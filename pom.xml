@@ -6,12 +6,7 @@
     <groupId>com.ontotext.graphdb</groupId>
     <artifactId>workbench-ui</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <properties>
-        <internal.repo>http://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
-        <snapshots.repo>http://maven.ontotext.com/content/repositories/owlim-snapshots</snapshots.repo>
-    </properties>
-
+    
     <build>
         <pluginManagement>
             <plugins>
@@ -162,25 +157,4 @@
         </plugins>
     </build>
 
-
-    <distributionManagement>
-        <repository>
-            <id>internal</id>
-            <name>OWLIM Releases repository</name>
-            <url>${internal.repo}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>OWLIM Snapshots repository</name>
-            <url>${snapshots.repo}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <scm>
-        <connection>scm:git:https://gitlab.ontotext.com/sdk/workbench-ui.git</connection>
-        <developerConnection>scm:git:https://gitlab.ontotext.com/sdk/workbench-ui.git
-        </developerConnection>
-        <url>https://gitlab.ontotext.com/sdk/workbench-ui</url>
-        <tag>HEAD</tag>
-    </scm>
 </project>
