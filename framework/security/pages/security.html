@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="graphdb.framework.security">
+<base href="${requestUtils.getRequest().getContextPath()}/security/">
+
+<title>Security Management</title>
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		<div class="form-horizontal row" ng-view></div>
+	</div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="${requestUtils.getRequest().getContextPath()}/webjars/angular-toastr/0.5.2/angular-toastr.css" />
+<link rel="stylesheet" type="text/css" href="${requestUtils.getRequest().getContextPath()}/css/animate.css">
+<link rel="stylesheet" type="text/css" href="${requestUtils.getRequest().getContextPath()}/css/forest-security.css" />
+
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/webjars/angularjs/1.3.8/angular.js"></script>
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/webjars/angularjs/1.3.8/angular-route.js"></script>
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/webjars/angular-toastr/0.5.2/angular-toastr.js"></script>
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/webjars/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/js/angular/security/directives.js"></script>
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/js/angular/security/controllers.js"></script>
+<script type="text/javascript" src="${requestUtils.getRequest().getContextPath()}/js/angular/security/app.js"></script>
+
+</html>

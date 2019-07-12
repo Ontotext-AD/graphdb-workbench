@@ -1,0 +1,159 @@
+.titleLine h3 {
+    position: absolute;
+}
+
+.top-offset {
+    position: relative;
+    top: 4em;
+}
+
+#classChart {
+    position: relative;
+}
+
+svg {
+    margin-left:auto;
+    margin-right:auto;
+    display:block;
+    height: calc(100vh - 120px);
+    width: 100%;
+}
+
+.rdf-class {
+    pointer-events: all;
+	cursor: pointer;
+	/* cursor: hand; */
+	fill: #8fc9ff;
+}
+
+.rdf-class:hover {
+  	stroke: cyan;
+  	stroke-width: 1.5px;
+}
+
+.side-panel-content {
+	margin-left: 10px;
+	margin-top: 5px;
+	margin-right: 10px;
+	word-wrap: break-word;
+}
+
+#close-button {
+	color: #003663;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.selected, .selected:hover {
+     stroke: #cbff66;
+     stroke-dasharray: 5, 5;
+     stroke-width: 4.5px;
+}
+
+.class-cnt-slider {
+    height: calc(100vh - 200px);
+    margin: 0;
+    float: left;
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+}
+
+.animate-show {
+    background:transparent;
+    z-index: 1;
+    -webkit-transition:all linear 0.1s;
+    transition:all linear 0.1s;
+}
+
+.animate-show.ng-hide {
+    opacity: 0;
+}
+
+.explore {
+    position: relative;
+}
+
+.toolbar-holder {
+	position: relative;
+    /* color: rgb(16, 48, 86); */
+/*
+    color: #018ae1;
+    background-color: rgba(255, 255, 255, 1);
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 5px;
+    padding-left: 0.4rem;
+    font-size: 2rem;
+*/
+}
+
+
+.pushed-toolbar {
+    right: 300px;
+}
+
+.slider-help-button {
+    color: rgb(16, 48, 86);
+}
+
+.slider-help-button:hover {
+    text-decoration: none;
+}
+
+.help-button-disabled {
+    z-index: 0;
+    position: relative;
+}
+
+.tooltip-hidden {
+    display: none;
+}
+
+.titleLine h3 {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.rdf-list-share-result {
+    font-size: 1em !important;
+}
+
+.no-instances-found-container {
+    height: 22.3vh;
+}
+
+#instances-search {
+    width: 100%;
+}
+
+.close-icon{
+    position: absolute;
+    z-index: 3;
+    left: -6px;
+    top: -1px;
+    display: none;
+}
+
+#search_input .angucomplete-holder{
+    position: absolute;
+    top: 0;
+    left: 35px;
+    width: 0;
+    z-index: 1;
+    display: none;
+    -webkit-transition: all 0.3s ease-in; /* Safari */
+    transition: all 0.3s ease-in;
+}
+
+#search_input .angucomplete-holder input{
+    margin-top: 0;
+}
+
+#search_input_dropdown{
+    margin-top: 0;
+    padding: 0;
+    border-radius: 0;
+    border-top: 0;
+}

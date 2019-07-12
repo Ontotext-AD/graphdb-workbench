@@ -1,0 +1,29 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="cancel()"></button>
+	<h3 class="modal-title">Are your license details correct?</h3>
+</div>
+<div class="modal-body">
+	<div>
+		<div class="d-inline-block mr-2 mb-1">
+			Licensed to
+			<span class="data-value big">{{license.licensee}}</span>
+		</div>
+		<div class="d-inline-block mr-2 mb-1">
+			Valid until
+			<span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+		</div>
+		<div class="d-inline-block mr-2 mb-1">
+			Number of cores
+			<span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'Unlimited'}}</span>
+		</div>
+		<div class="d-inline-block mb-1">
+			Maintenance date
+			<span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+		</div>
+	</div>
+	<div class="text-muted">{{license.typeOfUse}}</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" ng-click="ok()">Yes</button>
+</div>

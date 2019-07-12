@@ -1,0 +1,102 @@
+
+
+<div>
+    <!-- massively taken from https://github.com/chieffancypants/angular-hotkeys -->
+    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">mouse and keyboard actions</button>
+    <div class="hotkeys-container fade" ng-class="{in: shortcutsVisible}">
+        <div class="hotkeys">
+            <div class="close" ng-click="toggleCheatSheet()"></div>
+            <div class="mb-3">
+                <h3 class="text-xs-center">Mouse actions</h3>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Single click</kbd>
+                        </td>
+                        <td class="hotkeys-text">View node details and properties</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Double click</kbd>
+                        </td>
+                        <td class="hotkeys-text">Load node connections</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Ctrl/Cmd-click</kbd>
+                        </td>
+                        <td class="hotkeys-text">Removes a node and its links</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Ctrl/Cmd-Shift-click</kbd>
+                        </td>
+                        <td class="hotkeys-text">Restart the view with that node as a central one</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Click and drag a node</kbd>
+                        </td>
+                        <td class="hotkeys-text">Move a node by dragging it (will also pin down the node)</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Right click a node</kbd>
+                        </td>
+                        <td class="hotkeys-text">Pin down or unpin the node</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Click and drag outside a node</kbd>
+                        </td>
+                        <td class="hotkeys-text">Move the whole graph</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mb-3">
+            <h3 class="text-xs-center">Touch actions</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td class="hotkeys-keys">
+                        <kbd>Tap</kbd>
+                    </td>
+                    <td class="hotkeys-text">View node details and properties</td>
+                </tr>
+                <tr>
+                    <td class="hotkeys-keys">
+                        <kbd>Tap and hold</kbd>
+                    </td>
+                    <td class="hotkeys-text">Removes a node and its links</td>
+                </tr>
+                <tr>
+                    <td class="hotkeys-keys">
+                        <kbd>Tap twice</kbd>
+                    </td>
+                    <td class="hotkeys-text">Load node connections</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="mb-3">
+                <h3 class="text-xs-center">Keyboard actions</h3>
+                <table>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Left arrow</kbd>
+                        </td>
+                        <td class="hotkeys-text">Rotate the graph to the left</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Right arrow</kbd>
+                        </td>
+                        <td class="hotkeys-text">Rotate the graph to the right</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

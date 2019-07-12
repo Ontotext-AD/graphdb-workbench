@@ -1,0 +1,133 @@
+#domain-range {
+    position: relative;
+}
+
+#domain-range svg {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    /*min-height: 90vh;*/
+    width: 100%;
+}
+/*Fix for height of svg in IE11*/
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    #domain-range svg {
+        min-height: 80vh;
+    }
+}
+
+.legend-container {
+    display: inline-block;
+    width: 180px;
+    height: 216px;
+    position: fixed;
+    bottom: 20px;
+    left: 260px;
+}
+
+.legend-container svg {
+    width: 180px;
+    height: 216px;
+}
+
+.main-menu.collapsed ~ div .legend-container {
+    left: 90px;
+}
+
+.link, .loop-link, .property-arrow, .implicit-property-arrow, .collapsed-property-arrow, .property-type-list-item-legend {
+    stroke: #003663;
+}
+
+.legend-class-node {
+    fill: rgb(240, 78, 35);
+}
+
+.implicit-property-arrow {
+    stroke-dasharray: 3, 3;
+}
+
+.object-prop-node, .datatype-node {
+    cursor: move;
+}
+
+.object-prop-node:hover {
+    stroke: cyan;
+    stroke-width: 2px;
+}
+
+.object-prop-node, .legend-object-node {
+    fill: rgb(17, 176, 161);
+}
+
+.datatype-node, .legend-datatype-node {
+    fill: rgb(151, 153, 156);
+}
+
+#arrow {
+    stroke-width: 1;
+    stroke-dasharray: 0;
+}
+
+.class-node {
+    cursor: move;
+    fill: rgb(240, 78, 35);
+}
+
+.rdf-class-label {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    text-shadow: 0 0 3px #000000;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: white;
+    cursor: pointer;
+}
+
+.link-background, .loop-link-background {
+    fill: #f0f0f0;
+}
+
+.property-name, .loop-link-property-name {
+    dominant-baseline: middle;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.property-name:hover, .loop-link-property-name:hover, .left-class-label:hover, .right-class-label:hover, .rdf-class-label:hover {
+    fill: #003663;
+}
+
+.left-class-label {
+    dominant-baseline: middle;
+    text-anchor: end;
+    cursor: pointer;
+}
+
+.right-class-label {
+    dominant-baseline: middle;
+    text-anchor: start;
+    cursor: pointer;
+}
+
+.explore {
+    position: relative;
+}
+
+.toolbar-holder {
+    position: relative;
+    z-index: 1;
+}
+
+.titleLine h3 {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    position: absolute;
+}
+
+.top-offset {
+    position: relative;
+    top: 4em;
+}
+
+.pushed-toolbar {
+    right: 300px;
+}

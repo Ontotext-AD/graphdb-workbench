@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h4 class="modal-title">Import RDF data from URL</h4>
+</div>
+
+<div class="modal-body">
+    <form name="urlForm" ng-submit="importUrlForm($event)" ng-hide="loader" novalidate>
+        <div class="input-group mb-1">
+            <input required validate-uri id="dataUrl" name="dataUrl" placeholder="Data URL" type="url"
+                   ng-model="dataUrl" class="form-control"
+                   popover="URL with RDF data. Supported formats are {{fileFormatsHuman}}. "
+                   popover-placement="bottom"
+                   popover-trigger="focus">
+        </div>
+        <div class="text-danger" ng-show="urlForm.dataUrl.$error.validateUri">
+            Not valid url!
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <div class="mb-1">
+        <span popover="Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically."
+              popover-trigger="mouseenter"
+              popover-placement="top">
+            <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>
+            <label for="import-now-checkbox">Start import automatically</label>
+        </span>
+    </div>
+    <div>
+        <button type="button" ng-click="cancel()" class="btn btn-secondary">Cancel</button>
+        <div class="btn-group" dropdown>
+            <button class="btn btn-secondary dropdown-toggle" dropdown-toggle>
+                Format: {{importFormat.name}}
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a ng-click="importFormat = {name: 'Auto', type: ''}"
+                       class="dropdown-item">Auto</a></li>
+                <li><a ng-click="importFormat = {name: 'RDF/JSON', type: 'application/rdf+json'}"
+                       class="dropdown-item">RDF/JSON</a></li>
+                <li><a ng-click="importFormat = {name: 'JSON-LD', type: 'application/ld+json'}"
+                       class="dropdown-item">JSON-LD</a></li>
+                <li><a ng-click="importFormat = {name: 'RDF/XML', type: 'application/rdf+xml'}"
+                       class="dropdown-item">RDF/XML</a></li>
+                <li><a ng-click="importFormat = {name: 'N3', type: 'text/rdf+n3'}"
+                       class="dropdown-item">N3</a></li>
+                <li><a ng-click="importFormat = {name: 'N-Triples', type: 'text/plain'}"
+                       class="dropdown-item">N-Triples</a></li>
+                <li><a ng-click="importFormat = {name: 'N-Quads', type: 'text/x-nquads'}"
+                       class="dropdown-item">N-Quads</a></li>
+                <li><a ng-click="importFormat = {name: 'Turtle', type: 'text/turtle'}"
+                       class="dropdown-item">Turtle</a></li>
+                <li><a ng-click="importFormat = {name: 'TriX', type: 'application/trix'}"
+                       class="dropdown-item">TriX</a></li>
+                <li><a ng-click="importFormat = {name: 'TriG', type: 'application/x-trig'}"
+                       class="dropdown-item">TriG</a></li>
+                <li><a ng-click="importFormat = {name: 'BinaryRDF', type: 'application/x-binary-rdf'}"
+                       class="dropdown-item">BinaryRDF</a></li>
+            </ul>
+        </div>
+        <button id="wb-import-importUrl" ng-disabled="urlForm.$invalid" ng-click="ok()" class="btn btn-primary">
+            <span class="icon-import"></span> Import
+        </button>
+    </div>
+</div>

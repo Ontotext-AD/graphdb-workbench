@@ -1,0 +1,122 @@
+<link href="css/forest-domain-range-graph.css" rel="stylesheet"/>
+<link href="css/rdf-details-side-panel.css" rel="stylesheet"/>
+
+<title>Explore Data Graph</title>
+
+<h1>
+    {{title}}
+    <span class="btn btn-link"
+          ng-class="{ 'help-button': showExternalElements, 'help-button-disabled': !showExternalElements && !(!loader && !classHierarchyData.children.length) }"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom-right"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div class="explore">
+    <div class="toolbar-holder pull-right"
+         ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
+        <button class="btn btn-link p-0" type="button"
+			ng-click="goToClassHierarchyView()"
+			tooltip="Back to Class Hierarchy diagram"
+			tooltip-placement="bottom"
+			tooltip-trigger="mouseenter">
+            <i class="icon-arrow-left icon-2x"></i>
+        </button>
+
+		<button class="btn btn-link p-0 compact-mode-toggle" type="button"
+			ng-click="toggleCollapseEdgesState()"
+			tooltip="{{collapseEdges ? 'Show all predicates' : 'Show collapsed predicates'}}"
+			tooltip-placement="bottom"
+			tooltip-trigger="mouseenter">
+			<i class="fa fa-2x" 
+				ng-class="{'fa-toggle-off': collapseEdges, 'fa-toggle-on':!collapseEdges}"></i>
+        </button>
+
+		<a id="download-svg" href class="btn btn-link p-0"
+			tooltip="Export Diagram"
+			tooltip-placement="bottom"
+			tooltip-trigger="mouseenter">
+			<i class="icon-export icon-2x"></i>
+		</a>
+    </div>
+    <div class='explore_results'>
+        <domain-range-graph
+             show-predicates-info-panel="showPredicatesInfoPanel"
+             selected-predicate="selectedPredicate"
+             collapse-edges="collapseEdges">
+        </domain-range-graph>
+
+        <pageslide
+             ps-class="rdf-info-side-panel"
+             ps-open="showPredicatesInfoPanel"
+             ps-side="right"
+             ps-custom-height="calc(100vh - 55px)"
+             ps-custom-top="45px"
+             ps-size="25vw">
+            <div class="rdf-side-panel-content break-word-alt p-1">
+                <button class="close mb-1 ml-1" ng-click="showPredicatesInfoPanel = false"></button>
+
+                <h3 ng-switch on="sourceTargetObjectNodeName" class="hovered-parent">
+                    <p ng-switch-when="&lt;i&gt;Literal&lt;/i&gt;"
+                       ng-bind-html="sourceTargetObjectNodeName"></p>
+                    <a class="uri"
+                       href="resource?uri={{encodedSourceTargetObjectNodeUri}}"
+                       ng-switch-default>
+                        {{sourceTargetObjectNodeName}}
+                    </a>
+                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="Copy to Clipboard" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
+                        <span class="icon-link"></span>
+                    </button>
+                </h3>
+
+                <rdfs-comment-label
+                        rdfs-label="rdfsLabel"
+                        rdfs-comment="rdfsComment"
+                        expanded="expanded">
+                </rdfs-comment-label>
+
+
+
+                <div ng-switch on="predicatesObj.items.length">
+
+                    <list-items-search-filter
+                            filter-query-obj="predicatesQueryObj"
+                            filter-function="predicatesListFilterFunc"
+                            list-items-obj="predicatesObj"
+                            list-items-not-filtered="predicatesListNotFiltered"
+                            search-placeholder="{{predicatesSearchPlaceholder}}">
+                    </list-items-search-filter>
+
+                    <div class="rdf-not-found-container" ng-switch-when="0">
+                        <div class="alert alert-warning rdf-not-found-alert">
+                            <p class="rdf-not-found-label">No predicates found</p>
+                        </div>
+                    </div>
+
+                    <ul ng-switch-default ui-scroll-viewport class="rdf-list">
+                        <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
+                            <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
+                            <button class="btn btn-link btn-sm p-0 hovered-item" title="Copy to Clipboard" ng-click="copyToClipboard(item.absUriNonEncoded)">
+                                <span class="icon-link"></span>
+                            </button>
+                            <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">
+                                <path ng-switch-when="true" class="property-type-list-item-legend"
+                                      d="M5 45 l215 0"
+                                      transform="translate(200, -45)"
+                                      stroke-dasharray="3,3"/>
+                                <path ng-switch-default class="property-type-list-item-legend"
+                                      d="M5 45 l215 0"
+                                      transform="translate(200, -45)"/>
+                            </svg>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </pageslide>
+
+        <div class="legend-container"></div>
+    </div>
+</div>
+
+

@@ -1,0 +1,191 @@
+<script type="text/ng-template" id="popover-content-user.html">
+	<h5>User may:</h5>
+	<ul>
+        <li>Use GraphDB</li>
+	    <li>Be granted read access to a repository</li>
+		<li>Be granted read/write access to a repository</li>
+    </ul>
+</script>
+
+<script type="text/ng-template" id="popover-content-repo-manager.html">
+	<h5>Repository manager may:</h5>
+	<ul>
+		<li>Use GraphDB</li>
+		<li>Read and write all repositories</li>
+		<li>Create, edit and delete repositories</li>
+		<li>Access monitoring</li>
+	</ul>
+</script>
+
+<script type="text/ng-template" id="popover-content-admin.html">
+	<h5>Administrator may:</h5>
+	<ul>
+		<li>Use GraphDB</li>
+		<li>Read and write all repositories</li>
+		<li>Create, edit and delete repositories</li>
+		<li>Access monitoring</li>
+		<li>Attach remote locations</li>
+		<li>Manage Users and Access</li>
+		<li>Manage the cluster</li>
+		<li>View system information</li>
+	</ul>
+</script>
+
+<h1>{{pageTitle}}</h1>
+
+<div id="wb-user" ng-hide="loader">
+	<form name="form" class="form newUserForm userForm editUserContainer" ng-submit="submit()" novalidate>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card" ng-hide="isOverrideAuth()">
+					<div class="card-block">
+						<h3>Login</h3>
+						<div class="form-group" ng-class="{'has-danger': usernameError}">
+							<div class="input-group">
+								<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><i class="icon-user icon-2x text-muted"></i></span>
+								<input id="wb-user-username" placeholder="User name" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
+							</div>
+							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
+						</div>
+						<div class="form-group" ng-class="{'has-danger': passwordError}">
+							<div class="input-group">
+								<span class="input-group-addon" tooltip="Pasword" tooltip-trigger="mouseenter"><i class="icon-lock icon-2x text-muted"></i></span>
+								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external">
+								<span ng-show="user.external">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
+							</div>
+							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
+						</div>
+						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external">
+							<div class="input-group">
+								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><i class="icon-lock icon-2x text-muted"></i></span>
+								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword">
+							</div>
+							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card" id="user-settings">
+					<div class="card-block">
+						<h3>SPARQL editor settings</h3>
+
+						<div id="sameas-on" class="mb-1">
+							<span>
+								Expand results over owl:SameAs is
+								<span class="tag {{user.appSettings.DEFAULT_SAMEAS ? 'tag-primary' : 'tag-default'}}">
+									{{user.appSettings.DEFAULT_SAMEAS ? 'ON' : 'OFF'}}
+								</span>
+							</span>
+							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+								  ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
+								  class="switch mr-0">
+								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_SAMEAS"/>
+								<label for="sameas-on"></label>
+							</span>
+							by default
+						</div>
+
+						<div id="inference-on" class="mb-1">
+							<span>
+								Inference is
+								<span class="tag {{user.appSettings.DEFAULT_INFERENCE ? 'tag-primary' : 'tag-default'}}">
+									{{user.appSettings.DEFAULT_INFERENCE ? 'ON' : 'OFF'}}
+								</span>
+							</span>
+							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+								  ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
+								  class="switch mr-0">
+								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
+								<label for="inference-on"></label>
+							</span>
+							by default
+						</div>
+
+						<label class="d-block">
+							<input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
+							Count total results
+						</label>
+
+						<label class="d-block">
+							<input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
+							Ignore shared saved queries
+						</label>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="col-md-6">
+				<div class="card" id="user-roles">
+					<div class="card-block">
+						<h3>User role</h3>
+						<label class="mr-1"
+							   popover-template="'popover-content-user.html'"
+							   popover-trigger="mouseenter"
+							   popover-placement="bottom">
+							<input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="hasEditRestrictions()" >
+							User
+						</label>
+						<label class="mr-1"
+							   popover-template="'popover-content-repo-manager.html'"
+							   popover-trigger="mouseenter"
+							   popover-placement="bottom">
+							<input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="hasEditRestrictions()">
+							Repository manager
+						</label>
+						<label popover-template="'popover-content-admin.html'"
+							   popover-trigger="mouseenter"
+							   popover-placement="bottom">
+							<input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="hasEditRestrictions()">
+							Administrator
+						</label>
+					</div>
+				</div>
+
+				<div id="user-repos"  class="card">
+					<div class="card-block">
+						<h3>Repository rights</h3>
+						<div class="has-danger">
+							<p ng-show="repositoryCheckError" class="form-control-feedback">
+								Users should have rights to at least one repository!
+							</p>
+						</div>
+						<table class="table table-hover table-sm">
+							<thead>
+								<tr>
+									<th>Repository</th>
+									<th class="text-xs-center"><i class="icon-eye icon-lg" tooltip="Read" tooltip-trigger="mouseenter"></i></th>
+									<th class="text-xs-center"><i class="icon-edit icon-lg" tooltip="Write" tooltip-trigger="mouseenter"></i></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Any data repository
+										<i class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></i>
+									</td>
+									<td class="text-xs-center"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()"></td>
+								</tr>
+								<tr ng-repeat="repository in getReadableRepositories() | orderBy: 'id'">
+									<td>{{repository.id}}</td>
+									<td class="text-xs-center"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[repository.id]"  ng-checked="hasReadPermission(repository.id)" ng-disabled="readCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[repository.id]" ng-checked="hasWritePermission(repository.id)" ng-disabled="writeCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mb-3">
+			<button id="wb-user-submit" class="btn btn-primary" type="submit">{{saveButtonText}}</button>
+			<button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">Cancel</button>
+		</div>
+	</form>
+</div>
+<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+
+
+

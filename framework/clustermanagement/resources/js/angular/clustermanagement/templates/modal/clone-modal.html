@@ -1,0 +1,27 @@
+<!-- Start clone-modal.html -->
+            <div class="modal-header">
+                <h3 class="modal-title">Clone worker repository</h3>
+            </div>
+            <form name="cloneWorker" class="form-horizontal" autocomplete="off" novalidate>
+                <div class="modal-body row">
+                    <div class="col-xs-12">
+                        <label class="control-label" for="repository-id">New repository ID</label>
+                        <input required id="repository-id" name="repository-id" class="form-control" placeholder="This field is required" ng-model="clone.repositoryID" type="text" />
+                        <div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">Repository name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <label class="control-label" for="repository-title">New repository title</label>
+                        <input id="repository-title" name="repository-title" class="form-control" placeholder="Repository title" ng-model="clone.repositoryTitle" type="text" />
+                    </div>
+                    <div class="col-xs-12">
+                        <label class="control-label" for="location-select">Location in which to create the new worker</label>
+                        <select ng-init="clone.location = clone.locations[0]" required class="form-control" ng-model="clone.location" ng-options="location.uri for location in clone.locations" id="location-select" name="location-select">
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button  type="button" ng-click="cancel();" class="btn btn-sm btn-default">Cancel</button>
+                    <button type="submit" ng-click="ok();" class="btn btn-sm btn-primary" ng-disabled="cloneWorker.$invalid">Save</button>
+                </div>
+            </form>
+<!-- End clone-modal.html -->

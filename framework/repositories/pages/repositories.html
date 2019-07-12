@@ -1,0 +1,188 @@
+
+	<link href="css/forest-repositories.css" rel="stylesheet">
+
+	<link href="webjars/bootstrap-switch/3.2.2/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
+
+	<script src="webjars/bootstrap-switch/3.2.2/js/bootstrap-switch.min.js"></script>
+
+	<h1>
+		{{title}}
+		<span class="btn btn-link"
+		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   popover-trigger="mouseenter"
+		   popover-placement="bottom-right"
+		   popover-append-to-body="true"><span class="icon-info"></span></span>
+	</h1>
+
+	<div id="wb-repositories" class="ot-owlim-ctrl mb-2">
+		<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="false"></div>
+			<div ng-show="hasActiveLocation()">
+				<div class="pull-left">
+					<strong>Repositories from: </strong>
+					<i ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></i>
+					<span class="mr-1">{{getActiveLocation().label}}</span>
+				</div>
+				<div class="actions-bar-inline pull-right">
+					<button
+						tooltip="Edit common settings for these repositories"
+						tooltip-placement="top" tooltip-trigger="mouseenter"
+						class="btn btn-link px-0"
+						ng-click="openActiveLocationSettings()">
+						<span class="icon-settings"></span>
+					</button>
+					<a class="btn btn-link px-0 pull-right" href="license"
+						tooltip="View or update license for these repositories"
+						tooltip-placement="top" tooltip-trigger="mouseenter">
+						<span class="icon-key"></span>
+					</a>
+				</div>
+			</div>
+			<div class="alert alert-danger" ng-show="getActiveLocation().errorMsg">
+				{{getActiveLocation().errorMsg}} Refresh the page to retry.
+			</div>
+
+			<div class="alert alert-warning" ng-hide="!getLocations().length || hasActiveLocation()">
+				There is no active location
+			</div>
+
+			<div ng-show="hasActiveLocation()" class="mb-3">
+				<div class="alert alert-warning" ng-hide="getRepositories().length || getActiveLocation().errorMsg">
+					There are no repositories in the active location
+				</div>
+				<div ng-show="getRepositories().length" class="mb-1">
+					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped">
+						<tbody>
+							<tr
+								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
+								ng-class="{'table-info text-secondary': getActiveRepository() == repository.id}">
+								<td width="25">
+									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
+										  ng-click="setRepository(repository.id)"
+										  ng-if="getActiveRepository() !== repository.id"
+										  data-repository-id="{{repository.id}}"></span>
+									<span role="button" class="icon-connection-on icon-lg text-tertiary"
+										  tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
+										  ng-if="getActiveRepository() === repository.id"></span>
+								</td>
+								<td>
+									<div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
+										<span popover-popup-delay="500"
+										popover-trigger="mouseenter" popover-placement="bottom-right"
+										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
+											<strong>{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+									</div>
+								</td>
+								<td width="150" class="text-nowrap">
+									<button class="btn btn-link p-0"
+											ng-click="copyToClipboard(repository.externalUrl)"
+											tooltip="Copy repository URL to clipboard">
+										<span class="icon-link"></span>
+									</button>
+									<span ng-show="getDegradedReason()">
+										<i class="icon-warning icon-lg text-warning"
+											tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
+											tooltip-placement="top" tooltip-trigger="mouseenter"></i>
+									</span>
+									<span ng-hide="repository.type === 'system' || getDegradedReason()">
+										<a class="btn btn-link p-0"
+											href="repository/edit/{{repository.id}}"
+											tooltip="Edit repository"
+											tooltip-placement="top"
+											tooltip-trigger="mouseenter">
+											<span class="icon-edit"></span>
+										</a>
+										<a class="btn btn-link p-0 download-turtle-config" ng-href="{{getRepositoryDownloadLink(repository)}}"
+												target="_blank"
+												tooltip="Download repository configuration as Turtle"
+												tooltip-placement="top"
+												tooltip-trigger="mouseenter">
+												<i class="icon-download"></i>
+										</a>
+										<button class="btn btn-link p-0 secondary" type="button"
+											tooltip="Delete repository"
+											tooltip-placement="top"
+											tooltip-trigger="mouseenter"
+											ng-click="deleteRepository(repository.id)">
+											<i class="icon-trash"></i>
+										</button>
+									</span>
+								</td>
+								<td width="50">
+									<button class="btn btn-link p-0" ng-hide="repository.type === 'system'"
+										ng-click="toggleDefaultRepository(repository.id)"
+										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
+										tooltip="Set as default repository">
+										<i class="icon-pin"></i>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div ng-hide="getDegradedReason()" class="btn-group" dropdown>
+					<a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span class="icon-plus"></span> Create new repository</a>
+					<button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
+						<span class="sr-only">Split button!</span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<!--<li><a class="dropdown-item" ng-href="repository/add">Form</a></li>-->
+						<li><a class="dropdown-item" href ng-click="fromFile()">Create from file</a></li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div ng-show="hasRole('ROLE_ADMIN')">
+				<h3 ng-show="getLocations().length">Repository locations</h3>
+				<table class="table table-hover table-striped" ng-show="getLocations().length">
+					<tbody>
+						<tr
+							ng-repeat="location in getLocations() | orderBy: 'uri'"
+							ng-class="{'table-info text-secondary':location.active}">
+							<td width="25">
+
+								<span role="button" class="icon-connection-off icon-lg text-secondary m-0"
+									  tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									  ng-click="activateLocation(location)"
+									  ng-if="!location.active"></span>
+
+								<span class="icon-connection-on icon-lg text-tertiary"
+									tooltip="Activated" tooltip-placement="top" tooltip-trigger="mouseenter"
+									ng-if="location.active"></span>
+
+							</td>
+							<td>
+								<div class="text-overflow">
+									<strong>{{location.label}}</strong>
+								</div>
+								<div ng-show="location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
+							</td>
+							<td width="150" class="text-nowrap">
+								<button class="btn btn-link p-0"
+									tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									ng-hide="location.local"
+									ng-click="editLocation(location)">
+									<i class="icon-edit"></i>
+								</button>
+								<button class="btn btn-link p-0 secondary"
+									tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									ng-hide="location.system"
+									ng-click="deleteLocation(location.uri)">
+									<i class="icon-close"></i>
+								</button>
+							</td>
+							<td width="50"></td>
+						</tr>
+					</tbody>
+				</table>
+				<button id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span> Attach remote location</button>
+
+				<p class="text-muted" ng-hide="getLocations().length">
+					<em>There are no connected GraphDB instances.</em>
+				</p>
+
+			</div>
+
+	</div>

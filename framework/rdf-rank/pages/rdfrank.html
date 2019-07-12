@@ -1,0 +1,114 @@
+<link href="css/rdfrank.css" rel="stylesheet">
+<link href="css/lib/ng-tags-input.min.css" rel="stylesheet"/>
+
+<div class="page">
+	<h1>
+		{{title}}
+		<i class="btn btn-link"
+		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   popover-trigger="mouseenter"
+		   popover-placement="bottom-right"
+		   popover-append-to-body="true"><span class="icon-info"></span></i>
+	</h1>
+
+	<div onto-loader-new
+		 ng-show="loader"
+		 class="autocomplete-loader"
+		 message="getLoaderMessage"
+		 size="75">
+	</div>
+
+    <div core-errors write></div>
+
+    <div ng-show="canWriteActiveRepo() && !loading">
+		<div class="alert alert-info" ng-if="!loader && !pluginFound">
+			<h4>RDFRank not supported</h4>
+			<p>The current repository does not support the RDFRank plugin. Please check the type of the repository or select
+				another one.</p>
+		</div>
+		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
+			<h4>RDFRank not fully supported</h4>
+			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
+		</div>
+		<div ng-show="pluginFound && !getDegradedReason()">
+            <div class="lead mb-1" id="toggleIndex">
+				<span>RDFRank for repository <b>{{getActiveRepository()}}</b> is with status</span>
+                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><i class="icon-check icon-lg"></i> Computed</span>
+
+                <span ng-show="currentRankStatus == 'COMPUTING'">
+                    <span class="tag tag-info">
+                        <span class="icon-reload icon-lg loader"></span>
+                        Computing...
+                    </span>
+                    <button class="btn btn-link btn-sm" ng-click="interruptComputation()"
+                            tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+                </span>
+
+                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><i class="icon-warning icon-lg"></i> {{currentRankStatus}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><i class="icon-warning icon-lg"></i> Outdated</span>
+				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><i class="icon-warning icon-lg"></i> Configuration changed</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><i class="icon-warning icon-lg"></i> Computation canceled</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><i class="icon-info icon-lg"></i> RDFRank not built yet</span>
+
+				<p class="pull-right">
+					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary">Compute Full</button>
+                    <button ng-hide="currentRankStatus != rdfStatus.OUTDATED"
+							ng-click="computeIncrementalRank()" class="btn btn-primary">Compute Incremental</button>
+				</p>
+			</div>
+
+			<br>
+
+			<div id="toggleFilterMode">
+				<h3 class="d-inline-block mr-1">Filtering</h3>
+				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch">
+                    <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
+                    <label for="toggleFilterMode"></label>
+                </span>
+			</div>
+
+
+			<div id="filterConfig" ng-show="filteringEnabled" class="card card-block">
+
+				<div class="mb-2">
+					<div id="toggleIncludeExplicit" class="d-inline-block mr-2">
+						Include Explicit
+						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'YES' : 'NO'}}</span></span>
+						<span tooltip="Click to {{includeExplicit ? 'exclude' : 'include'}} Explicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
+	                    <input type="checkbox" class="switch" ng-checked="includeExplicit"/>
+	                    <label for="toggleIncludeExplicit"></label>
+	                </span>
+					</div>
+
+					<div id="toggleIncludeImplicit" class="d-inline-block">
+						Include Implicit
+						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'YES' : 'NO'}}</span></span>
+						<span tooltip="Click to {{includeImplicit ? 'exclude' : 'include'}} implicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
+	                    <input type="checkbox" class="switch" ng-checked="includeImplicit"/>
+	                    <label for="toggleIncludeImplicit"></label>
+	                </span>
+					</div>
+				</div>
+
+				<tabset active="active" ng-show="filteringEnabled">
+					<tab>
+						<tab-heading class="nav-item"
+									 tooltip-placement="bottom"
+									 tooltip-trigger="mouseenter"><span class="nav-link">Graphs</span></tab-heading>
+						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]" />
+						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]" />
+					</tab>
+					<tab>
+						<tab-heading class="nav-item"
+									 tooltip-placement="bottom"
+									 tooltip-trigger="mouseenter"><span class="nav-link">Predicates</span></tab-heading>
+						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]" />
+						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]" />
+					</tab>
+				</tabset>
+
+			</div>
+        </div>
+    </div>
+</div>

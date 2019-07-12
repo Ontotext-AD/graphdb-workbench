@@ -1,0 +1,122 @@
+<link href="css/autocomplete.css" rel="stylesheet">
+<div class="page">
+	<h1>
+		{{title}}
+		<i class="btn btn-link"
+		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   popover-trigger="mouseenter"
+		   popover-placement="bottom-right"
+		   popover-append-to-body="true"><span class="icon-info"></span></i>
+	</h1>
+
+	<div onto-loader-new
+		 ng-show="loader"
+		 class="autocomplete-loader"
+		 message="getLoaderMessage"
+		 size="75">
+	</div>
+
+    <div core-errors write></div>
+
+    <div ng-show="canWriteActiveRepo() && !loading">
+		<div class="alert alert-info" ng-if="!loader && !pluginFound">
+			<h4>Autocomplete not supported</h4>
+			<p>The current repository does not support the Autocomplete plugin. Please check the type of the repository or select
+				another one.</p>
+		</div>
+		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
+			<h4>Autocomplete not fully supported</h4>
+			<p>Configuring autocomplete is not supported. {{getDegradedReason()}}</p>
+		</div>
+		<div ng-show="pluginFound && !getDegradedReason()">
+            <div class="lead mb-1" id="toggleIndex">
+				<span>Autocomplete for repository <b>{{getActiveRepository()}}</b> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch">
+                    <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
+                    <label for="toggleIndex"></label>
+                </span>
+				<span ng-show="autocompleteEnabled">
+					with status
+					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><i class="icon-check icon-lg"></i> Ready</span>
+
+					<span ng-show="indexStatus == 'BUILDING'">
+						<span class="tag tag-info">
+							<span class="icon-reload icon-lg loader"></span>
+							Building...
+						</span>
+						<button class="btn btn-link btn-sm" ng-click="interruptIndexing()"
+								tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+					</span>
+
+					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><i class="icon-warning icon-lg"></i> {{indexStatus}}</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><i class="icon-warning icon-lg"></i> Index building was cancelled.</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><i class="icon-info icon-lg"></i> Index not built yet.</span>
+				</span>
+
+
+
+				<p class="pull-right" ng-show="autocompleteEnabled">
+					<button ng-disabled="indexStatus == 'BUILDING'" ng-click="buildIndex()" class="btn btn-primary">Build Now</button>
+				</p>
+			</div>
+
+			<div ng-class="indexStatus != 'READY_CONFIG' ? 'invisible' : ''" class="alert alert-warning no-icon">
+				Indexing options have changed but they have not been applied yet. Rebuild the index to apply the changes.
+			</div>
+
+			<button id="wb-autocomplete-addLabel" type="submit" ng-click="addLabel()"
+					ng-disabled="indexStatus == 'BUILDING'" class="btn btn-sm btn-primary pull-right"
+					tooltip-trigger="mouseenter" tooltip="Add label config">
+				<span class="icon-plus"></span>
+				Add label
+			</button>
+
+			<div id="toggleIRIs" class="pull-right">
+				Index IRIs is
+				<span class="tag {{shouldIndexIRIs ? 'tag-primary' : 'tag-default'}}">{{shouldIndexIRIs ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{shouldIndexIRIs ? 'disable' : 'enable'}} indexing of IRIs" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIndexIRIs()" class="switch">
+                    <input type="checkbox" class="switch" ng-checked="shouldIndexIRIs"/>
+                    <label for="toggleIRIs"></label>
+                </span>
+			</div>
+
+			<table id="wb-autocomplete-labels"
+				   class="table table-striped table-hover">
+				<thead>
+				<tr>
+					<th>Label IRI</th>
+					<th>Languages</th>
+					<th style="width: 100px"></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-if="labelConfig.length == 0">
+					<td colspan="3">No labels are configured.</td>
+				</tr>
+				<tr ng-repeat="label in labelConfig"
+					class="wb-autocomplete-labels-row" loader-post-repeat-directive>
+					<td>
+						{{label.labelIri}}
+					</td>
+
+					<td>
+						<span ng-if="!label.languages">any language</span>
+						<span ng-repeat="language in label.languages.split(', ')">
+							<span class="tag tag-default">{{language}}</span>
+						</span>
+					</td>
+
+					<td class="actions-bar">
+						<button class="btn btn-link" ng-click="editLabel(label)" tooltip-trigger="mouseenter"
+								tooltip="Edit label languages"><span class="icon-edit"></span></button>
+						<button class="btn btn-link secondary" ng-click="removeLabel(label)"
+								tooltip-trigger="mouseenter" tooltip="Delete label config">
+							<span class="icon-trash"></span>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+        </div>
+    </div>
+</div>

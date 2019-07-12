@@ -1,0 +1,196 @@
+<link href="css/forest-dependencies.css" rel="stylesheet">
+
+
+<title>Explore Class Dependencies</title>
+
+<h1>
+	{{title}}
+	<span class="btn btn-link"
+	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   popover-trigger="mouseenter"
+	   popover-placement="bottom-right"
+	   popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div class="top-offset" core-errors></div>
+<div class="top-offset" system-repo-warning></div>
+<div class="top-offset alert alert-danger" ng-show="repositoryError">
+    <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+    <p>{{repositoryError}}</p>
+</div>
+<div class="content" ng-show="!isSystemRepository()">
+    <div class="pull-right" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
+         <button class="btn btn-link p-0" type="button" 
+              	ng-show="allNotFilteredClasses.length > 0" 
+               ng-click="removeAllClasses()"
+               tooltip="Remove All Classes"
+               tooltip-trigger="mouseenter"
+               tooltip-placement="bottom">
+             <i class="icon-close icon-2x"></i>
+         </button>
+        <button class="btn btn-link p-0" type="button"
+             tooltip="Reload Diagram"
+              tooltip-placement="bottom"
+              tooltip-trigger="mouseenter"
+              ng-click="confirmCalculateDependencies()">
+            <i class="icon-reload icon-2x refresh-button" ></i>
+        </button>
+        <a href id="download-svg" class="btn btn-link p-0"
+           ng-show="allNotFilteredClasses.length > 0"
+           tooltip="Export Diagram"
+              tooltip-placement="bottom"
+              tooltip-trigger="mouseenter">
+            <i class="icon-export icon-2x"></i>
+        </a>
+    </div>
+    <div>
+        <div ng-show="selectedClasses.length >= 2">
+            <span ng-show="dependenciesData.hasLinks">Showing the dependencies between {{selectedClasses.length}} classes</span>
+            <span ng-show="!dependenciesData.hasLinks">No dependencies between these classes</span>
+        </div>
+
+        <div ng-show="allNotFilteredClasses.length > 0 && selectedClasses.length < 2">
+            At least two classes are needed to show dependency diagram
+        </div>
+    </div>
+    <div class="top-offset alert alert-warning"
+         ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO'">
+        The currently selected repository contains no dependencies data. Please, reload the diagram if you have imported
+        data recently.
+    </div>
+    <div class="dep-status" ng-show="status == 'N/A'">
+        Dependencies plugin is not available. Dependency data cannot be shown without it.
+    </div>
+    <div class="dep-status" ng-show="status == 'IN_PROGRESS'">
+        Dependencies calculation is in progress. If your repo is big it may take some time.
+    </div>
+    <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="isLoading() && status != 'NO_REPO'"></div>
+    <div class="row deps-sidebar" ng-show="!isLoading() && allNotFilteredClasses.length > 0">
+        <div class="col-sm-5 col-lg-4">
+            <div ng-show="!classToShow">
+                <div>
+                    <list-items-search-filter
+                            filter-query-obj="classQuery"
+                            filter-function="classFilterFunc"
+                            list-items-obj="allClasses"
+                            list-items-not-filtered="allNotFilteredClasses"
+                            search-placeholder="Filter classes">
+                    </list-items-search-filter>
+                </div>
+                <div class="row direction-filter">
+                    <div class="col-sm-4 col-xs-4 col-md-4">
+                        <label>
+                            <input type="radio" ng-model="direction" value="all">
+                            All
+                        </label>
+                    </div>
+                    <div class="col-sm-4 col-xs-4 col-md-4">
+                        <label>
+                            <input type="radio" ng-model="direction" value="in">
+                            Incoming
+                        </label>
+                    </div>
+                    <div class="col-sm-4 col-xs-4 col-md-4">
+                        <label>
+                            <input type="radio" ng-model="direction" value="out">
+                            Outgoing
+                        </label>
+                    </div>
+                </div>
+                <div class="row direction-filter-header">
+                    <div class="col-sm-6">Class</div>
+                    <div class="col-sm-6">Links</div>
+                </div>
+                <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row">
+                    <li ui-scroll="class in datasource" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
+                        padding="li">
+                        <div class="col-sm-11 row deps-data" ng-class="{'active': (isClassByNameShown(class.name))}">
+                            <div class="col-sm-8 col-md-8 deps-class-name">
+                                {{class.name}}
+                            </div>
+                            <div class="col-sm-3 col-md-3">
+                                {{(mode == "all") ? class.inConnectionsSum + class.outConnectionsSum -
+                                class.selfConnections : class.inConnectionsSum + class.outConnectionsSum | humanize}}
+                            </div>
+                            <div class="related-arrow col-sm-1 col-md-1" tooltip="Related Classes" tooltip-trigger="mouseenter"
+                                 ng-click="showClass(class)">
+                                <i class="fa fa-exchange pointer related-classes"
+                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></i>
+                                <i class="fa fa-long-arrow-left related-classes"
+                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></i>
+                                <i class="fa fa-long-arrow-right related-classes"
+                                   ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></i>
+                            </div>
+                        </div>
+                        <div class="plusminus col-sm-1 col-md-1">
+                            <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" tooltip="Add Class" tooltip-trigger="mouseenter">
+                                <i class="fa fa-plus" role="button"></i>
+                            </div>
+                            <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" tooltip="Remove Class"
+                                  tooltip-trigger="mouseenter">
+                                <i class="fa fa-minus-circle" role="button"></i>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div ng-show="classToShow">
+                <div class="direction-filter-header">
+                    {{classToShow.name}}
+                </div>
+                <div class="back-to-dependencies-list">
+                    <a href="#" ng-click="classToShow = undefined"><i class="fa fa-arrow-left"></i> Back to main Class
+                        Relationships table</a>
+                </div>
+                <div class="row direction-filter-header">
+                    <div class="col-sm-6">Class</div>
+                    <div class="col-sm-6">Links</div>
+                </div>
+                <ul id="wb-dependencies-classToShow" class="rdf-list rdf-list-static row">
+                    <li ng-repeat="connection in classToShow.connections.slice(0, 100)" class="col-sm-12 row">
+                        <div class="col-sm-11 row deps-data"
+                             ng-class="{'active': (isClassByNameShown(connection.dependencyClass))}">
+                            <div class="col-sm-8 col-md-8 deps-class-name">
+                                {{connection.dependencyClass}}
+                            </div>
+                            <div class="col-sm-3 col-md-3">
+                                {{(connection.dependencyClass == classToShow.name) ? connection.inWeight :
+                                connection.inWeight + connection.outWeight | humanize}}
+                            </div>
+                            <div class="related-arrow col-sm-1 col-md-1">
+                                <i class="fa fa-exchange"
+                                   ng-show="connection.inWeight > 0 && connection.outWeight > 0"></i>
+                                <i class="fa fa-long-arrow-left"
+                                   ng-show="connection.inWeight > 0 && connection.outWeight == 0"></i>
+                                <i class="fa fa-long-arrow-right"
+                                   ng-show="connection.inWeight == 0 && connection.outWeight > 0 "></i>
+                            </div>
+                        </div>
+                        <div class="plusminus col-sm-1 col-md-1">
+                            <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" tooltip="Add Class" tooltip-trigger="mouseenter">
+                                <i class="fa fa-plus" role="button"></i>
+                            </div>
+                            <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" tooltip="Remove Class"
+                                 tooltip-trigger="mouseenter">
+                                <i class="fa fa-minus-circle" role="button"></i>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div ng-show="classToShow.connections.length > 100">
+                    And {{classToShow.connections.length - 100}} more...
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-7 col-lg-8 text-center">
+            <div dependencies-chord
+                 dependencies-data="dependenciesData"
+                 ng-show="status == 'READY' && selectedClasses.length > 1 && dependenciesData.hasLinks"></div>
+        </div>
+
+    </div>
+
+
+</div>

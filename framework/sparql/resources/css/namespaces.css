@@ -1,0 +1,99 @@
+#namespaces li {
+    font-size: 1.1em;
+}
+/*#namespaces li i.fa,*/
+/*.wb-namespaces-row i.fa,*/
+/*.wb-namespaces-row a.fa {*/
+    /*margin-left: 5px;*/
+    /*display: none;*/
+/*}*/
+
+/*#namespaces li:hover i.fa,*/
+/*.wb-namespaces-row:hover i.fa,*/
+/*.wb-namespaces-row:hover a.fa {*/
+    /*display: inline;*/
+/*}*/
+
+/*#namespaces li > a {*/
+    /*margin-right: 15px;*/
+    /*margin-left: 10px;*/
+/*}*/
+
+/*#namespaces li a.fa {*/
+    /*margin-left: 5px;*/
+    /*display: none;*/
+/*}*/
+
+/*#namespaces li:hover a.fa {*/
+    /*display: inline;*/
+/*}*/
+
+.editable-controls input[name="namespace"], .editable-controls input[name="prefix"] {
+    width: 50%;
+}
+
+.editable-controls{
+    display: inline;
+}
+
+/*
+button.fa.fa-floppy-o {
+    border: none;
+    background: transparent;
+    color: #f04e23;
+}
+
+.wb-namespaces-row td .fa{
+    top: 0;
+    font-size: 14px;
+    margin: 0 5px;
+}
+*/
+
+/*
+#wb-namespaces-namespaceInNamespaces{
+    margin-top: 20px;
+}
+
+#wb-namespaces-namespaceInNamespaces thead tr th{
+    font-size: 14px;
+}
+*/
+
+/*
+#wb-namespaces-namespaceInNamespaces thead tr th:first-child{
+    width: 1%;
+}
+
+#wb-namespaces-namespaceInNamespaces thead tr th:last-child{
+    width: 50%;
+}
+
+#wb-namespaces-namespaceInNamespaces thead tr th .checkbox, #wb-namespaces-namespaceInNamespaces tbody tr td .checkbox{
+    margin: 0;
+}
+*/
+
+/*
+#wb-namespaces-namespaceInNamespaces thead tr th{
+    background-color: #f9f9f9;
+    border-bottom: 0;
+    color: red !important;
+}
+*/
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: #fff;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+    background-color: #f9f9f9;
+}
+
+.borderless td, .borderless th {
+    border: none !important;
+}
+
+th .fa.fa-trash-o.fa-1x{
+    cursor: pointer;
+}

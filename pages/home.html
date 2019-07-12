@@ -1,0 +1,197 @@
+<div class="ot-loader ot-loader-home" onto-loader-fancy size="100" ng-show="isLoadingLocation()"></div>
+<div class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
+    <div class="row mb-3 tutorial-container" ng-init="initTutorial()" ng-if="tutorialState">
+        <div class="col-lg-12">
+            <div class="card mt-2">
+                <div class="card-block">
+                    <button type="button" tooltip="Close" class="close" aria-label="Close"
+                            ng-click="declineTutorial()"></button>
+                    <div class="pages-wrapper">
+                        <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
+                            <h1 class="card-title">{{page.title}}</h1>
+                            <p class="card-text lead" ng-bind-html="page.info"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-block">
+                    <a href="#" class="btn btn-lg btn-primary" ng-click="slideNext()">OK, continue</a>
+                    <a href="#" class="btn btn-lg btn-outline-secondary" ng-click="declineTutorial()">No, thanks</a>
+                    <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <button type="button" class="btn btn-secondary" ng-click="slideToPage($index)"
+                                    ng-repeat="page in tutorialInfo track by $index">{{$index + 1}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3" ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak>
+        <div class="col-lg-12">
+            <h3><span  tooltip="View RDF data as a text table or as a visual graph" tooltip-placement="right">View resource</span></h3>
+            <div class="card">
+                <div class="card-block">
+                    <search-resource-input
+                            namespacespromise="getNamespacesPromise"
+                            autocompletepromisestatus="getAutocompletePromise"
+                            empty="empty">
+                    </search-resource-input>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div core-errors></div>
+
+    <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
+        <div class="col-lg-6">
+            <h3><span tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
+            <div class="card"
+                 ng-show="canReadRepo(getActiveLocation(), getActiveRepository())">
+                <div class="card-block">
+                    <h6>{{getActiveLocation().label}}</h6>
+                    <div class="actions-bar pull-right">
+                        <button type="button" tooltip="Copy repository URL to clipboard" class="btn btn-link"
+                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
+                        </button>
+                        <button type="button" ng-click="goToEditRepo(getActiveRepository())" class="btn btn-link" tooltip="Edit repository"
+                           ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
+                            <span class="icon-edit"></span>
+                        </button>
+                        <span ng-show="getDegradedReason()">
+                            <i class="icon-warning icon-lg text-warning"
+                               tooltip="{{getDegradedReason()}} Editing this repository is not supported."
+                               tooltip-placement="top" tooltip-trigger="mouseenter"></i>
+                        </span>
+                        <button type="button" tooltip="Refresh repository info" class="btn btn-link"
+                                ng-if="activeRepositorySize && !activeRepositorySizeError"
+                                ng-click="getActiveRepositorySize()"><span class="icon-reload"></span>
+                        </button>
+                    </div>
+                    <h3 class="card-title ellipsis-block">
+                        <i class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
+                           tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} repository with {{canWriteActiveRepo() ? 'read/write' : 'read-only'}} access"></i>
+                        {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
+                    </h3>
+                    <div ng-if="activeRepositorySize && !activeRepositorySizeError">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-6 mb-1">
+                                    <span>total statements</span>
+                                    <span class="data-value big" ng-if="activeRepositorySize.total !== -1">{{activeRepositorySize.total | currency:'':0}}</span>
+                                    <span class="data-value big" ng-if="activeRepositorySize.total === -1">&ndash;</span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit !== -1">{{activeRepositorySize.explicit | currency:'':0}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit === -1">&ndash;</span>
+                                        <span>explicit</span>
+                                    </div>
+                                    <div>
+                                        <span class="data-value" ng-if="activeRepositorySize.inferred !== -1">{{activeRepositorySize.inferred | currency:'':0}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.inferred === -1">&ndash;</span>
+                                        <span class="">inferred</span>
+                                    </div>
+                                    <div>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit !== 0 && activeRepositorySize.total !== -1">{{activeRepositorySize.total / activeRepositorySize.explicit | number: 2}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit === 0 || activeRepositorySize.total === -1">&ndash;</span>
+                                        <span class="">expansion ratio</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="activeRepositorySizeError">
+                        <div class="d-inline-block mr-1 mb-1">
+                            error
+                            <span class="data-value big">{{activeRepositorySizeError}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div>
+                                <a ng-show="canWriteActiveRepo()" class="btn btn-link" href="import">Import RDF data</a>
+                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="import">Import RDF data</button>
+                            </div>
+                            <div>
+                                <a ng-show="canWriteActiveRepo()" class="btn btn-link" href="ontorefine">Import tabular data with OntoRefine</a>
+                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="ontorefine">Import tabular data with OntoRefine</button>
+                            </div>
+                            <div><a class="btn btn-link" href="graphs">Export RDF data</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h3><span tooltip="Execute a saved SPARQL query directly" tooltip-placement="top">Saved SPARQL queries</span></h3>
+            <div class="card"
+                 ng-cloak>
+                <div>
+                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}}" ng-init="getSavedQueries()">
+                        <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries() && query.owner != null" class="list-group-item list-group-item-action">
+                            <span class="help-label" ng-click="goToSparqlEditor(query)">Execute <span class="icon-caret-right"></span></span>
+                            <samp class="h5">{{query.name}}</samp>
+                            <samp class="text-muted small">{{query.body}}</samp>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-lg-12">
+            <h3><span tooltip="View information about the installed GraphDB license" tooltip-placement="right">License</span></h3>
+            <div class="card">
+                <h4 class="card-header">GraphDB {{productTypeHuman}} Edition</h4>
+                <!-- appears only when there is a problem with the license -->
+                <div class="alert alert-warning" role="alert" ng-hide="license.valid">
+                    <p>
+                        <strong>{{license.message}}</strong><br>
+                        Please supply a valid license or contact Ontotext AD sales department to aquire one.
+                    </p>
+                    <a href="license/register" ng-href="license/register" ng-hide="isLicenseHardcoded">
+                        <button class="btn btn-primary license-button">
+                            Set new license
+                        </button>
+                    </a>
+                </div>
+                <div class="card-block" ng-hide="hasActiveLocation()">
+                    <div class="">
+                        <div class="d-inline-block mr-1 mb-1">
+                            <span class="data-value big">License information cannot be shown because you are not connected to a location.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-block" ng-show="hasActiveLocation()">
+                    <div class="" ng-show="license.product">
+                        <div class="d-inline-block mr-2 mb-1">
+                            Licensed to
+                            <span class="data-value big">{{license.licensee}}</span>
+                        </div>
+                        <div class="d-inline-block mr-2 mb-1">
+                            Valid until
+                            <span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+                        </div>
+                        <div class="d-inline-block mr-2 mb-1">
+                            Number of cores
+                            <span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'Unlimited'}}</span>
+                        </div>
+                        <div class="d-inline-block mb-1">
+                            Maintenance date
+                            <span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted">
+                        {{license.typeOfUse}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

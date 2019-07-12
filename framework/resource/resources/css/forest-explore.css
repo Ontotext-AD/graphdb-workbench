@@ -1,0 +1,16 @@
+.yasr .dataTables_wrapper .dataTables_filter {
+    display:none;
+}
+.opacity-hide {
+    opacity: 0;
+    display: none;
+}
+
+#results-loader object {
+    display: block;
+    margin: 0 auto;
+}
+
+.autocomplete-toast a, .autocomplete-toast a:hover {
+    color: #fff;
+}

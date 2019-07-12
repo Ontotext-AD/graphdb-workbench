@@ -1,0 +1,32 @@
+b {
+    color: #f04e23;
+}
+.angucomplete-dropdown {
+    overflow-y: auto;
+    max-height: 200px; // your preference
+}
+/*    position: relative;
+    display: inline-block;
+}
+*/
+.angucomplete-row {
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.angucomplete-selected-row {
+    background-color: #3385ff;
+    color: white;
+    cursor: pointer;
+}
+
+.angucomplete-dropdown:hover .angucomplete-row {
+    display: block;
+}
+
+.search-button {
+    position:absolute;
+    right: 0%;
+}

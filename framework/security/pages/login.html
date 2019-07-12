@@ -1,0 +1,31 @@
+<div id="wb-login" class="row">
+	<div class="col-xs-6 col-sm-6 col-md-6">
+		<div class="card">
+			<div class="card-block">
+				<h1>Login</h1>
+				<form class="form-horizontal loginForm"  ng-submit="login()">
+					<div ng-if="error" class="alert alert-danger">
+						Password or username did not match!
+					</div>
+
+					<div class="form-group mb-2" ng-class="wrongCredentials ? 'has-error' : ''">
+						<div class="input-group">
+							<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><i class="icon-user icon-2x text-muted"></i></span>
+							<input id="wb-login-username" ng-model="username" placeholder="Your name" type="text" class="form-control form-control-lg" autofocus required ng-blur="wrongCredentials = false">
+						</div>
+					</div>
+					<div class="form-group mb-2"  ng-class="wrongCredentials ? 'has-error' : ''">
+						<div class="input-group">
+							<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><i class="icon-lock icon-2x text-muted"></i></span>
+							<input id="wb-login-password" type="password" placeholder="Your password" ng-model="password" class="form-control form-control-lg" required ng-blur="wrongCredentials = false">
+						</div>
+					</div>
+					<div class="form-group">
+<!-- 					<a href="#" class="requestAccess">Request access</a> -->
+						<button id="wb-login-submitLogin" type="submit" class="btn btn-primary btn-lg">Sign in</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,77 @@
+<h1>
+	{{title}}
+	<span class="btn btn-link"
+	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   popover-trigger="mouseenter"
+	   popover-placement="bottom-right"
+	   popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+<div id="wb-users" ng-hide="loader">
+	<div class="mb-1">
+		<div class="pull-right">
+			<span id="toggle-security" class="mr-1">
+				<span>Security is <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
+					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
+					<label for="toggleSecurity"></label>
+				</span>
+			</span>
+			<span ng-show="securityEnabled()" id="toggle-freeaccess">
+				<span>Free Access is <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{freeAccessEnabled() ? 'disable' : 'enable'}} free access to non-admin functionality" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
+					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
+					<label for="toggleFreeAccess"></label>
+				</span>
+				<span ng-show="freeAccessEnabled()">
+					Free Access Settings
+					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><i class="icon-settings" tooltip="Free access configuration" ng-click="editFreeAccess()"></i></a>
+				</span>
+			</span>
+		</div>
+		
+		<a id="wb-users-userCreateLink" class="btn btn-primary" href="user/create""><span class="icon-plus"></span> Create new user</a>
+	</div>
+
+	<div ng-show="hasExternalAuth()">
+		<div>&nbsp;</div>
+		<div class="alert alert-info no-icon mt-1">
+			<p>You have configured the external authentication module {{getAuthImplementation()}}, which supplements the local users.</p>
+			<p>The table below shows only the local users.</p>
+		</div>
+	</div>
+
+	<table id="wb-users-userInUsers" class="table table-striped">
+		<thead>
+			<tr>
+				<th>Username</th>
+				<th>Role</th>
+				<th>Repository rights</th>
+				<th>Date created</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="user in users | orderBy: 'username'">
+				<td><span>{{user.username}}</span></td>
+				<td>{{user.userTypeDescription}}</td>
+				<td>
+					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
+						<i class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'Has read access' : 'Does not have read access'}}"></i>
+						<i class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'Has write access' : 'Does not have write access'}}"></i>
+						{{repo}}
+					</div>
+					<div ng-show="user.userType !== 'user'">Unrestricted</div>
+				</td>
+				<td><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+				<td class="actions-bar">
+					<span>
+						<a class="btn btn-link" href="user/{{encodeURIComponent(user.username)}}"><i class="icon-edit" tooltip="Edit user"></i></a>
+						<a class="btn btn-link secondary" ng-show="user.username != 'admin'" href ng-click="removeUser(user.username)"><i class="icon-trash" tooltip="Delete user"></i></a>
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+

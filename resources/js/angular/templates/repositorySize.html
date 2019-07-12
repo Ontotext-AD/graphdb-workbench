@@ -1,0 +1,46 @@
+<div ng-init="getRepositorySize()" style="margin: -4px 0; padding: 10px">
+	<div class="row">
+		<label style="margin-right: 10px">Type:</label>
+		<span class="text-right pull-right">
+			{{toHumanReadableType(popoverRepo.type)}}
+		</span>
+	</div>
+	<div class="row mb-1">
+		<label style="margin-right: 10px">Access:</label>
+		<span class="text-right pull-right">
+			{{canWriteRepoInActiveLocation(popoverRepo.id) ? 'Read/write' : 'Read-only'}}
+		</span>
+	</div>
+	<div ng-show="repositorySize.total >= 0">
+		<div class="row" ng-show="repositorySize.total >= 0" style="margin-top: 0">
+				<label style="margin-right: 10px">Total statements:</label>
+			<span class="text-right pull-right">
+				{{repositorySize.total | currency:'':0}}
+			</span>
+		</div>
+		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
+				<label style="margin-right: 10px">Explicit:</label>
+			<span class="text-right pull-right">
+				{{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
+			</span>
+		</div>
+		<div class="row" ng-show="repositorySize.inferred >= 0" style="margin-top: 0">
+			<label style="margin-right: 10px">Inferred:</label>
+			<span class="text-right pull-right">
+				{{repositorySize.inferred | currency:'':0}}
+			</span>
+		</div>
+		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
+				<label style="margin-right: 10px">Expansion ratio (total/explicit):</label>
+			<span class="text-right pull-right">
+				{{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
+			</span>
+		</div>
+	</div>
+	<div class="row" ng-hide="repositorySize.loading || repositorySize.total >= 0">
+		Size info not available.
+	</div>
+	<div class="row" class="row" ng-show="repositorySize.loading">
+		Loading...
+	</div>
+</div>

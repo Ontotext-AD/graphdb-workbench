@@ -1,0 +1,165 @@
+<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+<div ng-hide="loader">
+
+    <div ng-show="showTable()" class="mb-1 clearfix">
+        <div class="pull-right form-inline">
+            <div class="btn-group d-inline mr-1" ng-show="viewType === 'server'">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'file'" tooltip="Show files only">
+                    <i class="icon-file"></i>
+                </button>
+                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'all'" tooltip="Show both files and directories">
+                    <i class="icon-file"></i>
+                    <i class="icon-folder"></i>
+                </button>
+                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'directory'" tooltip="Show directories only">
+                    <i class="icon-folder"></i>
+                </button>
+            </div>
+            <div class="input-group">
+                <label class="input-group-addon" for="fileQuery"><span
+                        class="icon-search icon-lg text-muted"></span></label>
+                <input id="fileQuery" class="form-control" type="text" name="fileQuery" ng-model="fileQuery"
+                       placeholder="Type to filter">
+            </div>
+        </div>
+        <form class="form-inline">
+            <div class="btn btn-link">
+                <input class="form-check-input" type="checkbox" ng-click="selectAllFiles()" ng-model="checkAll"
+                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" tooltip="Select all">
+            </div>
+            <div class="btn-group" dropdown ng-hide="!hasImportable() || !batch"
+                 popover="Import the selected items"
+                 popover-trigger="mouseenter"
+                 popover-placement="top">
+                <button type="button" class="btn btn-primary" ng-click="setSettingsFor('')"><span class="icon-import"></span> Import</button>
+                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
+                    <span class="sr-only"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><button type="button" class="dropdown-item" ng-click="importSelected(true)">Import without changing settings</button></li>
+                </ul>
+            </div>
+            <button id="wb-import-clearStatuses"
+                    ng-show="batch && showClearStatuses"
+                    class="btn btn-secondary" type="button" ng-click="resetStatusSelected()"
+                    popover="Reset the last imported status of the selected items"
+                    popover-trigger="mouseenter"
+                    popover-placement="top">
+                Reset status
+            </button>
+            <button id="wb-import-removeEntries"
+                    ng-show="batch && viewType === 'user'"
+                    class="btn btn-secondary" type="button" ng-click="removeEntrySelected()"
+                    popover="Remove the selected items from the list"
+                    popover-trigger="mouseenter"
+                    popover-placement="top">
+                Remove
+            </button>
+        </form>
+    </div>
+
+    <script type="text/ng-template" id="settingsPopoverTemplate.html">
+        <h4>Last import settings</h4>
+        <table class="table table-sm m-0" ng-init="settings = filterSettings(file.name)">
+            <tr ng-repeat="setting in settings">
+                <td><b>{{setting[0]}}</b></td>
+                <td class="break-word" ng-show="setting[0] == 'parserSettings'">
+                    <pre>{{pritifySettings(setting[1])}}</pre>
+                </td>
+                <td class="break-word" ng-show="!(setting[0] == 'parserSettings')">{{setting[1]}}</td>
+            </tr>
+        </table>
+    </script>
+
+    <table id="wb-import-fileInFiles" class="table table-striped table-hover">
+        <tbody>
+        <tr
+                ng-repeat="file in files | filter: {name: fileQuery, type: getTypeFilter()}"
+                ng-show="files.length > 0">
+            <td width="25">
+                <label class="m-0 d-inline-block">
+                    <input type="checkbox" ng-model="fileChecked[file.name]"
+                           ng-disabled="!importable(file)" ng-change="switchBatch()">
+                </label>
+            </td>
+            <td>
+                <div class="d-inline-block" style="overflow: hidden; text-overflow: ellipsis;">
+                    <div>
+                        <!-- no icon for server files -->
+                        <i class="icon-file" ng-show="viewType === 'server' && file.type === 'file'"></i>
+                        <i class="icon-folder" ng-show="file.type === 'directory'"></i>
+                        <i class="icon-upload" ng-show="viewType === 'user' && file.type === 'file'"></i>
+                        <i class="icon-link" ng-show="file.type === 'url'"></i>
+                        <i class="icon-edit" ng-show="file.type === 'text'"></i>
+                        <strong ng-show="file.type !== 'text'">{{file.name}}</strong>
+                        <strong ng-show="file.type === 'text'"><a href="#" ng-click="pasteData(file)">{{file.name}}</a></strong>
+                    </div>
+                    <div>
+                        <button role="button" class="btn btn-link btn-inline secondary b-0 p-0"
+                                ng-click="resetStatus([file.name])"
+                                ng-show="file.status === 'DONE' || file.status === 'ERROR'"
+                                ng-disabled="batch"
+                                tooltip="Reset status" tooltip-trigger="mouseenter">
+                            <span class="icon-close"></span>
+                        </button>
+                        <span class="icon-info text-secondary"
+                              popover-class="impex-popover"
+                              popover-template="popoverTemplateUrl"
+                              popover-trigger="mouseenter"
+                              popover-placement="right"
+                              popover-append-to-body="true"
+                              ng-show="file.status === 'DONE' || file.status === 'ERROR'">
+                        </span>
+                        <span ng-show="file.status == 'NONE' && file.message" class="text-info">
+                            <small>{{file.message}}</small>
+                        </span>
+                        <span ng-show="file.status == 'DONE'" class="text-success">
+                            <i class="icon-check"></i>
+                            <small>{{file.message}}</small>
+                        </span>
+                        <span ng-show="file.status == 'ERROR'" class="text-danger">
+                            <i class="icon-warning"></i>
+                            <small>{{file.message}}</small>
+                        </span>
+                        <span ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'" class="text-secondary">
+                            <i class="icon-reload loader"></i>
+                            <small>{{toTitleCase(file.status)}}...</small>
+                        </span>
+                    </div>
+                </div>
+            </td>
+            <td width="25" ng-show="viewType === 'user'">
+                <button class="btn btn-link secondary" ng-click="removeEntry([file.name])" ng-disabled="batch || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'">
+                    <i class="icon-trash"></i>
+                </button>
+            </td>
+            <td width="100">
+                <button class="btn btn-primary btn-sm pull-right"
+                        ng-click="setSettingsFor(file.name)"
+                        ng-disabled="batch"
+                        ng-cloak
+                        ng-hide="!importable(file) || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
+                        data-target="#{{viewType}}Modal">
+                    <span class="icon-import"></span>
+                    Import
+                </button>
+                <button class="btn btn-sm pull-right"
+                        ng-click="stopImport(file)"
+                        ng-disabled="file.status === 'INTERRUPTING'"
+                        ng-cloak
+                        ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
+                        tooltip="Interrupt import" tooltip-trigger="mouseenter"
+                        tooltip-append-to-body="true">
+                    <span class="icon-close"></span>
+                    Abort
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        <tbody ng-show="files.length == 0 && viewType == 'server'">
+        <tr>
+            <td>No files found</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

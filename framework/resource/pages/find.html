@@ -1,0 +1,40 @@
+<link href="css/forest-find.css" rel="stylesheet"/>
+
+<div class="page">
+	<h1>
+		{{title}}
+		<span class="btn btn-link"
+		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   popover-trigger="mouseenter"
+		   popover-placement="bottom-right"
+		   popover-append-to-body="true"><span class="icon-info"></span></span>
+	</h1>
+    <div core-errors></div>
+    <form class="form-horizontal" name="form" novalidate ng-submit="submit()" ng-show="getActiveRepository()">
+        <p class="lead">Enter resource URI</p>
+		<div class="form-group pos-r">
+			<input type="submit" value="Go" class="btn btn-primary pull-right search-button"/>
+			<div angucomplete-alt-onto
+				 id="resources_finder"
+				 placeholder="Search RDF Resources"
+				 text-searching="false"
+				 text-no-results="false"
+				 pause="150"
+				 minlength="2"
+				 selected-object="selectedUriCallback"
+				 initial-value="selectedUri"
+				 field-required="true"
+				 input-name="rdfUriForm"
+				 auto-match="true"
+				 remote-api-handler="getAutocompleteSuggestions"
+				 remote-url-data-field="suggestions"
+				 title-field="value"
+				 input-class="form-control"
+				 match-class="highlight"
+				 focus-first="true"
+				 input-changed="inputChangedFn"
+				 disable-suggestions="autocompleteEnabled">
+			</div>
+		</div>
+    </form>
+</div>

@@ -1,0 +1,30 @@
+<!-- Start save graph modal -->
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h3 ng-if="isNew" class="modal-title">Add label for autocomplete</h3>
+    <h3 ng-if="!isNew" class="modal-title">Edit label for autocomplete</h3>
+</div>
+<form ng-submit="ok()" name="form">
+    <div class="modal-body">
+        <input id="wb-autocomplete-iri" required type="text" ng-model="label.labelIri" class="form-control" ng-readonly="!isNew"
+               placeholder="Enter label IRI or click one of the predefined IRIs" autofocus/>
+
+        <div class="mt-1 mb-2 templates">
+            <span class="tag tag-default" ng-click="setTemplate('http://www.w3.org/2000/01/rdf-schema#label')">rdfs:label</span>
+            <span class="tag tag-default" ng-click="label.labelIri = 'http://www.w3.org/2004/02/skos/core#prefLabel'; $('#wb-autocomplete-languages').focus()">skos:prefLabel</span>
+            <span class="tag tag-default" ng-click="label.labelIri = 'http://xmlns.com/foaf/0.1/name'; $('#wb-autocomplete-languages').focus()">foaf:name</span>
+        </div>
+
+        <input id="wb-autocomplete-languages" type="text" ng-model="label.languages" class="form-control"
+               placeholder="Enter comma-separated languages or leave empty for any language"/>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+        <button id="wb-autocomplete-savegraph-submit" class="btn btn-primary" ng-click="ok()" type="submit">OK</button>
+    </div>
+</form>
+
+<!-- End save graph modal -->
+    
+    

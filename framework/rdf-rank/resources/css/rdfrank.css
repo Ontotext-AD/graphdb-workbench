@@ -1,0 +1,21 @@
+.templates {
+}
+
+.templates .tag {
+    cursor: pointer;
+    font-size: 100%;
+}
+
+.autocomplete-loader {
+    position: relative;
+    z-index: 100000;
+}
+
+.autocomplete-loader .ot-loader-new-content {
+    position: absolute;
+    z-index: 100000;
+    width: 100%;
+    height: calc(100vh - 120px);
+    padding-top: calc((100vh - 300px) / 2);
+    background-color: rgba(255,255,255,0.66);
+}

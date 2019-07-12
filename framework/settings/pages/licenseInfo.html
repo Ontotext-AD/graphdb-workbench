@@ -1,0 +1,64 @@
+<link href="css/forest-license-info.css" rel="stylesheet"/>
+
+<title>GraphDB License Information</title>
+
+<h1>
+	{{title}}
+	<span class="btn btn-link"
+		popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		popover-trigger="mouseenter"
+		popover-placement="bottom-right"
+		popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
+
+<div class="license-container" ng-show="!loader">
+   
+	<div class="alert alert-warning" ng-if="!license.valid">
+		<p>
+			<strong>{{license.message}}</strong><br>
+			Please supply a valid license or contact the Ontotext AD sales department to acquire one!
+		</p>
+	</div>
+	
+	<div class="card">
+		<h3 class="card-header">GraphDB {{productTypeHuman}} Edition</h3>
+		<div class="card-block">
+			<div>
+				<div class="d-inline-block mr-2 mb-1">
+					Licensed to
+					<span class="data-value big">{{license.licensee}}</span>
+				</div>
+				<div class="d-inline-block mr-2 mb-1">
+					Valid until
+					<span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+				</div>
+				<div class="d-inline-block mr-2 mb-1">
+					Number of cores
+					<span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'Unlimited'}}</span>
+				</div>
+				<div class="d-inline-block mb-1">
+					Maintenance date
+					<span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+				</div>
+			</div>
+			<p class="text-muted">{{license.typeOfUse}}</p>
+			<div>
+				<a href="license/register" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
+					Set new license
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="alert alert-warning" ng-show="isLicenseHardcoded && hasRole('ROLE_ADMIN') && productType !== 'free'">
+		License cannot be changed from the Workbench as it was set through a file or config parameter.
+	</div>
+
+	<div class="alert alert-warning" ng-show="!hasRole('ROLE_ADMIN') && productType !== 'free'">
+		License can be changed by Admins only.
+	</div>
+</div>
+
+

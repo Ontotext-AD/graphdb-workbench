@@ -1,0 +1,181 @@
+<div class="connectorsPage">
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors write></div>
+    <div onto-loader-new
+         ng-show="loader"
+         style="height: 60vh;"
+         size="75"
+         message="getLoaderMessage"
+         timeout="[1]"></div>
+    <div ng-show="canWriteActiveRepo() && !loader">
+        <div class="pull-right">
+            <button class="btn btn-lg btn-link p-0" type="button"
+                    ng-click="getConnectors()"
+                    tooltip="Reload all connector information" tooltip-placement="left">
+                <i class="icon-reload"></i>
+            </button>
+        </div>
+        <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
+        <div ng-show="connectors.length">
+            <div class="mb-3" ng-repeat="connector in connectors">
+                <h3>{{connector.key}}</h3>
+                <section class="mb-1">
+                    <div id="accordion-{{connector.key}}" role="tablist" aria-multiselectable="true">
+                        <div class="card" ng-repeat="exist in existing[connector.key]">
+                            <div class="card-header" role="tab" id="heading-{{connector.key}}{{$index}}">
+								<div class="pull-right">
+									<button class="btn btn-link p-0" type="button"
+										ng-click="copyConnector(connector, exist)"
+										tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
+										<i class="icon-copy"></i>
+									</button>
+									<button class="btn btn-link p-0" type="button"
+										ng-click="repair(exist, connector)"
+										tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
+										<i class="icon-reload"></i>
+									</button>
+									<button class="btn btn-link secondary p-0" type="button"
+										ng-click="delete(exist, connector)"
+										tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
+										<i class="icon-trash"></i>
+                                    </button>
+								</div>
+                                <h5 class="mb-0">
+                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{connector.key}}"
+                                       href="#collapse-{{connector.key}}{{$index}}" aria-expanded="false"
+                                       aria-controls="collapse-{{connector.key}}{{$index}}">
+                                        {{exist.name}}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse-{{connector.key}}{{$index}}" class="collapse" role="tabpanel"
+                                 aria-labelledby="heading-{{connector.key}}{{$index}}">
+                                <div class="card-block">
+                                    <div class="form-horizontal">
+                                        <div class="row form-group" ng-repeat="option in getOptions(connector) | filter: { __name: exist.values.hasOwnProperty }"
+                                             ng-init="key = option.__name; value = exist.values[key]">
+                                            <label class="col-xs-2 col-form-label">{{option.__label}}</label>
+                                            <div class="col-xs-10">
+                                                <div ng-if="option.__type == 'String'">
+                                                    <input class="form-control" type="text" readonly value="{{value}}"/>
+                                                </div>
+                                                <div ng-if="option.__type == 'BigString'">
+                                                    <textarea class="form-control" ng-model="value" readonly>
+                                                    </textarea>
+                                                </div>
+                                                <div ng-if="option.__type == 'JsonString'">
+                                                    <textarea class="form-control" ng-bind="toPrettyJson(value)" readonly>
+                                                    </textarea>
+                                                </div>
+                                                <div>
+                                                    <input class="form-control" type="text" readonly value="{{value}}"
+                                                           ng-if="option.__type == 'Long'"/>
+                                                </div>
+                                                <div>
+                                                    <input type="checkbox" readonly ng-checked="{{value}}"
+                                                           ng-if="option.__type == 'Boolean'"/>
+                                                </div>
+                                                <div ng-if="option.__type == 'StringArray'"
+                                                     ng-repeat="val in value track by $index" class="mb-1">
+                                                    <input type="text" class="form-control" value="{{val}}" readonly>
+                                                </div>
+
+                                                <div ng-if="option.__type == 'Map'">
+                                                    <div ng-repeat="(mapKey, mapValue) in value">
+                                                        <div class="input-group mb-1">
+                                                            <div class="row">
+                                                                <div class="col-xs-6">
+                                                                    <input type="text" class="form-control" ng-model="mapKey" readonly>
+                                                                </div>
+                                                                <div class="col-xs-6">
+                                                                    <input type="text" class="form-control" ng-model="mapValue" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-form-label mb-1" ng-show="isEmpty(value)">
+                                                        <label><i>No {{option.__label}} added</i></label>
+                                                    </div>
+
+                                                </div>
+                                                <div ng-if="option.__type == 'OptionArray'">
+                                                    <fieldset class="form-group mb-1"
+                                                              ng-repeat="field in value track by $index"
+                                                              ng-init="fieldIndex = $index">
+                                                        <div class="alert alert-info no-icon">
+                                                            <div class="form-group row"
+                                                                 ng-repeat="child in option.__childOptions | filter: { __type: '!Boolean' }: true">
+                                                                <label class="col-xs-2 col-form-label">{{child.__label}}</label>
+                                                                <div class="col-xs-10">
+                                                                    <input type="text" class="form-control"
+                                                                           ng-if="child.__type == 'String'"
+                                                                           ng-model="field[child.__name]" readonly>
+                                                                    <div ng-if="child.__type == 'StringArray'"
+                                                                         ng-repeat="value in field[child.__name] track by $index">
+                                                                        <input type="text" class="form-control"
+                                                                               ng-model="field[child.__name][$index]"
+                                                                               readonly/>
+                                                                    </div>
+                                                                    <!-- Handles other types, e.g. OptionArray -->
+                                                                    <div ng-if="child.__type != 'String' && child.__type != 'StringArray'"
+                                                                         class="col-form-label">
+                                                                        <label ng-show="!field[child.__name]"><i>{{child.__label}} not set</i></label>
+                                                                        <pre ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-xs-2"></div>
+                                                                <div class="col-xs-10">
+                                                                    <label class="form-check-inline" ng-repeat="child in option.__childOptions | filter: { __type: 'Boolean' }: true">
+                                                                        <input type="checkbox"
+                                                                               class="form-check-input"
+                                                                               ng-model="field[child.__name]"
+                                                                               readonly>
+                                                                        {{child.__label}}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary pull-right"
+                                                    ng-click="viewQuery(connector, exist)">View SPARQL Query
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-hide="existing[connector.key].length">No connector instances.</div>
+                </section>
+                <section>
+                    <button class="btn btn-primary" ng-click="newConnector(connector)"><i class="icon-plus"></i>
+                        New {{connector.key}} connector
+                    </button>
+                </section>
+
+            </div>
+        </div>
+
+        <div class="alert alert-info" ng-if="!connectors.length">
+            <h4>No connectors available</h4>
+            <p>The current repository does not support any connectors. Please check the type of the repository or select
+                another one.</p>
+        </div>
+    </div>
+</div>
+
+

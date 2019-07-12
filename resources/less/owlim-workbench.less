@@ -1,0 +1,207 @@
+@primary-color-light: #ffe6df;
+@primary-color: #ff683f;
+@primary-color-dark: #ff410f;
+
+@secondary-color-light: #dce6f5;
+@secondary-color: #003663;
+@secondary-color-dark: #122a50;
+
+@input-border: 3px;
+
+@xx-small-font: 10px;
+@x-small-font: 11px;
+@small-font: 12px;
+@medium-font: 13px;
+@large-font: 14px;
+@x-large-font: 18px;
+@xx-large-font: 24px;
+
+@xx-small-size: 40px;
+@x-small-size: 80px;
+@small-size: 120px;
+@medium-size: 200px;
+@large-size: 280px;
+@x-large-size: 480px;
+@xx-large-size: 950px;
+
+a.navbar-brand {
+	padding-left: 43px;
+	position: relative;
+	object {
+		position: absolute;
+		left: 0;
+		top: 3px;
+		z-index: -1; /*Fix for logo to be clickable*/
+	}
+}
+
+.loggedInfo {
+	color: white;
+	padding-top: 9px;
+}
+
+.navbar-inverse, .navbar-inverse .dropdown-menu {
+	background-color: @secondary-color;
+}
+
+#repositorySelectDropdown {
+  .fa {
+    color: #fff;
+  }
+  &.open > .popover {
+    display: none !important;
+  }
+  li .popover {
+    .popover-title {
+      padding: 4px 14px;
+    }
+    .popover-content {
+      padding: 6px 14px
+    }
+    label {
+      margin-bottom: 3px;
+    }
+  }
+}
+
+#menu-active-location {
+  max-width: 146px;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  margin-bottom: -4px;
+  font-size: 0.9em;
+  padding-left: 5px;
+
+  @media (min-width:1030px) {
+    max-width: 180px;
+  }
+
+  @media (min-width:1080px) {
+    max-width: 230px;
+  }
+
+  @media (min-width:1130px) {
+    max-width: 280px;
+  }
+
+  @media (min-width:1180px) {
+    max-width: 330px;
+  }
+
+  @media (min-width:1230px) {
+    max-width: 380px;
+  }
+
+  @media (min-width:1280px) {
+    max-width: 430px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 520px;
+  }
+}
+
+.activeRepositorySYSTEM {
+  & > .popover {
+    width: 250px;
+    .popover-title {
+      display: none;
+    }
+    .popover-content .row {
+      display: none;
+      &:first-child {
+        display: block;
+      }
+    }
+  }
+}
+.chooseRepository > .popover {
+  display: none !important;
+}
+.activeRepository > .popover {
+  width: 250px;
+}
+
+.navbar-inverse .navbar-nav li a:hover, .navbar-nav .open a:hover {
+    background-color: #0cb0a0;
+}
+
+.navbar-inverse .navbar-nav .open a:focus, .navbar-inverse .navbar-nav li a:focus {
+    background-color: #0cb0a0;
+}
+
+// Change the z-index to show the popovers above the navigation bars
+.popover {
+    z-index: 2060;
+}
+
+
+[ng-cloak] + .show-ng-cloak {
+	display: block !important;
+}
+
+.wb-pointer {
+  cursor: pointer;
+}
+
+.wb-home-data h4 {
+  color: #000;
+}
+
+td .editable-wrap {
+	display: inline;
+}
+
+.navbar-fixed-top .container > .navbar-header, .navbar-fixed-top .container > .navbar-collapse {
+  margin-right: 0;
+  margin-left: 0;
+  display: block;
+  border-top: 0;
+}
+.navbar-fixed-top .navbar-header, .navbar-fixed-top .navbar-nav, .navbar-fixed-top .navbar-nav > li {
+  float: left;
+}
+.navbar-fixed-top .navbar-nav.navbar-right {
+  float: right;
+  margin-right: -15px;
+}
+.navbar-fixed-top .navbar-nav .open .dropdown-menu {
+  position: absolute;
+  background-color: #003663;
+}
+.navbar-fixed-top .navbar-nav > li > a {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.navbar-fixed-top .navbar-text {
+  margin-left: 15px;
+}
+
+.navbar-nav {
+  margin: 0;
+}
+
+.navbar-button {
+    color: white;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    text-decoration: none;
+    background-color: #003663;
+    display: inline-block !important;
+    margin-left: 7px;
+}
+
+.navbar-button:hover {
+    text-decoration: none;
+    background-color: #0cb0a0;
+}
+
+.autocomplete-toast a, .autocomplete-toast a:hover {
+    color: #fff;
+    cursor: pointer;
+}

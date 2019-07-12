@@ -1,0 +1,17 @@
+.upload-buttons {
+    align-items: stretch;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.upload-buttons div.btn {
+    height: 100%;
+    max-height: 100px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ng-hide.ng-hide-animate {
+    display: none !important;
+}

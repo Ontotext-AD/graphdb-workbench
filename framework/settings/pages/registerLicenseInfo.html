@@ -1,0 +1,68 @@
+<link href="css/forest-license-info.css" rel="stylesheet"/>
+
+<title>GraphDB License Information</title>
+
+<h1>
+	{{title}}
+	<span class="btn btn-link"
+		popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		popover-trigger="mouseenter"
+		popover-placement="bottom-right"
+		popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
+
+<div class="alert alert-info lead" ng-show="productType === 'free'">
+	GraphDB Free does not need a license file.
+</div>
+
+<div class="alert alert-warning lead" ng-show="productType !== 'free' && isLicenseHardcoded">
+	License cannot be changed from the Workbench as it was set through a file or config parameter.
+</div>
+
+<div class="alert alert-warning lead" ng-show="productType !== 'free' && !isLicenseHardcoded && !hasRole('ROLE_ADMIN')">
+	License can be changed by Admins only.
+</div>
+
+<div class="register-license-container" ng-show="productType !== 'free' && !isLicenseHardcoded && hasRole('ROLE_ADMIN')">
+
+   
+	<button ngf-select
+		ng-model="currentFile"
+		class="btn btn-outline-primary btn-lg text-xs-left mb-2"
+		accept="license">
+		<i class="icon-upload icon-lg pull-left"
+			tooltip="Select license file"
+			tooltip-trigger="mouseenter"
+			tooltip-placement="top-right"
+			tooltip-append-to-body="true">
+		</i>
+
+		<div class="pull-left upload-license-btn-info">
+			Click here to upload your license file
+			<br/>
+			<small class="text-muted">Supported file format is .license</small>
+		</div>
+	</button>
+    
+	<div class="form-group">
+		<label><i>or</i> copy your license code below</label>
+		<textarea class="form-control" rows="15" ng-model="licenseCode" placeholder="{{sample}}"
+			popover="Copy your license code here and click Register"
+			popover-placement="bottom"
+popover-trigger="focus"></textarea>
+	</div>
+    
+	<div>
+		<button class="btn btn-primary license-button"
+				ng-click="sendLicenseToValidateAndActivate(licenseCode)">
+			Register
+		</button>
+		<button class="btn btn-secondary license-button"
+				ng-click="getBackToPreviousPage()">
+			Cancel
+		</button>
+	</div>
+</div>
+

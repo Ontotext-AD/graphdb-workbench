@@ -1,0 +1,204 @@
+/* Override yasr styles */
+
+.yasr th {
+  text-align: center;
+}
+
+.yasr table.dataTable thead th, .yasr table.dataTable thead td {
+  border-bottom: none;
+}
+
+.yasr table.dataTable {
+  width: 100%;
+  margin: 0 auto;
+  clear: both;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.yasr a {
+  color: #018ae1;
+  text-decoration: none;
+}
+
+.yasr table.dataTable tr td:first-child {
+  color: #999;
+  text-align: center;
+}
+
+.yasr .yasr_header .dropdown-menu {
+    position: absolute;
+}
+
+.yasr .yasr_header .nav {
+  margin-left: 0px;
+}
+
+.yasr .yasr_results .CodeMirror {
+  margin-top: 0px;
+}
+
+.yasr .gchartWrapper {
+  margin-top: 0px;
+}
+
+/*
+.yasr .alert {
+  margin-bottom: 0px;
+}
+*/
+
+.yasr .dataTables_filter {
+  position: absolute;
+  top: -63px;
+  margin-bottom: -48px;
+  display: inline-block;
+}
+
+/*
+.yasr .saveAsDropDown,
+.yasr .yasr_downloadIcon {
+  margin-left: 3px;
+  margin-bottom: 3px;
+}
+*/
+
+.yasr .openGchartBtn {
+  border-radius: 0;
+  float: none;
+  top: -72px;
+  right: -6px;
+}
+
+.yasr .yasr_btn:focus, .yasr .yasr_btn.selected {
+  color: #333;
+  outline: 0;
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.yasr .spinWrapper {
+  position: relative;
+  top: 30px;
+}
+
+.yasr .dataTables_wrapper .dataTables_filter {
+	float: none;
+	text-align: left;
+}
+
+/*
+.yasr .results-info {
+	text-align: right;
+}
+*/
+
+.yasr .yasr_results .nonUri sup {
+  font-size: 75%;
+}
+
+.yasr .nonUri {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  white-space: pre-wrap;
+}
+
+.yasr .uri-cell {
+  word-break: normal !important;
+  word-wrap: normal !important;
+}
+
+.yasr .yasr_results .uri-cell .share-result {
+  display: none;
+}
+
+.yasr .yasr_results td:hover .uri-cell > .share-result {
+  display: inline;
+  position: absolute;
+  padding-top: 3px;
+  padding-left: 3px;
+}
+
+.yasr .yasr_results .uri-cell > .zeroclipboard-is-hover {
+    display: inline;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog {
+    z-index: 10092;
+}
+
+.yasr .yasr_results #cy {
+  height: 600px;
+  width: 70%;
+  position: relative;
+  left: 0;
+  top: 0;
+  float: left;
+}
+
+.yasr .yasr_results .graph-info {
+  width: 30%;
+  float: right;
+  margin-top: 10px;
+}
+
+.yasr .yasr_results #cy>div {
+  position: relative;
+}
+.yasr .yasr_results #cy canvas {
+  position: absolute;
+}
+
+#yasr {
+    /* keeps initial status (no results from ...) aligned like the actual results */
+    padding: 0;
+}
+
+/* somewhat different when in side-by-side (vertical) mode */
+#yasr.vertical > #yasr-inner {
+    padding-top: 0;
+}
+
+#yasr.vertical > .sparql-loader {
+    height: 75vh;
+}
+
+/*
+.no-results {
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    background-color: #dddddd;
+    width: 70%;
+    margin: auto;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    z-index: -1;
+}
+*/
+
+.boolRes {
+    font-size: 3rem;
+    text-align: center;
+}
+
+/* Experimental dynamic width of table columns in results: GDB-898 */
+.resultsTable {
+    table-layout: auto;
+}
+
+.resultsTable td {
+    max-width: 50vw;
+    /* show values on top of cells */
+    vertical-align: top;
+}
+
+/* Hide yasr's error, we provide our own */
+.yasr .errorResult {
+    display: none !important;
+}

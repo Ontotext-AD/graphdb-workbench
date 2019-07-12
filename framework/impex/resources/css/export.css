@@ -1,0 +1,298 @@
+.dropdown-menu > li > a {
+	text-decoration: none;
+}
+.ot-export-active-repo {
+	display: inline-block;
+	margin-left: 30px;
+}
+
+.ot-table {
+	display: table;
+	width: 100%;
+}
+.ot-table-row {
+	display: table-row;
+}
+.ot-table-row > div {
+	display: table-cell;
+	float: none;
+	vertical-align: middle;
+}
+
+.ot-selected-repository .dropdown-menu {
+	min-width: 146px;
+}
+.ot-selected-repository .ot-table {
+	height: 36px;
+}
+
+.ot-owlim-ctrl table .label {
+	margin-right: 5px;
+}
+.ot-owlim-ctrl .pagination > li > a {
+	border-radius: 0;
+}
+.ot-owlim-ctrl .pagination > .active > a {
+    background-color: #EBEBEB;
+    border-color: #EBEBEB;
+    color: #04355E;
+}
+
+.ot-page-size .dropdown-menu {
+	min-width: 50px;
+}
+.ot-export-selected > div > button:first-child {
+	padding: 8px 6px;
+}
+
+.ot-export-pagination .pagination > li > a {
+	padding: 6px 10px;
+} 
+/*
+input.ot-multiple-checkbox {
+	margin: 0 5px 0 0;
+	position: relative;
+	top: 3px;
+}
+.ot-border-right {
+	border-left: 1px solid #506e9c !important;
+}
+*/
+
+/* =================== Loader =========================== */
+#ot-loader {
+	margin: 200px auto;
+	display: block;
+}
+
+#ot-active-repo-id {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  position: relative;
+  top: 3px;
+}
+.ot-owlim-ctrl .btn-primary[disabled] {
+	background-color: #003663;
+	border-color: #003663;
+	color: #fff;
+}
+
+.ot-no-graphs .panel-title {
+    font-size: 14px;
+}
+
+.ot-no-graphs .panel-title > a {
+    color: #018ae1;
+}
+
+/*
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: #fff;
+}
+
+.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+    background-color: #f9f9f9;
+}
+*/
+
+/*
+#export-graphs thead tr th{
+    background-color: #f9f9f9;
+    border-bottom: 0;
+    color: red !important;
+}
+*/
+
+.arrows-up-down{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.arrows-up-down span{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.arrows-up-down i.fa{
+    color: #0cb0a0;
+    font-size: 26px;
+}
+
+.arrows-up-down i.fa.fa-long-arrow-up{
+    position: absolute;
+    top: 15px;
+    left: 32px;
+}
+
+.arrows-up-down i.fa.fa-long-arrow-down{
+    position: absolute;
+    top: 28px;
+    left: 42px;
+}
+
+.formats-list{
+    position: absolute;
+    width: 150px;
+    bottom: -428px;
+    right: -20px;
+    z-index: 99999;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #003663;
+    border-color: #003663;
+    display: none;
+}
+
+.formats-list > li > a{
+    color: #fff;
+}
+
+.formats-list > li > a:hover, .formats-list > li > a:focus{
+    text-decoration: none;
+}
+
+.formats-list > li {
+    padding: 12px 15px;
+}
+
+.formats-list > li:hover{
+    cursor: pointer;
+    background-color: #0cb0a0;
+}
+
+.arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #003663;
+    position: absolute;
+    bottom: 0px;
+    left: 40px;
+    display: none;
+}
+
+.arrows-up-down:hover .formats-list, .arrows-up-down:hover .arrow-up{
+    display: block;
+}
+
+.arrows-up-down span.delete-repo-icon{
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    font-size: 20px;
+}
+
+.arrows-up-down.delete-repo:hover{
+    cursor: pointer;
+}
+
+.arrows-up-down.delete-repo.disabled{
+    cursor: not-allowed;
+}
+
+.arrows-up-down i.fa.not-active{
+    color: #a3a3a3;
+}
+
+#export-graphs thead tr th .arrows-up-down span{
+    color: #333;
+}
+
+#export-graphs .arrows-up-down{
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+#export-graphs .arrows-up-down i.fa.fa-long-arrow-up{
+    font-size: 18px;
+    top: 8px;
+    left: 14px;
+}
+
+#export-graphs .arrows-up-down i.fa.fa-long-arrow-down{
+    font-size: 18px;
+    top: 17px;
+    left: 22px;
+}
+
+#export-graphs thead .formats-list{
+    width: 100px;
+    bottom: -450px;
+    right: -22px;
+    text-align: left;
+    font-size: 14px;
+}
+
+#export-graphs .arrow-up{
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #003663;
+    bottom: -2px;
+    left: 19px;
+}
+
+/*
+#export-graphs thead .delete-repo-icon{
+    font-size: 14px;
+    left: -10px;
+    float: left;
+}
+*/
+
+#export-graphs thead tr th:first-child{
+    width: 12%;
+    min-width: 140px;
+}
+
+#export-graphs thead tr th:first-child, #export-graphs tbody tr td:first-child{
+    border-right: 0;
+}
+
+#export-graphs thead tr th:last-child, #export-graphs tbody tr td:last-child{
+    border-left: 0;
+    vertical-align: middle;
+    text-align: left;
+}
+
+#export-graphs thead tr th:first-child div.checkbox input{
+    margin-top:  20px;
+}
+
+#export-graphs thead tr th .checkbox {
+     margin: 0;
+ }
+
+/*
+#export-graphs tbody tr td > span{
+    line-height: 50px;
+}
+*/
+
+#export-graphs tbody .formats-list{
+    width: 100px;
+    bottom: -450px;
+    right: -22px;
+}
+
+/*
+#export-graphs tbody .delete-repo-icon{
+    font-size: 14px;
+    left: 20px;
+}
+
+#export-graphs .delete-repo.pull-right{
+    margin-left: 40px;
+    margin-right: 15px;
+}
+*/
+

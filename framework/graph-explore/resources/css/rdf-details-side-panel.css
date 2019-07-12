@@ -1,0 +1,127 @@
+.rdf-info-side-panel {
+    background: white;
+    -webkit-box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.rdf-list {
+    height: 35vh;
+}
+
+@media (min-height: 700px) {
+    .rdf-list {
+        height: 43vh;
+    }
+
+    .rdf-list-comment {
+        height: 40vh;
+    }
+}
+
+@media (min-height: 800px) {
+    .rdf-list {
+        height: 49vh;
+    }
+
+    .rdf-list-comment {
+        height: 46vh;
+    }
+}
+
+@media (min-height: 900px) {
+    .rdf-list {
+        height: 53vh;
+    }
+
+    .rdf-list-comment {
+        height: 50vh;
+    }
+}
+
+@media (min-height: 1000px) {
+    .rdf-list {
+        height: 56vh;
+    }
+
+    .rdf-list-comment {
+        height: 53vh;
+    }
+}
+
+.rdf-link-share-result {
+    display: none;
+    font-size: 1em !important;
+}
+
+.rdfs-comment.not-expanded {
+    max-height: 70px;
+    overflow-y: hidden;
+}
+
+.rdf-show-comment {
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.rdfs-comment.expanded {
+    max-height: 15vh;
+    overflow-y: scroll;
+}
+
+.rdfs-comment {
+    -webkit-transition: max-height 0.25s ease-in;
+    -moz-transition: max-height 0.25s ease-in;
+    -ms-transition: max-height 0.25s ease-in;
+    -o-transition: max-height 0.25s ease-in;
+    transition: max-height 0.25s ease-in;
+}
+
+.rdfs-comment::-webkit-scrollbar {
+    display: none;
+}
+
+.rdf-not-found-alert {
+    margin-top: 50px
+}
+
+.rdf-not-found-label {
+    padding-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.rdf-not-found-container {
+    height: 22.3vh;
+}
+
+.rdf-info-side-panel.rdf-info-side-panel-nodeInfo {
+    max-width: none;
+}
+
+.toggle-sidepanel {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    line-height: 1.5;
+    font-size: 0.8em;
+    padding: 0 0.3em;
+}
+.toggle-sidepanel:hover {
+	background-color: #ED4F2F;
+	color: #fff;
+}
+
+.rdf-image {
+	width: 100%;
+	max-width: 460px;
+    height: 220px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+	background-color: #eee;
+}
+

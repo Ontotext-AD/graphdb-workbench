@@ -1,0 +1,17 @@
+.opacity-hide {
+    opacity: 0;
+    display: none;
+}
+
+#results-loader object {
+    display: block;
+    margin: 0 auto;
+}
+
+.yasr .dataTables_filter {
+    display: none;
+}
+
+.yasr-container {
+    margin-top: 10px;
+}

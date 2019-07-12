@@ -1,0 +1,43 @@
+<div class="mb-2 row" ng-hide="getActiveRepository() && (!isWriteRequired || canWriteActiveRepo())">
+    <div role="alert">
+        <div class="mb-1 mt-1 ml-1 mr-1">
+            <div class="card">
+                <div class="alert alert-warning lead">
+                    <div ng-hide="getActiveRepository()" >Some functionality is not available because you are not connected to any repository.</div>
+                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionality is not available because you have no write permission to repository <b>{{getActiveRepository()}}</b>.</div>
+                    <small>
+                        <span ng-show="getAccessibleRepositories().length">
+                            Click one of the repositories below to connect to it<span ng-show="canManageRepositories()"> or create a new repository</span>.
+                        </span>
+
+                        <span ng-hide="getAccessibleRepositories().length">
+                            There are no accessible <span ng-show="isWriteRequired">writable </span>repositories<span ng-show="canManageRepositories()">. You can create a new repository</span>.
+                        </span>
+                    </small>
+                </div>
+
+                <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
+                    <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'id']"
+                        class="list-group-item list-group-item-action"
+                        ng-mouseenter="showPopoverForRepo($event, repository)" ngx-mouseleave="setPopoverForRepo($event, repository, false)">
+                        <div class="lead ellipsis-block" ng-click="setRepository(repository.id)">
+                            <span class="popover-anchor"
+                                  popover-popup-delay="500"
+                                  popover-trigger="show" popover-placement="{{$index % 2 === 0 ? 'bottom-right' : 'left-bottom'}}"
+                                  popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+                            <i class="icon-lg" ng-class="'icon-repo-' + repository.type"></i>
+                            <strong>{{repository.id}}</strong></span><small ng-show="repository.title"><span class="small"> &middot; {{repository.title}}</span></small>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="pull-right" ng-if="canManageRepositories()">
+                    <button class="btn btn-link px-0" ng-click="goToAddRepo()">
+                        <span class="icon-plus"></span> Create new repository
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

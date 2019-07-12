@@ -1,0 +1,13 @@
+.label {
+  	font: 20px "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	text-anchor: middle;
+  	alignment-baseline: middle;
+	pointer-events: none;
+  	text-shadow: 0 0 1em black;
+  	fill: white;
+}
+
+.child-label {
+    text-shadow: 0 0 0.5em white;
+    fill: #606060;
+}

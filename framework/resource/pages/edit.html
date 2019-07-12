@@ -1,0 +1,191 @@
+<link href="webjars/angular-xeditable/0.1.8/css/xeditable.css" rel="stylesheet">
+
+<div core-errors></div>
+<div class="page" ng-show="getActiveRepository()">
+    <div class="resource-info">
+        <div class="thumb" ng-show="{{details.img}}">
+            <a href="{{details.img}}"><img ng-src="{{details.img}}"/></a>
+        </div>
+        <h1>
+            Edit
+            <a href="{{details.uri}}" tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
+                {{details.label ? details.label : getLocalName(details.uri)}}
+            </a>
+            <a class="btn btn-link" tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><i
+                    class="icon-close"></i></a>
+        </h1>
+
+        <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
+
+        <p class="source">
+            <span>Source:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
+        </p>
+    </div>
+
+    <div>
+
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                    <th>Context</th>
+					<th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <form name="newRowPredicate" novalidate>
+                            <input required uri name="value"
+                                   placeholder="Example: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
+                                   class="form-control" type="text" ng-model="newRow.predicate">
+
+                            <div ng-show="predicate_new.$submitted || predicate_new.value.$touched">
+                                <p ng-show="predicate_new.value.$error.required"
+                                   class="alert alert-info completeUriAlert">
+                                    Please complete the short URI.
+                                </p>
+                            </div>
+                            <ul class="list-inline">
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                           ng-click="newRow.predicate = namespace.uri"
+                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                            </ul>
+                        </form>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <form name="newRowObject" novalidate>
+                            <select class="form-control mb-1" ng-model="newRow.object.type">
+                                <option value="uri">URI</option>
+                                <option value="literal">Literal</option>
+                            </select>
+                            <input required name="value" id="objectUriText" class="form-control" type="text"
+                                   ng-model="newRow.object.value" auto-complete uiItems="namespaces"
+                                   value="exampleObjectValueText" placeholder="value">
+
+                            <div ng-show="object_new.$submitted || object_new.value.$touched">
+                                <p ng-show="newRow.object.type == 'uri' && !validateUri(newRow.object.value)"
+                                   class="alert alert-info completeUriAlert">
+                                    Please complete the short URI.
+                                </p>
+                            </div>
+                            <ul class="list-inline" ng-show="newRow.object.type == 'uri'">
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                           ng-click="newRow.object.value = namespace.uri"
+                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                            </ul>
+                            <select ng-show="newRow.object.type == 'literal'" class="form-control literalType"
+                                    ng-model="newRow.object.datatype">
+                                <option ng-repeat="option in datatypeOptions" value="{{option.value}}">
+                                    {{option.label}}
+                                </option>
+
+                            </select>
+                            <input ng-show="newRow.object.datatype == '' && newRow.object.type == 'literal'"
+                                   name="languageText" id="languageText" class="form-control" type="text"
+                                   ng-model="newRow.object.lang">
+                        </form>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <form name="newRowContext" novalidate>
+                            <input name="" uri
+                                   placeholder="Example: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
+                                   class="form-control" type="text" ng-model="newRow.context">
+
+                            <p ng-show="newRow.context && !validateUri(newRow.context)"
+                               class="alert alert-info completeUriAlert">
+                                Please complete the short URI.
+                            </p>
+                            <ul class="list-inline">
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                           ng-click="newRow.context = namespace.prefix+':'"
+                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                            </ul>
+                        </form>
+                    </td>
+                    <td style="vertical-align: top;" class="text-nowrap">
+                        <form name="newRowForm" novalidate ng-submit="addStatement()">
+                            <button type="submit" class="btn btn-link px-0" ng-form="newRowForm">
+                                <i class="icon-check"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr ng-repeat="statement in statements" ng-class="{'table-info':rowform.$visible}">
+                    <td style="vertical-align: top;">
+                        <span editable-text="statement.predicate" e-name="predicate" e-form="rowform" e-required e-uri
+                              onbeforesave="checkValid($data)">{{statement.predicate}}</span>
+                        <ul class="list-inline" ng-show="rowform.$visible">
+                            <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                       ng-click="rowform.$editables[0].scope.$data = namespace.uri"
+                                                                       class="pointer">{{namespace.prefix}}</a></li>
+                        </ul>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <span editable-text="statement.object.value" e-name="object_value" e-form="rowform" e-required
+                              onbeforesave="checkValid($data)">{{statement.object.value}}</span>
+                        <sup e-ng-show="statement.object.type != 'uri'"
+                             ng-show="statement.object.datatype || rowform.$visible"
+                             editable-select="statement.object.datatype" e-name="object_datatype" e-form="rowform"
+                             e-ng-options="option.value as option.label for option in datatypeOptions"
+                             e-ng-change="rowform.$editables[2].scope.$data != '' ? rowform.$editables[3].scope.$data = '' : ''">^^{{statement.object.datatype}}</sup>
+                        <sup e-ng-show="statement.object.type != 'uri' && rowform.$editables[2].scope.$data == ''"
+                             ng-show="statement.object.lang || rowform.$visible" editable-text="statement.object.lang"
+                             e-name="object_lang" e-form="rowform">@{{statement.object.lang}}</sup>
+                        <ul class="list-inline" ng-show="rowform.$visible && statement.object.type == 'uri'">
+                            <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                       ng-click="rowform.$editables[1].scope.$data = namespace.uri"
+                                                                       class="pointer">{{namespace.prefix}}</a></li>
+                        </ul>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <span editable-text="statement.context" e-name="context" e-form="rowform" e-uri>{{statement.context}}</span>
+                        <ul class="list-inline" ng-show="rowform.$visible">
+                            <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
+                                                                       ng-click="rowform.$editables[4].scope.$data = namespace.uri"
+                                                                       class="pointer">{{namespace.prefix}}</a></li>
+                        </ul>
+                    </td>
+                    <td style="vertical-align: top;" class="text-nowrap">
+                        <!-- form -->
+                        <form editable-form name="rowform" class="form-buttons form-inline" ng-show="rowform.$visible"
+                              shown="inserted == statement">
+                            <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-link px-0"
+                                    tooltip="Save">
+                                <i class="icon-check"></i>
+                            </button>
+                            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
+                                    class="btn btn-link px-0 secondary" tooltip="Cancel">
+                                <i class="icon-close"></i>
+                            </button>
+                        </form>
+                        <div class="buttons" ng-show="!rowform.$visible">
+                            <button class="btn btn-link px-0" ng-click="rowform.$show()">
+                                <i class="icon-edit"></i>
+                            </button>
+                            <button class="btn btn-link px-0 secondary" ng-click="removeStatement($index)">
+                                <i class="icon-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+    </div>
+    <div class="text-xs-right">
+		<button class="btn btn-secondary" 
+			ng-disabled="statements.length == 0" 
+			tooltip="View the resource graph in TriG format"
+			ng-click="viewTrig()">
+			View TriG
+		</button>
+		<button class="btn btn-primary" 
+			tooltip="Save changes"
+			ng-click="save()">
+			Save
+		</button>
+    </div>
+</div>
+
+

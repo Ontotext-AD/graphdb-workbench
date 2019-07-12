@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
+	
+	<link href="css/forest-jmx.css" rel="stylesheet" />
+
+	<h1>
+		{{title}}
+		<span class="btn btn-link"
+		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   popover-trigger="mouseenter"
+		   popover-placement="bottom-right"
+		   popover-append-to-body="true"><span class="icon-info"></span></span>
+	</h1>
+
+	<div id="wb-monitoringQueries" class="ot-owlim-monitoring-queries">
+		<div core-errors></div>
+		<div ng-show="getActiveRepository()">
+			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+
+			<div class="ng-scope" ng-show="!loader && jolokiaError">
+				<p class="alert alert-danger">
+					Jolokia error: {{jolokiaError}}.
+					<br/>
+					Refresh the page to retry.
+				</p>
+			</div>
+
+			<div ng-hide="loader || jolokiaError">
+				<div class="pause-bar">
+					<button type="button" class="btn pull-right" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
+							btn-checkbox
+						tooltip="Temporarily pauses query monitoring so you can copy text"
+						tooltip-placement="left">
+						{{paused ? 'Paused' : 'Pause'}}
+					</button>
+				</div>
+				<div ng-hide="noQueries">
+					<table id="wb-monitoringQueries-queryInQueries" class="table table-striped table-bordered query-table">
+						<thead>
+							<tr>
+								<th>id</th>
+								<th>node</th>
+								<th>type</th>
+								<th>query</th>
+								<th>lifetime</th>
+								<th>state</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="query in queries">
+								<td>{{query.compositeTrackId[0]}}</td>
+								<td><div>{{query.compositeTrackId[2]}}</div><div>{{query.compositeTrackId[1]}}</div></td>
+								<td>{{query.type}}</td>
+								<td>
+									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">Download</button>
+									<div ng-if="query.sparqlString.length > stringLimit" class="pull-right">
+										<button class="btn btn-link small px-0" ng-click="toggleQueryExpanded(query.trackId)">
+											<span ng-show="!expanded[query.trackId]">Show remaining {{query.sparqlString.length - stringLimit}} characters</span>
+											<span ng-show="expanded[query.trackId]">Show first 500 characters</span>
+										</button>
+									</div>
+									<div ng-if="query.sparqlString.length > stringLimit && !expanded[query.trackId]" class="query-string">{{query.sparqlString | limitTo: stringLimit}}...</div>
+									<div ng-if="query.sparqlString.length <= stringLimit || expanded[query.trackId]" class="query-string">{{query.sparqlString}}</div>
+								</td>
+								<td><span tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
+								<td>
+									<p>{{query.state}}</p>
+									<div>{{query.numberOfOperations}} operations</div>
+								</td>
+								<td>
+									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'Query was requested to abort and will be terminated on the first I/O operation' : 'Update was requested to abort and will be terminated if possible') : (query.type == 'QUERY' ? 'Click to abort query' : 'Click to abort update')}}"
+										 popover-trigger="mouseenter"
+										 popover-placement="bottom">
+										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->
+											<button ng-disabled="query.isRequestedToStop" class="abortQuery btn btn-xs btn-primary"
+													ng-click="abortQuery(query.trackId)">
+												{{query.isRequestedToStop ? 'Stop has been requested' : (query.type == 'QUERY' ? 'Abort query' : 'Abort update')}}
+											</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="alert alert-info no-icon" ng-show="noQueries">
+					No running queries or updates.
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+</html>

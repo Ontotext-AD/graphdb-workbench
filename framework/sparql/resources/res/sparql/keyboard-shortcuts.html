@@ -1,0 +1,109 @@
+
+
+<div>
+    <!-- massively taken from https://github.com/chieffancypants/angular-hotkeys -->
+    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">keyboard shortcuts</button>
+    <div class="hotkeys-container fade" ng-class="{in: shortcutsVisible}">
+        <div class="hotkeys">
+           	<div class="close" ng-click="toggleCheatSheet()"></div>
+            <h3 class="text-xs-center">Keyboard shortcuts</h3>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Space|Alt-Enter</kbd>
+                        </td>
+                        <td class="hotkeys-text">Trigger Autocompletion</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-D</kbd>
+                        </td>
+                        <td class="hotkeys-text">Delete current/selected line(s)</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-/</kbd>
+                        </td>
+                        <td class="hotkeys-text">Comment or uncomment current/selected line(s)</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Alt-Down</kbd>
+                        </td>
+                        <td class="hotkeys-text">Copy line down</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Alt-Up</kbd>
+                        </td>
+                        <td class="hotkeys-text">Copy line up</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Shift-F</kbd>
+                        </td>
+                        <td class="hotkeys-text">Auto-format/indent selected lines</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-]</kbd>
+                        </td>
+                        <td class="hotkeys-text">Indent current/selected line(s) more</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-[</kbd>
+                        </td>
+                        <td class="hotkeys-text">Indent current/selected line(s) less</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Enter</kbd>
+                        </td>
+                        <td class="hotkeys-text">Execute query or update</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Shift-[Ctrl|Cmd]-Enter</kbd>
+                        </td>
+                        <td class="hotkeys-text">Execute explain plan for query</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Alt-T</kbd>
+                        </td>
+                        <td class="hotkeys-text">Create a new unnamed tab</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-S</kbd>
+                        </td>
+                        <td class="hotkeys-text">Create a saved query from the current state</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Alt-Right</kbd>
+                        </td>
+                        <td class="hotkeys-text">Switch to next tab</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>[Ctrl|Cmd]-Alt-Left</kbd>
+                        </td>
+                        <td class="hotkeys-text">Switch to previous tab</td>
+                    </tr>
+                    <tr>
+                        <td class="hotkeys-keys">
+                            <kbd>Shift-Left-Mouse</kbd>
+                        </td>
+                        <td class="hotkeys-text">Click at close tab icon closes all the tabs except the clicked one</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,198 @@
+
+
+	<link href="css/forest-repositories.css" rel="stylesheet">
+
+	<link href="webjars/bootstrap-switch/3.2.2/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
+	
+	<div id="wb-repository">
+		<h1>{{pageTitle}}</h1>
+		<p class="alert alert-danger" ng-hide="hasActiveLocation()">
+			No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
+		</p>
+		
+		<div ng-show="hasActiveLocation()">
+			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+			<div ng-hide="loader">
+
+				<form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
+					<fieldset>
+						<legend>Repository properties</legend>
+						<div class="form-group row">
+							<label for="id" class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository ID*</label>
+							<div class="col-xs-4 col-sm-4 col-md-4">
+								<a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()" ng-show="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter" tooltip="Edit repository  id"><span class="icon-edit"></span></a>
+								<input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage" placeholder="This field is required" type="text" ng-model="repositoryInfo.id" required title="Repository name cannot be empty and must contain only letters (a-z, A-Z), numbers (0-9), '-' and '_'">
+								<div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">Repository name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository title</label>
+							<div class="col-xs-4 col-sm-4 col-md-4">
+								<input class="form-control" type="text" name="title" id="title" ng-model="repositoryInfo.title">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Type</label>
+							<div class="col-xs-4 col-sm-4 col-md-4">
+								<select ng-if="!editRepoPage" class="form-control" id="type" ng-model="repositoryInfo.type"  ng-change="getConfig(repositoryInfo.type)">
+								  <option value="se" ng-if="!isEnterprise && !isFreeEdition">GRAPHDB-SE</option>
+								  <option value="free" ng-if="isFreeEdition">GRAPHDB-FREE</option>
+								  <option value="worker" ng-if="isEnterprise">GRAPHDB-EE Worker</option>
+								  <option value="master" ng-if="isEnterprise">GRAPHDB-EE Master</option>
+								</select>
+								<select ng-if="editRepoPage" disabled="disabled" class="form-control" id="type" ng-model="repositoryInfo.type">
+								  <option value="se">GRAPHDB-SE</option>
+								  <option value="free">GRAPHDB-FREE</option>
+								  <option value="worker">GRAPHDB-EE Worker</option>
+								  <option value="master">GRAPHDB-EE Master</option>
+								</select>
+
+							</div>
+						</div>
+						<div id="additionalParams" ng-if="repositoryInfo.type != 'master'">
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.storageFolder.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input class="form-control" id="storageFolder" type="text" ng-model="repositoryInfo.params.storageFolder.value">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="ruleset" class="col-xs-2 col-sm-2 col-md-2 col-form-label">{{repositoryInfo.params.ruleset.label}}</label>
+								<div class="col-xs-1 col-md-1">
+									<i class="icon-warning icon-2x"
+										ng-show="rulesetWarning()"
+										tooltip="{{rulesetWarning()}}"
+										tooltip-placement="top"></i>
+								</div>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<select ng-disabled="editRepoPage" class="form-control" id="ruleset" ng-model="repositoryInfo.params.ruleset.value"
+										ng-change="repositoryInfo.params.disableSameAs.value = repositoryInfo.params.ruleset.value.indexOf('owl') === 0 ? 'false' : 'true'"
+										ng-options="r.id as r.name for r in rulesets">
+									</select>
+								</div>
+								<div class="form-group col-xs-5" ng-if="!editRepoPage">
+									<div class="btn btn-outline-primary btn-sm">
+										<div ngf-select ngf-change="upload($files)" ngf-multiple="false"
+											 class="selectFiles pointer clearfix"
+											 accept=".pie"
+											 tooltip="{{activeLocation().local ? 'Select file' : 'Not supported for remote locations'}}"
+											 tooltip-trigger="mouseenter"
+											 ng-disabled="!activeLocation().local">
+											<i ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></i>&nbsp;
+											<div ng-show="uploadFileLoader" onto-loader size="24" class="spinner-container ot-loader"></div>
+											<span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Upload custom ruleset</span>
+										</div>
+									</div>
+									<input class="form-control" id="customRuleSet" type="file" name="ruleset" style="display: none;"/>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="checkbox offset-xs-3 offset-md-3">
+									<label class="col-xs-6 col-md-6"
+										   tooltip="GraphDB uses a non-rule implementation of owl:sameAs, which can be enabled or disabled independently of the ruleset."
+											tooltip-placement="bottom">
+										<input id="disableSameAs" ng-disabled="editRepoPage || repositoryInfo.params.ruleset.value === 'empty'" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.disableSameAs.value"/>
+										{{repositoryInfo.params.disableSameAs.label}}
+									</label>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.baseURL.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input class="form-control" name="baseURL" id="baseURL" type="url" ng-model="repositoryInfo.params.baseURL.value">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.entityIndexSize.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input ng-readonly="editRepoPage" class="form-control" id="entityIndexSize" name="entityIndexSize" type="text"  ng-model="repositoryInfo.params.entityIndexSize.value" pattern="[0-9]+" title="This input has to be a number.">
+									<div style="margin-top: 5px" ng-show="isInvalidEntityIndexSize" class="idError alert alert-danger">This input has to be a number.</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="checkbox offset-xs-3 offset-md-3">
+									<label class="col-xs-3 col-md-3">
+										<input id="enablePredicateList" name="enablePredicateList" ng-true-value="'true'" ng-false-value="'false'" type="checkbox" ng-model="repositoryInfo.params.enablePredicateList.value" ng-change="resetIndexMemory()"/>
+										Use predicate indices
+									</label>
+									<label class="col-xs-6 col-md-6">
+										<input id="inMemoryLiteralProperties" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.inMemoryLiteralProperties.value"/>
+										{{repositoryInfo.params.inMemoryLiteralProperties.label}}
+									</label>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="checkbox offset-xs-3 offset-md-3">
+									<label class="col-xs-3 col-md-3">
+										<input id="enableContextIndex" name="enableContextIndex" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.enableContextIndex.value"/>
+										{{repositoryInfo.params.enableContextIndex.label}}
+									</label>
+									<label class="col-xs-6 col-md-6">
+										<input id="enableLiteralIndex" name="enableLiteralIndex" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.enableLiteralIndex.value"/>
+										{{repositoryInfo.params.enableLiteralIndex.label}}
+									</label>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="checkbox offset-xs-3 offset-md-3">
+									<label class="col-xs-3 col-md-3">
+										<input id="checkForInconsistencies" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.checkForInconsistencies.value"/>
+										{{repositoryInfo.params.checkForInconsistencies.label}}
+									</label>
+									<label class="col-xs-6 col-md-6">
+										<input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>
+										{{repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.label}}
+									</label>
+								</div>
+							</div>
+							<div class="form-group row">
+								<div class="checkbox offset-xs-3 offset-md-3">
+									<label class="col-xs-3 col-md-3">
+										<input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.readOnly.value"/>
+										{{repositoryInfo.params.readOnly.label}}
+									</label>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.entityIdSize.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<select ng-disabled="editRepoPage" class="form-control" id="entityIdSize" ng-model="repositoryInfo.params.entityIdSize.value">
+										 <option value="32">32</option>
+										 <option value="40">40</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input class="form-control" id="queryTimeout" type="text" ng-model="repositoryInfo.params.queryTimeout.value" pattern="[0-9]+" title="This input has to be a number."/>
+									<div style="margin-top: 5px" ng-show="isInvalidQueryTimeout" class="idError alert alert-danger">This input has to be a number.</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input class="form-control" id="queryLimitResults" type="text" ng-model="repositoryInfo.params.queryLimitResults.value" pattern="[0-9]+" title="This input has to be a number."/>
+									<div style="margin-top: 5px" ng-show="isInvalidQueryLimit" class="idError alert alert-danger">This input has to be a number.</div>
+								</div>
+							</div>
+							<div class="form-group row" ng-if="repositoryInfo.type == 'worker'">
+								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									<input class="form-control" id="nonInterpretablePredicates" name="nonInterpretablePredicates" type="url" ng-model="repositoryInfo.params.nonInterpretablePredicates.value"/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div class="col-xs-4 col-sm-4 col-md-4 col-md-offset-3">
+								<button id="addSaveRepository" ng-click="createRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary">Create</button>
+								<button id="addSaveRepository" ng-click="editRepository()" ng-if="editRepoPage" type="submit" class="btn btn-primary">Save</button>
+								<a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">Cancel</a>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+		

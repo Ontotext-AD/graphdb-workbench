@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h3 class="modal-title">Free Access configuration</h3>
+    <div>Configure Free Access application settings and read or read/write access repositories</div>
+</div>
+<div class="modal-body">
+    <div class="card" id="user-settings">
+        <div class="card-block">
+            <h3>Application settings</h3>
+            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_SAMEAS" id="defaultSameAs" checked="appSettings.DEFAULT_SAMEAS" > Default SameAS value</label>
+            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_INFERENCE" id="defaultInference" checked="appSettings.DEFAULT_INFERENCE" > Default Inference</label>
+            <label><input type="checkbox" ng-model="appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT"> Count all SPARQL results</label>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-block repo-fields">
+            <h3>Repositories read/write access</h3>
+            <div class="row">
+                <p ng-show="repositoryCheckError" class="authoritiesError alert alert-danger col-xs-12">
+                    Users should have rights to at least one repository!
+                </p>
+                <p ng-hide="hasActiveLocation()" class="authoritiesError alert alert-danger col-xs-12">There is no active location.
+                    <a href="repository" ng-if="isAdmin()">Activate location</a>
+                </p>
+            </div>
+            <div class="row" style="margin-top: 0">
+                <h5 class="boldless col-xs-10">Repository</h5>
+                <span class="fa fa-eye fa-1andAhalfx col-xs-1" tooltip="Read" tooltip-trigger="mouseenter"
+                      tooltip-placement="top" tooltip-append-to-body="true" style="margin-top: 10px"></span>
+                <span class="fa fa-pencil fa-1andAhalfx col-xs-1" tooltip="Write" tooltip-trigger="mouseenter"
+                      tooltip-placement="top" tooltip-append-to-body="true" style="margin-top: 10px"></span>
+            </div>
+            <div id="access-user-repos access-user-rights" class="row"
+                 ng-repeat="repository in getRepositories() | orderBy: 'id'">
+                <p class="col-xs-10">{{repository.id}}</p>
+                <label class="col-xs-1">
+                    <input class="animated read" type="checkbox"
+                           ng-model="grantedAuthorities.READ_REPO[repository.id]"
+                           ng-checked="grantedAuthorities.READ_REPO[repository.id] || grantedAuthorities.WRITE_REPO[repository.id]"
+                           ng-disabled="grantedAuthorities.WRITE_REPO[repository.id]"
+                           ng-class="grantedAuthorities.WRITE_REPO[repository.id] ? 'bounceIn' : ''"
+                           ng-click="setGrantedAuthorities()">
+                </label>
+                <label class="col-xs-1">
+                    <input class="animated write" type="checkbox"
+                           ng-model="grantedAuthorities.WRITE_REPO[repository.id]"
+                           ng-checked="grantedAuthorities.WRITE_REPO[repository.id]"
+                           ng-click="setGrantedAuthorities()">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>

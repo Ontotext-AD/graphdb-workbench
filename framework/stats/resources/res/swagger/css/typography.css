@@ -1,0 +1,60 @@
+/* Google Font's Droid Sans */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Droid Sans'), local('DroidSans'), url('../fonts/DroidSans.ttf') format('truetype');
+}
+/* Google Font's Droid Sans Bold */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Droid Sans Bold'), local('DroidSans-Bold'), url('../fonts/DroidSans-Bold.ttf') format('truetype');
+}
+
+/*-------------------------------------------------------------
+	Fonts
+-------------------------------------------------------------*/
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-regular.woff2') format('woff2'),
+    url('../fonts/rubik-regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-italic.woff2') format('woff2'),
+    url('../fonts/rubik-italic.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-light.woff2') format('woff2'),
+    url('../fonts/rubik-light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-lightitalic.woff2') format('woff2'),
+    url('../fonts/rubik-lightitalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-medium.woff2') format('woff2'),
+    url('../fonts/rubik-medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'RubikWeb';
+    src: url('../fonts/rubik-mediumitalic.woff2') format('woff2'),
+    url('../fonts/rubik-mediumitalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+}

@@ -1,0 +1,13 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="cancel()"></button>
+	<h3 class="modal-title">View SPARQL Query</h3>
+</div>
+<div class="modal-body">
+
+	<pre id="create-query" ng-click="selectQuery()">{{query}}</pre>
+	
+</div>
+<div class="modal-footer">
+	<button class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" ng-click="copyQueryToClipboard()">Copy to clipboard</button>
+</div>

@@ -1,0 +1,54 @@
+<!-- Start addLocation.html -->
+
+<div class="modal-header">
+    <button ng-click="cancel();" class="close" aria-hidden="true"></button>
+    <h3 class="modal-title">Attach a remote GraphDB instance</h3>
+</div>
+<form id="addLocationForm" novalidate name="form">
+    <div class="modal-body">
+        <div class="form-group row">
+            <label for="sesameLocation" class="col-md-4 col-form-label">Location URL</label>
+            <div class="col-md-8">
+                <input id="sesameLocation" ng-model="newLocation.uri" name="sesameLocation" class="form-control"
+                       placeholder="http://my-hostname:7200" ng-blur="isValidLocation()"/>
+                
+                <span class="form-text text-muted">Enter a URL to a remote GraphDB instance</span>
+            </div>
+        </div>
+        <div ng-show="!isValidLocation()" class="alert alert-warning">
+			Note that the location should be a URL that points to a remote GraphDB installation, e.g. http://server.example.com:7200/.
+		</div>
+       
+        <div class="text-xs-center">
+			<button ng-click="switchAdvanced()" class="btn btn-link btn-sm">
+				<span ng-hide="advanced">Show security settings<i class="icon-caret-down"></i></span>
+				<span ng-show="advanced">Hide security settings<i class="icon-caret-up"></i></span>
+       		</button>
+        </div>
+        <fieldset ng-show="advanced" class="mb-1">
+            <legend>Optional</legend>
+            <div class="form-group row">
+                <label for="username" class="col-md-4 col-form-label">Username</label>
+                <div class="col-md-8">
+                    <input id="username" ng-model="newLocation.username" name="locationUsername" placeholder="JohnDoe"
+                           class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-md-4 col-form-label">Password</label>
+                <div class="col-md-8">
+                    <input id="password" ng-model="newLocation.password" name="locationPassword" type="password"
+                           class="form-control"/>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" ng-click="ok();" class="btn btn-primary"
+                ng-disabled="form.$error.multiRequire.length"><span class="icon-plus"></span> Attach
+        </button>
+    </div>
+
+</form>
+<!-- End addLocation.html -->

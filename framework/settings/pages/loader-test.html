@@ -1,0 +1,9 @@
+<button ng-click="setLoader(false)">Hide</button> <button ng-click="setLoader(true)">Show</button>
+<div style="height: 300px; border: 1px solid black;">
+    <div onto-loader-new
+         ng-show="loader"
+         size="100"
+         message2="getMessage"
+         message="['Message 1...', 'Message 2...', 'Message 3...', 'Message 4... takes longer', 'Final message']"
+         timeout="[1, 1, 1, 5]"></div>
+</div>
