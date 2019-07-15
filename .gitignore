@@ -1,2 +1,8 @@
+# IDE specific
 target
 *.iml
+.idea/
+
+# Node
+node_modules/
+dist/
