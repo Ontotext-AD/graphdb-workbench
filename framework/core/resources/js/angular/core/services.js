@@ -1,13 +1,13 @@
-define([//'../../../../../../webjars/angularjs/1.3.8/angular', //We get this in the main app dependencies - e.g graphdb-workbench/js/angular/app.js
-        '../../../webjars/jquery/2.1.4/jquery.min',
-        '../../../webjars/angularjs/1.3.8/angular-animate.min',
-        '../../../webjars/angularjs/1.3.8/angular-cookies.min', //ngCookies
-        '../../../webjars/angularjs/1.3.8/angular-route',
-        '../../../webjars/angular-local-storage/0.1.5/angular-local-storage.min',
-        '../../../webjars/angular-sanitize/1.3.11/angular-sanitize.min',
-        '../../../webjars/angular-toastr/0.5.2/angular-toastr',
-        '../../../webjars/lodash/4.0.0/lodash',
-        '../../../webjars/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min',
+define([//'../../../../../../lib/angular/1.3.8/angular', //We get this in the main app dependencies - e.g graphdb-workbench/js/angular/app.js
+        '../../../lib/jquery/2.1.4/jquery.min',
+        '../../../lib/angularjs/1.3.8/angular-animate.min',
+        '../../../lib/angularjs/1.3.8/angular-cookies.min', //ngCookies
+        '../../../lib/angularjs/1.3.8/angular-route',
+        '../../../lib/angular-local-storage/0.1.5/angular-local-storage.min',
+        '../../../lib/angular-sanitize/1.3.11/angular-sanitize.min',
+        '../../../lib/angular-toastr/0.5.2/angular-toastr',
+        '../../../lib/lodash/4.0.0/lodash',
+        '../../../lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min',
         'angular/core/lib/angular-bowser',
         'forest-core',
         'autofill-event',
