@@ -29,7 +29,7 @@ var modules = ['ngRoute',
 	'angularCancelOnNavigateModule'];
 
 
-define([//'../../webjars/angularjs/1.3.8/angular',
+define([//'../../lib/angularjs/1.3.8/angular',
 		'angular/core/services',
 		'angular/repositories/app',
 		'angular/export/app',
