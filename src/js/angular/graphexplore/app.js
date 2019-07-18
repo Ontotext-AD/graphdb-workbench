@@ -4,7 +4,7 @@ define([
         'angular/core/directives',
         'angular/repositories/services',
         'lib/angular-ui-scroll/1.3.2/ui-scroll',
-        'lib/angular-ui-scroll/1.3.2/ui-scroll-jqlite',
+        'lib/angular-ui-scroll/ui-scroll-jqlite',
         'd3-ONTO-chord-patch',
         'd3-tip',
         'lib/angular-pageslide-directive',

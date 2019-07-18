@@ -270,7 +270,7 @@ define(['angular/core/services'], function () {
         };
 
         $scope.canWriteActiveRepo = function (noSystem) {
-            let activeRepository = $repositories.getActiveRepository();
+            var activeRepository = $repositories.getActiveRepository();
             // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
             return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
                 && (activeRepository !== 'SYSTEM' || !noSystem);

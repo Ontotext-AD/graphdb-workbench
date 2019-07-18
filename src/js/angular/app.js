@@ -1,5 +1,4 @@
 require.config({
-    // Note that baseUrl here is edited at build time to include the version. Be careful if you need to edit it.
     baseUrl: "js",
     waitSeconds: 60,
     shim: {
@@ -63,7 +62,6 @@ define([//'../../lib/angularjs/1.3.8/angular',
                        positionClass: 'toast-bottom-right'
                    });
 
-
                    localStorageServiceProvider
                        .setStorageType('localStorage')
                        .setNotify(true, true);
@@ -107,7 +105,7 @@ define([//'../../lib/angularjs/1.3.8/angular',
                }]);
 
                angular.bootstrap(document, ['graphdb.workbench']);
-       }
+       };
 
       $.get("rest/info/version?local=1", function( data ) {
           var marray = data.productVersion.match(/^(\d+\.\d+)/);
@@ -123,7 +121,6 @@ define([//'../../lib/angularjs/1.3.8/angular',
             moduleDefinition(data);
           }
       });
-
 
 
 		})(angular)
