@@ -3,7 +3,7 @@ define(['angular/core/services',
         'angular/repositories/services',
         'angular/namespaces/controllers',
         'angular/namespaces/directives',
-        'webjars/angular-xeditable/0.1.8/js/xeditable.min'
+        'lib/angular-xeditable/0.1.8/js/xeditable.min'
         ],
 
     function(){

@@ -3,7 +3,7 @@ define(['angular/core/services',
         'angular/explore/services',
         'angular/explore/controllers',
         'angular/explore/directives',
-        'webjars/angular-xeditable/0.1.8/js/xeditable.min',
+        'lib/angular-xeditable/0.1.8/js/xeditable.min',
         'lib/angucomplete-alt-onto.min'],
 
     function () {
