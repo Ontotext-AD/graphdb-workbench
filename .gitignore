@@ -6,3 +6,6 @@ target
 # Node
 node_modules/
 dist/
+
+# Dev specific
+.env
