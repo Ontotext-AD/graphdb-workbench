@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+
+  graphdb-workbench:
+    container_name: graphdb-workbench
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      GRAPHDB_URL: 'http://${HOST_IP}:7200'
+    ports:
+      - '9009:80'

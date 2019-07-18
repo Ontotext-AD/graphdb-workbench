@@ -1,0 +1,210 @@
+<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+
+<link href="css/yasqe.min.css" rel="stylesheet"/>
+
+<link href="css/yasr.css" rel='stylesheet' type='text/css'/>
+<link href="css/yasr.custom.css" rel='stylesheet' type='text/css'/>
+
+<link href="css/forest-new-sparql.css" rel="stylesheet"/>
+
+<link href="css/graphs-config.css" rel="stylesheet"/>
+
+
+<div class="container-fluid">
+
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors></div>
+    <div system-repo-warning></div>
+    <div class="alert alert-danger" ng-show="repositoryError">
+        <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+        <p>{{repositoryError}}</p>
+    </div>
+
+    <ul class="nav nav-tabs mb-2">
+        <li class="nav-item" id="create-text-index"><a class="nav-link" ng-class="viewType == 'text' ? 'active' : ''" href ng-click="viewType = 'text'"
+                data-toggle="tab">Create text similarity index</a></li>
+        <li class="nav-item" id="create-predication-index"><a class="nav-link" ng-class="viewType == 'predication' ? 'active' : ''" href ng-click="viewType = 'predication'" data-toggle="tab">
+            Create predication index</a></li>
+    </ul>
+    <div class="card mb-2">
+      <div class="card-block pt-1">
+        <p class="lead">Index name</p>
+        <div class="input-group input-group-lg">
+          <input required class="form-control" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
+        </div>
+        <div style="margin-top: 5px" ng-show="invalidIndexName" class="idError alert alert-danger">{{invalidIndexName}}</div>
+
+        <button class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
+
+        <div class="collapse mt-1" id="more-options" >
+
+          <div class="form-group row">
+                <label for="indexParameters" class="col-md-4 col-form-label">Semantic Vectors create index parameters</label>
+                <div class="col-md-8">
+      <input class="form-control" type="text" ng-model="newIndex.options" id="indexParameters" placeholder="-vectortype binary">
+                {{productInfo}}
+                    <div class="small text-muted" style="margin-top: 0.5rem">See the full <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#create-index-parameters" target="_blank">list of supported parameters</a></div>
+                </div>
+            </div>
+
+          <div class="form-group row" ng-show="viewType == 'text'">
+            <label class="col-md-4 col-form-label">Stop words</label>
+            <div class="col-md-8">
+              <input class="form-control" type="text" placeholder="a and be but ... (optional). Default Lucene stop list will be used if empty." ng-model="newIndex.stopList">
+            </div>
+          </div>
+          <div class="form-group row" ng-show="viewType == 'text'">
+              <label class="col-md-4 col-form-label">Analyzer Class</label>
+              <div class="col-md-8">
+                  <input class="form-control" type="text" ng-model="newIndex.analyzer">
+              </div>
+          </div>
+            <div class="checkbox offset-xs-3 offset-md-4" ng-show="viewType == 'text'">
+                <label class="col-xs-6 col-md-6"
+                       tooltip="Literal indexes can be used as input for Predication indexes. These index can not be used for searching."
+                       tooltip-placement="bottom">
+                    <input type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="newIndex.isLiteralIndex"/>
+                    Literal index
+                </label>
+            </div>
+            <div class="form-group row" ng-show="viewType == 'predication'">
+                <label class="col-md-4 col-form-label">Input Literal Index</label>
+                <div class="col-md-8">
+                    <select class="form-control" ng-options="idx for idx in literalIndexes" ng-model="newIndex.inputIndex"/>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-block">
+
+            <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
+              <span class="icon-help" popover="Toggle help" popover-placement="top" popover-trigger="mouseenter"></span>
+              <span class="hidden-lg-down">Help</span>
+            </button>
+
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
+                        Data query
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
+                        Search query
+                    </a>
+                </li>
+                <li class="nav-item" ng-show="viewType == 'predication'">
+                    <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link" href>
+                        Analogical query
+                    </a>
+                </li>
+            </ul>
+
+            <div>
+                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 1">
+                    <button class="close absolute" ng-click="toggleHelp(0)"></button>
+                    <p class="lead">
+                        This <span class="small-caps">SELECT</span> query determines the data that will be indexed.
+                    </p>
+
+                    <p>The query must <span class="small-caps">SELECT</span> the following bindings:</p>
+                    <ul ng-show="viewType == 'text'">
+                        <li><code>?documentID</code> determines the identifier of the indexed document.</li>
+                        <li><code>?documentText</code> determines the document content that will be indexed.</li>
+                    </ul>
+                    <ul ng-show="viewType == 'predication'">
+                        <li><code>?subject</code></li>
+                        <li><code>?predicate</code></li>
+                        <li><code>?object</code></li>
+                    </ul>
+
+                    This query is executed during index creation to obtain the actual data for the index.
+                    Incremental updates are not supported. When data in your repo changes you should rebuild the index.
+                    It is a subquery of a more complicated query you can see from the 'View Index Query' link bellow.
+                </div>
+
+                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 2">
+                    <button class="close absolute" ng-click="toggleHelp(0)"></button>
+                    <p class="lead">
+                        This <span class="small-caps">SELECT</span> query determines the data that will be fetched on search.
+                    </p>
+
+                    This query is executed during search. Add more bindings by modifying this query to see more data in the results table.
+                </div>
+
+                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 3">
+                    <button class="close absolute" ng-click="toggleHelp(0)"></button>
+                    <p class="lead">
+                        This <span class="small-caps">SELECT</span> query determines the data that will be fetched on analogical search.
+                    </p>
+
+                    This query is executed during analogical search. Add more bindings by modifying this query to see more data in the results table.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-9">
+                        <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun callback-on-change="updateDirty">
+                        </query-editor>
+                    </div>
+                    <div class="col-md-3" ng-show="page == 1">
+                        <p>Sample queries: </p>
+
+                        <div class="list-group">
+                            <div ng-repeat="(sampleKey, sampleValue) in samples">
+                                <a href="#" ng-click="setQuery(sampleValue)" class="list-group-item list-group-item-action">
+                                    <b ng-bind="sampleKey"></b>
+                                    <samp class="text-muted small">{{sampleValue}}</samp>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="clearfix">
+                <div class="pull-right">
+                    <a ng-href="/similarity" class="btn btn-lg btn-secondary"
+                       popover="Closes index creation without saving the changes."
+                       popover-placement="top"
+                       popover-trigger="mouseenter">
+                        Cancel
+                    </a>
+                    <button class="btn btn-lg btn-primary" ng-click="createIndex()"
+                            popover="Create index"
+                            popover-placement="top"
+                            popover-trigger="mouseenter">
+                        Create
+                    </button>
+                </div>
+                <div class="pull-left">
+                  <button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
+                  <button class="btn btn-link" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
+                          popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
+                          popover-placement="top"
+                          popover-trigger="mouseenter">
+                      Test Query
+                  </button>
+                  <button class="btn btn-link" ng-click="showEditor()" ng-show="viewMode == 'editor' && page == 1"
+                          popover="Closes the preview and shows the query editor."
+                          popover-placement="top"
+                          popover-trigger="mouseenter">
+                      Edit query
+                  </button>
+                </div>
+            </div>
+    </div>
+</div>

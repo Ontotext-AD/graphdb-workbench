@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html ng-controller="mainCtrl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        GraphDB Workbench
+    </title>
+    <base href="/" target="_blank"/>
+    <meta content="width=device-width" name="viewport">
+    <link rel="icon" href="img/icon.png">
+    <link rel="apple-touch-icon-precomposed" href="img/icon.png">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-graphdb-theme.css" rel="stylesheet">
+
+    <link href="js/lib/angular-toastr/0.5.2/angular-toastr.css" rel="stylesheet">
+
+    <link href="js/lib/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+     <link href="css/animate.css" rel="stylesheet">
+
+    <link href="css/workbench-custom.css" rel="stylesheet">
+    <link href="css/forest-core.css" rel="stylesheet">
+    <link href="css/owlim-workbench.css" rel="stylesheet">
+
+    <script type="text/javascript" src="js/lib/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/angularjs/1.3.8/angular.js"></script>
+    <script type="text/ecmascript" xlink:href="smil.user.js"></script>
+    <script type="text/javascript" src="js/lib/d3js/4.2.1/d3.js"></script>
+
+</head>
+
+<body>
+
+<div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
+    <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
+        <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
+             tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+            <span class="icon-warning"></span> No valid license
+            <a ng-show="!isLicenseHardcoded" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
+        </div>
+        <div class="btn btn-info imports-queries"
+                ng-if="queryCount > 0 || numberOfActiveImports > 0">
+            <span class="icon-reload text-primary loader"></span>
+            <span class="dot-separator" ng-if="queryCount > 0">
+                <a class="btn btn-link" href="./monitor/queries" target="_blank">
+                    <b>{{queryCount}}</b>
+                    <ng-pluralize count="queryCount"
+                                  when="{'one': 'query/update',
+                                         'other': 'queries/updates'}">
+                    </ng-pluralize>
+                </a>
+            </span>
+            <span class="dot-separator" ng-if="numberOfActiveImports > 0">
+                <a class="btn btn-link" href="./import" target="_blank">
+                    <b>{{numberOfActiveImports}}</b>
+                    <ng-pluralize count="numberOfActiveImports"
+                                  when="{'one': 'import',
+                                         'other': 'imports'}">
+                    </ng-pluralize>
+                </a>
+            </span>
+        </div>
+        <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
+            <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a dropdown-toggle>
+                    <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
+                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()">
+						<i ng-class="'icon-repo-' + getActiveRepositoryObject().type"></i>
+                        {{getActiveRepository()}}
+                    </span>
+                    <span ng-if="!getActiveRepository() && getReadableRepositories().length">Choose repository</span>
+                    <span ng-if="!getActiveRepository() && !getReadableRepositories().length">No accessible repositories</span>
+                </a>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
+                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id']"
+                    ng-if="repository.id !== getActiveRepository()"
+                    ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
+                    popover-trigger="mouseenter" popover-placement="left"
+                    popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+                    <a class="dropdown-item" ng-click="setRepository(repository.id)">
+                        <span class="multiline-text">
+                            <i ng-class="'icon-repo-' + repository.type"></i>
+						    {{repository.id}} <br/>
+						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn())">{{getActiveLocation().label}}</small>
+					    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group" role="group" ng-if="isSecurityEnabled() && isUserLoggedIn()">
+            <button id="btnGroupDrop2" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="icon-user text-primary"></span>
+                {{principal().username}}
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
+                <a class="dropdown-item" href="settings">My settings</a>
+                <a class="dropdown-item" ng-click="logout()" title="Sign out" ng-href="./login">Logout</a>
+            </div>
+        </div>
+        <div class="btn-group" ng-show="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">
+            <a class="btn btn-lg btn-secondary" href="./login" ng-href="./login">
+                <span class="icon-arrow-right text-primary"></span> Login
+            </a>
+        </div>
+    </div>
+</div>
+
+<ul class="main-menu" ng-cloak ng-show="!embedded">
+    <li class="brand">
+        <span class="toggle-menu" title="Collapse menu" ng-click="toggleNavigation()">
+            <i class="icon-caret-left"></i>
+        </span>
+        <a class="menu-element-root" ng-href="./" href="./" ng-click="selected = -1">
+            <img class="big-logo" src="img/graphdb-logo.svg" alt="GraphDB logo" width="181" height="45">
+            <img class="small-logo" src="img/graphdb-logo-sq.svg" alt="GraphDB logo" ng-href="./" href="./" width="58"
+                 height="58">
+            <span class="product-version" title="GraphDB {{mainTitle}}">{{mainTitle}}</span>
+        </a>
+    </li>
+    <li ng-repeat="item in menu" ng-if="hasRole(item.role)"
+        ng-class="{open: $index === selected, clicked: clicked && $index === selected}"
+        class="menu-element" ng-click="checkSubMenuPosition($index)">
+        <div class="menu-element-root" ng-if="item.children.length" ng-click="select($index, $event, clicked);">
+            <span ng-class=item.icon class="menu-item-icon"></span>
+            <span class="menu-item">{{item.label}}</span>
+        </div>
+        <a class="menu-element-root" ng-href="{{item.hrefFun ? item.hrefFun() : item.href}}" ng-if="!item.children.length"
+           ng-click="select($index, $event, clicked)">
+            <span ng-class=item.icon class="menu-item-icon"></span>
+            <span class="menu-item" ng-if="!checkMenu()">{{item.label}}</span>
+        </a>
+        <ul ng-if="item.children.length" class="sub-menu">
+            <li class="submenu-title">{{item.label}}</li>
+            <li ng-repeat="submenu in item.children"
+                ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
+                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
+                <a ng-href="{{submenu.hrefFun ? submenu.hrefFun() : submenu.href}}">{{submenu.label}}
+                  <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
+<div ng-cloak >
+    <div class="container-fluid main-container" ng-if="!hasPermission()">
+        <p class="alert alert-danger">
+            You have no permission to access this functionality with your current credentials.
+            <br>
+            Please choose another menu item or login as a different user.
+        </p>
+    </div>
+
+        <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
+             ng-class="checkMenu() ? 'expanded':''">
+
+        </div>
+
+    <footer ng-show="showFooter" class="footer">
+        <div class="container-fluid main-container">
+            <p>
+                <a href="http://graphdb.ontotext.com" target="_blank">GraphDB</a> {{graphdbVersion}} &bull; <a
+                    href="http://rdf4j.org" target="_blank">RDF4J</a>
+                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank">Ontotext AD</a>. All
+                rights reserved.
+            </p>
+        </div>
+    </footer>
+</div>
+<div class="show-ng-cloak ot-splash" style="display: none;">
+    <object data="img/graphdb-splash.svg"></object>
+    <div>GraphDB Workbench is loading...</div>
+</div>
+<script src="js/lib/requirejs/2.1.17/require.min.js" data-main="app.js"></script>
+<script src="js/loading-hint.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<link href="css/forest-rdf-class-hierarchy.css" rel="stylesheet"/>
+<link href="css/forest-rdf-class-hierarchy-labels.css" rel="stylesheet"/>
+<link href="css/rdf-details-side-panel.css" rel="stylesheet"/>
+<link href="css/lib/rzslider.css" rel="stylesheet"/>
+<link href="css/lib/angucomplete-alt.css" rel="stylesheet"/>
+<link href="css/lib/d3-tip.css" rel="stylesheet"/>
+<link href="js/lib/animate.css/3.2.0/animate.min.css" rel="stylesheet"/>
+
+<title>Explore Data Graph</title>
+
+<div class="toolbar-holder pull-right mt-1"
+	 id="toolbar"
+	ng-class="{ 'pushed-toolbar': showClassInfoPanel }"
+	ng-show="hasClassHierarchy() && !loader">
+
+	<search-icon-input
+			search-data="flattenedClassNames"
+			initial-value="searchedClass"
+			search-fields="name"
+			title-field="name"
+			search-placeholder="Search classes"
+			searched-obj-callback="searchedClassCallback">
+	</search-icon-input>
+
+	<button class="btn btn-link p-0 prefix-toggle" type="button"
+		ng-click="hidePrefixes = !hidePrefixes"
+		tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
+		tooltip-placement="bottom"
+		tooltip-trigger="mouseenter">
+		<i class="fa fa-2x"
+			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></i>
+	</button>
+
+	
+	<button class="btn btn-link p-0"
+		tooltip="Focus diagram"
+		tooltip-placement="bottom"
+		tooltip-trigger="mouseenter"
+		ng-click="focusOnRoot()">
+		<i class="icon-zoom-out icon-2x"></i>
+	</button>
+	<button class="btn btn-link p-0"
+		tooltip="Reload diagram"
+		tooltip-placement="bottom"
+		tooltip-trigger="mouseenter"
+		ng-click="confirmReloadClassHierarchy()">
+		<i class="icon-reload icon-2x"></i>
+	</button>
+	<a href class="btn btn-link p-0" id="download-svg"
+		tooltip="Export Diagram"
+		tooltip-placement="bottom"
+		tooltip-trigger="mouseenter">
+		<i class="icon-export icon-2x"></i>
+	</a>
+
+</div>
+
+<h1>
+	{{title}}
+	<span class="btn btn-link"
+	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   popover-trigger="mouseenter"
+	   popover-placement="bottom-right"
+	   popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
+
+<div class="explore" ng-hide="loader">
+    
+    <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
+		<p class="slider-help-button">
+			Class Count
+			<span class="btn btn-link help-button"
+				  popover-template="'js/angular/graphexplore/templates/rdfClassHierarchyClassCountSliderHelpTemplate.html'"
+				  popover-trigger="mouseenter"
+				  popover-placement="bottom-right"
+				  popover-append-to-body="true">
+				<span class="icon-info"></span>
+			</span>
+		</p>
+        <rzslider rz-slider-model="classCountSlider.value"
+                  rz-slider-options="classCountSlider.options"
+                  ng-hide="isSystemRepository()"></rzslider>
+    </div>
+    <div class='explore_results'>
+        <div class="top-offset" core-errors></div>
+        <div class="top-offset" system-repo-warning></div>
+        <div class="top-offset alert alert-danger" ng-show="repositoryError">
+            <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+            <p>{{repositoryError}}</p>
+        </div>
+		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
+			<p>The class hierarchy for the currently selected repository cannot be loaded:
+				<button class="btn btn-link p-0 pull-right"
+						tooltip="Reload diagram"
+						tooltip-placement="bottom"
+						tooltip-trigger="mouseenter"
+						ng-click="confirmReloadClassHierarchy()">
+					<i class="icon-reload icon-2x"></i>
+				</button>
+			</p>
+			<p>{{hierarchyError}}</p>
+
+		</div>
+        <div class="top-offset row"
+             ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository()">
+            <p class="alert alert-warning">The currently selected repository does not contain a class hierarchy.</p>
+        </div>
+
+        <rdf-class-hierarchy
+                class-hierarchy-data="classHierarchyData"
+                flattened-class-names="flattenedClassNames"
+                selected-class="selectedClass"
+                current-slider-value="currentSliderValue"
+                show-class-info-panel="showClassInfoPanel"
+                show-external-elements="showExternalElements"
+                hide-prefixes="hidePrefixes"
+                current-browser-limit="currentBrowserLimit"
+                ng-show="hasClassHierarchy()">
+        </rdf-class-hierarchy>
+
+        <pageslide
+                ps-class="rdf-info-side-panel"
+                ps-open="showClassInfoPanel"
+                ps-side="right"
+				ps-custom-height="calc(100vh - 55px)"
+                ps-custom-top="45px"
+				ps-size="25vw">
+            <div class="break-word-alt p-1">
+                <button class="close mb-1 ml-1"
+                   ng-click="toggleClassInfoSidePanel(); $event.stopPropagation();"></button>
+
+				<h3 class="hovered-parent">
+					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.name}}</a>
+					<button class="btn btn-link btn-sm px-0 hovered-item"
+						ng-click="copyToClipboard(selectedClass.fullName)"
+						title="Copy to Clipboard">
+						<span class="icon-link"></span>
+					</button>
+				</h3>
+				<p>
+					<button class="btn btn-sm btn-primary"
+						ng-click="goToDomainRangeGraphView(selectedClass)">Domain-Range Graph
+					</button>
+                </p>
+
+                <rdfs-comment-label
+                        rdfs-label="rdfsLabel"
+                        rdfs-comment="rdfsComment"
+                        expanded="expanded">
+                </rdfs-comment-label>
+
+                <div ng-switch on="selectedClass.instancesCount">
+                    <p class="alert alert-warning" ng-switch-when="0">
+                    	No instances available of selected class type
+                    </p>
+					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}}>View this instance in SPARQL</a></p>
+                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}}>View all {{selectedClass.instancesCount | number}} instances in SPARQL</a></p>
+                </div>
+
+                <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="instancesLoader"></div>
+
+                <div ng-hide="selectedClass.instancesCount == 0 || instancesLoader">
+                    <list-items-search-filter
+                        filter-query-obj="instancesQueryObj"
+                        filter-function="instancesFilterFunc"
+                        list-items-obj="instancesObj"
+                        list-items-not-filtered="instancesNotFiltered"
+                        search-placeholder={{instancesSearchPlaceholder}}>
+                    </list-items-search-filter>
+
+                    <div ng-switch on="instances.items.length">
+						<p ng-switch-when="0" class="alert alert-warning">No instances found</p>
+                        
+                        <div ng-switch-default ui-scroll-viewport class="rdf-list" ng-class="rdfsComment ? 'rdf-list-comment' : ''">
+							<table class="table table-sm table-striped">
+								<tbody>
+									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
+										<td class="break-word-alt">
+											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
+												title="Copy to Clipboard"
+												ng-click="copyToClipboard(item.absUriNonEncoded)">
+												<span class="icon-link"></span>
+											</button>
+											<a class="uri" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </pageslide>
+    </div>
+</div>
+

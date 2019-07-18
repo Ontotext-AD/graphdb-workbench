@@ -1,0 +1,58 @@
+<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+
+<link href="css/yasqe.min.css" rel="stylesheet"/>
+
+<link href="css/yasr.css" rel='stylesheet' type='text/css'/>
+<link href="css/yasr.custom.css" rel='stylesheet' type='text/css'/>
+
+<link href="css/forest-new-sparql.css" rel="stylesheet"/>
+<div id="wb-sparql">
+
+    <div ng-show="getActiveRepositoryNoError()" class="pull-right mt-1">
+        <div id="hideEditor" class="btn-group btn-group-sm" ng-click="showHideEditor()">
+            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'yasr'" uncheckable>
+                Editor only
+            </button>
+            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'none'" uncheckable>
+                Editor and results
+            </button>
+            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'editor'" uncheckable>
+                Results only
+            </button>
+
+            <button class="btn btn-link btn-sm p-0 ml-1"
+                    ng-click="changeViewMode(currentQuery.id)"
+                    tooltip="Switch to {{orientationViewMode ? 'vertical' : 'horizontal'}} view"
+                    tooltip-placement="left">
+                <span class="icon-columns icon-lg m-0"
+                      ng-class="orientationViewMode ? 'icon-rotate-90' : 'icon-rotate-270'"></span>
+            </button>
+        </div>
+    </div>
+
+     <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+
+    <div core-errors></div>
+    <div class="alert alert-danger" ng-show="repositoryError && getActiveRepository()">
+        <p>The currently selected repository cannot be used for queries due to an error:</p>
+        <p>{{repositoryError}}</p>
+    </div>
+    <query-editor
+            ng-show="getActiveRepositoryNoError()"
+            ng-keyup="saveQueryToLocal(currentQuery)"
+            nocount="{{skipCountQuery}}">
+    </query-editor>
+    <form id="wb-download" method="POST" action="" target="_self">
+        <input id="wb-download-query" name="query" type="hidden"/>
+        <input id="wb-download-infer" name="infer" type="hidden"/>
+        <input id="wb-download-accept" name="Accept" type="hidden"/>
+        <input id="wb-auth-token" name="authToken" type="hidden"/>
+    </form>
+</div>
