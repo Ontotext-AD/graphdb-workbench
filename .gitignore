@@ -6,6 +6,7 @@ target
 # Node
 node_modules/
 dist/
+coverage/
 
 # Dev specific
 .env
