@@ -1,0 +1,46 @@
+GRAPHDB-WORKBENCH uses the following third-party technologies, as part of its proper functionality and integration:
+
+angucomplete-alt-onto.js	MIT	https://github.com/ghiden/angucomplete-alt	MODIFIED
+angucomplete-alt.js	MIT	https://github.com/ghiden/angucomplete-alt
+angular-bowser.js	MIT	https://github.com/jacqueslareau/angular-bowser/
+angular-cookie.min.js	MIT	https://github.com/ivpusic/angular-cookie
+angular-cookies.min.js	MIT	https://docs.angularjs.org/api/ngCookies
+angular-local-storage	MIT	https://github.com/grevory/angular-local-storage
+angular-nvd3.js	MIT	http://krispo.github.io/angular-nvd3
+angular-pageslide-directive.js	MIT	https://github.com/dpiccone/ng-pageslide
+angular-sanitize	MIT	https://docs.angularjs.org/api/ngSanitize
+angular-spinner.min.js	MIT	https://github.com/urish/angular-spinner
+angular-toastr	MIT	https://github.com/Foxandxss/angular-toastr#readme
+angular-ui-bootstrap	MIT	http://angular-ui.github.io/bootstrap/
+angular-ui-scroll	MIT	https://github.com/angular-ui/ui-scroll.git
+angular-xeditable	MIT	https://vitalets.github.io/angular-xeditable/
+angular.js	MIT	https://angularjs.org/
+angularCancelOnNavigateModule.js	MIT	https://github.com/AlbertBrand/angular-cancel-on-navigate
+animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2	MODIFIED
+animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2
+autofill-event.js	MIT	https://github.com/iamjoetaylor/vanilla-autofill-event#readme
+bootstrap-switch	Apache 2.0	http://www.bootstrap-switch.org
+bootstrap.js	Apache 2.0	https://bootstrapdocs.com/v3.0.2/docs/
+circle-packing.js	MIT
+d3js	BSD 3-Clause	d3-ONTO-chord-patch.js MODIFIED from https://github.com/d3/d3/releases/tag/v3.5.12	MODIFIED
+d3-tip.js	MIT	https://github.com/caged/d3-tip
+d3-utils.js	ISC	https://github.com/emilbayes/d3-utils
+FileSaver.js	X11/MIT
+font-awesome css	MIT	https://fontawesome.com/v4.7.0/
+font-awesome web fonts	OFL-1.1	https://fontawesome.com/v4.7.0/
+jquery	MIT	https://jquery.com/
+jquery-cookie.js	MIT + GPL	https://github.com/carhartl/jquery-cookie
+jquery.fileupload.js	MIT	https://github.com/blueimp/jQuery-File-Upload
+jquery.validate.js	MIT	http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+lodash	MIT	https://lodash.com/
+ng-file-upload.min.js	MIT	https://github.com/danialfarid/ng-file-upload
+ng-tags-input.min.js	MIT
+ng-tree.js	MIT
+requirejs	BSD MIT	https://requirejs.org/
+rzslider.js	MIT	https://github.com/angular-slider/angularjs-slider
+svg-export.js	MIT	https://github.com/svgdotjs/svg.export.js/blob/master/README.md
+Swagger-ui.js	Apache-2.0	http://swagger.io
+twitter-bootstrap-hover-dropdown.js	MIT	http://cameronspear.com/blog/bootstrap-dropdown-on-hover-plugin/
+underscorejs	MIT	http://underscorejs.org
+YASQE	MIT	https://github.com/Ontotext-AD/YASQE-Ontotext	MODIFIED
+YASR	MIT	https://github.com/Ontotext-AD/YASGUI.YASR	MODIFIED
