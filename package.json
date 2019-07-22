@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "The web application for GraphDB APIs",
   "scripts": {
+    "build": "npm run less:preprocess",
     "start:dev": "webpack-dev-server --config=webpack.config.dev.js",
     "test": "karma start",
     "test:ci": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
-    "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
+    "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
   },
   "repository": {
     "type": "git",
@@ -37,6 +40,8 @@
     "karma-jasmine": "^2.0.1",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-requirejs": "^1.1.0",
+    "less": "^3.9.0",
+    "less-watch-compiler": "^1.13.0",
     "requirejs": "^2.3.6",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.6",

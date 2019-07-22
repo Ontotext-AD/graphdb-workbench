@@ -10,8 +10,17 @@ needed dependencies locally.
 
 ## Development
 
+### Dev mode server
+
 Running `npm run start:dev` will start webpack development server which servers 
-the files from `src/` and proxy requests to `localhost:7200` (default)
+the files from `src/` and proxy requests to `localhost:7200` (default).
+
+### LESS preprocessor
+
+Some of the workbench CSS stylesheets are preprocessed using the [LESS](http://lesscss.org/)
+library. The tool used for running the LESS preprocessor is `less-watch-compiler`.
+In development mode it can be run in a watch mode by executing `npm run less:watch`. 
+Or for one time processing by executing `npm run less:preprocess`.
 
 ## Tests
 
