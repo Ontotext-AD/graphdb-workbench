@@ -10,7 +10,7 @@ needed dependencies locally.
 
 ## Development
 
-### Dev mode server
+### Dev server
 
 Running `npm run start:dev` will start webpack development server which servers 
 the files from `src/` and proxy requests to `localhost:7200` (default).
