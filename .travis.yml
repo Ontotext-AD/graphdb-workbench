@@ -15,3 +15,12 @@ branches:
 script:
   - npm run test:ci
   - npm run test:coveralls
+  - npm run build
+
+deploy:
+  - provider: npm
+    skip_cleanup: true
+    email: graphdb-support@ontotext.com
+    api_key: $NPM_TOKEN
+    on:
+      tags: true
