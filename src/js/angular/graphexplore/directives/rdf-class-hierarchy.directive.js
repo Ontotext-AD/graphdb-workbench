@@ -88,7 +88,7 @@ define(['d3-tip'],
                  */
                 function prepareForSVGImageExport() {
                     // get css rules for the diagram
-                    var cssRules = SVG.Export.getCSSRules("css/forest-rdf-class-hierarchy-labels.css");
+                    var cssRules = SVG.Export.getCSSRules("css/rdf-class-hierarchy-labels.css");
                     // inline css rules in a defs tag
                     d3.selectAll("#main-group")
                         .append("defs");

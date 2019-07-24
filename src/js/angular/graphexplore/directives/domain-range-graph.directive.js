@@ -134,7 +134,7 @@ define([],
                  */
                 function prepareForSVGImageExport() {
                     // get css rules for the diagram
-                    var cssRules = SVG.Export.getCSSRules("css/forest-domain-range-graph.css");
+                    var cssRules = SVG.Export.getCSSRules("css/domain-range-graph.css");
 
                     // inline css rules in a defs tag
                     $("defs").append('<style type="text/css"><![CDATA[' + cssRules + ']]></style>');
