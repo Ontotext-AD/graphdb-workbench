@@ -4,6 +4,7 @@
   "description": "The web application for GraphDB APIs",
   "scripts": {
     "build": "npm run less:preprocess",
+    "lint": "eslint ./src",
     "start:dev": "webpack-dev-server --config=webpack.config.dev.js",
     "test": "karma start",
     "test:ci": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
@@ -34,6 +35,8 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "coveralls": "^3.0.5",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
     "karma": "^4.2.0",
     "karma-chrome-launcher": "^3.0.0",
     "karma-coverage": "^1.1.2",
