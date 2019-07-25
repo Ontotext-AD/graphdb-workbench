@@ -40,4 +40,4 @@ The compose requires to create `.env` file in the root directory of the project 
 must be specified, e.g. `HOST_IP=10.131.2.176`.
 
 ### License
-[LICENSE](LICENSE)
+[LICENSE](licenses/LICENSE)
