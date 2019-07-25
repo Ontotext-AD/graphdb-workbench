@@ -1,7 +1,7 @@
 define(["angular/repositories/services",
     "angular/repositories/controllers",
-    'ng-file-upload.min',
-    'ng-file-upload-shim.min'], function () {
+    'lib/ng-file-upload.min',
+    'lib/ng-file-upload-shim.min'], function () {
 
     describe('==> Repository module controllers tests', function () {
 
@@ -365,7 +365,7 @@ define(["angular/repositories/services",
                         overrideAuth: {enabled: false},
                         freeAccess: {enabled: false}
                     });
-                    
+
                 }));
 
                 afterEach(function () {

@@ -1,4 +1,4 @@
-define(['angular/core/lib/stringify'],
+define(['lib/stringify/stringify'],
     function (stringify) {
 
         function jsonToFormData(data) {

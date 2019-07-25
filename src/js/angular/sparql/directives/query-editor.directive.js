@@ -1,4 +1,4 @@
-define(['bootstrap/bootstrap.min'],
+define(['lib/bootstrap/bootstrap.min'],
     function () {
 
         angular
@@ -62,8 +62,8 @@ define(['bootstrap/bootstrap.min'],
             function drawQueryEditor(scope) {
                 scope.changePagination = changePagination;
 
-                var YASQE = require('yasqe.bundled.min');
-                var YASR = require('yasr.bundled');
+                var YASQE = require('lib/yasqe.bundled.min');
+                var YASR = require('lib/yasr.bundled');
 
                 // start of keyboard shortcut actions
                 function saveQueryAction() {

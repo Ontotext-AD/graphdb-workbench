@@ -1,4 +1,4 @@
-define(['d3-tip'],
+define(['lib/d3-tip/d3-tip-patch'],
     function (d3tip) {
 
         angular

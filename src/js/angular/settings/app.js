@@ -3,8 +3,8 @@ define(['angular/core/services',
         'angular/settings/services',
         'angular/settings/controllers',
         'angular/security/services',
-        'ng-file-upload.min',
-        'ng-file-upload-shim.min'],
+        'lib/ng-file-upload.min',
+        'lib/ng-file-upload-shim.min'],
 
     function () {
 

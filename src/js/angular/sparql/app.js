@@ -11,7 +11,7 @@ define([
         'angular/sparql/directives/query-editor.directive',
         // 'angular/sparql/directives',
         'lib/angular-xeditable/0.1.8/js/xeditable.min',
-        'FileSaver'],
+        'lib/FileSaver-patch'],
 
     function () {
 

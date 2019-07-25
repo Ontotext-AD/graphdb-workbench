@@ -1,6 +1,6 @@
 define(['angular/core/services',
 		'angular/repositories/services',
-		'nvd3/nv.d3'],
+		'lib/nvd3/nv.d3'],
     function(){
 
 	var resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers',[
@@ -12,13 +12,13 @@ define(['angular/core/services',
 	resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$filter', '$timeout',
 	                                           function($scope, $http, $modal, toastr, $interval, $filter, $timeout) {
 		$scope.data = {
-			classCount: [{key: "Classes", 
+			classCount: [{key: "Classes",
 			            values: []}],
-			cpuLoad: [{key: "System CPU Load", 
+			cpuLoad: [{key: "System CPU Load",
 			          values: []}],
-			memoryUsage: [{key: "Used memory", 
+			memoryUsage: [{key: "Used memory",
 				          values: []}],
-			threadCount: [{key: "Thread Count", 
+			threadCount: [{key: "Thread Count",
 				          values: []}],
 		}
 		$scope.firstLoad = true;
@@ -36,9 +36,9 @@ define(['angular/core/services',
 					if ($scope.data.classCount[0].values.length == 100) {
 						$scope.clearData();
 					}
-					
+
 					var timestamp = new Date();
-					
+
 					if ($scope.firstLoad) {
 						$scope.firstLoad = false;
 						$scope.data.classCount[0].values.push([timestamp, data.classCount * 2]);
@@ -52,7 +52,7 @@ define(['angular/core/services',
 							$timeout.cancel(timer);
 						});
 					}
-					
+
 					if (!$scope.firstLoad) {
 						if (data.classCount > $scope.data.classCount[0].values[0][1]) {
 							$scope.data.classCount[0].values[0][1] = data.classCount * 2;
@@ -76,36 +76,36 @@ define(['angular/core/services',
 					$scope.data.memoryUsage[0].values.push([timestamp, (data.heapMemoryUsage.used / 1000000000).toFixed(4)]);
 					$scope.data.threadCount[0].values.push([timestamp, data.threadCount]);
 				}
-				
+
 			  }).
 			  error(function(data, status, headers, config) {
 				  $scope.jolokiaError = getError(data);
 				  $scope.loader = false;
 			  });
 		}
-		
+
 		$scope.clearData = function(){
 			$scope.data.classCount[0].values = $scope.data.classCount[0].values.slice(50);
 			$scope.data.classCount[0].values[0][0] = $scope.data.classCount[0].values[1][0];
 			$scope.data.classCount[0].values[0][1] = $scope.data.classCount[0].values[1][1] * 2;
-			
+
 			$scope.data.cpuLoad[0].values = $scope.data.cpuLoad[0].values.slice(50);
 			$scope.data.cpuLoad[0].values[0][0] = $scope.data.cpuLoad[0].values[1][0];
 			$scope.data.cpuLoad[0].values[0][1] = (parseFloat($scope.data.cpuLoad[0].values[1][1])).toFixed(2) * 2;
-	
+
 			$scope.data.memoryUsage[0].values = $scope.data.memoryUsage[0].values.slice(50);
 			$scope.data.memoryUsage[0].values[0][0] = $scope.data.memoryUsage[0].values[1][0];
 			$scope.data.memoryUsage[0].values[0][1] = (parseFloat($scope.data.memoryUsage[0].values[1][1])).toFixed(2) * 2;
-			
+
 			$scope.data.threadCount[0].values = $scope.data.threadCount[0].values.slice(50);
 			$scope.data.threadCount[0].values[0][0] = $scope.data.threadCount[0].values[1][0];
 			$scope.data.threadCount[0].values[0][1] = $scope.data.threadCount[0].values[1][1] * 2;
 		}
-	
+
 		var timer = $interval(function() {
             $scope.getResourcesData();
 	    }, 2000);
-		
+
 	    $scope.$on("$destroy", function(event) {
 			$interval.cancel(timer);
 		});
@@ -153,9 +153,9 @@ define(['angular/core/services',
 		$scope.chartCPUOptions.chart.yAxis.tickFormat =  function(d){
 	                return d + '%';
 	            }
-		
+
 		$scope.garbadgeCollector = function(){
-	
+
 			$scope.garbadgeCollectorLoader = true;
 			$http.post('rest/monitor/resource/gc').
 				success(function(data, status, headers, config) {
@@ -169,7 +169,7 @@ define(['angular/core/services',
 			  });
 		}
 	}]);
-	
+
 	return resourcesCtrl;
 
 });

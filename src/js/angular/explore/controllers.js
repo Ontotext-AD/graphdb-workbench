@@ -1,4 +1,4 @@
-define(['require', 'yasr.bundled'],
+define(['require', 'lib/yasr.bundled'],
 
     function (require) {
 
@@ -64,7 +64,7 @@ define(['require', 'yasr.bundled'],
         ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService'];
         function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService) {
 
-            var YASR = require('../../yasr.bundled');
+            var YASR = require('lib/yasr.bundled');
             $scope.loading = false;
 
             $scope.getActiveRepository = function () {

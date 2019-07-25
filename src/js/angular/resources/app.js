@@ -3,7 +3,7 @@ define(['angular/core/services',
         'angular/resources/controllers',
         'angular/resources/directives',
         'angular/repositories/services',
-        'nvd3/angular-nvd3'],
+        'lib/nvd3/angular-nvd3'],
     function(){
 
 	var resourceMonitoringApp = angular.module('graphdb.framework.jmx.resources',

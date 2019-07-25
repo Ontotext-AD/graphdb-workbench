@@ -1,13 +1,13 @@
-define(['angular/core/services'], 
+define(['angular/core/services'],
 	function(){
-	
+
 
 		var importDirectives = angular.module('graphdb.framework.impex.import.directives', []);
-		
+
 		importDirectives.directive('validateUri', ['UtilService', function(UtilService){
 			return {
 				restrict: 'A',
-			    require: 'ngModel', 
+			    require: 'ngModel',
 				link: function(scope, element, attr, ctrl) {
 					ctrl.$parsers.unshift(function(value) {
 					    var valid = true;
@@ -22,7 +22,7 @@ define(['angular/core/services'],
 					});
 				}
 			}
-		}]);// defined in forest-core.js
+		}]);// defined in workbench-core.js
 
 		importDirectives.directive('filesTable', function() {
 		    return {
