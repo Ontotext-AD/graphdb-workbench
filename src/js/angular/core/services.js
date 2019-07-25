@@ -9,7 +9,7 @@ define([//'../../../../../../lib/angularjs/1.3.8/angular', //We get this in the 
         'lib/lodash/4.0.0/lodash',
         'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min',
         'angular/core/lib/angular-bowser',
-        'forest-core',
+        'workbench-core',
         'autofill-event',
         'angular/core/directives',
         'angular/core/controllers'],
