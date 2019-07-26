@@ -1,54 +1,57 @@
 {
-  "name": "graphdb-workbench",
-  "version": "0.1.0",
-  "description": "The web application for GraphDB APIs",
-  "scripts": {
-    "build": "npm run less:preprocess",
-    "lint": "eslint ./src",
-    "start:dev": "webpack-dev-server --config=webpack.config.dev.js",
-    "test": "karma start",
-    "test:ci": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
-    "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-    "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
-  },
-  "keywords": [
-    "graphdb",
-    "workbench"
-  ],
-  "author": {
-    "name": "\"Sirma AI\" JSC, trading as Ontotext",
-    "url": "https://www.ontotext.com/"
-  },
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
-  },
-  "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
-  "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "coveralls": "^3.0.5",
-    "eslint": "^5.16.0",
-    "eslint-config-google": "^0.13.0",
-    "karma": "^4.2.0",
-    "karma-chrome-launcher": "^3.0.0",
-    "karma-coverage": "^1.1.2",
-    "karma-jasmine": "^2.0.1",
-    "karma-phantomjs-launcher": "^1.0.4",
-    "karma-requirejs": "^1.1.0",
-    "less": "^3.9.0",
-    "less-watch-compiler": "^1.13.0",
-    "requirejs": "^2.3.6",
-    "webpack": "^4.35.3",
-    "webpack-cli": "^3.3.6",
-    "webpack-dev-server": "^3.7.2"
-  },
-  "proxy": "http://localhost:7200"
+    "name": "graphdb-workbench",
+    "version": "0.1.0",
+    "description": "The web application for GraphDB APIs",
+    "scripts": {
+        "build": "npm run less:preprocess",
+        "lint": "eslint ./src",
+        "start:dev": "webpack-dev-server --config=webpack.config.dev.js",
+        "test": "karma start",
+        "test:ci": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
+        "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+        "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
+    },
+    "files": [
+        "src/"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
+    },
+    "keywords": [
+        "graphdb",
+        "workbench"
+    ],
+    "author": {
+        "name": "\"Sirma AI\" JSC, trading as Ontotext",
+        "url": "https://www.ontotext.com/"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
+    },
+    "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
+    "devDependencies": {
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.5",
+        "babel-polyfill": "^6.26.0",
+        "babel-preset-es2015": "^6.24.1",
+        "coveralls": "^3.0.5",
+        "eslint": "^5.16.0",
+        "eslint-config-google": "^0.13.0",
+        "karma": "^4.2.0",
+        "karma-chrome-launcher": "^3.0.0",
+        "karma-coverage": "^1.1.2",
+        "karma-jasmine": "^2.0.1",
+        "karma-phantomjs-launcher": "^1.0.4",
+        "karma-requirejs": "^1.1.0",
+        "less": "^3.9.0",
+        "less-watch-compiler": "^1.13.0",
+        "requirejs": "^2.3.6",
+        "webpack": "^4.35.3",
+        "webpack-cli": "^3.3.6",
+        "webpack-dev-server": "^3.7.2"
+    },
+    "proxy": "http://localhost:7200"
 }
