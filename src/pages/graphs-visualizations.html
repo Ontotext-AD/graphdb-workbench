@@ -1,7 +1,7 @@
 <link href="css/graphs-vizualizations.css" rel="stylesheet"/>
 <link href="css/rdf-details-side-panel.css" rel="stylesheet"/>
-<link href="css/lib/ng-tags-input.min.css" rel="stylesheet"/>
-<link href="css/lib/d3-tip.css" rel="stylesheet"/>
+<link href="js/lib/ng-tags-input/ng-tags-input.min.css" rel="stylesheet"/>
+<link href="js/lib/d3-tip/d3-tip.css" rel="stylesheet"/>
 
 <div class="container-fluid">
 
@@ -81,7 +81,7 @@
     </div>
 
     <div class="search-bar" ng-show="getActiveRepository() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
-        
+
         <div class="row slider mb-2"
              ng-show="configLoaded.startMode == 'search' && (searchVisible || !nodeSelected)" ng-cloak>
             <div class="col-lg-12">
@@ -105,7 +105,7 @@
         <div ng-show="!configLoaded">
             <div ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()"
                  ng-cloak>
-                
+
                 <div class="card mb-2">
                     <div class="card-block">
                         <h3>Easy graph</h3>
@@ -193,9 +193,9 @@
                 </div>
         </div>
 
-            
+
         </div>
-        
+
     </div>
 </div>
 

@@ -1,8 +1,8 @@
 
 define(['angular/core/services',
         'angular/core/directives',
-        'yasqe.bundled.min',
-        'yasr.bundled'
+        'lib/yasqe.bundled.min',
+        'lib/yasr.bundled'
     ],
     function(){
 		var ontorefine = angular.module('graphdb.framework.ontorefine', ['graphdb.framework.core.directives']);

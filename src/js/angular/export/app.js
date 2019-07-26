@@ -4,7 +4,7 @@ define(['angular/core/services',
         'angular/export/controllers',
         'angular/export/directives',
         'angular/repositories/services',
-		'FileSaver'],
+		'lib/FileSaver-patch'],
     function(){
 
 		var exportApp = angular.module(

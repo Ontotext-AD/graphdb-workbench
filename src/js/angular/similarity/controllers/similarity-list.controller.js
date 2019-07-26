@@ -1,4 +1,4 @@
-define(['require', 'yasr.bundled'],
+define(['require', 'lib/yasr.bundled'],
 
 	function (require) {
 
@@ -10,7 +10,7 @@ define(['require', 'yasr.bundled'],
 
 		function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteService, productInfo) {
 
-			var YASR = require('../../../yasr.bundled');
+			var YASR = require('lib/yasr.bundled');
 
             var PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
             var PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';

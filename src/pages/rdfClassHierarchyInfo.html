@@ -1,10 +1,10 @@
 <link href="css/rdf-class-hierarchy.css" rel="stylesheet"/>
 <link href="css/rdf-class-hierarchy-labels.css" rel="stylesheet"/>
 <link href="css/rdf-details-side-panel.css" rel="stylesheet"/>
-<link href="css/lib/rzslider.css" rel="stylesheet"/>
-<link href="css/lib/angucomplete-alt.css" rel="stylesheet"/>
-<link href="css/lib/d3-tip.css" rel="stylesheet"/>
-<link href="js/lib/animate.css/3.2.0/animate.min.css" rel="stylesheet"/>
+<link href="js/lib/rzslider/rzslider.css" rel="stylesheet"/>
+<link href="js/lib/angucomplete-alt/angucomplete-alt.css" rel="stylesheet"/>
+<link href="js/lib/d3-tip/d3-tip.css" rel="stylesheet"/>
+<link href="css/lib/animate/3.2.0/animate.min.css" rel="stylesheet"/>
 
 <title>Explore Data Graph</title>
 
@@ -31,7 +31,7 @@
 			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></i>
 	</button>
 
-	
+
 	<button class="btn btn-link p-0"
 		tooltip="Focus diagram"
 		tooltip-placement="bottom"
@@ -67,7 +67,7 @@
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
 
 <div class="explore" ng-hide="loader">
-    
+
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
 			Class Count
@@ -173,7 +173,7 @@
 
                     <div ng-switch on="instances.items.length">
 						<p ng-switch-when="0" class="alert alert-warning">No instances found</p>
-                        
+
                         <div ng-switch-default ui-scroll-viewport class="rdf-list" ng-class="rdfsComment ? 'rdf-list-comment' : ''">
 							<table class="table table-sm table-striped">
 								<tbody>

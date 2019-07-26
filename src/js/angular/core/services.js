@@ -8,9 +8,9 @@ define([//'../../../../../../lib/angularjs/1.3.8/angular', //We get this in the 
         'lib/angular-toastr/0.5.2/angular-toastr',
         'lib/lodash/4.0.0/lodash',
         'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min',
-        'angular/core/lib/angular-bowser',
+        'lib/angular-bowser/angular-bowser',
         'workbench-core',
-        'autofill-event',
+        'lib/autofill-event',
         'angular/core/directives',
         'angular/core/controllers'],
     function () {

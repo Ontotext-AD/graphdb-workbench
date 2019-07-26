@@ -4,7 +4,7 @@ define(['angular/core/services',
         'angular/clustermanagement/controllers',
         'angular/clustermanagement/directives',
         'angular/repositories/services',
-        'd3-ONTO-chord-patch'],
+        'lib/d3-ONTO-chord-patch'],
     function(){
 
         var clusterManagementApp = angular.module(
