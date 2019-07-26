@@ -103,10 +103,11 @@ define(['angular/core/services', 'angular/security/services'],
                             var location = res.data;
                             if (location.active) {
                                 $http.get('rest/repositories').then(function (res) {
-                                        that.location = location;
-                                        that.repositories = res.data;
+                                        // First should reset active repository
                                         that.resetActiveRepository();
                                         loadingDone();
+                                        that.location = location;
+                                        that.repositories = res.data;
                                         that.checkActiveLocationDegraded();
                                         // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
                                         $rootScope.globalLocation = that.location;
