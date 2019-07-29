@@ -1,4 +1,4 @@
-define(['angular/core/services', 'd3-tip'],
+define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
     function (require, d3tip) {
 
         angular
