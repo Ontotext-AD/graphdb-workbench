@@ -1,4 +1,4 @@
-define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
+define(['angular/core/services', 'd3-tip'],
     function (require, d3tip) {
 
         angular
@@ -28,6 +28,7 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
             $scope.nodeSelected = false;
             $scope.queryResultsMode = false;
             $scope.embedded = $location.search().embedded;
+            $scope.openedNodeInfoPanel = undefined;
 
             // embedded and other params when the controller is initialized
             if ($scope.embedded && ($location.search().query ||
@@ -1184,6 +1185,7 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
                             if (!(shownLinks >= $scope.saveSettings['linksLimit'])) {
                                 expandNode(d, false, element.parentNode);
                             }
+                            $scope.closeInfoPanel();
                         }
                     }
 
@@ -1549,6 +1551,14 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
                 // ctrl/cmd + click hides the node
                 if (event.ctrlKey || event.metaKey) {
                     hideNode(d);
+                    return;
+                }
+
+                // If value of openedNodeInfoPanel is different than "undefined"
+                // we evaluate if clicked node value is the same and close it
+                if (typeof $scope.openedNodeInfoPanel !== "undefined" && $scope.openedNodeInfoPanel === d) {
+                    $scope.pageslideExpanded = false;
+                    $scope.openedNodeInfoPanel = undefined;
                     return;
                 }
 
@@ -2039,6 +2049,8 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
 
             function showNodeInfo(d) {
                 force.stop();
+                // Assign value of node, which info panel has been opened
+                $scope.openedNodeInfoPanel = d;
                 $scope.showNodeInfo = true;
                 $scope.showFilter = false;
                 $scope.showPredicates = false;
@@ -2097,6 +2109,7 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
 
             $scope.closeInfoPanel = function () {
                 $scope.pageslideExpanded = false;
+                $scope.openedNodeInfoPanel = undefined;
                 // o, angular, o, miracle
                 $timeout(function () {
                     $scope.showInfoPanel = false;
@@ -2165,7 +2178,6 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
 
             $scope.rotate = function (isLeft) {
                 removeMenuIfVisible();
-                $scope.closeInfoPanel();
 
                 // compute common rotation math such as the angle, its sine and cosine and the pivot point
                 var theta = (isLeft ? 1 : -1) * 2 * Math.PI / 180; // + rotates left, - rotates right
@@ -2360,7 +2372,6 @@ define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
 
             $scope.togglePinAllNodes = function () {
                 removeMenuIfVisible();
-                $scope.closeInfoPanel();
 
                 var value = $scope.numberOfPinnedNodes > 0 ? false : true;
 
