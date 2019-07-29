@@ -7,6 +7,10 @@ dist: trusty
 
 cache: npm
 
+# TODO
+#  directories:
+#    - '$HOME/.sonar/cache'
+
 # Build only commits on master and release tags preventing double builds for PRs
 # See https://docs.travis-ci.com/user/pull-requests/#double-builds-on-pull-requests
 branches:
