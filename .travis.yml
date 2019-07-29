@@ -5,6 +5,9 @@ node_js:
 
 dist: trusty
 
+git:
+  depth: false
+
 cache:
   npm: true
 #  directories:
