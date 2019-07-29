@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "npm run less:preprocess",
