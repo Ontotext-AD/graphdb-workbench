@@ -5,9 +5,8 @@ node_js:
 
 dist: trusty
 
-cache: npm
-
-# TODO
+cache:
+  npm: true
 #  directories:
 #    - '$HOME/.sonar/cache'
 
@@ -22,7 +21,7 @@ addons:
   sonarcloud:
     organization: "ontotext-ad"
     token:
-      secure: $SONARCLOUD_TOKEN
+      secure: $SONAR_TOKEN
 
 script:
   - npm run test:ci
