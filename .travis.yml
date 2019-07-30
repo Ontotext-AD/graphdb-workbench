@@ -27,7 +27,7 @@ script:
   - npm run test:ci
   - npm run test:coveralls
   - npm run build
-  - sonar-scanner
+  - npm run sonar
 
 deploy:
   - provider: npm

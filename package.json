@@ -10,7 +10,8 @@
         "test:ci": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
+        "sonar": "sonar-scanner -Dsonar.projectVersion=$npm_package_version"
     },
     "files": [
         "src/"
