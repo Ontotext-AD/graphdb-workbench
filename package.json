@@ -3,9 +3,9 @@
     "version": "0.1.3",
     "description": "The web application for GraphDB APIs",
     "scripts": {
-        "build": "npm run less:preprocess",
+        "build": "webpack --config=webpack.config.prod.js",
+        "start": "webpack-dev-server --config=webpack.config.dev.js --open",
         "lint": "eslint ./src",
-        "start:dev": "webpack-dev-server --config=webpack.config.dev.js",
         "test": "karma start",
         "test:coverage": "rimraf coverage/ && karma start --single-run --browsers PhantomJS",
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
@@ -15,7 +15,7 @@
         "sonar": "sonar-scanner -Dsonar.projectVersion=$npm_package_version"
     },
     "files": [
-        "src/"
+        "dist/"
     ],
     "repository": {
         "type": "git",
@@ -42,9 +42,15 @@
         "babel-loader": "^7.1.5",
         "babel-polyfill": "^6.26.0",
         "babel-preset-es2015": "^6.24.1",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.0.4",
         "coveralls": "^3.0.5",
         "eslint": "^5.16.0",
         "eslint-config-google": "^0.13.0",
+        "expose-loader": "^0.7.5",
+        "file-loader": "^4.1.0",
+        "html-loader": "^0.5.5",
+        "html-webpack-plugin": "^3.2.0",
         "karma": "^4.2.0",
         "karma-chrome-launcher": "^3.0.0",
         "karma-coverage": "^1.1.2",
@@ -52,10 +58,16 @@
         "karma-phantomjs-launcher": "^1.0.4",
         "karma-requirejs": "^1.1.0",
         "less": "^3.9.0",
-        "less-watch-compiler": "^1.13.0",
+        "less-loader": "^5.0.0",
+        "mini-css-extract-plugin": "^0.8.0",
+        "optimize-css-assets-webpack-plugin": "^5.0.3",
         "requirejs": "^2.3.6",
+        "style-loader": "^0.23.1",
+        "url-loader": "^2.1.0",
         "webpack": "^4.35.3",
         "webpack-cli": "^3.3.6",
-        "webpack-dev-server": "^3.7.2"
-    }
+        "webpack-dev-server": "^3.7.2",
+        "webpack-merge": "^4.2.1"
+    },
+    "proxy": "http://localhost:7200"
 }

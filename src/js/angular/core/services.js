@@ -1,6 +1,4 @@
-define([//'../../../../../../lib/angularjs/1.3.8/angular', //We get this in the main app dependencies - e.g graphdb-workbench/js/angular/app.js
-        'lib/jquery/2.1.4/jquery.min',
-        'lib/angularjs/1.3.8/angular-animate.min',
+define(['lib/angularjs/1.3.8/angular-animate.min',
         'lib/angularjs/1.3.8/angular-cookies.min', //ngCookies
         'lib/angularjs/1.3.8/angular-route',
         'lib/angular-local-storage/0.1.5/angular-local-storage.min',
