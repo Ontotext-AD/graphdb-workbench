@@ -1,6 +1,7 @@
 # graphdb-workbench
 The web application for GraphDB APIs
 
+[![Build Status](https://travis-ci.com/Ontotext-AD/graphdb-workbench.svg?branch=master)](https://travis-ci.com/Ontotext-AD/graphdb-workbench)
 
 ### Setup Environment
 
