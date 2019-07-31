@@ -34,7 +34,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/js/angular/**/*.js': ['coverage'],
-      'src/app.js': ['coverage']
+      'src/*.js': ['coverage']
     },
 
 
@@ -46,6 +46,7 @@ module.exports = function(config) {
 
     // optionally, configure the reporter
     coverageReporter: {
+      includeAllSources: true,
       type: 'lcov',
       dir : 'coverage/',
       subdir: '.'
