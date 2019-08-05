@@ -24,7 +24,7 @@ addons:
       secure: $SONAR_TOKEN
 
 script:
-  - npm run test:ci
+  - npm run test:coverage
   - npm run test:coveralls
   - npm run build
   - npm run sonar
