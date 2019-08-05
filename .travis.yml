@@ -9,6 +9,7 @@ cache:
   npm: true
   directories:
     - '$HOME/.sonar/cache'
+    - '~/.cache'
 
 # Build only commits on master and release tags preventing double builds for PRs
 # See https://docs.travis-ci.com/user/pull-requests/#double-builds-on-pull-requests
@@ -22,12 +23,19 @@ addons:
     organization: "ontotext-ad"
     token:
       secure: $SONAR_TOKEN
+  # Needed for Cypress tests
+  apt:
+    packages:
+      - libgconf-2-4
 
 script:
   - npm run test:coverage
   - npm run test:coveralls
   - npm run build
   - npm run sonar
+
+after_script:
+  - npm run test:cypress-ci
 
 deploy:
   - provider: npm

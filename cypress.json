@@ -1,5 +1,5 @@
 {
-    "projectId":"graphdb-workbench",
+    "projectId": "v35btb",
     "baseUrl": "http://localhost:9000",
     "fixturesFolder": "test-cypress/fixtures",
     "integrationFolder": "test-cypress/integration",
