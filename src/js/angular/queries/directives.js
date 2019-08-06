@@ -1,8 +1,3 @@
-define(['angular/core/services'], 
-    function(){
-	
-	var queriesDirectives = angular.module('graphdb.framework.jmx.queries.directives',[]);
-		
-	return queriesDirectives;
+import 'angular/core/services';
 
-});
+const queriesDirectives = angular.module('graphdb.framework.jmx.queries.directives', []);

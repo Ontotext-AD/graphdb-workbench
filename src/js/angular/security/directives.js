@@ -1,5 +1,1 @@
-define([],
-    function() {
-        var securityDirectives = angular.module('graphdb.framework.security.directives', []);
-        return securityDirectives;
-    });
+const securityDirectives = angular.module('graphdb.framework.security.directives', []);

@@ -1,14 +1,10 @@
-define(['angular/core/services'], 
-        
-    function(){
+import 'angular/core/services';
 
-		return angular.module('graphdb.framework.externalsync.directives', [])
-			.directive('createProgress', function(){
-				return {
-					templateUrl: 'pages/connectorProgress.html',
-					controller: 'CreateProgressCtrl',
-					restrict: 'EA'
-				}
-		});
-
-});
+angular.module('graphdb.framework.externalsync.directives', [])
+    .directive('createProgress', function () {
+        return {
+            templateUrl: 'pages/connectorProgress.html',
+            controller: 'CreateProgressCtrl',
+            restrict: 'EA'
+        }
+    });
