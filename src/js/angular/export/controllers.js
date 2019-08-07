@@ -177,7 +177,7 @@ exportCtrl.controller('ExportCtrl',
                 if (_.isEmpty($scope.selectedGraphs.exportGraphs)) {
                     return !_.isEmpty($scope.selectedGraphs.exportGraphs);
                 } else {
-                    for (index in $scope.selectedGraphs.exportGraphs) {
+                    for (var index in $scope.selectedGraphs.exportGraphs) {
                         if ($scope.selectedGraphs.exportGraphs[index] == true) {
                             return true;
                         }
@@ -189,7 +189,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.exportSelectedGraphs = function (format) {
                 var contextStr = '';
-                for (index in $scope.selectedGraphs.exportGraphs) {
+                for (var index in $scope.selectedGraphs.exportGraphs) {
                     if ($scope.selectedGraphs.exportGraphs[index]) {
                         contextStr += 'context=' + $scope.graphsByValue[index].exportUri + '&';
                     }

@@ -1,6 +1,9 @@
 // Karma configuration
 // Generated on Thu Jul 18 2019 18:49:29 GMT+0300 (EEST)
 
+const DEV_CONFIG = require('./webpack.config.dev');
+const merge = require('webpack-merge');
+
 module.exports = function(config) {
   config.set({
 
@@ -10,31 +13,38 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'test/test-main.js',
-      'src/js/lib/jquery/2.1.4/jquery.min.js',
-      'src/js/lib/angularjs/1.3.8/angular.js',
-      'test/lib/angularjs/1.3.8/angular-mocks.js',
-      { pattern: 'src/**/*.js', included: false },
-      { pattern: 'test/**/*.spec.js', included: false }
+        'test/test-main.js'
     ],
 
 
     // list of files / patterns to exclude
-    exclude: [
-        'src/app.js'
-    ],
+    exclude: [],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/js/angular/**/*.js': ['coverage'],
-      'src/*.js': ['coverage']
+        'test/test-main.js': ['webpack', 'sourcemap'],
+        'src/js/angular/**/*.js': ['coverage'],
+        'src/*.js': ['coverage']
+    },
+
+
+    // Reuse the DEV configuration
+    webpack: merge(DEV_CONFIG, {
+        devtool: 'inline-source-map'
+    }),
+
+
+    webpackMiddleware: {
+      // webpack-dev-middleware configuration
+      // i. e.
+      stats: 'errors-only',
     },
 
 

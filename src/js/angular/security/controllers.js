@@ -31,13 +31,13 @@ var setGrantedAuthorities = function ($scope) {
         pushAuthority('ROLE_REPO_MANAGER');
     } else {
         pushAuthority('ROLE_USER');
-        for (index in $scope.grantedAuthorities.WRITE_REPO) {
+        for (var index in $scope.grantedAuthorities.WRITE_REPO) {
             if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                 $scope.repositoryCheckError = false;
                 pushAuthority('WRITE_REPO_' + index, 'READ_REPO_' + index);
             }
         }
-        for (index in $scope.grantedAuthorities.READ_REPO) {
+        for (var index in $scope.grantedAuthorities.READ_REPO) {
             if ($scope.grantedAuthorities.READ_REPO[index]) {
                 $scope.repositoryCheckError = false;
                 pushAuthority('READ_REPO_' + index);
@@ -292,14 +292,14 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
         $scope.ok = function () {
             var auth = [];
             $scope.repositoryCheckError = true;
-            for (index in $scope.grantedAuthorities.WRITE_REPO) {
+            for (var index in $scope.grantedAuthorities.WRITE_REPO) {
                 if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                     auth.push('WRITE_REPO_' + index);
                     auth.push('READ_REPO_' + index);
                     $scope.repositoryCheckError = false;
                 }
             }
-            for (index in $scope.grantedAuthorities.READ_REPO) {
+            for (var index in $scope.grantedAuthorities.READ_REPO) {
                 if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf('READ_REPO_' + index) == -1) {
                     auth.push('READ_REPO_' + index);
                     $scope.repositoryCheckError = false;
