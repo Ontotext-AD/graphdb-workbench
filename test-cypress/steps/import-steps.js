@@ -96,7 +96,9 @@ class ImportSteps {
     }
 
     static selectServerFile(filename) {
-        ImportSteps.getServerFileElement(filename).find('.import-file-checkbox').click();
+        // Forcing it because often times cypress sees it with zero width and height although it's
+        // clearly visible.
+        ImportSteps.getServerFileElement(filename).find('.import-file-checkbox').click({force: true});
 
         return ImportSteps;
     }

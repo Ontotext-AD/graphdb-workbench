@@ -38,11 +38,11 @@
       <div class="card-block pt-1">
         <p class="lead">Index name</p>
         <div class="input-group input-group-lg">
-          <input required class="form-control" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
+          <input required class="form-control similarity-index-name" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
         </div>
         <div style="margin-top: 5px" ng-show="invalidIndexName" class="idError alert alert-danger">{{invalidIndexName}}</div>
 
-        <button class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
+        <button class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
 
         <div class="collapse mt-1" id="more-options" >
 
@@ -58,20 +58,20 @@
           <div class="form-group row" ng-show="viewType == 'text'">
             <label class="col-md-4 col-form-label">Stop words</label>
             <div class="col-md-8">
-              <input class="form-control" type="text" placeholder="a and be but ... (optional). Default Lucene stop list will be used if empty." ng-model="newIndex.stopList">
+              <input class="form-control stop-words" type="text" placeholder="a and be but ... (optional). Default Lucene stop list will be used if empty." ng-model="newIndex.stopList">
             </div>
           </div>
           <div class="form-group row" ng-show="viewType == 'text'">
               <label class="col-md-4 col-form-label">Analyzer Class</label>
               <div class="col-md-8">
-                  <input class="form-control" type="text" ng-model="newIndex.analyzer">
+                  <input class="form-control analyzer-class" type="text" ng-model="newIndex.analyzer">
               </div>
           </div>
             <div class="checkbox offset-xs-3 offset-md-4" ng-show="viewType == 'text'">
                 <label class="col-xs-6 col-md-6"
                        tooltip="Literal indexes can be used as input for Predication indexes. These index can not be used for searching."
                        tooltip-placement="bottom">
-                    <input type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="newIndex.isLiteralIndex"/>
+                    <input type="checkbox" class="literal-index" ng-true-value="'true'" ng-false-value="'false'" ng-model="newIndex.isLiteralIndex"/>
                     Literal index
                 </label>
             </div>
@@ -100,7 +100,7 @@
                         Data query
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item search-query-tab">
                     <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
                         Search query
                     </a>
@@ -183,7 +183,7 @@
                        popover-trigger="mouseenter">
                         Cancel
                     </a>
-                    <button class="btn btn-lg btn-primary" ng-click="createIndex()"
+                    <button class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
                             popover="Create index"
                             popover-placement="top"
                             popover-trigger="mouseenter">
@@ -192,7 +192,7 @@
                 </div>
                 <div class="pull-left">
                   <button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
-                  <button class="btn btn-link" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
+                  <button class="btn btn-link test-query-btn" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
                           popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
                           popover-placement="top"
                           popover-trigger="mouseenter">
