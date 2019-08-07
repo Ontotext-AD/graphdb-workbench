@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Except
+!docker-rootfs/
+!src/
+!test-cypress/

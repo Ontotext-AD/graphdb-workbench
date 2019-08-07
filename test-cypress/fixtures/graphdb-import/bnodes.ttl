@@ -1,0 +1,2 @@
+_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
+	<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .

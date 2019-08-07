@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
 
-  graphdb-workbench:
+  workbench:
     container_name: graphdb-workbench
     build:
       context: .
@@ -10,4 +10,4 @@ services:
     environment:
       GRAPHDB_URL: 'http://${HOST_IP}:7200'
     ports:
-      - '9009:80'
+      - '7300:80'
