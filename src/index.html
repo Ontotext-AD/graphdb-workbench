@@ -71,7 +71,7 @@
                         {{getActiveRepository()}}
                     </span>
                     <span ng-if="!getActiveRepository() && getReadableRepositories().length">Choose repository</span>
-                    <span ng-if="!getActiveRepository() && !getReadableRepositories().length">No accessible repositories</span>
+                    <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">No accessible repositories</span>
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">

@@ -24,6 +24,14 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import './repository-commands';
+
+// ================================================================================
+// ================================================================================
+// ========================= FOR REVIEW / REFACTOR/ REMOVAL =======================
+// ================================================================================
+// ================================================================================
+
 let openImportURLDialog = Cypress.Commands.add('openImportURLDialog', (importURL) => {
     cy.get('i[class="icon-link icon-lg pull-left"]').click();
     cy.get('#dataUrl').type(importURL);
@@ -79,13 +87,16 @@ Cypress.Commands.add('selectRDFLinkButton', () => {
 
 
 Cypress.Commands.add('selectRepo', (repoId) => {
-    cy.get('#repositorySelectDropdown')
-        .click({force: true})
-        .then(() => {
-            cy.get('.dropdown-item', {timeout: 1000})
-                .contains(repoId)
-                .click({force: true});
-        });
+    cy.get('#repositorySelectDropdown', {timeout: 30000}).should('be.visible');
+
+    // Wait until repositories GET request finishes and the menu is updated
+    cy.get('#repositorySelectDropdown .no-repositories').should('not.be.visible');
+
+    cy.get('#repositorySelectDropdown').click().within(() => {
+        // TODO: Force is necessary because the repo name could be hidden in quite long menu -> try to fix it
+        // After selecting the repository, the menu item should be detached from the DOM as possible selection
+        cy.get('.dropdown-item', {timeout: 1000}).contains(repoId).click({force: true}).should('not.exist');
+    });
 });
 
 Cypress.Commands.add('selectRepoS', (repoId) => {
@@ -257,6 +268,7 @@ let navigateToPageS = Cypress.Commands.add('navigateToPageS', (mainMenu, subMenu
 });
 
 let createNewRepo = Cypress.Commands.add('createNewRepo', (repoId, rulesetToSelect, enableSameAs) => {
+    // TODO: Sometimes the page is not yet loaded and this fails ?!
     cy.get('#wb-repositories-addRepositoryLink', {timeout: 1000})
         .click({force: true});
 
