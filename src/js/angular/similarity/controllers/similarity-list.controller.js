@@ -414,7 +414,7 @@ define(['require', 'lib/yasr.bundled'],
                 };
                 $.ajax({
                     type: "put",
-                    url: "/rest/similarity/update/search-query",
+                    url: "/rest/similarity/search-query",
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: function (result) {
