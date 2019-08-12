@@ -1,7 +1,7 @@
 <div class="mb-2 row" ng-hide="getActiveRepository() && (!isWriteRequired || canWriteActiveRepo())">
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
-            <div class="card">
+            <div class="card repository-errors">
                 <div class="alert alert-warning lead">
                     <div ng-hide="getActiveRepository()" >Some functionality is not available because you are not connected to any repository.</div>
                     <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionality is not available because you have no write permission to repository <b>{{getActiveRepository()}}</b>.</div>
@@ -32,7 +32,7 @@
                 </ul>
 
                 <div class="pull-right" ng-if="canManageRepositories()">
-                    <button class="btn btn-link px-0" ng-click="goToAddRepo()">
+                    <button class="btn btn-link px-0 create-repository-btn" ng-click="goToAddRepo()">
                         <span class="icon-plus"></span> Create new repository
                     </button>
                 </div>

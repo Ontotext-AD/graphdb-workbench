@@ -3,10 +3,10 @@
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
     <span class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary" type="button" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" type="button" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
     </span>
     <span class="input-group-btn">
-        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary" type="button" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
+        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" type="button" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
     </span>
 </div>
 <div id="auto-complete-results-wrapper">

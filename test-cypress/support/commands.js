@@ -241,6 +241,14 @@ let navigateToPage = Cypress.Commands.add('navigateToPage', (mainMenu, subMenu) 
         });
 });
 
+let visitAndWaitLoader = Cypress.Commands.add('visitAndWaitLoader', (page) => {
+    //we assume here we do not have two submenus with the same text???
+    cy.visit(page);
+
+    cy.get(".show-ng-cloak.ot-splash").should("not.be.visible");
+    cy.get(".ot-loader-new-content").should("not.be.visible");
+});
+
 let navigateToPageS = Cypress.Commands.add('navigateToPageS', (mainMenu, subMenu) => {
     //we assume here we do not have two submenus with the same text???
     if (mainMenu == 'Setup' && subMenu == 'Repositories') {
