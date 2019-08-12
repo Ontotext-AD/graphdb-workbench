@@ -23,5 +23,5 @@ wait-on http://localhost:7200 -t 60000
 wait-on http://localhost:7300 -t 30000
 
 # Run the tests
-npx cypress run --record=true --config baseUrl=http://localhost:7300,video=false
+npx cypress run --record=false --config baseUrl=http://localhost:7300,video=false
 
