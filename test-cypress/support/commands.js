@@ -25,6 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 import './repository-commands';
+import './import-commands';
 
 // ================================================================================
 // ================================================================================
