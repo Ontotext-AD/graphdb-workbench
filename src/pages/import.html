@@ -37,7 +37,7 @@
                  ng-class="$parent.viewType == 'user' ? 'active' : ''">
                 <div class="row mb-2 upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block"
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
                              popover="The supported RDF formats are {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block" role="button" ng-click="rdfDataFromURL()"
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()"
                              popover="The supported RDF formats are {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block" role="button" ng-click="pasteData()"
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()"
                              popover="The supported RDF formats are {{textFileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">

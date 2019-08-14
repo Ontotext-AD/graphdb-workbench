@@ -30,11 +30,11 @@ addons:
 
 script:
   - npm run test:coverage
-  - npm run test:coveralls
   - npm run build
   - npm run sonar
 
 after_script:
+  - npm run test:coveralls
   - npm run test:cypress-ci
 
 deploy:
