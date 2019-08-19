@@ -1,180 +1,181 @@
-describe('Class hierarchy screen validation', function () {
-    let repoId = 'repo' + Date.now();
+const INITIAL_CLASS_COUNT = 50;
+const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
+const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 
-    before(function () {
+describe('Class hierarchy screen validation', () => {
+    let repositoryId;
+
+    before(() => {
+        repositoryId = 'repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+
         cy.visit('/repository');
-        // Create new one
-        cy.createNewRepo(repoId).wait(2000);
-        cy.setRepoDefault(repoId);
-        cy.selectRepo(repoId);
+        cy.setRepoDefault(repositoryId);
+        cy.selectRepo(repositoryId);
 
-        // Import Wine dataset which will be used in most of the following tests
-        cy.navigateToPage('Import', 'RDF');
-        cy.openImportURLDialog('https://www.w3.org/TR/owl-guide/wine.rdf');
-        cy.clickImportUrlBtn();
-        cy.clickImportBtnOnPopUpMenu().wait(2000);
+        cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
     });
 
-    beforeEach(function () {
-        // Go to Explore\Class Hierarchy
-        cy.visit('/hierarchy').wait(1000);
+    beforeEach(() => {
+        cy.visit('/hierarchy');
+        // Wait for the chart and diagram to be visible, also check if a class is displayed.
+        cy.get('#classChart').should('be.visible').within(() => {
+            cy.get('#main-group').should('be.visible');
+            findClassByName('food:Grape');
+            cy.get('@classInHierarchy').should('be.visible');
+        });
     });
 
-    after(function () {
-        cy.navigateToPage('Setup', 'Repositories');
-        cy.deleteRepo(repoId);
+    after(() => {
+        cy.deleteRepository(repositoryId);
     });
 
-    it('Test initial state of the diagram has a class count 50', function () {
-        //  Confirm the initial state of the diagram has a class count of 50
-        cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => {
-                expect($element.prop('aria-valuenow') === 50);
+    function getCurrentSliderValue() {
+        // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
+        // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
+        // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
+        // value.
+        return cy.get('.rz-pointer[role="slider"]')
+            .then(($element) => $element.prop('aria-valuenow'));
+    }
+
+    function searchForClass(name) {
+        cy.get('.toolbar-holder .icon-search')
+            .click()
+            .then(() => {
+                cy.get('#search_input_value').type(name).type('{enter}');
             });
-    });
+    }
 
-    it('Test show/hide prefixes', function () {
-        //  Verify that switching on/off Show/hide prefixes is reflected on the diagram - prefixes are displayed/hidden
-        cy.get('#main-group > text.label')
+    function verifyPrefixes(expectation) {
+        cy.get(CLASS_LABEL_SELECTOR)
             .each(($element) => {
-                // let display = ;
-                let parsed = $element.prop('style');
-                if (parsed.display != 'none') {
-                    expect($element.text()).contain(':');
+                if ($element.prop('style').display !== 'none') {
+                    expectation($element);
                 }
             });
+    }
+
+    function findClassByName(className) {
+        cy.get(CLASS_LABEL_SELECTOR)
+            .each(($element) => {
+                let data = $element.prop('__data__');
+                if (data.name === className) {
+                    cy.wrap($element).as('classInHierarchy');
+                }
+            });
+    }
+
+    function verifyClassIsNotExpanded($element) {
+        return cy.wrap($element).should('have.css', 'font-size').and('eq', '10px');
+    }
+
+    function verifyClassIsExpanded($element) {
+        return cy.wrap($element).should('have.css', 'font-size').and('not.eq', '10px');
+    }
+
+    function confirmReload() {
+        cy.get('.modal-footer .confirm-btn').click();
+        cy.get('.modal').should('not.be.visible');
+    }
+
+    it('Test initial state of the diagram has a class count 50', () => {
+        getCurrentSliderValue()
+            .then((currentValue) => {
+                expect(currentValue === INITIAL_CLASS_COUNT);
+            });
+    });
+
+    it('Test show/hide prefixes', () => {
+        // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
+        // prefixes are displayed/hidden
+        verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
 
         // Switch show prefixes to off
-        cy.get('button[ng-click="hidePrefixes = !hidePrefixes"]').click().wait(200);
+        cy.get('.toolbar-holder .prefix-toggle-btn').click();
 
         // Verify that prefixes are removed from diagram
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                // let display = ;
-                let parsed = $element.prop('style');
-                if (parsed.display != 'none') {
-                    expect($element.text()).not.contain(':');
-                }
-            });
+        verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));
     });
 
-    it('Test focus on diagram', function () {
+    it('Test focus on diagram', () => {
         let className = ':CabernetSauvignon';
-        // Select a class ":CabernetSauvignon"
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    let fontSize = $element.prop('style');
-                    expect(fontSize['font-size']).be.eq('10px');
-                }
-            });
-        // Verify that the diagram zooms that class
-        cy.get('.p-0 > .icon-search')
-            .click()
-            .then(() => {
-                cy.get('#search_input_value').type(className).type('{enter}').wait(500);
-            });
+        findClassByName(className);
+        cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
 
-        // Find class ":CabernetSauvignon" and verify changed font-size
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    let fontSize = $element.prop('style');
-                    expect(fontSize['font-size']).not.be.eq('10px');
-                }
-            });
-        // Click on ""Focus diagram""
-        cy.get('.icon-zoom-out').click({force: true}).wait(500);
+        // Verify that the diagram zooms that class
+        searchForClass(className);
+
+        // Verify font-size is changed
+        findClassByName(className);
+        cy.get('@classInHierarchy').then(verifyClassIsExpanded);
+
+        // When a class is focused in diagram a side panel is opened on the right and covers the
+        // buttons toolbar.
+        cy.get('[ps-class=rdf-info-side-panel] .close').click()
+            .should('not.be.visible');
+        cy.get('.toolbar-holder .focus-diagram-btn').click();
+
         // Verify that the diagram zooms out without resetting the class count.
-        // Select a class ":CabernetSauvignon"
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    let fontSize = $element.prop('style');
-                    expect(fontSize['font-size']).be.eq('10px');
-                }
-            });
+        findClassByName(className);
+        cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
     });
 
-    it('Test reload diagram', function () {
-        let className = ':CabernetSauvignon';
+    it('Test reload diagram', () => {
+        // Initial class count is 50
+        // Change the class count to a custom value
+        cy.get('.class-cnt-slider > .ng-isolate-scope').trigger('click', 'center');
 
-        //  Confirm the initial state of the diagram has a class count of 50
-        cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => {
-                expect($element.prop('aria-valuenow') === 50);
-            });
-
-        // Change the class count to custom value
-        cy.get('.class-cnt-slider > .ng-isolate-scope')
-            .trigger('click', 'center', {force: true});
-
-        // Select a class ":CabernetSauvignon"
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    let fontSize = $element.prop('style');
-                    expect(fontSize['font-size']).be.eq('10px');
-                }
-            });
-        // Verify that the diagram zooms that class
-        cy.get('.p-0 > .icon-search')
-            .click()
-            .then(() => {
-                cy.get('#search_input_value').type(className).type('{enter}').wait(500);
-            });
-
-        // Find class ":CabernetSauvignon" and verify changed font-size
-        cy.get('#main-group > text.label')
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    let fontSize = $element.prop('style');
-                    expect(fontSize['font-size']).not.be.eq('10px');
-                }
-            });
-
-        // Click on "Reload diagram"
-        cy.get('#toolbar > [tooltip="Reload diagram"] > .icon-reload').click({force: true}).wait(200);
+        // Reload diagram
+        cy.get('.toolbar-holder .reload-diagram-btn').click();
 
         // Verify that warning message appears
-        cy.get('.modal-body > .lead').should('be.visible').and('contain', 'Calculating class hierarchy data may take some time. Are you sure?');
+        cy.get('.modal-body > .lead')
+            .should('be.visible')
+            .and('contain', 'Calculating class hierarchy data may take some time. Are you sure?');
 
         // Confirm diagram reloading
-        cy.get('.modal-footer > .btn-primary').click().wait(200);
+        confirmReload();
 
         // Verify that the diagram zooms out and the class count is reset
-        cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => {
-                expect($element.prop('aria-valuenow') === 50);
+        getCurrentSliderValue()
+            .then((currentValue) => {
+                expect(currentValue === INITIAL_CLASS_COUNT);
             });
     });
-    it('Test export diagram', function () {
-        // Export the diagram
+
+    it('Test export diagram', () => {
+        // TODO: Verify that there aren't issues with this approach as there is no guarantee that the click will happen after mouseover event!
+        // Eventually file an issue for refactoring.
         cy.get('#download-svg')
             .then(($element) => {
                 let href = $element.prop('href');
                 // Verify that a svg with the current diagram state is saved on your hdd.
                 expect(href).to.contain(Cypress.config("baseUrl"));
             });
+
+        // This is how I see it should be tested properly but for some reason when the whole spec is
+        // executed the test fails.
+        // Verify that the diagram converted to svg is present as base64 encoded string in
+        // the href attribute. This is done in the mouseover over the link
+        // (https://github.com/Ontotext-AD/graphdb-workbench/blob/master/src/js/angular/graphexplore/directives/rdf-class-hierarchy.directive.js#L127)
+        // cy.get('#download-svg')
+        //     .trigger('mouseover')
+        //     .should('have.attr', 'download', `class-hierarchy-${repositoryId}.svg`)
+        //     .should('have.attr', 'href')
+        //     .and('not.be.empty')
+        //     .and('include', 'data:image/svg+xml;charset=utf-8;base64,');
     });
 
-    it('Test search for a class', function () {
-        // Search for wine"
+    it('Test search for a class', () => {
         let className = 'wine';
-        cy.get('#search_input_dropdown')
+        cy.get(SEARCH_INPUT_DROPDOWN_ID)
             .should('not.be.visible');
-        cy.get('.p-0 > .icon-search')
-            .click()
-            .then(() => {
-                cy.get('#search_input_value').type(className).type('{enter}');
-            });
+
+        searchForClass(className);
+
         // Verify that a list of suggestions is displayed.
-        cy.get('#search_input_dropdown')
+        cy.get(SEARCH_INPUT_DROPDOWN_ID)
             .should('be.visible')
             .and('length.be.gt', 0);
 
@@ -184,26 +185,14 @@ describe('Class hierarchy screen validation', function () {
                 let selectedClassName = $el.text().trim();
 
                 // Find selected class from drop-down menu and verify that isn't expanded
-                cy.get('#main-group > text.label')
-                    .each(($element) => {
-                        let data = $element.prop('__data__');
-                        if (data.name === selectedClassName) {
-                            let fontSize = $element.prop('style');
-                            expect(fontSize['font-size']).be.eq('10px');
-                        }
-                    });
+                findClassByName(selectedClassName);
+                cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
 
-                cy.wrap($el).click().wait(500);
+                cy.wrap($el).click();
 
                 // Find selected class from drop-down menu after clicking on it and verify that it is expanded
-                cy.get('#main-group > text.label')
-                    .each(($element) => {
-                        let data = $element.prop('__data__');
-                        if (data.name === selectedClassName) {
-                            let fontSize = $element.prop('style');
-                            expect(fontSize['font-size']).not.be.eq('10px');
-                        }
-                    });
+                findClassByName(selectedClassName);
+                cy.get('@classInHierarchy').then(verifyClassIsExpanded);
             });
     });
 });

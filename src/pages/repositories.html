@@ -70,7 +70,7 @@
 										popover-trigger="mouseenter" popover-placement="bottom-right"
 										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
 											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-											<strong>{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+											<strong class="repository-id">{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>
 								<td width="150" class="text-nowrap">
@@ -109,7 +109,7 @@
 									</span>
 								</td>
 								<td width="50">
-									<button class="btn btn-link p-0" ng-hide="repository.type === 'system'"
+									<button class="btn btn-link p-0 pin-repository-btn" ng-hide="repository.type === 'system'"
 										ng-click="toggleDefaultRepository(repository.id)"
 										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
 										tooltip="Set as default repository">
