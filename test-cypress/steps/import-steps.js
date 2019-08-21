@@ -58,6 +58,12 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static pasteRDFTextSnippet(snippet) {
+        ImportSteps.getSnippetTextarea().invoke('val', snippet).trigger('change');
+
+        return ImportSteps;
+    }
+
     static clickImportTextSnippetButton() {
         cy.get('#wb-import-importText').click();
 

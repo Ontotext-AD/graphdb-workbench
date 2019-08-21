@@ -420,10 +420,3 @@ let verifyQueryResultsS = Cypress.Commands.add('verifyQueryResultsS', (numberOfR
     cy.get('#yasr-inner .alert.alert-info.no-icon').not("ng-hide")
         .should('contain', 'Query took');
 });
-
-
-//verifies that a certain graph exist within the current page in graphs overview.
-let verifyGraphExists = Cypress.Commands.add('verifyGraphExists', (graphName) => {
-    cy.wait(500);
-    cy.get("tbody").should('contain', graphName);
-});
