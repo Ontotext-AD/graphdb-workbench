@@ -8,8 +8,7 @@
 
 <title>Explore Data Graph</title>
 
-<div class="toolbar-holder pull-right mt-1"
-	 id="toolbar"
+<div class="toolbar-holder pull-right mt-1" id="toolbar"
 	ng-class="{ 'pushed-toolbar': showClassInfoPanel }"
 	ng-show="hasClassHierarchy() && !loader">
 
@@ -22,7 +21,7 @@
 			searched-obj-callback="searchedClassCallback">
 	</search-icon-input>
 
-	<button class="btn btn-link p-0 prefix-toggle" type="button"
+	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
 		ng-click="hidePrefixes = !hidePrefixes"
 		tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
 		tooltip-placement="bottom"
@@ -31,21 +30,22 @@
 			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></i>
 	</button>
 
-
-	<button class="btn btn-link p-0"
+	<button class="btn btn-link p-0 focus-diagram-btn"
 		tooltip="Focus diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
 		<i class="icon-zoom-out icon-2x"></i>
 	</button>
-	<button class="btn btn-link p-0"
+
+	<button class="btn btn-link p-0 reload-diagram-btn"
 		tooltip="Reload diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
 		<i class="icon-reload icon-2x"></i>
 	</button>
+
 	<a href class="btn btn-link p-0" id="download-svg"
 		tooltip="Export Diagram"
 		tooltip-placement="bottom"

@@ -322,12 +322,8 @@ let createNewRepoS = Cypress.Commands.add('createNewRepoS', (repoId, rulesetToSe
 });
 
 let setRepoDefault = Cypress.Commands.add('setRepoDefault', (repoId) => {
-    cy.get('#wb-repositories-repositoryInGetRepositories > tbody > tr')
-        .each(($el, index) => {
-            if ($el.text().trim() === repoId) {
-                cy.get('i.icon-pin').eq(index).click({force: true});
-            }
-        });
+    cy.get(`#wb-repositories-repositoryInGetRepositories .repository-id:contains(${repoId})`)
+        .closest('tr').find('.pin-repository-btn').click({force: true});
 });
 
 let setRepoDefaultS = Cypress.Commands.add('setRepoDefaultS', (repoId) => {
