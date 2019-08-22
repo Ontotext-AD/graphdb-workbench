@@ -1,0 +1,7 @@
+PREFIX wordn-sc: <http://example.org>
+select * where {
+    ?sub rdfs:subClassOf ?c .
+    ?c a owl:Restriction;
+       owl:onProperty wordn-sc:word;
+       owl:someValuesFrom wordn-sc:Word .
+}

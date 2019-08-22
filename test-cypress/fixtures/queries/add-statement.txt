@@ -1,0 +1,8 @@
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+INSERT DATA
+      {
+      GRAPH <http://example> {
+          <http://example/book1> dc:title "A new book" ;
+                                 dc:creator "A.N.Other" .
+          }
+      }

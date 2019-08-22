@@ -10,17 +10,17 @@
 
     <div ng-show="getActiveRepositoryNoError()" class="pull-right mt-1">
         <div id="hideEditor" class="btn-group btn-group-sm" ng-click="showHideEditor()">
-            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'yasr'" uncheckable>
+            <button class="btn btn-secondary btn-sm editor-only-btn" ng-model="viewMode" btn-radio="'yasr'" uncheckable>
                 Editor only
             </button>
-            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'none'" uncheckable>
+            <button class="btn btn-secondary btn-sm editor-and-results-btn" ng-model="viewMode" btn-radio="'none'" uncheckable>
                 Editor and results
             </button>
-            <button class="btn btn-secondary btn-sm" ng-model="viewMode" btn-radio="'editor'" uncheckable>
+            <button class="btn btn-secondary btn-sm results-only-btn" ng-model="viewMode" btn-radio="'editor'" uncheckable>
                 Results only
             </button>
 
-            <button class="btn btn-link btn-sm p-0 ml-1"
+            <button class="btn btn-link btn-sm p-0 ml-1 toggle-horizontal-view-btn"
                     ng-click="changeViewMode(currentQuery.id)"
                     tooltip="Switch to {{orientationViewMode ? 'vertical' : 'horizontal'}} view"
                     tooltip-placement="left">

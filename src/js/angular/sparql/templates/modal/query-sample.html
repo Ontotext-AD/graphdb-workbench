@@ -4,12 +4,13 @@
     <button type="button" class="close" ng-click="cancel()"></button>
     <h3 class="modal-title">{{title}}</h3>
 </div>
-<form novalidate ng-submit="ok()" name="form">
+<form novalidate ng-submit="ok()" name="form" class="save-query-form">
     <div class="modal-body">
         <input id="wb-sparql-sampleName" required type="text" ng-model="query.name" class="form-control"
                ng-change="queryExists = false"
                placeholder="Enter Title"/>
-        <label for="share-query" tooltip="If checked other users will be able to see the query but not delete or edit it.">
+        <label for="share-query"
+               tooltip="If checked other users will be able to see the query but not delete or edit it.">
             <input id="share-query" type="checkbox" ng-model="query.shared">
             Share query with other users
         </label>
@@ -17,21 +18,27 @@
         <br>
         <textarea id="wb-sparql-sampleValue" required rows="8" class="form-control" ng-model="query.body"
                   placeholder="Create your Sample Query" ng-blur="errorMsg = ''"></textarea>
-        <div ng-show="form.$error.required.length">
-            <div ng-hide="query.name" class="alert alert-danger" style="margin-top: 5px;">Name cannot be empty!</div>
-            <div ng-hide="query.body" class="alert alert-danger" style="margin-top: 5px;">Query cannot be empty!</div>
-        </div>
-        <div ng-hide="form.$error.required.length" ng-if="queryExists" class="alert alert-danger"
-             style="margin-top: 5px;">Query with name <b>&#39;{{query.name}}&#39;</b> already
-            exists!
+        <div class="saved-query-errors">
+            <div ng-show="form.$error.required.length" >
+                <div ng-hide="query.name" class="alert alert-danger empty-query-name-err" style="margin-top: 5px;">
+                    Name cannot be empty!
+                </div>
+                <div ng-hide="query.body" class="alert alert-danger empty-query-err" style="margin-top: 5px;">
+                    Query cannot be empty!
+                </div>
+            </div>
+            <div ng-hide="form.$error.required.length" ng-if="queryExists" class="alert alert-danger query-exists-error"
+                 style="margin-top: 5px;">
+                Query with name <b>&#39;{{query.name}}&#39;</b> already exists!
+            </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-        <button id="wb-sparql-submit" class="btn btn-primary" ng-click="ok()" type="submit">{{okButtonText}}</button>
+        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">Cancel</button>
+        <button id="wb-sparql-submit" class="btn btn-primary create-btn" ng-click="ok()" type="submit">
+            {{okButtonText}}
+        </button>
     </div>
 </form>
 
 <!-- End QuerySample modal -->
-    
-    
