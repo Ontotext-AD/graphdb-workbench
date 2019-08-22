@@ -20,23 +20,23 @@
     <p>{{repositoryError}}</p>
 </div>
 <div class="content" ng-show="!isSystemRepository()">
-    <div class="pull-right" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
-         <button class="btn btn-link p-0" type="button" 
-              	ng-show="allNotFilteredClasses.length > 0" 
+    <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
+         <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
+                 ng-show="allNotFilteredClasses.length > 0"
                ng-click="removeAllClasses()"
                tooltip="Remove All Classes"
                tooltip-trigger="mouseenter"
                tooltip-placement="bottom">
              <i class="icon-close icon-2x"></i>
          </button>
-        <button class="btn btn-link p-0" type="button"
+        <button class="btn btn-link p-0 reload-diagram-btn" type="button"
              tooltip="Reload Diagram"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter"
               ng-click="confirmCalculateDependencies()">
             <i class="icon-reload icon-2x refresh-button" ></i>
         </button>
-        <a href id="download-svg" class="btn btn-link p-0"
+        <a href id="download-svg" class="btn btn-link p-0 export-diagram-btn"
            ng-show="allNotFilteredClasses.length > 0"
            tooltip="Export Diagram"
               tooltip-placement="bottom"
@@ -45,7 +45,7 @@
         </a>
     </div>
     <div>
-        <div ng-show="selectedClasses.length >= 2">
+        <div ng-show="selectedClasses.length >= 2" class="available-dependencies-label">
             <span ng-show="dependenciesData.hasLinks">Showing the dependencies between {{selectedClasses.length}} classes</span>
             <span ng-show="!dependenciesData.hasLinks">No dependencies between these classes</span>
         </div>
