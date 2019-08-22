@@ -66,11 +66,11 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <a dropdown-toggle>
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()">
+                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<i ng-class="'icon-repo-' + getActiveRepositoryObject().type"></i>
                         {{getActiveRepository()}}
                     </span>
-                    <span ng-if="!getActiveRepository() && getReadableRepositories().length">Choose repository</span>
+                    <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">Choose repository</span>
                     <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">No accessible repositories</span>
                 </a>
             </button>

@@ -1,5 +1,8 @@
 import {REPOSITORIES_URL} from '../../support/repository-commands';
 
+/**
+ * Tests the programmatic creation and deletion of repositories via REST calls.
+ */
 describe('Repository commands test', () => {
 
     let repoId;
