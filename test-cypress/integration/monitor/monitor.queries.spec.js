@@ -11,6 +11,8 @@ describe('Monitor Queries', () => {
         cy.presetRepositoryCookie(repositoryId);
 
         cy.visit('/monitor/queries');
+        // Wait for the loader to disappear
+        cy.get('.ot-loader').should('not.be.visible');
     });
 
     after(() => {
