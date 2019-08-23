@@ -10,7 +10,7 @@
 	<div class="mb-1">
 		<div class="pull-right">
 			<span id="toggle-security" class="mr-1">
-				<span>Security is <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
+				<span class="security-switch-label">Security is <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
 				<span tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
 					<label for="toggleSecurity"></label>
@@ -28,8 +28,8 @@
 				</span>
 			</span>
 		</div>
-		
-		<a id="wb-users-userCreateLink" class="btn btn-primary" href="user/create""><span class="icon-plus"></span> Create new user</a>
+
+		<a id="wb-users-userCreateLink" class="btn btn-primary" href="user/create"><span class="icon-plus"></span> Create new user</a>
 	</div>
 
 	<div ng-show="hasExternalAuth()">
@@ -52,9 +52,9 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="user in users | orderBy: 'username'">
-				<td><span>{{user.username}}</span></td>
-				<td>{{user.userTypeDescription}}</td>
-				<td>
+				<td class="username"><span>{{user.username}}</span></td>
+				<td class="user-type">{{user.userTypeDescription}}</td>
+				<td class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
 						<i class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'Has read access' : 'Does not have read access'}}"></i>
 						<i class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'Has write access' : 'Does not have write access'}}"></i>
@@ -62,11 +62,15 @@
 					</div>
 					<div ng-show="user.userType !== 'user'">Unrestricted</div>
 				</td>
-				<td><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
+				<td class="date-created"><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
 				<td class="actions-bar">
 					<span>
-						<a class="btn btn-link" href="user/{{encodeURIComponent(user.username)}}"><i class="icon-edit" tooltip="Edit user"></i></a>
-						<a class="btn btn-link secondary" ng-show="user.username != 'admin'" href ng-click="removeUser(user.username)"><i class="icon-trash" tooltip="Delete user"></i></a>
+						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
+                            <i class="icon-edit" tooltip="Edit user"></i>
+                        </a>
+						<a class="btn btn-link secondary delete-user-btn" ng-show="user.username != 'admin'" href ng-click="removeUser(user.username)">
+                            <i class="icon-trash" tooltip="Delete user"></i>
+                        </a>
 					</span>
 				</td>
 			</tr>
