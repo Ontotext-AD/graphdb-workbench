@@ -17,6 +17,7 @@ Cypress.Commands.add('createRepository', (options = {}) => {
 });
 
 Cypress.Commands.add('deleteRepository', (id) => {
+    // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + id;
     cy.request('DELETE', url).should((response) => expect(response.status).to.equal(200));
 });

@@ -46,13 +46,13 @@
 			</div>
 
 			<div ng-show="hasActiveLocation()" class="mb-3">
-				<div class="alert alert-warning" ng-hide="getRepositories().length || getActiveLocation().errorMsg">
+				<div class="alert alert-warning no-repositories-alert" ng-hide="getRepositories().length || getActiveLocation().errorMsg">
 					There are no repositories in the active location
 				</div>
 				<div ng-show="getRepositories().length" class="mb-1">
 					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped">
 						<tbody>
-							<tr
+							<tr class="repository"
 								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
 								ng-class="{'table-info text-secondary': getActiveRepository() == repository.id}">
 								<td width="25">
@@ -73,7 +73,7 @@
 											<strong class="repository-id">{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>
-								<td width="150" class="text-nowrap">
+								<td width="150" class="text-nowrap repository-actions">
 									<button class="btn btn-link p-0"
 											ng-click="copyToClipboard(repository.externalUrl)"
 											tooltip="Copy repository URL to clipboard">
@@ -85,21 +85,21 @@
 											tooltip-placement="top" tooltip-trigger="mouseenter"></i>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
-										<a class="btn btn-link p-0"
+										<a class="btn btn-link p-0 edit-repository-btn"
 											href="repository/edit/{{repository.id}}"
 											tooltip="Edit repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter">
 											<span class="icon-edit"></span>
 										</a>
-										<a class="btn btn-link p-0 download-turtle-config" ng-href="{{getRepositoryDownloadLink(repository)}}"
+										<a class="btn btn-link p-0 download-turtle-config download-repository-config-btn" ng-href="{{getRepositoryDownloadLink(repository)}}"
 												target="_blank"
 												tooltip="Download repository configuration as Turtle"
 												tooltip-placement="top"
 												tooltip-trigger="mouseenter">
 												<i class="icon-download"></i>
 										</a>
-										<button class="btn btn-link p-0 secondary" type="button"
+										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
 											tooltip="Delete repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter"
@@ -136,7 +136,7 @@
 
 			<div ng-show="hasRole('ROLE_ADMIN')">
 				<h3 ng-show="getLocations().length">Repository locations</h3>
-				<table class="table table-hover table-striped" ng-show="getLocations().length">
+				<table class="table table-hover table-striped locations-table" ng-show="getLocations().length">
 					<tbody>
 						<tr
 							ng-repeat="location in getLocations() | orderBy: 'uri'"
