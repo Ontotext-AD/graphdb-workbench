@@ -3,13 +3,13 @@
 	<link href="css/repositories.min.css" rel="stylesheet">
 
 	<link href="js/lib/bootstrap-switch/3.2.2/bootstrap-switch.min.css" rel="stylesheet">
-	
+
 	<div id="wb-repository">
 		<h1>{{pageTitle}}</h1>
 		<p class="alert alert-danger" ng-hide="hasActiveLocation()">
 			No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
 		</p>
-		
+
 		<div ng-show="hasActiveLocation()">
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 			<div ng-hide="loader">
@@ -195,4 +195,4 @@
 			</div>
 		</div>
 	</div>
-		
+
