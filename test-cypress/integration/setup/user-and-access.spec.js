@@ -42,7 +42,7 @@ describe('User and Access', () => {
         // Security should be disabled
         getToggleSecuritySwitch().find('.security-switch-label').should('be.visible')
             .and('contain', 'Security is OFF');
-        getToggleSecuritySwitch().find('.switch :checkbox').should('not.be.checked');
+        getToggleSecuritySwitch().find('.switch:checkbox').should('not.be.checked');
         // Only admin user should be created by default
         getUsersTable().find('tbody tr').should('have.length', 1);
         findUserInTable('admin');
