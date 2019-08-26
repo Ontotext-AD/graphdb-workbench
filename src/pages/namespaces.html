@@ -14,12 +14,12 @@
 </h1>
 
 
-<div id="wb-namespaces" class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
-<div ng-hide="loader">
+<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+<div id="wb-namespaces" ng-hide="loader">
     <div core-errors></div>
     <div ng-show="getActiveRepository()">
         <div class="clearfix mb-2">
-            <form novalidate name="form" class="form-inline pull-right" ng-show="canWriteActiveRepo()">
+            <form novalidate name="form" class="form-inline pull-right add-namespace-form" ng-show="canWriteActiveRepo()">
                 <div class="form-group" style="width: 130px;">
                     <input id="wb-namespaces-prefix"
                            type="text" ng-model="namespace.prefix" placeholder="examplePrefix"
@@ -40,7 +40,7 @@
             </form>
         </div>
         <div ng-show="displayedNamespaces.length > 0" class="clearfix">
-            <div class="btn-group pull-right" dropdown>
+            <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
                         ng-disabled="disabled">
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) > -1">{{pageSize}}</span>
@@ -48,22 +48,22 @@
                 </button>
                 <ul class="dropdown-menu small">
                     <li ng-repeat="size in pageSizeOptions" ng-if="size < matchedElements.length">
-                        <span class="dropdown-item" ng-click="changePageSize(size)">{{size}}</span>
+                        <span class="dropdown-item page-size-option" ng-click="changePageSize(size)">{{size}}</span>
                     </li>
                     <li>
-                        <span class="dropdown-item" ng-click="changePageSize(namespaces.length)">All</span>
+                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)">All</span>
                     </li>
                 </ul>
             </div>
             <span class="pull-right mr-1">Namespaces per page:</span>
         </div>
-        <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix">
+        <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-result-header">
             <span class="pull-left">
-                <input type="text" class="form-control" placeholder="Search namespaces"
+                <input type="text" class="form-control namespaces-filter" placeholder="Search namespaces"
                        ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="Search"
                        ng-change="haveSelected = false;selectedAll = false;deselectAll();updateResults()">
             </span>
-            <div paginations class="ot-export-pagination pull-right"></div>
+            <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
             <span class="showing-info-namespaces pull-right">Showing {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} results</span>
         </div>
         <table ng-show="displayedNamespaces.length > 0" id="wb-namespaces-namespaceInNamespaces"
@@ -72,10 +72,10 @@
             <tr>
                 <th style="width: 100px">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" ng-model="selectedAll"
+                        <input class="form-check-input select-all-namespaces" type="checkbox" ng-model="selectedAll"
                                ng-click="checkAll();checkIfSelectedNamespace()" ng-disabled="!canWriteActiveRepo()">
                     </label>
-                    <button type="button" class="btn btn-link btn-sm secondary p-0" ng-click="deleteSelected()"
+                    <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
                             tooltip="Delete selected"><span class="icon-trash"></span></button>
                 </th>
@@ -86,16 +86,16 @@
             </thead>
             <tbody>
             <tr ng-repeat="namespace in displayedNamespaces | orderBy: 'prefix'"
-                class="wb-namespaces-row" loader-post-repeat-directive>
+                class="wb-namespaces-row namespace" loader-post-repeat-directive>
                 <td>
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" ng-model="namespace.selected"
+                        <input class="form-check-input select-namespace" type="checkbox" ng-model="namespace.selected"
                                ng-disabled="!canWriteActiveRepo()" ng-click="checkIfSelectedNamespace()">
                     </label>
                 </td>
                 <td>
 						<span editable-text="namespace.prefix" e-name="prefix" e-form="rowform" e-required
-                              class="ot-edit-namespace">
+                              class="ot-edit-namespace namespace-prefix">
 						{{namespace.prefix}} :
 						</span>
                 </td>
@@ -118,19 +118,19 @@
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
-                    <button class="btn btn-link" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
+                    <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
                             tooltip="Edit namespace"><span class="icon-edit"></span></button>
-                    <button class="btn btn-link secondary" ng-click="removeNamespace(namespace)"
+                    <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
                             ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" tooltip="Delete namespace">
                         <span class="icon-trash"></span></button>
                 </td>
             </tr>
             </tbody>
         </table>
-        <div class="alert alert-warning" ng-show="displayedNamespaces.length === 0">
+        <div class="alert alert-warning no-namespaces-alert" ng-show="displayedNamespaces.length === 0">
             <p>There are no added namespaces on this repository.</p>
         </div>
-        <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix">
+        <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-pagination">
             <div paginations class="ot-export-pagination pull-right"></div>
         </div>
     </div>
