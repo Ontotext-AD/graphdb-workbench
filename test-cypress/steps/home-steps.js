@@ -82,7 +82,7 @@ class HomeSteps {
     static noAutocompleteToast() {
         // Verify that the “Enable autocomplete” toast message is displayed.
         cy.get('.autocomplete-toast')
-            .contains('Autocomplete is OFF').and('be.visible');
+            .contains('Autocomplete is OFF').should('be.visible');
     }
 
     static getAutocompleteInput() {

@@ -1,5 +1,5 @@
 <link href="css/autocomplete.css" rel="stylesheet">
-<div class="page">
+<div id="autocomplete" class="page">
 	<h1>
 		{{title}}
 		<i class="btn btn-link"
@@ -19,23 +19,23 @@
     <div core-errors write></div>
 
     <div ng-show="canWriteActiveRepo() && !loading">
-		<div class="alert alert-info" ng-if="!loader && !pluginFound">
+		<div class="alert alert-info autocomplete-not-supported-alert" ng-if="!loader && !pluginFound">
 			<h4>Autocomplete not supported</h4>
 			<p>The current repository does not support the Autocomplete plugin. Please check the type of the repository or select
 				another one.</p>
 		</div>
-		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
+		<div class="alert alert-info autocomplete-configuring-not-supported-alert" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>Autocomplete not fully supported</h4>
 			<p>Configuring autocomplete is not supported. {{getDegradedReason()}}</p>
 		</div>
 		<div ng-show="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span>Autocomplete for repository <b>{{getActiveRepository()}}</b> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch">
+				<span class="autocomplete-header">Autocomplete for repository <b>{{getActiveRepository()}}</b> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
+				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch">
                     <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
                     <label for="toggleIndex"></label>
                 </span>
-				<span ng-show="autocompleteEnabled">
+				<span ng-show="autocompleteEnabled" class="autocomplete-status">
 					with status
 					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><i class="icon-check icon-lg"></i> Ready</span>
 
@@ -56,7 +56,7 @@
 
 
 				<p class="pull-right" ng-show="autocompleteEnabled">
-					<button ng-disabled="indexStatus == 'BUILDING'" ng-click="buildIndex()" class="btn btn-primary">Build Now</button>
+					<button ng-disabled="indexStatus == 'BUILDING'" ng-click="buildIndex()" class="btn btn-primary build-index-btn">Build Now</button>
 				</p>
 			</div>
 
