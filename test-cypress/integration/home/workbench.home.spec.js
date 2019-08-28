@@ -3,10 +3,10 @@ import HomeSteps from '../../steps/home-steps';
 describe('Home screen validation', () => {
 
     const FOAT_SNIPPET = '@base <http://example.org/> .\n' +
-                       '@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n' +
-                       '<#green-goblin>\n' +
-                           'a foaf:Person ;    # in the context of the Marvel universe\n' +
-                           'foaf:name "Green Goblin" .\n';
+        '@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n' +
+        '<#green-goblin>\n' +
+        'a foaf:Person ;    # in the context of the Marvel universe\n' +
+        'foaf:name "Green Goblin" .\n';
     const GOBLIN_URI = 'http://example.org/#green-goblin';
 
     beforeEach(() => cy.viewport(1280, 1000));
@@ -41,6 +41,9 @@ describe('Home screen validation', () => {
             HomeSteps.verifyCreateRepositoryLink();
 
             let repositoryId = HomeSteps.createRepo();
+            // Initializing the repository to speed up retrieving repository info
+            cy.initializeRepository(repositoryId);
+
             HomeSteps.selectRepo(repositoryId);
             HomeSteps.verifyRepositoryIsSelected(repositoryId);
             HomeSteps.hasRepositoryInfo(repositoryId);
@@ -78,13 +81,13 @@ describe('Home screen validation', () => {
             HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click();
             HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
 
-            HomeSteps.goBackAndWaitAutocomplete(function() {
+            HomeSteps.goBackAndWaitAutocomplete(function () {
                 HomeSteps.autocompleteText('Green', GOBLIN_URI);
                 HomeSteps.getAutocompleteButton('text').click();
                 HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
             });
 
-            HomeSteps.goBackAndWaitAutocomplete(function() {
+            HomeSteps.goBackAndWaitAutocomplete(function () {
                 HomeSteps.autocompleteText('Green', GOBLIN_URI);
                 HomeSteps.getAutocompleteButton('visual').click();
                 cy.url()

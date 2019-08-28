@@ -127,7 +127,7 @@
             </tr>
             </tbody>
         </table>
-        <div ng-show="displayedNamespaces.length === 0 && namespaces.length > 0">
+        <div class="alert alert-info no-namespaces-match-alert" ng-show="displayedNamespaces.length === 0 && namespaces.length > 0">
             <p>No namespaces match this filter.</p>
         </div>
         <div class="alert alert-warning no-namespaces-alert" ng-show="namespaces.length === 0">

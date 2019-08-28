@@ -26,8 +26,11 @@ Cypress.Commands.add('presetRepositoryCookie', (id) => {
     cy.setCookie('com.ontotext.graphdb.repository' + window.location.port, id);
 });
 
-Cypress.Commands.add('warmRepositoryNamespaces', (id) => {
-    const url = '/repositories/' + id + '/namespaces';
+/**
+ * Speeds up any following requests
+ */
+Cypress.Commands.add('initializeRepository', (id) => {
+    const url = REPOSITORIES_URL + id + '/size';
     cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
 });
 
@@ -42,7 +45,7 @@ Cypress.Commands.add('enableAutocomplete', (repositoryId, waitTimeout = 10000) =
     waitAutocomplete(repositoryId, waitTimeout);
 });
 
-let waitAutocomplete = function(repositoryId, pollTimeout) {
+let waitAutocomplete = function (repositoryId, pollTimeout) {
     cy.expect(pollTimeout).to.be.greaterThan(0);
     cy.wait(POLL_INTERVAL);
     cy.request({

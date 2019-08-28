@@ -11,6 +11,11 @@ describe('Monitor Resources', () => {
         cy.presetRepositoryCookie(repositoryId);
 
         cy.visit('/monitor/resources');
+
+        // Wait for loaders to disappear
+        cy.get('.ot-splash').should('not.be.visible');
+        cy.get('.ot-loader').should('not.be.visible');
+
         // Ensure the chart on the default active tab is rendered
         getActiveTabContent().find('svg').should('be.visible');
     });
