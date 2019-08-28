@@ -57,7 +57,7 @@
             </div>
             <span class="pull-right mr-1">Namespaces per page:</span>
         </div>
-        <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix">
+        <div ng-show="namespaces.length > 0" class="ot-owlim-ctrl clearfix">
             <span class="pull-left">
                 <input type="text" class="form-control" placeholder="Search namespaces"
                        ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="Search"
@@ -127,7 +127,10 @@
             </tr>
             </tbody>
         </table>
-        <div class="alert alert-warning" ng-show="displayedNamespaces.length === 0">
+        <div ng-show="displayedNamespaces.length === 0 && namespaces.length > 0">
+            <p>No namespaces match this filter.</p>
+        </div>
+        <div class="alert alert-warning" ng-show="namespaces.length === 0">
             <p>There are no added namespaces on this repository.</p>
         </div>
         <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix">
