@@ -1,7 +1,7 @@
 <link href="css/rdfrank.css" rel="stylesheet">
 <link href="js/lib/ng-tags-input/ng-tags-input.min.css" rel="stylesheet"/>
 
-<div class="page">
+<div id="rdfRank" class="page">
 	<h1>
 		{{title}}
 		<i class="btn btn-link"
@@ -32,7 +32,7 @@
 		</div>
 		<div ng-show="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span>RDFRank for repository <b>{{getActiveRepository()}}</b> is with status</span>
+				<span class="rdf-rank-status">RDFRank for repository <b>{{getActiveRepository()}}</b> is with status</span>
                 <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><i class="icon-check icon-lg"></i> Computed</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
@@ -51,7 +51,7 @@
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><i class="icon-info icon-lg"></i> RDFRank not built yet</span>
 
 				<p class="pull-right">
-					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary">Compute Full</button>
+					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary compute-rdf-rank-btn">Compute Full</button>
                     <button ng-hide="currentRankStatus != rdfStatus.OUTDATED"
 							ng-click="computeIncrementalRank()" class="btn btn-primary">Compute Incremental</button>
 				</p>
@@ -62,7 +62,7 @@
 			<div id="toggleFilterMode">
 				<h3 class="d-inline-block mr-1">Filtering</h3>
 				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch">
+				<span tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
                     <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
                     <label for="toggleFilterMode"></label>
                 </span>
@@ -96,15 +96,15 @@
 						<tab-heading class="nav-item"
 									 tooltip-placement="bottom"
 									 tooltip-trigger="mouseenter"><span class="nav-link">Graphs</span></tab-heading>
-						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]" />
-						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]" />
+						<div class="included-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]" />
+						<div class="excluded-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]" />
 					</tab>
 					<tab>
 						<tab-heading class="nav-item"
 									 tooltip-placement="bottom"
 									 tooltip-trigger="mouseenter"><span class="nav-link">Predicates</span></tab-heading>
-						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]" />
-						<div ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]" />
+						<div class="included-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]" />
+						<div class="excluded-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]" />
 					</tab>
 				</tabset>
 
