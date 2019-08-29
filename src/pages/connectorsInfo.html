@@ -59,10 +59,13 @@
                                  aria-labelledby="heading-{{connector.key}}{{$index}}">
                                 <div class="card-block">
                                     <div class="form-horizontal">
-                                        <div class="row form-group" ng-repeat="option in getOptions(connector) | filter: { __name: exist.values.hasOwnProperty }"
-                                             ng-init="key = option.__name; value = exist.values[key]">
+                                        <div class="row form-group" ng-repeat="option in getOptions(connector)"
+                                             ng-init="key = option.__name; value = exist.values[key] != null ? exist.values[key] : option.__defaultValue">
                                             <label class="col-xs-2 col-form-label">{{option.__label}}</label>
-                                            <div class="col-xs-10">
+                                            <div ng-if="value == null" class="col-xs-10">
+                                                <div class="form-control"><i>No value set</i></div>
+                                            </div>
+                                            <div ng-if="value != null" class="col-xs-10">
                                                 <div ng-if="option.__type == 'String'">
                                                     <input class="form-control" type="text" readonly value="{{value}}"/>
                                                 </div>
@@ -71,15 +74,14 @@
                                                     </textarea>
                                                 </div>
                                                 <div ng-if="option.__type == 'JsonString'">
-                                                    <textarea class="form-control" ng-bind="toPrettyJson(value)" readonly>
-                                                    </textarea>
+                                                    <pre class="form-control" ng-bind="toPrettyJson(value)"></pre>
                                                 </div>
                                                 <div>
                                                     <input class="form-control" type="text" readonly value="{{value}}"
                                                            ng-if="option.__type == 'Long'"/>
                                                 </div>
                                                 <div>
-                                                    <input type="checkbox" readonly ng-checked="{{value}}"
+                                                    <input type="checkbox" disabled ng-checked="value"
                                                            ng-if="option.__type == 'Boolean'"/>
                                                 </div>
                                                 <div ng-if="option.__type == 'StringArray'"
@@ -127,8 +129,8 @@
                                                                     <!-- Handles other types, e.g. OptionArray -->
                                                                     <div ng-if="child.__type != 'String' && child.__type != 'StringArray'"
                                                                          class="col-form-label">
-                                                                        <label ng-show="!field[child.__name]"><i>{{child.__label}} not set</i></label>
-                                                                        <pre ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
+                                                                        <label ng-show="!field[child.__name]"><i>No value set</i></label>
+                                                                        <pre class="form-control" ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -138,8 +140,8 @@
                                                                     <label class="form-check-inline" ng-repeat="child in option.__childOptions | filter: { __type: 'Boolean' }: true">
                                                                         <input type="checkbox"
                                                                                class="form-check-input"
-                                                                               ng-model="field[child.__name]"
-                                                                               readonly>
+                                                                               ng-checked="field[child.__name] != null ? field[child.__name] : child.__defaultValue"
+                                                                               disabled>
                                                                         {{child.__label}}
                                                                     </label>
                                                                 </div>
