@@ -13,6 +13,11 @@ describe('SPARQL screen validation', () => {
         '} limit 1001';
 
     function createRepoAndVisit(repoOptions = {}) {
+        createRepository(repoOptions);
+        visitSparql(true);
+    }
+
+    function createRepository(repoOptions = {}) {
         repositoryId = 'sparql-' + Date.now();
         repoOptions.id = repositoryId;
         cy.createRepository(repoOptions);
@@ -20,8 +25,6 @@ describe('SPARQL screen validation', () => {
 
         // Avoids having to select the repository through the UI
         cy.presetRepositoryCookie(repositoryId);
-
-        visitSparql(true);
     }
 
     function visitSparql(resetLocalStorage) {
@@ -729,6 +732,58 @@ describe('SPARQL screen validation', () => {
         });
     });
 
+    context('SPARQL with autocomplete', () => {
+        const queryBegin = 'select * where { ';
+        const queryEnd = ' ?s ?p . } limit 100';
+        const wineUri = '<http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#CorbansDryWhiteRiesling>';
+
+        it('should suggest resources in the "SPARQL" editor when autocomplete is enabled', () => {
+            createRepository();
+            cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf');
+            cy.enableAutocomplete(repositoryId);
+            visitSparql(true);
+
+            const expectedQuery = queryBegin + wineUri + queryEnd;
+
+            clearQuery();
+
+            typeQuery(queryBegin, false);
+            typeQuery('Dry{ctrl} ', false, true);
+
+            getAutoSuggestHints()
+                .should('be.visible')
+                .and('have.length', 7)
+                .contains('CorbansDryWhiteRiesling')
+                .click()
+                .should('not.exist');
+
+            typeQuery(queryEnd, false);
+
+            verifyQueryAreaEquals(expectedQuery);
+
+            executeQuery();
+
+            getResultsWrapper().should('be.visible');
+
+            verifyResultsPageLength(10);
+        });
+
+        it('should not suggests resources in the "SPARQL" editor if the autocomplete is NOT enabled', () => {
+            createRepoAndVisit();
+
+            clearQuery();
+
+            typeQuery(queryBegin, false);
+            typeQuery('Dry{ctrl} ', false, true);
+
+            getAutoSuggestHints().should('not.exist');
+            getToast()
+                .find('.toast-warning')
+                .should('be.visible')
+                .and('contain', 'Autocomplete is OFF');
+        });
+    });
+
     const TABS_SELECTOR = '#sparql-content .nav-tabs .sparql-tab';
     const EDITOR_SELECTOR = '#queryEditor';
     const YASR_SELECTOR = '#yasr';
@@ -879,13 +934,17 @@ describe('SPARQL screen validation', () => {
         getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
     }
 
-    function typeQuery(query) {
-        clearQuery();
-        getQueryTextArea().type(query, {force: true, parseSpecialCharSequences: false});
+    function typeQuery(query, clear = true, parseSpecialCharSequences = false) {
+        if (clear) {
+            clearQuery();
+        }
+        // Using force because the textarea is not visible
+        getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
     }
 
     function pasteQuery(query) {
         clearQuery();
+        // Using force because the textarea is not visible
         getQueryTextArea().invoke('val', query).trigger('change', {force: true});
         waitUntilQueryIsVisible();
     }
@@ -1104,6 +1163,14 @@ describe('SPARQL screen validation', () => {
 
     function getSameAsButton() {
         return cy.get('#sameAs');
+    }
+
+    function getAutoSuggestHints() {
+        return cy.get('.CodeMirror-hints .CodeMirror-hint');
+    }
+
+    function getToast() {
+        return cy.get('#toast-container');
     }
 
 });
