@@ -34,7 +34,6 @@ describe('Import screen validation - user data', () => {
     });
 
     afterEach(() => {
-        ImportSteps.removeUploadedFiles();
         cy.deleteRepository(repositoryId);
     });
 
@@ -116,5 +115,14 @@ describe('Import screen validation - user data', () => {
 
         // Should return to initial url in order after each block of the tests to be executed
         cy.navigateToPage('Import', 'RDF');
+    });
+
+    it('should allow to delete uploaded files', () => {
+        ImportSteps
+            .openImportURLDialog(IMPORT_URL)
+            .clickImportUrlButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE)
+            .removeUploadedFiles();
     });
 });

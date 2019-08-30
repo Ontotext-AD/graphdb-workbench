@@ -20,7 +20,7 @@
 
             <script type="text/ng-template" id="sampleQueriesPopoverTemplate.html">
                 <ul id="wb-sparql-queryInSampleQueries" class="list-unstyled">
-                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != null" class="hovered-parent">
+                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != null" class="hovered-parent saved-query">
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
                         <i class="icon-warning" ng-show="query.owner != null && hasRole('ROLE_USER')"

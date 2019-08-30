@@ -12,27 +12,34 @@ class ImportSteps {
     }
 
     static visitImport(type, repository) {
-        cy.visit('/import#' + type);
-
         if (repository) {
-            cy.selectRepo(repository);
+            cy.presetRepositoryCookie(repository);
         }
 
+        cy.visit('/import#' + type);
+
+        cy.get('.ot-splash').should('not.be.visible');
+
         cy.get('#import-' + type).should('be.visible');
+
+        cy.get('.ot-loader').should('not.be.visible');
 
         return ImportSteps;
     }
 
     static openImportURLDialog(importURL) {
         cy.get('#import-user .import-from-url-btn').click();
-        cy.get('.url-import-form input[name="dataUrl"]').type(importURL).should('have.value', importURL);
+        ImportSteps.getModal()
+            .find('.url-import-form input[name="dataUrl"]')
+            .type(importURL)
+            .should('have.value', importURL);
 
         return ImportSteps;
     }
 
     static openImportTextSnippetDialog() {
         cy.get('#import-user .import-rdf-snippet-btn').click();
-        ImportSteps.getSnippetTextarea().should('be.visible');
+        ImportSteps.getModal().find('#wb-import-textarea').should('be.visible');
 
         return ImportSteps;
     }
@@ -113,15 +120,17 @@ class ImportSteps {
     }
 
     static importFromSettingsDialog() {
-        // TODO: cy.confirmDialog() ?
         // Dialog should disappear
-        cy.get('.modal-footer > .btn-primary').click().should('not.exist');
+        ImportSteps.getModal().
+        find('.modal-footer > .btn-primary')
+            .click()
+            .should('not.exist');
 
         return ImportSteps;
     }
 
     static getSettingsForm() {
-        return cy.get('.modal .settings-form');
+        return ImportSteps.getModal().find('.settings-form');
     }
 
     static fillBaseURI(baseURI) {
@@ -224,6 +233,14 @@ class ImportSteps {
             .contains(filename)
             .parentsUntil('.import-file-row')
             .parent();
+    }
+
+    static getModal() {
+        // Increased timeout to allow dialog to show and finish its animation..
+        // Should not be needed but it seems animations in Travis are slow..
+        return cy.get('.modal', {timeout: 10000})
+            .should('be.visible')
+            .and('not.have.class', 'ng-animate')
     }
 }
 

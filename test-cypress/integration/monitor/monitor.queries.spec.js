@@ -11,7 +11,9 @@ describe('Monitor Queries', () => {
         cy.presetRepositoryCookie(repositoryId);
 
         cy.visit('/monitor/queries');
-        // Wait for the loader to disappear
+
+        // Wait for loaders to disappear
+        cy.get('.ot-splash').should('not.be.visible');
         cy.get('.ot-loader').should('not.be.visible');
     });
 
@@ -23,6 +25,6 @@ describe('Monitor Queries', () => {
         cy.get('.no-running-queries-alert')
             .should('be.visible')
             .and('contain', 'No running queries or updates.');
-        cy.get('.pause-btn').should('be.visible')
+        cy.get('.pause-btn').should('be.visible');
     });
 });

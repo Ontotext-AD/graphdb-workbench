@@ -21,7 +21,7 @@ describe('SPARQL screen validation', () => {
         repositoryId = 'sparql-' + Date.now();
         repoOptions.id = repositoryId;
         cy.createRepository(repoOptions);
-        cy.warmRepositoryNamespaces(repositoryId);
+        cy.initializeRepository(repositoryId);
 
         // Avoids having to select the repository through the UI
         cy.presetRepositoryCookie(repositoryId);
@@ -46,16 +46,17 @@ describe('SPARQL screen validation', () => {
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
-        // Editor should have an active tab
-        getActiveTab().should('be.visible');
-
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
+        waitUntilQueryIsVisible();
+
+        // Editor should have an active tab
+        // Giving the editor time to fully initialize
+        cy.get(TABS_SELECTOR + '.active .nav-link', {timeout: 30000}).should('be.visible');
+
         // No active loader
         getLoader().should('not.be.visible');
-
-        waitUntilQueryIsVisible();
     }
 
     afterEach(() => {
@@ -560,6 +561,10 @@ describe('SPARQL screen validation', () => {
             // Verify that the query is edited.
             // Select the query from the saved queries again
             openSavedQueriesPopup();
+            getPopover()
+                .should('be.visible')
+                .and('contain', savedQueryName);
+
             editSaveQueryFromPopup(savedQueryName);
 
             waitUntilSavedQueryModalIsVisible();
@@ -572,6 +577,10 @@ describe('SPARQL screen validation', () => {
 
             // Click on the saved queries icon
             openSavedQueriesPopup();
+            getPopover()
+                .should('be.visible')
+                .and('contain', savedQueryName);
+
             // Press the trash bin to delete the custom query created earlier
             deleteSaveQueryFromPopup(savedQueryName);
 
@@ -582,7 +591,9 @@ describe('SPARQL screen validation', () => {
 
             // Verify that the query is deleted
             openSavedQueriesPopup();
-            getPopover().should('not.contain', savedQueryName);
+            getPopover()
+                .should('be.visible')
+                .and('not.contain', savedQueryName);
         });
 
         it('Test save invalid Sample Queries', () => {
@@ -610,19 +621,20 @@ describe('SPARQL screen validation', () => {
                 .should('be.visible')
                 .and('contain', 'Query cannot be empty!');
 
-            // TODO: Avoid closing...
-            // Close "Create New Saved Query" dialog
-            cancelSavedQuery();
-
-            // Try to create saved query with a name that already exists - "Add statements"
-            saveQuery();
-            waitUntilSavedQueryModalIsVisible();
-
+            // Try to save a query with name that already exists -> Add statements
             getSavedQueryNameField()
+                .clear()
                 .type('Add statements')
                 .should('have.value', 'Add statements');
+            getSavedQueryField()
+                .type(QUERY_FOR_SAVING);
 
-            submitSavedQuery();
+            // The form is valid, the modal should disappear and then reappear with an error
+            getSubmitSavedQueryBtn()
+                .click()
+                .should('not.exist');
+            waitUntilSavedQueryModalIsVisible();
+
             getSavedQueryErrors()
                 .find('.query-exists-error')
                 .should('be.visible')
@@ -680,6 +692,8 @@ describe('SPARQL screen validation', () => {
         it('Test saved query link', () => {
             const queryName = 'Add statements';
             openSavedQueriesPopup();
+            getPopover().should('be.visible');
+
             openSavedQueryLinkFromPopup(queryName);
 
             const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName);
@@ -703,7 +717,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('Test URL to current query', () => {
-            const query = 'SELECT ?s ?p ?o WHERE {?s ?p ?o .} LIMIT 100';
+            const query = 'SELECT ?sub ?pred ?obj WHERE {?sub ?pred ?obj .} LIMIT 100';
             pasteQuery(query);
 
             // Press the link icon to generate a link for a query
@@ -713,7 +727,7 @@ describe('SPARQL screen validation', () => {
 
             // TODO: Test with different values for infer & same as
 
-            const encodedQuery = 'SELECT+%3Fs+%3Fp+%3Fo+WHERE+%7B%3Fs+%3Fp+%3Fo+.%7D+LIMIT+100';
+            const encodedQuery = 'SELECT+%3Fsub+%3Fpred+%3Fobj+WHERE+%7B%3Fsub+%3Fpred+%3Fobj+.%7D+LIMIT+100';
             const expectedUrl = Cypress.config().baseUrl + '/sparql?name=&infer=true&sameAs=true&query=' + encodedQuery;
             getModal()
                 .should('be.visible')
@@ -825,7 +839,9 @@ describe('SPARQL screen validation', () => {
     }
 
     function getModal() {
-        return cy.get('.modal').should('not.have.class', 'ng-animate');
+        // Increased timeout to allow dialog to show and finish its animation..
+        // Should not be needed but it seems animations in Travis are slow..
+        return cy.get('.modal', {timeout: 10000}).should('not.have.class', 'ng-animate');
     }
 
     function confirmModal() {
@@ -841,12 +857,8 @@ describe('SPARQL screen validation', () => {
         return cy.get(TABS_SELECTOR);
     }
 
-    function getActiveTab() {
-        return cy.get(TABS_SELECTOR + '.active')
-    }
-
     function getActiveTabLink() {
-        return cy.get(TABS_SELECTOR + '.active .nav-link')
+        return cy.get(TABS_SELECTOR + '.active .nav-link');
     }
 
     function getNewTabButton() {
@@ -1050,30 +1062,24 @@ describe('SPARQL screen validation', () => {
         return cy.get('#wb-sparql-sampleValue');
     }
 
-    function getCancelSavedQueryBtn() {
-        return cy.get('.modal-footer .cancel-btn');
-    }
-
-    function cancelSavedQuery() {
-        getCancelSavedQueryBtn().click();
-    }
-
     function getSavedQueriesPopupBtn() {
         return cy.get('#wb-sparql-toggleSampleQueries');
     }
 
     function openSavedQueriesPopup() {
         getSavedQueriesPopupBtn().click();
+
     }
 
     function getSavedQueryFromPopup(savedQueryName) {
         return cy.get('#wb-sparql-queryInSampleQueries')
             .contains(savedQueryName)
-            .parentsUntil('#wb-sparql-queryInSampleQueries');
+            .closest('.saved-query');
     }
 
     function selectSavedQuery(savedQueryName) {
         openSavedQueriesPopup();
+        getPopover().should('be.visible');
         getSavedQueryFromPopup(savedQueryName)
             .find('a')
             .click();
@@ -1081,26 +1087,35 @@ describe('SPARQL screen validation', () => {
 
     function editSaveQueryFromPopup(savedQueryName) {
         getSavedQueryFromPopup(savedQueryName)
-            .within(() => {
-                cy.get('a').trigger('mouseover');
-                cy.get('.icon-edit').click();
-            });
+            .trigger('mouseover')
+            .find('.actions-bar')
+            .should('be.visible')
+            .find('.icon-edit')
+            .parent('.btn')
+            // Cypress sometimes determines the element has 0x0 dimensions...
+            .click({force: true});
     }
 
     function deleteSaveQueryFromPopup(savedQueryName) {
         getSavedQueryFromPopup(savedQueryName)
-            .within(() => {
-                cy.get('a').trigger('mouseover');
-                cy.get('.icon-trash').click();
-            });
+            .trigger('mouseover')
+            .find('.actions-bar')
+            .should('be.visible')
+            .find('.icon-trash')
+            .parent('.btn')
+            // Cypress sometimes determines the element has 0x0 dimensions...
+            .click({force: true});
     }
 
     function openSavedQueryLinkFromPopup(savedQueryName) {
         getSavedQueryFromPopup(savedQueryName)
-            .within(() => {
-                cy.get('a').trigger('mouseover');
-                cy.get('.icon-link').click();
-            });
+            .trigger('mouseover')
+            .find('.actions-bar')
+            .should('be.visible')
+            .find('.icon-link')
+            .parent('.btn')
+            // Cypress sometimes determines the element has 0x0 dimensions...
+            .click({force: true});
     }
 
     function getUpdateMessage() {
@@ -1138,7 +1153,6 @@ describe('SPARQL screen validation', () => {
     function verifyDownloadMenuFormat(rdfFormat, mimetype) {
         getDownloadAsFormatButtons()
             .contains(rdfFormat)
-            .should('be.visible')
             .and('have.attr', 'data-accepts')
             .and('include', mimetype);
     }

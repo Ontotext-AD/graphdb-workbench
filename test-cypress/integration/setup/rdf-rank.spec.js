@@ -35,8 +35,9 @@ describe('Setup / RDF Rank', () => {
             .find('.rdf-rank-status')
             .should('be.visible')
             .and('contain', repositoryId);
-        getRdfStatusTag()
+        getRdfStatusTags()
             .contains('RDFRank not built yet')
+
             .should('be.visible')
             .and('have.class', 'tag-warning');
         getFilteringSwitch()
@@ -45,14 +46,21 @@ describe('Setup / RDF Rank', () => {
 
         getComputeFullButton().click();
 
-        getRdfStatusTag()
+        getRdfStatusTags()
             .contains('Computed')
+            .closest('.tag')
             .should('be.visible')
             .and('have.class', 'tag-success');
     });
 
     it('should allow to enable the RDF rank with graphs and predicates filters', () => {
         getComputeFullButton().click();
+
+        // Wait until index is built
+        getRdfStatusTags()
+            .contains('Computed')
+            .closest('.tag')
+            .should('be.visible');
 
         // Enable filtering for ranks
         getFilteringSwitch()
@@ -61,8 +69,9 @@ describe('Setup / RDF Rank', () => {
             .should('be.checked');
 
         // Should render that rebuild is required
-        getRdfStatusTag()
+        getRdfStatusTags()
             .contains('Configuration changed')
+            .closest('.tag')
             .should('be.visible')
             .and('have.class', 'tag-warning');
 
@@ -130,8 +139,9 @@ describe('Setup / RDF Rank', () => {
         getComputeFullButton().click();
 
         // All should be OK
-        getRdfStatusTag()
+        getRdfStatusTags()
             .contains('Computed')
+            .closest('.tag')
             .should('be.visible')
             .and('have.class', 'tag-success');
     });
@@ -144,7 +154,7 @@ describe('Setup / RDF Rank', () => {
         return getRdfRankPage().find('#toggleIndex');
     }
 
-    function getRdfStatusTag() {
+    function getRdfStatusTags() {
         return getRdfStatusHeader().find('.tag');
     }
 
