@@ -22,7 +22,7 @@
     </div>
 
     <div class="toolbar-holder" ng-show="configLoaded && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
-        <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0"
+        <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 tooltip="Back to visual graph home"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
@@ -76,7 +76,7 @@
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-click="showSettings()">
-            <i class="icon-settings icon-2x"></i>
+            <i class="icon-settings icon-2x visual-graph-settings-btn"></i>
         </button>
     </div>
 
@@ -89,7 +89,7 @@
                     <div class="card-block">
                         <h3>{{configLoaded.name}}</h3>
                         <p>Search for an IRI to view it. This is a user defined advanced configuration.</p>
-                        <search-resource-input
+                        <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
@@ -110,7 +110,7 @@
                     <div class="card-block">
                         <h3>Easy graph</h3>
                         <p>Search for an IRI to view it and configure the visualisation through the UI without using SPARQL</p>
-                        <search-resource-input
+                        <search-resource-input class="search-rdf-resources"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
@@ -252,7 +252,7 @@
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
                     <label>Preferred languages</label>
-                    <div class="input-group">
+                    <div class="input-group preferred-languages">
                         <tags-input ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="Add a language tag"></tags-input>
                     </div>
@@ -260,7 +260,7 @@
                 <div class="form-group mb-2">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" ng-model="settings['includeInferred']">
+                            <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
                             Include Inferred Statements
                         </label>
                     </div>
@@ -283,7 +283,7 @@
                 <div class="form-group mb-2">
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" ng-model="settings['showLinksText']">
+                            <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
                             Show Predicate Labels
                         </label>
                     </div>
@@ -297,7 +297,7 @@
                         <div class="form-group mb-2 mt-1">
                             <label>Preferred types</label>
                             <div>
-                                <tags-input ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="preferred-types" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
                                             on-tag-added="addingTag($tag)"></tags-input>
                             </div>
@@ -305,7 +305,7 @@
                         <div class="form-group mb-2">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" ng-model="settings['preferredTypesOnly']">
+                                    <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
                                     Show Preferred Types Only
                                 </label>
                             </div>
@@ -314,7 +314,7 @@
                         <div class="form-group">
                             <label>Ignored types</label>
                             <div>
-                                <tags-input ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="ignored-types" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
                                             on-tag-added="addingTag($tag)"></tags-input>
                             </div>
@@ -323,11 +323,11 @@
                     <tab>
                         <tab-heading class="nav-item"
                                      tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link">Predicates</span></tab-heading>
+                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <label>Preferred predicates</label>
                             <div>
-                                <tags-input ng-model="settings['preferredPredicatesMap']" min-length="3"
+                                <tags-input class="preferred-predicates" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred predicate"
                                             on-tag-added="addingTag($tag)"></tags-input>
@@ -336,7 +336,7 @@
                         <div class="form-group mb-2">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" ng-model="settings['preferredPredicatesOnly']">
+                                    <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
                                     Show Preferred Predicates Only
                                 </label>
                             </div>
@@ -345,7 +345,7 @@
                         <div class="form-group ">
                             <label>Ignored predicates</label>
                             <div>
-                                <tags-input ng-model="settings['rejectedPredicatesMap']" min-length="3"
+                                <tags-input class="ignored-predicates" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored predicate"
                                             on-tag-added="addingTag($tag)"></tags-input>
@@ -355,8 +355,8 @@
                 </tabset>
 
                 <div class="mt-1">
-                    <button type="button" class="btn btn-secondary btn-lg" ng-click="resetSettings()">Reset</button>
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="updateSettings()">Save</button>
+                    <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">Reset</button>
+                    <button type="submit" class="btn btn-primary btn-lg save-settings-btn" ng-click="updateSettings()">Save</button>
                 </div>
             </div>
         </div>
