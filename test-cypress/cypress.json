@@ -1,0 +1,11 @@
+{
+    "projectId": "v35btb",
+    "baseUrl": "http://localhost:9000",
+    "fixturesFolder": "fixtures",
+    "integrationFolder": "integration",
+    "pluginsFile": "plugins/index.js",
+    "screenshotsFolder": "report/screenshots",
+    "supportFile": "support/index.js",
+    "videosFolder": "report/videos",
+    "video": false
+}

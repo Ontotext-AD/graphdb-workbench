@@ -1,0 +1,30 @@
+{
+    "name": "graphdb-workbench-tests",
+    "version": "0.1.3",
+    "description": "Cypress tests for GraphDB workbench",
+    "scripts": {
+        "start": "cypress open",
+        "test": "cypress run"
+    },
+    "author": {
+        "name": "\"Sirma AI\" JSC, trading as Ontotext",
+        "url": "https://www.ontotext.com/"
+    },
+    "license": "Apache-2.0",
+    "keywords": [
+        "graphdb",
+        "workbench"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
+    },
+    "devDependencies": {
+        "cypress": "^3.4.1",
+        "cypress-failed-log": "^2.5.1",
+        "cypress-plugin-retries": "^1.2.2"
+    },
+    "bin": {
+        "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
+    }
+}
