@@ -136,6 +136,7 @@
         <ul ng-if="item.children.length" class="sub-menu">
             <li class="submenu-title">{{item.label}}</li>
             <li ng-repeat="submenu in item.children"
+                class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
                 ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
                 <a ng-href="{{submenu.hrefFun ? submenu.hrefFun() : submenu.href}}">{{submenu.label}}
