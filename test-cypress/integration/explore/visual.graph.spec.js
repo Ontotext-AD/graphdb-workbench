@@ -6,9 +6,11 @@ describe('Visual graph screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.enableAutocomplete(repositoryId);
         cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
         cy.presetRepositoryCookie(repositoryId);
+
+        cy.enableAutocomplete(repositoryId);
+
         cy.visit('/graphs-visualizations');
     });
 
@@ -17,8 +19,12 @@ describe('Visual graph screen validation', () => {
     });
 
     it('Test notification when autocomplete is disabled', () => {
-        // Disable it for the test only
-        cy.disableAutocomplete(repositoryId);
+        // Disable it for the test only but manually because for some reason it doesn't work through
+        // the command which utilize a rest call.
+        cy.visit('/autocomplete');
+        cy.get('.enable-autocomplete-switch').click();
+        cy.visit('/graphs-visualizations');
+
         getSearchField().type('http://');
         // Verify that a message with a redirection to the autocomplete section is displayed.
         cy.get('.autocomplete-toast a').should('contain', 'Autocomplete is OFF')

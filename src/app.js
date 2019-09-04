@@ -5,7 +5,6 @@ require.config({
     }
 });
 
-
 var modules = ['ngRoute',
 	'graphdb.workbench.se.controllers',
 	'graphdb.framework.core',
@@ -28,8 +27,7 @@ var modules = ['ngRoute',
 	'angularCancelOnNavigateModule'];
 
 
-define([//'../../lib/angularjs/1.3.8/angular',
-		'angular/core/services',
+define(['angular/core/services',
 		'angular/repositories/app',
 		'angular/export/app',
 		'angular/import/app',
