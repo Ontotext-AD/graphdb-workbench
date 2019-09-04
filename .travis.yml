@@ -35,12 +35,17 @@ script:
 
 after_script:
   - npm run test:coveralls
-  - npm run test:cypress-ci
+  - npm run test:acceptance
 
 deploy:
   - provider: npm
     skip_cleanup: true
     email: graphdb-support@ontotext.com
     api_key: $NPM_TOKEN
+    on:
+      tags: true
+  - provider: script
+    skip_cleanup: true
+    script: cd test-cypress/ && npm publish
     on:
       tags: true

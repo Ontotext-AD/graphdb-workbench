@@ -16,6 +16,10 @@ docker-compose --file test-cypress/docker-compose.yml up -d --build
 # Wait until both containers are reachable
 npm install -g wait-on
 
+cd test-cypress
+
+npm install
+
 # Wait GraphDB for 60 seconds
 wait-on http://localhost:7200 -t 60000
 
