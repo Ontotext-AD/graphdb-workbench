@@ -16,7 +16,9 @@ needed dependencies locally.
 Running `npm run start` will bundle application and vendor code in memory and start a webpack 
 development server and proxy requests to `localhost:7200` (default).
 
-## Tests
+## Testing
+
+### Unit tests
 
 Unit tests can be run by executing `npm test`. 
 
@@ -27,14 +29,44 @@ Requirejs is used as a module loader. The test framework is Jasmine with Karma
 as test launcher. Karma is configured to watch source and tests files for 
 changes and continuously re-executing the tests.
 
-## Build
+### Acceptance/functional tests
+
+Cypress is used as a framework for writing functional tests which cover concrete UI components as
+well as whole acceptance scenarios. The tests are executed against a GraphDB version as defined in
+`package.json#versions.graphdb` which is run in a docker container.
+ 
+There are two options for running the tests. One is a headless execution and the second is through
+the Cypress's dashboard application. Follow the steps described below: 
+* Ensure a GraphDB instance is running on `localhost:7200`. One can be run by executing 
+`docker-compose up` in the `graphdb-workbench/test-cypress` folder. 
+* In `graphdb-workbench` folder execute `npm run start` to build and run the workbench web 
+application. In result it is published and served by webpack's web dev server.
+* In terminal, go in `graphdb-workbench/test-cypress` folder and choose one of the options below: 
+    * Execute `npm run test` - this will run the test suite in a headless mode and the outcome log
+will be seen in the terminal.
+    * Execute `npm run start` or the equivalent `npx cypress open` - this will open the Cypress's
+dashboard application through which the tests can be run one by one or altogether and observing the
+outcome in the dashboard.
+
+## Release and publish
+
+The workbench is regularly published as a package in the NPM registry. 
+
+**When a newer version needs to be published:**
+* Increase the version in the `package.json` by following the semantic versioning approach.
+* Create a new PR and a tag through Github. Beware the version to follow the pattern 
+`/v[0-9]+\.[0-9]+\.[0-9]+(-.*)?$/` as defined in `.travis.yml`. Any discrepancies will result in
+version being rejected as appropriate for publish in the NPM.
+* If the build is successful which can be seen in 
+https://travis-ci.com/Ontotext-AD/graphdb-workbench the workbench package is published in NPM which 
+can be also verified on the site https://www.npmjs.com/package/graphdb-workbench. 
+
+### Build
 
 Application can be built by executing the `npm run build` command. In result, the application is 
 bundled, less files are processed and the code is minified. The result of the build command is 
-emitted in the `/dist` folder. 
-
-When the workbench application is published, only the `/dist` folder gets published in the NPM 
-registry. This is configured in `package.json#files` property.
+emitted in the `/dist` folder. When the workbench is published, only the `/dist` folder gets 
+published in the NPM registry. This is configured in `package.json#files` property.
 
 ## Workbench bundling
 
