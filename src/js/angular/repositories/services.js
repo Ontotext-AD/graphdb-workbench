@@ -232,9 +232,9 @@ define(['angular/core/services', 'angular/security/services'],
                 }
                 var that = this;
                 $http({
-                    url: 'rest/locations/default-repository',
+                    url: 'rest/locations/active/default-repository',
                     method: 'POST',
-                    data: {repository: id}
+                    data: {defaultRepository: id}
                 })
                     .success(function (data, status, headers, config) {
                         // XXX maybe we should reload the active location but oh well
