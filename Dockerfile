@@ -4,7 +4,7 @@ ENV GRAPHDB_URL=http://graphdb:7200
 
 COPY docker-rootfs/ /
 
-COPY src/ /usr/share/nginx/html
+COPY dist/ /usr/share/nginx/html
 
 RUN chmod +x /usr/local/bin/*.sh
 

@@ -6,7 +6,7 @@ describe('Namespaces', () => {
         repositoryId = 'namespaces-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
-        cy.warmRepositoryNamespaces(repositoryId);
+        cy.initializeRepository(repositoryId);
 
         cy.visit('/namespaces');
 
@@ -124,10 +124,8 @@ describe('Namespaces', () => {
         getNamespacesFilterField()
             .clear()
             .type('missing_prefix');
-        // The table should still be visible but without any results
-        getNamespacesTable().should('be.visible');
-        getNamespaces()
-            .should('have.length', 0);
+        getNamespacesTable().should('not.be.visible');
+        getNoNamespacesMatchAlert().should('be.visible');
     });
 
     it('should allow to add new namespace', () => {
@@ -223,6 +221,10 @@ describe('Namespaces', () => {
 
     function getNoNamespacesAlert() {
         return getNamespacesPage().find('.no-namespaces-alert');
+    }
+
+    function getNoNamespacesMatchAlert() {
+        return getNamespacesPage().find('.no-namespaces-match-alert');
     }
 
     function getToast() {

@@ -31,7 +31,7 @@
 		<div ng-show="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="autocomplete-header">Autocomplete for repository <b>{{getActiveRepository()}}</b> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch">
+				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch enable-autocomplete-switch">
                     <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
                     <label for="toggleIndex"></label>
                 </span>

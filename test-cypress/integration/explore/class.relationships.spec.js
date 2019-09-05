@@ -2,13 +2,11 @@ describe('Class relations screen validation', () => {
 
     let repositoryId;
 
-    before(() => {
+    beforeEach(() => {
         repositoryId = 'class-relations-repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
-    });
 
-    beforeEach(() => {
         cy.presetRepositoryCookie(repositoryId);
 
         cy.visit('/relationships');
@@ -17,37 +15,9 @@ describe('Class relations screen validation', () => {
         cy.get('#wb-dependencies-classInClasses').should('be.visible');
     });
 
-    after(() => {
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
-
-    function getFilterField() {
-        return cy.get('.search-filter-field');
-    }
-
-    function filterByClass(name) {
-        getFilterField().type(name);
-    }
-
-    function getDirectionFilter() {
-        return cy.get('.direction-filter');
-    }
-
-    function verifySelectedDirectionFilter(name) {
-        getDirectionFilter().find('input[type=radio]:checked').should('have.value', name);
-    }
-
-    function getRelationsToolbar() {
-        return cy.get('.relations-toolbar');
-    }
-
-    function getDependenciesList() {
-        return cy.get('#wb-dependencies-classInClasses');
-    }
-
-    function verifyListLength(count) {
-        getDependenciesList().find('.item .row').should('have.length', count);
-    }
 
     it('Test initial state', function () {
         // Filter field should be visible
@@ -87,4 +57,32 @@ describe('Class relations screen validation', () => {
         getFilterField().clear();
         verifyListLength(10);
     });
+
+    function getFilterField() {
+        return cy.get('.search-filter-field');
+    }
+
+    function filterByClass(name) {
+        getFilterField().type(name);
+    }
+
+    function getDirectionFilter() {
+        return cy.get('.direction-filter');
+    }
+
+    function verifySelectedDirectionFilter(name) {
+        getDirectionFilter().find('input[type=radio]:checked').should('have.value', name);
+    }
+
+    function getRelationsToolbar() {
+        return cy.get('.relations-toolbar');
+    }
+
+    function getDependenciesList() {
+        return cy.get('#wb-dependencies-classInClasses');
+    }
+
+    function verifyListLength(count) {
+        getDependenciesList().find('.item .row').should('have.length', count);
+    }
 });

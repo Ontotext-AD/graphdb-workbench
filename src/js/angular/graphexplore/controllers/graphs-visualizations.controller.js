@@ -1,5 +1,9 @@
-define(['angular/core/services', 'lib/d3-tip/d3-tip-patch'],
-    function (require, d3tip) {
+define([
+        'angular/core/services',
+        'lib/d3-tip/d3-tip-patch',
+        'lib/common/d3-utils'
+    ],
+    function (require, d3tip, D3) {
 
         angular
             .module('graphdb.framework.graphexplore.controllers.graphviz', [

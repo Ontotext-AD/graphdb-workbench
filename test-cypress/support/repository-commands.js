@@ -26,23 +26,34 @@ Cypress.Commands.add('presetRepositoryCookie', (id) => {
     cy.setCookie('com.ontotext.graphdb.repository' + window.location.port, id);
 });
 
-Cypress.Commands.add('warmRepositoryNamespaces', (id) => {
-    const url = '/repositories/' + id + '/namespaces';
+/**
+ * Speeds up any following requests
+ */
+Cypress.Commands.add('initializeRepository', (id) => {
+    const url = REPOSITORIES_URL + id + '/size';
     cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
 });
 
 Cypress.Commands.add('enableAutocomplete', (repositoryId, waitTimeout = 10000) => {
+    toggleAutocomplete(repositoryId, true, waitTimeout);
+});
+
+Cypress.Commands.add('disableAutocomplete', (repositoryId, waitTimeout = 10000) => {
+    toggleAutocomplete(repositoryId, false, waitTimeout);
+});
+
+let toggleAutocomplete = (repositoryId, enable, waitTimeout) => {
     cy.request({
         method: 'POST',
-        url: AUTOCOMPLETE_URL + 'enabled?enabled=true',
+        url: `${AUTOCOMPLETE_URL}enabled?enabled=${enable}`,
         headers: {
             'X-GraphDB-Repository': repositoryId,
         }
-    }).should((response) => expect(response.body).to.equal('Autocomplete was enabled'));
+    }).should((response) => expect(response.body).to.equal(`Autocomplete was ${enable ? 'enabled' : 'disabled'}`));
     waitAutocomplete(repositoryId, waitTimeout);
-});
+};
 
-let waitAutocomplete = function(repositoryId, pollTimeout) {
+let waitAutocomplete = function (repositoryId, pollTimeout) {
     cy.expect(pollTimeout).to.be.greaterThan(0);
     cy.wait(POLL_INTERVAL);
     cy.request({
@@ -52,7 +63,7 @@ let waitAutocomplete = function(repositoryId, pollTimeout) {
             'X-GraphDB-Repository': repositoryId,
         },
     }).then((response) => {
-        if (response.status === 200 && response.body === 'READY') return;
+        if (response.status === 200 && response.body === 'READY' || response.body === 'NONE') return;
         waitAutocomplete(repositoryId, pollTimeout - response.duration - POLL_INTERVAL);
     });
 };

@@ -34,6 +34,7 @@ class HomeSteps {
         cy.visitAndWaitLoader('/');
         cy.get('ul.repos')
             .contains(repositoryId)
+            .closest('.repository')
             .click();
     }
 
@@ -51,14 +52,16 @@ class HomeSteps {
     }
 
     static hasRepositoryInfo(repositoryId) {
-        cy.get('.active-repo-card').should('contain', repositoryId)
+        cy.get('.active-repo-card')
+            .should('contain', repositoryId)
             .and('contain', 'total statements')
             .and('contain', 'explicit')
             .and('contain', 'inferred')
             .and('contain', 'expansion ratio')
             .within(() => {
-                cy.get('.total-statements').should('contain', '70');
-                cy.get('.explicit-statements').should('contain', '0')
+                // New repositories would retrieve the /size data a little slower due to some initializations
+                cy.get('.total-statements', {timeout: 10000}).should('contain', '70');
+                cy.get('.explicit-statements').should('contain', '0');
                 cy.get('.inferred-statements').should('contain', '70');
             });
     }
