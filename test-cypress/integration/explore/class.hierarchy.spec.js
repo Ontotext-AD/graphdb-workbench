@@ -5,18 +5,12 @@ const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
-    before(() => {
+    beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-
-        cy.visit('/repository');
-        cy.setRepoDefault(repositoryId);
-        cy.selectRepo(repositoryId);
-
         cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
-    });
+        cy.presetRepositoryCookie(repositoryId);
 
-    beforeEach(() => {
         cy.visit('/hierarchy');
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
         cy.get('#classChart').should('be.visible').within(() => {
@@ -26,58 +20,9 @@ describe('Class hierarchy screen validation', () => {
         });
     });
 
-    after(() => {
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
-
-    function getCurrentSliderValue() {
-        // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
-        // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
-        // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
-        // value.
-        return cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => $element.prop('aria-valuenow'));
-    }
-
-    function searchForClass(name) {
-        cy.get('.toolbar-holder .icon-search')
-            .click()
-            .then(() => {
-                cy.get('#search_input_value').type(name).type('{enter}');
-            });
-    }
-
-    function verifyPrefixes(expectation) {
-        cy.get(CLASS_LABEL_SELECTOR)
-            .each(($element) => {
-                if ($element.prop('style').display !== 'none') {
-                    expectation($element);
-                }
-            });
-    }
-
-    function findClassByName(className) {
-        cy.get(CLASS_LABEL_SELECTOR)
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.name === className) {
-                    cy.wrap($element).as('classInHierarchy');
-                }
-            });
-    }
-
-    function verifyClassIsNotExpanded($element) {
-        return cy.wrap($element).should('have.css', 'font-size').and('eq', '10px');
-    }
-
-    function verifyClassIsExpanded($element) {
-        return cy.wrap($element).should('have.css', 'font-size').and('not.eq', '10px');
-    }
-
-    function confirmReload() {
-        cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.be.visible');
-    }
 
     it('Test initial state of the diagram has a class count 50', () => {
         getCurrentSliderValue()
@@ -195,4 +140,53 @@ describe('Class hierarchy screen validation', () => {
                 cy.get('@classInHierarchy').then(verifyClassIsExpanded);
             });
     });
+
+    function getCurrentSliderValue() {
+        // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
+        // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
+        // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
+        // value.
+        return cy.get('.rz-pointer[role="slider"]')
+            .then(($element) => $element.prop('aria-valuenow'));
+    }
+
+    function searchForClass(name) {
+        cy.get('.toolbar-holder .icon-search')
+            .click()
+            .then(() => {
+                cy.get('#search_input_value').type(name).type('{enter}');
+            });
+    }
+
+    function verifyPrefixes(expectation) {
+        cy.get(CLASS_LABEL_SELECTOR)
+            .each(($element) => {
+                if ($element.prop('style').display !== 'none') {
+                    expectation($element);
+                }
+            });
+    }
+
+    function findClassByName(className) {
+        cy.get(CLASS_LABEL_SELECTOR)
+            .each(($element) => {
+                let data = $element.prop('__data__');
+                if (data.name === className) {
+                    cy.wrap($element).as('classInHierarchy');
+                }
+            });
+    }
+
+    function verifyClassIsNotExpanded($element) {
+        return cy.wrap($element).should('have.css', 'font-size').and('eq', '10px');
+    }
+
+    function verifyClassIsExpanded($element) {
+        return cy.wrap($element).should('have.css', 'font-size').and('not.eq', '10px');
+    }
+
+    function confirmReload() {
+        cy.get('.modal-footer .confirm-btn').click();
+        cy.get('.modal').should('not.be.visible');
+    }
 });
