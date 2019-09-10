@@ -11,10 +11,9 @@ describe('Graphs overview screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
+        cy.presetRepositoryCookie(repositoryId);
 
-        cy.visit('/repository');
-        cy.setRepoDefault(repositoryId);
-        cy.selectRepo(repositoryId);
+        cy.visit('/');
 
         cy.navigateToPage('Import', 'RDF');
         ImportSteps.openImportTextSnippetDialog();
