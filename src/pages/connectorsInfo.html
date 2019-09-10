@@ -24,7 +24,7 @@
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
         <div ng-show="connectors.length">
-            <div class="mb-3" ng-repeat="connector in connectors">
+            <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors">
                 <h3>{{connector.key}}</h3>
                 <section class="mb-1">
                     <div id="accordion-{{connector.key}}" role="tablist" aria-multiselectable="true">
@@ -164,7 +164,7 @@
                     <div ng-hide="existing[connector.key].length">No connector instances.</div>
                 </section>
                 <section>
-                    <button class="btn btn-primary" ng-click="newConnector(connector)"><i class="icon-plus"></i>
+                    <button class="btn btn-primary new-connector-btn" ng-click="newConnector(connector)"><i class="icon-plus"></i>
                         New {{connector.key}} connector
                     </button>
                 </section>
