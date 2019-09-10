@@ -1,6 +1,12 @@
+import ImportSteps from "../../steps/import-steps";
+
 const INITIAL_CLASS_COUNT = 50;
 const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
+const FILE_TO_IMPORT = 'wine.rdf';
+const SUCCESS_MESSAGE = 'Imported successfully';
+
+
 
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
@@ -8,8 +14,13 @@ describe('Class hierarchy screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
         cy.presetRepositoryCookie(repositoryId);
+
+
+        ImportSteps.visitServerImport();
+        ImportSteps.selectServerFile(FILE_TO_IMPORT)
+            .importServerFiles()
+            .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
 
         cy.visit('/hierarchy');
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
