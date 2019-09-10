@@ -35,6 +35,7 @@ script:
 
 after_script:
   - npm run test:coveralls
+  - echo "test"
   - npm run test:acceptance
 
 deploy:
