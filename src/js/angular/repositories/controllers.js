@@ -149,7 +149,7 @@ define(['angular/core/services', 'angular/repositories/services'],
 
             $scope.activateLocationRequest = function (location) {
                 $scope.loader = true;
-                let data = {
+                var data = {
                     'uri': location.uri
                 };
                 $http.post('rest/locations/activate', data).success(function (data, status, headers, config) {
