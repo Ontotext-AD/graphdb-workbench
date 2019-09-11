@@ -1,3 +1,5 @@
+const FILE_TO_IMPORT = 'wine.rdf';
+
 describe('Class relations screen validation', () => {
 
     let repositoryId;
@@ -5,9 +7,9 @@ describe('Class relations screen validation', () => {
     beforeEach(() => {
         repositoryId = 'class-relations-repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
-
         cy.presetRepositoryCookie(repositoryId);
+
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/relationships');
         // The diagram and the list should be visible in order to assume the page is ready

@@ -1,3 +1,5 @@
+const FILE_TO_IMPORT = 'wine.rdf';
+
 describe('Visual graph screen validation', () => {
 
     let repositoryId = 'graphRepo' + Date.now();
@@ -6,8 +8,9 @@ describe('Visual graph screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf', {});
         cy.presetRepositoryCookie(repositoryId);
+
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.enableAutocomplete(repositoryId);
 

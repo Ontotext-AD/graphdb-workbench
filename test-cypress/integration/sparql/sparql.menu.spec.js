@@ -1,5 +1,7 @@
 import ImportSteps from '../../steps/import-steps';
 
+const FILE_TO_IMPORT = 'wine.rdf';
+
 describe('SPARQL screen validation', () => {
     let repositoryId;
 
@@ -102,7 +104,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('Test filter query results', () => {
-            cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf');
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             executeQuery();
 
@@ -251,7 +253,7 @@ describe('SPARQL screen validation', () => {
         }));
 
         it('Test execute query including inferred with ruleset "OWL-Horst (Optimized)"', () => {
-            cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf');
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             let defaultQueryWithoutLimit = 'select * where { \n' +
                 '\t?s ?p ?o .\n' +
@@ -753,7 +755,9 @@ describe('SPARQL screen validation', () => {
 
         it('should suggest resources in the "SPARQL" editor when autocomplete is enabled', () => {
             createRepository();
-            cy.importFromUrl(repositoryId, 'https://www.w3.org/TR/owl-guide/wine.rdf');
+
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+
             cy.enableAutocomplete(repositoryId);
             visitSparql(true);
 

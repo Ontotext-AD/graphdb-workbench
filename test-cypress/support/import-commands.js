@@ -1,22 +1,9 @@
 import urlImportTemplate from '../fixtures/url-import-template.json';
 import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 
-const IMPORT_URL = '/rest/data/import/upload/';
+const UPLOAD_URL = '/rest/data/import/upload/';
+const SERVER_IMPORT_URL = '/rest/data/import/server/';
 const POLL_INTERVAL = 200;
-
-Cypress.Commands.add('importFromUrl', (repositoryId, url, importSettings = {}) => {
-
-    const importData = Cypress._.defaultsDeep(importSettings, urlImportTemplate);
-    importData.name = url;
-    importData.data = url;
-
-    cy.request({
-        method: 'POST',
-        url: IMPORT_URL + repositoryId + '/url',
-        body: importData,
-    }).should((response) => expect(response.status).to.equal(202))
-        .then({timeout: 30000}, () => waitImport(repositoryId, url));
-});
 
 Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}, waitTimeout = 4000) => {
     const importData = Cypress._.defaultsDeep(importSettings, snippetImportTemplate);
@@ -24,22 +11,49 @@ Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings 
 
     cy.request({
         method: 'POST',
-        url: IMPORT_URL + repositoryId + '/text',
+        url: UPLOAD_URL + repositoryId + '/text',
         body: importData,
     }).should((response) => expect(response.status).to.equal(202));
-    waitImport(repositoryId, importData.name, waitTimeout);
+    waitUpload(repositoryId, importData.name, waitTimeout);
 });
 
-function waitImport(repositoryId, name) {
+Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings = {}, waitTimeout = 4000) => {
+    let importData = {
+        fileNames: [fileName],
+        importSettings
+    };
+
+    cy.request({
+        method: 'POST',
+        url: SERVER_IMPORT_URL + repositoryId,
+        body: importData,
+    }).should((response) => expect(response.status).to.equal(202));
+    waitServerImport(repositoryId, importData.name);
+});
+
+function waitServerImport(repositoryId, name) {
     cy.request({
         method: 'GET',
-        url: IMPORT_URL + repositoryId,
+        url: SERVER_IMPORT_URL + repositoryId,
+    }).then((response) => {
+        if (response.status === 200 && response.statusText === 'OK') {
+            return;
+        }
+        cy.wait(POLL_INTERVAL);
+        waitServerImport(repositoryId, name);
+    });
+}
+
+function waitUpload(repositoryId, name) {
+    cy.request({
+        method: 'GET',
+        url: UPLOAD_URL + repositoryId,
     }).then((response) => {
         const importStatus = Cypress._.find(response.body, (importStatus) => importStatus.name === name);
         if (importStatus.status === 'DONE') {
             return;
         }
         cy.wait(POLL_INTERVAL);
-        waitImport(repositoryId, name);
+        waitUpload(repositoryId, name);
     });
 }
