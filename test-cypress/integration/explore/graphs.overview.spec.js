@@ -1,5 +1,3 @@
-import ImportSteps from '../../steps/import-steps';
-
 const EXPORT_GRAPHS_TABLE_ID = '#export-graphs';
 const ROWS_PER_PAGE_20 = '1';
 const ROWS_PER_PAGE_ALL = '2';
@@ -12,18 +10,11 @@ describe('Graphs overview screen validation', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
+        cy.visit("/");
 
-        cy.visit('/');
-
-        cy.navigateToPage('Import', 'RDF');
-        ImportSteps.openImportTextSnippetDialog();
         cy.fixture('graph/rdf.txt').then((rdf) => {
             return new Cypress.Promise((resolve, reject) => {
-                ImportSteps.pasteRDFTextSnippet(rdf)
-                    .selectRDFFormat('TriG')
-                    .clickImportTextSnippetButton()
-                    .importFromSettingsDialog()
-                    .verifyImportStatus('Text snippet', 'Imported successfully');
+                cy.importRDFTextSnippet(repositoryId, rdf, {format: "application/x-trig"});
                 resolve();
             });
         });
