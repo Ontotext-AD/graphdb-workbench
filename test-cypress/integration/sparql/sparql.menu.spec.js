@@ -1,6 +1,6 @@
 import ImportSteps from '../../steps/import-steps';
+
 const FILE_TO_IMPORT = 'wine.rdf';
-const SUCCESS_MESSAGE = 'Imported successfully';
 
 describe('SPARQL screen validation', () => {
     let repositoryId;
@@ -104,10 +104,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('Test filter query results', () => {
-            ImportSteps.visitServerImport();
-            ImportSteps.selectServerFile(FILE_TO_IMPORT)
-                .importServerFiles()
-                .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             executeQuery();
 
@@ -256,10 +253,7 @@ describe('SPARQL screen validation', () => {
         }));
 
         it('Test execute query including inferred with ruleset "OWL-Horst (Optimized)"', () => {
-            ImportSteps.visitServerImport();
-            ImportSteps.selectServerFile(FILE_TO_IMPORT)
-                .importServerFiles()
-                .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             let defaultQueryWithoutLimit = 'select * where { \n' +
                 '\t?s ?p ?o .\n' +
@@ -762,10 +756,7 @@ describe('SPARQL screen validation', () => {
         it('should suggest resources in the "SPARQL" editor when autocomplete is enabled', () => {
             createRepository();
 
-            ImportSteps.visitServerImport();
-            ImportSteps.selectServerFile(FILE_TO_IMPORT)
-                .importServerFiles()
-                .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             cy.enableAutocomplete(repositoryId);
             visitSparql(true);

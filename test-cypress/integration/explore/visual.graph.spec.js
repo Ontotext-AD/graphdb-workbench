@@ -1,6 +1,4 @@
-import ImportSteps from "../../steps/import-steps";
 const FILE_TO_IMPORT = 'wine.rdf';
-const SUCCESS_MESSAGE = 'Imported successfully';
 
 describe('Visual graph screen validation', () => {
 
@@ -12,10 +10,7 @@ describe('Visual graph screen validation', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
 
-        ImportSteps.visitServerImport();
-        ImportSteps.selectServerFile(FILE_TO_IMPORT)
-            .importServerFiles()
-            .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.enableAutocomplete(repositoryId);
 
