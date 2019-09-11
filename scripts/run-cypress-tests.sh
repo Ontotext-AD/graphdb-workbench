@@ -1,30 +1,31 @@
 #!/usr/bin/env bash
 
+# Force quit if error occurs or if there is unbound variable
 set -eu
 
-# Export the variable to be used in the compose file (test-cypress/docker-compose.yml)
-export GRAPHDB_VERSION=$1
+echo "Working directory: $(pwd)"
 
-echo "Starting Cypress tests against GraphDB version ${GRAPHDB_VERSION}"
+GRAPHDB_VERSION=$1
+GRAPHDB_DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb-free/${GRAPHDB_VERSION}/graphdb-free-${GRAPHDB_VERSION}-dist.zip"
 
-# Build Workbench image
-docker build -t graphdb-workbench:latest .
+echo "Downloading GraphDB from $GRAPHDB_DOWNLOAD_URL"
+# Clean previous runs
+rm -rf /tmp/graphdb.zip /tmp/graphdb-tmp /tmp/graphdb
+curl -sSL -u ${NEXUS_CREDENTIALS} ${GRAPHDB_DOWNLOAD_URL} -o /tmp/graphdb.zip
+unzip -q /tmp/graphdb.zip -d /tmp/graphdb-tmp
+mv /tmp/graphdb-tmp/graphdb* /tmp/graphdb
+rm -rf /tmp/graphdb.zip /tmp/graphdb-tmp
 
-# Build custom GraphDB image with text fixtures and start the compose
-docker-compose --file test-cypress/docker-compose.yml up -d --build
-
-# Wait until both containers are reachable
-npm install -g wait-on
+echo "Starting GraphDB daemon"
+/tmp/graphdb/bin/graphdb -d \
+    -Dgraphdb.home=/tmp/graphdb \
+    -Dgraphdb.workbench.home="$(pwd)/dist/" \
+    -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/"
 
 cd test-cypress
 
+echo "Installing Cypress tests module"
 npm install
 
-# Wait GraphDB for 60 seconds
-wait-on http://localhost:7200 -t 60000
-
-# Wait Workbench for 30 seconds
-wait-on http://localhost:7300 -t 30000
-
-# Run the tests
-npx cypress run --record=false --config baseUrl=http://localhost:7300
+echo "Starting Cypress tests against GraphDB version ${GRAPHDB_VERSION}"
+npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
