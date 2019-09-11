@@ -4,20 +4,6 @@ import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 const IMPORT_URL = '/rest/data/import/upload/';
 const POLL_INTERVAL = 200;
 
-Cypress.Commands.add('importFromUrl', (repositoryId, url, importSettings = {}) => {
-
-    const importData = Cypress._.defaultsDeep(importSettings, urlImportTemplate);
-    importData.name = url;
-    importData.data = url;
-
-    cy.request({
-        method: 'POST',
-        url: IMPORT_URL + repositoryId + '/url',
-        body: importData,
-    }).should((response) => expect(response.status).to.equal(202))
-        .then({timeout: 30000}, () => waitImport(repositoryId, url));
-});
-
 Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}, waitTimeout = 4000) => {
     const importData = Cypress._.defaultsDeep(importSettings, snippetImportTemplate);
     importData.data = rdf;

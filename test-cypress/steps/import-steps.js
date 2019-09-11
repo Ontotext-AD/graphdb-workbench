@@ -114,7 +114,8 @@ class ImportSteps {
             // TODO: Check for dialog?
             cy.get('#import-server .import-btn').click();
         } else {
-            cy.get('#import-server .import-dropdown-btn').click();
+            cy.get('#import-server .import-dropdown-btn').click()
+                .should('have.attr', 'aria-expanded', 'true');
             cy.get('#import-server .import-without-change-btn').click();
         }
 
