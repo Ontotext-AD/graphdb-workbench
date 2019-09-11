@@ -1,8 +1,0 @@
-ARG GRAPHDB_VERSION=8.10-SNAPSHOT
-
-FROM docker-registry.ontotext.com/graphdb-free:$GRAPHDB_VERSION
-
-# Copy files for server import tests
-COPY fixtures/graphdb-import/ /opt/graphdb/home/graphdb-import/
-
-CMD ["-Dgraphdb.home=/opt/graphdb/home", "-Dgraphdb.workbench.importDirectory=/opt/graphdb/home/graphdb-import/"]
