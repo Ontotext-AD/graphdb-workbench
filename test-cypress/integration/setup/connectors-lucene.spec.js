@@ -8,14 +8,14 @@ describe('Setup / Connectors - Lucene', () => {
     const connectorCreateToastMessage = 'Created connector ' + luceneConnectorName;
     const connectorDeleteToastMessage = 'Deleted connector ' + luceneConnectorName;
 
-    before(() => {
+    beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
         cy.visit('/connectors');
     });
 
-    after(() => {
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -32,7 +32,6 @@ describe('Setup / Connectors - Lucene', () => {
             .should('be.visible')
             .and('contain', 'Create new Lucene Connector');
         getConnectorNameField()
-            .find('input')
             .type(luceneConnectorName);
         getFieldNameField()
             .find('input')
@@ -51,11 +50,7 @@ describe('Setup / Connectors - Lucene', () => {
         getConnectorStatusToastMessage()
             .should('be.visible')
             .and('contain', connectorCreateToastMessage);
-    });
-
-    it('Test connector copy functionality', () => {
-        getConnectorsPage()
-            .should('be.visible');
+        //copy connector
         getConnectorInstance(0)
             .find('.icon-copy')
             .should('be.visible')
@@ -68,9 +63,7 @@ describe('Setup / Connectors - Lucene', () => {
         getConnectorStatusToastMessage()
             .should('be.visible')
             .and('contain', connectorCreateToastMessage + '-copy');
-    });
-
-    it('Test connector delete functionality', () => {
+        //delete connector copy
         getConnectorInstance(1)
             .find('.icon-trash')
             .should('be.visible')
@@ -96,7 +89,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getConnectorNameField() {
-        return getCreateLuceneConnectorPage().find('.connector-name-field');
+        return getCreateLuceneConnectorPage().find('.connector-name-field input');
     }
 
     function getFieldNameField() {
