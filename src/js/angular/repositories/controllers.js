@@ -83,7 +83,7 @@ define(['angular/core/services', 'angular/repositories/services'],
 
             $scope.addLocationHttp = function (dataAddLocation) {
                 $scope.loader = true;
-                $http.put('rest/locations', dataAddLocation)
+                $http.post('rest/locations', dataAddLocation)
                     .success(function (data, status, headers, config) {
                         $scope.locations = data;
                         //Reload locations and repositories
@@ -118,7 +118,7 @@ define(['angular/core/services', 'angular/repositories/services'],
             //Edit location
             $scope.editLocationHttp = function (dataEditLocation) {
                 $scope.loader = true;
-                $http.post('rest/locations', dataEditLocation).success(function (data, status, headers, config) {
+                $http.put('rest/locations', dataEditLocation).success(function (data, status, headers, config) {
                     $scope.locations = data;
                     //Reload locations and repositories
                     $repositories.init();
@@ -148,13 +148,10 @@ define(['angular/core/services', 'angular/repositories/services'],
             };
 
             $scope.activateLocationRequest = function (location) {
-                var data = {
-                    "uri": location.uri,
-                    "username": location.username,
-                    "password": location.password,
-                    "active": false
-                };
                 $scope.loader = true;
+                var data = {
+                    'uri': location.uri
+                };
                 $http.post('rest/locations/activate', data).success(function (data, status, headers, config) {
                     $repositories.setRepository('');
                     $repositories.init();

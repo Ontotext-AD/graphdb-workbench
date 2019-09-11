@@ -92,7 +92,7 @@ define(["angular/repositories/services",
                     $repositories.init = function () {
                         test = true
                     };
-                    $httpBackend.expectPUT('rest/locations', {}).respond(200, '');
+                    $httpBackend.expectPOST('rest/locations', {}).respond(200, '');
                     $scope.addLocationHttp({});
                     $httpBackend.flush();
                     expect(test).toBeTruthy();
@@ -106,7 +106,7 @@ define(["angular/repositories/services",
                     $repositories.init = function () {
                         test = true
                     };
-                    $httpBackend.expectPOST('rest/locations', {}).respond(200, {locations: ['some new location']});
+                    $httpBackend.expectPUT('rest/locations', {}).respond(200, {locations: ['some new location']});
                     $scope.editLocationHttp({});
                     $httpBackend.flush();
                     expect($scope.locations).toEqual({locations: ['some new location']});
@@ -125,16 +125,9 @@ define(["angular/repositories/services",
                     $repositories.setRepository = function (id) {
                         repository = id
                     };
-                    $httpBackend.expectPOST('rest/locations/activate', {
-                        "uri": 'uri',
-                        "username": 'username',
-                        "password": 'password',
-                        "active": false
-                    }).respond(200, '');
+                    $httpBackend.expectPOST('rest/locations/activate').respond(200, '');
                     $scope.activateLocationRequest({
-                        "uri": 'uri',
-                        "username": 'username',
-                        "password": 'password'
+                        'uri': 'uri'
                     });
                     $httpBackend.flush();
                     expect(init).toBeTruthy();

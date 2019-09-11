@@ -698,7 +698,7 @@ describe('SPARQL screen validation', () => {
 
             openSavedQueryLinkFromPopup(queryName);
 
-            const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName);
+            const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName) + '&owner=admin';
             getModal()
                 .should('be.visible')
                 .find('#clipboardURI')
