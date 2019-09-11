@@ -25,7 +25,7 @@ describe('Setup / Connectors - Lucene', () => {
             .and('contain', 'No connector instances.');
     });
 
-    it('Create a lucene connector', () => {
+    it('Create, copy and delete a lucene connector', () => {
         getNewLuceneConnectorButton()
             .click();
         getCreateLuceneConnectorPage()
@@ -34,13 +34,10 @@ describe('Setup / Connectors - Lucene', () => {
         getConnectorNameField()
             .type(luceneConnectorName);
         getFieldNameField()
-            .find('input')
             .type(fieldName, {force:true});
         getPropertyChainField()
-            .find('input')
             .type(connectorPropertyChain, {force:true});
         getUriTypes()
-            .find('input')
             .type(uriType);
         getOkButton()
             .click();
@@ -93,15 +90,15 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getFieldNameField() {
-        return getCreateLuceneConnectorPage().find('.child-property-fieldName');
+        return getCreateLuceneConnectorPage().find('.child-property-fieldName input');
     }
 
     function getPropertyChainField() {
-        return getCreateLuceneConnectorPage().find('.child-property-propertyChain');
+        return getCreateLuceneConnectorPage().find('.child-property-propertyChain input');
     }
 
     function getUriTypes() {
-        return getCreateLuceneConnectorPage().find('.property-types');
+        return getCreateLuceneConnectorPage().find('.property-types input');
     }
 
     function getOkButton() {
