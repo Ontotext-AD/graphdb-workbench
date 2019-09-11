@@ -20,21 +20,21 @@
 
             <script type="text/ng-template" id="sampleQueriesPopoverTemplate.html">
                 <ul id="wb-sparql-queryInSampleQueries" class="list-unstyled">
-                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != null" class="hovered-parent saved-query">
+                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal().username" class="hovered-parent saved-query">
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
-                        <i class="icon-warning" ng-show="query.owner != null && hasRole('ROLE_USER')"
+                        <i class="icon-warning" ng-show="query.owner != principal().username && hasRole('ROLE_USER')"
                            popover="Query shared by another user. You may not edit or delete it."
                            popover-trigger="mouseenter"></i>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == null && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
                                     popover="Edit query" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == null && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
                                     popover="Delete query" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
