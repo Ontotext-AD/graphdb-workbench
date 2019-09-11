@@ -3,7 +3,7 @@ define(["angular/repositories/services",
     'lib/ng-file-upload.min',
     'lib/ng-file-upload-shim.min'], function () {
 
-    xdescribe('==> Repository module controllers tests', function () {
+    describe('==> Repository module controllers tests', function () {
 
         beforeEach(module('graphdb.framework.repositories.controllers'));
 
