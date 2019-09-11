@@ -3,7 +3,7 @@ define(["angular/repositories/services",
     'lib/ng-file-upload.min',
     'lib/ng-file-upload-shim.min'], function () {
 
-    xdescribe('==> Repository module controllers tests', function () {
+    describe('==> Repository module controllers tests', function () {
 
         beforeEach(module('graphdb.framework.repositories.controllers'));
 
@@ -92,7 +92,7 @@ define(["angular/repositories/services",
                     $repositories.init = function () {
                         test = true
                     };
-                    $httpBackend.expectPOST('rest/locations', {}).respond(200, '');
+                    $httpBackend.expectPUT('rest/locations', {}).respond(200, '');
                     $scope.addLocationHttp({});
                     $httpBackend.flush();
                     expect(test).toBeTruthy();
@@ -106,7 +106,7 @@ define(["angular/repositories/services",
                     $repositories.init = function () {
                         test = true
                     };
-                    $httpBackend.expectPUT('rest/locations', {}).respond(200, {locations: ['some new location']});
+                    $httpBackend.expectPOST('rest/locations', {}).respond(200, {locations: ['some new location']});
                     $scope.editLocationHttp({});
                     $httpBackend.flush();
                     expect($scope.locations).toEqual({locations: ['some new location']});
@@ -125,9 +125,16 @@ define(["angular/repositories/services",
                     $repositories.setRepository = function (id) {
                         repository = id
                     };
-                    $httpBackend.expectPOST('rest/locations/activate').respond(200, '');
+                    $httpBackend.expectPOST('rest/locations/activate', {
+                        "uri": 'uri',
+                        "username": 'username',
+                        "password": 'password',
+                        "active": false
+                    }).respond(200, '');
                     $scope.activateLocationRequest({
-                        'uri': 'uri'
+                        "uri": 'uri',
+                        "username": 'username',
+                        "password": 'password'
                     });
                     $httpBackend.flush();
                     expect(init).toBeTruthy();
@@ -402,18 +409,18 @@ define(["angular/repositories/services",
 
                 $scope = $rootScope.$new();
                 var controller = $controller('EditRepositoryCtrl', {
-                        $scope: $scope,
-                        $location: locationMock,
-                        isEnterprise: isEnterprise,
-                        isFreeEdition: isFreeEdition,
-                        $routeParams: routeParamsMock,
-                        $repositories: repositoriesMock,
-                        ModalService: {
-                            openSimpleModal: function () {
-                                return this;
-                            }
+                    $scope: $scope,
+                    $location: locationMock,
+                    isEnterprise: isEnterprise,
+                    isFreeEdition: isFreeEdition,
+                    $routeParams: routeParamsMock,
+                    $repositories: repositoriesMock,
+                    ModalService: {
+                        openSimpleModal: function () {
+                            return this;
                         }
-                   });
+                    }
+                });
 
             }));
 
