@@ -4,7 +4,8 @@ define(['require', 'lib/yasr.bundled'],
 
 		angular
 			.module('graphdb.framework.similarity.controllers.list', [])
-			.controller('SimilarityCtrl', SimilarityCtrl);
+			.controller('SimilarityCtrl', SimilarityCtrl)
+            .controller('EditSearchQueryCtrl', EditSearchQueryCtrl);
 
 		SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteService', 'productInfo'];
 
@@ -340,11 +341,93 @@ define(['require', 'lib/yasr.bundled'],
                 return '"' + literal + '"';
             };
 
+            $scope.editSearchQuery = function (index) {
+                var modal = $modal.open({
+                    templateUrl: 'pages/editSearchQuery.html',
+                    controller: 'EditSearchQueryCtrl',
+                    resolve: {
+                        index: function () {
+                            return index;
+                        }
+                    }
+                });
+            };
+
             $scope.trimIRI = function(iri) {
                 return _.trim(iri, "<>");
             }
 
 		}
-	}
+
+        EditSearchQueryCtrl.$inject = ['$scope', '$modalInstance', 'index', 'toastr'];
+
+        function EditSearchQueryCtrl($scope, $modalInstance, index, toastr) {
+            $scope.index = index;
+            $scope.tabNum = 1;
+            $scope.currentQuery = $scope.index.searchQuery;
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
+            // This method will resize height of textArea until the max-height property
+            let autoExpand = function (field) {
+
+                // Reset field height
+                field.style.height = 'inherit';
+
+                // Get the computed styles for the element
+                var computed = window.getComputedStyle(field);
+
+                // Calculate the height
+                var height = parseInt(computed.getPropertyValue('border-top-width'), 10)
+                    + parseInt(computed.getPropertyValue('padding-top'), 10)
+                    + field.scrollHeight
+                    + parseInt(computed.getPropertyValue('padding-bottom'), 10)
+                    + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+
+                field.style.height = height + 'px';
+
+            };
+
+            document.addEventListener('input', function (event) {
+                if (event.target.tagName.toLowerCase() !== 'textarea') return;
+                autoExpand(event.target);
+            }, false);
+
+            $scope.changeTab = function (tabNum) {
+                if (tabNum === 1) {
+                    $scope.currentQuery = $scope.index.searchQuery;
+                }
+                if (tabNum === 2) {
+                    $scope.currentQuery = $scope.index.analogicalQuery;
+                }
+
+                $scope.tabNum = tabNum;
+            };
+
+            $scope.saveSearchQuery = function () {
+                let data = {
+                    name: $scope.index.name,
+                    changedQuery: $scope.currentQuery,
+                    isSearchQuery: $scope.tabNum === 1
+                };
+                $.ajax({
+                    type: "put",
+                    url: "/rest/similarity/search-query",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        toastr.success($scope.tabNum === 1 ? 'Changed Search query' : 'Changed Analogical query');
+                    },
+                    error: function () {
+                        toastr.error(getError(data), 'Could not change query!');
+                    }
+                });
+                $modalInstance.close(true);
+            };
+        }
+
+    }
 );
 
