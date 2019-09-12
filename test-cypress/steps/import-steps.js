@@ -212,10 +212,9 @@ class ImportSteps {
     }
 
     static verifyImportStatus(filename, message) {
-        // Increase the default timeout to allow longer imports to finish
         ImportSteps
             .getServerFileElement(filename)
-            .find('.import-status .import-status-message', {timeout: 30000})
+            .find('.import-status .import-status-message')
             .should('be.visible').and('contain', message);
 
         return ImportSteps;
@@ -239,9 +238,7 @@ class ImportSteps {
     }
 
     static getModal() {
-        // Increased timeout to allow dialog to show and finish its animation..
-        // Should not be needed but it seems animations in Travis are slow..
-        return cy.get('.modal', {timeout: 10000})
+        return cy.get('.modal')
             .should('be.visible')
             .and('not.have.class', 'ng-animate')
     }

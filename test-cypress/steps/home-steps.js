@@ -1,5 +1,11 @@
 class HomeSteps {
 
+    static visitAndWaitLoader() {
+        cy.visit('/');
+        cy.get('.ot-splash').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.be.visible');
+    }
+
     static verifyTutorialVisible(shouldBeVisible) {
         if (shouldBeVisible) {
             cy.get('.tutorial-container')
@@ -27,11 +33,11 @@ class HomeSteps {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
         modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.be.visible');
         cy.url().should('eq', Cypress.config("baseUrl") + queryURL);
-        cy.visitAndWaitLoader('/');
+        HomeSteps.visitAndWaitLoader();
     }
 
     static selectRepo(repositoryId) {
-        cy.visitAndWaitLoader('/');
+        HomeSteps.visitAndWaitLoader();
         cy.get('ul.repos')
             .contains(repositoryId)
             .closest('.repository')
@@ -59,8 +65,7 @@ class HomeSteps {
             .and('contain', 'inferred')
             .and('contain', 'expansion ratio')
             .within(() => {
-                // New repositories would retrieve the /size data a little slower due to some initializations
-                cy.get('.total-statements', {timeout: 10000}).should('contain', '70');
+                cy.get('.total-statements').should('contain', '70');
                 cy.get('.explicit-statements').should('contain', '0');
                 cy.get('.inferred-statements').should('contain', '70');
             });

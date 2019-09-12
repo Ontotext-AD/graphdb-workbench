@@ -104,17 +104,15 @@ describe('Import screen validation - user data', () => {
             .importFromSettingsDialog()
             .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
 
-        // TODO: Refactor
-
         // Go to Graphs overview
-        cy.navigateToPage('Explore', 'Graphs overview');
-        let graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
-        // Verify that created graph is found
-        cy.get('.form-control').type(graphName);
-        cy.get('#export-graphs').should('be.visible').should('contain', graphName);
+        cy.visit('/graphs');
+        cy.get('.ot-splash').should('not.be.visible');
 
-        // Should return to initial url in order after each block of the tests to be executed
-        cy.navigateToPage('Import', 'RDF');
+        let graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
+
+        // Verify that created graph can be found
+        cy.get('.search-graphs').type(graphName).should('have.value', graphName);
+        cy.get('#export-graphs').should('be.visible').should('contain', graphName);
     });
 
     it('should allow to delete uploaded files', () => {
