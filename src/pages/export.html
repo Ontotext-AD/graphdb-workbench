@@ -1,7 +1,7 @@
 <link href="css/export.css" rel="stylesheet">
 
 <div id="wb-export">
-	
+
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
@@ -10,17 +10,17 @@
 			popover-placement="bottom-right"
 			popover-append-to-body="true"><span class="icon-info"></span></span>
 	</h1>
-	
-	
+
+
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
     <div class="ot-owlim-ctrl" ng-hide="loader">
         <div core-errors></div>
         <div ng-show="getActiveRepository()">
-			
+
 			<div class="alert alert-warning" ng-hide="graphs.length > 0">
 				No graphs in this repository. Add graphs via the <a ng-href="sparql">SPARQL update form</a> or <a ng-href="import">the data import page</a>.
 			</div>
-           
+
 			<div>
 				<div class="clearfix mb-2">
 					<div class="pull-right col-form-label">
@@ -45,13 +45,13 @@
 					</div>
 
 					<label class="mr-1 mb-0">
-						<input type="text" class="form-control" ng-model="exportFilter" ng-keyup="updateResults();deselectAll()"
+						<input type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="updateResults();deselectAll()"
 							placeholder="Search Graphs"/>
 					</label>
 				</div>
-				
-                   
-                   
+
+
+
 				<div class="clearfix mb-2">
 					<div class="btn-group" dropdown>
 						<button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
@@ -64,8 +64,8 @@
 							</li>
 						</ul>
 					</div>
-					<button type="button" class="btn btn-secondary"
-						ng-click="dropRepository()" 
+					<button type="button" class="btn btn-secondary clear-repository-btn"
+						ng-click="dropRepository()"
 						tooltip="Removes all data from the current repository" tooltip-placement="top"
 						ng-disabled="!canWriteActiveRepo(true)">
 						<span class="icon-trash"></span> Clear repository
@@ -73,10 +73,10 @@
                     <div class="pull-right">
                         <div ng-show="pageSize >= filteredGraphs.length"></div>
                         <div paginations ng-hide="pageSize >= filteredGraphs.length"
-                             class="ot-export-pagination"></div>
+                             class="ot-export-pagination top-pagination"></div>
                     </div>
 				</div>
-                
+
                 <div class="mb-2">
 					<div ng-hide="displayGraphs.length > 0">
 						<em>No results were found.</em>
@@ -128,7 +128,7 @@
 								{{graph.contextID.value}}
 							</td>
 							<td>
-								
+
 								<div class="btn-group" dropdown>
 									<button type="button" class="btn btn-link dropdown-toggle" dropdown-toggle tooltip="Export graph"
                                             ng-disabled="!graph.contextID.uri">
@@ -141,20 +141,20 @@
 										</li>
 									</ul>
 								</div>
-								
-								<button class="btn btn-link secondary"
+
+								<button class="btn btn-link secondary delete-graph-btn"
 									ng-click="dropContext(graph)"
 									tooltip="Removes all data from this graph" tooltip-placement="top"
 									ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
 									<span class="fa fa-trash-o fa-lg"></span>
 								</button>
-								
+
 							</td>
 						</tr>
 						</tbody>
 					</table>
                 </div>
-                <div paginations ng-hide="pageSize >= filteredGraphs.length" class="ot-export-pagination pull-right"></div>
+                <div paginations ng-hide="pageSize >= filteredGraphs.length" class="ot-export-pagination pull-right bottom-pagination"></div>
             </div>
         </div>
     </div>

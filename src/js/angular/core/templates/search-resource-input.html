@@ -3,16 +3,17 @@
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
     <span class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary" type="button" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" type="button" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
     </span>
-    <span class="input-group-btn">
-        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary" type="button" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
+    <span class="input-group-btn show-btn">
+        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" type="button" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
     </span>
 </div>
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)" ng-class="{active: activeSearchElm === $index}"
-         ng-mouseover="setActiveClassOnHover($index)">
+         ng-mouseover="setActiveClassOnHover($index)"
+         class="result-item">
         <p ng-bind-html="autoCompleteUriResult.description"></p>
     </div>
 </div>

@@ -2,7 +2,7 @@
 <html>
 
 	<title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
-	
+
 	<link href="css/jmx.css" rel="stylesheet" />
 
 	<h1>
@@ -29,7 +29,7 @@
 
 			<div ng-hide="loader || jolokiaError">
 				<div class="pause-bar">
-					<button type="button" class="btn pull-right" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
+					<button type="button" class="btn pull-right pause-btn" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							btn-checkbox
 						tooltip="Temporarily pauses query monitoring so you can copy text"
 						tooltip-placement="left">
@@ -86,12 +86,12 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="alert alert-info no-icon" ng-show="noQueries">
+				<div class="alert alert-info no-icon no-running-queries-alert" ng-show="noQueries">
 					No running queries or updates.
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 
 </html>

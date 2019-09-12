@@ -1,5 +1,7 @@
-define([],
-    function () {
+define([
+        'lib/common/svg-export'
+    ],
+    function (SVG) {
         angular
             .module('graphdb.framework.graphexplore.directives.dependencies', ['graphdb.framework.graphexplore.controllers.dependencies'])
             .directive('dependenciesChord', dependenciesChordDirective);

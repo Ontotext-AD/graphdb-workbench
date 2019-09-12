@@ -37,7 +37,7 @@
 	<form name="form" class="form newUserForm userForm editUserContainer" ng-submit="submit()" novalidate>
 		<div class="row">
 			<div class="col-md-6">
-				<div class="card" ng-hide="isOverrideAuth()">
+				<div class="card login-credentials" ng-hide="isOverrideAuth()">
 					<div class="card-block">
 						<h3>Login</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
@@ -65,12 +65,12 @@
 					</div>
 				</div>
 
-				<div class="card" id="user-settings">
+				<div class="card sparql-editor-settings" id="user-settings">
 					<div class="card-block">
 						<h3>SPARQL editor settings</h3>
 
 						<div id="sameas-on" class="mb-1">
-							<span>
+							<span class="sameas-label">
 								Expand results over owl:SameAs is
 								<span class="tag {{user.appSettings.DEFAULT_SAMEAS ? 'tag-primary' : 'tag-default'}}">
 									{{user.appSettings.DEFAULT_SAMEAS ? 'ON' : 'OFF'}}
@@ -86,7 +86,7 @@
 						</div>
 
 						<div id="inference-on" class="mb-1">
-							<span>
+							<span class="inference-label">
 								Inference is
 								<span class="tag {{user.appSettings.DEFAULT_INFERENCE ? 'tag-primary' : 'tag-default'}}">
 									{{user.appSettings.DEFAULT_INFERENCE ? 'ON' : 'OFF'}}
@@ -117,7 +117,7 @@
 			</div>
 
 			<div class="col-md-6">
-				<div class="card" id="user-roles">
+				<div class="card user-role" id="user-roles">
 					<div class="card-block">
 						<h3>User role</h3>
 						<label class="mr-1"
@@ -143,7 +143,7 @@
 					</div>
 				</div>
 
-				<div id="user-repos"  class="card">
+				<div id="user-repos"  class="card user-repositories">
 					<div class="card-block">
 						<h3>Repository rights</h3>
 						<div class="has-danger">
@@ -164,13 +164,17 @@
 									<td>Any data repository
 										<i class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></i>
 									</td>
-									<td class="text-xs-center"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()"></td>
-									<td class="text-xs-center"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center">
+                                        <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">
+                                    </td>
+									<td class="text-xs-center">
+                                        <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()">
+                                    </td>
 								</tr>
 								<tr ng-repeat="repository in getReadableRepositories() | orderBy: 'id'">
-									<td>{{repository.id}}</td>
-									<td class="text-xs-center"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[repository.id]"  ng-checked="hasReadPermission(repository.id)" ng-disabled="readCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
-									<td class="text-xs-center"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[repository.id]" ng-checked="hasWritePermission(repository.id)" ng-disabled="writeCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+									<td class="repository-name">{{repository.id}}</td>
+									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[repository.id]"  ng-checked="hasReadPermission(repository.id)" ng-disabled="readCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[repository.id]" ng-checked="hasWritePermission(repository.id)" ng-disabled="writeCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
 								</tr>
 							</tbody>
 						</table>

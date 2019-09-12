@@ -1,5 +1,10 @@
-define(['lib/d3-tip/d3-tip-patch'],
-    function (d3tip) {
+define([
+        'lib/d3-tip/d3-tip-patch',
+        'lib/common/circle-packing',
+        'lib/common/d3-utils',
+        'lib/common/svg-export'
+    ],
+    function (d3tip, CirclePacking, D3, SVG) {
 
         angular
             .module('graphdb.framework.graphexplore.directives.class', ['graphdb.framework.graphexplore.controllers.class'])

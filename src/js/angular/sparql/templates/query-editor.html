@@ -20,21 +20,21 @@
 
             <script type="text/ng-template" id="sampleQueriesPopoverTemplate.html">
                 <ul id="wb-sparql-queryInSampleQueries" class="list-unstyled">
-                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != null" class="hovered-parent">
+                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal().username" class="hovered-parent saved-query">
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
-                        <i class="icon-warning" ng-show="query.owner != null && hasRole('ROLE_USER')"
+                        <i class="icon-warning" ng-show="query.owner != principal().username && hasRole('ROLE_USER')"
                            popover="Query shared by another user. You may not edit or delete it."
                            popover-trigger="mouseenter"></i>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == null && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
                                     popover="Edit query" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == null && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
                                     popover="Delete query" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
@@ -166,7 +166,7 @@
 
         <div class="yasr" id="yasr-inner">
             <div ng-hide="nostatus || currentTabConfig.queryType || queryIsRunning"
-                 class="alert alert-info no-icon">No results from previous run.
+                 class="alert alert-info no-icon no-query-run">No results from previous run.
                 Click Run or press Ctrl/Cmd-Enter to execute the current query or update.
             </div>
             <!--ng-show="!queryIsRunning">-->
@@ -181,22 +181,22 @@
             </div>
             <h6 class="alert alert-danger no-icon additional" ng-show="!queryIsRunning && !nostatus && currentTabConfig.errorMessage">Error: {{currentTabConfig.errorMessage}}</h6>
             <h6 class="alert alert-warning no-icon additional" ng-show="!queryIsRunning && !nostatus && currentTabConfig.warningMessage">Warning: {{currentTabConfig.warningMessage}}</h6>
-            <div class="alert alert-info no-icon"
+            <div class="alert alert-info no-icon results-info"
                  ng-show="!nostatus && currentTabConfig.queryType && currentTabConfig.queryType != 'UPDATE' && currentTabConfig.queryType != 'ERROR' && !queryIsRunning">
                 <div class="text-xs-right">
                     <span class="icon-warning icon-lg"
                             ng-show="getStaleWarningMessage()"
                             tooltip="{{getStaleWarningMessage()}}" tooltip-trigger="mouseenter"
                             tooltip-append-to-body="true"></span>
-                    <span ng-show="currentTabConfig.queryType != 'ASK'">
+                    <span ng-show="currentTabConfig.queryType != 'ASK'" class="results-description">
                         {{getResultsDescription()}}
                     </span>
-                    <span ng-show="currentTabConfig.timeTook">
+                    <span ng-show="currentTabConfig.timeTook" class="query-duration">
                         Query took {{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}, {{ getHumanReadableTimestamp(currentTabConfig.timeFinished) }}.
                     </span>
                 </div>
             </div>
-            <div class='alert alert-info no-icon results-info update-info'
+            <div class='alert alert-info no-icon update-info'
                  ng-show="!nostatus && currentTabConfig.queryType == 'UPDATE' && !queryIsRunning">
                 {{getUpdateDescription()}}
                 <span ng-show="currentTabConfig.timeTook">

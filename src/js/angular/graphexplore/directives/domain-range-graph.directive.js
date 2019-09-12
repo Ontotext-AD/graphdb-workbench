@@ -1,5 +1,8 @@
-define([],
-    function () {
+define([
+        'lib/common/svg-export',
+        'lib/common/d3-utils'
+    ],
+    function (SVG, D3) {
 
         angular
             .module('graphdb.framework.graphexplore.directives.domainrange', ['graphdb.framework.graphexplore.controllers.domainrange'])

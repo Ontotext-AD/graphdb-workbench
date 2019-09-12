@@ -1,357 +1,210 @@
-describe('Visual graph screen validation', function () {
-    let repoId = 'graphRepo' + Date.now();
-    let validResource = 'USRegion';
+const FILE_TO_IMPORT = 'wine.rdf';
 
-    let searchForResource = function (resource) {
-        cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > .form-control')
-            .invoke('val', resource).trigger('change', {force: true}).wait(200)
-            .type('{enter}');
-    };
+describe('Visual graph screen validation', () => {
 
-    let checkIncludeInferredBoxAndSave = function (check) {
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                if (check) {
-                    // Include inferred: false
-                    cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                        '> label > input[ng-model="settings[\'includeInferred\']"]')
-                        .check();
-                } else {
-                    // Include inferred: false
-                    cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                        '> label > input[ng-model="settings[\'includeInferred\']"]')
-                        .uncheck();
-                }
-                cy.get('button[type="submit"]').click();
-            });
-    };
+    let repositoryId = 'graphRepo' + Date.now();
+    const VALID_RESOURCE = 'USRegion';
 
-    before(function () {
-        cy.visit('/repository');
-        // Create new one
-        cy.createNewRepo(repoId).wait(2000);
-        cy.setRepoDefault(repoId).wait(500);
-        cy.selectRepo(repoId);
+    beforeEach(() => {
+        repositoryId = 'repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.presetRepositoryCookie(repositoryId);
 
-        // Import Wine dataset which will be used in most of the following tests
-        cy.navigateToPage('Import', 'RDF');
-        cy.openImportURLDialog('https://www.w3.org/TR/owl-guide/wine.rdf');
-        cy.clickImportUrlBtn();
-        cy.clickImportBtnOnPopUpMenu().wait(2000);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+
+        cy.enableAutocomplete(repositoryId);
+
+        cy.visit('/graphs-visualizations');
     });
 
-    beforeEach(function () {
-        // Go to Visual graph page
-        cy.visit('/graphs-visualizations').wait(1000);
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
-    after(function () {
-        cy.navigateToPage('Setup', 'Repositories');
-        cy.deleteRepo(repoId);
-    });
+    it('Test notification when autocomplete is disabled', () => {
+        // Disable it for the test only but manually because for some reason it doesn't work through
+        // the command which utilize a rest call.
+        cy.visit('/autocomplete');
+        cy.get('.enable-autocomplete-switch').click();
+        cy.visit('/graphs-visualizations');
 
-    it('Test autocomplete enable toast message', function () {
-        // Search for a resource
-        cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > .form-control').type('http://');
+        getSearchField().type('http://');
         // Verify that a message with a redirection to the autocomplete section is displayed.
-        cy.get('div[class="autocomplete-toast"] > a[href="autocomplete"]')
-            .then(($el) => {
-                expect($el.text()).to.contain('Autocomplete is OFF');
-                expect($el.text()).to.contain('Go to Setup -> Autocomplete');
-            });
-
-        // Enable autocomplete
-        cy.navigateToPage('Setup', 'Autocomplete');
-        cy.get('label[for="toggleIndex"]').click().wait(2000);
+        cy.get('.autocomplete-toast a').should('contain', 'Autocomplete is OFF')
+            .and('contain', 'Go to Setup -> Autocomplete').click();
+        // The link in notification should redirect to the autocomplete page
+        cy.url().should('include', '/autocomplete');
     });
 
-    it('Test search for a resource - suggestions', function () {
-        // Search for a resource
-        cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > .form-control').type('USRegion')
-            .then(() => {
-                // Verify that a list of suggested resources is displayed as you type.
-                cy.get('#auto-complete-results-wrapper')
-                    .its('length')
-                    .should('be.gt', '0');
-            });
+    it('Test search for a resource - suggestions', () => {
+        getSearchField().type(VALID_RESOURCE);
+        // Verify that a list of suggested resources is displayed as you type.
+        cy.get('#auto-complete-results-wrapper .result-item').should('have.length', 1);
     });
 
-    it('Test search for an invalid resource', function () {
-        // Search for an invalid resource
-        cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > .form-control').type('hfsafa')
-            .then(() => {
-                // Click "Show" button
-                cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > :nth-child(3) > .btn').click()
-                    .then(() => {
-                        // Verify that an "Invalid URI" message is displayed
-                        cy.get('#toast-container')
-                            .then(($el) => {
-                                expect($el.text()).to.contain('Invalid URI');
-                            });
-                    });
-            });
+    it('Test search for an invalid resource', () => {
+        getSearchField().type('.invalid_resource');
+        // There are two buttons rendered in the DOM where one of them is hidden. We need the visible one.
+        cy.get('.autocomplete-visual-btn:visible').click();
+        // Verify that an "Invalid URI" message is displayed
+        cy.get('#toast-container').should('contain', 'Invalid URI');
     });
 
-    it('Test search for a valid resource', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
+    it('Test search for a valid resource', () => {
+        searchForResource(VALID_RESOURCE);
         // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
+        cy.url().should('match', /USRegion$/);
     });
 
-    it('Test default graph state', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
+    it('Test default graph state', () => {
+        searchForResource(VALID_RESOURCE);
+        openVisualGraphSettings();
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Verify that the default settings are as follows:
-                // Maximum links to show: 20
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .should('have.value', '20');
-                // Preferred lang: en
-                cy.get('.input-group > .ng-valid-max-tags > .host > .tags > .tag-list > li[class="tag-item ng-scope  [object Object]"]' +
-                    '> ti-tag-item > ng-include > span.ng-binding.ng-scope')
-                    .then(($el) => {
-                        expect($el.text()).to.contain('en');
-                    });
-                // Include inferred: false
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'includeInferred\']"]')
-                    .should('not.be.checked');
-                // Expand results over owl:sameAs: false
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'sameAsState\']"]')
-                    .should('not.be.checked');
-                // Show predicate labels: true
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'showLinksText\']"]')
-                    .should('be.checked');
+        cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
+            // Verify that the default settings are as follows:
+            // Maximum links to show: 20
+            getLinksNumberField().should('have.value', '20');
+            // Preferred lang: en
+            cy.get('.preferred-languages .tag-item').should('have.length', 1)
+                .and('contain', 'en');
+            // Include inferred: false
+            getIncludeInferredStatementsCheckbox().should('not.be.checked')
+                .and('not.be.disabled');
+            // Expand results over owl:sameAs: false
+            getSameAsCheckbox().should('not.be.checked')
+                .and('be.disabled');
+            // Show predicate labels: true
+            getShowPredicateLabelsCheckbox().should('be.checked')
+                .and('not.be.disabled');
 
-                // No pre-added preferred/ignored types
-                cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .should('have.value', '');
-                cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                    .should(('not.be.checked'));
-                cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .should('have.value', '');
+            // No pre-added preferred/ignored types
+            getPreferredTypesField().should('be.empty');
+            getShowPreferredTypesOnlyCheckbox().should(('not.be.checked'))
+                .and('not.be.disabled');
+            getIgnoredTypesField().should('be.empty');
 
-                // Go to predicates tab
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-                        // No pre-added preferred/ignored predicates
-                        cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '');
-                        cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                            .should(('not.be.checked'));
-                        cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '');
-                    });
-            });
+            // Go to predicates tab
+            openPredicatesTab();
+            // No pre-added preferred/ignored predicates
+            getPreferredPredicatesField().should('be.empty');
+            getShowPreferredPredicatesOnlyCheckbox().should('not.be.checked')
+                .and('not.be.disabled');
+            getIgnoredPredicatesField().should('be.empty');
+
+            // Save and rest buttons should be visible and enabled
+            cy.get('@sidepanel').scrollIntoView();
+            getSaveSettingsButton().and('not.be.disabled');
+            getResetSettingsButton().and('not.be.disabled');
+        });
     });
 
-    it('Test search for a valid resource with links', function () {
-        // Search for "USRegion"
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
+    it('Test search for a valid resource with links', () => {
+        searchForResource(VALID_RESOURCE);
         // Check include inferred
-        checkIncludeInferredBoxAndSave('check');
-
+        enableInferredStatements(true);
         // Navigate to Visual graph menu
-        cy.get('i.icon-arrow-up.icon-2x')
-            .click()
-            .then(() => {
-                // Search for "USRegion" again
-                searchForResource(validResource);
-                // Verify redirection to existing visual graph
-                cy.url()
-                    .should('contain', validResource);
-
-                // 	Verify that 20 links (nodes) are displayed
-                cy.get('g.nodes-container > g.link-wrapper')
-                    .should('have.length', '20');
-                // Verify that links are counted by nodes and not by triples (predicates)
-                cy.get('g.nodes-container > g.node-wrapper')
-                    .should('have.length', '21');
-
-                // Uncheck include inferred
-                checkIncludeInferredBoxAndSave();
-            });
+        openVisualGraphHome();
+        // Search for "USRegion" again
+        searchForResource(VALID_RESOURCE);
+        // Verify that 20 links (nodes) are displayed
+        getPredicates().should('have.length', 20);
+        // Verify that links are counted by nodes and not by triples (predicates)
+        getNodes().should('have.length', 21);
     });
 
-    it('Test collapse and expand a node', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url({timeout: 5000})
-            .should('include', validResource);
+    it('Test collapse and expand a node', () => {
+        searchForResource(VALID_RESOURCE);
 
-        // Hover over node with the mouse
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle', {
-            waitForAnimations: true,
-            animationDistanceThreshold: 0
-        })
-            .should('be.visible', {timeout: 5000}).wait(5000)
-            .trigger('mouseover').wait(1000)
-            .then(() => {
-                cy.get('g.nodes-container > g.menu-events > g.collapse-icon > circle')
-                    .trigger('click', {force: true});
-            });
+        // Hover over node with the mouse and collapse it through the menu
+        getTargetNode().trigger('mouseover');
+        collapseGraph();
 
         // Verify that all links to the USRegion node are collapsed
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '0');
+        getPredicates().should('have.length', 0);
         // Verify that the USRegion node is the only node left in the graph
-        cy.get('g.nodes-container > g.node-wrapper')
-            .should('have.length', '1').and('contain', 'USRegion');
+        getNodes().should('have.length', 1).and('contain', 'USRegion');
 
-        // Hover over node with the mouse
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle', {
-            waitForAnimations: true,
-            animationDistanceThreshold: 0
-        })
-            .should('be.visible', {timeout: 5000}).wait(5000)
-            .trigger('mouseover').wait(1000)
-            .then(() => {
-                cy.get('g.nodes-container > g.menu-events > g.expand-icon > circle')
-                    .trigger('click', {force: true});
-            });
+        // Hover over node with the mouse and expand it through the menu
+        getTargetNode().trigger('mouseover');
+        expandGraph();
 
         // Verify that all links to the USRegion node are expanded
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '2');
+        getPredicates().should('have.length', 2);
         // Verify that the USRegion node is not the only node left in the graph
-        cy.get('g.nodes-container > g.node-wrapper')
-            .its('length')
-            .should('be.gt', '1');
+        getNodes().should('have.length', 3);
     });
 
-    it('Test node info', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
+    it('Test expand and collapse node info panel with single click', () => {
+        searchForResource(VALID_RESOURCE);
 
         // Click once on the node with the mouse to open node's info panel
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle')
-            .click({force: true})
-            .then(() => {
-                cy.get('pageslide > div.rdf-side-panel-content.break-word-alt.p-1.pt-2')
-                // Verify that a side panel is displayed containing info about the resource
-                    .should('be.visible', {timeout: 5000}).and('contain', validResource);
-            });
+        getTargetNode().click();
+        // Verify that a side panel is displayed containing info about the resource
+        getNodeInfoPanel().should('be.visible')
+            .find('.uri')
+            .should('be.visible')
+            .and('contain', VALID_RESOURCE);
+
+        // Close side panel and verify it's missing
+        getTargetNode().click();
+        getNodeInfoPanel().should('not.be.visible');
     });
 
-    it('Test remove child node', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url({timeout: 5000})
-            .should('include', validResource);
-
+    it('Test remove child node', () => {
+        searchForResource(VALID_RESOURCE);
         // Verify that before given node is removed there are 3 of them
-        cy.get('g.nodes-container > g.node-wrapper').should('have.length', '3');
-
+        getNodes().should('have.length', 3);
         // Click once on node different than parent one with the mouse
-        cy.get('g.nodes-container > g.node-wrapper > circle', {waitForAnimations: true, animationDistanceThreshold: 0}).eq(1)
-        // timeout is needed because mouseover event will result in
+        cy.get('.node-wrapper circle').eq(1)
+        // The wait is needed because mouseover event will result in
         // pop-up of menu icons only if nodes are not moving
-            .should('be.visible', {timeout: 5000}).wait(5000)
-            .trigger('mouseover').wait(1000)
-            .then(() => {
-                // Select remove function
-                cy.get('g.nodes-container > g.menu-events > g.close-icon > circle')
-                    .trigger('click', {force: true})
-                    .then(() => {
-                        // Verify that link between parent node and the one child node is expanded
-                        cy.get('g.nodes-container > g.link-wrapper')
-                            .should('have.length', '1');
-                        // Verify that the USRegion node is not the only node left in the graph
-                        cy.get('g.nodes-container > g.node-wrapper')
-                            .its('length')
-                            .should('to.be', '2');
-                    });
-            });
+            .should('be.visible').wait(5000)
+            .trigger('mouseover');
+        // Select remove function
+        removeNode();
+        // Verify that link between parent node and the one child node is expanded
+        getPredicates().should('have.length', 1);
+        // Verify that the USRegion node is not the only node left in the graph
+        getNodes().should('have.length', 2);
     });
 
-    it('Test remove parent node', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url({timeout: 5000})
-            .should('include', validResource);
+    it('Test remove parent node', () => {
+        searchForResource(VALID_RESOURCE);
+
         // Verify that search bar isn't visible
-        cy.get('div.ng-scope > :nth-child(1) > .card-block > .ng-isolate-scope > .input-group > .form-control')
-            .should('not.be.visible');
+        getSearchField().should('not.be.visible');
         // Hover over node with the mouse
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle', {
-            waitForAnimations: true,
-            animationDistanceThreshold: 0
-        })
-            .should('be.visible', {timeout: 5000}).wait(5000)
-            .trigger('mouseover').wait(1000)
-            .then(() => {
-                // Select remove function
-                cy.get('g.nodes-container > g.menu-events > g.close-icon > circle')
-                    .trigger('click', {force: true});
-                // Verify that the search bar re-appears on the screen
-                cy.get('.col-lg-12 > .card > .card-block > .ng-isolate-scope > .input-group > .form-control')
-                    .should('be.visible');
-            });
+        getTargetNode().trigger('mouseover');
+        // Select remove function for the parent node
+        removeNode();
+        cy.get('.graph-visualization').should('not.be.visible');
+        // Verify that the search bar re-appears on the screen
+        cy.get('.incontext-search-rdf-resource input').should('be.visible');
     });
 
-    it('Test expand collapsed node which has connections with double click', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url({timeout: 5000})
-            .should('include', validResource);
+    it('Test expand collapsed node which has connections with double click', () => {
+        searchForResource(VALID_RESOURCE);
 
-        // Hover over the node with the mouse
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle', {
-            waitForAnimations: true,
-            animationDistanceThreshold: 0
-        })
-        // timeout is needed because mouseover event will result in
-        // pop-up of menu icons only if nodes are not moving
-            .should('be.visible', {timeout: 5000}).wait(5000)
-            .trigger('mouseover').wait(1000);
-
-        // Select collapse function
-        cy.get('g.nodes-container > g.menu-events > g.collapse-icon > circle')
-            .trigger('click', {force: true});
+        getTargetNode().trigger('mouseover');
+        collapseGraph();
         // Verify that all links to the USRegion node are collapsed
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '0');
+        getPredicates().should('have.length', 0);
         // Verify that the USRegion node is the only node left in the graph
-        cy.get('g.nodes-container > g.node-wrapper')
-            .should('have.length', '1').and('contain', 'USRegion');
+        getNodes().should('have.length', 1).and('contain', 'USRegion');
 
         // Double click on collapsed node
-        cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle')
-            .click({force: true})
-            .then(() => {
-                cy.get('g[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#' + validResource + '"] > circle')
-                    .click({force: true});
-            });
+        // This is ugly but unfortunately I couldn't make cypress's dblclick to work reliably here
+        getTargetNodeElement().click().then(() => {
+            getTargetNodeElement().click();
+        });
 
         // Verify that all links to the USRegion node are expanded
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '2');
+        getPredicates().should('have.length', 2);
         // Verify that the USRegion node is not the only node left in the graph
-        cy.get('g.nodes-container > g.node-wrapper')
-            .its('length')
-            .should('be.gt', '1');
+        getNodes().should('have.length', 3);
     });
 
-    it('Test verify mouse/keyboard actions', function () {
+    it('Test verify mouse/keyboard actions', () => {
         let mouseActions = 'Mouse actions\n                ' +
             '\n                    \n                    \n                        \n                            ' +
             'Single click\n                        \n                        ' +
@@ -382,393 +235,352 @@ describe('Visual graph screen validation', function () {
             'Rotate the graph to the right\n';
 
         // Click on "mouse and keyboard actions" in the lower right corner of the screen
-        cy.get('#keyboardShortcuts')
-            .click()
-            .then(() => {
-                // Verify all mouse and actions
-                cy.get('.hotkeys > :nth-child(2)')
-                    .then(($el) => {
-                        expect($el.text()).to.contain(mouseActions);
-                    });
-
-                // Verify all touch actions
-                cy.get('.hotkeys > :nth-child(3)')
-                    .then(($el) => {
-                        expect($el.text()).to.contain(touchActions);
-                    });
-                // // Verify keyboard actions
-                cy.get('.hotkeys > :nth-child(4)')
-                    .then(($el) => {
-                        expect($el.text()).to.contain(keyboardActions);
-                    });
-            });
+        cy.get('#keyboardShortcuts').click();
+        // Verify all mouse and actions
+        cy.get('.hotkeys-container').should('contain', mouseActions);
+        // Verify all touch actions
+        cy.get('.hotkeys-container').then(($el) => {
+            expect($el.text()).to.contain(touchActions);
+        });
+        // // Verify keyboard actions
+        cy.get('.hotkeys-container').then(($el) => {
+            expect($el.text()).to.contain(keyboardActions);
+        });
     });
 
-    it('Test maximum links to show', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
-
-        // Check include inferred
-        checkIncludeInferredBoxAndSave('check');
+    it('Test maximum links to show', () => {
+        searchForResource(VALID_RESOURCE);
+        enableInferredStatements(true);
 
         // Verify that 20 links (nodes) are displayed
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '20');
+        getPredicates().should('have.length', 20);
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Set maximum links to 2
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .clear().type('2');
-                cy.get('button[type="submit"]').click()
-                    .then(() => {
-                        // Verify that the diagram is updated
-                        cy.get('g.nodes-container > g.link-wrapper')
-                            .should('have.length', '2');
-                    });
-            });
+        openVisualGraphSettings();
+        // Set maximum links to 2
+        getLinksNumberField().clear().type('2');
+        saveSettings();
+        // Verify that the diagram is updated
+        getPredicates().should('have.length', 2);
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Set maximum links to 100
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .clear().type('100');
-                cy.get('button[type="submit"]').click().wait(1500)
-                    .then(() => {
-                        // Verify that the diagram is updated
-                        cy.get('g.nodes-container > g.link-wrapper')
-                            .its('length')
-                            .should('be.gt', '20');
-                    });
-            });
-
-        // Uncheck include inferred
-        checkIncludeInferredBoxAndSave();
+        openVisualGraphSettings();
+        // Set maximum links to 100
+        getLinksNumberField().clear().type('100');
+        saveSettings();
+        // Verify that the diagram is updated
+        getPredicates().should('have.length', 35);
     });
 
-    it('Test include inferred Statements', function () {
-        // Search for an valid resource
-        searchForResource(validResource);
-        // Verify redirection to existing visual graph
-        cy.url()
-            .should('contain', validResource);
-
+    it('Test include inferred Statements', () => {
+        searchForResource(VALID_RESOURCE);
         // Check include inferred
-        checkIncludeInferredBoxAndSave('check');
+        enableInferredStatements(true);
 
         // Verify that many results are displayed
         // Verify that 20 links (nodes) are displayed
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '20');
-
+        getPredicates().should('have.length', 20);
         // Verify that more than three nodes are displayed
-        cy.get('g.nodes-container > g.node-wrapper')
-            .its('length')
-            .should('be.gt', '3');
+        getNodes().should('have.length', 21);
 
         // Switch Include Inferred Statements off
-        checkIncludeInferredBoxAndSave();
+        enableInferredStatements();
 
         // Verify that 20 links (nodes) are displayed
-        cy.get('g.nodes-container > g.link-wrapper')
-            .should('have.length', '2');
+        getPredicates().should('have.length', 2);
 
-        // Verify that more than three nodes are displayed
-        cy.get('g.nodes-container > g.node-wrapper')
-            .should('have.length', '3');
+        // Verify that three nodes are displayed
+        getNodes().should('have.length', 3);
 
         // Verify that only "Texas" and "California" regions are displayed
-        cy.get('g.nodes-container > g.node-wrapper')
-            .should('contain', 'Texas').and('contain', 'California');
+        getNodes().should('contain', 'Texas').and('contain', 'California');
     });
 
-    it('Test preferred types', function () {
-        // Search for "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry"
-        searchForResource('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+    it('Test preferred types', () => {
+        typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Set "vin:Chardonnay" as a preferred type
-                cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .clear().type('vin:Chardonnay');
-                // Select "Show preferred types only"
-                cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                    .check();
-                cy.get('button[type="submit"]').click().wait(1000)
-                    .then(() => {
-                        // Verify that there are a total of 6 ( 5 children plus one parent nodes ) are connected to the DRY node
-                        cy.get('g.nodes-container > g.node-wrapper > foreignObject > div.node-label-body > div')
-                            .should('have.length', '6')
-                            .each(($el) => {
-                                // Exclude parent node
-                                if ($el.text() !== 'Dry') {
-                                    expect($el.text()).to.contain('Chardonnay');
-                                }
-                            });
-                    });
-            });
+        openVisualGraphSettings();
+        // Set "vin:Chardonnay" as a preferred type
+        getPreferredTypesField().clear().type('vin:Chardonnay');
+        // Select "Show preferred types only"
+        showPreferredTypes(true);
 
-        // Return previous state of the graph
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .clear();
-                cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                    .uncheck();
-                cy.get('button[type="submit"]').click();
-            });
+        saveSettings();
+
+        // Verify that there are a total of 6 ( 5 children plus one parent nodes ) are connected to the DRY node
+        getNodes().should('have.length', 6).each(($el) => {
+            // Exclude parent node
+            if ($el.text() !== 'Dry') {
+                expect($el.text()).to.contain('Chardonnay');
+            }
+        });
     });
 
-    it('Test ignored types', function () {
-        // Search for "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry"
-        searchForResource('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+    it('Test ignored types', () => {
+        typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
         // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
-        cy.get('g.nodes-container > g.node-wrapper > foreignObject > div.node-label-body > div')
-            .should('contain', 'Zinfandel');
+        getNodes().should('contain', 'Zinfandel');
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Go to Settings and set "vin:Zinfandel" as an ignored type
-                cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .clear().type('vin:Zinfandel').wait(200);
+        openVisualGraphSettings();
+        // Go to Settings and set "vin:Zinfandel" as an ignored type
+        getIgnoredTypesField().clear().type('vin:Zinfandel');
 
-                // Set the connections limit to 10
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .clear().type('10');
+        // Set the connections limit to 10
+        getLinksNumberField().clear().type('10');
 
-                cy.get('button[type="submit"]').click().wait(1000)
-                    .then(() => {
-                        // Verify that "vin:Zinfandel" has been removed from the diagram
-                        cy.get('g.nodes-container > g.node-wrapper > foreignObject > div.node-label-body > div')
-                            .should('not.contain', 'Zinfandel');
-                    });
-            });
-
-        // Return previous state of the graph
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .clear();
-
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .clear().type('20');
-
-                cy.get('button[type="submit"]').click();
-            });
+        saveSettings();
+        // Verify that "vin:Zinfandel" has been removed from the diagram
+        getNodes().should('not.contain', 'Zinfandel');
     });
 
-    it('Test preferred predicates', function () {
-        // Search for "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry"
-        searchForResource('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+    it('Test preferred predicates', () => {
+        typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Go to predicates tab
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-                        // Set "vin:hasSugar" as a preferred predicate
-                        cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .clear().type('vin:hasSugar');
-                        // Select "Show preferred predicates only"
-                        cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                            .check();
+        openVisualGraphSettings();
+        // Go to predicates tab
+        openPredicatesTab();
+        // Set "vin:hasSugar" as a preferred predicate
+        getPreferredPredicatesField().clear().type('vin:hasSugar');
+        // Select "Show preferred predicates only"
+        getShowPreferredPredicatesOnlyCheckbox().check();
 
-                        cy.get('button[type="submit"]').click().wait(1000)
-                            .then(() => {
-                                // Verify that only the "vin:hasSugar" predicate is displayed between the nodes
-                                cy.get('g.nodes-container > g.link-wrapper > text.predicate')
-                                    .should('contain', 'hasSugar');
-                            });
-                    });
-            });
-
-        // Return previous state of the graph
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-                        cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .clear();
-                        cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                            .uncheck();
-
-                        cy.get('button[type="submit"]').click();
-                    });
-            });
+        saveSettings();
+        // Verify that only the "vin:hasSugar" predicate is displayed between the nodes
+        getPredicates().should('contain', 'hasSugar');
     });
 
-    it('Test ignored predicates', function () {
-        // Search for "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry"
-        searchForResource('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+    it('Test ignored predicates', () => {
+        typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
         // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
-        cy.get('g.nodes-container > g.link-wrapper > text.predicate')
-            .should('contain', 'hasSugar');
+        getPredicates().should('contain', 'hasSugar');
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Go to predicates tab
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-                        // Set "vin:hasSugar" as an ignored predicate
-                        cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .clear().type('vin:hasSugar').wait(200);
+        openVisualGraphSettings();
+        // Go to predicates tab
+        openPredicatesTab();
+        // Set "vin:hasSugar" as an ignored predicate
+        getIgnoredPredicatesField().clear().type('vin:hasSugar');
 
-                        // Set the connections limit to 10
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                            .clear().type('10');
+        // Set the connections limit to 10
+        getLinksNumberField().clear().type('10');
+        saveSettings();
 
-                        cy.get('button[type="submit"]').click().wait(1000)
-                            .then(() => {
-                                // Verify that "vin:hasSugar" has been removed from the diagram
-                                cy.get('g.nodes-container > g.link-wrapper > text.predicate')
-                                    .should('not.contain', 'hasSugar');
-                            });
-                    });
-            });
-
-        // Return previous state of the graph
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Go to predicates tab
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-
-                        cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .clear();
-
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                            .clear().type('20');
-
-                        cy.get('button[type="submit"]').click();
-                    });
-            });
+        // Verify that "vin:hasSugar" has been removed from the diagram
+        getPredicates().should('not.contain', 'hasSugar');
     });
 
-    it('Test reset settings', function () {
-        // Search for "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry"
-        searchForResource('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+    it('Test reset settings', () => {
+        typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
-        cy.get('i.icon-settings.icon-2x').click()
-            .then(() => {
-                // Verify that the default settings are as follows:
-                // Maximum links to show: 20
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                    .should('have.value', '20')
-                    // Change the default value to 10
-                    .clear().type('10')
-                    .should('have.value', '10');
-                // Preferred lang: en
-                cy.get('.input-group > .ng-valid-max-tags > .host > .tags > .tag-list > li[class="tag-item ng-scope  [object Object]"]' +
-                    '> ti-tag-item > ng-include > span.ng-binding.ng-scope')
-                    .then(($el) => {
-                        expect($el.text()).to.contain('en');
-                    });
-                // Include inferred: false
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'includeInferred\']"]')
-                    .should('not.be.checked')
-                    .check()
-                    .should('be.checked');
-                // Expand results over owl:sameAs: false
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'sameAsState\']"]')
-                    .should('not.be.checked')
-                    .check()
-                    .should('be.checked');
-                // Show predicate labels: true
-                cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                    '> label > input[ng-model="settings[\'showLinksText\']"]')
-                    .should('be.checked')
-                    .uncheck()
-                    .should('not.be.checked');
+        // Modify the settings first
+        openVisualGraphSettings();
+        // Verify that the default settings are as follows:
+        // Maximum links to show: 20
+        getLinksNumberField().clear().type('10')
+            .should('have.value', '10');
+        // Preferred lang: en
+        cy.get('.preferred-languages .tag-item').should('have.length', 1)
+            .eq(0).should('contain', 'en');
+        // Include inferred: false
+        getIncludeInferredStatementsCheckbox().check()
+            .should('be.checked');
+        // Expand results over owl:sameAs: false
+        getSameAsCheckbox().check()
+            .should('be.checked');
+        // Show predicate labels: true
+        getShowPredicateLabelsCheckbox().uncheck()
+            .should('not.be.checked');
 
-                // No pre-added preferred/ignored types
-                cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .should('have.value', '')
-                    .type('vin:PinotNoir')
-                    .should('have.value', 'vin:PinotNoir');
-                cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                    .should(('not.be.checked'))
-                    .check()
-                    .should('be.checked');
-                cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                    .should('have.value', '')
-                    .type('vin:PinotNoir')
-                    .should('have.value', 'vin:PinotNoir');
+        // No pre-added preferred/ignored types
+        getPreferredTypesField().type('vin:PinotNoir')
+            .should('have.value', 'vin:PinotNoir');
+        getShowPreferredTypesOnlyCheckbox().check()
+            .should('be.checked');
+        getIgnoredTypesField().type('vin:PinotNoir')
+            .should('have.value', 'vin:PinotNoir');
 
-                // Go to predicates tab
-                cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                    .then(() => {
-                        // No pre-added preferred/ignored predicates
-                        cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '')
-                            .type('vin:hasSugar')
-                            .should('have.value', 'vin:hasSugar');
-                        cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '')
-                            .type('vin:hasSugar')
-                            .should('have.value', 'vin:hasSugar');
-                        cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                            .should(('not.be.checked'))
-                            .check()
-                            .should('be.checked');
-                        cy.get('button[type="submit"]').click().wait(1000)
-                    });
+        // Go to predicates tab
+        openPredicatesTab();
+        // No pre-added preferred/ignored predicates
+        getPreferredPredicatesField().type('vin:hasSugar')
+            .should('have.value', 'vin:hasSugar');
+        getShowPreferredPredicatesOnlyCheckbox().check()
+            .should('be.checked');
+        getIgnoredPredicatesField().type('vin:hasSugar')
+            .should('have.value', 'vin:hasSugar');
 
-                cy.get('i.icon-settings.icon-2x').click()
-                    .then(() => {
-                        cy.get('button[ng-click="resetSettings()"]').click();
-                        cy.get('button[type="submit"]').click().wait(1000)
-                    });
-                cy.get('i.icon-settings.icon-2x').click()
-                    .then(() => {
-                        // Verify that settings are reverted to default:
-                        // Maximum links to show: 20
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.form-inline > input[type="number"]')
-                            .should('have.value', '20');
-                        // Preferred lang: en
-                        cy.get('.input-group > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .then(($el) => {
-                                expect($el.text()).to.contain('');
-                            });
-                        // Include inferred: false
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                            '> label > input[ng-model="settings[\'includeInferred\']"]')
-                            .should('not.be.checked');
-                        // Expand results over owl:sameAs: false
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                            '> label > input[ng-model="settings[\'sameAsState\']"]')
-                            .should('not.be.checked');
-                        // Show predicate labels: true
-                        cy.get('div.filter-sidepanel.tab-content.ng-scope > div > div.form-group.mb-2 > div.checkbox' +
-                            '> label > input[ng-model="settings[\'showLinksText\']"]')
-                            .should('be.checked');
+        saveSettings();
 
-                        // No pre-added preferred/ignored types
-                        cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '');
-                        cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                            .should(('not.be.checked'));
-                        cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                            .should('have.value', '');
+        // Reset settings and verify everything is reverted to its default
+        openVisualGraphSettings();
+        resetSettings();
+        saveSettings();
 
-                        // Go to predicates tab
-                        cy.get(':nth-child(2) > .ng-binding > .nav-item > .nav-link').click()
-                            .then(() => {
-                                // No pre-added preferred/ignored predicates
-                                cy.get('.active > .mt-1 > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                                    .should('have.value', '');
-                                cy.get('.active > :nth-child(2) > .checkbox > label > .ng-pristine')
-                                    .should(('not.be.checked'));
-                                cy.get('.active > :nth-child(3) > :nth-child(2) > .ng-isolate-scope > .host > .tags > .ng-pristine')
-                                    .should('have.value', '');
-                            });
-                    });
-            });
+        openVisualGraphSettings();
+        // Verify that the default settings are as follows:
+        // Maximum links to show: 20
+        getLinksNumberField().should('have.value', '20');
+        // Preferred lang: en
+        cy.get('.preferred-languages .tag-item').should('have.length', 0);
+        // Include inferred: false
+        getIncludeInferredStatementsCheckbox().should('not.be.checked')
+            .and('not.be.disabled');
+        // Expand results over owl:sameAs: false
+        getSameAsCheckbox().should('not.be.checked')
+            .and('be.disabled');
+        // Show predicate labels: true
+        getShowPredicateLabelsCheckbox().should('be.checked')
+            .and('not.be.disabled');
+
+        // No pre-added preferred/ignored types
+        getPreferredTypesField().should('be.empty');
+        getShowPreferredTypesOnlyCheckbox().should(('not.be.checked'))
+            .and('not.be.disabled');
+        getIgnoredTypesField().should('be.empty');
+
+        // Go to predicates tab
+        openPredicatesTab();
+        // No pre-added preferred/ignored predicates
+        getPreferredPredicatesField().should('be.empty');
+        getShowPreferredPredicatesOnlyCheckbox().should(('not.be.checked'))
+            .and('not.be.disabled');
+        getIgnoredPredicatesField().should('be.empty');
     });
+
+    // Visual graph home view access
+
+    function getSearchField() {
+        return cy.get('.search-rdf-resources input:visible');
+    }
+
+    function typeInSearchField(resource) {
+        // Wait should guarantee that the dropdown has been rendered and the focus is properly set.
+        getSearchField().type(resource).trigger('change').wait(500).type('{enter}');
+    }
+
+    function searchForResource(resource) {
+        typeInSearchField(resource);
+        // Verify redirection to existing visual graph
+        cy.get('.graph-visualization').should('be.visible')
+            .find('.nodes-container').should('be.visible');
+    }
+
+    function getTargetNodeElement() {
+        return cy.get(`[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#${VALID_RESOURCE}"] circle`);
+    }
+
+    function getTargetNode() {
+        // The wait is needed because mouseover event will result in
+        // pop-up of menu icons only if nodes are not moving
+        return getTargetNodeElement().should('be.visible').wait(5000);
+    }
+
+    function getNodes() {
+        return cy.get('.node-wrapper');
+    }
+
+    function getPredicates() {
+        return cy.get('.predicate');
+    }
+
+    function getNodeInfoPanel() {
+        return cy.get('.rdf-info-side-panel .tab-content');
+    }
+
+    // Visual graph settings form field access
+
+    function openPredicatesTab() {
+        cy.get('.predicates-tab').click();
+    }
+
+    function showPreferredTypes(enable) {
+        let command = enable ? 'check' : 'uncheck';
+        getShowPreferredTypesOnlyCheckbox()[command]();
+    }
+
+    function enableInferredStatements(enable) {
+        openVisualGraphSettings();
+        let command = enable ? 'check' : 'uncheck';
+        getIncludeInferredStatementsCheckbox()[command]();
+        saveSettings();
+    }
+
+    function getLinksNumberField() {
+        return cy.get('.input-number');
+    }
+
+    function getSaveSettingsButton() {
+        return cy.get('.save-settings-btn');
+    }
+
+    function saveSettings() {
+        getSaveSettingsButton().click();
+    }
+
+    function getResetSettingsButton() {
+        return cy.get('.reset-settings');
+    }
+
+    function resetSettings() {
+        getResetSettingsButton().click();
+    }
+
+    function getSameAsCheckbox() {
+        return cy.get('#sameAsCheck');
+    }
+
+    function getIncludeInferredStatementsCheckbox() {
+        return cy.get('.include-inferred-statements');
+    }
+
+    function getShowPredicateLabelsCheckbox() {
+        return cy.get('.show-predicate-labels');
+    }
+
+    function getPreferredTypesField() {
+        return cy.get('.preferred-types input');
+    }
+
+    function getShowPreferredTypesOnlyCheckbox() {
+        return cy.get('.show-preferred-types-only');
+    }
+
+    function getIgnoredTypesField() {
+        return cy.get('.ignored-types input');
+    }
+
+    function getPreferredPredicatesField() {
+        return cy.get('.preferred-predicates input');
+    }
+
+    function getShowPreferredPredicatesOnlyCheckbox() {
+        return cy.get('.show-preferred-predicates-only');
+    }
+
+    function getIgnoredPredicatesField() {
+        return cy.get('.ignored-predicates input');
+    }
+
+    // Node actions
+
+    function collapseGraph() {
+        cy.get('.menu-events .collapse-icon circle').click();
+    }
+
+    function expandGraph() {
+        cy.get('.menu-events .expand-icon circle').click();
+    }
+
+    function removeNode() {
+        cy.get('.menu-events .close-icon circle').click();
+    }
+
+    // Visual graph toolbar actions
+
+    function openVisualGraphSettings() {
+        return cy.get('.visual-graph-settings-btn').click();
+    }
+
+    function openVisualGraphHome() {
+        cy.get('.return-home-btn').click();
+    }
 });

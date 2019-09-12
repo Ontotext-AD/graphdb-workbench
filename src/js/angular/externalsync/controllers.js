@@ -32,51 +32,56 @@ define(['lib/stringify/stringify'],
         function mapCreateValuesToUiValues(values, options) {
             for (var i = 0; i < options.length; i++) {
                 var option = options[i];
-                if (option.__type == 'StringArray') {
+                if (option.__type === 'StringArray') {
                     if (!values[option.__name]) {
                         values[option.__name] = [''];
                     }
-                }
-                else if (option.__type == 'OptionArray') {
-                    if (!values[option.__name]) {
+                } else if (option.__type === 'OptionArray') {
+                    if (!values[option.__name]) { // values has no entry for this option
                         values[option.__name] = [];
                         var optionEl = {};
-                        var boolOptions = [];
-                        for (var j = 0; j < option.__childOptions.length; j++) {
-                            var child = option.__childOptions[j];
-                            if (child.__type == 'StringArray') {
+                        for (let j = 0; j < option.__childOptions.length; j++) {
+                            const child = option.__childOptions[j];
+                            if (child.__type === 'StringArray') {
                                 optionEl[child.__name] = [''];
-                            }
-                            else {
+                            } else {
                                 optionEl[child.__name] = (!angular.isUndefined(child.__defaultValue) ? child.__defaultValue : '');
                             }
                         }
                         values[option.__name].push(optionEl);
+                    } else { // values already has en entry for this option
+                        // Copies the default value for Boolean child options if no explicit value is set
+                        for (let j = 0; j < option.__childOptions.length; j++) {
+                            const child = option.__childOptions[j];
+                            if (child.__type === 'Boolean') {
+                                for (let k = 0; k < values[option.__name].length; k++) {
+                                    const valueK = values[option.__name][k];
+                                    if (!valueK.hasOwnProperty([child.__name]) && angular.isDefined(child.__defaultValue)) {
+                                        valueK[child.__name] = child.__defaultValue;
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-                else if (option.__type == 'Map') {
+                } else if (option.__type === 'Map') {
                     if (!values[option.__name]) {
                         values[option.__name] = [];
                     } else {
                         values[option.__name] = toArrayMap(values[option.__name]);
                     }
-                }
-                else if (option.__type == 'JsonString') {
-                    if (!values[option.__name]) {
-                        values[option.__name] = '{}';
-                    } else {
+                } else if (option.__type === 'JsonString') {
+                    if (values[option.__name]) {
                         values[option.__name] = angular.toJson(values[option.__name], 2);
                     }
-                }
-                else {
-                    if (!values[option.__name]) {
+                } else {
+                    if (angular.isUndefined(values[option.__name])) {
                         values[option.__name] = (!angular.isUndefined(option.__defaultValue) ? option.__defaultValue : '');
                     }
                 }
             }
 
             return values;
-                    }
+        }
 
         function _evaluateSparqlQuery(http, repository, query) {
             return http.post('repositories/' + repository, jsonToFormData({query: query}),

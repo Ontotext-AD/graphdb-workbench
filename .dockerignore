@@ -4,4 +4,5 @@
 # Except
 !docker-rootfs/
 !src/
+!dist/
 !test-cypress/

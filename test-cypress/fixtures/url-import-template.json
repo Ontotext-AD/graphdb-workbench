@@ -1,0 +1,26 @@
+{
+    "name": "https://www.w3.org/TR/owl-guide/wine.rdf",
+    "status": "NONE",
+    "message": "",
+    "context": null,
+    "replaceGraphs": [],
+    "baseURI": null,
+    "forceSerial": false,
+    "type": "url",
+    "format": "",
+    "data": "https://www.w3.org/TR/owl-guide/wine.rdf",
+    "timestamp": 1565777709509,
+    "parserSettings": {
+        "preserveBNodeIds": false,
+        "failOnUnknownDataTypes": false,
+        "verifyDataTypeValues": false,
+        "normalizeDataTypeValues": false,
+        "failOnUnknownLanguageTags": false,
+        "verifyLanguageTags": true,
+        "normalizeLanguageTags": false,
+        "verifyURISyntax": true,
+        "verifyRelativeURIs": true,
+        "stopOnError": true
+    },
+    "xRequestIdHeaders": null
+}

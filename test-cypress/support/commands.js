@@ -24,6 +24,41 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import './repository-commands';
+import './import-commands';
+
+/**
+ * Cypress cannot directly work with iframes due to https://github.com/cypress-io/cypress/issues/136
+ *
+ * This command acts as a workaround that encapsulates the frame's content and makes it queryable and assertable.
+ */
+Cypress.Commands.add('iframe', {prevSubject: 'element'}, ($iframe) => {
+    Cypress.log({
+        name: 'iframe',
+        consoleProps() {
+            return {
+                iframe: $iframe,
+            };
+        },
+    });
+    return new Cypress.Promise(resolve => {
+        // Directly resolve the body if it is loaded, otherwise wait
+        if ($iframe.contents().find('body').children().length > 0) {
+            resolve($iframe.contents().find('body'));
+        } else {
+            $iframe.on('load', () => {
+                resolve($iframe.contents().find('body'));
+            });
+        }
+    });
+});
+
+// ================================================================================
+// ================================================================================
+// ========================= FOR REVIEW / REFACTOR/ REMOVAL =======================
+// ================================================================================
+// ================================================================================
+
 let openImportURLDialog = Cypress.Commands.add('openImportURLDialog', (importURL) => {
     cy.get('i[class="icon-link icon-lg pull-left"]').click();
     cy.get('#dataUrl').type(importURL);
@@ -79,13 +114,16 @@ Cypress.Commands.add('selectRDFLinkButton', () => {
 
 
 Cypress.Commands.add('selectRepo', (repoId) => {
-    cy.get('#repositorySelectDropdown')
-        .click({force: true})
-        .then(() => {
-            cy.get('.dropdown-item', {timeout: 1000})
-                .contains(repoId)
-                .click({force: true});
-        });
+    cy.get('#repositorySelectDropdown', {timeout: 30000}).should('be.visible');
+
+    // Wait until repositories GET request finishes and the menu is updated
+    cy.get('#repositorySelectDropdown .no-repositories').should('not.be.visible');
+
+    cy.get('#repositorySelectDropdown').click().within(() => {
+        // TODO: Force is necessary because the repo name could be hidden in quite long menu -> try to fix it
+        // After selecting the repository, the menu item should be detached from the DOM as possible selection
+        cy.get('.dropdown-item', {timeout: 1000}).contains(repoId).click({force: true}).should('not.exist');
+    });
 });
 
 Cypress.Commands.add('selectRepoS', (repoId) => {
@@ -230,6 +268,14 @@ let navigateToPage = Cypress.Commands.add('navigateToPage', (mainMenu, subMenu) 
         });
 });
 
+let visitAndWaitLoader = Cypress.Commands.add('visitAndWaitLoader', (page) => {
+    //we assume here we do not have two submenus with the same text???
+    cy.visit(page);
+
+    cy.get(".show-ng-cloak.ot-splash").should("not.be.visible");
+    cy.get(".ot-loader-new-content").should("not.be.visible");
+});
+
 let navigateToPageS = Cypress.Commands.add('navigateToPageS', (mainMenu, subMenu) => {
     //we assume here we do not have two submenus with the same text???
     if (mainMenu == 'Setup' && subMenu == 'Repositories') {
@@ -257,6 +303,7 @@ let navigateToPageS = Cypress.Commands.add('navigateToPageS', (mainMenu, subMenu
 });
 
 let createNewRepo = Cypress.Commands.add('createNewRepo', (repoId, rulesetToSelect, enableSameAs) => {
+    // TODO: Sometimes the page is not yet loaded and this fails ?!
     cy.get('#wb-repositories-addRepositoryLink', {timeout: 1000})
         .click({force: true});
 
@@ -301,12 +348,8 @@ let createNewRepoS = Cypress.Commands.add('createNewRepoS', (repoId, rulesetToSe
 });
 
 let setRepoDefault = Cypress.Commands.add('setRepoDefault', (repoId) => {
-    cy.get('#wb-repositories-repositoryInGetRepositories > tbody > tr')
-        .each(($el, index) => {
-            if ($el.text().trim() === repoId) {
-                cy.get('i.icon-pin').eq(index).click({force: true});
-            }
-        });
+    cy.get(`#wb-repositories-repositoryInGetRepositories .repository-id:contains(${repoId})`)
+        .closest('tr').find('.pin-repository-btn').click({force: true});
 });
 
 let setRepoDefaultS = Cypress.Commands.add('setRepoDefaultS', (repoId) => {
@@ -398,11 +441,4 @@ let verifyQueryResultsS = Cypress.Commands.add('verifyQueryResultsS', (numberOfR
         .should('contain', message);
     cy.get('#yasr-inner .alert.alert-info.no-icon').not("ng-hide")
         .should('contain', 'Query took');
-});
-
-
-//verifies that a certain graph exist within the current page in graphs overview.
-let verifyGraphExists = Cypress.Commands.add('verifyGraphExists', (graphName) => {
-    cy.wait(500);
-    cy.get("tbody").should('contain', graphName);
 });

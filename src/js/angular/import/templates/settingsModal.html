@@ -1,252 +1,270 @@
-
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="cancel()"></button>
-                <h4 class="modal-title">Import settings</h4>
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h4 class="modal-title">Import settings</h4>
+</div>
+<form name="settingsForm" class="settings-form">
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label">
+                    Base IRI
+                    <span class="btn btn-link p-0"
+                          popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
+                                    <i class="icon icon-info"></i>
+                                </span>
+                </label>
+                <div class="col-lg-9">
+                    <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control"
+                           placeholder="http://exampleuri.com/examplepath">
+                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">Not a
+                        valid IRI!
+                    </div>
+                </div>
             </div>
-            <form name="settingsForm">
-            <div class="modal-body">
-                <div class="form-horizontal">
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">
-                                Base IRI
-                                <span class="btn btn-link p-0"
-                                      popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
-                                      popover-trigger="mouseenter"
-                                      popover-placement="right">
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label">
+                    Target graphs
+                    <span class="btn btn-link p-0"
+                          popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
                                     <i class="icon icon-info"></i>
                                 </span>
-                            </label>
-                            <div class="col-lg-9">
-                                <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control" placeholder="http://exampleuri.com/examplepath">
-                                <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">Not a valid IRI!</div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">
-                                Target graphs
-                                <span class="btn btn-link p-0"
-                                      popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
-                                      popover-trigger="mouseenter"
-                                      popover-placement="right">
+                </label>
+                <div class="col-lg-9">
+                    <div>
+                        <label popover="Import into the graph(s) specified by the data source."
+                               popover-trigger="mouseenter">
+                            <input type="radio" ng-model="target" value="data"
+                                   ng-change="settingsForm.context.$setValidity('validateUri', true)">
+                            From data
+                        </label>
+                        &nbsp;
+                        <label popover="Import everything into the default graph."
+                               popover-trigger="mouseenter">
+                            <input type="radio" ng-model="target" value="default"
+                                   ng-change="settingsForm.context.$setValidity('validateUri', true)">
+                            The default graph
+                        </label>
+                        &nbsp;
+                        <label popover="Import everything into a user-specified named graph."
+                               popover-trigger="mouseenter">
+                            <input type="radio" ng-model="target" value="named" class="named-graph-option">
+                            Named graph
+                        </label>
+                    </div>
+                    <div>
+                        <input validate-uri name="context" type="text" ng-required="target === 'named'"
+                               ng-disabled="target !== 'named'" ng-model="settings.context" class="form-control named-graph-input"
+                               placeholder="http://example.com/graph...">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-9 offset-lg-3">
+                    <label class="col-form-label"
+                           popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
+                           popover-trigger="mouseenter"
+                           popover-placement="top">
+                        <input type="checkbox" ng-model="enableReplace" ng-disabled="isMultiple">
+                        Enable replacement of existing data
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row" ng-show="enableReplace">
+                <label class="col-lg-3 col-form-label">
+                    Replaced graphs
+                    <span class="btn btn-link p-0"
+                          popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
                                     <i class="icon icon-info"></i>
                                 </span>
-                            </label>
-                            <div class="col-lg-9">
-                                <div>
-                                <label popover="Import into the graph(s) specified by the data source."
-                                       popover-trigger="mouseenter">
-                                    <input type="radio" ng-model="target" value="data" ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                                    From data
-                                </label>
-                                &nbsp;
-                                <label popover="Import everything into the default graph."
-                                       popover-trigger="mouseenter">
-                                    <input type="radio" ng-model="target" value="default" ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                                    The default graph
-                                </label>
-                                &nbsp;
-                                <label popover="Import everything into a user-specified named graph."
-                                       popover-trigger="mouseenter">
-                                    <input type="radio" ng-model="target" value="named">
-                                    Named graph
-                                </label>
-                                </div>
-                                <div>
-                                    <input validate-uri name="context" type="text" ng-required="target === 'named'" ng-disabled="target !== 'named'" ng-model="settings.context" class="form-control" placeholder="http://example.com/graph...">
-                                </div>
-                            </div>
+                </label>
+                <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
+                    <span ng-show="target === 'default'">The default graph</span>
+                    <span ng-show="target === 'named'">{{settings.context}}</span>
+                    <span class="text-muted">(same as the target graph)</span>
+                </label>
+                <div class="col-lg-9" ng-show="target === 'data'">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <input name="replaceGraph" ng-model="replaceGraph" type="text" class="form-control"
+                                   placeholder="http://example.com/graph..."
+                                   ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
+                                   popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
+                                   popover-placement="top"
+                                   popover-trigger="mouseenter">
                         </div>
-                        <div class="form-group row">
-                            <div class="col-lg-9 offset-lg-3">
-                                <label class="col-form-label"
-                                       popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
-                                       popover-trigger="mouseenter"
-                                       popover-placement="top">
-                                    <input type="checkbox" ng-model="enableReplace" ng-disabled="isMultiple">
-                                    Enable replacement of existing data
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-show="enableReplace">
-                            <label class="col-lg-3 col-form-label">
-                                Replaced graphs
-                                <span class="btn btn-link p-0"
-                                    popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
-                                    popover-trigger="mouseenter"
-                                    popover-placement="right">
-                                    <i class="icon icon-info"></i>
-                                </span>
-                            </label>
-                            <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
-                                <span ng-show="target === 'default'">The default graph</span>
-                                <span ng-show="target === 'named'">{{settings.context}}</span>
-                                <span class="text-muted">(same as the target graph)</span>
-                            </label>
-                            <div class="col-lg-9" ng-show="target === 'data'">
-                                <div class="row">
-                                    <div class="col-lg-9">
-                                        <input name="replaceGraph" ng-model="replaceGraph" type="text" class="form-control" placeholder="http://example.com/graph..."
-                                            ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
-                                            popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
-                                            popover-placement="top"
-                                            popover-trigger="mouseenter">
-                                    </div>
-                                    <div class="col-lg-3 col-lg-no-padding">
-                                        <div class="btn-group" dropdown>
-                                            <button type="button" class="btn btn-primary" ng-click="addReplaceGraph(replaceGraph)"><span class="icon-plus"></span> Add graph</button>
-                                            <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
-                                                <span class="sr-only"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li><button type="button" class="dropdown-item" ng-click="addReplaceGraph('default')">Add default graph</button></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <table>
-                                        <tr>
-                                            <th>
-                                                <span ng-show="settings.replaceGraphs.length">Replaced graphs</span>
-                                                <span ng-show="!settings.replaceGraphs.length">No replaced graphs added</span>
-                                            </th>
-                                        </tr>
-                                        <tr ng-repeat="g in settings.replaceGraphs">
-                                            <td>
-                                                <span ng-show="g !== 'default'">{{g}}</span>
-                                                <span ng-show="g === 'default'">The default graph</span>
-                                                <button type="button" class="btn btn-link btn-sm secondary" ng-click="settings.replaceGraphs.splice($index, 1)">
-                                                    <i class="icon icon-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-lg-9 offset-lg-3">
-                                <label class="col-form-label">
-                                    <input type="checkbox" ng-model="agree" ng-required="enableReplace">
-                                    <b>I understand that data in the replaced graphs will be cleared before importing new data.</b>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="text-xs-center">
-                            <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm">
-                                <span ng-hide="showAdvancedSettings">Show advanced settings<i class="icon-caret-down"></i></span>
-                                <span ng-show="showAdvancedSettings">Hide advanced settings<i class="icon-caret-up"></i></span>
-                            </button>
-                        </div>
-
-                        <div ng-show="hasParserSettings && showAdvancedSettings">
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">BNodes</label>
-                            <div class="col-lg-9">
-                                <div>
-                                    <label>
-                                        <input name="preserveBNodeIDs" type="checkbox" ng-model="settings['parserSettings']['preserveBNodeIds']"
-                                               popover="Assign its own internal blank node identifiers or use the blank node ids it finds in the file."
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Preserve BNode IDs
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">Datatype</label>
-                            <div class="col-lg-9">
-                                <div>
-                                    <label>
-                                        <input name="failOnUnknownDataTypes" type="checkbox"
-                                               ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
-                                               popover="Fail on unknown datatypes"
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Fail parsing if datatypes are not recognised
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input name="verifyDataTypeValues"  type="checkbox"
-                                               ng-model="settings['parserSettings']['verifyDataTypeValues']"
-                                               popover="Validate recognised datatype values"
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Verify recognised datatypes
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input name="normalizeDataTypeValues" type="checkbox"
-                                        ng-model="settings['parserSettings']['normalizeDataTypeValues']"
-                                        popover="Normalize recognised datatype values"
-                                        popover-trigger="mouseenter"
-                                        popover-placement="bottom"> Normalize recognised datatypes values
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">Language tags</label>
-                            <div class="col-lg-9">
-                                <div>
-                                    <label>
-                                        <input name="failOnUnknownLanguageTags" type="checkbox"
-                                               ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
-                                               popover="Fail on unknown languages"
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Fail parsing if languages are not recognised
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input name="verifyLanguageTags" type="checkbox"
-                                               ng-model="settings['parserSettings']['verifyLanguageTags']"
-                                               popover="Validate recognised language tags"
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Verify language based on a given set of definitions for valid languages
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>
-                                        <input name="normalizeLanguageTags" type="checkbox"
-                                               ng-model="settings['parserSettings']['normalizeLanguageTags']"
-                                               popover="Normalize language tags"
-                                               popover-trigger="mouseenter"
-                                               popover-placement="bottom"> Normalize recognised language tags
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">Error handling</label>
-                            <div class="col-lg-9">
-                                <label>
-                                    <input name="stopOnError" type="checkbox"
-                                           ng-model="settings['parserSettings']['stopOnError']"
-                                           popover="By default parser stops on error. When set on false errors are reported in the log and parsing continues."
-                                           popover-trigger="mouseenter"
-                                           popover-placement="bottom"> Should stop on error
-                                </label>
+                        <div class="col-lg-3 col-lg-no-padding">
+                            <div class="btn-group" dropdown>
+                                <button type="button" class="btn btn-primary" ng-click="addReplaceGraph(replaceGraph)">
+                                    <span class="icon-plus"></span> Add graph
+                                </button>
+                                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
+                                        dropdown-toggle>
+                                    <span class="sr-only"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                ng-click="addReplaceGraph('default')">Add default graph
+                                        </button>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-
-                        <div ng-show="showAdvancedSettings" class="form-group row">
-                            <label class="col-lg-3 col-form-label">Debug</label>
-                            <div class="col-lg-9 col-form-label">
-                                <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
-                                <label for="force-serial" popover="Forces the use of the serial statements pipeline. Not recommended. Use for debugging only."
-                                       popover-placement="bottom"
-                                       popover-trigger="mouseenter">Force serial pipeline</label>
-                            </div>
-                        </div>
-
-
+                    <div>
+                        <table>
+                            <tr>
+                                <th>
+                                    <span ng-show="settings.replaceGraphs.length">Replaced graphs</span>
+                                    <span ng-show="!settings.replaceGraphs.length">No replaced graphs added</span>
+                                </th>
+                            </tr>
+                            <tr ng-repeat="g in settings.replaceGraphs">
+                                <td>
+                                    <span ng-show="g !== 'default'">{{g}}</span>
+                                    <span ng-show="g === 'default'">The default graph</span>
+                                    <button type="button" class="btn btn-link btn-sm secondary"
+                                            ng-click="settings.replaceGraphs.splice($index, 1)">
+                                        <i class="icon icon-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-9 offset-lg-3">
+                    <label class="col-form-label">
+                        <input type="checkbox" ng-model="agree" ng-required="enableReplace">
+                        <b>I understand that data in the replaced graphs will be cleared before importing new data.</b>
+                    </label>
                 </div>
             </div>
-            <div class="modal-footer">
-				<button type="button" class="btn btn-link pull-left" ng-click="reset()">Restore defaults</button>
-                <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-                <button type="submit" class="btn btn-primary" ng-click="ok()"><span class="import"></span> Import</button>
+            <div class="text-xs-center">
+                <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm toggle-advanced-settings">
+                    <span ng-hide="showAdvancedSettings">Show advanced settings<i class="icon-caret-down"></i></span>
+                    <span ng-show="showAdvancedSettings">Hide advanced settings<i class="icon-caret-up"></i></span>
+                </button>
             </div>
-            </form>
+
+            <div ng-show="hasParserSettings && showAdvancedSettings" class="advanced-settings">
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">BNodes</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="preserveBNodeIDs" type="checkbox"
+                                       ng-model="settings['parserSettings']['preserveBNodeIds']"
+                                       popover="Assign its own internal blank node identifiers or use the blank node ids it finds in the file."
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Preserve BNode IDs
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Datatype</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="failOnUnknownDataTypes" type="checkbox"
+                                       ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
+                                       popover="Fail on unknown datatypes"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Fail parsing if datatypes are not recognised
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="verifyDataTypeValues" type="checkbox"
+                                       ng-model="settings['parserSettings']['verifyDataTypeValues']"
+                                       popover="Validate recognised datatype values"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Verify recognised datatypes
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="normalizeDataTypeValues" type="checkbox"
+                                       ng-model="settings['parserSettings']['normalizeDataTypeValues']"
+                                       popover="Normalize recognised datatype values"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Normalize recognised datatypes values
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Language tags</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="failOnUnknownLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
+                                       popover="Fail on unknown languages"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Fail parsing if languages are not recognised
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="verifyLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['verifyLanguageTags']"
+                                       popover="Validate recognised language tags"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Verify language based on a given set of definitions
+                                for valid languages
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="normalizeLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['normalizeLanguageTags']"
+                                       popover="Normalize language tags"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> Normalize recognised language tags
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Error handling</label>
+                    <div class="col-lg-9">
+                        <label>
+                            <input name="stopOnError" type="checkbox"
+                                   ng-model="settings['parserSettings']['stopOnError']"
+                                   popover="By default parser stops on error. When set on false errors are reported in the log and parsing continues."
+                                   popover-trigger="mouseenter"
+                                   popover-placement="bottom"> Should stop on error
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="showAdvancedSettings" class="form-group row">
+                <label class="col-lg-3 col-form-label">Debug</label>
+                <div class="col-lg-9 col-form-label">
+                    <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
+                    <label for="force-serial"
+                           popover="Forces the use of the serial statements pipeline. Not recommended. Use for debugging only."
+                           popover-placement="bottom"
+                           popover-trigger="mouseenter">Force serial pipeline</label>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-link pull-left" ng-click="reset()">Restore defaults</button>
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" ng-click="ok()"><span class="import"></span> Import</button>
+    </div>
+</form>

@@ -1,0 +1,9 @@
+{
+    "name": "Text snippet",
+    "status":"NONE",
+    "message":"",
+    "context":"",
+    "type":"text",
+    "format":"text/turtle",
+    "data":"<http://example.org/#spiderman> <http://www.perceive.net/schemas/relationship/enemyOf> <http://example.org/#green-goblin> ."
+}

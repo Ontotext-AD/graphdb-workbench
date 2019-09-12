@@ -4,7 +4,7 @@
 </div>
 
 <div class="modal-body">
-    <form name="urlForm" ng-submit="importUrlForm($event)" ng-hide="loader" novalidate>
+    <form name="urlForm" class="url-import-form" ng-submit="importUrlForm($event)" ng-hide="loader" novalidate>
         <div class="input-group mb-1">
             <input required validate-uri id="dataUrl" name="dataUrl" placeholder="Data URL" type="url"
                    ng-model="dataUrl" class="form-control"
@@ -29,8 +29,8 @@
     </div>
     <div>
         <button type="button" ng-click="cancel()" class="btn btn-secondary">Cancel</button>
-        <div class="btn-group" dropdown>
-            <button class="btn btn-secondary dropdown-toggle" dropdown-toggle>
+        <div class="btn-group import-format-dropdown" dropdown>
+            <button class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" dropdown-toggle>
                 Format: {{importFormat.name}}
             </button>
             <ul class="dropdown-menu" role="menu">

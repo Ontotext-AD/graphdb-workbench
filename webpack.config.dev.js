@@ -1,24 +1,44 @@
-var path = require('path');
+const path = require('path');
+const merge = require('webpack-merge');
+const commonConfig = require('./webpack.config.common');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = {
-  entry: './src/app.js',
-
-  resolve: {
-    modules: [
-      'src/js/',
-      'node_modules'
+module.exports = merge(commonConfig, {
+    mode: 'development',
+    devtool: 'source-map',
+    // devtool: 'none',
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
+            }
+        ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/template.html',
+            favicon: 'src/img/icon.png'
+        }),
+        new CleanWebpackPlugin()
     ],
-    extensions: ['.js']
-  },
-
-  devServer: {
-    contentBase: path.join(__dirname, 'src/'),
-    compress: true,
-    port: 9000,
-    historyApiFallback: true,
-    proxy: [{
-      context: ['/rest', '/repositories', '/orefine', '/protocol'],
-      target: 'http://localhost:7200'
-    }]
-  }
-};
+    devServer: {
+        contentBase: path.join(__dirname, 'dist/'),
+        compress: true,
+        port: 9000,
+        historyApiFallback: true,
+        proxy: [{
+            context: ['/rest', '/repositories', '/orefine', '/protocol'],
+            target: 'http://localhost:7200'
+        }]
+    }
+});

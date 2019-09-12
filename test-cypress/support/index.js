@@ -21,4 +21,6 @@ import './commands';
 
 // Configures retry count for failed tests TODO: Remove after tests are stabilized
 require('cypress-plugin-retries');
-Cypress.env('RETRIES', 2);
+Cypress.env('RETRIES', 0);
+
+require('cypress-failed-log');

@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-block">
                     <a href="#" class="btn btn-lg btn-primary" ng-click="slideNext()">OK, continue</a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary" ng-click="declineTutorial()">No, thanks</a>
+                    <a href="#" class="btn btn-lg btn-outline-secondary decline-tutorial" ng-click="declineTutorial()">No, thanks</a>
                     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
                             <button type="button" class="btn btn-secondary" ng-click="slideToPage($index)"
@@ -47,7 +47,7 @@
     <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
         <div class="col-lg-6">
             <h3><span tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
-            <div class="card"
+            <div class="card active-repo-card"
                  ng-show="canReadRepo(getActiveLocation(), getActiveRepository())">
                 <div class="card-block">
                     <h6>{{getActiveLocation().label}}</h6>
@@ -77,18 +77,18 @@
                     <div ng-if="activeRepositorySize && !activeRepositorySizeError">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-xs-6 mb-1">
+                                <div class="col-xs-6 mb-1 total-statements">
                                     <span>total statements</span>
                                     <span class="data-value big" ng-if="activeRepositorySize.total !== -1">{{activeRepositorySize.total | currency:'':0}}</span>
                                     <span class="data-value big" ng-if="activeRepositorySize.total === -1">&ndash;</span>
                                 </div>
                                 <div class="col-xs-6">
-                                    <div>
+                                    <div class="explicit-statements">
                                         <span class="data-value" ng-if="activeRepositorySize.explicit !== -1">{{activeRepositorySize.explicit | currency:'':0}}</span>
                                         <span class="data-value" ng-if="activeRepositorySize.explicit === -1">&ndash;</span>
                                         <span>explicit</span>
                                     </div>
-                                    <div>
+                                    <div class="inferred-statements">
                                         <span class="data-value" ng-if="activeRepositorySize.inferred !== -1">{{activeRepositorySize.inferred | currency:'':0}}</span>
                                         <span class="data-value" ng-if="activeRepositorySize.inferred === -1">&ndash;</span>
                                         <span class="">inferred</span>
@@ -129,9 +129,9 @@
             <div class="card"
                  ng-cloak>
                 <div>
-                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}}" ng-init="getSavedQueries()">
+                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-init="getSavedQueries()">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries() && query.owner != null" class="list-group-item list-group-item-action">
-                            <span class="help-label" ng-click="goToSparqlEditor(query)">Execute <span class="icon-caret-right"></span></span>
+                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">Execute <span class="icon-caret-right"></span></span>
                             <samp class="h5">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>
