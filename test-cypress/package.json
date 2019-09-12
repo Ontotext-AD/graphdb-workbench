@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
@@ -19,7 +19,7 @@
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
-    "devDependencies": {
+    "dependencies": {
         "cypress": "^3.4.1",
         "cypress-failed-log": "^2.5.1",
         "cypress-plugin-retries": "^1.2.2"
