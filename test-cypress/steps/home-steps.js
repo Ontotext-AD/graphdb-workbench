@@ -1,5 +1,11 @@
 class HomeSteps {
 
+    static visitAndWaitLoader() {
+        cy.visit('/');
+        cy.get('.ot-splash').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.be.visible');
+    }
+
     static verifyTutorialVisible(shouldBeVisible) {
         if (shouldBeVisible) {
             cy.get('.tutorial-container')
@@ -27,11 +33,11 @@ class HomeSteps {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
         modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.be.visible');
         cy.url().should('eq', Cypress.config("baseUrl") + queryURL);
-        cy.visitAndWaitLoader('/');
+        HomeSteps.visitAndWaitLoader();
     }
 
     static selectRepo(repositoryId) {
-        cy.visitAndWaitLoader('/');
+        HomeSteps.visitAndWaitLoader();
         cy.get('ul.repos')
             .contains(repositoryId)
             .closest('.repository')
