@@ -1,14 +1,11 @@
-import ImportSteps from '../../steps/import-steps';
+const INDEX_NAME = 'index-' + Date.now();
+const FILE_TO_IMPORT = 'people.zip';
+const INDEX_CREATE_URL = '/similarity/index/create';
+const BUILD_PARAM = ' -trainingcycles 4';
+const STOP_WORD = 'stopword';
+const LUCENE_ANALYZER = 'org.apache.lucene.analysis.de.GermanAnalyzer';
 
 describe('Similarity screen validation', () => {
-
-    const INDEX_NAME = 'index-' + Date.now();
-    const FILE_TO_IMPORT = 'people.zip';
-    const SUCCESS_MESSAGE = 'Imported successfully';
-    const INDEX_CREATE_URL = '/similarity/index/create';
-    const BUILD_PARAM = ' -trainingcycles 4';
-    const STOP_WORD = 'stopword';
-    const LUCENE_ANALYZER = 'org.apache.lucene.analysis.de.GermanAnalyzer';
 
     let repositoryId;
 
@@ -17,10 +14,7 @@ describe('Similarity screen validation', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
 
-        ImportSteps.visitServerImport();
-        ImportSteps.selectServerFile(FILE_TO_IMPORT)
-            .importServerFiles()
-            .verifyImportStatus(FILE_TO_IMPORT, SUCCESS_MESSAGE);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/similarity');
     });
