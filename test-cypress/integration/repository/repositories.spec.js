@@ -392,9 +392,7 @@ describe('Repositories', () => {
     }
 
     function confirmModal() {
-        // Increased timeout to allow dialog to show and finish its animation..
-        // Should not be needed but it seems animations in Travis are slow..
-        cy.get('.modal', {timeout: 10000})
+        cy.get('.modal')
             .should('be.visible')
             .and('not.have.class', 'ng-animate')
             .find('.modal-footer .btn-primary')

@@ -177,8 +177,7 @@ describe('Similarity screen validation', () => {
     }
 
     function rebuildIndex() {
-        // Explicitly increased timeout because index creation takes more time.
-        cy.get('.similarity-index-icon-reload', {timeout: 20000}).should('be.visible').click();
+        cy.get('.similarity-index-icon-reload').should('be.visible').click();
         cy.get('.modal-footer .btn-primary').click();
         cy.get('.similarity-index-building-loader').should('be.visible');
         getDeleteIndexButton().should('be.visible');
@@ -203,7 +202,7 @@ describe('Similarity screen validation', () => {
         setNewQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
         cy.get('.sparql-loader').should('not.be.visible');
-        cy.get('.resultsTable', {timeout: 10000}).should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
+        cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
         cy.get('.uri-cell').eq(0).should('contain', 'http://dbpedia.org/resource/Aaron_Jay_Kernis');
     }
 
@@ -235,8 +234,7 @@ describe('Similarity screen validation', () => {
     }
 
     function waitForIndexBuildingIndicatorToHide() {
-        // Timeout is explicitly increased because index creation/rebuilding takes longer than default timeout.
-        cy.get('.similarity-index-building-loader', {timeout: 30000}).should('not.be.visible');
+        cy.get('.similarity-index-building-loader').should('not.be.visible');
     }
 
     function setNewQuery(newQuery) {

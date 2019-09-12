@@ -34,15 +34,15 @@ Cypress.Commands.add('initializeRepository', (id) => {
     cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
 });
 
-Cypress.Commands.add('enableAutocomplete', (repositoryId, waitTimeout = 10000) => {
-    toggleAutocomplete(repositoryId, true, waitTimeout);
+Cypress.Commands.add('enableAutocomplete', (repositoryId) => {
+    toggleAutocomplete(repositoryId, true);
 });
 
-Cypress.Commands.add('disableAutocomplete', (repositoryId, waitTimeout = 10000) => {
-    toggleAutocomplete(repositoryId, false, waitTimeout);
+Cypress.Commands.add('disableAutocomplete', (repositoryId) => {
+    toggleAutocomplete(repositoryId, false);
 });
 
-let toggleAutocomplete = (repositoryId, enable, waitTimeout) => {
+let toggleAutocomplete = (repositoryId, enable) => {
     cy.request({
         method: 'POST',
         url: `${AUTOCOMPLETE_URL}enabled?enabled=${enable}`,
@@ -50,20 +50,19 @@ let toggleAutocomplete = (repositoryId, enable, waitTimeout) => {
             'X-GraphDB-Repository': repositoryId,
         }
     }).should((response) => expect(response.body).to.equal(`Autocomplete was ${enable ? 'enabled' : 'disabled'}`));
-    waitAutocomplete(repositoryId, waitTimeout);
+    waitAutocomplete(repositoryId);
 };
 
-let waitAutocomplete = function (repositoryId, pollTimeout) {
-    cy.expect(pollTimeout).to.be.greaterThan(0);
-    cy.wait(POLL_INTERVAL);
+let waitAutocomplete = function (repositoryId) {
     cy.request({
         method: 'GET',
         url: AUTOCOMPLETE_URL + 'status',
         headers: {
-            'X-GraphDB-Repository': repositoryId,
+            'X-GraphDB-Repository': repositoryId
         },
     }).then((response) => {
         if (response.status === 200 && response.body === 'READY' || response.body === 'NONE') return;
-        waitAutocomplete(repositoryId, pollTimeout - response.duration - POLL_INTERVAL);
+        cy.wait(POLL_INTERVAL);
+        waitAutocomplete(repositoryId);
     });
 };

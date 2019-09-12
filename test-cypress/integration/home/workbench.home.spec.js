@@ -12,7 +12,7 @@ describe('Home screen validation', () => {
     beforeEach(() => cy.viewport(1280, 1000));
 
     context('First visit', () => {
-        beforeEach(() => cy.visitAndWaitLoader('/'));
+        beforeEach(() => HomeSteps.visitAndWaitLoader());
 
         it('Verify that tutorial panel exists', () => {
             HomeSteps.verifyTutorialVisible(true);
@@ -35,7 +35,7 @@ describe('Home screen validation', () => {
     });
 
     context('Creating repository', () => {
-        beforeEach(() => cy.visitAndWaitLoader('/'));
+        beforeEach(() => HomeSteps.visitAndWaitLoader());
 
         it('Test create and select new repository via home page', () => {
             HomeSteps.verifyCreateRepositoryLink();
@@ -76,7 +76,7 @@ describe('Home screen validation', () => {
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
             cy.enableAutocomplete(repositoryId);
 
-            cy.visitAndWaitLoader('/');
+            HomeSteps.visitAndWaitLoader();
             HomeSteps.autocompleteText('Green', GOBLIN_URI);
             HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click();
             HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
@@ -101,7 +101,7 @@ describe('Home screen validation', () => {
             let repositoryId = HomeSteps.createRepo();
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
 
-            cy.visitAndWaitLoader('/');
+            HomeSteps.visitAndWaitLoader();
             HomeSteps.selectRepo(repositoryId);
 
             HomeSteps.getAutocompleteInput().type('Green');
