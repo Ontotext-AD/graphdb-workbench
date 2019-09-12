@@ -54,7 +54,9 @@ describe('SPARQL screen validation', () => {
         waitUntilQueryIsVisible();
 
         // Editor should have an active tab
-        cy.get(TABS_SELECTOR + '.active .nav-link').should('be.visible');
+        getTabs().should('not.have.class', 'ng-animate')
+            .and('have.class', 'active');
+        getTabs().find('.nav-link').should('be.visible');
 
         // No active loader
         getLoader().should('not.be.visible');
@@ -1124,7 +1126,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function getResultsMessage() {
-        return cy.get('#yasr-inner .alert-info.results-info');
+        return cy.get('#yasr-inner .alert-info.results-info', {timeout: 40000});
     }
 
     function getQueryLinkBtn() {
