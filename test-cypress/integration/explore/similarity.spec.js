@@ -10,7 +10,7 @@ describe('Similarity screen validation', () => {
     let repositoryId;
 
     beforeEach(() => {
-        repositoryId = 'repo-' + Date.now();
+        repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
 
@@ -107,11 +107,15 @@ describe('Similarity screen validation', () => {
 
     function openCreateNewIndexForm() {
         cy.get('.create-similarity-index').click();
+        // Wait for query editor to become ready because consecutive command for index creation might
+        // fail because the query may not be submitted with the request.
+        cy.waitUntilQueryIsVisible();
     }
 
     function setIndexName() {
         cy.url().should('eq', Cypress.config('baseUrl') + INDEX_CREATE_URL);
         cy.get('.similarity-index-name').type(INDEX_NAME);
+        cy.get('.similarity-index-name').invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
     }
 
     function clickMoreOptionsMenu() {
@@ -158,6 +162,9 @@ describe('Similarity screen validation', () => {
 
     function switchToPredicationIndex() {
         cy.get('#create-predication-index').click();
+        // Wait for query editor to become ready because consecutive command for index creation might
+        // fail because the query may not be submitted with the request.
+        cy.waitUntilQueryIsVisible();
     }
 
     function cloneExistingIndex() {
