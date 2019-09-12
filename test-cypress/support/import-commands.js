@@ -1,24 +1,23 @@
-import urlImportTemplate from '../fixtures/url-import-template.json';
 import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 
 const UPLOAD_URL = '/rest/data/import/upload/';
 const SERVER_IMPORT_URL = '/rest/data/import/server/';
 const POLL_INTERVAL = 200;
 
-Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}, waitTimeout = 30000) => {
+Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}) => {
     const importData = Cypress._.defaultsDeep(importSettings, snippetImportTemplate);
     importData.data = rdf;
 
     cy.request({
         method: 'POST',
         url: UPLOAD_URL + repositoryId + '/text',
-        body: importData,
+        body: importData
     }).should((response) => expect(response.status).to.equal(202));
-    waitUpload(repositoryId, importData.name, waitTimeout);
+    waitUpload(repositoryId, importData.name);
 });
 
-Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings = {}, waitTimeout = 30000) => {
-    let importData = {
+Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings = {}) => {
+    const importData = {
         fileNames: [fileName],
         importSettings
     };
@@ -26,7 +25,7 @@ Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings
     cy.request({
         method: 'POST',
         url: SERVER_IMPORT_URL + repositoryId,
-        body: importData,
+        body: importData
     }).should((response) => expect(response.status).to.equal(202));
     waitServerImport(repositoryId);
 });
