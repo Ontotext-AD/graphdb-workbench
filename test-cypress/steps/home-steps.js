@@ -59,8 +59,7 @@ class HomeSteps {
             .and('contain', 'inferred')
             .and('contain', 'expansion ratio')
             .within(() => {
-                // New repositories would retrieve the /size data a little slower due to some initializations
-                cy.get('.total-statements', {timeout: 10000}).should('contain', '70');
+                cy.get('.total-statements').should('contain', '70');
                 cy.get('.explicit-statements').should('contain', '0');
                 cy.get('.inferred-statements').should('contain', '70');
             });

@@ -54,8 +54,7 @@ describe('SPARQL screen validation', () => {
         waitUntilQueryIsVisible();
 
         // Editor should have an active tab
-        // Giving the editor time to fully initialize
-        cy.get(TABS_SELECTOR + '.active .nav-link', {timeout: 30000}).should('be.visible');
+        cy.get(TABS_SELECTOR + '.active .nav-link').should('be.visible');
 
         // No active loader
         getLoader().should('not.be.visible');
@@ -843,9 +842,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function getModal() {
-        // Increased timeout to allow dialog to show and finish its animation..
-        // Should not be needed but it seems animations in Travis are slow..
-        return cy.get('.modal', {timeout: 10000}).should('not.have.class', 'ng-animate');
+        return cy.get('.modal').should('not.have.class', 'ng-animate');
     }
 
     function confirmModal() {

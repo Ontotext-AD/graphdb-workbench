@@ -7,5 +7,6 @@
     "screenshotsFolder": "report/screenshots",
     "supportFile": "support/index.js",
     "videosFolder": "report/videos",
-    "video": false
+    "video": false,
+    "defaultCommandTimeout": 30000
 }

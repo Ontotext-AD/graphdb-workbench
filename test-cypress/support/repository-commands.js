@@ -34,11 +34,11 @@ Cypress.Commands.add('initializeRepository', (id) => {
     cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
 });
 
-Cypress.Commands.add('enableAutocomplete', (repositoryId, waitTimeout = 10000) => {
+Cypress.Commands.add('enableAutocomplete', (repositoryId, waitTimeout = 30000) => {
     toggleAutocomplete(repositoryId, true, waitTimeout);
 });
 
-Cypress.Commands.add('disableAutocomplete', (repositoryId, waitTimeout = 10000) => {
+Cypress.Commands.add('disableAutocomplete', (repositoryId, waitTimeout = 30000) => {
     toggleAutocomplete(repositoryId, false, waitTimeout);
 });
 
