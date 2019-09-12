@@ -37,7 +37,10 @@ describe('Autocomplete ', () => {
         getAutocompleteHeader()
             .should('be.visible')
             .and('contain', repositoryId);
-        getAutocompleteTag().should('have.text', 'OFF');
+        getAutocompleteHeader()
+            .find('.tag-default')
+            .should('be.visible')
+            .and('contain', 'OFF');
         getAutocompleteSwitch()
             .find('input')
             .should('not.be.checked');
@@ -59,9 +62,12 @@ describe('Autocomplete ', () => {
             .should('have.length', 1)
             .and('contain', 'http://www.w3.org/2000/01/rdf-schema#label');
 
-        // Enable autocomplete and verify status is OK
+        // Enable autocomplete and verify status is OK (possible slow operation)
         getAutocompleteSwitch().click();
-        getAutocompleteTag().should('have.text', 'ON');
+        getAutocompleteHeader()
+            .find('.tag-primary')
+            .should('be.visible')
+            .and('contain', 'ON');
         getAutocompleteStatus()
             .should('be.visible')
             .find('.tag-success')
@@ -82,10 +88,6 @@ describe('Autocomplete ', () => {
 
     function getAutocompleteHeader() {
         return getAutocompleteIndex().find('.autocomplete-header');
-    }
-
-    function getAutocompleteTag() {
-        return getAutocompleteHeader().find('.tag');
     }
 
     function getAutocompleteSwitch() {
