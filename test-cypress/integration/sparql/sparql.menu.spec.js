@@ -53,9 +53,7 @@ describe('SPARQL screen validation', () => {
 
         waitUntilQueryIsVisible();
 
-        // Editor should have an active tab
-        getTabs().should('not.have.class', 'ng-animate')
-            .and('have.class', 'active');
+        // Editor should have a visible tab
         getTabs().find('.nav-link').should('be.visible');
 
         // No active loader
