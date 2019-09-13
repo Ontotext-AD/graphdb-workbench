@@ -241,6 +241,7 @@ class ImportSteps {
         return cy.get('.modal')
             .should('be.visible')
             .and('not.have.class', 'ng-animate')
+            .and('have.class', 'in');
     }
 }
 
