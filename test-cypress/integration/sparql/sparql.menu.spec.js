@@ -815,9 +815,11 @@ describe('SPARQL screen validation', () => {
         return cy.get('.ot-loader-new-content');
     }
 
-    // TODO: waitAnimation() command ?
     function getPopover() {
-        return cy.get('.popover').should('not.have.class', 'ng-animate');
+        return cy.get('.popover')
+            .should('not.have.class', 'ng-animate')
+            .and('not.have.class', 'in-add')
+            .and('not.have.class', 'in-add-active');
     }
 
     function getRunQueryButton() {
