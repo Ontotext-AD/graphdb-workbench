@@ -15,6 +15,7 @@ describe('Visual graph screen validation', () => {
         cy.enableAutocomplete(repositoryId);
 
         cy.visit('/graphs-visualizations');
+        getSearchField().should('be.visible');
     });
 
     afterEach(() => {
