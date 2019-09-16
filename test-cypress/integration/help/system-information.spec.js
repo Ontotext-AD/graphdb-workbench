@@ -72,19 +72,21 @@ describe('System information', () => {
         it('JVM Arguments tab', () => {
             // JVM arguments tab can be opened
             selectTab(2);
-            // Tab content is visible and there 14 jvm arguments listed
+            // Tab content is visible and there at least 5 jvm arguments listed
             getTabContent().find('.jvm-arguments-body').closest('.tab-pane')
                 .should('have.class', 'active')
                 .find('.list-group-item').as('groups')
-                .should('have.length', 14);
+                .should('have.length.of.at.least', 5);
         });
 
         it('Configuration parameters tab', () => {
             // Configuration parameters tab can be opened
             selectTab(3);
-            // Tab content is visible and there 14 configurations listed
+            // Tab content is visible and there at least 5 parameters listed
             getTabContent().find('.configuration-parameters-body').closest('.tab-pane')
-                .should('have.class', 'active');
+                .should('have.class', 'active')
+                .find('.list-group-item').as('groups')
+                .should('have.length.of.at.least', 5);
         });
     });
 
