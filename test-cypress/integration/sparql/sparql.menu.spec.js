@@ -418,6 +418,10 @@ describe('SPARQL screen validation', () => {
         it('Test download query results in Supported formats', () => {
             executeQuery();
 
+            // Wait until results are visible before verifying the download menu
+            getResultsWrapper().should('be.visible');
+            verifyResultsPageLength(70);
+
             openDownloadAsMenu();
 
             getDownloadAsFormatButtons()
