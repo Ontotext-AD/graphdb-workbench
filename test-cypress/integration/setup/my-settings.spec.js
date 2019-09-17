@@ -78,7 +78,7 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it('Test SPARQL settings change', function () {
+    it.only('Test SPARQL settings change', function () {
         const DEFAULT_QUERY = 'select * where { \n' +
             '\t?s ?p ?o .\n' +
             '} limit 100';
@@ -207,9 +207,11 @@ describe('My Settings', () => {
     function verifySameAsIsActive(isActive) {
         let activePropertyClass = 'icon-sameas-on';
         let inactivePropertyClass = 'icon-sameas-off';
-        cy.get('#sameAs > span')
-            .should('not.have.class', 'ng-animate')
-            .and('have.class', isActive ? activePropertyClass : inactivePropertyClass);
+        cy.get('#sameAs > span').then((icon) => {
+            console.log('icon: ', icon, icon.attr('class'));
+            cy.get(icon).should('not.have.class', 'ng-animate')
+                .and('have.class', isActive ? activePropertyClass : inactivePropertyClass);
+        })
     }
 
     function verifyInferenceIsActive(isActive) {
