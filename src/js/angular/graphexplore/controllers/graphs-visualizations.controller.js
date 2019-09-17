@@ -1163,7 +1163,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             if (!d.isBeingDragged) {
                 var event = d3.event;
                 $timeout.cancel(removeIconsTimer);
-                showNodeTipAndIconsTimer = $timeout(function () {
+                showNodeTipAndIconsTimer = $timeout(() => {
                     if (expandNodeIcons(d, this)) {
                         showTipForNode(d, event);
                     }
