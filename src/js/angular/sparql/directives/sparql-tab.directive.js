@@ -132,7 +132,7 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
     return {
         restrict: 'AE',
         // for some reason when you extract this template in a file and use templateUrl it selects all tabs when editing the tab name, not only the currently selected one
-        template: '<a class="nav-link" role="tab" data-toggle="tab" blur="submit" editable-text="tab.name" e-form="editCurrentlySelectedOnly" ng-click="selectThisTab($event)" ng-dblclick="editCurrentTab()" ><span ng-class="{\'text-muted\': !tab.name}">{{ tab.name || \'Unnamed\'}}</span><button type="button" ng-click="deleteTab($event)" class="btn btn-link btn-sm secondarydelete-sparql-tab-btn" title="Delete tab"><i class="icon-close"></i></button></a>',
+        template: '<a class="nav-link" role="tab" data-toggle="tab" blur="submit" editable-text="tab.name" e-form="editCurrentlySelectedOnly" ng-click="selectThisTab($event)" ng-dblclick="editCurrentTab()" ><span ng-class="{\'text-muted\': !tab.name}">{{ tab.name || \'Unnamed\'}}</span><button type="button" ng-click="deleteTab($event)" class="btn btn-link btn-sm secondary delete-sparql-tab-btn" title="Delete tab"><i class="icon-close"></i></button></a>',
         replace: true,
         controller: SparqlTabCtrl
     };
