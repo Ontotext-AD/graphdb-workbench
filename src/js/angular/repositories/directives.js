@@ -1,9 +1,3 @@
-define(['angular/core/services'], 
-        
-    function(){
-	
-		var repoDirectives = angular.module('graphdb.framework.repositories.directives', []);
+import 'angular/core/services';
 
-		return repoDirectives;
-		
-	});
+const repoDirectives = angular.module('graphdb.framework.repositories.directives', []);

@@ -1,20 +1,8 @@
-var allTestFiles = []
-var TEST_REGEXP = /(spec|test)\.js$/i
+import 'lib/jquery/2.1.4/jquery.min.js';
+import 'lib/angularjs/1.3.8/angular.js';
+import './lib/angularjs/1.3.8/angular-mocks';
 
-// Get a list of all the test files to include
-Object.keys(window.__karma__.files).forEach(function (file) {
-  if (TEST_REGEXP.test(file)) {
-    allTestFiles.push(file)
-  }
-})
+// See https://github.com/webpack-contrib/karma-webpack#alternative-usage
 
-require.config({
-  // Karma serves files under /base, which is the basePath from your config file
-  baseUrl: '/base/src/js',
-
-  // dynamically load all test files
-  deps: allTestFiles,
-
-  // we have to kickoff jasmine, as it is asynchronous
-  callback: window.__karma__.start
-})
+const testsContext = require.context('.', true, /.spec$/);
+testsContext.keys().forEach(testsContext);
