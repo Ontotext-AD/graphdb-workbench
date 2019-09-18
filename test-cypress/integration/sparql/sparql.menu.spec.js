@@ -732,7 +732,7 @@ describe('SPARQL screen validation', () => {
 
             // TODO: Test with different values for infer & same as
 
-            const encodedQuery = 'SELECT+%3Fsub+%3Fpred+%3Fobj+WHERE+%7B%3Fsub+%3Fpred+%3Fobj+.%7D+LIMIT+100';
+            const encodedQuery = 'SELECT%20%3Fsub%20%3Fpred%20%3Fobj%20WHERE%20%7B%3Fsub%20%3Fpred%20%3Fobj%20.%7D%20LIMIT%20100';
             const expectedUrl = Cypress.config().baseUrl + '/sparql?name=&infer=true&sameAs=true&query=' + encodedQuery;
             getModal()
                 .should('be.visible')

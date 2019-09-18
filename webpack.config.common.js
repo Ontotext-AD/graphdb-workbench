@@ -108,7 +108,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /jquery.min.js/,
+                test: /jquery.js/,
                 use: [
                     {
                         loader: 'expose-loader',

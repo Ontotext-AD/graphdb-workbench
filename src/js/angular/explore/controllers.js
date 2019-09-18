@@ -209,7 +209,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 sameAs: $scope.sameAs,
             },
             headers: headers
-        }).complete(function (data, textStatus, jqXhrOrErrorString) {
+        }).done(function (data, textStatus, jqXhrOrErrorString) {
             toggleOntoLoader(false);
             yasr.setResponse(data, textStatus, jqXhrOrErrorString);
         }).fail(function (data) {

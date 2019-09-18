@@ -3,7 +3,7 @@ import 'lib/angular-toastr/0.5.2/angular-toastr.css';
 import './font/font-awesome/4.3.0/css/font-awesome.min.css';
 import './css/lib/animate/animate.css';
 
-import 'lib/jquery/2.1.4/jquery.min.js';
+import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
 import 'lib/d3js/4.2.1/d3.js';
 import 'lib/loading-hint.js';
