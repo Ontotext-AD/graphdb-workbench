@@ -69,5 +69,8 @@
         "webpack-dev-server": "^3.7.2",
         "webpack-merge": "^4.2.1"
     },
-    "proxy": "http://localhost:7200"
+    "proxy": "http://localhost:7200",
+    "dependencies": {
+        "lodash": "^4.17.15"
+    }
 }
