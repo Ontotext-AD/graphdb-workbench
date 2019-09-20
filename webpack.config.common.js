@@ -36,8 +36,8 @@ module.exports = {
                 to: 'js/lib/ng-tags-input/ng-tags-input.min.css'
             },
             {
-                from: 'src/js/lib/angular-xeditable/0.1.8/xeditable.css',
-                to: 'js/lib/angular-xeditable/0.1.8/xeditable.css'
+                from: 'node_modules/angular-xeditable/dist/css/xeditable.min.css',
+                to: 'css/lib/angular-xeditable/xeditable.min.css'
             },
             {
                 from: 'src/js/lib/bootstrap-switch/3.2.2/bootstrap-switch.min.css',

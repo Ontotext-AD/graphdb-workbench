@@ -1,4 +1,4 @@
-<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
 
 <link href="css/lib/yasqe.min.css" rel="stylesheet"/>
 
@@ -66,7 +66,7 @@
 <div class="card" style="border-top: none">
     <div class="card-block">
         <div>
-                        
+
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
@@ -95,7 +95,7 @@
                         </div>
                     </label>
                 </div>
-                
+
                 <div class="form-group card mb-2" ng-show="newConfig.startMode == 'node' && page == 1">
                     <div class="card-block">
                         <p class="lead" ng-show="newConfig.startIRI">
@@ -134,7 +134,7 @@
                     </div>
 
 
-                    
+
                     <div class="d-flex" ng-if="page == 3">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
@@ -205,8 +205,8 @@
                     </div>
 
                 </div>
-                
-                
+
+
                 <div class="form-group row" ng-hide="page == 1 && newConfig.startMode != 'query'">
                     <div class="col-md-9">
                         <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun callback-on-change="updateDirty">
@@ -309,8 +309,8 @@
 
                     </div>
                 </div>
-                
-                
+
+
         </div>
     </div>
 </div>

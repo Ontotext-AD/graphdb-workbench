@@ -3,7 +3,7 @@ import 'angular/core/directives';
 import 'angular/repositories/services';
 import 'angular/namespaces/controllers';
 import 'angular/namespaces/directives';
-import 'lib/angular-xeditable/0.1.8/js/xeditable.min';
+import 'angular-xeditable/dist/js/xeditable.min';
 
 const modules = [
     'LocalStorageModule',

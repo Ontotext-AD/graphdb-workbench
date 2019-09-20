@@ -71,6 +71,7 @@
     },
     "proxy": "http://localhost:7200",
     "dependencies": {
+        "angular-xeditable": "^0.10.0",
         "jquery": "^3.4.1",
         "lodash": "^4.17.15"
     }

@@ -3,7 +3,7 @@ import 'angular/core/directives';
 import 'angular/explore/services';
 import 'angular/explore/controllers';
 import 'angular/explore/directives';
-import 'lib/angular-xeditable/0.1.8/js/xeditable.min';
+import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/angucomplete-alt/angucomplete-alt-onto.min';
 
 const modules = [
