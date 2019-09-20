@@ -16,6 +16,9 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.predicatesListNotFiltered = [];
     $scope.predicatesSearchPlaceholder = "Search predicates";
 
+    // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
+    // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
+    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
 
     // creating datasource for predicates data
     var datasource = {},

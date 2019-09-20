@@ -35,6 +35,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     $scope.embedded = $location.search().embedded;
     $scope.openedNodeInfoPanel = undefined;
 
+    // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
+    // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
+    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
+
     // embedded and other params when the controller is initialized
     if ($scope.embedded && ($location.search().query ||
             $location.search().uri ||

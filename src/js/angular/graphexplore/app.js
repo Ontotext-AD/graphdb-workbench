@@ -6,7 +6,7 @@ import 'lib/angular-ui-scroll/1.3.2/ui-scroll';
 import 'lib/angular-ui-scroll/ui-scroll-jqlite';
 import 'lib/d3-ONTO-chord-patch';
 import 'lib/d3-tip/d3-tip-patch';
-import 'lib/angular-pageslide-directive';
+import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'lib/rzslider/rzslider';
 import 'lib/angucomplete-alt/angucomplete-alt';
 import 'lib/ng-tags-input/ng-tags-input.min';
