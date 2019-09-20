@@ -3,8 +3,8 @@ import 'angular/core/directives';
 import 'angular/settings/services';
 import 'angular/settings/controllers';
 import 'angular/security/services';
-import 'lib/ng-file-upload.min';
-import 'lib/ng-file-upload-shim.min';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 angular.module('graphdb.framework.settings', [
     'toastr',
