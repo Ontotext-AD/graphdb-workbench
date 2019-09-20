@@ -8,7 +8,7 @@ import 'lodash';
 import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
 import 'angular-bowser/src/angular-bowser';
 import 'workbench-core';
-import 'lib/autofill-event';
+import 'autofill-event/autofill-event';
 import 'angular/core/directives';
 import 'angular/core/controllers';
 
