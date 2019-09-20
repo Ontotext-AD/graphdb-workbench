@@ -4,7 +4,7 @@ const modules = [
     'ui.scroll.jqlite',
     'ui.scroll',
     'angucomplete-alt',
-    'rzModule',
+    'rzSlider',
     'toastr'
 ];
 

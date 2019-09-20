@@ -16,8 +16,8 @@ module.exports = {
     plugins: [
         new CopyPlugin([
             {
-                from: 'src/js/lib/rzslider/rzslider.css',
-                to: 'js/lib/rzslider/rzslider.css'
+                from: 'node_modules/angularjs-slider/dist/rzslider.min.css',
+                to: 'js/lib/rzslider/rzslider.min.css'
             },
             {
                 from: 'src/js/lib/angucomplete-alt/angucomplete-alt.css',

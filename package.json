@@ -74,6 +74,7 @@
         "angular-bowser": "0.0.4",
         "angular-pageslide-directive": "^2.2.0",
         "angular-xeditable": "^0.10.0",
+        "angularjs-slider": "^7.0.0",
         "autofill-event": "0.0.1",
         "jquery": "^3.4.1",
         "lodash": "^4.17.15"
