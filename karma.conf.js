@@ -1,8 +1,6 @@
-// Karma configuration
-// Generated on Thu Jul 18 2019 18:49:29 GMT+0300 (EEST)
-
 const DEV_CONFIG = require('./webpack.config.dev');
 const merge = require('webpack-merge');
+const path = require('path');
 
 module.exports = function(config) {
   config.set({
@@ -29,15 +27,27 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'test/test-main.js': ['webpack', 'sourcemap'],
-        'src/js/angular/**/*.js': ['coverage'],
-        'src/*.js': ['coverage']
+        'test/test-main.js': ['webpack', 'sourcemap']
     },
 
 
     // Reuse the DEV configuration
     webpack: merge(DEV_CONFIG, {
-        devtool: 'inline-source-map'
+        devtool: 'inline-source-map',
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    use: {
+                        loader: 'istanbul-instrumenter-loader',
+                        query: {
+                            esModules: true
+                        }
+                    },
+                    include: path.resolve('src/js/angular/')
+                }
+            ]
+        }
     }),
 
 
