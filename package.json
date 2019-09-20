@@ -71,6 +71,7 @@
     },
     "proxy": "http://localhost:7200",
     "dependencies": {
+        "angular-bowser": "0.0.4",
         "angular-pageslide-directive": "^2.2.0",
         "angular-xeditable": "^0.10.0",
         "jquery": "^3.4.1",

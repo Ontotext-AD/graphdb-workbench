@@ -6,7 +6,7 @@ import 'lib/angular-sanitize/1.3.11/angular-sanitize.min';
 import 'lib/angular-toastr/0.5.2/angular-toastr';
 import 'lodash';
 import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
-import 'lib/angular-bowser/angular-bowser';
+import 'angular-bowser/src/angular-bowser';
 import 'workbench-core';
 import 'lib/autofill-event';
 import 'angular/core/directives';
