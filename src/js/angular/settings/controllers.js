@@ -30,7 +30,7 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
             if (response.status == 404) {
                 $scope.supportsStatistics = false;
             } else {
-                var msg = getError(response.data);
+                let msg = getError(response.data);
                 toastr.error(msg, 'Error getting settings');
             }
         });
@@ -50,7 +50,7 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
                 $modalInstance.close();
                 toastr.success('Settings have been saved');
             }, function (response) {
-                var msg = getError(response.data);
+                let msg = getError(response.data);
                 toastr.error(msg, 'Error saving settings')
             });
     }

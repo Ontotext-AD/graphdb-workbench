@@ -68,7 +68,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
                 $scope.similarityIndexes = data;
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Could not get indexes');
             });
     };

@@ -254,7 +254,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 saveAs(file, 'statements' + format.extension);
             }
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
         });
     };
@@ -318,7 +318,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
                 });
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -458,7 +458,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 });
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });

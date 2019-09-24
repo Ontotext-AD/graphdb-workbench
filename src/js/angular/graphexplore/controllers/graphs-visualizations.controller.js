@@ -729,7 +729,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     $scope.loadSavedGraph(data);
                 })
                 .error(function (data) {
-                    var msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error! Could not open saved graph');
                 });
         }
@@ -1725,7 +1725,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
         }, function (response) {
-            var msg = getError(response.data);
+            let msg = getError(response.data);
             toastr.error(msg, 'Error exploring node');
             $scope.loading = false;
             loader.setLoadingState(false);
@@ -2238,7 +2238,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 if (status === 422) {
                     $scope.saveGraphModal('new', graph, true);
                 } else {
-                    var msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error! Cannot create saved graph');
                 }
             });
@@ -2301,7 +2301,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 $scope.savedGraphs = data;
             })
             .error(function (data) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not get saved graphs');
             });
     };
@@ -2342,7 +2342,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 toastr.success('Saved graph ' + savedGraph.name + ' was deleted.');
             })
             .error(function (data) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Cannot delete saved graph');
             });
     }
@@ -2366,7 +2366,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 toastr.success('Saved graph ' + savedGraph.name + ' was edited.');
             })
             .error(function (data) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Cannot edit saved graph');
             });
     };

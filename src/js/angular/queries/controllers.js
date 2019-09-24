@@ -98,7 +98,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
                 toastr.success('Abort request sent.');
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
 
                 $scope.loader = false;
