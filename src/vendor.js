@@ -7,4 +7,4 @@ import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
 import 'lib/d3js/4.2.1/d3.js';
 import 'lib/loading-hint.js';
-import 'lib/bootstrap-switch/3.2.2/bootstrap-switch.min.js';
+import 'bootstrap-switch/dist/js/bootstrap-switch.min';
