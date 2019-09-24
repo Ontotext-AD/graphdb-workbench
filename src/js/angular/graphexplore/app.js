@@ -9,7 +9,7 @@ import 'lib/d3-tip/d3-tip-patch';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import 'lib/angucomplete-alt/angucomplete-alt';
-import 'lib/ng-tags-input/ng-tags-input.min';
+import 'ng-tags-input/build/ng-tags-input.min';
 import 'lib/common/d3-utils';
 import 'lib/common/circle-packing';
 import 'lib/common/svg-export';

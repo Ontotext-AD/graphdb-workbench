@@ -32,8 +32,8 @@ module.exports = {
                 to: 'js/angular/templates/loader/ot-loader.svg'
             },
             {
-                from: 'src/js/lib/ng-tags-input/ng-tags-input.min.css',
-                to: 'js/lib/ng-tags-input/ng-tags-input.min.css'
+                from: 'node_modules/ng-tags-input/build/ng-tags-input.min.css',
+                to: 'css/lib/ng-tags-input/ng-tags-input.min.css'
             },
             {
                 from: 'node_modules/angular-xeditable/dist/css/xeditable.min.css',
