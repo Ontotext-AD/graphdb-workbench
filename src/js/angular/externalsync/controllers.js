@@ -4,6 +4,7 @@ angular
     .controller('ExtendNewConnectorCtrl', ExtendNewConnectorCtrl)
     .controller('CreateConnectorCtrl', CreateConnectorCtrl)
     .controller('CreateProgressCtrl', CreateProgressCtrl)
+    .controller('DeleteConnectorCtrl', DeleteConnectorCtrl)
     .filter('ceil', ceil);
 
 function jsonToFormData(data) {
@@ -183,11 +184,11 @@ function repairConnectorQuery(name, prefix) {
     return query;
 }
 
-function deleteConnectorQuery(name, prefix) {
-    var namePrefix = buildNamePrefix(prefix);
+function deleteConnectorQuery(name, prefix, force) {
+    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
     var query = 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
-        '\t<' + namePrefix + name + '> prefix:dropConnector ""\n' +
+        '\t<' + namePrefix + name + '> prefix:dropConnector "' + (force ? "force" : "") + '"\n' +
         '}';
     return query;
 }
@@ -510,29 +511,44 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.delete = function (inst, type) {
-        ModalService.openSimpleModal({
-            title: 'Confirm delete',
-            message: 'Are you sure you want to delete this connector?',
-            warning: true
+        var isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
+
+        $modal.open({
+            templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',
+            controller: 'DeleteConnectorCtrl',
+            resolve: {
+                type: function () {
+                    return type.key;
+                },
+                isExternal: function () {
+                    return isExternal;
+                }
+            }
         }).result
-            .then(function () {
+            .then(function(force) {
                 $scope.setLoader(true, 'Deleting connector ' + inst.name, 'This is usually a fast operation but it might take a while.');
 
-                var query = deleteConnectorQuery(inst.name, type.value);
+                var query = deleteConnectorQuery(inst.name, type.value, force);
                 $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function (res) {
                     $http.get('rest/connectors').then(function (res) {
                         $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
                             $scope.existing[type.key] = res.data;
                         });
                     });
-                    toastr.success("Deleted connector " + inst.name);
+                    if (force) {
+                        toastr.success("Deleted (with force) connector " + inst.name);
+                        if (isExternal) {
+                            toastr.warning("You may have to remove the index manually from " + type.key);
+                        }
+                    } else {
+                        toastr.success("Deleted connector " + inst.name);
+                    }
                 }, function (err) {
                     toastr.error(getError(err));
-                }).finally(function () {
+                }).finally(function() {
                     $scope.setLoader(false);
                 });
             });
-
     };
 
     $scope.viewQuery = function (connector, inst) {
@@ -551,9 +567,24 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
 }
 
-ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
+        DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
+        function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+            $scope.force = false;
+            $scope.type = type;
+            $scope.isExternal = isExternal;
 
-function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
+            $scope.ok = function () {
+                $modalInstance.close($scope.force);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss();
+            };
+        }
+
+
+        ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
+        function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
 
     $scope.connector = connector;
 
