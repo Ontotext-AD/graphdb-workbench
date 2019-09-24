@@ -6,5 +6,5 @@ import './css/lib/animate/animate.css';
 import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
 import 'd3/build/d3';
-import 'lib/loading-hint.js';
+import 'angular/common/loading-hint.js';
 import 'bootstrap-switch/dist/js/bootstrap-switch.min';
