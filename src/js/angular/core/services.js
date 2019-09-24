@@ -3,7 +3,7 @@ import 'lib/angularjs/1.3.8/angular-cookies.min'; //ngCookies
 import 'lib/angularjs/1.3.8/angular-route';
 import 'lib/angular-local-storage/0.1.5/angular-local-storage.min';
 import 'lib/angular-sanitize/1.3.11/angular-sanitize.min';
-import 'lib/angular-toastr/0.5.2/angular-toastr';
+import toastr from 'angular-toastr';
 import 'lodash';
 import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
 import 'angular-bowser/src/angular-bowser';

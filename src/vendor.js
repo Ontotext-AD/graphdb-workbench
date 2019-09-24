@@ -1,5 +1,5 @@
 import 'lib/bootstrap/bootstrap.min.css';
-import 'lib/angular-toastr/0.5.2/angular-toastr.css';
+import 'angular-toastr/dist/angular-toastr.min.css';
 import './font/font-awesome/4.3.0/css/font-awesome.min.css';
 import './css/lib/animate/animate.css';
 
