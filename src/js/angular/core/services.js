@@ -1,4 +1,4 @@
-import 'lib/angularjs/1.3.8/angular-animate.min';
+import 'angular-animate/angular-animate.min';
 import 'lib/angularjs/1.3.8/angular-cookies.min'; //ngCookies
 import 'lib/angularjs/1.3.8/angular-route';
 import 'lib/angular-local-storage/0.1.5/angular-local-storage.min';
