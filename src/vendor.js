@@ -5,6 +5,6 @@ import './css/lib/animate/animate.css';
 
 import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
-import 'lib/d3js/4.2.1/d3.js';
+import 'd3/build/d3';
 import 'lib/loading-hint.js';
 import 'bootstrap-switch/dist/js/bootstrap-switch.min';
