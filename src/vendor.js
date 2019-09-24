@@ -1,6 +1,6 @@
 import 'lib/bootstrap/bootstrap.min.css';
 import 'angular-toastr/dist/angular-toastr.min.css';
-import './font/font-awesome/4.3.0/css/font-awesome.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import './css/lib/animate/animate.css';
 
 import 'jquery';
