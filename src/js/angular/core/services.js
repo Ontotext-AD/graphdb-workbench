@@ -2,7 +2,7 @@ import 'angular-animate/angular-animate.min';
 import 'angular-cookies/angular-cookies.min';
 import 'angular-route/angular-route.min';
 import 'angular-local-storage/dist/angular-local-storage.min';
-import 'lib/angular-sanitize/1.3.11/angular-sanitize.min';
+import 'angular-sanitize/angular-sanitize.min';
 import toastr from 'angular-toastr';
 import 'lodash';
 import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
