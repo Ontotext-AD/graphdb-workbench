@@ -5,7 +5,7 @@ import 'angular-local-storage/dist/angular-local-storage.min';
 import 'angular-sanitize/angular-sanitize.min';
 import toastr from 'angular-toastr';
 import 'lodash';
-import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
+import 'angular-ui-bootstrap/ui-bootstrap-tpls.min';
 import 'angular-bowser/src/angular-bowser';
 import 'workbench-core';
 import 'autofill-event/autofill-event';
