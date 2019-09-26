@@ -1,7 +1,7 @@
 import "angular/repositories/services";
 import "angular/repositories/controllers";
-import 'lib/ng-file-upload.min';
-import 'lib/ng-file-upload-shim.min';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 describe('==> Repository module controllers tests', function () {
 

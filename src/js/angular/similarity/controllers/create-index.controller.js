@@ -87,7 +87,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                     }
                 })
                 .error(function (data, status, headers, config) {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Could not get indexes');
                 });
 
@@ -243,7 +243,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Could not get indexes');
             });
 
@@ -592,7 +592,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                 }
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });

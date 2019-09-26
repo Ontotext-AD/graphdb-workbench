@@ -106,7 +106,7 @@ exportCtrl.controller('ExportCtrl',
                         $scope.selectedGraphs.exportGraphs = {};
                         $scope.matchedElements = $scope.graphs;
                     }).error(function (data, status, headers, config) {
-                        msg = getError(data, status);
+                        let msg = getError(data, status);
                         if (msg === "There is no active location!") {
                             $repositories.setRepository('');
                             toastr.error(msg, 'Error');

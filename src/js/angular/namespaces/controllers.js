@@ -75,7 +75,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                     $scope.loader = false;
                 } // else let the loaderPostRepeatDirective do it
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg);
                 $scope.loader = false;
             });
@@ -121,7 +121,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                 $scope.getNamespaces();
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -137,7 +137,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                 $scope.getNamespaces();
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -296,7 +296,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                     }
                 }
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, "Error");
                 $scope.loader = false;
             });

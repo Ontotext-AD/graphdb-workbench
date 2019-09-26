@@ -5,8 +5,8 @@ import 'angular/repositories/controllers';
 import 'angular/repositories/directives';
 import 'angular/repositories/services';
 import 'angular/settings/app';
-import 'lib/ng-file-upload.min';
-import 'lib/ng-file-upload-shim.min';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 const modules = [
     'ui.bootstrap',

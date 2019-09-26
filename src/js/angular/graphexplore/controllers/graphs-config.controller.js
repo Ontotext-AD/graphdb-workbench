@@ -568,7 +568,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
                 }
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });

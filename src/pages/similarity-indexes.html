@@ -19,8 +19,8 @@
 		<p>{{repositoryError}}</p>
 	</div>
 
-	<div class="alert alert-danger" ng-show="pluginDisabled">
-		<p>Similarity Plugin is disabled for this repository. <a href="#" ng-click="enabledSimilarityPlugin()">Enable plugin</a></p>
+	<div class="alert alert-danger plugin-disabled-warning" ng-show="pluginDisabled">
+		<p>Similarity Plugin is disabled for this repository. <a href="#" class="enable-plugin-link" ng-click="enabledSimilarityPlugin()">Enable plugin</a></p>
 	</div>
 
 	<div class="card mb-2 existing-indexes" ng-show="getActiveRepository() && !pluginDisabled">
@@ -92,9 +92,9 @@
 		</div>
 	</div>
 
-	<div class="card mb-2" ng-hide="selected === undefined || selected.type == 'textLiteral'">
+	<div class="card mb-2 index-search-panel" ng-hide="selected === undefined || selected.type == 'textLiteral'">
 		<div class="card-block">
-			<h3>Search in <b>{{selected.name}}</b></h3>
+			<h3 class="selected-index">Search in <b>{{selected.name}}</b></h3>
 
 			<div ng-show="selected.type == 'text'">
 				<div class="d-inline-block">
@@ -286,7 +286,7 @@
 		</div>
 	</div>
 
-	<div class="card" ng-show="lastSearch">
+	<div class="card search-results" ng-show="lastSearch">
 		<div class="card-block">
 				<em ng-show="lastSearch.type != 'searchAnalogical'">Showing results for
 					<a ng-show="lastSearch.type == 'searchDocumentID' || lastSearch.type == 'searchEntity' || lastSearch.type == 'searchEntityPredicate'"

@@ -282,7 +282,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             };
                         });
                     }).error(function (data) {
-                        msg = getError(data);
+                        let msg = getError(data);
                         toastr.error(msg, 'Error getting namespaces for repository.');
                     });
                 }

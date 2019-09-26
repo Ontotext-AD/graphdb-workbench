@@ -4,7 +4,7 @@ const modules = [
     'ui.scroll.jqlite',
     'ui.scroll',
     'angucomplete-alt',
-    'rzModule',
+    'rzSlider',
     'toastr'
 ];
 
@@ -26,6 +26,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.instancesObj.items = [];
     $scope.instancesNotFiltered = [];
     $scope.isWarningShowed = false;
+
+    // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
+    // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
+    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
 
     $scope.currentBrowserLimit = 2000;
     if (bowser.firefox) {
