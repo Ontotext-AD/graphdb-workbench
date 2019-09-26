@@ -14,6 +14,13 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     var PREFIX_INSTANCE = PREFIX + 'instance/';
     var ANY_PREDICATE = PREFIX_PREDICATION + "any";
 
+    var literalForQuery = function (literal) {
+        return '"' + literal + '"';
+    };
+
+    var iriForQuery = function (iri) {
+        return '<' + iri + '>';
+    };
 
     $scope.info = productInfo;
     $scope.pluginDisabled = false;
@@ -324,14 +331,6 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
 
     $scope.copyToClipboardResult = function (uri) {
         ModalService.openCopyToClipboardModal(uri);
-    };
-
-    var iriForQuery = function (iri) {
-        return '<' + iri + '>';
-    };
-
-    var literalForQuery = function (literal) {
-        return '"' + literal + '"';
     };
 
     $scope.editSearchQuery = function (index) {

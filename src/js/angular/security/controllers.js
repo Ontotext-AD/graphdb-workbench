@@ -594,10 +594,6 @@ securityCtrl.controller('RolesMappingController', ['$scope', '$http', function (
         })
     }
 
-    $scope.$on("repositoryIsSet", function (event) {
-        loadRoles();
-    });
-
     var loadRoles = function () {
         $http.get('rest/roles')
             .success(function (data, status, headers, config) {
@@ -612,17 +608,17 @@ securityCtrl.controller('RolesMappingController', ['$scope', '$http', function (
                 }), function (p) {
                     return p[0]
                 }))
-
-
             })
             .error(function (data, status, headers, config) {
                 let msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
-    }
+    };
 
-
+    $scope.$on("repositoryIsSet", function (event) {
+        loadRoles();
+    });
 }]);
 
 securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$rootScope', '$controller',

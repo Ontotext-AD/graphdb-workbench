@@ -393,6 +393,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
             }
         }
 
+        var promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             str = str.replace(expandedUri, expandedUri + ";");

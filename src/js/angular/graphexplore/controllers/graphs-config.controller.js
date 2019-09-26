@@ -115,6 +115,19 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     function initForConfig() {
         getGraphConfigSamples();
 
+        /**
+         *  This method will show message with tiny delay and only after completion
+         *  of latter redirection to "graphs-visualizations" page will happen.
+         * @param message
+         * @returns {Promise<any>}
+         */
+        let showSuccessMessage = function (message) {
+            return new Promise(r => {
+                toastr.success(message);
+                setTimeout(r, 300)
+            });
+        };
+
         $scope.createGraphConfig = function () {
             GraphConfigService.createGraphConfig($scope.newConfig)
                 .success(async function () {
@@ -132,19 +145,6 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
                     $location.url("graphs-visualizations");
                 }).error(function (data, status, headers, config) {
                 toastr.error(getError(data), 'Error! Could not save graph config');
-            });
-        };
-
-        /**
-         *  This method will show message with tiny delay and only after completion
-         *  of latter redirection to "graphs-visualizations" page will happen.
-         * @param message
-         * @returns {Promise<any>}
-         */
-        let showSuccessMessage = function (message) {
-            return new Promise(r => {
-                toastr.success(message);
-                setTimeout(r, 300)
             });
         };
 
