@@ -1413,15 +1413,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }).attr("y", function (d) {
                 return d.y = (d.source.y + d.target.y) * 0.5;
             }).attr("transform", function (d) {
-                var angle;
-                if (d.direction === 'double') {
-                    angle = findAngleBetweenNodes(d, d.direction);
-                    return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
-                } else {
-                    angle = findAngleBetweenNodes(d, d.direction);
-                    return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
-                }
-
+                var angle = findAngleBetweenNodes(d, d.direction);
+                return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
             });
 
             // recalculate nodes attributes

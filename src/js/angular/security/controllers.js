@@ -72,9 +72,7 @@ var parseAuthorities = function (authorities) {
                 userType = 'repoManager';
             }
         } else if (role === 'ROLE_USER') {
-            if (!userType) {
-                userType = 'user';
-            }
+            userType = 'user';
         } else if (role.indexOf('ROLE_') !== 0) {
             var index = role.indexOf('_', role.indexOf('_') + 1);
             var op = role.substr(0, index);
