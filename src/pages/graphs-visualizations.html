@@ -27,7 +27,7 @@
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-click="goToHome()">
-            <i class="icon-arrow-up icon-2x"></i>
+            <em class="icon-arrow-up icon-2x"></em>
         </button>
         <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link p-0"
                 tooltip="Search another resource"
@@ -35,7 +35,7 @@
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="searchVisible = !searchVisible">
-            <i class="icon-search icon-2x"></i>
+            <em class="icon-search icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
                 tooltip="Click to rotate the graph to the left"
@@ -43,7 +43,7 @@
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(true)">
-            <i class="icon-rotate-left icon-2x"></i>
+            <em class="icon-rotate-left icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
                 tooltip="Click to rotate the graph to the right"
@@ -51,7 +51,7 @@
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(false)">
-            <i class="icon-rotate-right icon-2x"></i>
+            <em class="icon-rotate-right icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
                 tooltip="{{numberOfPinnedNodes > 0 ? 'Unpin all nodes' : 'Pin down all nodes'}}"
@@ -60,7 +60,7 @@
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="togglePinAllNodes()">
-            <i class="icon-pin icon-2x"></i>
+            <em class="icon-pin icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
                 tooltip="Save graph snapshot"
@@ -69,14 +69,14 @@
                 ng-if="hasRole('ROLE_USER') && !embedded"
                 ng-disabled="!nodeSelected"
                 ng-click="saveOrUpdateGraph()">
-            <i class="icon-save icon-2x"></i>
+            <em class="icon-save icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
                 tooltip="Click to configure the view"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-click="showSettings()">
-            <i class="icon-settings icon-2x visual-graph-settings-btn"></i>
+            <em class="icon-settings icon-2x visual-graph-settings-btn"></em>
         </button>
     </div>
 
@@ -128,7 +128,7 @@
                             <p>Define how the visualisation works by writing your own SPARQL queries</p>
                         </div>
                         <div ng-show="graphConfigs.length == 0">No graph configs</div>
-                        <table class="table table-hover mb-0" >
+                        <table class="table table-hover mb-0" aria-describedby="Graph configurations table">
                             <tbody>
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
@@ -159,14 +159,14 @@
                     <div class="card-block">
                         <h3 class="mb-2">Saved graphs</h3>
                         <div ng-show="savedGraphs.length == 0">No saved visual graph snapshots</div>
-                        <table class="table table-hover mb-0" ng-init="refreshSavedGraphs()">
+                        <table class="table table-hover mb-0" ng-init="refreshSavedGraphs()" aria-describedby="Saved graphs table">
                             <tbody>
                             <tr ng-repeat="graph in savedGraphs">
                                 <td>
                                     <h5><a href ng-click="loadSavedGraph(graph)">{{graph.name}}</a></h5>
                                 </td>
                                 <td>
-                                    <span ng-show="graph.config != 'default'">Advanced: <b>{{findConfigById(graph.config).name}}</b></span>
+                                    <span ng-show="graph.config != 'default'">Advanced: <strong>{{findConfigById(graph.config).name}}</strong></span>
                                     <span ng-show="graph.config == 'default'">Easy graph</span>
                                 </td>
                                 <td class="text-xs-right">
@@ -219,7 +219,7 @@
         ps-size="{{pageslideExpanded ? '80vw' : '25vw'}}">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
         <span class="toggle-sidepanel" title="Collapse sidepanel" ng-click="toggleSidePanel()">
-            <i ng-class="pageslideExpanded ? 'icon-caret-right' : 'icon-caret-left'"></i>
+            <em ng-class="pageslideExpanded ? 'icon-caret-right' : 'icon-caret-left'"></em>
         </span>
         <button class="close mb-1 ml-1" ng-click="closeInfoPanel()"></button>
         <h3 class="hovered-parent" ng-if="showPredicates">
@@ -386,7 +386,7 @@
                      tooltip="Labels"
                      tooltip-placement="top"
                      tooltip-trigger="mouseenter">
-                    <i class="icon-tag icon-lg" aria-hidden="true"></i>
+                    <em class="icon-tag icon-lg" aria-hidden="true"></em>
                 </div>
                 <div class="media-body">
 					<span ng-repeat="l in nodeLabels">
@@ -397,7 +397,7 @@
             </div>
 
             <div class="break-word-alt">
-                <b>Types: </b><em class="text-muted" ng-if="!nodeTypes.length">No types</em><br>
+                <strong>Types: </strong><em class="text-muted" ng-if="!nodeTypes.length">No types</em><br>
                 <ul class="list-inline">
                     <li class="list-inline-item" ng-repeat="nodeType in nodeTypes"
                         ng-class="{'lead d-block': $index == 0}">
@@ -407,7 +407,7 @@
                 </ul>
             </div>
             <div class="mb-1" ng-show="rdfRank >= 0">
-                <b>RDF rank: </b>
+                <strong>RDF rank: </strong>
                 <div class="progress">
                     <div class="progress-bar" role="progressbar" aria-valuenow="{{rdfRank}}"
                          aria-valuemin="0" aria-valuemax="1" style="word-break: normal; width: {{rdfRank*100}}%">

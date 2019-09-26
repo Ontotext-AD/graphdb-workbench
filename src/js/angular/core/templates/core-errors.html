@@ -4,7 +4,7 @@
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
                     <div ng-hide="getActiveRepository()" >Some functionality is not available because you are not connected to any repository.</div>
-                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionality is not available because you have no write permission to repository <b>{{getActiveRepository()}}</b>.</div>
+                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionality is not available because you have no write permission to repository <strong>{{getActiveRepository()}}</strong>.</div>
                     <small>
                         <span ng-show="getAccessibleRepositories().length">
                             Click one of the repositories below to connect to it<span ng-show="canManageRepositories()"> or create a new repository</span>.
@@ -25,7 +25,7 @@
                                   popover-popup-delay="500"
                                   popover-trigger="show" popover-placement="{{$index % 2 === 0 ? 'bottom-right' : 'left-bottom'}}"
                                   popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
-                            <i class="icon-lg" ng-class="'icon-repo-' + repository.type"></i>
+                            <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
                             <strong>{{repository.id}}</strong></span><small ng-show="repository.title"><span class="small"> &middot; {{repository.title}}</span></small>
                         </div>
                     </li>

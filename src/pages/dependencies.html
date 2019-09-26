@@ -27,21 +27,21 @@
                tooltip="Remove All Classes"
                tooltip-trigger="mouseenter"
                tooltip-placement="bottom">
-             <i class="icon-close icon-2x"></i>
+             <em class="icon-close icon-2x"></em>
          </button>
         <button class="btn btn-link p-0 reload-diagram-btn" type="button"
              tooltip="Reload Diagram"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter"
               ng-click="confirmCalculateDependencies()">
-            <i class="icon-reload icon-2x refresh-button" ></i>
+            <em class="icon-reload icon-2x refresh-button" ></em>
         </button>
         <a href id="download-svg" class="btn btn-link p-0 export-diagram-btn"
            ng-show="allNotFilteredClasses.length > 0"
            tooltip="Export Diagram"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter">
-            <i class="icon-export icon-2x"></i>
+            <em class="icon-export icon-2x"></em>
         </a>
     </div>
     <div>
@@ -115,21 +115,21 @@
                             </div>
                             <div class="related-arrow col-sm-1 col-md-1" tooltip="Related Classes" tooltip-trigger="mouseenter"
                                  ng-click="showClass(class)">
-                                <i class="fa fa-exchange pointer related-classes"
-                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></i>
-                                <i class="fa fa-long-arrow-left related-classes"
-                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></i>
-                                <i class="fa fa-long-arrow-right related-classes"
-                                   ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></i>
+                                <em class="fa fa-exchange pointer related-classes"
+                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
+                                <em class="fa fa-long-arrow-left related-classes"
+                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></em>
+                                <em class="fa fa-long-arrow-right related-classes"
+                                   ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></em>
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
                             <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" tooltip="Add Class" tooltip-trigger="mouseenter">
-                                <i class="fa fa-plus" role="button"></i>
+                                <em class="fa fa-plus" role="button"></em>
                             </div>
                             <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" tooltip="Remove Class"
                                   tooltip-trigger="mouseenter">
-                                <i class="fa fa-minus-circle" role="button"></i>
+                                <em class="fa fa-minus-circle" role="button"></em>
                             </div>
                         </div>
                     </li>
@@ -140,7 +140,7 @@
                     {{classToShow.name}}
                 </div>
                 <div class="back-to-dependencies-list">
-                    <a href="#" ng-click="classToShow = undefined"><i class="fa fa-arrow-left"></i> Back to main Class
+                    <a href="#" ng-click="classToShow = undefined"><em class="fa fa-arrow-left"></em> Back to main Class
                         Relationships table</a>
                 </div>
                 <div class="row direction-filter-header">
@@ -159,21 +159,21 @@
                                 connection.inWeight + connection.outWeight | humanize}}
                             </div>
                             <div class="related-arrow col-sm-1 col-md-1">
-                                <i class="fa fa-exchange"
-                                   ng-show="connection.inWeight > 0 && connection.outWeight > 0"></i>
-                                <i class="fa fa-long-arrow-left"
-                                   ng-show="connection.inWeight > 0 && connection.outWeight == 0"></i>
-                                <i class="fa fa-long-arrow-right"
-                                   ng-show="connection.inWeight == 0 && connection.outWeight > 0 "></i>
+                                <em class="fa fa-exchange"
+                                   ng-show="connection.inWeight > 0 && connection.outWeight > 0"></em>
+                                <em class="fa fa-long-arrow-left"
+                                   ng-show="connection.inWeight > 0 && connection.outWeight == 0"></em>
+                                <em class="fa fa-long-arrow-right"
+                                   ng-show="connection.inWeight == 0 && connection.outWeight > 0 "></em>
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
                             <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" tooltip="Add Class" tooltip-trigger="mouseenter">
-                                <i class="fa fa-plus" role="button"></i>
+                                <em class="fa fa-plus" role="button"></em>
                             </div>
                             <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" tooltip="Remove Class"
                                  tooltip-trigger="mouseenter">
-                                <i class="fa fa-minus-circle" role="button"></i>
+                                <em class="fa fa-minus-circle" role="button"></em>
                             </div>
                         </div>
                     </li>

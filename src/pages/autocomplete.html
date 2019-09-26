@@ -2,11 +2,11 @@
 <div id="autocomplete" class="page">
 	<h1>
 		{{title}}
-		<i class="btn btn-link"
+		<em class="btn btn-link"
 		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
-		   popover-append-to-body="true"><span class="icon-info"></span></i>
+		   popover-append-to-body="true"><span class="icon-info"></span></em>
 	</h1>
 
 	<div onto-loader-new
@@ -30,14 +30,14 @@
 		</div>
 		<div ng-show="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span class="autocomplete-header">Autocomplete for repository <b>{{getActiveRepository()}}</b> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
+				<span class="autocomplete-header">Autocomplete for repository <strong>{{getActiveRepository()}}</strong> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
 				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch enable-autocomplete-switch">
                     <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
                     <label for="toggleIndex"></label>
                 </span>
 				<span ng-show="autocompleteEnabled" class="autocomplete-status">
 					with status
-					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><i class="icon-check icon-lg"></i> Ready</span>
+					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><em class="icon-check icon-lg"></em> Ready</span>
 
 					<span ng-show="indexStatus == 'BUILDING'">
 						<span class="tag tag-info">
@@ -48,9 +48,9 @@
 								tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
 					</span>
 
-					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><i class="icon-warning icon-lg"></i> {{indexStatus}}</span>
-					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><i class="icon-warning icon-lg"></i> Index building was cancelled.</span>
-					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><i class="icon-info icon-lg"></i> Index not built yet.</span>
+					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="icon-warning icon-lg"></em> {{indexStatus}}</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><em class="icon-warning icon-lg"></em> Index building was cancelled.</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><em class="icon-info icon-lg"></em> Index not built yet.</span>
 				</span>
 
 
@@ -80,13 +80,12 @@
                 </span>
 			</div>
 
-			<table id="wb-autocomplete-labels"
-				   class="table table-striped table-hover">
+			<table id="wb-autocomplete-labels" class="table table-striped table-hover" aria-describedby="Autocomplete labels table">
 				<thead>
 				<tr>
-					<th>Label IRI</th>
-					<th>Languages</th>
-					<th style="width: 100px"></th>
+					<th id="labelIRIColumn">Label IRI</th>
+					<th id="languagesColumn">Languages</th>
+					<th id="actionsColumn" style="width: 100px"></th>
 				</tr>
 				</thead>
 				<tbody>
