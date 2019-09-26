@@ -509,7 +509,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     // debug stuff
                     if (isRandomLink) {
                         status = ['UNINITIALIZED', 'ON', 'OFF', 'REPLICATION_SERVER', 'REPLICATION_CLIENT',
-                            'OUT_OF_SYNC', 'OUT_OF_SYNC_FORCED', 'WAITING_WRITE', 'WRITING'][Math.floor(Math.random() * 9)];
+                            'OUT_OF_SYNC', 'OUT_OF_SYNC_FORCED', 'WAITING_WRITE', 'WRITING'][Math.floor(Math.random() * 9)]; // NOSONAR
                     }
                     // end of debug stuff
 
