@@ -44,6 +44,14 @@ module.exports = {
                 to: 'css/lib/bootstrap-switch/bootstrap-switch.min.css'
             },
             {
+                from: 'src/js/lib/bootstrap/bootstrap.min.css',
+                to: 'js/lib/bootstrap/bootstrap.min.css'
+            },
+            {
+                from: 'src/font/font-awesome',
+                to: 'font/font-awesome'
+            },
+            {
                 from: 'src/js/lib/nvd3/nv.d3.css',
                 to: 'js/lib/nvd3/nv.d3.css'
             },
