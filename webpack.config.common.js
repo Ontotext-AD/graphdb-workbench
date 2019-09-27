@@ -16,8 +16,8 @@ module.exports = {
     plugins: [
         new CopyPlugin([
             {
-                from: 'src/js/lib/rzslider/rzslider.css',
-                to: 'js/lib/rzslider/rzslider.css'
+                from: 'node_modules/angularjs-slider/dist/rzslider.min.css',
+                to: 'js/lib/rzslider/rzslider.min.css'
             },
             {
                 from: 'src/js/lib/angucomplete-alt/angucomplete-alt.css',
@@ -32,16 +32,28 @@ module.exports = {
                 to: 'js/angular/templates/loader/ot-loader.svg'
             },
             {
-                from: 'src/js/lib/ng-tags-input/ng-tags-input.min.css',
-                to: 'js/lib/ng-tags-input/ng-tags-input.min.css'
+                from: 'node_modules/ng-tags-input/build/ng-tags-input.min.css',
+                to: 'css/lib/ng-tags-input/ng-tags-input.min.css'
             },
             {
-                from: 'src/js/lib/angular-xeditable/0.1.8/xeditable.css',
-                to: 'js/lib/angular-xeditable/0.1.8/xeditable.css'
+                from: 'node_modules/angular-xeditable/dist/css/xeditable.min.css',
+                to: 'css/lib/angular-xeditable/xeditable.min.css'
             },
             {
-                from: 'src/js/lib/bootstrap-switch/3.2.2/bootstrap-switch.min.css',
-                to: 'js/lib/bootstrap-switch/3.2.2/bootstrap-switch.min.css'
+                from: 'node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css',
+                to: 'css/lib/bootstrap-switch/bootstrap-switch.min.css'
+            },
+            {
+                from: 'src/js/lib/bootstrap/bootstrap.min.css',
+                to: 'js/lib/bootstrap/bootstrap.min.css'
+            },
+            {
+                from: 'node_modules/font-awesome/css',
+                to: 'font/font-awesome/4.3.0/css'
+            },
+            {
+                from: 'node_modules/font-awesome/fonts',
+                to: 'font/font-awesome/4.3.0/fonts'
             },
             {
                 from: 'src/js/lib/nvd3/nv.d3.css',
@@ -108,7 +120,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /jquery.min.js/,
+                test: /jquery.js/,
                 use: [
                     {
                         loader: 'expose-loader',

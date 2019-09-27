@@ -359,7 +359,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                     $('#sampleQueriesCollapse').collapse('show').width('300px');
                 })
                 .error(function (data, status, headers, config) {
-                    var msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error! Could not get saved queries');
                 });
         } else {
@@ -386,7 +386,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                 }
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });
@@ -446,7 +446,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                         $scope.deleteQueryHttp(query.name, true);
                     })
                     .error(function (data, status, headers, config) {
-                        var msg = getError(data);
+                        let msg = getError(data);
                         toastr.error(msg, 'Error! Cannot edit saved query');
                     });
             } else {
@@ -457,7 +457,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                         toastr.success('Saved query ' + query.name + ' was edited.');
                     })
                     .error(function (data, status, headers, config) {
-                        var msg = getError(data);
+                        let msg = getError(data);
                         toastr.error(msg, 'Error! Cannot edit Saved query');
                     });
             }
@@ -474,7 +474,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                 }
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Cannot delete saved query');
             });
     }
@@ -496,8 +496,9 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                 toastr.success('Saved query ' + query.name + ' was saved.');
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Cannot create saved query');
+                // TODO: This condition will always be true
                 if (msg = "Query '" + query.name + "' already exists!") {
                     query.query = query.body;
                     var queryExists = true;

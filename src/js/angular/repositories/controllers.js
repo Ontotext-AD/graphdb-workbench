@@ -90,7 +90,7 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
                 $repositories.init();
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
 
                 $scope.loader = false;
@@ -123,7 +123,7 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
             //Reload locations and repositories
             $repositories.init();
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
 
             $scope.loader = false;
@@ -156,7 +156,7 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
             $repositories.setRepository('');
             $repositories.init();
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             document.getElementById('switch-' + location.$$hashKey).checked = false;
         });
@@ -296,7 +296,7 @@ function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr) {
                     $modalInstance.close();
                 })
                 .error(function (data, status, headers, config) {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error');
                     $scope.uploadFileLoader = false;
                 });
@@ -405,7 +405,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
                 }
                 $scope.uploadFileLoader = false;
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.uploadFile = '';
                 $scope.uploadFileLoader = false;
@@ -423,7 +423,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
             $scope.loader = false;
 
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -458,7 +458,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
             toastr.success('The repository ' + $scope.repositoryInfo.id + ' has been created.');
             $repositories.init($scope.goBackToPreviousLocation);
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -566,7 +566,7 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
                         $location.path('repository');
                     }
                     else {
-                        msg = getError(data);
+                        let msg = getError(data);
                         toastr.error(msg, 'Error');
                         $scope.loader = false;
                     }
@@ -584,7 +584,7 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
             toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
             $repositories.init($scope.goBackToPreviousLocation);
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -611,7 +611,7 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
     };
 
     $scope.editRepositoryId = function () {
-        var msg = 'Changing the repository id is a dangerous operation since it moves the repository folder. Also, it may be slow due to reinitialisation of the repository.';
+        let msg = 'Changing the repository id is a dangerous operation since it moves the repository folder. Also, it may be slow due to reinitialisation of the repository.';
         if ($scope.isEnterprise) {
             msg += 'If your repository is in a cluster, it is your responsibility to update the cluster after renaming.'
         }

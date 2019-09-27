@@ -132,7 +132,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     $scope.password = "";
                 }
                 else {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, status);
                 }
 
@@ -167,7 +167,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                 }
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -259,7 +259,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                     $scope.getUsers();
 
                 }).error(function (data, status, headers, config) {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error');
 
                     $scope.loader = false;
@@ -425,7 +425,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                     $timeout.cancel(timer);
                 });
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
@@ -508,7 +508,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
             });
         };
@@ -545,7 +545,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                     $jwtAuth.getPrincipal().appSettings = $scope.user.appSettings;
                 }
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
@@ -618,7 +618,7 @@ securityCtrl.controller('RolesMappingController', ['$scope', '$http', function (
 
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
@@ -716,7 +716,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
                     $timeout.cancel(timer);
                 });
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });

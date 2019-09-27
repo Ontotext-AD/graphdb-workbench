@@ -1,6 +1,6 @@
 <link href="css/graphs-vizualizations.css" rel="stylesheet"/>
 <link href="css/rdf-details-side-panel.css" rel="stylesheet"/>
-<link href="js/lib/ng-tags-input/ng-tags-input.min.css" rel="stylesheet"/>
+<link href="css/lib/ng-tags-input/ng-tags-input.min.css" rel="stylesheet"/>
 <link href="js/lib/d3-tip/d3-tip.css" rel="stylesheet"/>
 
 <div class="container-fluid">
@@ -211,6 +211,8 @@
 <pageslide
         ps-class="rdf-info-side-panel node-info predicate-info"
         ps-open="showInfoPanel"
+        onopen="onopen"
+        onclose="onclose"
         ps-side="right"
         ps-custom-top="45px"
         ps-custom-height="calc(100vh - 55px)"

@@ -1,14 +1,14 @@
-import 'lib/angularjs/1.3.8/angular-animate.min';
-import 'lib/angularjs/1.3.8/angular-cookies.min'; //ngCookies
-import 'lib/angularjs/1.3.8/angular-route';
-import 'lib/angular-local-storage/0.1.5/angular-local-storage.min';
-import 'lib/angular-sanitize/1.3.11/angular-sanitize.min';
-import 'lib/angular-toastr/0.5.2/angular-toastr';
-import 'lib/lodash/4.0.0/lodash';
-import 'lib/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min';
-import 'lib/angular-bowser/angular-bowser';
+import 'angular-animate/angular-animate.min';
+import 'angular-cookies/angular-cookies.min';
+import 'angular-route/angular-route.min';
+import 'angular-local-storage/dist/angular-local-storage.min';
+import 'angular-sanitize/angular-sanitize.min';
+import toastr from 'angular-toastr';
+import 'lodash';
+import 'angular-ui-bootstrap/ui-bootstrap-tpls.min';
+import 'angular-bowser/src/angular-bowser';
 import 'workbench-core';
-import 'lib/autofill-event';
+import 'autofill-event/autofill-event';
 import 'angular/core/directives';
 import 'angular/core/controllers';
 

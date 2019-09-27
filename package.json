@@ -70,5 +70,26 @@
         "webpack-dev-server": "^3.7.2",
         "webpack-merge": "^4.2.1"
     },
-    "proxy": "http://localhost:7200"
+    "dependencies": {
+        "angular-animate": "1.3.8",
+        "angular-bowser": "0.0.4",
+        "angular-cookies": "1.3.8",
+        "angular-local-storage": "0.1.5",
+        "angular-pageslide-directive": "^2.2.0",
+        "angular-route": "1.3.8",
+        "angular-sanitize": "1.3.11",
+        "angular-toastr": "^2.1.1",
+        "angular-ui-bootstrap": "0.13.0",
+        "angular-ui-scroll": "^1.7.6",
+        "angular-xeditable": "^0.10.0",
+        "angularjs-slider": "^7.0.0",
+        "autofill-event": "0.0.1",
+        "bootstrap-switch": "^3.4.0",
+        "d3": "4.2.1",
+        "font-awesome": "^4.7.0",
+        "jquery": "^3.4.1",
+        "lodash": "^4.17.15",
+        "ng-file-upload": "^12.2.13",
+        "ng-tags-input": "^3.2.0"
+    }
 }

@@ -242,7 +242,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
                 that.location.defaultRepository = id;
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
             })
     };
@@ -258,7 +258,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
                 }
                 that.init();
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
         });
     };
@@ -268,7 +268,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
             .success(function (data, status, headers, config) {
                 that.init();
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
         });
         if (that.getActiveRepository() == repositoryId) {

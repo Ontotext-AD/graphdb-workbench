@@ -372,7 +372,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 $scope.sampleQueries = data;
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not get saved queries');
             });
     };

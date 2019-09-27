@@ -3,8 +3,8 @@ import 'angular/core/directives';
 import 'angular/import/controllers';
 import 'angular/import/directives';
 import 'angular/repositories/services';
-import 'lib/ng-file-upload.min';
-import 'lib/ng-file-upload-shim.min';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 const modules = [
     'toastr',

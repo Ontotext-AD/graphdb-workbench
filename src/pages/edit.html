@@ -1,4 +1,4 @@
-<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
 
 <div core-errors></div>
 <div class="page" ng-show="getActiveRepository()">
@@ -174,13 +174,13 @@
             </table>
     </div>
     <div class="text-xs-right">
-		<button class="btn btn-secondary" 
-			ng-disabled="statements.length == 0" 
+		<button class="btn btn-secondary"
+			ng-disabled="statements.length == 0"
 			tooltip="View the resource graph in TriG format"
 			ng-click="viewTrig()">
 			View TriG
 		</button>
-		<button class="btn btn-primary" 
+		<button class="btn btn-primary"
 			tooltip="Save changes"
 			ng-click="save()">
 			Save
