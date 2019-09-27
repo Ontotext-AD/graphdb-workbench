@@ -11,18 +11,18 @@
             <div class="col-md-8">
                 <input id="sesameLocation" ng-model="newLocation.uri" name="sesameLocation" class="form-control"
                        placeholder="http://my-hostname:7200" ng-blur="isValidLocation()"/>
-                
+
                 <span class="form-text text-muted">Enter a URL to a remote GraphDB instance</span>
             </div>
         </div>
         <div ng-show="!isValidLocation()" class="alert alert-warning">
 			Note that the location should be a URL that points to a remote GraphDB installation, e.g. http://server.example.com:7200/.
 		</div>
-       
+
         <div class="text-xs-center">
 			<button ng-click="switchAdvanced()" class="btn btn-link btn-sm">
-				<span ng-hide="advanced">Show security settings<i class="icon-caret-down"></i></span>
-				<span ng-show="advanced">Hide security settings<i class="icon-caret-up"></i></span>
+				<span ng-hide="advanced">Show security settings<em class="icon-caret-down"></em></span>
+				<span ng-show="advanced">Hide security settings<em class="icon-caret-up"></em></span>
        		</button>
         </div>
         <fieldset ng-show="advanced" class="mb-1">

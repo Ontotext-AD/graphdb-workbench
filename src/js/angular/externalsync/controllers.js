@@ -8,8 +8,9 @@ angular
 
 function jsonToFormData(data) {
     var str = [];
-    for (var p in data)
+    for (var p in data) {
         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(data[p]));
+    }
     return str.join("&");
 }
 
@@ -99,6 +100,10 @@ function _evaluateSparqlQuery(http, repository, query) {
         });
 }
 
+function buildNamePrefix(prefix) {
+    return prefix.substring(0, prefix.length - 1) + "/instance#";
+}
+
 function createConnectorQuery(name, prefix, fields, options, reportError) {
     // Returns a copy of the parameter obj sorted according to the order in options
     function sortObject(obj, options) {
@@ -137,7 +142,7 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
     //escapeValues(fields);
     var finalString = '';
     finalString += 'PREFIX :<' + prefix + '>\n';
-    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
+    var namePrefix = buildNamePrefix(prefix);
     finalString += 'PREFIX inst:<' + namePrefix + '>\n';
     finalString += 'INSERT DATA {\n';
     finalString += "\tinst:" + name + " :createConnector '''\n";
@@ -170,7 +175,7 @@ function createStatusQueryForAny(connectors) {
 }
 
 function repairConnectorQuery(name, prefix) {
-    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
+    var namePrefix = buildNamePrefix(prefix);
     var query = 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
         '\t<' + namePrefix + name + '> prefix:repairConnector ""\n' +
@@ -179,7 +184,7 @@ function repairConnectorQuery(name, prefix) {
 }
 
 function deleteConnectorQuery(name, prefix) {
-    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
+    var namePrefix = buildNamePrefix(prefix);
     var query = 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
         '\t<' + namePrefix + name + '> prefix:dropConnector ""\n' +
@@ -368,7 +373,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         resetProgress(repair);
 
         $.extend($scope.beingBuiltConnector, {
-            iri: prefix.substring(0, prefix.length - 1) + "/instance#" + name,
+            iri: buildNamePrefix(prefix) + name,
             name: name,
             inline: false,
             doneCallback: function () {
@@ -391,7 +396,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         resetProgress();
 
         $.extend($scope.beingBuiltConnector, {
-            iri: prefix.substring(0, prefix.length - 1) + "/instance#" + name,
+            iri: buildNamePrefix(prefix) + name,
             name: name,
             inline: true,
             doneCallback: function () {

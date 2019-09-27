@@ -4,11 +4,11 @@
 <div id="rdfRank" class="page">
 	<h1>
 		{{title}}
-		<i class="btn btn-link"
+		<em class="btn btn-link"
 		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
-		   popover-append-to-body="true"><span class="icon-info"></span></i>
+		   popover-append-to-body="true"><span class="icon-info"></span></em>
 	</h1>
 
 	<div onto-loader-new
@@ -32,8 +32,8 @@
 		</div>
 		<div ng-show="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span class="rdf-rank-status">RDFRank for repository <b>{{getActiveRepository()}}</b> is with status</span>
-                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><i class="icon-check icon-lg"></i> Computed</span>
+				<span class="rdf-rank-status">RDFRank for repository <strong>{{getActiveRepository()}}</strong> is with status</span>
+                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> Computed</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
                     <span class="tag tag-info">
@@ -44,11 +44,11 @@
                             tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
                 </span>
 
-                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><i class="icon-warning icon-lg"></i> {{currentRankStatus}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><i class="icon-warning icon-lg"></i> Outdated</span>
-				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><i class="icon-warning icon-lg"></i> Configuration changed</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><i class="icon-warning icon-lg"></i> Computation canceled</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><i class="icon-info icon-lg"></i> RDFRank not built yet</span>
+                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="icon-warning icon-lg"></em> {{currentRankStatus}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="icon-warning icon-lg"></em> Outdated</span>
+				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="icon-warning icon-lg"></em> Configuration changed</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="icon-warning icon-lg"></em> Computation canceled</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> RDFRank not built yet</span>
 
 				<p class="pull-right">
 					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary compute-rdf-rank-btn">Compute Full</button>

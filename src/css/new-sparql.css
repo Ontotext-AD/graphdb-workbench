@@ -5,8 +5,8 @@
 
 #yasqe_buttons #buttons {
     position:absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     padding-bottom: 10px;
 }
 #queryEditor {
@@ -21,7 +21,7 @@
 	#queryEditor #checkboxes {
 	    position:absolute;
 	    bottom: -25px;
-	    right: 0px;
+	    right: 0;
 	    z-index: 10;
 	}
 	#queryEditor #yasqe_buttons {
@@ -33,7 +33,7 @@
 	#queryEditor .CodeMirror-code {
 		width: 89%;
 	}
-	
+
 
 /* icons in the editor that form the toolbar */
 #yasqe_buttons #buttons .fa-2x {
@@ -57,112 +57,10 @@
   cursor: pointer;
 }
 
-/*
-#showSavedQueries {
-	top: 80px;
-	right: -71px;
-	position: absolute;
-	height: auto;
-	display:inline-block;
-	-webkit-transform:rotate(-90deg);
-	-moz-transform:rotate(-90deg);
-	-ms-transform:rotate(-90deg);
-	-o-transform:rotate(-90deg);
-	transform:rotate(-90deg);
-	-webkit-transform-origin:50% 50%;
-	-moz-transform-origin:50% 50%;
-	-ms-transform-origin:50% 50%;
-	-o-transform-origin:50% 50%;
-	transform-origin:50% 50%;
-}
-
-
-#sampleQueriesCollapse {
-    position: absolute;
-    top: 108px;
-    right: 70px;
-    z-index: 11;
-    height: 210px;
-    padding-top: 10px;
-    background-color: #eee;
-    border: 1px solid #ddd;
-}
-
-#sampleQueriesCollapse .list-group-item-heading {
-    border-bottom: 1px solid;
-    padding: 0 15px;
-    margin-bottom: 0;
-    white-space: nowrap;
-}
-
-#sampleQueriesCollapse.in {
-    width: 300px !important;
-}
-*/
-
 #wb-sparql-queryInSampleQueries{
     max-height: 170px;
     overflow-y: auto;
 }
-
-/*
-.queries li {
-    font-size: 1em;
-}
-.queries li i.fa-1x {
-    display: none;
-}
-
-.queries li:hover i.fa-1x {
-    display: inline;
-    margin-left: -5px;
-    cursor: pointer;
-}
-
-.queries li > a {
-    margin-right: 10px;
-    margin-left: 10px;
-    color: #000;
-}
-
-.queries li:hover > a {
-    text-decoration: none;
-    color: #018ae1;
-}
-
-
-#showSavedQueries a:hover {
-    color: #018ae1;
-    background-color: #e7e7e7;
-}
-
-.queries li span .fa {
-    margin-left: 5px;
-    display: none;
-}
-
-.queries li:hover span .fa {
-    margin-left: 5px;
-    display: inline;
-}
-
-input[type="checkbox"] {
-    vertical-align: middle;
-    margin-top: 0px;
-}
-label {
-    vertical-align: middle;
-}
-
-.textarea {
-	display: block;
-}
-
-.textarea label {
-    display: block;
-	margin: 0 0 4px;
-}
-*/
 
 .CodeMirror {
     border: 1px solid #ddd;
@@ -187,7 +85,6 @@ label {
     font-style: normal;
 }
 
-
 .hotkeys-container.fade.in {
     z-index: 10092;
 }
@@ -209,10 +106,6 @@ input#inference {
 
 input#inference + label {
     letter-spacing: -0.3em;
-}
-
-input#inference + label i {
-    /* opacity: 1; */ /* this is multiplied to label's opacity of 0.7 */
 }
 
 input#inference:not(:checked) + label i:last-child {
@@ -249,30 +142,6 @@ a[aria-expanded = true].query-has-error span {
 .autocomplete-toast a, .autocomplete-toast a:hover {
     color: #fff;
 }
-
-/*
-#separator {
-    width: 9px;
-    height: 100%;
-    background-color: #e7e7e7;
-    position: absolute;
-    top: 0;
-    right: -12px;
-    cursor:e-resize;
-}
-#separator:after {
-    content: 'RESIZE';
-    position: absolute;
-    width: 20px;
-    height: 10px;
-    font-size: 9px;
-    top: 50%;
-    left: -6px;
-    font-family: cursive;
-    -ms-transform: rotate(90deg); /!* IE 9 *!/
-    -webkit-transform: rotate(90deg); /!* Safari *!/
-    transform: rotate(90deg);
-}*/
 
 .plaintext {
     white-space: pre-wrap;

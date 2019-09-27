@@ -182,15 +182,16 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     var toggleOntoLoader = function (showLoader) {
         var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
         var resultsLoader = angular.element(document.getElementById("results-loader"));
+        const opacityHideClass = 'opacity-hide';
         /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
         if (showLoader) {
             $scope.loading = true;
-            yasrInnerContainer.addClass("opacity-hide");
-            resultsLoader.removeClass("opacity-hide");
+            yasrInnerContainer.addClass(opacityHideClass);
+            resultsLoader.removeClass(opacityHideClass);
         } else {
             $scope.loading = false;
-            yasrInnerContainer.removeClass("opacity-hide");
-            resultsLoader.addClass("opacity-hide");
+            yasrInnerContainer.removeClass(opacityHideClass);
+            resultsLoader.addClass(opacityHideClass);
         }
     };
 
@@ -393,6 +394,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
             }
         }
 
+        var promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             str = str.replace(expandedUri, expandedUri + ";");

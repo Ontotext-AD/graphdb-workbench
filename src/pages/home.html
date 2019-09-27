@@ -60,9 +60,9 @@
                             <span class="icon-edit"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
-                            <i class="icon-warning icon-lg text-warning"
+                            <em class="icon-warning icon-lg text-warning"
                                tooltip="{{getDegradedReason()}} Editing this repository is not supported."
-                               tooltip-placement="top" tooltip-trigger="mouseenter"></i>
+                               tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                         </span>
                         <button type="button" tooltip="Refresh repository info" class="btn btn-link"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
@@ -70,8 +70,8 @@
                         </button>
                     </div>
                     <h3 class="card-title ellipsis-block">
-                        <i class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
-                           tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} repository with {{canWriteActiveRepo() ? 'read/write' : 'read-only'}} access"></i>
+                        <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
+                           tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} repository with {{canWriteActiveRepo() ? 'read/write' : 'read-only'}} access"></em>
                         {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
                     </h3>
                     <div ng-if="activeRepositorySize && !activeRepositorySizeError">

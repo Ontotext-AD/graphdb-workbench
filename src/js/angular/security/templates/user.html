@@ -42,14 +42,14 @@
 						<h3>Login</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><i class="icon-user icon-2x text-muted"></i></span>
+								<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
 								<input id="wb-user-username" placeholder="User name" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Pasword" tooltip-trigger="mouseenter"><i class="icon-lock icon-2x text-muted"></i></span>
+								<span class="input-group-addon" tooltip="Pasword" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external">
 								<span ng-show="user.external">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
 							</div>
@@ -57,7 +57,7 @@
 						</div>
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><i class="icon-lock icon-2x text-muted"></i></span>
+								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
@@ -151,18 +151,18 @@
 								Users should have rights to at least one repository!
 							</p>
 						</div>
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm" aria-describedby="User rights table">
 							<thead>
 								<tr>
-									<th>Repository</th>
-									<th class="text-xs-center"><i class="icon-eye icon-lg" tooltip="Read" tooltip-trigger="mouseenter"></i></th>
-									<th class="text-xs-center"><i class="icon-edit icon-lg" tooltip="Write" tooltip-trigger="mouseenter"></i></th>
+									<th id="repositoryIdColumn">Repository</th>
+									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" tooltip="Read" tooltip-trigger="mouseenter"></em></th>
+									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" tooltip="Write" tooltip-trigger="mouseenter"></em></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>Any data repository
-										<i class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></i>
+										<em class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></em>
 									</td>
 									<td class="text-xs-center">
                                         <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">
