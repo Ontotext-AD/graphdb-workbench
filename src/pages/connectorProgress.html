@@ -1,9 +1,9 @@
 <div ng-hide="beingBuiltConnector.inline" class="modal-header creating-connector-dialog">
-	<h3 class="modal-title">{{beingBuiltConnector.actionName}} connector <b>{{beingBuiltConnector.name}}</b>...</h3>
+	<h3 class="modal-title">{{beingBuiltConnector.actionName}} connector <strong>{{beingBuiltConnector.name}}</strong>...</h3>
 </div>
 <div ng-class="beingBuiltConnector.inline ? 'card' : 'modal-body'">
 	<div ng-class="beingBuiltConnector.inline ? 'card-block' : ''">
-		<h4 ng-show="beingBuiltConnector.inline" class="card-title">{{beingBuiltConnector.actionName}} connector <b>{{beingBuiltConnector.name}}</b>...</h4>
+		<h4 ng-show="beingBuiltConnector.inline" class="card-title">{{beingBuiltConnector.actionName}} connector <strong>{{beingBuiltConnector.name}}</strong>...</h4>
 
 		<div class="progress">
 			<div class="progress-bar progress-bar-success" role="progressbar" style="width:{{beingBuiltConnector.percentDone}}%">

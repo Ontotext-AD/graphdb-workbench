@@ -26,6 +26,91 @@ rdfRankApp.config(['$routeProvider', '$menuItemsProvider', function ($routeProvi
 rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService',
     function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService) {
 
+        var refreshStatus = function () {
+            $http.get('rest/rdfrank/status')
+                .success(function (data, status, headers, config) {
+                    $scope.currentRankStatus = data;
+                }).error(function (data, status, headers, config) {
+                toastr.error(getError(data));
+            });
+        };
+
+        var initNamespaces = function () {
+            $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
+                var nss = _.map(data.results.bindings, function (o) {
+                    return {"uri": o.namespace.value, "prefix": o.prefix.value}
+                });
+                $scope.namespaces = _.sortBy(nss, function (n) {
+                    return n.uri.length
+                });
+
+            }).error(function (data) {
+                toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
+            });
+        };
+
+        var checkForPlugin = function () {
+            $scope.pluginFound = false;
+
+            if (!$repositories.getActiveRepository()) {
+                return;
+            }
+
+            $scope.setLoader(true);
+            $http.get('rest/rdfrank/pluginFound')
+                .success(function (data) {
+                    $scope.pluginFound = (data === true);
+                    if ($scope.pluginFound) {
+                        initNamespaces();
+                        refreshPage();
+                    } else {
+                        $scope.loading = false;
+                    }
+                })
+                .error(function (data) {
+                    toastr.error(getError(data));
+                }).finally(function () {
+                $scope.setLoader(false);
+            });
+        };
+
+        var refreshFilteringStatus = function () {
+            $http.get('rest/rdfrank/filtering')
+                .success(function (data, status, headers, config) {
+                    $scope.filteringEnabled = data;
+                }).error(function (data, status, headers, config) {
+                toastr.error(getError(data));
+            });
+        };
+
+        var refreshFilteringConfig = function () {
+            Object.values($scope.filterLists).forEach(function (list) {
+                $http.get('rest/rdfrank/filtering/' + list.predicate)
+                    .success(function (data, status, headers, config) {
+                        list.elements = data;
+
+                        list.elements = list.elements.map(function (elem) {
+                            return foldPrefix(elem, $scope.namespaces);
+                        });
+
+                    }).error(function (data, status, headers, config) {
+                    toastr.error(getError(data));
+                });
+            });
+            $http.get('rest/rdfrank/includeExplicit')
+                .success(function (data, status, headers, config) {
+                    $scope.includeExplicit = data;
+                }).error(function (data, status, headers, config) {
+                toastr.error(getError(data));
+            });
+            $http.get('rest/rdfrank/includeImplicit')
+                .success(function (data, status, headers, config) {
+                    $scope.includeImplicit = data;
+                }).error(function (data, status, headers, config) {
+                toastr.error(getError(data));
+            });
+        };
+
         $scope.rdfStatus = {
             CANCELED: 'CANCELED',
             COMPUTED: 'COMPUTED',
@@ -140,71 +225,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
-        $scope.addToList = function (list, iri) {
-            if (UtilService.isValidIri(iri.text)) {
-                _addToList(list, expandPrefix(iri.text, $scope.namespaces));
-            } else {
-                refreshFilteringConfig();
-                toastr.error('\'' + iri.text + '\' is not a valid IRI')
-            }
-        };
-
-        $scope.deleteFromList = function (list, iri) {
-            _deleteFromList(list, expandPrefix(iri.text, $scope.namespaces));
-        };
-
-        var refreshStatus = function () {
-            $http.get('rest/rdfrank/status')
-                .success(function (data, status, headers, config) {
-                    $scope.currentRankStatus = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
-        };
-
-        var pullStatus = function () {
-            var timer = $interval(function () {
-                if ($scope.pluginFound) {
-                    refreshStatus();
-                }
-            }, 5000);
-
-            $scope.$on("$destroy", function (event) {
-                $interval.cancel(timer);
-            });
-        };
-
-        var refreshPage = function () {
-            refreshStatus();
-            refreshFilteringStatus();
-            refreshFilteringConfig();
-        };
-
-        var checkForPlugin = function () {
-            $scope.pluginFound = false;
-
-            if (!$repositories.getActiveRepository()) {
-                return;
-            }
-
-            $scope.setLoader(true);
-            $http.get('rest/rdfrank/pluginFound')
-                .success(function (data) {
-                    $scope.pluginFound = (data === true);
-                    if ($scope.pluginFound) {
-                        initNamespaces();
-                        refreshPage();
-                    } else {
-                        $scope.loading = false;
-                    }
-                })
-                .error(function (data) {
-                    toastr.error(getError(data));
-                }).finally(function () {
-                $scope.setLoader(false);
-            });
-        };
-
         var _addToList = function (list, iri) {
             var data = {
                 iri: iri
@@ -217,6 +237,15 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
                 toastr.error(getError(data));
                 refreshFilteringConfig()
             });
+        };
+
+        $scope.addToList = function (list, iri) {
+            if (UtilService.isValidIri(iri.text)) {
+                _addToList(list, expandPrefix(iri.text, $scope.namespaces));
+            } else {
+                refreshFilteringConfig();
+                toastr.error('\'' + iri.text + '\' is not a valid IRI')
+            }
         };
 
         var _deleteFromList = function (list, iri) {
@@ -235,41 +264,26 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
-        var refreshFilteringStatus = function () {
-            $http.get('rest/rdfrank/filtering')
-                .success(function (data, status, headers, config) {
-                    $scope.filteringEnabled = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
+        $scope.deleteFromList = function (list, iri) {
+            _deleteFromList(list, expandPrefix(iri.text, $scope.namespaces));
+        };
+
+        var pullStatus = function () {
+            var timer = $interval(function () {
+                if ($scope.pluginFound) {
+                    refreshStatus();
+                }
+            }, 5000);
+
+            $scope.$on("$destroy", function (event) {
+                $interval.cancel(timer);
             });
         };
 
-        var refreshFilteringConfig = function () {
-            Object.values($scope.filterLists).forEach(function (list) {
-                $http.get('rest/rdfrank/filtering/' + list.predicate)
-                    .success(function (data, status, headers, config) {
-                        list.elements = data;
-
-                        list.elements = list.elements.map(function (elem) {
-                            return foldPrefix(elem, $scope.namespaces);
-                        });
-
-                    }).error(function (data, status, headers, config) {
-                    toastr.error(getError(data));
-                });
-            });
-            $http.get('rest/rdfrank/includeExplicit')
-                .success(function (data, status, headers, config) {
-                    $scope.includeExplicit = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
-            $http.get('rest/rdfrank/includeImplicit')
-                .success(function (data, status, headers, config) {
-                    $scope.includeImplicit = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
+        var refreshPage = function () {
+            refreshStatus();
+            refreshFilteringStatus();
+            refreshFilteringConfig();
         };
 
         function expandPrefix(str, namespaces) {
@@ -295,20 +309,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
 
             return folded === '' ? iri : folded + ':' + localPart;
         }
-
-        var initNamespaces = function () {
-            $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                var nss = _.map(data.results.bindings, function (o) {
-                    return {"uri": o.namespace.value, "prefix": o.prefix.value}
-                });
-                $scope.namespaces = _.sortBy(nss, function (n) {
-                    return n.uri.length
-                });
-
-            }).error(function (data) {
-                toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
-            });
-        };
 
         if ($repositories.getActiveRepository()) {
             checkForPlugin();

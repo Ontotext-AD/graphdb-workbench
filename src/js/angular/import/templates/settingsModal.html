@@ -12,7 +12,7 @@
                           popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
                           popover-trigger="mouseenter"
                           popover-placement="right">
-                                    <i class="icon icon-info"></i>
+                                    <em class="icon icon-info"></em>
                                 </span>
                 </label>
                 <div class="col-lg-9">
@@ -30,7 +30,7 @@
                           popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
                           popover-trigger="mouseenter"
                           popover-placement="right">
-                                    <i class="icon icon-info"></i>
+                                    <em class="icon icon-info"></em>
                                 </span>
                 </label>
                 <div class="col-lg-9">
@@ -80,7 +80,7 @@
                           popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
                           popover-trigger="mouseenter"
                           popover-placement="right">
-                                    <i class="icon icon-info"></i>
+                                    <em class="icon icon-info"></em>
                                 </span>
                 </label>
                 <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
@@ -118,9 +118,9 @@
                         </div>
                     </div>
                     <div>
-                        <table>
+                        <table aria-describedby="Replaced graphs table">
                             <tr>
-                                <th>
+                                <th id="graphsColumn">
                                     <span ng-show="settings.replaceGraphs.length">Replaced graphs</span>
                                     <span ng-show="!settings.replaceGraphs.length">No replaced graphs added</span>
                                 </th>
@@ -131,7 +131,7 @@
                                     <span ng-show="g === 'default'">The default graph</span>
                                     <button type="button" class="btn btn-link btn-sm secondary"
                                             ng-click="settings.replaceGraphs.splice($index, 1)">
-                                        <i class="icon icon-trash"></i>
+                                        <em class="icon icon-trash"></em>
                                     </button>
                                 </td>
                             </tr>
@@ -141,14 +141,14 @@
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label">
                         <input type="checkbox" ng-model="agree" ng-required="enableReplace">
-                        <b>I understand that data in the replaced graphs will be cleared before importing new data.</b>
+                        <strong>I understand that data in the replaced graphs will be cleared before importing new data.</strong>
                     </label>
                 </div>
             </div>
             <div class="text-xs-center">
                 <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm toggle-advanced-settings">
-                    <span ng-hide="showAdvancedSettings">Show advanced settings<i class="icon-caret-down"></i></span>
-                    <span ng-show="showAdvancedSettings">Hide advanced settings<i class="icon-caret-up"></i></span>
+                    <span ng-hide="showAdvancedSettings">Show advanced settings<em class="icon-caret-down"></em></span>
+                    <span ng-show="showAdvancedSettings">Hide advanced settings<em class="icon-caret-up"></em></span>
                 </button>
             </div>
 

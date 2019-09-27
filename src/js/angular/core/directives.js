@@ -200,6 +200,9 @@ function multiRequired() {
             if (!scope.multiRequired) {
                 scope.multiRequired = [];
             }
+
+            var element = attrs.multiRequireElement;
+
             var setMultiValue = function (value) {
 
                 if (element && element % 1 === 0) {
@@ -218,7 +221,6 @@ function multiRequired() {
                 }
                 ngModel.$setValidity('multiRequire', !(filledData && emptyData));
             };
-            var element = attrs.multiRequireElement;
 
             ngModel.$parsers.unshift(function (value) {
                 setMultiValue(value);

@@ -26,8 +26,8 @@
 		tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
-		<i class="fa fa-2x"
-			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></i>
+		<em class="fa fa-2x"
+			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></em>
 	</button>
 
 	<button class="btn btn-link p-0 focus-diagram-btn"
@@ -35,7 +35,7 @@
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
-		<i class="icon-zoom-out icon-2x"></i>
+		<em class="icon-zoom-out icon-2x"></em>
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
@@ -43,14 +43,14 @@
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
-		<i class="icon-reload icon-2x"></i>
+		<em class="icon-reload icon-2x"></em>
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
 		tooltip="Export Diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
-		<i class="icon-export icon-2x"></i>
+		<em class="icon-export icon-2x"></em>
 	</a>
 
 </div>
@@ -98,7 +98,7 @@
 						tooltip-placement="bottom"
 						tooltip-trigger="mouseenter"
 						ng-click="confirmReloadClassHierarchy()">
-					<i class="icon-reload icon-2x"></i>
+					<em class="icon-reload icon-2x"></em>
 				</button>
 			</p>
 			<p>{{hierarchyError}}</p>
@@ -177,7 +177,7 @@
 						<p ng-switch-when="0" class="alert alert-warning">No instances found</p>
 
                         <div ng-switch-default ui-scroll-viewport class="rdf-list" ng-class="rdfsComment ? 'rdf-list-comment' : ''">
-							<table class="table table-sm table-striped">
+							<table class="table table-sm table-striped" aria-describedby="Class instances table">
 								<tbody>
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
 										<td class="break-word-alt">

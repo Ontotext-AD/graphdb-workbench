@@ -3,11 +3,11 @@
 </h1>
 <div core-errors></div>
 <div ng-show="getActiveRepository()">
-    <table class="table table-striped">
+    <table class="table table-striped" aria-describedby="Role mappings table">
         <thead>
-        <th><b>mapping</b></th>
-        <th ng-repeat="role in roles">
-            <b>{{role}}</b>
+        <th id="mappingsColumn"><strong>mapping</strong></th>
+        <th ng-repeat="role in roles" id="rolesColumn">
+            <strong>{{role}}</strong>
         </th>
         </thead>
         <tbody>

@@ -16,11 +16,11 @@
           treeControl: '='
         },
         controller: function($scope, $element, $http){
-        	$scope.expandClose = function(branch) { 
+        	$scope.expandClose = function(branch) {
         		$scope.$parent.fetchChildData(branch);
         		branch.expanded = !branch.expanded
         	};
-        	
+
         	$scope.checkBoxClicked = function(row){
         		if(row.branch.showCheckboxes=='true' && row.level > 2){
         			$scope.$parent.fetchChildDataAll(row.branch);
@@ -29,7 +29,7 @@
         	}
           },
         link: function(scope, element, attrs) {
-        	
+
         	var error, expand_all_parents, expand_level, for_all_ancestors, for_each_branch, get_parent, n, on_treeData_change, select_branch, selected_branch, tree;
           error = function(s) {
             console.log('ERROR:' + s);
@@ -50,14 +50,14 @@
           expand_level = parseInt(attrs.expandLevel, 1);
 //          expand_level = 1;
           if (!scope.treeData) {
-            alert('no treeData defined for the tree!');
+            alert('no treeData defined for the tree!'); // NOSONAR
             return;
           }
           if (scope.treeData.length == null) {
             if (treeData.label != null) {
               scope.treeData = [treeData];
             } else {
-              alert('treeData should be an array of root branches');
+              alert('treeData should be an array of root branches'); // NOSONAR
               return;
             }
           }
@@ -207,9 +207,9 @@
               if (branch.fetched == null || branch.fetched == undefined) {
                   branch.fetched = 0;
               }
-              
+
               branch.showCheckboxes = attrs.showCheckboxes;
-              
+
               if (!branch.children || branch.children.length === 0) {
                 tree_icon = attrs.iconLeaf;
               } else {
@@ -523,6 +523,6 @@ function createTemplate(){
 					  	"</a>"+
 					  "</li>"+
 					"</ul>";
-	
+
 	return template
 }

@@ -6,7 +6,6 @@
     margin-left: auto;
     margin-right: auto;
     display: block;
-    /*min-height: 90vh;*/
     width: 100%;
 }
 /*Fix for height of svg in IE11*/

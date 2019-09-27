@@ -236,13 +236,11 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         if (params.newRepo) {
             $scope.tabsData = localStorageService.get("tabs-state");
             _.each($scope.tabsData, function (item) {
-                Object.keys(item).map(function () {
-                    item.yasrData = undefined;
-                    item.queryType = undefined;
-                    item.resultsCount = 0;
-                    item.allResultsCount = 0;
-                    item.sizeDelta = undefined;
-                });
+                item.yasrData = undefined;
+                item.queryType = undefined;
+                item.resultsCount = 0;
+                item.allResultsCount = 0;
+                item.sizeDelta = undefined;
             });
 
             localStorageService.set("tabs-state", $scope.tabsData);

@@ -19,7 +19,7 @@
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
                     tooltip="Reload all connector information" tooltip-placement="left">
-                <i class="icon-reload"></i>
+                <em class="icon-reload"></em>
             </button>
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
@@ -34,17 +34,17 @@
 									<button class="btn btn-link p-0" type="button"
 										ng-click="copyConnector(connector, exist)"
 										tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
-										<i class="icon-copy"></i>
+										<em class="icon-copy"></em>
 									</button>
 									<button class="btn btn-link p-0" type="button"
 										ng-click="repair(exist, connector)"
 										tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
-										<i class="icon-reload"></i>
+										<em class="icon-reload"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										ng-click="delete(exist, connector)"
 										tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
-										<i class="icon-trash"></i>
+										<em class="icon-trash"></em>
                                     </button>
 								</div>
                                 <h5 class="mb-0">
@@ -164,7 +164,7 @@
                     <div ng-hide="existing[connector.key].length">No connector instances.</div>
                 </section>
                 <section>
-                    <button class="btn btn-primary new-connector-btn" ng-click="newConnector(connector)"><i class="icon-plus"></i>
+                    <button class="btn btn-primary new-connector-btn" ng-click="newConnector(connector)"><em class="icon-plus"></em>
                         New {{connector.key}} connector
                     </button>
                 </section>

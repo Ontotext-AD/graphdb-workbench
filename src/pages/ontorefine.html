@@ -7,7 +7,7 @@
           popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
-<iframe ng-show="!refineDisabled" id="ontorefine-iframe" ng-src="{{page}}" onload="if (window.loadFunction) { window.loadFunction(this) }" style="width: 100%; height: calc(100vh - 75px); border: none;"></iframe>
+<iframe ng-show="!refineDisabled" id="ontorefine-iframe" title="Ontorefine module" ng-src="{{page}}" onload="if (window.loadFunction) { window.loadFunction(this) }" style="width: 100%; height: calc(100vh - 75px); border: none;"></iframe>
 
 <div ng-show="refineDisabled">
     <div class="top-offset alert alert-warning">OntoRefine is not available</div>

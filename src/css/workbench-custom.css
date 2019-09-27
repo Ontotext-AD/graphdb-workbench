@@ -104,8 +104,6 @@
     color: #000000;
 }
 
-
-
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
@@ -208,7 +206,6 @@
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
     color: #ffffff;
-    /* background-color: #018ae1; */
 }
 
 .navbar-inverse .navbar-nav > .dropdown > a:hover .caret {
@@ -276,15 +273,6 @@
 .navbar-inverse .dropdown-menu > .active > a:hover {
     background-color: #0cb0a0;
 }
-
-/*
-not used
-@font-face {
-    font-family: 'Glyphicons Halflings';
-    src: url('../font/glyphicons-halflings-regular.eot');
-    src: url('../font/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../font/glyphicons-halflings-regular.woff') format('woff'), url('../font/glyphicons-halflings-regular.ttf') format('truetype'), url('../font/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
-}
-*/
 
 .panel-danger > .panel-heading {
     color: #fff;
