@@ -1,51 +1,5 @@
 import YASR from 'lib/yasr.bundled';
 
-function transformToTrig(statements) {
-    var data = '';
-    var contexts = {};
-
-    for (var i = 0; i < statements.length; i++) {
-        var statement = statements[i];
-        if (statement.context === undefined) {
-            statement.context = '';
-        } else {
-            statement.context = _.trim(statement.context);
-        }
-        if (angular.isUndefined(contexts[statement.context])) {
-            var cstatement = [];
-            cstatement.push(statement);
-            contexts[statement.context] = cstatement;
-        } else {
-            contexts[statement.context].push(statement);
-        }
-    }
-
-    var ckeys = Object.keys(contexts);
-    for (var i = 0; i < ckeys.length; i++) {
-        var key = ckeys[i];
-        if (key === "") {
-            data += "\n{"
-        } else {
-            data += "\n<" + key + "> {";
-        }
-
-        var value = contexts[key];
-        for (var j = 0; j < value.length; j++) {
-            var statement = value[j];
-            data += "\n\t<" + statement.subject + "> <" + statement.predicate + "> ";
-            if (statement.object.type == "uri") {
-                data += "<" + statement.object.value + "> .";
-            } else {
-                data += "\"" + statement.object.value + "\"" + (statement.object.datatype ? "^^<" + statement.object.datatype + ">" : (statement.object.lang ? "@" + statement.object.lang : "")) + " .";
-            }
-        }
-
-        data += "\n}"
-    }
-
-    return data;
-}
-
 const modules = [
     'ngCookies',
     'ngRoute',
@@ -104,7 +58,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     ];
 
 
-    var yasr;
+    let yasr;
 
     window.editor = {};
     window.editor.getQueryType = function () {
@@ -118,23 +72,22 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {
-                $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                    $scope.usedPrefixes = {};
-                    data.results.bindings.forEach(function (e) {
-                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces')
+                    .success(function (data) {
+                        $scope.usedPrefixes = {};
+                        data.results.bindings.forEach(function (e) {
+                            $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                        });
+                        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                            //this way, the URLs in the results are prettified using the defined prefixes
+                            getUsedPrefixes: $scope.usedPrefixes,
+                            persistency: false,
+                            hideHeader: true
+                        });
+                        $scope.loadResource();
+                    }).error(function (data) {
+                        toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
                     });
-                    yasr = YASR(document.getElementById("yasr"), {
-                        //this way, the URLs in the results are prettified using the defined prefixes
-                        getUsedPrefixes: $scope.usedPrefixes,
-                        persistency: false,
-                        hideHeader: true
-                    });
-
-                    $scope.loadResource();
-
-                }).error(function (data) {
-                    toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
-                });
             }
         }
     });
@@ -172,16 +125,13 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         $scope.exploreResource();
     };
 
-    $scope.loading = false;
-
     $scope.goToGraphsViz = function () {
-        console.log($scope.uriParam);
         $location.path('graphs-visualizations').search('uri', $scope.uriParam);
     };
 
-    var toggleOntoLoader = function (showLoader) {
-        var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
-        var resultsLoader = angular.element(document.getElementById("results-loader"));
+    const toggleOntoLoader = function (showLoader) {
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
+        const resultsLoader = angular.element(document.getElementById('results-loader'));
         const opacityHideClass = 'opacity-hide';
         /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
         if (showLoader) {
@@ -198,7 +148,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Get resource table
     $scope.exploreResource = function () {
         toggleOntoLoader(true);
-        var headers = {Accept: 'application/rdf+json'};
+        const headers = {Accept: 'application/rdf+json'};
         $.ajax({
             method: 'GET',
             url: 'rest/explore/graph',
@@ -207,7 +157,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 inference: $scope.inference,
                 role: $scope.role,
                 bnodes: $scope.blanks,
-                sameAs: $scope.sameAs,
+                sameAs: $scope.sameAs
             },
             headers: headers
         }).done(function (data, textStatus, jqXhrOrErrorString) {
@@ -217,22 +167,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             toastr.error('Could not get resource; ' + getError(data));
             toggleOntoLoader(false);
         });
-        // We do not show results count currently
-//                $.ajax({
-//                    method: 'GET',
-//                    url: 'rest/explore/graph/count',
-//                    data: {
-//                        uri: $scope.uriParam,
-//                        inference: $scope.inference,
-//                        role: $scope.role,
-//                        bnodes: $scope.blanks
-//                    },
-//                    headers: headers
-//                }).complete(function (data, textStatus, jqXhrOrErrorString) {
-//                    yasr.setResultsCount(data, textStatus, jqXhrOrErrorString);
-//                }).fail(function (data) {
-//                    toastr.error('Could not get resource count; ' + getError(data));
-//                });
     };
 
     $scope.downloadExport = function (format) {
@@ -246,16 +180,17 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             if (format.type.indexOf('json') > -1) {
                 data = JSON.stringify(data);
             }
-            var ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf('safari') != -1 && ua.indexOf('chrome') == -1) {
-                window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), "statements." + format.extension);
+            // TODO: Use bowser library to get the browser type
+            const ua = navigator.userAgent.toLowerCase();
+            if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
+                window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
+            } else {
+                const file = new Blob([data], {type: format.type});
+                // saveAs is a global function exposed from FileSaver-patch.js
+                saveAs(file, 'statements' + format.extension); // eslint-disable-line no-undef
             }
-            else {
-                var file = new Blob([data], {type: format.type});
-                saveAs(file, 'statements' + format.extension);
-            }
-        }).error(function (data, status, headers, config) {
-            let msg = getError(data);
+        }).error(function (data) {
+            const msg = getError(data);
             toastr.error(msg, 'Error');
         });
     };
@@ -296,7 +231,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
 
     function checkAutocompleteStatus() {
         AutocompleteService.checkAutocompleteStatus()
-            .success(function (response, status) {
+            .success(function (response) {
                 if (!response) {
                     toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
                         {allowHtml: true});
@@ -310,7 +245,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
 
     function getAllNamespacesForActiveRepository() {
         ClassInstanceDetailsService.getNamespaces($repositories.getActiveRepository())
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
                     return {
                         prefix: e.prefix.value,
@@ -318,8 +253,8 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
                     };
                 });
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-            let msg = getError(data);
+            }).error(function (data) {
+            const msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -327,16 +262,16 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
 
     function validateRdfUri(value) {
         // has a pair of angle brackets and the closing one is the last char of the string
-        var hasAngleBrackets = value.indexOf("<") >= 0 && value.lastIndexOf(">") === value.length - 1;
+        const hasAngleBrackets = value.indexOf("<") >= 0 && value.lastIndexOf(">") === value.length - 1;
 
         // does not have a pair of angle bracket - if only one of the is available that is incorrect
-        var noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
+        const noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
 
-        var validProtocol = /^<?[http|urn].*>?$/.test(value) && (hasAngleBrackets || noAngleBrackets);
-        var validPath = false;
+        const validProtocol = /^<?[http|urn].*>?$/.test(value) && (hasAngleBrackets || noAngleBrackets);
+        let validPath = false;
         if (validProtocol) {
             if (value.indexOf("http") >= 0) {
-                var schemaSlashesIdx = value.indexOf('//');
+                const schemaSlashesIdx = value.indexOf('//');
                 validPath = schemaSlashesIdx > 4
                     && value.substring(schemaSlashesIdx + 2).length > 0;
             } else if (value.indexOf("urn") >= 0) {
@@ -346,7 +281,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         return validProtocol && validPath;
     }
 
-    var uri;
+    let uri;
 
     function submit(uri) {
         function setFormInvalid(isDirty) {
@@ -380,21 +315,21 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 
     // use a global var to keep old uri in order to change it when a new one appears
-    var expandedUri;
+    let expandedUri;
 
     function getAutocompleteSuggestions(str) {
         // expand prefix to uri only if the last character of the input is a colon and
         // there are no angle brackets because they are allowed only for absolute uris
-        var ANGLE_BRACKETS_REGEX = /<|>/;
+        const ANGLE_BRACKETS_REGEX = /<|>/;
         if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ":") {
-            var newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, str.slice(0, -1));
+            const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, str.slice(0, -1));
             expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
             if (expandedUri) {
                 $("#resources_finder_value").val(expandedUri);
             }
         }
 
-        var promise;
+        let promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             str = str.replace(expandedUri, expandedUri + ";");
@@ -406,7 +341,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         return promise;
     }
 
-    $scope.$on('repositoryIsSet', function (event) {
+    $scope.$on('repositoryIsSet', function () {
         checkAutocompleteStatus();
         getAllNamespacesForActiveRepository();
     });
@@ -451,7 +386,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
 
     function getClassInstancesDetails() {
         ClassInstanceDetailsService.getNamespaces($scope.activeRepository())
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
                     return {
                         prefix: e.prefix.value,
@@ -459,8 +394,8 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                     };
                 });
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-            let msg = getError(data);
+            }).error(function (data) {
+            const msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -475,7 +410,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
             .then(function (res) {
-                var statements = StatementsService.buildStatements(res, $scope.uriParam);
+                const statements = StatementsService.buildStatements(res, $scope.uriParam);
                 $scope.statements = statements;
                 $scope.newResource = !statements.length;
             });
@@ -490,26 +425,27 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
     });
 
     $scope.validateUri = function (val) {
-        var check = true;
-        var text = val ? val : '';
+        let check = true;
+        const text = val ? val : '';
 
-        if (text.indexOf(':') == -1) {
+        if (text.indexOf(':') === -1) {
             check = false;
         } else {
-            var prefix = text.substring(0, text.indexOf(':'));
-            var uriForPrefixNotAvailable = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, prefix) == '';
+            const prefix = text.substring(0, text.indexOf(':'));
+            const uriForPrefixNotAvailable = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, prefix) === '';
             if (uriForPrefixNotAvailable) {
-                if (/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(text) == false) {
+                // TODO: There's this reported useless escape character for this regex, but I'm not sure if and can I fix it.
+                if (/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(text) === false) {
                     check = false;
                 }
 
-                var count = text.match(/\//g);
+                const count = text.match(/\//g);
 
-                if (count == undefined || count.length < 3) {
+                if (count === undefined || count.length < 3) {
                     check = false;
                 }
             } else {
-                var restText = text.substring(text.indexOf(':') + 1).trim();
+                const restText = text.substring(text.indexOf(':') + 1).trim();
                 if (restText.length < 1) {
                     check = false;
                 }
@@ -539,7 +475,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
             $scope.newRowContext.$setPristine();
             $scope.newRowContext.$setUntouched();
         }
-    };
+    }
 
     function checkValid(data) {
         if (!angular.isUndefined(data)) {
@@ -548,7 +484,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
         return "Please enter a valid value.";
     }
 
-    function validEditRow(form) {
+    function validEditRow() {
         return $scope.rowform.$valid;
     }
 
@@ -561,36 +497,36 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
     }
 
     function viewTrig() {
-        var modalInstance = $modal.open({
+        $modal.open({
             templateUrl: 'js/angular/explore/templates/viewTrig.html',
             controller: 'ViewTrigCtrl',
             size: 'lg',
             resolve: {
                 data: function () {
-                    return transformToTrig($scope.statements);
+                    return StatementsService.transformToTrig($scope.statements);
                 }
             }
         });
     }
 
     function save() {
-        var method = $scope.newResource ? 'POST' : 'PUT';
+        const method = $scope.newResource ? 'POST' : 'PUT';
         $http({
             method: method,
             url: 'rest/resource?uri=' + encodeURIComponent($scope.uriParam),
             headers: {
                 'Content-Type': 'application/x-trig'
             },
-            data: transformToTrig($scope.statements)
-        }).success(function (data, status, headers, config) {
+            data: StatementsService.transformToTrig($scope.statements)
+        }).success(function () {
             toastr.success("Resource saved.");
-            var timer = $timeout(function () {
+            const timer = $timeout(function () {
                 $location.path('resource').search('uri', $scope.uriParam);
             }, 500);
-            $scope.$on("$destroy", function (event) {
+            $scope.$on("$destroy", function () {
                 $timeout.cancel(timer);
             });
-        }).error(function (data, status, headers, config) {
+        }).error(function (data) {
             toastr.error(getError(data));
         });
     }

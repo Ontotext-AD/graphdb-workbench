@@ -12,12 +12,7 @@
                 "objects": "never"
             }
         ],
-        "max-len": [
-            "warn",
-            {
-                "code": 100
-            }
-        ],
+        "max-len": "off",
         "indent": "off",
         "no-tabs": "off",
         "no-mixed-spaces-and-tabs": "off",

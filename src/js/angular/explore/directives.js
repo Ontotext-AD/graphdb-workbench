@@ -5,14 +5,15 @@ exploreDirectives.directive('uri', function () {
         require: 'ngModel',
         link: function (scope, elem, attr, ngModel) {
 
+            // TODO: This function is found duplicated in tree more files. Find out how to reuse it.
             function validateRdfUri(value) {
-                var hasAngleBrackets = value.indexOf("<") >= 0 && value.indexOf(">") >= 0;
-                var noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
-                var validProtocol = /^<?(http|urn).*>?/.test(value) && (hasAngleBrackets || noAngleBrackets);
-                var validPath = false;
+                const hasAngleBrackets = value.indexOf("<") >= 0 && value.indexOf(">") >= 0;
+                const noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
+                const validProtocol = /^<?(http|urn).*>?/.test(value) && (hasAngleBrackets || noAngleBrackets);
+                let validPath = false;
                 if (validProtocol) {
                     if (value.indexOf("http") >= 0) {
-                        var schemaSlashesIdx = value.indexOf('//');
+                        const schemaSlashesIdx = value.indexOf('//');
                         validPath = schemaSlashesIdx > 4
                             && value.substring(schemaSlashesIdx + 2).length > 0;
                     } else if (value.indexOf("urn") >= 0) {
@@ -25,7 +26,7 @@ exploreDirectives.directive('uri', function () {
             //For DOM -> model validation
             ngModel.$parsers.unshift(function (value) {
                 if (!angular.isUndefined(value) && value.length > 0) {
-                    var isValidUri = validateRdfUri(value);
+                    const isValidUri = validateRdfUri(value);
                     ngModel.$setValidity('searchStr', isValidUri);
                     return isValidUri ? value : undefined;
                 } else {
