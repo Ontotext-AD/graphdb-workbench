@@ -1,3 +1,5 @@
+const HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY = 'hide-graph-config-help';
+
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
@@ -10,16 +12,16 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     $scope.page = 1;
     $scope.totalPages = 5;
 
-    $scope.helpHidden = localStorageService.get('hide-graph-config-help') === 1;
+    $scope.helpHidden = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY) === 1;
     $scope.toggleHelp = function (value) {
         if (value == undefined) {
-            value = localStorageService.get('hide-graph-config-help');
+            value = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY);
         }
         if (value != 1) {
-            localStorageService.set('hide-graph-config-help', 1);
+            localStorageService.set(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY, 1);
             $scope.helpHidden = true;
         } else {
-            localStorageService.set('hide-graph-config-help', 0);
+            localStorageService.set(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY, 0);
             $scope.helpHidden = false;
         }
     };
@@ -406,15 +408,16 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
         }
 
+        const codemirrorWrapperSelector = '.CodeMirror-wrap';
         var verticalView = verticalView;
         if (!$scope.orientationViewMode) {
             $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
 
             // window.editor is undefined if no repo is selected
-            if (window.editor && document.querySelector('.CodeMirror-wrap')) {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+            if (window.editor && document.querySelector(codemirrorWrapperSelector)) {
+                var newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
                 newHeight -= 40;
-                document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
+                document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
                 //window.editor.refresh();
             } else {
@@ -432,13 +435,13 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             }
         } else {
             if ($scope.viewMode === 'yasr') {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+                var newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
                 newHeight -= 40;
-                document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
+                document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
                 //window.editor.refresh();
             } else {
                 $scope.noPadding = {};
-                document.querySelector('.CodeMirror-wrap').style.height = '';
+                document.querySelector(codemirrorWrapperSelector).style.height = '';
                 //window.editor.refresh();
             }
             document.getElementById('yasr').style.minHeight = '';

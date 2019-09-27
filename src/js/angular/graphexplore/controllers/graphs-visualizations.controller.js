@@ -866,6 +866,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("preserveAspectRatio", "xMidYMid meet");
 
+    var showNodeTipAndIconsTimer = 0;
+    var removeIconsTimer = 0;
+
     function draw(resetRootNode) {
         // remove all group elements and rec to rebuild the graph when the user clicks on it
         d3.selectAll("svg g").remove();
@@ -998,9 +1001,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 }
             }, 300);
         };
-
-        var showNodeTipAndIconsTimer = 0;
-        var removeIconsTimer = 0;
 
         // Hides the tooltip for the node and resets some variables
         var hideTipForNode = function (d) {
