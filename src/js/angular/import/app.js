@@ -32,6 +32,6 @@ importApp.config(['$routeProvider', '$menuItemsProvider', function ($routeProvid
         + 'Each import method supports different serialisation formats.'
     });
 
-    $menuItemsProvider.addItem({label: 'Import', href: '#', order: 0, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-import"});
+    $menuItemsProvider.addItem({label: 'Import', href: '#', order: 0, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-import'});
     $menuItemsProvider.addItem({label: 'RDF', href: 'import', order: 1, parent: 'Import', role: 'IS_AUTHENTICATED_FULLY'});
 }]);
