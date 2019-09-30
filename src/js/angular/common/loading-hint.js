@@ -1,5 +1,5 @@
-var loadingHintCounter = 0;
-var loadingHintInterval = setInterval(function() {
+let loadingHintCounter = 0;
+let loadingHintInterval = setInterval(function() {
     loadingHintCounter++;
     if (loadingHintCounter === 5) {
         $('.ot-splash div').text("GraphDB Workbench is still loading but it's taking longer than usual, please wait...");
