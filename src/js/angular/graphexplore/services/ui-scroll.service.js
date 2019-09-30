@@ -2,18 +2,18 @@ angular
     .module('graphdb.framework.graphexplore.services.uiscroll', [])
     .factory('UiScrollService', UiScrollService);
 
-UiScrollService.$inject = ['$http', '$timeout'];
+UiScrollService.$inject = ['$timeout'];
 
-function UiScrollService($http, $timeout) {
+function UiScrollService($timeout) {
     return {
         initLazyList: initLazyList
     };
 
     function initLazyList(index, count, success, position, data) {
         return $timeout(function () {
-            var actualIndex = index + position - 1;
-            var start = Math.max(0 - position, actualIndex);
-            var end = Math.min(actualIndex + count - 1, data.length);
+            const actualIndex = index + position - 1;
+            const start = Math.max(0 - position, actualIndex);
+            const end = Math.min(actualIndex + count - 1, data.length);
             if (start > end) {
                 success([]);
             } else if ($.isArray(data)) {

@@ -4,7 +4,7 @@ angular
     .module('graphdb.framework.graphexplore.services.savedgraphs', [])
     .factory('SavedGraphsService', SavedGraphsService);
 
-SavedGraphsService.$inject = ['$http', '$repositories'];
+SavedGraphsService.$inject = ['$http'];
 
 function SavedGraphsService($http) {
     return {

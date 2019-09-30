@@ -89,7 +89,7 @@ function config($menuItemsProvider, $routeProvider) {
         href: '#',
         order: 1,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: "icon-data"
+        icon: 'icon-data'
     });
 
     $menuItemsProvider.addItem({

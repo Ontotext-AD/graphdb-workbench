@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.graphexplore.services.data', [])
     .factory('GraphDataService', GraphDataService);
 
-GraphDataService.$inject = ['$http', '$repositories'];
+GraphDataService.$inject = ['$http'];
 
-function GraphDataService($http, $repositories) {
+function GraphDataService($http) {
     return {
         // class hierarchy
         getClassHierarchyData: getClassHierarchyData,
@@ -69,20 +69,20 @@ function GraphDataService($http, $repositories) {
     function getRelationshipsData(selectedClasses, direction) {
         return $http.get('rest/dependencies/matrix', {
             params: {
-                "mode": direction,
-                "classes": _.map(selectedClasses, function (c) {
-                    return c.name
+                'mode': direction,
+                'classes': _.map(selectedClasses, function (c) {
+                    return c.name;
                 })
             }
-        })
+        });
     }
 
     function getRelationshipsClasses(direction) {
-        return $http.get("rest/dependencies/classes", {
+        return $http.get('rest/dependencies/classes', {
             params: {
-                "mode": direction
+                'mode': direction
             }
-        })
+        });
     }
 
     function getRelationshipsStatus() {
@@ -104,7 +104,7 @@ function GraphDataService($http, $repositories) {
     function getInstanceNodeLinks(iri) {
         return $http.get('rest/explore-graph/links', {
             params: {
-                iri: iri,
+                iri: iri
             }
         });
     }

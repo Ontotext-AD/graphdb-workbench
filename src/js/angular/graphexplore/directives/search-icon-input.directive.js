@@ -20,7 +20,7 @@ function searchIconInputDirective($rootScope, $timeout) {
             scope.searchedObjCallback = scope.searchedObjCallback();
 
             scope.performSearchActionOnEnter = function () {
-                $rootScope.$broadcast("onEnterKeypressSearchAction");
+                $rootScope.$broadcast('onEnterKeypressSearchAction');
             };
 
             scope.showInput = function () {
@@ -62,7 +62,7 @@ function searchIconInputDirective($rootScope, $timeout) {
                     // Hack needed to force close close-button tooltip in order not be
                     // visible after icon is switched
                     .click(function () {
-                        $(".tooltip").hide();
+                        $('.tooltip').hide();
                     });
                 $timeout(function () {
                     element.find('.search-icon')
@@ -71,7 +71,7 @@ function searchIconInputDirective($rootScope, $timeout) {
                         .addClass('bounceIn')
                         .css('z-index', '3');
                 }, 200);
-            }
+            };
         }
     };
 }

@@ -3,7 +3,7 @@ const modules = [
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.repositories.services'
 ];
 
 angular
@@ -13,28 +13,30 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }])
     .filter('humanize', function () {
-        return function humanize(number) {
-            if (number < 1000) {
-                return number;
-            }
-            var si = ['K', 'M', 'G', 'T', 'P', 'H'];
-            var exp = Math.floor(Math.log(number) / Math.log(1000));
-            var result = number / Math.pow(1000, exp);
-            result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
-            return result + si[exp - 1];
-        };
+        return humanize;
     });
 
-DependenciesChordCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "GraphDataService", "UiScrollService", "ModalService"];
+function humanize(number) {
+    if (number < 1000) {
+        return number;
+    }
+    const si = ['K', 'M', 'G', 'T', 'P', 'H'];
+    const exp = Math.floor(Math.log(number) / Math.log(1000));
+    let result = number / Math.pow(1000, exp);
+    result = (result % 1 > (1 / Math.pow(1000, exp - 1))) ? result.toFixed(2) : result.toFixed(0);
+    return result + si[exp - 1];
+}
+
+DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataService', 'UiScrollService', 'ModalService'];
 
 function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataService, UiScrollService, ModalService) {
 
-    var timer;
+    let timer;
 
     $scope.status = !$repositories.getActiveRepository() ? 'NO_REPO' : 'WAIT';
 
-    var getRelationshipsData = function (selectedClasses) {
-        d3.select("#dependencies-chord").html("");
+    const getRelationshipsData = function (selectedClasses) {
+        d3.select('#dependencies-chord').html('');
 
         $scope.status = 'WAIT';
 
@@ -45,7 +47,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                     matrix: matrixData.right,
                     nodes: matrixData.left,
                     hasLinks: _.sum(_.map(matrixData.right, function (arr) {
-                        return _.sum(arr)
+                        return _.sum(arr);
                     })) > 0,
                     direction: $scope.direction
                 };
@@ -56,7 +58,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         });
     };
 
-    var getRelationshipsClasses = function () {
+    const getRelationshipsClasses = function () {
         GraphDataService.getRelationshipsClasses($scope.direction)
             .success(function (classesData, status) {
                 $scope.allClasses.items = _.filter(classesData, classFilterFunc);
@@ -66,30 +68,30 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
                 getRelationshipsData($scope.selectedClasses);
                 if (status === 207) {
-                    toastr.warning("You can update the diagram by pressing the reload button.", "Repository data has changed");
+                    toastr.warning('You can update the diagram by pressing the reload button.', 'Repository data has changed');
                 }
             });
     };
 
-    var getRelationshipsStatus = function (force) {
-        if ($scope.status == 'READY' && !force) {
+    const getRelationshipsStatus = function (force) {
+        if ($scope.status === 'READY' && !force) {
             return;
         }
         $scope.status = 'WAIT';
         GraphDataService.getRelationshipsStatus()
-            .success(function (data, status) {
+            .success(function (data) {
                 $scope.status = data;
-                if ($scope.status == 'IN_PROGRESS') {
+                if ($scope.status === 'IN_PROGRESS') {
                     if (timer) {
                         return;
                     } else {
                         timer = $timeout(getRelationshipsStatus, 2000);
                     }
                 }
-                if ($scope.status == 'READY') {
+                if ($scope.status === 'READY') {
                     getRelationshipsClasses();
                 }
-                if ($scope.status.indexOf('ERROR;') == 0) {
+                if ($scope.status.indexOf('ERROR;') === 0) {
                     $scope.status = 'ERROR';
                     toastr.error('There was an error while calculating dependencies: ' + $scope.status.substring('ERROR;'.length));
                 }
@@ -103,12 +105,12 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.allClasses = {};
     $scope.allClasses.items = [];
     $scope.allNotFilteredClasses = [];
-    $scope.direction = "all";
+    $scope.direction = 'all';
 
-    var datasource = {};
-    var position = 0;
-    var current = 0;
-    $rootScope.key = "";
+    const datasource = {};
+    let position = 0;
+    let current = 0;
+    $rootScope.key = '';
 
     datasource.get = function (index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.allClasses.items);
@@ -152,18 +154,18 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         }
     });
 
-    $scope.$watch("direction", function () {
+    $scope.$watch('direction', function () {
         if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
             return;
         }
-        if ($scope.status == "READY") {
+        if ($scope.status === 'READY') {
             getRelationshipsClasses();
         } else {
             getRelationshipsStatus();
         }
     });
 
-    $scope.$on("$destroy", function (event) {
+    $scope.$on('$destroy', function () {
         $timeout.cancel(timer);
     });
 
@@ -174,7 +176,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.confirmCalculateDependencies = function () {
         ModalService.openSimpleModal({
             title: 'Confirm operation',
-            message: "Calculating relationships data may take some time. Are you sure?",
+            message: 'Calculating relationships data may take some time. Are you sure?',
             warning: true
         }).result
             .then(function () {
@@ -187,7 +189,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         $scope.selectedClasses = undefined;
         GraphDataService.calculateRelationships()
             .success(function (data) {
-                if (data.indexOf('ERROR;') == 0) {
+                if (data.indexOf('ERROR;') === 0) {
                     toastr.error('There was an error while calculating dependencies: ' + data.substring('ERROR;'.length));
                 } else {
                     getRelationshipsStatus();
@@ -205,7 +207,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.removeClass = function (clazz) {
         _.remove($scope.selectedClasses, function (c) {
-            return c.name == clazz.name
+            return c.name === clazz.name;
         });
         getRelationshipsData($scope.selectedClasses);
     };
@@ -215,7 +217,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isClassByNameShown = function (name) {
-        return _.find($scope.selectedClasses, {name: name}) != undefined
+        return _.find($scope.selectedClasses, {name: name}) !== undefined;
     };
 
     $scope.addClassByName = function (name) {
@@ -225,7 +227,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.removeClassByName = function (name) {
         _.remove($scope.selectedClasses, function (c) {
-            return c.name == name
+            return c.name === name;
         });
         getRelationshipsData($scope.selectedClasses);
     };
@@ -237,7 +239,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isSystemRepository = function () {
-        return $repositories.getActiveRepository() == "SYSTEM";
+        return $repositories.getActiveRepository() === 'SYSTEM';
     };
 
     function onRepositoryIsSet() {

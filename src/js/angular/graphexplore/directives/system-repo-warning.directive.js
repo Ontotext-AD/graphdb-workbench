@@ -9,9 +9,9 @@ function systemRepoWarningDirective($repositories, $rootScope) {
         restrict: 'A',
         scope: {},
         templateUrl: 'js/angular/graphexplore/templates/systemRepoWarningTemplate.html',
-        link: function (scope, element) {
+        link: function (scope) {
             scope.isSystemRepository = function () {
-                return $repositories.getActiveRepository() === "SYSTEM";
+                return $repositories.getActiveRepository() === 'SYSTEM';
             };
 
             scope.hasPermission = function () {
