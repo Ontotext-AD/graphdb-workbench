@@ -13,8 +13,8 @@
 <div class="container-fluid">
 
     <h1>
-        {{title}}
-        <span class="btn btn-link"
+        {{editSearchQuery ? (viewType === 'text' ? 'Edit search query':(page === 2 ? 'Edit search query' : 'Edit analogical query')) : title}}
+        <span ng-hide="editSearchQuery" class="btn btn-link"
               popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
@@ -28,7 +28,7 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <ul class="nav nav-tabs mb-2">
+    <ul ng-hide="editSearchQuery" class="nav nav-tabs mb-2">
         <li class="nav-item" id="create-text-index"><a class="nav-link" ng-class="viewType == 'text' ? 'active' : ''" href ng-click="viewType = 'text'"
                 data-toggle="tab">Create text similarity index</a></li>
         <li class="nav-item" id="create-predication-index"><a class="nav-link" ng-class="viewType == 'predication' ? 'active' : ''" href ng-click="viewType = 'predication'" data-toggle="tab">
@@ -38,11 +38,11 @@
       <div class="card-block pt-1">
         <p class="lead">Index name</p>
         <div class="input-group input-group-lg">
-          <input required class="form-control similarity-index-name" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
+          <input ng-disabled="editSearchQuery" required class="form-control similarity-index-name" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
         </div>
         <div style="margin-top: 5px" ng-show="invalidIndexName" class="idError alert alert-danger">{{invalidIndexName}}</div>
 
-        <button class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
+        <button ng-hide="editSearchQuery" class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
 
         <div class="collapse mt-1" id="more-options" >
 
@@ -95,7 +95,7 @@
             </button>
 
             <ul class="nav nav-tabs">
-                <li class="nav-item">
+                <li ng-hide="editSearchQuery" class="nav-item">
                     <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
                         Data query
                     </a>
@@ -183,15 +183,21 @@
                        popover-trigger="mouseenter">
                         Cancel
                     </a>
-                    <button class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
+                    <button ng-if="!editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
                             popover="Create index"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         Create
                     </button>
+                    <button ng-if="editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="saveSearchQuery()"
+                            popover="Edit query"
+                            popover-placement="top"
+                            popover-trigger="mouseenter">
+                        Edit
+                    </button>
                 </div>
                 <div class="pull-left">
-                  <button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
+                  <button ng-if="!editSearchQuery" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
                   <button class="btn btn-link test-query-btn" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
                           popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
                           popover-placement="top"
@@ -207,4 +213,5 @@
                 </div>
             </div>
     </div>
+</div>
 </div>
