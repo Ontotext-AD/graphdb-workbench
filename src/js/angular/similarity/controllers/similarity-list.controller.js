@@ -5,9 +5,9 @@ angular
     .controller('SimilarityCtrl', SimilarityCtrl)
     .controller('EditSearchQueryCtrl', EditSearchQueryCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteService', 'productInfo'];
+SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteService, productInfo) {
+function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
 
     var PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     var PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -112,7 +112,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if ($scope.getActiveRepository()) {
             $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
                 $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
                 $scope.usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
                     $scope.usedPrefixes[e.prefix.value] = e.namespace.value;

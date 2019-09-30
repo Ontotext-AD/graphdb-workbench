@@ -9,9 +9,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService'];
 
-function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteService) {
+function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService) {
     $http.get('rest/graphdb-settings/license/hardcoded')
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === "true");
@@ -44,7 +44,7 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
         if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
             $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
-                    $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus()
+                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
                         .success(function (data) {
                             $scope.getActiveRepositorySize();
                         });

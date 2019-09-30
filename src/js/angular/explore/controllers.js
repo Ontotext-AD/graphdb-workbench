@@ -210,9 +210,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 }
 
-FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteService', 'ClassInstanceDetailsService', '$routeParams'];
+FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams'];
 
-function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteService, ClassInstanceDetailsService, $routeParams) {
+function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams) {
     $scope.submit = submit;
     $scope.getAutocompleteSuggestions = getAutocompleteSuggestions;
     $scope.inputChangedFn = inputChangedFn;
@@ -230,7 +230,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 
     function checkAutocompleteStatus() {
-        AutocompleteService.checkAutocompleteStatus()
+        AutocompleteRestService.checkAutocompleteStatus()
             .success(function (response) {
                 if (!response) {
                     toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
@@ -333,7 +333,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             str = str.replace(expandedUri, expandedUri + ";");
-            promise = AutocompleteService.getAutocompleteSuggestions(str);
+            promise = AutocompleteRestService.getAutocompleteSuggestions(str);
         } else {
             // return empty promise
             promise = $q.when($scope.autocompleteEnabled);

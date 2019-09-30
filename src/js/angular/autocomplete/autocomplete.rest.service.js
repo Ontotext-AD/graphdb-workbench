@@ -6,7 +6,7 @@ AutocompleteRestService.$inject = ['$http'];
 
 function AutocompleteRestService($http) {
     return {
-        refreshEnabledStatus: refreshEnabledStatus,
+        checkAutocompleteStatus: checkAutocompleteStatus,
         refreshIndexStatus: refreshIndexStatus,
         refreshIndexIRIs: refreshIndexIRIs,
         refreshLabelConfig: refreshLabelConfig,
@@ -16,10 +16,11 @@ function AutocompleteRestService($http) {
         toggleIndexIRIs: toggleIndexIRIs,
         buildIndex: buildIndex,
         interruptIndexing: interruptIndexing,
-        checkForPlugin: checkForPlugin
+        checkForPlugin: checkForPlugin,
+        getAutocompleteSuggestions: getAutocompleteSuggestions
     };
 
-    function refreshEnabledStatus() {
+    function checkAutocompleteStatus() {
         return $http.get('rest/autocomplete/enabled');
     }
 
@@ -66,5 +67,14 @@ function AutocompleteRestService($http) {
 
     function checkForPlugin() {
         return $http.get('rest/autocomplete/pluginFound');
+    }
+
+    function getAutocompleteSuggestions(str, cancelerPromise) {
+        return $http.get('rest/autocomplete/query', {
+            params: {
+                q: str
+            },
+            timeout: cancelerPromise
+        });
     }
 }

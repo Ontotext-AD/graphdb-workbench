@@ -15,7 +15,7 @@ AutocompleteCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$reposito
 function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService) {
 
     const refreshEnabledStatus = function () {
-        AutocompleteRestService.refreshEnabledStatus()
+        AutocompleteRestService.checkAutocompleteStatus()
             .success(function (data) {
                 $scope.autocompleteEnabled = data;
             }).error(function (data) {

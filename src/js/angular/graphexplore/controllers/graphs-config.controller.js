@@ -5,9 +5,9 @@ angular
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteService', 'ClassInstanceDetailsService', '$routeParams'];
+GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams'];
 
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteService, ClassInstanceDetailsService, $routeParams) {
+function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -150,7 +150,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             });
         };
 
-        $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
 
         var validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {

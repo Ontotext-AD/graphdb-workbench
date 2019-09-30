@@ -19,9 +19,9 @@ angular
     }]);
 
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -795,7 +795,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             });
 
             $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-            $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }).error(function (data) {
             toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
         });
