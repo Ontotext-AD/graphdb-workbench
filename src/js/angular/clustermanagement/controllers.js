@@ -221,8 +221,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.disconnectLink = function (d, onSuccess, overrideDisabled) {
-        var master,
-            worker;
+        var master = {};
+        var worker = {};
         if (d.source.repositoryType === 'master') {
             master = d.source;
             worker = d.target;
@@ -474,7 +474,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
                 masterData.workers.forEach(function (worker) {
                     node.workers[worker.location] = 1;
-                    var workerNode;
+                    var workerNode = {};
                     if (worker.location in $scope.urlToNode) {
                         workerNode = $scope.urlToNode[worker.location];
                         workerNode.fingerprint = worker.fingerprint;
@@ -509,7 +509,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     // debug stuff
                     if (isRandomLink) {
                         status = ['UNINITIALIZED', 'ON', 'OFF', 'REPLICATION_SERVER', 'REPLICATION_CLIENT',
-                            'OUT_OF_SYNC', 'OUT_OF_SYNC_FORCED', 'WAITING_WRITE', 'WRITING'][Math.floor(Math.random() * 9)];
+                            'OUT_OF_SYNC', 'OUT_OF_SYNC_FORCED', 'WAITING_WRITE', 'WRITING'][Math.floor(Math.random() * 9)]; // NOSONAR
                     }
                     // end of debug stuff
 

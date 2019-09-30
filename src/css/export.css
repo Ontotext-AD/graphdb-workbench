@@ -47,17 +47,7 @@
 
 .ot-export-pagination .pagination > li > a {
 	padding: 6px 10px;
-} 
-/*
-input.ot-multiple-checkbox {
-	margin: 0 5px 0 0;
-	position: relative;
-	top: 3px;
 }
-.ot-border-right {
-	border-left: 1px solid #506e9c !important;
-}
-*/
 
 /* =================== Loader =========================== */
 #ot-loader {
@@ -87,24 +77,6 @@ input.ot-multiple-checkbox {
 .ot-no-graphs .panel-title > a {
     color: #018ae1;
 }
-
-/*
-.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-    background-color: #fff;
-}
-
-.table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
-    background-color: #f9f9f9;
-}
-*/
-
-/*
-#export-graphs thead tr th{
-    background-color: #f9f9f9;
-    border-bottom: 0;
-    color: red !important;
-}
-*/
 
 .arrows-up-down{
     display: inline-block;
@@ -175,7 +147,7 @@ input.ot-multiple-checkbox {
     border-right: 8px solid transparent;
     border-bottom: 8px solid #003663;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     left: 40px;
     display: none;
 }
@@ -241,14 +213,6 @@ input.ot-multiple-checkbox {
     left: 19px;
 }
 
-/*
-#export-graphs thead .delete-repo-icon{
-    font-size: 14px;
-    left: -10px;
-    float: left;
-}
-*/
-
 #export-graphs thead tr th:first-child{
     width: 12%;
     min-width: 140px;
@@ -270,29 +234,10 @@ input.ot-multiple-checkbox {
 
 #export-graphs thead tr th .checkbox {
      margin: 0;
- }
-
-/*
-#export-graphs tbody tr td > span{
-    line-height: 50px;
 }
-*/
 
 #export-graphs tbody .formats-list{
     width: 100px;
     bottom: -450px;
     right: -22px;
 }
-
-/*
-#export-graphs tbody .delete-repo-icon{
-    font-size: 14px;
-    left: 20px;
-}
-
-#export-graphs .delete-repo.pull-right{
-    margin-left: 40px;
-    margin-right: 15px;
-}
-*/
-

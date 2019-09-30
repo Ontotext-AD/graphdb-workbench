@@ -18,7 +18,7 @@
             <div ng-hide="graph.name" class="alert alert-danger" style="margin-top: 5px;">Name cannot be empty!</div>
         </div>
         <div ng-hide="form.$error.required.length" ng-if="graphExists" class="alert alert-danger"
-             style="margin-top: 5px;">Saved graph with name <b>&#39;{{graph.name}}&#39;</b> already exists!
+             style="margin-top: 5px;">Saved graph with name <strong>&#39;{{graph.name}}&#39;</strong> already exists!
         </div>
         <!-- <div ng-if="graphExists || overwrite"><label for="override-saved">Overwrite existing saved graph <input id="override-saved" type="checkbox" ng-model="overwrite"></label></div> -->
     </div>
@@ -30,5 +30,4 @@
 </form>
 
 <!-- End save graph modal -->
-    
-    
+

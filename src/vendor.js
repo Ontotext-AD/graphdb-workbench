@@ -1,10 +1,10 @@
 import 'lib/bootstrap/bootstrap.min.css';
-import 'lib/angular-toastr/0.5.2/angular-toastr.css';
-import './font/font-awesome/4.3.0/css/font-awesome.min.css';
+import 'angular-toastr/dist/angular-toastr.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import './css/lib/animate/animate.css';
 
-import 'lib/jquery/2.1.4/jquery.min.js';
+import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
-import 'lib/d3js/4.2.1/d3.js';
-import 'lib/loading-hint.js';
-import 'lib/bootstrap-switch/3.2.2/bootstrap-switch.min.js';
+import 'd3/build/d3';
+import 'angular/common/loading-hint.js';
+import 'bootstrap-switch/dist/js/bootstrap-switch.min';

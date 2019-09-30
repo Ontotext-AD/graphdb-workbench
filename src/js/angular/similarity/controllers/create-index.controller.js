@@ -20,22 +20,13 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
     $scope.info = productInfo;
     $scope.page = 1;
 
-
-    SimilarityService.getSearchQueries().success(function (data) {
-        $scope.searchQueries = data;
-        SimilarityService.getSamples().success(function (samples) {
-            defaultTabConfig.query = $location.search().selectQuery ? $location.search().selectQuery : samples['text']['literals'];
-            defaultTabConfig.inference = !($location.search().infer == 'false');
-            defaultTabConfig.sameAs = !($location.search().sameAs == 'false');
-            $scope.tabsData = $scope.tabs = [defaultTabConfig];
-            $scope.currentQuery = angular.copy(defaultTabConfig);
-            $scope.allSamples = samples;
-            initForViewType();
-        });
-    }).error(function (data) {
-        let msg = getError(data);
-        toastr.error(msg, 'Could not get search queries');
-    });
+    var defaultTabConfig = {
+        id: "1",
+        name: '',
+        query: '',
+        inference: true,
+        sameAs: true
+    };
 
     var initForViewType = function () {
         $scope.editSearchQuery = $location.search().editSearchQuery;
@@ -94,7 +85,7 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
                     }
                 })
                 .error(function (data, status, headers, config) {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Could not get indexes');
                 });
 
@@ -105,6 +96,61 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
             }
         }
     };
+
+    var validateIndex = function () {
+        $scope.invalidIndexName = false;
+        $scope.saveQueries();
+        if (!$scope.newIndex.name) {
+            $scope.invalidIndexName = "Index name cannot be empty";
+            return false;
+        }
+        if (!filenamePattern.test($scope.newIndex.name)) {
+            $scope.invalidIndexName = 'Index name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"';
+            return false;
+        }
+
+        if (!$scope.newIndex.query) {
+            toastr.error('Select query cannot be empty.');
+            return false;
+        }
+
+        if (!$scope.newIndex.searchQuery) {
+            toastr.error('Search query cannot be empty.');
+            return false;
+        }
+
+        if ($scope.viewType == 'predication' && !$scope.newIndex.analogicalQuery) {
+            toastr.error('Analogical query cannot be empty.');
+            return false;
+        }
+
+        if (window.editor.getQueryType() !== 'SELECT') {
+            toastr.error('Similarity index requires SELECT queries.');
+            return;
+        }
+
+        return true;
+    };
+
+    var appendOption = function (option, value) {
+        $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + " " + value
+    };
+
+    SimilarityService.getSearchQueries().success(function (data) {
+        $scope.searchQueries = data;
+        SimilarityService.getSamples().success(function (samples) {
+            defaultTabConfig.query = $location.search().selectQuery ? $location.search().selectQuery : samples['text']['literals'];
+            defaultTabConfig.inference = !($location.search().infer == 'false');
+            defaultTabConfig.sameAs = !($location.search().sameAs == 'false');
+            $scope.tabsData = $scope.tabs = [defaultTabConfig];
+            $scope.currentQuery = angular.copy(defaultTabConfig);
+            $scope.allSamples = samples;
+            initForViewType();
+        });
+    }).error(function (data) {
+        let msg = getError(data);
+        toastr.error(msg, 'Could not get search queries');
+    });
 
     $scope.$watch('viewType', function () {
         initForViewType();
@@ -251,49 +297,10 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
 
             })
             .error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Could not get indexes');
             });
 
-    };
-
-    var appendOption = function (option, value) {
-        $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + " " + value
-    };
-
-    var validateIndex = function () {
-        $scope.invalidIndexName = false;
-        $scope.saveQueries();
-        if (!$scope.newIndex.name) {
-            $scope.invalidIndexName = "Index name cannot be empty";
-            return false;
-        }
-        if (!filenamePattern.test($scope.newIndex.name)) {
-            $scope.invalidIndexName = 'Index name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"';
-            return false;
-        }
-
-        if (!$scope.newIndex.query) {
-            toastr.error('Select query cannot be empty.');
-            return false;
-        }
-
-        if (!$scope.newIndex.searchQuery) {
-            toastr.error('Search query cannot be empty.');
-            return false;
-        }
-
-        if ($scope.viewType == 'predication' && !$scope.newIndex.analogicalQuery) {
-            toastr.error('Analogical query cannot be empty.');
-            return false;
-        }
-
-        if (window.editor.getQueryType() !== 'SELECT') {
-            toastr.error('Similarity index requires SELECT queries.');
-            return;
-        }
-
-        return true;
     };
 
     // Called when user clicks on a sample query
@@ -318,15 +325,6 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
         $scope.currentQuery.outputType = 'table';
         $scope.runQuery();
     };
-
-    var defaultTabConfig = {
-        id: "1",
-        name: '',
-        query: '',
-        inference: true,
-        sameAs: true
-    };
-
 
     $scope.resetCurrentTabConfig = function () {
         $scope.currentTabConfig = {
@@ -600,7 +598,7 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
                 }
             })
             .error(function (data, status, headers, config) {
-                var msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });

@@ -9,7 +9,7 @@ import 'angular/security/services';
 // import 'angular/sparql/controllers';
 import 'angular/sparql/directives/query-editor.directive';
 // import 'angular/sparql/directives';
-import 'lib/angular-xeditable/0.1.8/js/xeditable.min';
+import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/FileSaver-patch';
 
 angular

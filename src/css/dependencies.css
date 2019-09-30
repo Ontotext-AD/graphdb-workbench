@@ -23,7 +23,7 @@ div.tooltip {
     text-align: center;
     padding: 10px;
     font: 12px sans-serif;
-    border: 0px;
+    border: 0;
     border-style: solid;
     pointer-events: none;
 }
@@ -41,7 +41,7 @@ div.tooltip {
 
 .dependencies-tooltip > .row {
     padding: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     text-align: left;
 }
 
@@ -52,7 +52,6 @@ div.tooltip {
 }
 
 .toolbar-holder {
-    /* color: rgb(16, 48, 86); */
     color: #018ae1;
     background-color: rgba(255, 255, 255, 1);
     position: absolute;
@@ -86,7 +85,7 @@ div.tooltip {
 }
 
 ::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
+    width: 0;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
 }
 /* optional: show position indicator in red */
@@ -190,7 +189,7 @@ div.tooltip {
 }
 
 body .row {
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .direction-filter, .back-to-dependencies-list {
@@ -207,8 +206,8 @@ svg {
 }
 
 .related-arrow {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .plusminus {

@@ -13,6 +13,13 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     var PREFIX_INSTANCE = PREFIX + 'instance/';
     var ANY_PREDICATE = PREFIX_PREDICATION + "any";
 
+    var literalForQuery = function (literal) {
+        return '"' + literal + '"';
+    };
+
+    var iriForQuery = function (iri) {
+        return '<' + iri + '>';
+    };
 
     $scope.info = productInfo;
     $scope.pluginDisabled = false;
@@ -26,19 +33,21 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository()) {
             return;
         }
-        SimilarityService.checkPluginEnabled().complete(function (data, textStatus, jqXhrOrErrorString) {
-            $scope.pluginDisabled = data.responseText.indexOf("false") > 0;
-        })
+        SimilarityService.checkPluginEnabled()
+            .done(function (data, textStatus, jqXhrOrErrorString) {
+                $scope.pluginDisabled = data.indexOf("false") > 0;
+            })
             .fail(function (data) {
                 toastr.error(getError(data), 'Could not check plugin enabled!');
             });
     };
 
     $scope.enabledSimilarityPlugin = function () {
-        SimilarityService.enableSimilarityPlugin().complete(function (data, textStatus, jqXhrOrErrorString) {
-            $scope.pluginDisabled = false;
-            $scope.getSimilarityIndexes();
-        })
+        SimilarityService.enableSimilarityPlugin()
+            .done(function (data, textStatus, jqXhrOrErrorString) {
+                $scope.pluginDisabled = false;
+                $scope.getSimilarityIndexes();
+            })
             .fail(function (data) {
                 toastr.error(getError(data), 'Could not enable plugin!');
             });
@@ -218,7 +227,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             url: 'repositories/' + $repositories.getActiveRepository(),
             data: sendData,
             headers: headers
-        }).complete(function (data, textStatus, jqXhrOrErrorString) {
+        }).done(function (data, textStatus, jqXhrOrErrorString) {
             toggleOntoLoader(false);
             yasr.setResponse(data, textStatus, jqXhrOrErrorString);
         }).fail(function (data) {

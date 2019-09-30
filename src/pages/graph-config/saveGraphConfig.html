@@ -1,4 +1,4 @@
-<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
 
 <link href="css/lib/yasqe.min.css" rel="stylesheet"/>
 
@@ -66,11 +66,11 @@
 <div class="card" style="border-top: none">
     <div class="card-block">
         <div>
-                        
+
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
-                        <img class="image-label-image" src="css/images/search.png" alt="" width="100%">
+                        <img class="image-label-image" src="css/images/search.png" alt="search image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with a search box</h5>
                             <div>Choose the starting point of your visual graph every time</div>
@@ -79,7 +79,7 @@
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'node'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="node">
-                        <img class="image-label-image" src="css/images/node.png" alt="" width="100%">
+                        <img class="image-label-image" src="css/images/node.png" alt="node image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with a fixed node</h5>
                             <div>The visual graph will always start from the chosen node.</div>
@@ -88,23 +88,23 @@
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'query'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="query">
-                        <img class="image-label-image" src="css/images/query.png" alt="" width="100%">
+                        <img class="image-label-image" src="css/images/query.png" alt="query image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with graph query results</h5>
                             <div>The results from your query will be the starting point of the visual graph.</div>
                         </div>
                     </label>
                 </div>
-                
+
                 <div class="form-group card mb-2" ng-show="newConfig.startMode == 'node' && page == 1">
                     <div class="card-block">
                         <p class="lead" ng-show="newConfig.startIRI">
-                            <b>Selected node:</b>
+                            <strong>Selected node:</strong>
                             <code ng-bind="newConfig.startIRILabel ? newConfig.startIRILabel + '<' + newConfig.startIRI + '>' : newConfig.startIRI"></code>
-                            <i ng-hide="newConfig.startIRI" class="text-muted">No node selected</i>
+                            <em ng-hide="newConfig.startIRI" class="text-muted">No node selected</em>
                         </p>
                         <p class="lead" ng-hide="newConfig.startIRI">
-                            <b>No node selected</b>
+                            <strong>No node selected</strong>
                         </p>
                         <search-resource-input
                             namespacespromise="getNamespacesPromise"
@@ -126,15 +126,15 @@
 
                             <p>The <code>?node</code> variable is required and will be replaced with the IRI of the expanded node.</p>
 
-                            <p>This query is optional. If empty, the <i>{{getSampleName(samples[0], 'expandQuery')}}</i> sample query will be used.</p>
+                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'expandQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/expand.png" class="info-box-img" height="220">
+                            <img src="css/images/expand.png" class="info-box-img" height="220" alt="expand image">
                         </div>
                     </div>
 
 
-                    
+
                     <div class="d-flex" ng-if="page == 3">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
@@ -153,10 +153,10 @@
 
                             <p>The <code>?node</code> variable is required and will be replaced with the IRI of the expanded node.</p>
 
-                            <p>This query is optional. If empty, the <i>{{getSampleName(samples[0], 'resourceQuery')}}</i> sample query will be used.</p>
+                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/labels-size.png" class="info-box-img" height="220">
+                            <img src="css/images/labels-size.png" class="info-box-img" height="220" alt="labels size image">
                         </div>
                     </div>
 
@@ -175,7 +175,7 @@
                             <p>This query is optional. If empty, the edge IRI's local name is used.</p>
                         </div>
                         <div>
-                            <img src="css/images/predicates.png" class="info-box-img" height="220">
+                            <img src="css/images/predicates.png" class="info-box-img" height="220" alt="predicates image">
                         </div>
                     </div>
 
@@ -197,16 +197,16 @@
 
                             <p>The <code>?node</code> variable is required and will be replaced with the IRI of the viewed node.</p>
 
-                            <p>This query is optional. If empty, the <i>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</i> sample query will be used.</p>
+                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/side-panel.png" class="info-box-img" height="220">
+                            <img src="css/images/side-panel.png" class="info-box-img" height="220" alt="side panel image">
                         </div>
                     </div>
 
                 </div>
-                
-                
+
+
                 <div class="form-group row" ng-hide="page == 1 && newConfig.startMode != 'query'">
                     <div class="col-md-9">
                         <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun callback-on-change="updateDirty">
@@ -218,7 +218,7 @@
                         <div ng-show="page == 1" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.startGraphQuery" ng-click="setQuery(sample.startGraphQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'startGraphQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'startGraphQuery')"></strong>
                                     <samp class="text-muted small">{{sample.startGraphQuery}}</samp>
                                 </a>
                             </div>
@@ -227,7 +227,7 @@
                         <div ng-show="page == 2" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.expandQuery" ng-click="setQuery(sample.expandQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'expandQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'expandQuery')"></strong>
                                     <samp class="text-muted small">{{sample.expandQuery}}</samp>
                                 </a>
                             </div>
@@ -236,7 +236,7 @@
                         <div ng-show="page == 3" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.resourceQuery" ng-click="setQuery(sample.resourceQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'resourceQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'resourceQuery')"></strong>
                                     <samp class="text-muted small">{{sample.resourceQuery}}</samp>
                                 </a>
                             </div>
@@ -245,7 +245,7 @@
                         <div ng-show="page == 4" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.predicateLabelQuery" ng-click="setQuery(sample.predicateLabelQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'predicateLabelQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'predicateLabelQuery')"></strong>
                                     <samp class="text-muted small">{{sample.predicateLabelQuery}}</samp>
                                 </a>
                             </div>
@@ -254,7 +254,7 @@
                         <div ng-show="page == 5" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.resourcePropertiesQuery" ng-click="setQuery(sample.resourcePropertiesQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></strong>
                                     <samp class="text-muted small">{{sample.resourcePropertiesQuery}}</samp>
                                 </a>
                             </div>
@@ -265,7 +265,7 @@
                         <div ng-show="page == 1" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">
                                 <a href="#" ng-if="sample.startGraphQuery" ng-click="setQuery(sample.startGraphQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'startGraphQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'startGraphQuery')"></strong>
                                     <samp class="text-muted small">{{sample.startGraphQuery}}</samp>
                                 </a>
                             </div>
@@ -274,7 +274,7 @@
                         <div ng-show="page == 2" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">
                                 <a href="#" ng-if="sample.expandQuery" ng-click="setQuery(sample.expandQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'expandQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'expandQuery')"></strong>
                                     <samp class="text-muted small">{{sample.expandQuery}}</samp>
                                 </a>
                             </div>
@@ -283,7 +283,7 @@
                         <div ng-show="page == 3" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">
                                 <a href="#" ng-if="sample.resourceQuery" ng-click="setQuery(sample.resourceQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'resourceQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'resourceQuery')"></strong>
                                     <samp class="text-muted small">{{sample.resourceQuery}}</samp>
                                 </a>
                             </div>
@@ -292,7 +292,7 @@
                         <div ng-show="page == 4" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">
                                 <a href="#" ng-if="sample.predicateLabelQuery" ng-click="setQuery(sample.predicateLabelQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'predicateLabelQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'predicateLabelQuery')"></strong>
                                     <samp class="text-muted small">{{sample.predicateLabelQuery}}</samp>
                                 </a>
                             </div>
@@ -301,7 +301,7 @@
                         <div ng-show="page == 5" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">
                                 <a href="#" ng-if="sample.resourcePropertiesQuery" ng-click="setQuery(sample.resourcePropertiesQuery)" class="list-group-item list-group-item-action">
-                                    <b ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></b>
+                                    <strong ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></strong>
                                     <samp class="text-muted small">{{sample.resourcePropertiesQuery}}</samp>
                                 </a>
                             </div>
@@ -309,8 +309,8 @@
 
                     </div>
                 </div>
-                
-                
+
+
         </div>
     </div>
 </div>

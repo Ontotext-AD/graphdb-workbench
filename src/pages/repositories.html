@@ -1,7 +1,7 @@
 
 	<link href="css/repositories.min.css" rel="stylesheet">
 
-	<link href="js/lib/bootstrap-switch/3.2.2/bootstrap-switch.min.css" rel="stylesheet">
+	<link href="css/lib/bootstrap-switch/bootstrap-switch.min.css" rel="stylesheet">
 
 	<h1>
 		{{title}}
@@ -17,7 +17,7 @@
 			<div ng-show="hasActiveLocation()">
 				<div class="pull-left">
 					<strong>Repositories from: </strong>
-					<i ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></i>
+					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></em>
 					<span class="mr-1">{{getActiveLocation().label}}</span>
 				</div>
 				<div class="actions-bar-inline pull-right">
@@ -48,7 +48,7 @@
 					There are no repositories in the active location
 				</div>
 				<div ng-show="getRepositories().length" class="mb-1">
-					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped">
+					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped" aria-describedby="Repositories table">
 						<tbody>
 							<tr class="repository"
 								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
@@ -78,9 +78,9 @@
 										<span class="icon-link"></span>
 									</button>
 									<span ng-show="getDegradedReason()">
-										<i class="icon-warning icon-lg text-warning"
+										<em class="icon-warning icon-lg text-warning"
 											tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
-											tooltip-placement="top" tooltip-trigger="mouseenter"></i>
+											tooltip-placement="top" tooltip-trigger="mouseenter"></em>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
 										<a class="btn btn-link p-0 edit-repository-btn"
@@ -95,14 +95,14 @@
 												tooltip="Download repository configuration as Turtle"
 												tooltip-placement="top"
 												tooltip-trigger="mouseenter">
-												<i class="icon-download"></i>
+												<em class="icon-download"></em>
 										</a>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
 											tooltip="Delete repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter"
 											ng-click="deleteRepository(repository.id)">
-											<i class="icon-trash"></i>
+											<em class="icon-trash"></em>
 										</button>
 									</span>
 								</td>
@@ -111,7 +111,7 @@
 										ng-click="toggleDefaultRepository(repository.id)"
 										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
 										tooltip="Set as default repository">
-										<i class="icon-pin"></i>
+										<em class="icon-pin"></em>
 									</button>
 								</td>
 							</tr>
@@ -134,7 +134,7 @@
 
 			<div ng-show="hasRole('ROLE_ADMIN')">
 				<h3 ng-show="getLocations().length">Repository locations</h3>
-				<table class="table table-hover table-striped locations-table" ng-show="getLocations().length">
+				<table class="table table-hover table-striped locations-table" ng-show="getLocations().length" aria-describedby="Locations table">
 					<tbody>
 						<tr
 							ng-repeat="location in getLocations() | orderBy: 'uri'"
@@ -162,13 +162,13 @@
 									tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.local"
 									ng-click="editLocation(location)">
-									<i class="icon-edit"></i>
+									<em class="icon-edit"></em>
 								</button>
 								<button class="btn btn-link p-0 secondary"
 									tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.system"
 									ng-click="deleteLocation(location.uri)">
-									<i class="icon-close"></i>
+									<em class="icon-close"></em>
 								</button>
 							</td>
 							<td width="50"></td>

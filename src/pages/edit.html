@@ -1,10 +1,10 @@
-<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
 
 <div core-errors></div>
 <div class="page" ng-show="getActiveRepository()">
     <div class="resource-info">
         <div class="thumb" ng-show="{{details.img}}">
-            <a href="{{details.img}}"><img ng-src="{{details.img}}"/></a>
+            <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
             Edit
@@ -24,13 +24,13 @@
 
     <div>
 
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-striped" aria-describedby="Resources table">
                 <thead>
                 <tr>
-                    <th>Predicate</th>
-                    <th>Object</th>
-                    <th>Context</th>
-					<th></th>
+                    <th id="predicateColumn">Predicate</th>
+                    <th id="objectColumn">Object</th>
+                    <th id="contextColumn">Context</th>
+					<th id="actionsColumn"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -107,7 +107,7 @@
                     <td style="vertical-align: top;" class="text-nowrap">
                         <form name="newRowForm" novalidate ng-submit="addStatement()">
                             <button type="submit" class="btn btn-link px-0" ng-form="newRowForm">
-                                <i class="icon-check"></i>
+                                <em class="icon-check"></em>
                             </button>
                         </form>
                     </td>
@@ -153,19 +153,19 @@
                               shown="inserted == statement">
                             <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-link px-0"
                                     tooltip="Save">
-                                <i class="icon-check"></i>
+                                <em class="icon-check"></em>
                             </button>
                             <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
                                     class="btn btn-link px-0 secondary" tooltip="Cancel">
-                                <i class="icon-close"></i>
+                                <em class="icon-close"></em>
                             </button>
                         </form>
                         <div class="buttons" ng-show="!rowform.$visible">
                             <button class="btn btn-link px-0" ng-click="rowform.$show()">
-                                <i class="icon-edit"></i>
+                                <em class="icon-edit"></em>
                             </button>
                             <button class="btn btn-link px-0 secondary" ng-click="removeStatement($index)">
-                                <i class="icon-trash"></i>
+                                <em class="icon-trash"></em>
                             </button>
                         </div>
                     </td>
@@ -174,13 +174,13 @@
             </table>
     </div>
     <div class="text-xs-right">
-		<button class="btn btn-secondary" 
-			ng-disabled="statements.length == 0" 
+		<button class="btn btn-secondary"
+			ng-disabled="statements.length == 0"
 			tooltip="View the resource graph in TriG format"
 			ng-click="viewTrig()">
 			View TriG
 		</button>
-		<button class="btn btn-primary" 
+		<button class="btn btn-primary"
 			tooltip="Save changes"
 			ng-click="save()">
 			Save

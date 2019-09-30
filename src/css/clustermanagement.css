@@ -1,15 +1,10 @@
 svg {
   background-color: #FFF;
-  /* cursor: default; */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-}
-
-svg:not(.active):not(.ctrl) {
-  /* cursor: crosshair; */
 }
 
 path.link {
@@ -255,7 +250,6 @@ text.icon-any {
 div.nodetooltip {
     z-index: 1000;
     position: absolute;
-    text-align: center;
     padding: 10px;
     padding-left: 30px;
     font-size: 90%;
@@ -277,8 +271,8 @@ div.nodetooltip {
 .short-help {
     position: absolute;
     padding: 3px 8px;
-    left: 0px;
-    top: 0px;
+    left: 0;
+    top: 0;
 }
 
 .node-tip {
@@ -358,7 +352,4 @@ div.nodetooltip {
     height: calc(100vh - 120px);
     padding-top: calc((100vh - 300px) / 2);
     background-color: rgba(255,255,255,0.66);
-}
-
-.cluster-loader img {
 }

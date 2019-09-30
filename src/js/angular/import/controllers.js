@@ -30,7 +30,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 }
                 $scope.maxUploadFileSizeMB = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value / (1024 * 1024);
             }).error(function (data, status, headers, config) {
-                msg = getError(data);
+                let msg = getError(data);
                 toastr.error(msg, 'Error');
             });
         };

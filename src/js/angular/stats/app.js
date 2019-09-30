@@ -80,7 +80,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
                     }
                 })
                 .error(function (data, status, headers, config) {
-                    msg = getError(data);
+                    let msg = getError(data);
                     toastr.error(msg, 'Error');
                 });
         };

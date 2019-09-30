@@ -63,9 +63,9 @@
     font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"], icon-any {
+[class^="icon-"], [class*=" icon-"], .icon-any {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -675,13 +675,6 @@ main menu height*/
 
 }
 
-.main-menu .menu-element.active .menu-element-root,
-.main-menu .menu-element.active a,
-.main-menu.collapsed .menu-element:hover .menu-item,
-.main-menu.collapsed .menu-element:hover a {
-    /*		color: #fff;*/
-}
-
 .main-menu .sub-menu {
     position: relative;
     padding: 0;
@@ -708,7 +701,7 @@ main menu height*/
 }
 
 .main-menu .menu-element ul:before, .rdf-list ul.datasource:before {
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     content: "\e921";
     display: block;
     color: rgba(0, 0, 0, .25);
@@ -744,7 +737,7 @@ main menu height*/
     color: #fff;
     font-size: 0.8em;
     line-height: 1.5;
-    padding: 0em 0.3em;
+    padding: 0 0.3em;
     background-color: rgba(255, 255, 255, .1);
     z-index: 10;
     cursor: pointer;
@@ -922,7 +915,7 @@ main menu height*/
 }
 
 .btn-outline-primary:hover,
-.btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle
+.btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
     color: #ED4F2F;
     background-color: rgba(237, 79, 47, 0.2);
@@ -1068,16 +1061,10 @@ h3 [class^=icon-] {
     right: 2rem;
     font-size: 0.9em;
     z-index: 1010;
-    /*	opacity: 1;*/
     -moz-transition: all 0.1s ease-out; /* FF4+ */
     -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
     -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
     transition: all 0.1s ease-out;
-}
-
-.status-bar:hover {
-    /*	opacity: 1;*/
-    /*	font-size: 1em;*/
 }
 
 /*-------------------------------------------------------------
@@ -1124,7 +1111,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .dropdown-toggle::after {
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     content: "\e921";
     display: inline-block;
     color: rgba(0, 0, 0, .35);
@@ -1248,7 +1235,7 @@ footer.footer .container-fluid.main-container p {
 .alert-info:before,
 .alert-warning:before,
 .alert-help:before {
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     font-size: 1.6em;
     vertical-align: middle;
     line-height: 1;
@@ -1354,7 +1341,7 @@ ul[class*="style-"] li {
 
 ul[class*="style-"] li:before {
     content: "\e91b";
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     position: absolute;
     left: 0;
     top: -0.07em;
@@ -1522,7 +1509,7 @@ code {
 }
 
 .close::before {
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     content: "\e922";
     -moz-transition: all 0.18s ease-out; /* FF4+ */
     -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
@@ -1682,7 +1669,6 @@ code {
 .card.button .btn {
     white-space: normal;
     padding: 0 1.8rem;
-    /*	display: inline-block;*/
     line-height: 218px;
 
 }
@@ -1730,10 +1716,6 @@ code {
 
 .card .alert {
     margin-bottom: 0;
-}
-
-.actions-bar {
-    /*	float: right;*/
 }
 
 .actions-bar .btn {
@@ -2192,7 +2174,7 @@ input.switch:checked ~ label:after {
 
 #toast-container > div:before {
     display: block;
-    font-family: 'icomoon' !important;
+    font-family: 'icomoon', sans-serif !important;
     font-size: 2em;
     position: absolute;
     left: 0.3em;

@@ -1,5 +1,5 @@
 <!--<link href="css/namespaces.css" rel="stylesheet"/>-->
-<link href="js/lib/angular-xeditable/0.1.8/xeditable.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
 <link href="css/export.css" rel="stylesheet">
 
 <title>Namespaces</title>
@@ -67,10 +67,10 @@
             <span class="showing-info-namespaces pull-right">Showing {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} results</span>
         </div>
         <table ng-show="displayedNamespaces.length > 0" id="wb-namespaces-namespaceInNamespaces"
-               class="table table-striped table-hover">
+               class="table table-striped table-hover" aria-describedby="Namespaces table">
             <thead>
             <tr>
-                <th style="width: 100px">
+                <th id="selectionColumn" style="width: 100px">
                     <label class="form-check-label">
                         <input class="form-check-input select-all-namespaces" type="checkbox" ng-model="selectedAll"
                                ng-click="checkAll();checkIfSelectedNamespace()" ng-disabled="!canWriteActiveRepo()">
@@ -79,9 +79,9 @@
                             ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
                             tooltip="Delete selected"><span class="icon-trash"></span></button>
                 </th>
-                <th style="width: 20%">Prefix</th>
-                <th>URI</th>
-                <th style="width: 100px"></th>
+                <th id="prefixColumn" style="width: 20%">Prefix</th>
+                <th id="uriColumn">URI</th>
+                <th id="actionsColumn" style="width: 100px"></th>
             </tr>
             </thead>
             <tbody>

@@ -182,15 +182,16 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     var toggleOntoLoader = function (showLoader) {
         var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
         var resultsLoader = angular.element(document.getElementById("results-loader"));
+        const opacityHideClass = 'opacity-hide';
         /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
         if (showLoader) {
             $scope.loading = true;
-            yasrInnerContainer.addClass("opacity-hide");
-            resultsLoader.removeClass("opacity-hide");
+            yasrInnerContainer.addClass(opacityHideClass);
+            resultsLoader.removeClass(opacityHideClass);
         } else {
             $scope.loading = false;
-            yasrInnerContainer.removeClass("opacity-hide");
-            resultsLoader.addClass("opacity-hide");
+            yasrInnerContainer.removeClass(opacityHideClass);
+            resultsLoader.addClass(opacityHideClass);
         }
     };
 
@@ -209,7 +210,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 sameAs: $scope.sameAs,
             },
             headers: headers
-        }).complete(function (data, textStatus, jqXhrOrErrorString) {
+        }).done(function (data, textStatus, jqXhrOrErrorString) {
             toggleOntoLoader(false);
             yasr.setResponse(data, textStatus, jqXhrOrErrorString);
         }).fail(function (data) {
@@ -254,7 +255,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 saveAs(file, 'statements' + format.extension);
             }
         }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
         });
     };
@@ -318,7 +319,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
                 });
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });
@@ -393,6 +394,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
             }
         }
 
+        var promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             str = str.replace(expandedUri, expandedUri + ";");
@@ -458,7 +460,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 });
                 $scope.loader = false;
             }).error(function (data, status, headers, config) {
-            msg = getError(data);
+            let msg = getError(data);
             toastr.error(msg, 'Error');
             $scope.loader = false;
         });

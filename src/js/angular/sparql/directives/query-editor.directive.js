@@ -187,6 +187,12 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             scope.saveTab(scope.currentQuery.id);
         };
 
+        /*
+         * Patch the execute query to take into account the inference
+         * and the same as options
+         */
+        var originalExecuteQuery = YASQE.executeQuery;
+        var originalGetUrlArguments = YASQE.getUrlArguments;
 
         scope.$on('$destroy', function () {
             if (!scope.nostorage) {
@@ -209,7 +215,6 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             return $repositories.getActiveRepository();
         };
 
-        var originalGetUrlArguments = YASQE.getUrlArguments;
         YASQE.getUrlArguments = function (yasqe, config) {
             var data = originalGetUrlArguments(yasqe, config);
             var qType = window.editor.getQueryType();
@@ -240,11 +245,6 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         var connectorProgressModal;
 
-        /*
-         * Patch the execute query to take into account the inference
-         * and the same as options
-         */
-        var originalExecuteQuery = YASQE.executeQuery;
         YASQE.executeQuery = function (cm, callBackOrConfig) {
             if (yasr && $(yasr.resultsContainer).length) {
                 $(yasr.resultsContainer).empty();

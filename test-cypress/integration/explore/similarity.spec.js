@@ -9,95 +9,210 @@ describe('Similarity screen validation', () => {
 
     let repositoryId;
 
-    beforeEach(() => {
-        repositoryId = 'similarity-repo-' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
-
-        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-
-        cy.visit('/similarity');
-    });
-
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
     it('Test similarity page default state', () => {
+        initRepositoryAndVisitSimilarityView();
         checkSimilarityPageDefaultState();
     });
 
-    it('Create default text similarity index and view SPARQL query', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        createSimilarityIndex();
-        viewSPARQLQuery();
-        deleteSimilarityIndex();
+    context('Creating similarity index', () => {
+        beforeEach(() => {
+            initRepositoryAndVisitSimilarityView()
+        });
+
+        it('Create default text similarity index and view SPARQL query', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+            viewSPARQLQuery();
+            deleteSimilarityIndex();
+        });
+
+        it('Create default predication similarity index', () => {
+            openCreateNewIndexForm();
+            switchToPredicationIndex();
+            setIndexName();
+            createSimilarityIndex();
+        });
+
+        it('Create text similarity index with a build parameter, stop word and custom Lucene Analyzer', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            clickMoreOptionsMenu();
+            addBuildParam();
+            addStopWord();
+            addLuceneAnalyzer();
+            clickMoreOptionsMenu();
+            createSimilarityIndex();
+        });
+
+        it('Create predication similarity index with a build parameter', () => {
+            openCreateNewIndexForm();
+            switchToPredicationIndex();
+            setIndexName();
+            clickMoreOptionsMenu();
+            addBuildParam();
+            clickMoreOptionsMenu();
+            createSimilarityIndex();
+        });
+
+        it('Create text similarity - literal index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            clickMoreOptionsMenu();
+            checkLiteralIndex();
+            createSimilarityIndex();
+        });
     });
 
-    it('Create default predication similarity index', () => {
-        openCreateNewIndexForm();
-        switchToPredicationIndex();
-        setIndexName();
-        createSimilarityIndex();
+    context('Index operations', () => {
+        beforeEach(() => {
+            initRepositoryAndVisitSimilarityView()
+        });
+
+        it('Change Data query in Create index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            changeDataQuery();
+            createSimilarityIndex();
+        });
+
+        it('Change Search query in Create index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            changeSearchQuery();
+            createSimilarityIndex();
+        });
+
+        it('Clone existing similarity index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+            cloneExistingIndex();
+        });
+
+        it('Rebuild existing similarity index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+            rebuildIndex();
+        });
     });
 
-    it('Create text similarity index with a build parameter, stop word and custom Lucene Analyzer', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        clickMoreOptionsMenu();
-        addBuildParam();
-        addStopWord();
-        addLuceneAnalyzer();
-        clickMoreOptionsMenu();
-        createSimilarityIndex();
+    context('Searching in index', () => {
+        beforeEach(() => {
+            initRepositoryAndVisitSimilarityView()
+        });
+
+        it('Search for entiry in index', () => {
+            // I have created similarity index
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+            // wait a bit for the edit icon to ensure index is created
+            cy.get('.icon-edit').should('be.visible');
+
+            // When I open the index
+            openIndex(0);
+
+            // Then I expect the indexes table to become hidden
+            cy.get('#indexes-table table').should('not.be.visible');
+
+            // And index search panel to be opened
+            cy.get('.index-search-panel').should('be.visible');
+            cy.get('.selected-index').should('be.visible').and('contain', `Search in ${INDEX_NAME}`);
+            getSearchIndexInput().should('be.visible');
+
+            // When I search for "Neal" in the index
+            searchIndex('Neal');
+
+            // Then I expect search results to be displayed
+            cy.get('.search-results').should('be.visible');
+            // And showing 20 results
+            cy.get('.resultsTable tbody tr').should('have.length', 20);
+        });
     });
 
-    it('Create predication similarity index with a build parameter', () => {
-        openCreateNewIndexForm();
-        switchToPredicationIndex();
-        setIndexName();
-        clickMoreOptionsMenu();
-        addBuildParam();
-        clickMoreOptionsMenu();
-        createSimilarityIndex();
+    it('Disable and enable similarity plugin', () => {
+        initRepository();
+
+        cy.visit('/sparql');
+        waitUntilSparqlPageIsLoaded();
+
+        // When I disable the plugin.
+        disableSimilarityPlugin();
+
+        // Then I expect a message to be displayed confirming that operation is complete.
+        cy.get('.update-info.alert-info').should('be.visible').and('contain', 'The number of statements did not change.');
+
+        // When I try to disable it while it's disabled.
+        disableSimilarityPlugin();
+
+        // Then I expect an error message to be displayed informing me that the plugin has been already disabled.
+        cy.get('.update-info.alert-danger .plaintext').should('be.visible').and('contain', 'Plugin similarity has been already disabled');
+
+        // When I visit similarity view while the plugin is disabled.
+        cy.visit('/similarity');
+
+        // Then I expect a message to be displayed informing me that the plugin is disabled.
+        cy.get('.plugin-disabled-warning').should('be.visible').and('contain', 'Similarity Plugin is disabled for this repository.');
+
+        // When I enable the plugin
+        cy.get('.enable-plugin-link').click();
+
+        // Then I expect default similarity view with no indexes available
+        checkSimilarityPageDefaultState();
     });
 
-    it('Create text similarity - literal index', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        clickMoreOptionsMenu();
-        checkLiteralIndex();
-        createSimilarityIndex();
-    });
+    function initRepository() {
+        repositoryId = 'similarity-repo-' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.presetRepositoryCookie(repositoryId);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+    }
 
-    it('Clone existing similarity index', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        createSimilarityIndex();
-        cloneExistingIndex();
-    });
+    function initRepositoryAndVisitSimilarityView() {
+        initRepository();
+        cy.visit('/similarity');
+    }
 
-    it('Rebuild existing similarity index', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        createSimilarityIndex();
-        rebuildIndex();
-    });
+    function openIndex(index) {
+        getIndexLinks().eq(index).click();
+    }
 
-    it('Change Data query in Create index', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        changeDataQuery();
-        createSimilarityIndex();
-    });
+    function getSearchIndexInput() {
+        // There are 6 such fields and it's not obvious what selectors they should have.
+        // So we select it by placeholders.
+        return cy.get('input[placeholder="Search RDF resources for RDF entity"]');
+    }
 
-    it('Change Search query in Create index', () => {
-        openCreateNewIndexForm();
-        setIndexName();
-        changeSearchQuery();
-        createSimilarityIndex();
-    });
+    function searchIndex(entity) {
+        getSearchIndexInput().type(entity);
+        // there are two buttons so we search in the context
+        getSearchIndexInput().closest('.input-group').find('.autocomplete-visual-btn').click();
+    }
+
+    function disableSimilarityPlugin() {
+        const disableSimilarityPluginQuery = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#stopplugin> \'similarity\' . }';
+        cy.pasteQuery(disableSimilarityPluginQuery);
+        cy.executeQuery();
+    }
+
+    function waitUntilSparqlPageIsLoaded() {
+        // Workbench loading screen should not be visible
+        cy.get('.ot-splash').should('not.be.visible');
+
+        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
+            const cm = codeMirrorEl[0].CodeMirror;
+            expect(cm.getValue().trim().length > 0).to.be.true;
+        });
+
+        // No active loader
+        cy.get('.ot-loader-new-content').should('not.be.visible');
+    }
 
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
@@ -149,7 +264,7 @@ describe('Similarity screen validation', () => {
         // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
         // fails often because during completing the index name on a previous step the WB seems to
         // cut off part of the name on the leading side.
-        cy.get(`#indexes-table .index-name`).should('be.visible');
+        getIndexLinks().should('be.visible');
     }
 
     function deleteSimilarityIndex() {
@@ -178,9 +293,13 @@ describe('Similarity screen validation', () => {
         getCreateIndexButton().should('be.visible').click();
         getExistingIndexesPanel().should('be.visible');
         waitForIndexBuildingIndicatorToHide();
-        cy.get(`#indexes-table .index-name`).should('have.length', 2);
+        getIndexLinks().should('have.length', 2);
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
+    }
+
+    function getIndexLinks() {
+        return cy.get('#indexes-table .index-name');
     }
 
     function rebuildIndex() {

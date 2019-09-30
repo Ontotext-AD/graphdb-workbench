@@ -33,6 +33,44 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.status = !$repositories.getActiveRepository() ? 'NO_REPO' : 'WAIT';
 
+    var getRelationshipsData = function (selectedClasses) {
+        d3.select("#dependencies-chord").html("");
+
+        $scope.status = 'WAIT';
+
+        GraphDataService.getRelationshipsData(selectedClasses, $scope.direction)
+            .success(function (matrixData) {
+                // Check classes empty
+                $scope.dependenciesData = {
+                    matrix: matrixData.right,
+                    nodes: matrixData.left,
+                    hasLinks: _.sum(_.map(matrixData.right, function (arr) {
+                        return _.sum(arr)
+                    })) > 0,
+                    direction: $scope.direction
+                };
+                $scope.status = 'READY';
+            }).error(function (data) {
+            $scope.status = 'READY';
+            toastr.error(getError(data), 'Could not get dependencies count');
+        });
+    };
+
+    var getRelationshipsClasses = function () {
+        GraphDataService.getRelationshipsClasses($scope.direction)
+            .success(function (classesData, status) {
+                $scope.allClasses.items = _.filter(classesData, classFilterFunc);
+                $scope.allNotFilteredClasses = classesData;
+                if (angular.isUndefined($scope.selectedClasses)) {
+                    $scope.selectedClasses = classesData.slice(0, 10);
+                }
+                getRelationshipsData($scope.selectedClasses);
+                if (status === 207) {
+                    toastr.warning("You can update the diagram by pressing the reload button.", "Repository data has changed");
+                }
+            });
+    };
+
     var getRelationshipsStatus = function (force) {
         if ($scope.status == 'READY' && !force) {
             return;
@@ -158,44 +196,6 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             .error(function (data) {
                 toastr.error('Could not force dependencies count' + getError(data));
             });
-    };
-
-    var getRelationshipsClasses = function () {
-        GraphDataService.getRelationshipsClasses($scope.direction)
-            .success(function (classesData, status) {
-                $scope.allClasses.items = _.filter(classesData, classFilterFunc);
-                $scope.allNotFilteredClasses = classesData;
-                if (angular.isUndefined($scope.selectedClasses)) {
-                    $scope.selectedClasses = classesData.slice(0, 10);
-                }
-                getRelationshipsData($scope.selectedClasses);
-                if (status === 207) {
-                    toastr.warning("You can update the diagram by pressing the reload button.", "Repository data has changed");
-                }
-            });
-    };
-
-    var getRelationshipsData = function (selectedClasses) {
-        d3.select("#dependencies-chord").html("");
-
-        $scope.status = 'WAIT';
-
-        GraphDataService.getRelationshipsData(selectedClasses, $scope.direction)
-            .success(function (matrixData) {
-                // Check classes empty
-                $scope.dependenciesData = {
-                    matrix: matrixData.right,
-                    nodes: matrixData.left,
-                    hasLinks: _.sum(_.map(matrixData.right, function (arr) {
-                        return _.sum(arr)
-                    })) > 0,
-                    direction: $scope.direction
-                };
-                $scope.status = 'READY';
-            }).error(function (data) {
-            $scope.status = 'READY';
-            toastr.error(getError(data), 'Could not get dependencies count');
-        });
     };
 
     $scope.addClass = function (clazz) {
