@@ -4,7 +4,7 @@ const namespacesDirectives = angular.module('graphdb.framework.namespaces.direct
 
 // This directive will set the loader to false once the respective ngRepeat is done loading
 namespacesDirectives.directive('loaderPostRepeatDirective', ['$timeout', function ($timeout) {
-    return function (scope, element, attrs) {
+    return function (scope) {
         if (scope.$last) {
             // It's important to do this with timeout:
             //   "...since the setTimeout function gets pushed to the end of the queue of the browser,
