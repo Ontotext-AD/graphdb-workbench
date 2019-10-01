@@ -13,7 +13,7 @@
             return 'Access is restricted'
         }
         if (data) {
-            var msg = 'Generic error';
+            let msg = 'Generic error';
             if (angular.isString(data)) {
                 // Check if Jetty/Tomcat returned some HTML, if so ignore it
                 if (data.indexOf('<html>') === -1) {

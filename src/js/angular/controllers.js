@@ -1,3 +1,4 @@
+/* eslint quotes: "off" */
 import 'angular/core/services';
 
 angular
@@ -22,13 +23,13 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
         .then(function () {
             $http.get('rest/graphdb-settings/license').then(function (res) {
                 $scope.license = res.data;
-            }, function (res) {
+            }, function () {
                 $scope.license = {message: "No license was set.", valid: false};
             });
         });
 
     $scope.getActiveRepositorySize = function () {
-        var repo = $repositories.getActiveRepository();
+        const repo = $repositories.getActiveRepository();
         if (!repo) {
             return;
         }
@@ -43,9 +44,9 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
     $scope.$watch($scope.getActiveRepository, function () {
         if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
             $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
+                .success(function () {
                     $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function (data) {
+                        .success(function () {
                             $scope.getActiveRepositorySize();
                         });
                 });
@@ -66,15 +67,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
 
-    var setYears = function () {
-        var date = new Date();
+    const setYears = function () {
+        const date = new Date();
         $scope.currentYear = date.getFullYear();
         $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
     };
 
     setYears();
 
-    $scope.$on("$routeChangeSuccess", function (event, next, current) {
+    $scope.$on("$routeChangeSuccess", function () {
         $scope.clicked = false;
         $('.menu-element-root').removeClass('active');
         $timeout(function () {
@@ -105,10 +106,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $scope.showFooter = $location.url() === '/';
     });
 
-    $scope.$on("repositoryIsSet", function (event) {
+    $scope.$on("repositoryIsSet", function () {
         angular.forEach(localStorageService.keys(), function (key) {
             // remove everything but the hide prefixes setting, it should always persist
-            if (key.indexOf("classHierarchy-") == 0 && key !== "classHierarchy-hidePrefixes") {
+            if (key.indexOf("classHierarchy-") === 0 && key !== "classHierarchy-hidePrefixes") {
                 localStorageService.remove(key);
             }
         });
@@ -135,7 +136,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     }
     $scope.mainTitle = $scope.productTypeHuman;
 
-
     $scope.select = function (index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
             if (!$(event.target).parents(".menu-element").children('.menu-element-root').hasClass('active')) {
@@ -146,16 +146,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 }
                 if ($scope.selected === index) {
                     $scope.selected = -1;
-                }
-                else {
+                } else {
                     $scope.selected = index;
                 }
             } else {
                 $scope.selected = index;
                 $scope.clicked = !clicked;
             }
-        }
-        else {
+        } else {
             if (!$(event.target).parents(".menu-element").hasClass('open') && clicked) {
                 $scope.clicked = true;
             } else {
@@ -169,8 +167,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 }
                 if ($scope.selected === index) {
                     $scope.selected = -1;
-                }
-                else {
+                } else {
                     $scope.selected = index;
                 }
             } else {
@@ -180,7 +177,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 $scope.selected = index;
             }
         }
-
     };
 
     $('body').bind('click', function (e) {
@@ -208,8 +204,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $scope.selected = -1;
     } else {
         $timeout(function () {
-            var route = $location.path().replace('/', '');
-            var elem = $('a[href^="' + route + '"]');
+            const route = $location.path().replace('/', '');
+            const elem = $('a[href^="' + route + '"]');
             $scope.selected = elem.closest('.menu-element').index() - 1;
         }, 200);
         $scope.isCurrentPath($location.path());
@@ -272,7 +268,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {
-        var activeRepository = $repositories.getActiveRepository();
+        const activeRepository = $repositories.getActiveRepository();
         // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
         return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
             && (activeRepository !== 'SYSTEM' || !noSystem);
@@ -280,7 +276,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
 
     $scope.getActiveRepositoryObject = function () {
         return _.find($scope.getRepositories(), function (repo) {
-            return repo.id === $scope.getActiveRepository()
+            return repo.id === $scope.getActiveRepository();
         });
     };
 
@@ -348,7 +344,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $scope.popoverRepo = repository;
     };
 
-    $scope.getRepositorySize = function (repository) {
+    $scope.getRepositorySize = function () {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
@@ -368,11 +364,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
 
     $scope.getSavedQueries = function () {
         $http.get('rest/sparql/saved-queries')
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.sampleQueries = data;
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Could not get saved queries');
             });
     };
@@ -439,10 +435,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         ];
         $scope.activePage = 0;
         $(".pages-wrapper .page-slide").css("opacity", 100);
-        var withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
+        const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
         $timeout(function () {
-            $(".pages-wrapper .page-slide").css("left", withOfParentElm + "px");
-            $($(".pages-wrapper .page-slide")[$scope.activePage]).css("left", 0 + "px");
+            const $pageSlider = $(".pages-wrapper .page-slide");
+            $pageSlider.css("left", withOfParentElm + "px");
+            $($pageSlider[$scope.activePage]).css("left", 0 + "px");
             $($(".btn-toolbar.pull-right .btn-group .btn")[0]).focus();
         }, 50);
     };
@@ -450,12 +447,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.checkSubMenuPosition = function (index) {
         if (index === 0) {
             $('.main-menu.collapsed .sub-menu').removeClass('align-bottom');
-        }
-        else {
+        } else {
             if ($(window).height() < 735) {
                 $('.main-menu.collapsed .sub-menu').addClass('align-bottom');
-            }
-            else {
+            } else {
                 $('.main-menu.collapsed .sub-menu').removeClass('align-bottom');
             }
         }
@@ -467,13 +462,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         collapseMenuLogicOnResize();
         if ($scope.tutorialState && $location.path() === '/') {
             $scope.initTutorial();
-            //$scope.setHeightOfParent($scope.tutorialInfo.length - 1);
         }
         if ($(window).height() < 735) {
             $('.sub-menu').addClass('align-bottom');
             $('.main-menu.collapsed li:nth-child(2) .sub-menu').removeClass('align-bottom');
-        }
-        else {
+        } else {
             $('.sub-menu').removeClass('align-bottom');
         }
     });
@@ -484,14 +477,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             $('.main-menu').addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.toggle-menu').hide();
-        }
-        else if ($(window).width() > 720 && localStorageService.get('menu-state') === 'collapsedMenu') {
+        } else if ($(window).width() > 720 && localStorageService.get('menu-state') === 'collapsedMenu') {
             $('.container-fluid.main-container').addClass("expanded");
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
-        }
-        else {
+        } else {
             $('.container-fluid.main-container').removeClass("expanded");
             $('.main-menu').removeClass('collapsed');
             $('.toggle-menu').show();
@@ -506,11 +497,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 $('.main-menu').addClass('collapsed');
                 $('.toggle-menu').hide();
                 $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
-            }
-            else if ($(window).width() > 720 && $scope.menuState) {
+            } else if ($(window).width() > 720 && $scope.menuState) {
                 $('.toggle-menu').show();
-            }
-            else {
+            } else {
                 $('.container-fluid.main-container').removeClass("expanded");
                 $('.main-menu').removeClass('collapsed');
                 $('.toggle-menu').show();
@@ -522,15 +511,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     }
 
     $scope.slideToPage = function (index) {
-        var withOfParentElm = $(".pages-wrapper")[0].offsetWidth;
-        $(".pages-wrapper .page-slide").css("opacity", "0").delay(200).css("left", withOfParentElm + "px");
+        const withOfParentElm = $(".pages-wrapper")[0].offsetWidth;
+        const $pageSlider = $(".pages-wrapper .page-slide");
+        $pageSlider.css("opacity", "0").delay(200).css("left", withOfParentElm + "px");
         $scope.activePage = index;
-        //$scope.setHeightOfParent(index);
-        $($(".pages-wrapper .page-slide")[$scope.activePage]).css("opacity", "100").css("left", 0 + "px");
+        $($pageSlider[$scope.activePage]).css("opacity", "100").css("left", 0 + "px");
     };
 
     $scope.slideNext = function () {
-        var nextPageIndex = ++$scope.activePage;
+        let nextPageIndex = ++$scope.activePage;
         if (nextPageIndex >= $scope.tutorialInfo.length) {
             nextPageIndex = 0;
         }
@@ -539,26 +528,30 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.toggleNavigation = function () {
-        if (!$('.main-menu').hasClass('collapsed')) {
-            $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').addClass('active');
-            if ($('.menu-element').hasClass('open')) {
-                $('.menu-element').removeClass('open');
+        const $mainMenu = $('.main-menu');
+        const $activeSubmenu = $('.sub-menu li.active');
+        if (!$mainMenu.hasClass('collapsed')) {
+            $activeSubmenu.parents('.menu-element').children('.menu-element-root').addClass('active');
+
+            const $menuElement = $('.menu-element');
+            if ($menuElement.hasClass('open')) {
+                $menuElement.removeClass('open');
                 $scope.clicked = false;
                 $scope.selected = -1;
             }
             $('.container-fluid.main-container').addClass("expanded");
-            $('.main-menu').addClass("collapsed");
+            $mainMenu.addClass("collapsed");
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
             $rootScope.$broadcast("onToggleNavWidth", true);
         } else {
-            if (!$('.sub-menu li.active').parents('.menu-element').hasClass('open')) {
-                $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').addClass('active');
+            if (!$activeSubmenu.parents('.menu-element').hasClass('open')) {
+                $activeSubmenu.parents('.menu-element').children('.menu-element-root').addClass('active');
             } else {
-                $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').removeClass('active');
+                $activeSubmenu.parents('.menu-element').children('.menu-element-root').removeClass('active');
             }
             $('.container-fluid.main-container').removeClass("expanded");
-            $('.main-menu').removeClass("collapsed");
+            $mainMenu.removeClass("collapsed");
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
             $rootScope.$broadcast("onToggleNavWidth", false);
         }
@@ -572,10 +565,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             localStorageService.set("menu-state", 'expandedMenu');
         }
         if ($scope.tutorialState && $location.path() === '/') {
-            var withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
+            const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
             $timeout(function () {
-                $(".pages-wrapper .page-slide").css("left", withOfParentElm + "px");
-                $($(".pages-wrapper .page-slide")[$scope.activePage]).css("left", 0 + "px");
+                const $pageSlider = $(".pages-wrapper .page-slide");
+                $pageSlider.css("left", withOfParentElm + "px");
+                $($pageSlider[$scope.activePage]).css("left", 0 + "px");
             }, 50);
         }
     });
@@ -600,7 +594,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             method: 'GET',
             url: 'rest/data/import/active/' + $scope.getActiveRepository(),
             timeout: 10000
-        }).success(function (data, status, headers, config) {
+        }).success(function (data) {
             $scope.numberOfActiveImports = data;
         }).finally(function () {
             $scope.getNumberOfActiveImportsRunning = false;
@@ -612,13 +606,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.skipGetQueriesTimes = 0;
 
     // Fibonacci sequence generator
-    var fibo = (function () {
-        var fibo1 = 0;
-        var fibo2 = 1;
+    const fibo = (function () {
+        let fibo1 = 0;
+        let fibo2 = 1;
 
         return {
             next: function () {
-                var next = fibo2;
+                const next = fibo2;
                 fibo2 = fibo1 + fibo2;
                 fibo1 = next;
                 return next;
@@ -628,7 +622,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
                 fibo1 = 0;
                 fibo2 = 1;
             }
-        }
+        };
     }());
 
     $scope.getQueries = function () {
@@ -671,14 +665,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             });
     };
 
-    var timer = $interval(function () {
+    const timer = $interval(function () {
         if (!$scope.getDegradedReason()) {
             $scope.getQueries();
             $scope.getNumberOfActiveImports();
         }
     }, 2000);
 
-    $scope.$on("$destroy", function (event) {
+    $scope.$on("$destroy", function () {
         $interval.cancel(timer);
     });
 
@@ -711,12 +705,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.getHumanReadableSeconds = function (s, preciseSeconds) {
-        var days = Math.floor(s / 86400);
-        var hours = Math.floor((s % 86400) / 3600);
-        var minutes = Math.floor((s % 3600) / 60);
+        const days = Math.floor(s / 86400);
+        const hours = Math.floor((s % 86400) / 3600);
+        const minutes = Math.floor((s % 3600) / 60);
         // preciseSeconds = true and s < 10 will use fractional seconds rounded to one decimal place,
         // elsewhere it will be rounded up to an integer.
-        var seconds;
+        let seconds;
         if (preciseSeconds && s < 10) {
             if (s < 1) {
                 // avoid returning 0 for times less than 0.1s
@@ -727,7 +721,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         } else {
             seconds = _.round(s % 60, 0);
         }
-        var message = "";
+        let message = "";
         if (days) {
             message += days + "d ";
         }
@@ -742,16 +736,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.getHumanReadableTimestamp = function (time) {
-        var now = Date.now();
-        var delta = (now - time) / 1000;
+        const now = Date.now();
+        const delta = (now - time) / 1000;
         if (delta < 60) {
             return "moments ago";
         } else if (delta < 600) {
             return "minutes ago";
         } else {
-            var dNow = new Date(now);
-            var dTime = new Date(time);
-            if (dNow.getYear() == dTime.getYear() && dNow.getMonth() == dTime.getMonth() && dNow.getDate() == dTime.getDate()) {
+            const dNow = new Date(now);
+            const dTime = new Date(time);
+            if (dNow.getYear() === dTime.getYear() && dNow.getMonth() === dTime.getMonth() && dNow.getDate() === dTime.getDate()) {
                 // today
                 return $filter('date')(time, "'today at' HH:mm");
             } else if (delta < 86400) {
@@ -771,5 +765,5 @@ function repositorySizeCtrl($scope, $http) {
         $http.get('rest/repositories/' + repository + '/size').then(function (res) {
             $scope.size = res.data;
         });
-    }
+    };
 }
