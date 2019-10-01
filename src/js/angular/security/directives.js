@@ -1,1 +1,1 @@
-const securityDirectives = angular.module('graphdb.framework.security.directives', []);
+angular.module('graphdb.framework.security.directives', []);

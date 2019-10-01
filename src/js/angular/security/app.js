@@ -52,7 +52,7 @@ securityApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider',
             title: 'Roles per Request Mapping'
         });
 
-        $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"});
+        $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
         $menuItemsProvider.addItem({
             label: 'Users and Access', href: 'users', order: 2, parent: 'Setup', role: 'ROLE_ADMIN',
             children: [{
