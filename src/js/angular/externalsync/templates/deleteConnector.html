@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h3 class="modal-title">Confirm delete</h3>
+</div>
+<div class="modal-body">
+    <p>Are you sure you want to delete this connector?</p>
+    <span popover="Force delete will remove the connector even if part of the operation fails. Use it if normal delete does not work.{{ isExternal ? (' Note that you may have to drop the index manually from ' + type + '.') : '' }}"
+         popover-trigger="mouseenter"
+         popover-placement="bottom">
+        <input id="force-delete" type="checkbox" ng-model="force"><label for="force-delete">&nbsp;Force delete</label>
+    </span>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary delete-connector-btn" ng-click="ok()">Delete</button>
+    </div>
+</div>
