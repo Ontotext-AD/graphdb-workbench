@@ -24,7 +24,7 @@ queriesMonitoringApp.config(['$menuItemsProvider', '$routeProvider', function ($
         + 'A query or update can be terminated by pressing the Abort button.'
     });
 
-    $menuItemsProvider.addItem({label: 'Monitor', href: '#', order: 1, role: 'ROLE_REPO_MANAGER', icon: "icon-monitoring"});
+    $menuItemsProvider.addItem({label: 'Monitor', href: '#', order: 1, role: 'ROLE_REPO_MANAGER', icon: 'icon-monitoring'});
     $menuItemsProvider.addItem({label: 'Queries and Updates', href: 'monitor/queries', order: 1, parent: 'Monitor'});
 
 }]);
