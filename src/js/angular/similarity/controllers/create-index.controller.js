@@ -28,6 +28,17 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
         sameAs: true
     };
 
+    var getNewIndexName = function (indexNameFromLocation) {
+        if (indexNameFromLocation) {
+            if ($scope.page !== 1) {
+                return indexNameFromLocation;
+            } else {
+                return 'Copy_of_' + indexNameFromLocation;
+            }
+        }
+        return '';
+    };
+
     var initForViewType = function () {
         $scope.editSearchQuery = $location.search().editSearchQuery;
         $scope.page = $scope.editSearchQuery ? 2 : 1;
@@ -95,17 +106,6 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
                 }
             }
         }
-    };
-
-    var getNewIndexName = function (indexNameFromLocation) {
-        if (indexNameFromLocation) {
-            if ($scope.page !== 1) {
-                return indexNameFromLocation;
-            } else {
-                return 'Copy_of_' + indexNameFromLocation;
-            }
-        }
-        return '';
     };
 
     var validateIndex = function () {
