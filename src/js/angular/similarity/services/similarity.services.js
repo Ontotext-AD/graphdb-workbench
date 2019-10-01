@@ -4,12 +4,12 @@ angular
 
 SimilarityService.$inject = ['$http', '$repositories'];
 
-const SIMILARITY_ENABLED = "select ?o where {\n" +
-    "?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n" +
-    "filter(str(?s) = 'similarity')\n" +
-    "} ";
+const SIMILARITY_ENABLED = 'select ?o where {\n' +
+    '?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n' +
+    'filter(str(?s) = \'similarity\')\n' +
+    '} ';
 
-const ENABLE_SIMILARITY = "INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> 'similarity' .}";
+const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
 
 function SimilarityService($http, $repositories) {
 
@@ -40,7 +40,7 @@ function SimilarityService($http, $repositories) {
     function createIndex(method, name, options, selectQuery, searchQuery, analogicalQuery, stopList, inference, sameAs, indexType, analyzer) {
         return $http({
                 method: method,
-                url: "/rest/similarity",
+                url: '/rest/similarity',
                 noCancelOnRouteChange: true,
                 data: {
                     name: name,
@@ -55,7 +55,7 @@ function SimilarityService($http, $repositories) {
                     analogicalQuery: analogicalQuery
                 }
             }
-        )
+        );
     }
 
     function rebuildIndex(index) {
@@ -71,18 +71,18 @@ function SimilarityService($http, $repositories) {
             method: 'GET',
             url: 'repositories/' + $repositories.getActiveRepository(),
             data: {
-                query: SIMILARITY_ENABLED,
-            },
+                query: SIMILARITY_ENABLED
+            }
         });
     }
 
     function enableSimilarityPlugin() {
         return $.ajax({
             method: 'POST',
-            url: 'repositories/' + $repositories.getActiveRepository() + "/statements",
+            url: 'repositories/' + $repositories.getActiveRepository() + '/statements',
             data: {
                 update: ENABLE_SIMILARITY
             }
-        })
+        });
     }
 }
