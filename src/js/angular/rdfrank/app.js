@@ -13,35 +13,35 @@ rdfRankApp.config(['$routeProvider', '$menuItemsProvider', function ($routeProvi
         ' can then be used to order the query results.'
     });
 
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"});
+    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
     $menuItemsProvider.addItem({
         label: 'RDF Rank',
         href: 'rdfrank',
         order: 45,
         parent: 'Setup',
-        role: "IS_AUTHENTICATED_FULLY"
+        role: 'IS_AUTHENTICATED_FULLY'
     });
 }]);
 
 rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService',
     function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService) {
 
-        var refreshStatus = function () {
+        const refreshStatus = function () {
             $http.get('rest/rdfrank/status')
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.currentRankStatus = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
+                }).error(function (data) {
+                    toastr.error(getError(data));
+                });
         };
 
-        var initNamespaces = function () {
+        const initNamespaces = function () {
             $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                var nss = _.map(data.results.bindings, function (o) {
-                    return {"uri": o.namespace.value, "prefix": o.prefix.value}
+                const nss = _.map(data.results.bindings, function (o) {
+                    return {'uri': o.namespace.value, 'prefix': o.prefix.value};
                 });
                 $scope.namespaces = _.sortBy(nss, function (n) {
-                    return n.uri.length
+                    return n.uri.length;
                 });
 
             }).error(function (data) {
@@ -49,7 +49,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
-        var checkForPlugin = function () {
+        const checkForPlugin = function () {
             $scope.pluginFound = false;
 
             if (!$repositories.getActiveRepository()) {
@@ -74,41 +74,41 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
-        var refreshFilteringStatus = function () {
+        const refreshFilteringStatus = function () {
             $http.get('rest/rdfrank/filtering')
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.filteringEnabled = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
+                }).error(function (data) {
+                    toastr.error(getError(data));
+                });
         };
 
-        var refreshFilteringConfig = function () {
+        const refreshFilteringConfig = function () {
             Object.values($scope.filterLists).forEach(function (list) {
                 $http.get('rest/rdfrank/filtering/' + list.predicate)
-                    .success(function (data, status, headers, config) {
+                    .success(function (data) {
                         list.elements = data;
 
                         list.elements = list.elements.map(function (elem) {
                             return foldPrefix(elem, $scope.namespaces);
                         });
 
-                    }).error(function (data, status, headers, config) {
-                    toastr.error(getError(data));
-                });
+                    }).error(function (data) {
+                        toastr.error(getError(data));
+                    });
             });
             $http.get('rest/rdfrank/includeExplicit')
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.includeExplicit = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
+                }).error(function (data) {
+                    toastr.error(getError(data));
+                });
             $http.get('rest/rdfrank/includeImplicit')
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.includeImplicit = data;
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-            });
+                }).error(function (data) {
+                    toastr.error(getError(data));
+                });
         };
 
         $scope.rdfStatus = {
@@ -147,8 +147,8 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
         $scope.computeRank = function () {
             $scope.setLoader(true, 'Requesting rank full computation...');
 
-            $http.post('rest/rdfrank/compute').success(function (data, status, headers, config) {
-                $scope.currentRankStatus = $scope.rdfStatus.COMPUTING
+            $http.post('rest/rdfrank/compute').success(function () {
+                $scope.currentRankStatus = $scope.rdfStatus.COMPUTING;
             }).error(function (data) {
                 toastr.error(getError(data));
             }).finally(function () {
@@ -159,8 +159,8 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
         $scope.computeIncrementalRank = function () {
             $scope.setLoader(true, 'Requesting rank incremental computation...');
 
-            $http.post('rest/rdfrank/computeIncremental').success(function (data, status, headers, config) {
-                $scope.currentRankStatus = $scope.rdfStatus.COMPUTING
+            $http.post('rest/rdfrank/computeIncremental').success(function () {
+                $scope.currentRankStatus = $scope.rdfStatus.COMPUTING;
             }).error(function (data) {
                 toastr.error(getError(data));
             }).finally(function () {
@@ -225,18 +225,18 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
-        var _addToList = function (list, iri) {
-            var data = {
+        const _addToList = function (list, iri) {
+            const data = {
                 iri: iri
             };
             $http.put('rest/rdfrank/filtering/' + list.predicate, data)
-                .success(function (data, status, headers, config) {
+                .success(function () {
                     refreshStatus();
-                    refreshFilteringConfig()
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data));
-                refreshFilteringConfig()
-            });
+                    refreshFilteringConfig();
+                }).error(function (data) {
+                    toastr.error(getError(data));
+                    refreshFilteringConfig();
+                });
         };
 
         $scope.addToList = function (list, iri) {
@@ -244,22 +244,22 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
                 _addToList(list, expandPrefix(iri.text, $scope.namespaces));
             } else {
                 refreshFilteringConfig();
-                toastr.error('\'' + iri.text + '\' is not a valid IRI')
+                toastr.error('\'' + iri.text + '\' is not a valid IRI');
             }
         };
 
-        var _deleteFromList = function (list, iri) {
-            var data = {
+        const _deleteFromList = function (list, iri) {
+            const data = {
                 iri: iri
             };
             $http.delete('rest/rdfrank/filtering/' + list.predicate, {
                 data: data,
-                headers: {"Content-Type": "application/json;charset=utf-8"}
+                headers: {'Content-Type': 'application/json;charset=utf-8'}
             })
-                .success(function (data, status, headers, config) {
-                    refreshStatus();
-                    refreshFilteringConfig()
-                }).error(function (data, status, headers, config) {
+            .success(function () {
+                refreshStatus();
+                refreshFilteringConfig();
+            }).error(function (data) {
                 toastr.error(getError(data));
             });
         };
@@ -268,32 +268,32 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             _deleteFromList(list, expandPrefix(iri.text, $scope.namespaces));
         };
 
-        var pullStatus = function () {
-            var timer = $interval(function () {
+        const pullStatus = function () {
+            const timer = $interval(function () {
                 if ($scope.pluginFound) {
                     refreshStatus();
                 }
             }, 5000);
 
-            $scope.$on("$destroy", function (event) {
+            $scope.$on('$destroy', function () {
                 $interval.cancel(timer);
             });
         };
 
-        var refreshPage = function () {
+        const refreshPage = function () {
             refreshStatus();
             refreshFilteringStatus();
             refreshFilteringConfig();
         };
 
         function expandPrefix(str, namespaces) {
-            var ABS_URI_REGEX = /^<?(http|urn).*>?/;
+            const ABS_URI_REGEX = /^<?(http|urn).*>?/;
             if (!ABS_URI_REGEX.test(str)) {
-                var uriParts = str.split(':'),
-                    uriPart = uriParts[0],
-                    localName = uriParts[1];
+                const uriParts = str.split(':');
+                const uriPart = uriParts[0];
+                const localName = uriParts[1];
                 if (!angular.isUndefined(localName)) {
-                    var expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
+                    const expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
                     if (expandedUri) {
                         return expandedUri + localName;
                     }
@@ -303,9 +303,9 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
         }
 
         function foldPrefix(iri, namespaces) {
-            var localPart = ClassInstanceDetailsService.getLocalName(iri);
-            var iriPart = iri.replace(new RegExp(localPart + '$', 'i'), '');
-            var folded = ClassInstanceDetailsService.getNamespacePrefixForUri(namespaces, iriPart);
+            const localPart = ClassInstanceDetailsService.getLocalName(iri);
+            const iriPart = iri.replace(new RegExp(localPart + '$', 'i'), '');
+            const folded = ClassInstanceDetailsService.getNamespacePrefixForUri(namespaces, iriPart);
 
             return folded === '' ? iri : folded + ':' + localPart;
         }
