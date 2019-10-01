@@ -5,7 +5,7 @@ angular
 LicenseService.$inject = ['$http', 'Upload'];
 
 function LicenseService($http, Upload) {
-    var factory = {};
+    const factory = {};
 
     factory.getLicenseInfo = getLicenseInfo;
     factory.sendLicenseToValidate = sendLicenseToValidate;
@@ -22,7 +22,7 @@ function LicenseService($http, Upload) {
 
     // send license to be validated and parsed before activation
     function sendLicenseToValidate(licenseCode) {
-        var headers = {
+        const headers = {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'text/plain'
@@ -44,16 +44,16 @@ function LicenseService($http, Upload) {
 
     // send license code to GraphDB for activation
     function registerLicense(licenseCode) {
-        var array = new Uint8Array(licenseCode.length);
-        for (var i = 0; i < array.length; i++) {
+        const array = new Uint8Array(licenseCode.length);
+        for (let i = 0; i < array.length; i++) {
             array[i] = licenseCode.charCodeAt(i);
         }
 
-        var request = {
+        const request = {
             method: 'POST',
             url: 'rest/graphdb-settings/license',
             headers: {
-                'Content-Type': 'application/octet-stream',
+                'Content-Type': 'application/octet-stream'
             },
             data: array,
             transformRequest: []
