@@ -14,38 +14,38 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
     function ($scope, $http, $modal, toastr, $interval, $filter, $timeout) {
         $scope.data = {
             classCount: [{
-                key: "Classes",
+                key: 'Classes',
                 values: []
             }],
             cpuLoad: [{
-                key: "System CPU Load",
+                key: 'System CPU Load',
                 values: []
             }],
             memoryUsage: [{
-                key: "Used memory",
+                key: 'Used memory',
                 values: []
             }],
             threadCount: [{
-                key: "Thread Count",
+                key: 'Thread Count',
                 values: []
-            }],
-        }
+            }]
+        };
         $scope.firstLoad = true;
         $scope.activeTab = 'memory';
-        $scope.jolokiaError = "";
+        $scope.jolokiaError = '';
         $scope.loader = true;
         $scope.garbadgeCollectorLoader = false;
         $scope.getResourcesData = function () {
             if ($scope.jolokiaError) {
                 return;
             }
-            $http.get('rest/monitor/resource').success(function (data, status, headers, config) {
+            $http.get('rest/monitor/resource').success(function (data) {
                 if (data) {
-                    if ($scope.data.classCount[0].values.length == 100) {
+                    if ($scope.data.classCount[0].values.length === 100) {
                         $scope.clearData();
                     }
 
-                    var timestamp = new Date();
+                    const timestamp = new Date();
 
                     if ($scope.firstLoad) {
                         $scope.firstLoad = false;
@@ -53,10 +53,10 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
                         $scope.data.cpuLoad[0].values.push([timestamp, (parseFloat(data.cpuLoad)).toFixed(2) * 2]);
                         $scope.data.memoryUsage[0].values.push([timestamp, (data.heapMemoryUsage.used / 1000000000).toFixed(2) * 2]);
                         $scope.data.threadCount[0].values.push([timestamp, data.threadCount * 2]);
-                        var timer = $timeout(function () {
+                        const timer = $timeout(function () {
                             $scope.loader = false;
                         }, 500);
-                        $scope.$on("$destroy", function (event) {
+                        $scope.$on('$destroy', function () {
                             $timeout.cancel(timer);
                         });
                     }
@@ -85,11 +85,11 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
                     $scope.data.threadCount[0].values.push([timestamp, data.threadCount]);
                 }
 
-            }).error(function (data, status, headers, config) {
+            }).error(function (data) {
                 $scope.jolokiaError = getError(data);
                 $scope.loader = false;
             });
-        }
+        };
 
         $scope.clearData = function () {
             $scope.data.classCount[0].values = $scope.data.classCount[0].values.slice(50);
@@ -107,20 +107,20 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
             $scope.data.threadCount[0].values = $scope.data.threadCount[0].values.slice(50);
             $scope.data.threadCount[0].values[0][0] = $scope.data.threadCount[0].values[1][0];
             $scope.data.threadCount[0].values[0][1] = $scope.data.threadCount[0].values[1][1] * 2;
-        }
+        };
 
-        var timer = $interval(function () {
+        const timer = $interval(function () {
             $scope.getResourcesData();
         }, 2000);
 
-        $scope.$on("$destroy", function (event) {
+        $scope.$on('$destroy', function () {
             $interval.cancel(timer);
         });
 
-        $scope.chartConfig = {refreshDataOnly: true}
+        $scope.chartConfig = {refreshDataOnly: true};
         $scope.chartOptions = {
             chart: {
-                type: "stackedAreaChart",
+                type: 'stackedAreaChart',
                 height: 500,
                 width: 1000,
                 margin: {
@@ -136,7 +136,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
                     return d[1];
                 },
                 clipEdge: true,
-                noData: "No Data Available.",
+                noData: 'No Data Available.',
                 showControls: false,
                 rightAlignYAxis: false,
                 transitionDuration: 500,
@@ -145,7 +145,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
                 xAxis: {
                     showMaxMin: false,
                     tickFormat: function (d) {
-                        return d3.time.format('%X')(new Date(d))
+                        return d3.time.format('%X')(new Date(d));
                     }
                 },
                 yAxis: {
@@ -168,13 +168,13 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
         $scope.garbadgeCollector = function () {
 
             $scope.garbadgeCollectorLoader = true;
-            $http.post('rest/monitor/resource/gc').success(function (data, status, headers, config) {
+            $http.post('rest/monitor/resource/gc').success(function () {
                 toastr.success('Garbage collection performed.');
                 $scope.garbadgeCollectorLoader = false;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.garbadgeCollectorLoader = false;
             });
-        }
+        };
     }]);

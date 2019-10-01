@@ -27,7 +27,7 @@ resourceMonitoringApp.config(['$menuItemsProvider', '$routeProvider', function (
         + 'such as memory and CPU, for the currently active location.'
     });
 
-    $menuItemsProvider.addItem({label: 'Monitor', href: '#', order: 4, role: 'ROLE_REPO_MANAGER', icon: "icon-monitoring"});
+    $menuItemsProvider.addItem({label: 'Monitor', href: '#', order: 4, role: 'ROLE_REPO_MANAGER', icon: 'icon-monitoring'});
     $menuItemsProvider.addItem({label: 'Resources', href: 'monitor/resources', order: 2, parent: 'Monitor'});
 
 }]);
