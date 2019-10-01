@@ -31,7 +31,7 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
     var initForViewType = function () {
         $scope.editSearchQuery = $location.search().editSearchQuery;
         $scope.page = $scope.editSearchQuery ? 2 : 1;
-        $scope.newIndex.name = ($location.search().name ? $scope.page !== 1 ? $location.search().name : 'Copy_of_' + $location.search().name : "");
+        $scope.newIndex.name = getNewIndexName($location.search().name);
         $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === "text") ? textDefaultOptions : predDefaultOptions);
 
         if ($scope.searchQueries) {
@@ -95,6 +95,17 @@ function CreateSimilarityIdxCtrl($rootScope, $scope, $http, $interval, localStor
                 }
             }
         }
+    };
+
+    var getNewIndexName = function (indexNameFromLocation) {
+        if (indexNameFromLocation) {
+            if ($scope.page !== 1) {
+                return indexNameFromLocation;
+            } else {
+                return 'Copy_of_' + indexNameFromLocation;
+            }
+        }
+        return '';
     };
 
     var validateIndex = function () {
