@@ -238,7 +238,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         } else if (page === 3) {
             $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
         }
-        loadTab($scope.currentQuery.id);
+        loadTab();
         $scope.notoolbar = page !== 1;
 
         $scope.page = page;
@@ -476,7 +476,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         $('.dataTables_filter').remove();
         $('.resultsTable').remove();
         $timeout(function () {
-            loadTab(tabID);
+            loadTab();
             selectTab(tabID);
         }, 100);
     }

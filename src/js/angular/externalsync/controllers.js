@@ -184,12 +184,11 @@ function repairConnectorQuery(name, prefix) {
 }
 
 function deleteConnectorQuery(name, prefix, force) {
-    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
-    var query = 'PREFIX prefix:<' + prefix + '>\n' +
+    const namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
+    return 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
         '\t<' + namePrefix + name + '> prefix:dropConnector "' + (force ? "force" : "") + '"\n' +
         '}';
-    return query;
 }
 
 function removeEmptyValues(o) {
@@ -511,7 +510,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.delete = function (inst, type) {
-        var isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
+        const isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
 
         $modal.open({
             templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',
@@ -528,9 +527,9 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             .then(function(force) {
                 $scope.setLoader(true, 'Deleting connector ' + inst.name, 'This is usually a fast operation but it might take a while.');
 
-                var query = deleteConnectorQuery(inst.name, type.value, force);
-                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function (res) {
-                    $http.get('rest/connectors').then(function (res) {
+                const query = deleteConnectorQuery(inst.name, type.value, force);
+                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function () {
+                    $http.get('rest/connectors').then(function () {
                         $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
                             $scope.existing[type.key] = res.data;
                         });

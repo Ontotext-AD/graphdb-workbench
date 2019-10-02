@@ -1086,8 +1086,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         const predicate = container.selectAll(".link-wrapper")
             .append("text")
-            .text(function (d, index) {
-                return getPredicate(d, index);
+            .text(function (d) {
+                return getPredicate(d);
             })
             .attr("class", function (d) {
                 if (d.predicates.length > 1) {
@@ -1137,7 +1137,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         // builds upon downEventHandler and adds additional functionality for touch devices
         const touchStartEventHandler = function (d) {
-            downEventHandler(d);
+            downEventHandler();
 
             // for touch devices we track touch and hold for 1s in order to remove a node
             moveEventCount = 0;
@@ -2127,7 +2127,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             return d.predicates.length + " predicates";
         }
         return getShortPredicate(d.predicates[0]);
-
     }
 
     function getShortPredicate(p) {
