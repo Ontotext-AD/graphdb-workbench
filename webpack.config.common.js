@@ -88,6 +88,10 @@ module.exports = {
                 to: 'js/angular/explore/templates'
             },
             {
+                from: 'src/js/angular/externalsync/templates',
+                to: 'js/angular/externalsync/templates'
+            },
+            {
                 from: 'src/js/angular/graphexplore/templates',
                 to: 'js/angular/graphexplore/templates'
             },

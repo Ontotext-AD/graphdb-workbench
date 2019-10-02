@@ -137,7 +137,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getConfirmConnectorDeletebutton() {
-        return cy.get('.confirm-btn');
+        return cy.get('.delete-connector-btn');
     }
 
 });
