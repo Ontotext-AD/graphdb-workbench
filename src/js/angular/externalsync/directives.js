@@ -6,5 +6,5 @@ angular.module('graphdb.framework.externalsync.directives', [])
             templateUrl: 'pages/connectorProgress.html',
             controller: 'CreateProgressCtrl',
             restrict: 'EA'
-        }
+        };
     });

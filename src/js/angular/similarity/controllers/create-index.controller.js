@@ -6,36 +6,36 @@ CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorage
 
 function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityService, SparqlService, $location, productInfo) {
 
-    let indexType = $location.search().type;
-    if (indexType == undefined || indexType.startsWith('text')) {
+    const indexType = $location.search().type;
+    if (indexType === undefined || indexType.startsWith('text')) {
         $scope.viewType = 'text';
     } else {
         $scope.viewType = indexType;
     }
 
-    var textDefaultOptions = "-termweight idf";
-    var predDefaultOptions = "";
+    const textDefaultOptions = '-termweight idf';
+    const predDefaultOptions = '';
     $scope.newIndex = {};
 
     $scope.info = productInfo;
     $scope.page = 1;
 
-    var defaultTabConfig = {
-        id: "1",
+    const defaultTabConfig = {
+        id: '1',
         name: '',
         query: '',
         inference: true,
         sameAs: true
     };
 
-    var initForViewType = function () {
+    const initForViewType = function () {
         $scope.page = 1;
-        $scope.newIndex.name = ($location.search().name ? 'Copy_of_' + $location.search().name : "");
-        $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === "text") ? textDefaultOptions : predDefaultOptions);
+        $scope.newIndex.name = ($location.search().name ? 'Copy_of_' + $location.search().name : '');
+        $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === 'text') ? textDefaultOptions : predDefaultOptions);
 
         if ($scope.searchQueries) {
             $scope.newIndex.searchQuery = $location.search().searchQuery ? $location.search().searchQuery : $scope.searchQueries[$scope.viewType];
-            if ($scope.viewType == 'predication') {
+            if ($scope.viewType === 'predication') {
                 $scope.newIndex.analogicalQuery = $location.search().analogicalQuery ? $location.search().analogicalQuery : $scope.searchQueries['analogical'];
             }
         }
@@ -44,8 +44,8 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             $scope.samples = $scope.allSamples['text'];
             $scope.newIndex.stopList = ($location.search().stopList ? $location.search().stopList : undefined);
             $scope.newIndex.analyzer = ($location.search().analyzer ? $location.search().analyzer : 'org.apache.lucene.analysis.en.EnglishAnalyzer');
-            let isLiteralIndex = getAndRemoveOption("-literal_index");
-            if (isLiteralIndex != undefined) {
+            const isLiteralIndex = getAndRemoveOption('-literal_index');
+            if (isLiteralIndex !== undefined) {
                 $scope.newIndex.isLiteralIndex = isLiteralIndex;
             }
             if (window.editor) {
@@ -57,28 +57,28 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                 .success(function (data) {
                     $scope.literalIndexes = ['no-index'].concat(data
                         .filter(function (idx) {
-                            return idx.type == 'textLiteral' && (idx.status === 'BUILT' || idx.status === 'OUTDATED')
+                            return idx.type === 'textLiteral' && (idx.status === 'BUILT' || idx.status === 'OUTDATED');
                         })
                         .map(function (idx) {
-                            return idx.name
+                            return idx.name;
                         }));
 
-                    if ($scope.newIndex.inputIndex == undefined) {
-                        let desiredIdx = getAndRemoveOption("-input_index");
-                        if (desiredIdx != undefined) {
+                    if ($scope.newIndex.inputIndex === undefined) {
+                        const desiredIdx = getAndRemoveOption('-input_index');
+                        if (desiredIdx !== undefined) {
                             for (let j = 0; j < $scope.literalIndexes.length; j++) {
-                                if (desiredIdx == $scope.literalIndexes[j]) {
+                                if (desiredIdx === $scope.literalIndexes[j]) {
                                     $scope.newIndex.inputIndex = $scope.literalIndexes[j];
                                 }
                             }
                         }
                     }
-                    if ($scope.newIndex.inputIndex == undefined) {
-                        $scope.newIndex.inputIndex = $scope.literalIndexes[0]
+                    if ($scope.newIndex.inputIndex === undefined) {
+                        $scope.newIndex.inputIndex = $scope.literalIndexes[0];
                     }
                 })
-                .error(function (data, status, headers, config) {
-                    let msg = getError(data);
+                .error(function (data) {
+                    const msg = getError(data);
                     toastr.error(msg, 'Could not get indexes');
                 });
 
@@ -89,11 +89,11 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         }
     };
 
-    var validateIndex = function () {
+    const validateIndex = function () {
         $scope.invalidIndexName = false;
         $scope.saveQueries();
         if (!$scope.newIndex.name) {
-            $scope.invalidIndexName = "Index name cannot be empty";
+            $scope.invalidIndexName = 'Index name cannot be empty';
             return false;
         }
         if (!filenamePattern.test($scope.newIndex.name)) {
@@ -111,7 +111,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             return false;
         }
 
-        if ($scope.viewType == 'predication' && !$scope.newIndex.analogicalQuery) {
+        if ($scope.viewType === 'predication' && !$scope.newIndex.analogicalQuery) {
             toastr.error('Analogical query cannot be empty.');
             return false;
         }
@@ -124,23 +124,23 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         return true;
     };
 
-    var appendOption = function (option, value) {
-        $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + " " + value
+    const appendOption = function (option, value) {
+        $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + ' ' + value;
     };
 
     SimilarityService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
         SimilarityService.getSamples().success(function (samples) {
             defaultTabConfig.query = $location.search().selectQuery ? $location.search().selectQuery : samples['text']['literals'];
-            defaultTabConfig.inference = !($location.search().infer == 'false');
-            defaultTabConfig.sameAs = !($location.search().sameAs == 'false');
+            defaultTabConfig.inference = !($location.search().infer === 'false');
+            defaultTabConfig.sameAs = !($location.search().sameAs === 'false');
             $scope.tabsData = $scope.tabs = [defaultTabConfig];
             $scope.currentQuery = angular.copy(defaultTabConfig);
             $scope.allSamples = samples;
             initForViewType();
         });
     }).error(function (data) {
-        let msg = getError(data);
+        const msg = getError(data);
         toastr.error(msg, 'Could not get search queries');
     });
 
@@ -148,7 +148,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         initForViewType();
     });
 
-    var similarityLocalStorageKey = 'hide-similarity-help';
+    const similarityLocalStorageKey = 'hide-similarity-help';
     $scope.helpHidden = localStorageService.get(similarityLocalStorageKey) === 1;
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
@@ -162,14 +162,14 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             $scope.helpHidden = false;
         }
     };
-    var filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
+    const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 
     $scope.viewQuery = function () {
         if (!validateIndex()) {
             return;
         }
 
-        $http.get("/rest/similarity/query",
+        $http.get('/rest/similarity/query',
             {
                 params: {
                     name: $scope.newIndex.name,
@@ -179,22 +179,21 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                     infer: $scope.currentQuery.inference,
                     sameAs: $scope.currentQuery.sameAs,
                     type: $scope.viewType,
-                    analyzer: $scope.newIndex.analyzer,
+                    analyzer: $scope.newIndex.analyzer
                 }
             }).success(function (query) {
-            if (query) {
-                var modal = $modal.open({
-                    templateUrl: 'pages/viewQuery.html',
-                    controller: 'ViewQueryCtrl',
-                    resolve: {
-                        query: function () {
-                            return query;
+                if (query) {
+                    $modal.open({
+                        templateUrl: 'pages/viewQuery.html',
+                        controller: 'ViewQueryCtrl',
+                        resolve: {
+                            query: function () {
+                                return query;
+                            }
                         }
-                    }
-                });
-            }
-        })
-
+                    });
+                }
+            });
     };
 
     $scope.$watch('newIndex.name', function () {
@@ -204,12 +203,12 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
     $scope.saveQueries = function () {
         // save the current query
-        var query = window.editor.getValue().trim();
+        const query = window.editor.getValue().trim();
         if ($scope.page === 1) {
             $scope.newIndex.query = query;
         } else if ($scope.page === 2) {
             $scope.newIndex.searchQuery = query;
-        } else if ($scope.page == 3) {
+        } else if ($scope.page === 3) {
             $scope.newIndex.analogicalQuery = query;
         }
     };
@@ -227,7 +226,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                 }
 
                 window.editor.setValue($scope.currentQuery.query);
-            })
+            });
         }
 
         $scope.saveQueries();
@@ -239,7 +238,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         } else if (page === 3) {
             $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
         }
-        loadTab($scope.currentQuery.id);
+        loadTab();
         $scope.notoolbar = page !== 1;
 
         $scope.page = page;
@@ -254,21 +253,21 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             .success(function (data) {
                 data.forEach(function (index) {
                     if (index.name === $scope.newIndex.name) {
-                        $scope.invalidIndexName = "Index with this name already exists.";
+                        $scope.invalidIndexName = 'Index with this name already exists.';
                     }
                 });
                 if (!$scope.invalidIndexName) {
                     let indexType = $scope.viewType;
 
                     if ($scope.literalIndexes !== undefined) {
-                        let inputIndex = $scope.newIndex.inputIndex;
+                        const inputIndex = $scope.newIndex.inputIndex;
                         if (inputIndex !== $scope.literalIndexes[0]) {
-                            appendOption("-input_index", inputIndex)
+                            appendOption('-input_index', inputIndex);
                         }
                     }
-                    if ($scope.newIndex.isLiteralIndex == 'true') {
-                        appendOption("-literal_index", "true")
-                        indexType = "textLiteral";
+                    if ($scope.newIndex.isLiteralIndex === 'true') {
+                        appendOption('-literal_index', 'true');
+                        indexType = 'textLiteral';
                     }
 
                     SimilarityService.createIndex('POST',
@@ -281,24 +280,24 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                         $scope.currentQuery.inference,
                         $scope.currentQuery.sameAs,
                         indexType,
-                        $scope.newIndex.analyzer).error(function (err) {
-                        toastr.error(getError(err), "Could not create index")
-                    })
+                        $scope.newIndex.analyzer)
+                        .error(function (err) {
+                            toastr.error(getError(err), 'Could not create index');
+                        });
                     $location.path('similarity');
                 }
 
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Could not get indexes');
             });
-
     };
 
     // Called when user clicks on a sample query
     $scope.setQuery = function (query) {
         // Hack for YASQE bug
-        window.editor.setValue(query ? query : " ");
+        window.editor.setValue(query ? query : ' ');
     };
 
     // TODO don't copy paste each time, this is the same as in the graph config
@@ -359,17 +358,17 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     $scope.orientationViewMode = true;
 
     // start of repository actions
-    let backendRepositoryID = $scope.getActiveRepository();
+    $scope.getActiveRepository();
 
     function getAndRemoveOption(key) {
-        let optArr = $scope.newIndex.options.split(" ");
+        const optArr = $scope.newIndex.options.split(' ');
         for (let i = 0; i < optArr.length; i++) {
-            if (optArr[i] == key && i + 1 < optArr.length) {
-                let value = optArr[i + 1];
+            if (optArr[i] === key && i + 1 < optArr.length) {
+                const value = optArr[i + 1];
 
                 delete optArr[i];
                 delete optArr[i + 1];
-                $scope.newIndex.options = optArr.join(" ");
+                $scope.newIndex.options = optArr.join(' ');
 
                 return value;
             }
@@ -381,18 +380,18 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     }
 
     function setLoader(isRunning, progressMessage, extraMessage) {
-        var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
         $scope.queryIsRunning = isRunning;
         if (isRunning) {
             $scope.queryStartTime = Date.now();
             $scope.countTimeouted = false;
             $scope.progressMessage = progressMessage;
             $scope.extraMessage = extraMessage;
-            yasrInnerContainer.addClass("hide");
+            yasrInnerContainer.addClass('hide');
         } else {
-            $scope.progressMessage = "";
-            $scope.extraMessage = "";
-            yasrInnerContainer.removeClass("hide");
+            $scope.progressMessage = '';
+            $scope.extraMessage = '';
+            yasrInnerContainer.removeClass('hide');
         }
         // We might call this from angular or outside angular so take care of applying the scope.
         if ($scope.$$phase === null) {
@@ -401,63 +400,61 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     }
 
     function getLoaderMessage() {
-        var timeSeconds = (Date.now() - $scope.queryStartTime) / 1000,
-            timeHuman = $scope.getHumanReadableSeconds(timeSeconds),
-            message = "";
+        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
+        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
+        let message = '';
 
         if ($scope.progressMessage) {
-            message = $scope.progressMessage + "... " + timeHuman;
+            message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = "Running operation..." + timeHuman;
+            message = 'Running operation...' + timeHuman;
         }
         if ($scope.extraMessage && timeSeconds > 10) {
-            message += "\n" + $scope.extraMessage;
+            message += '\n' + $scope.extraMessage;
         }
 
         return message;
     }
 
-
     // start of query editor results orientation operations
-    function fixSizesOnHorizontalViewModeSwitch(verticalView) {
+    function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
         function visibleWindowHeight() {
             return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
         }
 
-        var verticalView = verticalView;
+        const verticalView = verticalViewParam;
         if (!$scope.orientationViewMode) {
             $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
 
             // window.editor is undefined if no repo is selected
             if (window.editor && document.querySelector('.CodeMirror-wrap')) {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
                 //window.editor.refresh();
             } else {
+                let timer;
                 if (verticalView) {
-                    var timer = $timeout(function () {
-                        $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
+                    timer = $timeout(function () {
+                        $scope.fixSizesOnHorizontalViewModeSwitch(verticalView);
                     }, 100);
                 } else {
-                    var timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
+                    timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
                 }
 
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
             }
         } else {
             if ($scope.viewMode === 'yasr') {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
-                //window.editor.refresh();
             } else {
                 $scope.noPadding = {};
                 document.querySelector('.CodeMirror-wrap').style.height = '';
-                //window.editor.refresh();
             }
             document.getElementById('yasr').style.minHeight = '';
         }
@@ -472,16 +469,14 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         showHideEditor();
     }
 
-
     function changeViewMode(tabID) {
         $scope.viewMode = 'none';
         $scope.orientationViewMode = !$scope.orientationViewMode;
-        // localStorageService.set('viewMode', $scope.orientationViewMode);
         fixSizesOnHorizontalViewModeSwitch();
         $('.dataTables_filter').remove();
         $('.resultsTable').remove();
         $timeout(function () {
-            loadTab(tabID);
+            loadTab();
             selectTab(tabID);
         }, 100);
     }
@@ -491,15 +486,12 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     }
 
     function focusQueryEditor() {
-        if (!angular.element(document).find('.editable-input').is(":focus")) {
+        if (!angular.element(document).find('.editable-input').is(':focus')) {
             angular.element(document).find('.CodeMirror textarea:first-child').focus();
         }
     }
 
     // end of query editor results orientation operations
-
-    function deleteCachedSparqlResults() {
-    }
 
     function selectTab(id) {
         $timeout(function () {
@@ -535,7 +527,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             // Hides the editor and shows the yasr results
             $scope.viewMode = 'editor';
             if ($scope.orientationViewMode) {
-                $scope.fixSizesOnHorizontalViewModeSwitch()
+                $scope.fixSizesOnHorizontalViewModeSwitch();
             }
 
             setLoader(true, 'Evaluating query');
@@ -547,10 +539,10 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
         // $scope.queryIsRunning = true;
-        ////console.log("Send namespaces request. Default token is : " + $http.defaults.headers.common["Authorization"]);
+        ////console.log('Send namespaces request. Default token is : ' + $http.defaults.headers.common['Authorization']);
         SparqlService.getRepositoryNamespaces()
             .success(function (data) {
-                var usedPrefixes = {};
+                const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
                     usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
@@ -573,7 +565,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         getNamespaces();
     }
 
-    $scope.$on("$destroy", function (event) {
+    $scope.$on('$destroy', function () {
         window.editor = null;
         window.yasr = null;
     });
@@ -584,13 +576,13 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     // Add known prefixes
     function addKnownPrefixes() {
         SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);
                 }
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });
@@ -603,7 +595,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     });
 
     function querySelected(query) {
-        var tabId = getExistingTabId(query);
+        const tabId = getExistingTabId(query);
         $scope.toggleSampleQueries();
         if (!angular.isDefined(tabId)) {
             $scope.addNewTab(null, query.name, query.body);
@@ -613,8 +605,8 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     }
 
     function getExistingTabId(query) {
-        var existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item, index) {
+        let existingTabId = undefined;
+        angular.forEach($scope.tabsData, function (item) {
             if (item.name === query.name && item.query === query.body) {
                 existingTabId = item.id;
                 return item;
@@ -629,8 +621,8 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
     // start of query tab operations
     function findTabIndexByID(id) {
-        for (var i = 0; i < $scope.tabsData.length; i++) {
-            var tab = $scope.tabsData[i];
+        for (let i = 0; i < $scope.tabsData.length; i++) {
+            const tab = $scope.tabsData[i];
             if (tab.id === id) {
                 return i;
             }
@@ -642,30 +634,28 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     });
 
     function saveTab(id) {
-        var idx = findTabIndexByID(id);
+        const idx = findTabIndexByID(id);
         // Tab was deleted, don't try to save it's state
         if (idx === undefined) {
             return {};
         }
-        var tab = $scope.tabsData[idx];
+        const tab = $scope.tabsData[idx];
         //tab.query = window.editor.getValue();
         $scope.saveQueryToLocal(tab);
         return tab;
     }
 
-    var maxID = 1;
-
     function addNewTab(callback, tabName, savedQuery) {
     }
 
-    function loadTab(id) {
+    function loadTab() {
         $scope.tabsData = [$scope.currentQuery];
 
-        let tab = $scope.currentQuery;
+        const tab = $scope.currentQuery;
 
-        if ($scope.currentQuery.query == null || $scope.currentQuery.query == "") {
+        if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
             // hack for YASQE bug
-            window.editor.setValue(" ");
+            window.editor.setValue(' ');
         } else {
             window.editor.setValue($scope.currentQuery.query);
         }
@@ -720,6 +710,5 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
     };
 
     $scope.getStaleWarningMessage = function () {
-    }
-
+    };
 }

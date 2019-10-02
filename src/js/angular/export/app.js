@@ -33,10 +33,16 @@ exportApp.config(['$menuItemsProvider', '$routeProvider', '$tooltipProvider', fu
         href: '#',
         order: 1,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: "icon-data"
+        icon: 'icon-data'
     });
 
-    $menuItemsProvider.addItem({label: 'Graphs overview', href: 'graphs', order: 0, role: "IS_AUTHENTICATED_FULLY", parent: "Explore"});
+    $menuItemsProvider.addItem({
+        label: 'Graphs overview',
+        href: 'graphs',
+        order: 0,
+        role: 'IS_AUTHENTICATED_FULLY',
+        parent: 'Explore'
+    });
 
     //Add custom event for Export repository DD tooltip
     $tooltipProvider.setTriggers({'showExportDDTooltip': 'showExportDDTooltip'});

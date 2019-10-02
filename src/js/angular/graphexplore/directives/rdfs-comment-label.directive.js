@@ -22,12 +22,12 @@ function rdfsCommentLabelDirective(SHORT_COMMENT_LENGTH) {
             };
 
             scope.checkCommentLength = function () {
-                var commentLength = element[0].getElementsByClassName('rdfs-comment-text')[0].innerText.length;
+                const commentLength = element[0].getElementsByClassName('rdfs-comment-text')[0].innerText.length;
                 return commentLength < SHORT_COMMENT_LENGTH;
             };
 
             scope.equalHeights = function () {
-                var commentHeight = element[0].getElementsByClassName('rdfs-comment-text')[0].innerHeight;
+                const commentHeight = element[0].getElementsByClassName('rdfs-comment-text')[0].innerHeight;
                 if (commentHeight < 250 && scope.expanded) {
                     element[0].getElementsByClassName('rdfs-comment')[0].innerHeight = commentHeight;
                 }

@@ -27,10 +27,10 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
             $scope.settings.statistics = response.data === 'true';
             $scope.supportsStatistics = true;
         }, function (response) {
-            if (response.status == 404) {
+            if (response.status === 404) {
                 $scope.supportsStatistics = false;
             } else {
-                let msg = getError(response.data);
+                const msg = getError(response.data);
                 toastr.error(msg, 'Error getting settings');
             }
         });
@@ -46,23 +46,22 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             data: 'enabled=' + $scope.settings.statistics
         })
-            .then(function (response) {
+            .then(function () {
                 $modalInstance.close();
                 toastr.success('Settings have been saved');
             }, function (response) {
-                let msg = getError(response.data);
-                toastr.error(msg, 'Error saving settings')
+                const msg = getError(response.data);
+                toastr.error(msg, 'Error saving settings');
             });
-    }
+    };
 
     $scope.submitForm = function () {
         $scope.setSettings();
-    }
+    };
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-
 }
 
 LicenseCtrl.$inject = ['$scope', '$http', '$location', '$cookieStore', 'LicenseService', 'toastr', '$rootScope'];
@@ -72,11 +71,11 @@ function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseService, toa
 
     LicenseService.checkLicenseHardcoded()
         .success(function (res) {
-            $rootScope.isLicenseHardcoded = (res === "true");
+            $rootScope.isLicenseHardcoded = (res === 'true');
         })
         .error(function () {
             $rootScope.isLicenseHardcoded = false;
-            toastr.error("Error checking license availability")
+            toastr.error('Error checking license availability');
         })
         .then(function () {
             LicenseService.getLicenseInfo()
@@ -86,19 +85,19 @@ function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseService, toa
                     // check if you have a hardcoded license that is not activated through the workbench and if
                     // you do disable ability to update license
                 })
-                .error(function (res) {
+                .error(function () {
                     // no license but we need to check for 417
                     $scope.loader = false;
-                    $scope.license = {message: "No license was set.", valid: false};
-                    //$location.path("license/register");
+                    $scope.license = {message: 'No license was set.', valid: false};
+                    //$location.path('license/register');
                 });
-        })
+        });
 }
 
 RegisterLicenseCtrl.$inject = ['$scope', 'LicenseService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
 
 function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, $window, $jwtAuth) {
-    $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+    $scope.$on('securityInit', function () {
         if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
             $location.path('/license');
         }
@@ -106,43 +105,43 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
 
     $scope.sendLicenseToValidateAndActivate = sendLicenseToValidateAndActivate;
 
-    var textAreaSel = $(".license-textarea");
+    const textAreaSel = $('.license-textarea');
 
     // watch for uploaded license file
     $scope.$watch('currentFile', function () {
         if ($scope.currentFile) {
-            var file = $scope.currentFile;
+            const file = $scope.currentFile;
             LicenseService.extractFromLicenseFile(file)
-                .success(function (licenseCode, status, headers, config) {
+                .success(function (licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
-                }).error(function (data, status, headers, config) {
-                toastr.error("Could not upload file");
-            });
+                }).error(function () {
+                    toastr.error('Could not upload file');
+                });
         }
     });
 
     $scope.getBackToPreviousPage = function () {
         $window.history.back();
-    }
+    };
 
     // send license code for validation and activation
     function sendLicenseToValidateAndActivate(licenseCode) {
         LicenseService.sendLicenseToValidate(licenseCode)
             .success(function (validatedLicense) {
-                if (validatedLicense.licensee !== "Invalid") {
+                if (validatedLicense.licensee !== 'Invalid') {
                     // write code to textarea
                     textAreaSel.val(licenseCode);
                     // pop dialog for license details confirmation
                     confirmWantedNewLicenseDetails(validatedLicense, licenseCode);
                 } else {
                     // clear textarea on invalid license
-                    textAreaSel.val("");
+                    textAreaSel.val('');
                     // show error
                     toastr.error(validatedLicense.message);
                 }
             })
             .error(function () {
-                toastr.error("Invalid license");
+                toastr.error('Invalid license');
             });
     }
 
@@ -150,7 +149,7 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
     // pops a modal dialog which asks you if your expected license details are correct
     // and sends license to GraphDB upon confirmation
     function confirmWantedNewLicenseDetails(license, licenseCode) {
-        var modalInstance = $modal.open({
+        const modalInstance = $modal.open({
             templateUrl: 'js/angular/settings/modal/validate-license.html',
             controller: 'ValidateLicenseModalCtrl',
             resolve: {
@@ -174,16 +173,16 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
         if (licenseCode) {
             // replacing whitespace makes this work on Safari too,
             // whereas other browser happily ignore the whitespace
-            var decodedLicense = atob(licenseCode.replace(/\s/g, ""));
+            const decodedLicense = atob(licenseCode.replace(/\s/g, ''));
             LicenseService.registerLicense(decodedLicense)
-                .success(function (data, status, headers, config) {
+                .success(function () {
                     $window.history.back();
-                    // $location.path("license");
-                }).error(function (data, status, headers, config) {
-                toastr.error("Error registering GraphDB license");
-            });
+                    // $location.path('license');
+                }).error(function () {
+                    toastr.error('Error registering GraphDB license');
+                });
         } else {
-            toastr.error("No license code available in textarea");
+            toastr.error('No license code available in textarea');
         }
     }
 }
@@ -210,5 +209,5 @@ function LoaderSamplesCtrl($scope) {
     $scope.loader = true;
     $scope.setLoader = function (loader) {
         $scope.loader = loader;
-    }
+    };
 }

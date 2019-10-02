@@ -42,7 +42,7 @@ repositoriesApp.config(['$menuItemsProvider', '$routeProvider', function ($menuI
         title: 'Edit Repository'
     });
 
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"});
+    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
     $menuItemsProvider.addItem({
         label: 'Repositories', href: 'repository', order: 1, role: 'ROLE_REPO_MANAGER', parent: 'Setup',
         children: [{

@@ -5,20 +5,20 @@ angular
     .controller('SimilarityCtrl', SimilarityCtrl)
     .controller('EditSearchQueryCtrl', EditSearchQueryCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteService', 'productInfo'];
+SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteService, productInfo) {
+function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
 
-    var PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
-    var PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
-    var PREFIX_INSTANCE = PREFIX + 'instance/';
-    var ANY_PREDICATE = PREFIX_PREDICATION + "any";
+    const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
+    const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
+    const PREFIX_INSTANCE = PREFIX + 'instance/';
+    const ANY_PREDICATE = PREFIX_PREDICATION + 'any';
 
-    var literalForQuery = function (literal) {
+    const literalForQuery = function (literal) {
         return '"' + literal + '"';
     };
 
-    var iriForQuery = function (iri) {
+    const iriForQuery = function (iri) {
         return '<' + iri + '>';
     };
 
@@ -35,8 +35,8 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             return;
         }
         SimilarityService.checkPluginEnabled()
-            .done(function (data, textStatus, jqXhrOrErrorString) {
-                $scope.pluginDisabled = data.indexOf("false") > 0;
+            .done(function (data) {
+                $scope.pluginDisabled = data.indexOf('false') > 0;
             })
             .fail(function (data) {
                 toastr.error(getError(data), 'Could not check plugin enabled!');
@@ -45,7 +45,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
 
     $scope.enabledSimilarityPlugin = function () {
         SimilarityService.enableSimilarityPlugin()
-            .done(function (data, textStatus, jqXhrOrErrorString) {
+            .done(function () {
                 $scope.pluginDisabled = false;
                 $scope.getSimilarityIndexes();
             })
@@ -57,7 +57,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     SimilarityService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
     }).error(function (data) {
-        let msg = getError(data);
+        const msg = getError(data);
         toastr.error(msg, 'Could not get search queries');
     });
 
@@ -74,8 +74,8 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             .success(function (data) {
                 $scope.similarityIndexes = data;
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Could not get indexes');
             });
     };
@@ -85,12 +85,12 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             return;
         }
         $scope.getSimilarityIndexes();
-        var timer = $interval(function () {
-            if ($('#indexes-table').attr("aria-expanded") != "false") {
-                $scope.getSimilarityIndexes()
+        const timer = $interval(function () {
+            if ($('#indexes-table').attr('aria-expanded') !== 'false') {
+                $scope.getSimilarityIndexes();
             }
         }, 5000);
-        $scope.$on("$destroy", function (event) {
+        $scope.$on('$destroy', function () {
             $interval.cancel(timer);
         });
     };
@@ -104,7 +104,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         $scope.pullList();
     }
 
-    var yasr;
+    let yasr;
 
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
@@ -112,12 +112,12 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if ($scope.getActiveRepository()) {
             $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
                 $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
                 $scope.usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
                     $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
-                yasr = YASR(document.getElementById("yasr"), {
+                yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
                     //this way, the URLs in the results are prettified using the defined prefixes
                     getUsedPrefixes: $scope.usedPrefixes,
                     persistency: false,
@@ -140,7 +140,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     });
 
     $scope.goToSimilarityIndex = function (index) {
-        if (!('BUILT' == index.status || 'OUTDATED' == index.status)) {
+        if (!('BUILT' === index.status || 'OUTDATED' === index.status)) {
             return;
         }
         $scope.empty = true;
@@ -154,22 +154,22 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             $scope.searchType = 'searchEntity';
         }
         if (index.type === 'text' || index.type === 'predication') {
-            $('#indexes-table').collapse('hide')
+            $('#indexes-table').collapse('hide');
         }
     };
 
-    var toggleOntoLoader = function (showLoader) {
-        var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
-        var resultsLoader = angular.element(document.getElementById("results-loader"));
+    const toggleOntoLoader = function (showLoader) {
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
+        const resultsLoader = angular.element(document.getElementById('results-loader'));
         /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
         if (showLoader) {
             $scope.loading = true;
-            yasrInnerContainer.addClass("opacity-hide");
-            resultsLoader.removeClass("opacity-hide");
+            yasrInnerContainer.addClass('opacity-hide');
+            resultsLoader.removeClass('opacity-hide');
         } else {
             $scope.loading = false;
-            yasrInnerContainer.removeClass("opacity-hide");
-            resultsLoader.addClass("opacity-hide");
+            yasrInnerContainer.removeClass('opacity-hide');
+            resultsLoader.addClass('opacity-hide');
         }
     };
 
@@ -178,12 +178,12 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         toggleOntoLoader(true);
 
         // this is either the search term or the iri for the subject
-        var termOrSubject = uri;
+        let termOrSubject = uri;
 
         $scope.lastSearch = {};
         $scope.lastSearch.type = searchType;
 
-        if (searchType == 'searchEntityPredicate') {
+        if (searchType === 'searchEntityPredicate') {
             termOrSubject = $scope.psiSubject;
             $scope.lastSearch.predicate = uri;
         }
@@ -196,27 +196,27 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
 
         $scope.lastSearch.termOrSubject = termOrSubject;
 
-        var headers = {Accept: 'application/sparql-results+json'};
-        var sparqlQuery;
-        if (searchType == 'searchAnalogical') {
+        const headers = {Accept: 'application/sparql-results+json'};
+        let sparqlQuery;
+        if (searchType === 'searchAnalogical') {
             sparqlQuery = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
             sparqlQuery = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
         }
-        var sendData = {
+        const sendData = {
             query: sparqlQuery,
             $index: iriForQuery(PREFIX_INSTANCE + index),
             $query: termOrSubject,
             $searchType: iriForQuery(($scope.selected.type === 'text' ? PREFIX : PREFIX_PREDICATION) + (searchType === 'searchEntityPredicate' ? 'searchEntity' : searchType)),
             $resultType: iriForQuery($scope.selected.type === 'text' ? PREFIX + resultType : PREFIX_PREDICATION + 'entityResult'),
-            $parameters: literalForQuery(parameters),
+            $parameters: literalForQuery(parameters)
         };
 
-        if (searchType == 'searchEntityPredicate') {
+        if (searchType === 'searchEntityPredicate') {
             sendData.$psiPredicate = $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE);
         }
 
-        if (searchType == 'searchAnalogical') {
+        if (searchType === 'searchAnalogical') {
             $scope.searchSubject = uri;
             sendData.$givenSubject = iriForQuery($scope.analogicalSubject);
             sendData.$givenObject = iriForQuery($scope.analogicalObject);
@@ -238,13 +238,13 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.viewSearchQuery = function () {
-        var queryTemplate;
-        if ($scope.lastSearch.type == 'searchAnalogical') {
+        let queryTemplate;
+        if ($scope.lastSearch.type === 'searchAnalogical') {
             queryTemplate = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
             queryTemplate = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
         }
-        var replacedQuery = queryTemplate
+        const replacedQuery = queryTemplate
             .replace('?index', 'inst:' + $scope.selected.name)
             .replace('?query', $scope.lastSearch.termOrSubject)
             .replace('?searchType', ($scope.selected.type === 'text' ? ':' : 'psi:') + ($scope.lastSearch.type === 'searchEntityPredicate' ? 'searchEntity' : $scope.lastSearch.type))
@@ -255,7 +255,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             .replace('?givenObject', iriForQuery($scope.analogicalObject))
             .replace('?searchSubject', iriForQuery($scope.searchSubject));
 
-        var modal = $modal.open({
+        $modal.open({
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
@@ -275,16 +275,16 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         }).result
             .then(function () {
                 SimilarityService.deleteIndex(index)
-                    .then(function (res) {
+                    .then(function () {
                         $scope.getSimilarityIndexes();
                     }, function (err) {
                         toastr.error(getError(err));
-                    })
+                    });
             });
     };
 
     $scope.viewCreateQuery = function (index) {
-        $http.get("/rest/similarity/query",
+        $http.get('/rest/similarity/query',
             {
                 params: {
                     name: index.name,
@@ -297,16 +297,16 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
                     analyzer: index.analyzer
                 }
             }).success(function (query) {
-            var modal = $modal.open({
-                templateUrl: 'pages/viewQuery.html',
-                controller: 'ViewQueryCtrl',
-                resolve: {
-                    query: function () {
-                        return query;
+                $modal.open({
+                    templateUrl: 'pages/viewQuery.html',
+                    controller: 'ViewQueryCtrl',
+                    resolve: {
+                        query: function () {
+                            return query;
+                        }
                     }
-                }
+                });
             });
-        })
     };
 
     $scope.rebuildIndex = function (index) {
@@ -334,7 +334,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.editSearchQuery = function (index) {
-        var modal = $modal.open({
+        $modal.open({
             templateUrl: 'pages/editSearchQuery.html',
             controller: 'EditSearchQueryCtrl',
             resolve: {
@@ -346,9 +346,8 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.trimIRI = function (iri) {
-        return _.trim(iri, "<>");
-    }
-
+        return _.trim(iri, '<>');
+    };
 }
 
 EditSearchQueryCtrl.$inject = ['$scope', '$modalInstance', 'index', 'toastr'];
@@ -363,23 +362,22 @@ function EditSearchQueryCtrl($scope, $modalInstance, index, toastr) {
     };
 
     // This method will resize height of textArea until the max-height property
-    let autoExpand = function (field) {
+    const autoExpand = function (field) {
 
         // Reset field height
         field.style.height = 'inherit';
 
         // Get the computed styles for the element
-        var computed = window.getComputedStyle(field);
+        const computed = window.getComputedStyle(field);
 
         // Calculate the height
-        var height = parseInt(computed.getPropertyValue('border-top-width'), 10)
+        const height = parseInt(computed.getPropertyValue('border-top-width'), 10)
             + parseInt(computed.getPropertyValue('padding-top'), 10)
             + field.scrollHeight
             + parseInt(computed.getPropertyValue('padding-bottom'), 10)
             + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
 
         field.style.height = height + 'px';
-
     };
 
     document.addEventListener('input', function (event) {
@@ -399,18 +397,18 @@ function EditSearchQueryCtrl($scope, $modalInstance, index, toastr) {
     };
 
     $scope.saveSearchQuery = function () {
-        let data = {
+        const data = {
             name: $scope.index.name,
             changedQuery: $scope.currentQuery,
             isSearchQuery: $scope.tabNum === 1
         };
 
         $.ajax({
-            type: "put",
-            url: "/rest/similarity/search-query",
-            contentType: "application/json",
+            type: 'put',
+            url: '/rest/similarity/search-query',
+            contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (result) {
+            success: function () {
                 toastr.success($scope.tabNum === 1 ? 'Changed Search query' : 'Changed Analogical query');
             },
             error: function () {

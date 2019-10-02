@@ -5,19 +5,19 @@ angular
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteService', 'ClassInstanceDetailsService', '$routeParams'];
+GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams'];
 
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteService, ClassInstanceDetailsService, $routeParams) {
+function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
 
     $scope.helpHidden = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY) === 1;
     $scope.toggleHelp = function (value) {
-        if (value == undefined) {
+        if (value === undefined) {
             value = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY);
         }
-        if (value != 1) {
+        if (value !== 1) {
             localStorageService.set(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY, 1);
             $scope.helpHidden = true;
         } else {
@@ -40,7 +40,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     };
 
     $scope.getSampleName = function (sample, property) {
-        var extra = sample[property + 'Description'];
+        const extra = sample[property + 'Description'];
         if (extra) {
             // Sample has description, use it
             return extra;
@@ -50,9 +50,9 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         }
     };
 
-    var getGraphConfigSamples = function () {
+    const getGraphConfigSamples = function () {
         GraphConfigService.getGraphConfigSamples()
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.samples = _.filter(data, function (s) {
                     // Skip the currently edited config from samples and store it into a revert variable
                     if (!s.id || $scope.newConfig.id !== s.id) {
@@ -62,15 +62,14 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
                         return false;
                     }
                 });
-            }).error(function (data, status, headers, config) {
-            toastr.error(getError(data), 'Could not get graph configs. You may not see sample values');
-        });
-
+            }).error(function (data) {
+                toastr.error(getError(data), 'Could not get graph configs. You may not see sample values');
+            });
     };
 
-    var configName = $routeParams.configName;
+    const configName = $routeParams.configName;
     $scope.newConfig = {startQueryIncludeInferred: true, startQuerySameAs: true};
-    $scope.newConfig.startMode = "search";
+    $scope.newConfig.startMode = 'search';
     $scope.isUpdate = false;
 
     $scope.encodeQuery = function (query) {
@@ -84,11 +83,11 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     if (configName) {
         $scope.isUpdate = true;
         GraphConfigService.getConfig(configName)
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.newConfig = data;
                 initForConfig();
             })
-            .error(function (data, status, headers, config) {
+            .error(function (data) {
                 toastr.error(getError(data), 'Could not load config for name ' + configName);
             });
     } else {
@@ -97,21 +96,21 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     function getQueryForCurrentPage(config) {
-        var q;
+        let query;
 
         if (config.startMode === 'query' && $scope.page === 1) {
-            q = config.startGraphQuery;
+            query = config.startGraphQuery;
         } else if ($scope.page === 2) {
-            q = config.expandQuery;
+            query = config.expandQuery;
         } else if ($scope.page === 3) {
-            q = config.resourceQuery;
+            query = config.resourceQuery;
         } else if ($scope.page === 4) {
-            q = config.predicateLabelQuery;
+            query = config.predicateLabelQuery;
         } else if ($scope.page === 5) {
-            q = config.resourcePropertiesQuery;
+            query = config.resourcePropertiesQuery;
         }
 
-        return angular.isDefined(q) ? q : "";
+        return angular.isDefined(query) ? query : '';
     }
 
     function initForConfig() {
@@ -119,7 +118,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
         /**
          *  This method will show message with tiny delay and only after completion
-         *  of latter redirection to "graphs-visualizations" page will happen.
+         *  of latter redirection to 'graphs-visualizations' page will happen.
          * @param message
          * @returns {Promise<any>}
          */
@@ -134,33 +133,33 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             GraphConfigService.createGraphConfig($scope.newConfig)
                 .success(async function () {
                     await showSuccessMessage('Saved new graph config');
-                    $location.url("graphs-visualizations");
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data), 'Error! Could not create graph config');
-            });
+                    $location.url('graphs-visualizations');
+                }).error(function (data) {
+                    toastr.error(getError(data), 'Error! Could not create graph config');
+                });
         };
 
         $scope.updateGraphConfig = function () {
             GraphConfigService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
                     await showSuccessMessage('Graph config saved');
-                    $location.url("graphs-visualizations");
-                }).error(function (data, status, headers, config) {
-                toastr.error(getError(data), 'Error! Could not save graph config');
-            });
+                    $location.url('graphs-visualizations');
+                }).error(function (data) {
+                    toastr.error(getError(data), 'Error! Could not save graph config');
+                });
         };
 
-        $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
 
-        var validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {
+        const validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {
             if (!query) {
                 successCallback();
             } else {
                 GraphConfigService.validateQuery(query, queryType, params, all, oneOf)
                     .success(function () {
                         successCallback();
-                    }).error(function (data, status, headers, config) {
+                    }).error(function (data) {
                     showInvalidMsg(getError(data));
                 });
             }
@@ -170,11 +169,11 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             $scope.updateModel();
 
             if ($scope.page === 1) {
-                if ($scope.newConfig.startMode === "node" && !$scope.newConfig.startIRI) {
-                    showInvalidMsg("Please select start node.");
-                } else if ($scope.newConfig.startMode === "query" && !$scope.newConfig.startGraphQuery) {
-                    showInvalidMsg("Please provide start graph query.");
-                } else if ($scope.newConfig.startMode === "query") {
+                if ($scope.newConfig.startMode === 'node' && !$scope.newConfig.startIRI) {
+                    showInvalidMsg('Please select start node.');
+                } else if ($scope.newConfig.startMode === 'query' && !$scope.newConfig.startGraphQuery) {
+                    showInvalidMsg('Please provide start graph query.');
+                } else if ($scope.newConfig.startMode === 'query') {
                     validateQueryWithCallback(successCallback, $scope.newConfig.startGraphQuery, 'graph')
                 } else {
                     successCallback();
@@ -199,7 +198,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             $scope.validateCurrentPage(function () {
                 $scope.showEditor();
                 $scope.page = nextPage;
-                $scope.notoolbar = $scope.page != 1;
+                $scope.notoolbar = $scope.page !== 1;
             });
         };
 
@@ -209,7 +208,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             }
         };
 
-        $scope.goToNextPage = function (page) {
+        $scope.goToNextPage = function () {
             $scope.goToPage($scope.page + 1);
         };
 
@@ -219,7 +218,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
             $scope.validateCurrentPage(function () {
                 if (!$scope.newConfig.name) {
-                    showInvalidMsg("Please provide config name.");
+                    showInvalidMsg('Please provide config name.');
                     return;
                 }
                 $scope.isUpdate ? $scope.updateGraphConfig($scope.newConfig) : $scope.createGraphConfig($scope.newConfig);
@@ -227,7 +226,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         };
 
         $scope.updateModel = function () {
-            var query = window.editor.getValue().trim();
+            const query = window.editor.getValue().trim();
             if ($scope.newConfig.startMode === 'query' && $scope.page === 1) {
                 $scope.newConfig.startGraphQuery = query;
             } else if ($scope.page === 2) {
@@ -244,13 +243,13 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         // Called when user clicks on a sample query
         $scope.setQuery = function (query) {
             // Hack for YASQE bug
-            window.editor.setValue(query ? query : " ");
+            window.editor.setValue(query ? query : ' ');
         };
 
         $scope.updateDirty = function () {
             if ($scope.revertConfig) {
-                var q1 = getQueryForCurrentPage($scope.revertConfig);
-                var q2 = window.editor.getValue().trim();
+                const q1 = getQueryForCurrentPage($scope.revertConfig);
+                const q2 = window.editor.getValue().trim();
                 $scope.queryEditorIsDirty = q1 !== q2;
             }
         };
@@ -307,9 +306,10 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     // DOWN HERE WE KEEP EVERYTHING PURELY QUERY EDITOR (MOSTLY BORROWED FROM query-editor.controller.js)
+    // But Why? Can't we reuse it instead of borrow?
 
-    var defaultTabConfig = {
-        id: "1",
+    const defaultTabConfig = {
+        id: '1',
         name: '',
         query: 'select * where { \n' +
         '\t?s ?p ?o .\n' +
@@ -365,18 +365,18 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     function setLoader(isRunning, progressMessage, extraMessage) {
-        var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
         $scope.queryIsRunning = isRunning;
         if (isRunning) {
             $scope.queryStartTime = Date.now();
             $scope.countTimeouted = false;
             $scope.progressMessage = progressMessage;
             $scope.extraMessage = extraMessage;
-            yasrInnerContainer.addClass("hide");
+            yasrInnerContainer.addClass('hide');
         } else {
-            $scope.progressMessage = "";
-            $scope.extraMessage = "";
-            yasrInnerContainer.removeClass("hide");
+            $scope.progressMessage = '';
+            $scope.extraMessage = '';
+            yasrInnerContainer.removeClass('hide');
         }
         // We might call this from angular or outside angular so take care of applying the scope.
         if ($scope.$$phase === null) {
@@ -385,17 +385,17 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     function getLoaderMessage() {
-        var timeSeconds = (Date.now() - $scope.queryStartTime) / 1000,
-            timeHuman = $scope.getHumanReadableSeconds(timeSeconds),
-            message = "";
+        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
+        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
+        let message = '';
 
         if ($scope.progressMessage) {
-            message = $scope.progressMessage + "... " + timeHuman;
+            message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = "Running operation..." + timeHuman;
+            message = 'Running operation...' + timeHuman;
         }
         if ($scope.extraMessage && timeSeconds > 10) {
-            message += "\n" + $scope.extraMessage;
+            message += '\n' + $scope.extraMessage;
         }
 
         return message;
@@ -403,46 +403,45 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
 
     // start of query editor results orientation operations
-    function fixSizesOnHorizontalViewModeSwitch(verticalView) {
+    function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
         function visibleWindowHeight() {
             return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
         }
 
         const codemirrorWrapperSelector = '.CodeMirror-wrap';
-        var verticalView = verticalView;
+        const verticalView = verticalViewParam;
         if (!$scope.orientationViewMode) {
             $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
 
             // window.editor is undefined if no repo is selected
             if (window.editor && document.querySelector(codemirrorWrapperSelector)) {
-                var newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
                 //window.editor.refresh();
             } else {
+                let timer;
                 if (verticalView) {
-                    var timer = $timeout(function () {
+                    timer = $timeout(function () {
                         $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
                     }, 100);
                 } else {
-                    var timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
+                    timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
                 }
 
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
             }
         } else {
             if ($scope.viewMode === 'yasr') {
-                var newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
-                //window.editor.refresh();
             } else {
                 $scope.noPadding = {};
                 document.querySelector(codemirrorWrapperSelector).style.height = '';
-                //window.editor.refresh();
             }
             document.getElementById('yasr').style.minHeight = '';
         }
@@ -457,11 +456,9 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         showHideEditor();
     }
 
-
     function changeViewMode(tabID) {
         $scope.viewMode = 'none';
         $scope.orientationViewMode = !$scope.orientationViewMode;
-        // localStorageService.set('viewMode', $scope.orientationViewMode);
         fixSizesOnHorizontalViewModeSwitch();
         $('.dataTables_filter').remove();
         $('.resultsTable').remove();
@@ -476,7 +473,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     function focusQueryEditor() {
-        if (!angular.element(document).find('.editable-input').is(":focus")) {
+        if (!angular.element(document).find('.editable-input').is(':focus')) {
             angular.element(document).find('.CodeMirror textarea:first-child').focus();
         }
     }
@@ -527,11 +524,9 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
-        // $scope.queryIsRunning = true;
-        ////console.log("Send namespaces request. Default token is : " + $http.defaults.headers.common["Authorization"]);
         SparqlService.getRepositoryNamespaces()
             .success(function (data) {
-                var usedPrefixes = {};
+                const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
                     usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
@@ -554,7 +549,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         getNamespaces();
     }
 
-    $scope.$on("$destroy", function (event) {
+    $scope.$on('$destroy', function () {
         window.editor = null;
         window.yasr = null;
     });
@@ -565,12 +560,12 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     // Add known prefixes
     function addKnownPrefixes() {
         SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);
                 }
             })
-            .error(function (data, status, headers, config) {
+            .error(function (data) {
                 let msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
@@ -584,7 +579,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     });
 
     function querySelected(query) {
-        var tabId = getExistingTabId(query);
+        const tabId = getExistingTabId(query);
         $scope.toggleSampleQueries();
         if (!angular.isDefined(tabId)) {
             $scope.addNewTab(null, query.name, query.body);
@@ -594,8 +589,8 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     }
 
     function getExistingTabId(query) {
-        var existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item, index) {
+        let existingTabId = undefined;
+        angular.forEach($scope.tabsData, function (item) {
             if (item.name === query.name && item.query === query.body) {
                 existingTabId = item.id;
                 return item;
@@ -605,13 +600,12 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         return existingTabId;
     }
 
-
     // end of query operations
 
     // start of query tab operations
     function findTabIndexByID(id) {
-        for (var i = 0; i < $scope.tabsData.length; i++) {
-            var tab = $scope.tabsData[i];
+        for (let i = 0; i < $scope.tabsData.length; i++) {
+            const tab = $scope.tabsData[i];
             if (tab.id === id) {
                 return i;
             }
@@ -623,18 +617,18 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     });
 
     function saveTab(id) {
-        var idx = findTabIndexByID(id);
+        const idx = findTabIndexByID(id);
         // Tab was deleted, don't try to save it's state
         if (idx === undefined) {
             return {};
         }
-        var tab = $scope.tabsData[idx];
+        const tab = $scope.tabsData[idx];
         //tab.query = window.editor.getValue();
         $scope.saveQueryToLocal(tab);
         return tab;
     }
 
-    var maxID = 1;
+    let maxID = 1;
 
     function addNewTab(callback, tabName, savedQuery) {
     }
@@ -644,9 +638,9 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
         let tab = $scope.currentQuery;
 
-        if ($scope.currentQuery.query == null || $scope.currentQuery.query == "") {
+        if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
             // hack for YASQE bug
-            window.editor.setValue(" ");
+            window.editor.setValue(' ');
         } else {
             window.editor.setValue($scope.currentQuery.query);
         }
@@ -667,7 +661,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
             $scope.$apply();
         }, 0);
 
-        //Remove paddign of yasr so it will be aligned with sparql editor
+        //Remove padding of yasr so it will be aligned with sparql editor
         $('#yasr').css('padding', '0');
     }
 

@@ -18,11 +18,11 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     this.locations = [];
     this.repositories = [];
     this.locationsShouldReload = false;
-    this.degradedReason = "";
+    this.degradedReason = '';
 
-    var that = this;
+    const that = this;
 
-    var loadingDone = function (err) {
+    const loadingDone = function (err) {
         that.loading = false;
         if (err) {
             // reset location data
@@ -40,10 +40,10 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.resetActiveRepository = function () {
-        var existsActiveRepo = false;
-        for (var i = 0; i < this.repositories.length; i++) {
-            var repo = this.repositories[i];
-            if (repo.id == this.repository) {
+        let existsActiveRepo = false;
+        for (let i = 0; i < this.repositories.length; i++) {
+            const repo = this.repositories[i];
+            if (repo.id === this.repository) {
                 existsActiveRepo = true;
                 break;
             }
@@ -52,7 +52,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
             if (!$jwtAuth.canReadRepo(this.location, this.repository)) {
                 this.setRepository('');
             } else {
-                $rootScope.$broadcast("repositoryIsSet", {newRepo: false});
+                $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
             }
         } else {
             this.setRepository(this.location.defaultRepository ? this.location.defaultRepository : '');
@@ -60,29 +60,29 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.checkActiveLocationDegraded = function () {
-        this.degradedReason = "";
+        this.degradedReason = '';
         // local locations are always fully supported
         if (this.location.local) {
             return;
         }
-        var that = this;
+        const that = this;
         $http.get('rest/info/version')
             .success(function (res) {
-                if (typeof res === "object") {
+                if (typeof res === 'object') {
                     // New style, check version and product
                     if (res.productVersion !== productInfo.productVersion) {
-                        that.degradedReason = "The remote location is running a different GraphDB version.";
+                        that.degradedReason = 'The remote location is running a different GraphDB version.';
                     } else if (res.productType !== productInfo.productType) {
-                        that.degradedReason = "The remote location is running a different GraphDB edition.";
+                        that.degradedReason = 'The remote location is running a different GraphDB edition.';
                     }
                 } else {
                     // Pre 7.1 style
-                    that.degradedReason = "The remote location is running a different GraphDB version.";
+                    that.degradedReason = 'The remote location is running a different GraphDB version.';
                 }
             })
-            .error(function (res) {
+            .error(function () {
                 // Even older style, endpoint missing
-                that.degradedReason = "The remote location is running a different GraphDB version.";
+                that.degradedReason = 'The remote location is running a different GraphDB version.';
             });
     };
 
@@ -101,7 +101,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
         }).then(
             function (res) {
                 if (res.data) {
-                    var location = res.data;
+                    const location = res.data;
                     if (location.active) {
                         $http.get('rest/repositories').then(function (res) {
                                 that.location = location;
@@ -146,14 +146,14 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
         if (this.locationsShouldReload) {
             this.locationsShouldReload = false;
             this.locations = [this.location];
-            var that = this;
+            const that = this;
             $http.get('rest/locations')
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     that.locations = data;
                 })
-                .error(function (data, status, headers, config) {
+                .error(function () {
                     // if there is an error clear the flag after some time to trigger another attempt
-                    var timer = $timeout(function (event) {
+                    $timeout(function () {
                         that.locationsShouldReload = true;
                     }, 2000);
                 });
@@ -179,14 +179,14 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.getReadableRepositories = function () {
-        var that = this;
+        const that = this;
         return _.filter(this.getRepositories(), function (repo) {
             return $jwtAuth.canReadRepo(that.location, repo.id)
         });
     };
 
     this.getWritableRepositories = function () {
-        var that = this;
+        const that = this;
         return _.filter(this.getRepositories(), function (repo) {
             return $jwtAuth.canWriteRepo(that.location, repo.id)
         });
@@ -211,7 +211,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
         this.repository = id;
         $cookies[this.repositoryCookieName] = this.repository;
         this.setRepositoryHeaders(id);
-        $rootScope.$broadcast("repositoryIsSet", {newRepo: true});
+        $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
         // if the current repo is unreadable by the currently logged in user (or free access user)
         // we unset the repository
@@ -223,55 +223,55 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.getDefaultRepository = function () {
-        return this.hasActiveLocation() ? this.location.defaultRepository : "";
+        return this.hasActiveLocation() ? this.location.defaultRepository : '';
     };
 
     this.setDefaultRepository = function (id) {
         if (!this.hasActiveLocation()) {
-            toastr.error("No active location", 'Error');
+            toastr.error('No active location', 'Error');
             return;
         }
-        var that = this;
+        const that = this;
         $http({
             url: 'rest/locations/active/default-repository',
             method: 'POST',
             data: {defaultRepository: id}
         })
-            .success(function (data, status, headers, config) {
+            .success(function () {
                 // XXX maybe we should reload the active location but oh well
                 that.location.defaultRepository = id;
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
-            })
+            });
     };
 
     this.deleteLocation = function (uri) {
-        var escUri = encodeURIComponent(uri);
+        const escUri = encodeURIComponent(uri);
         $http.delete('rest/locations?uri=' + escUri)
-            .success(function (data, status, headers, config) {
+            .success(function () {
                 //Reload locations and repositories
-                if (that.getActiveLocation().uri == uri) {
+                if (that.getActiveLocation().uri === uri) {
                     that.location = '';
                     that.setRepository('');
                 }
                 that.init();
-            }).error(function (data, status, headers, config) {
-            let msg = getError(data);
-            toastr.error(msg, 'Error');
-        });
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+            });
     };
 
     this.deleteRepository = function (repositoryId) {
         $http.delete('rest/repositories/' + repositoryId)
-            .success(function (data, status, headers, config) {
+            .success(function () {
                 that.init();
-            }).error(function (data, status, headers, config) {
-            let msg = getError(data);
-            toastr.error(msg, 'Error');
-        });
-        if (that.getActiveRepository() == repositoryId) {
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+            });
+        if (that.getActiveRepository() === repositoryId) {
             that.setRepository('');
         }
     };

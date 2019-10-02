@@ -75,8 +75,8 @@ const moduleDefinition = function (productInfo) {
             $menuItemsProvider.setProductInfo(productInfo);
         }]);
 
-    workbench.constant('isEnterprise', productInfo.productType === "enterprise");
-    workbench.constant('isFreeEdition', productInfo.productType === "free");
+    workbench.constant('isEnterprise', productInfo.productType === 'enterprise');
+    workbench.constant('isFreeEdition', productInfo.productType === 'free');
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
@@ -97,7 +97,7 @@ const moduleDefinition = function (productInfo) {
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 
-$.get("rest/info/version?local=1", function (data) {
+$.get('rest/info/version?local=1', function (data) {
     const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
     if (versionArray.length) {
         data.productShortVersion = versionArray[1];
@@ -106,10 +106,10 @@ $.get("rest/info/version?local=1", function (data) {
     }
 
     // TODO: TEST
-    if (data.productType === "enterprise") {
+    if (data.productType === 'enterprise') {
         modules.push('graphdb.framework.clustermanagement');
-        require(["angular/clustermanagement/app"], function () {
-            moduleDefinition(data)
+        require(['angular/clustermanagement/app'], function () {
+            moduleDefinition(data);
         });
     } else {
         moduleDefinition(data);

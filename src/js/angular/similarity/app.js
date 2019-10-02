@@ -6,7 +6,7 @@ import 'angular/similarity/modules';
 import 'angular/similarity/controllers/similarity-list.controller';
 import 'angular/similarity/controllers/create-index.controller';
 
-const similarityApp = angular.module('graphdb.framework.similarity').config(config);
+angular.module('graphdb.framework.similarity').config(config);
 
 config.$inject = ['$routeProvider', '$menuItemsProvider'];
 
@@ -23,9 +23,9 @@ function config($routeProvider, $menuItemsProvider) {
         helpInfo: 'Index name and select query are required. Add Semantic Vectors parameters if you want.'
     });
 
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"});
+    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
     $menuItemsProvider.addItem({
-        label: 'Similarity', href: 'similarity', order: 40, parent: 'Explore', role: "IS_AUTHENTICATED_FULLY",
+        label: 'Similarity', href: 'similarity', order: 40, parent: 'Explore', role: 'IS_AUTHENTICATED_FULLY',
         children: [{
             href: 'similarity/index/create',
             children: []

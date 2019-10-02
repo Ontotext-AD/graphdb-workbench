@@ -24,14 +24,14 @@ exportDirectives.directive('paginations', function () {
                 }
             };
         }
-    }
+    };
 });
 
 exportDirectives.directive('formatDropdown', function () {
     return {
         restrict: 'A',
         scope: {
-            selectFormat: '&',
+            selectFormat: '&'
         },
         controller: function ($scope, $element) {
 

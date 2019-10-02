@@ -19,9 +19,9 @@ angular
     }]);
 
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -37,7 +37,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
-    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
+    $scope.onopen = $scope.onclose = () => angular.noop();
 
     // embedded and other params when the controller is initialized
     if ($scope.embedded && ($location.search().query ||
@@ -49,20 +49,20 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     }
 
     // creating datasource for class properties data
-    var datasource = {};
-    var position = 0;
-    var current = 0;
-    var type2color = {};
-    var colorIndex = 0;
-    var nodeLabelMinFontSize = 16; // pixels
+    const datasource = {};
+    let position = 0;
+    let current = 0;
+    let type2color = {};
+    let colorIndex = 0;
+    const nodeLabelMinFontSize = 16; // pixels
     // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
-    var panAndZoom = d3.behavior.zoom()
+    const panAndZoom = d3.behavior.zoom()
         .scaleExtent([0.5, 10]);
-    var transformValues;
+    let transformValues;
     // build svg element
-    var width = 1000;
-    var height = 1000;
-    var tipElement;
+    const width = 1000;
+    const height = 1000;
+    let tipElement;
 
     $rootScope.key = "";
 
@@ -127,7 +127,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.shouldDisableSameAs = function () {
-        let sameAsCheckbox = $('#sameAsCheck');
+        const sameAsCheckbox = $('#sameAsCheck');
         if ($scope.settings && !$scope.settings['includeInferred'] && sameAsCheckbox.prop('checked')) {
             sameAsCheckbox.prop("checked", false);
             $scope.settings['sameAsState'] = false;
@@ -141,7 +141,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .toLowerCase()
             .indexOf($scope.propertiesQueryObj.query.toLowerCase()) >= 0;
     }
-
 
     $scope.$watch('propertiesObj.items', function () {
         if (angular.isDefined($scope.propertiesObj.items) && $scope.propertiesObj.items.length > 0) {
@@ -164,7 +163,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             d3.selectAll("svg .link-wrapper text")
                 .style("display", "block");
         }
-
     }
 
     function updateNodeLabels(nodeLabels) {
@@ -194,9 +192,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $timeout(function () {
             $('.node-label-body div').each(function (i, e) {
                 // Initial text is minus one character as we'll be adding a one-character suffix if we need to truncate
-                var text = e.textContent.substring(0, e.textContent.length - 1);
-                var suffixToInsert = '…';
-                var endlessLoopGuard = 0;
+                let text = e.textContent.substring(0, e.textContent.length - 1);
+                const suffixToInsert = '…';
+                let endlessLoopGuard = 0;
 
                 // Loop until the text fits
                 while (endlessLoopGuard < 200 && (e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth)) {
@@ -211,7 +209,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             });
         }, 50);
     }
-
 
     $scope.copyToClipboard = copyToClipboard;
 
@@ -235,7 +232,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.saveSettings = angular.copy($scope.defaultSettings);
 
-    var localStorageSettings = localStorageService.get('graphs-viz');
+    const localStorageSettings = localStorageService.get('graphs-viz');
     if (localStorageSettings && typeof localStorageSettings === 'object') {
         try {
             $scope.saveSettings = localStorageSettings;
@@ -250,7 +247,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.changeLimit = function (delta) {
-        var linksLimit = $scope.settings.linksLimit + delta;
+        let linksLimit = $scope.settings.linksLimit + delta;
         if (linksLimit < 1) {
             linksLimit = 1;
         }
@@ -291,11 +288,34 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         });
     };
 
-
     $scope.reExpandNode = function () {
         if ($scope.rootNodeIri) {
             $scope.$broadcast("onRootNodeChange", $scope.rootNodeIri);
         }
+    };
+
+    const loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
+        const sendSameAs = (sameAsParam === undefined) ? ($scope.saveSettings['sameAsState']) : sameAsParam === true;
+        const sendInferred = (inferredParam === undefined) ? ($scope.saveSettings['includeInferred']) : inferredParam === true;
+
+        $scope.loading = true;
+        $http({
+            url: 'rest/explore-graph/graph',
+            method: 'GET',
+            params: {
+                query: queryString,
+                linksLimit: $scope.saveSettings['linksLimit'],
+                languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
+                includeInferred: sendInferred,
+                sameAsState: sendSameAs
+            }
+        }).then(function (response) {
+            // Node draw will turn off loader
+            initGraphFromResponse(response);
+        }, function (response) {
+            $scope.loading = false;
+            toastr.error(getError(response.data), 'Cannot load visual graph!');
+        });
     };
 
     $scope.updateSettings = function () {
@@ -317,30 +337,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function (t) {
             return t['text'];
         });
-
-        var loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
-            var sendSameAs = (sameAsParam === undefined) ? ($scope.saveSettings['sameAsState']) : sameAsParam === true;
-            var sendInferred = (inferredParam === undefined) ? ($scope.saveSettings['includeInferred']) : inferredParam === true;
-
-            $scope.loading = true;
-            $http({
-                url: 'rest/explore-graph/graph',
-                method: 'GET',
-                params: {
-                    query: queryString,
-                    linksLimit: $scope.saveSettings['linksLimit'],
-                    languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                    includeInferred: sendInferred,
-                    sameAsState: sendSameAs
-                }
-            }).then(function (response) {
-                // Node draw will turn off loader
-                initGraphFromResponse(response);
-            }, function (response) {
-                $scope.loading = false;
-                toastr.error(getError(response.data), 'Cannot load visual graph!');
-            });
-        };
 
         // TODO
         // reexpand root node
@@ -380,12 +376,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         this.computeConnectedness = function () {
             // count the the number of times a given node is connected to other nodes
             // (only for nodes connected to more than one node)
-            var counts = {};
-            var seenLinks = {};
+            const counts = {};
+            const seenLinks = {};
             _.each(this.links, function (link) {
-                var i1 = link.source.iri;
-                var i2 = link.target.iri;
-                var seenKey = _.min([i1, i2]) + "|" + _.max([i1, i2]);
+                const i1 = link.source.iri;
+                const i2 = link.target.iri;
+                const seenKey = _.min([i1, i2]) + "|" + _.max([i1, i2]);
                 if (!seenLinks[seenKey]) {
                     seenLinks[seenKey] = 1;
                     counts[i1] = (counts[i1] || 0) + 1;
@@ -405,13 +401,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         this.addAndMatchLinks = function (newLinks) {
-            var nodes = this.nodes;
+            const nodes = this.nodes;
             Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
 
             this.computeConnectedness();
         };
 
-        var countLinks = function (d, links) {
+        const countLinks = function (d, links) {
             return findLinksForNode(d, links).length;
         };
 
@@ -419,21 +415,21 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         function findLinksForNode(d, links) {
             return _.filter(links, function (l) {
-                return l.source.iri === d.iri || l.target.iri === d.iri
+                return l.source.iri === d.iri || l.target.iri === d.iri;
             });
         }
 
         function linksTypes(d, links) {
-            var linksForNode = findLinksForNode(d, links);
-            var types = _.map(linksForNode, function (l) {
+            const linksForNode = findLinksForNode(d, links);
+            const types = _.map(linksForNode, function (l) {
                 return (l.source.iri === d.iri ) ? l.target.types : l.source.types;
             });
             return _.uniq(_.flatten(types));
         }
 
         function linksPredicates(d, links) {
-            var linksForNode = findLinksForNode(d, links);
-            var predicates = _.map(linksForNode, function (l) {
+            const linksForNode = findLinksForNode(d, links);
+            const predicates = _.map(linksForNode, function (l) {
                 return l.predicates;
             });
             return _.uniq(_.flatten(predicates));
@@ -447,7 +443,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             this.links = _.reject(this.links, function (l) {
                 return l.source.iri === d.iri || l.target.iri === d.iri;
             });
-            var links = this.links;
+            const links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
                 return countLinks(n, links) === 0;
             });
@@ -459,27 +455,27 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         this.removeNodeLeafLinks = function (d) {
-            var links = this.links;
+            let links = this.links;
             this.links = _.reject(this.links, function (l) {
                 if ((l.source.iri === d.iri && countLinks(l.target, links) === 1) ||
                     (l.target.iri === d.iri && countLinks(l.source, links) === 1)) {
                     return true;
                 }
-                var targetLinks;
+                let targetLinks;
                 if (l.source.iri === d.iri && countLinks(l.target, links) === 2) {
                     targetLinks = findLinksForNode(l.target, links);
                 } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2) {
                     targetLinks = findLinksForNode(l.source, links);
                 }
-                if (!targetLinks)
+                if (!targetLinks) {
                     return;
+                }
 
                 // the node to which (or from which) d has link to has only two links, check if the second one is to d also
                 return (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
                     (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
-
-
             });
+
             links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
                 return countLinks(n, links) === 0 && n.iri !== d.iri;
@@ -503,7 +499,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         this.copyState = function () {
-            var nodesCopy = _.map(this.nodes, function (node) {
+            const nodesCopy = _.map(this.nodes, function (node) {
                 return {
                     iri: node.iri,
                     size: node.size,
@@ -515,7 +511,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     fixed: node.fixed
                 };
             });
-            var linksCopy = _.map(this.links, function (link) {
+            const linksCopy = _.map(this.links, function (link) {
                 return {
                     source: link.source.iri,
                     target: link.target.iri,
@@ -559,10 +555,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }
 
             draw();
-        }
+        };
     }
 
-    var graph = new Graph();
+    let graph = new Graph();
 
     $scope.defaultGraphConfig = {
         id: 'default',
@@ -581,7 +577,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }).error(function (data) {
             toastr.error(getError(data), 'Could not get graph configs');
         });
-
     };
 
     $scope.loadConfigForId = function (configId, successCallback) {
@@ -604,7 +599,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             return $scope.defaultGraphConfig;
         }
         return $.grep($scope.graphConfigs, function (e) {
-            return e.id === configId
+            return e.id === configId;
         })[0];
     };
 
@@ -672,7 +667,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
     };
 
-    var initGraphFromQueryParam = function () {
+    const initGraphFromQueryParam = function () {
         // view sparql
         if ($location.search().query) {
             $scope.searchVisible = false;
@@ -703,7 +698,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                             response.data.types = "greyColor";
                         }
                         graph = new Graph();
-                        var rootNode = graph.addNode(response.data, width / 2, height / 2);
+                        const rootNode = graph.addNode(response.data, width / 2, height / 2);
 
                         transformValues = "translate(0, -70) scale(1)";
                         panAndZoom.translate([0, -70]);
@@ -728,13 +723,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     $scope.loadSavedGraph(data);
                 })
                 .error(function (data) {
-                    let msg = getError(data);
+                    const msg = getError(data);
                     toastr.error(msg, 'Error! Could not open saved graph');
                 });
         }
     };
 
-    var loadGraphFromQueryParam = function () {
+    const loadGraphFromQueryParam = function () {
         // view graph config
         if ($location.search().config) {
             $scope.loadConfigForId($location.search().config, initGraphFromQueryParam);
@@ -747,21 +742,21 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.replaceIRIWithPrefix = function (iri) {
-        var namespaces = $scope.namespaces;
-        var namespacePrefix = _.findLast(namespaces, function (o) {
-            return iri.indexOf(o.uri) === 0
+        const namespaces = $scope.namespaces;
+        const namespacePrefix = _.findLast(namespaces, function (o) {
+            return iri.indexOf(o.uri) === 0;
         });
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
     function expandPrefix(str, namespaces) {
-        var ABS_URI_REGEX = /^<?(http|urn).*>?/;
+        const ABS_URI_REGEX = /^<?(http|urn).*>?/;
         if (!ABS_URI_REGEX.test(str)) {
-            var uriParts = str.split(':'),
-                uriPart = uriParts[0],
-                localName = uriParts[1];
+            const uriParts = str.split(':');
+            const uriPart = uriParts[0];
+            const localName = uriParts[1];
             if (!angular.isUndefined(localName)) {
-                var expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
+                const expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
                 if (expandedUri) {
                     return expandedUri + localName;
                 }
@@ -787,15 +782,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         // Inits namespaces for repo
         $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-            var nss = _.map(data.results.bindings, function (o) {
-                return {"uri": o.namespace.value, "prefix": o.prefix.value}
+            const nss = _.map(data.results.bindings, function (o) {
+                return {"uri": o.namespace.value, "prefix": o.prefix.value};
             });
             $scope.namespaces = _.sortBy(nss, function (n) {
-                return n.uri.length
+                return n.uri.length;
             });
 
             $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-            $scope.getAutocompletePromise = AutocompleteService.checkAutocompleteStatus();
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }).error(function (data) {
             toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
         });
@@ -827,17 +822,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         initForRepository();
     }
 
+    const multiClickDelay = 500; // max delay between clicks for multiple click events
 
-    var multiClickDelay = 500; // max delay between clicks for multiple click events
+    const nodeLabelRectScaleX = 1.75;
 
-    var nodeLabelRectScaleX = 1.75;
-
-    var color1 = d3.scale.linear()
+    const color1 = d3.scale.linear()
         .domain([0, 9])
         .range(["hsl(0, 100%, 75%)", "hsl(360, 90%, 82%)"])
         .interpolate(d3.interpolateHslLong);
 
-    var color2 = d3.scale.linear()
+    const color2 = d3.scale.linear()
         .domain([0, 9])
         .range(["hsl(180, 50%, 75%)", "hsl(540, 40%, 82%)"])
         .interpolate(d3.interpolateHslLong);
@@ -848,9 +842,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             colorIndex++;
         }
 
-        var index = type2color[type];
+        const index = type2color[type];
         if (index > 39) {
-            return "#c2c2c2"
+            return "#c2c2c2";
         } else if (index % 2 === 0) {
             return color1(index / 2);
         } else {
@@ -858,16 +852,18 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
     };
 
-    var force = d3.layout.force()
+    const force = d3.layout.force()
         .gravity(0.07)
         .size([width, height]);
 
-    var svg = d3.select(".main-container .graph-visualization").append("svg")
+    const svg = d3.select(".main-container .graph-visualization").append("svg")
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("preserveAspectRatio", "xMidYMid meet");
 
-    var showNodeTipAndIconsTimer = 0;
-    var removeIconsTimer = 0;
+    let showNodeTipAndIconsTimer = 0;
+    let removeIconsTimer = 0;
+
+    const loader = new Loader();
 
     function draw(resetRootNode) {
         // remove all group elements and rec to rebuild the graph when the user clicks on it
@@ -880,7 +876,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         panAndZoom.on("zoom", panAndZoomed);
 
         // building rectangular so we can bind zoom and drag effects
-        var rect = svg.append("rect")
+        svg.append("rect")
             .attr("width", width * 10)
             .attr("height", height * 10)
             .attr("x", -(width * 10 - width) / 2)
@@ -888,7 +884,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .style("fill", "none")
             .style("pointer-events", "all")
             .call(panAndZoom)
-            .on("click", function (d) {
+            .on("click", function () {
                 d3.event.stopPropagation();
                 removeMenuIfVisible();
                 // Clicking outside the graph stops the layout
@@ -896,7 +892,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             });
 
 
-        var container = svg.append("g").attr("class", "nodes-container")
+        const container = svg.append("g").attr("class", "nodes-container")
             .attr("transform", function () {
                 if (angular.isDefined(transformValues) && !resetRootNode) {
                     return transformValues;
@@ -904,17 +900,17 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 return '';
             });
 
-        var tip = d3tip()
+        const tip = d3tip()
             .attr('class', 'd3-tip')
-            .customPosition(function (d) {
-                var bbox = tipElement.getBoundingClientRect();
+            .customPosition(function () {
+                const bbox = tipElement.getBoundingClientRect();
                 return {
                     top: (bbox.bottom + 10) + 'px',
                     left: (bbox.left - 30) + 'px'
-                }
+                };
             })
             .html(function (d) {
-                var html = '';
+                let html = '';
 
                 if (d.fixed) {
                     // add pin icon if pinned down
@@ -924,7 +920,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 if (d.types.length > 0) {
                     // mid-dot delimited types
                     html += _.join(_.map(d.types, function (t) {
-                        return $scope.replaceIRIWithPrefix(t)
+                        return $scope.replaceIRIWithPrefix(t);
                     }), ' \u00B7 ');
                 } else {
                     html += '<i>No types</i>';
@@ -933,13 +929,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 return html;
             });
 
-        var numberOfPredLeft = function (d) {
+        const numberOfPredLeft = function (d) {
             return d.predicates.length - 10;
         };
 
         // This will create text that will appear in d3tip
-        var createTipText = function (d) {
-            var html = '';
+        const createTipText = function (d) {
+            let html = '';
             html += _.join(_.map(d.predicates, function (p, index) {
                 if (index === 0) {
                     return getShortPredicate(p);
@@ -947,10 +943,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 } else if (index < 10) {
                     return ' \u00B7 ' + getShortPredicate(p);
                     // On eleventh predicate just append how many more predicates left to show to the user
-                } else if (index == 10) {
-                    var numOfPredLeft = numberOfPredLeft(d);
+                } else if (index === 10) {
+                    const numOfPredLeft = numberOfPredLeft(d);
                     // Show how many predicates left
-                    var textToShow = numOfPredLeft > 1 ? numOfPredLeft + ' predicates'
+                    const textToShow = numOfPredLeft > 1 ? numOfPredLeft + ' predicates'
                         : numOfPredLeft + ' predicate';
                     return ' \u00B7 ' + 'more ' + textToShow + ' to show';
                 }
@@ -959,10 +955,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             return html;
         };
 
-        var calculateWidth = function (d) {
-            var text = createTipText(d);
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext("2d");
+        const calculateWidth = function (d) {
+            const text = createTipText(d);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext("2d");
             ctx.font = "13px Arial";
 
             if (d.predicates.length < 10) {
@@ -972,29 +968,29 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }
         };
 
-        var tipPredicateElement;
-        var tipPredicateTimer;
+        let tipPredicateElement;
+        let tipPredicateTimer;
 
-        var tipPredicates = d3tip()
+        const tipPredicates = d3tip()
             .attr('class', 'd3-tip')
             .customPosition(function (d) {
-                var bbox = tipPredicateElement.getBoundingClientRect();
-                var textWidth = calculateWidth(d);
+                const bbox = tipPredicateElement.getBoundingClientRect();
+                const textWidth = calculateWidth(d);
                 return {
                     top: (bbox.top - 30) + 'px',
                     left: (bbox.left - 30) + 'px',
                     width: textWidth + 'px'
-                }
+                };
             })
             .html(function (d) {
                 return createTipText(d);
             });
 
-        var tipTimer;
+        let tipTimer;
         // Shows the tooltip for a node but with a slight delay
-        var showTipForNode = function (d, event) {
+        const showTipForNode = function (d, event) {
             $timeout.cancel(tipTimer);
-            var thisTipElement = tipElement = event.target;
+            const thisTipElement = tipElement = event.target;
             $timeout(function () {
                 if (tipElement === thisTipElement) {
                     tip.show(d, tipElement);
@@ -1003,7 +999,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         // Hides the tooltip for the node and resets some variables
-        var hideTipForNode = function (d) {
+        const hideTipForNode = function () {
             $timeout.cancel(tipTimer);
             $timeout.cancel(showNodeTipAndIconsTimer);
             tipElement = null;
@@ -1014,7 +1010,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         // Updates the text in the tooltip if already visible
-        var updateTipForNode = function (d) {
+        const updateTipForNode = function (d) {
             if (tipElement) {
                 tip.show(d, tipElement);
             }
@@ -1023,9 +1019,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         svg.call(tip);
 
         // Shows like tooltip list of predicates but with a slight delay
-        var showPredicateToolTip = function (d) {
+        const showPredicateToolTip = function (d) {
             $timeout.cancel(tipPredicateTimer);
-            var thisPredicateTipElement = tipPredicateElement = d3.event.target;
+            const thisPredicateTipElement = tipPredicateElement = d3.event.target;
             $timeout(function () {
                 if (tipPredicateElement === thisPredicateTipElement && d.predicates.length > 1) {
                     tipPredicates.show(d, tipPredicateElement);
@@ -1034,7 +1030,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         // Hides the tooltip with predicates and resets some variables
-        var hidePredicateToolTip = function (d) {
+        const hidePredicateToolTip = function () {
             $timeout.cancel(tipPredicateTimer);
             tipPredicateElement = null;
             tipPredicates.hide();
@@ -1042,8 +1038,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         svg.call(tipPredicates);
 
-        var link = svg.selectAll(".link"),
-            node = svg.selectAll(".node");
+        let link = svg.selectAll(".link");
+        let node = svg.selectAll(".node");
 
         force.nodes(graph.nodes).charge(-3000);
 
@@ -1073,7 +1069,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .attr("d", "M0,-5L10,0L0,5 L10,0 L0, -5");
 
         // add the links, nodes, predicates and node labels
-        var link = container.selectAll(".link")
+        link = container.selectAll(".link")
             .data(graph.links)
             .enter().append("g")
             .attr("class", "link-wrapper")
@@ -1088,10 +1084,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 return "url(" + $location.absUrl() + "#" + d.target.size + ")";
             });
 
-        var predicate = container.selectAll(".link-wrapper")
+        const predicate = container.selectAll(".link-wrapper")
             .append("text")
-            .text(function (d, index) {
-                return getPredicate(d, index);
+            .text(function (d) {
+                return getPredicate(d);
             })
             .attr("class", function (d) {
                 if (d.predicates.length > 1) {
@@ -1113,14 +1109,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             });
 
         // node events and variables
-        var mouseEventTimer;
-        var upEventLast = 0;
-        var virtualClickEventTimer = 0;
-        var moveEventCount = 0;
+        let mouseEventTimer;
+        let upEventLast = 0;
+        let virtualClickEventTimer = 0;
+        let moveEventCount = 0;
 
         // tracks mousedown and touchstart events in order to count single or double click
         // (checked in upEventHandler)
-        var downEventHandler = function (d) {
+        const downEventHandler = function () {
             if (d3.event.button && d3.event.button !== 0) {
                 return;
             }
@@ -1140,8 +1136,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         // builds upon downEventHandler and adds additional functionality for touch devices
-        var touchStartEventHandler = function (d) {
-            downEventHandler(d);
+        const touchStartEventHandler = function (d) {
+            downEventHandler();
 
             // for touch devices we track touch and hold for 1s in order to remove a node
             moveEventCount = 0;
@@ -1157,13 +1153,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         // tracks the number of move events (checked in the touchend event handler)
-        var moveEventHandler = function (d) {
+        const moveEventHandler = function () {
             moveEventCount++;
         };
 
-        var showNodeTipAndIcons = function (d) {
+        const showNodeTipAndIcons = function (d) {
             if (!d.isBeingDragged) {
-                var event = d3.event;
+                const event = d3.event;
                 $timeout.cancel(removeIconsTimer);
                 showNodeTipAndIconsTimer = $timeout(() => {
                     if (expandNodeIcons(d, this)) {
@@ -1173,15 +1169,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }
         };
 
-        var upEventHandler = function (d) {
+        const upEventHandler = function (d) {
             if (d3.event.button && d3.event.button !== 0) {
                 return;
             }
 
             $timeout.cancel(mouseEventTimer);
 
-            var event = d3.event;
-            var element = this;
+            const event = d3.event;
+            const element = this;
             if (d3.event.timeStamp - upEventLast < multiClickDelay) {
                 if (virtualClickEventTimer === 1) {
                     mouseEventTimer = $timeout(function () {
@@ -1189,7 +1185,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     }, 40 + multiClickDelay - (d3.event.timeStamp - upEventLast));
                 } else if (virtualClickEventTimer === 2) {
                     // expand node
-                    var shownLinks = graph.countLinks(d, graph.links);
+                    const shownLinks = graph.countLinks(d, graph.links);
                     if (!(shownLinks >= $scope.saveSettings['linksLimit'])) {
                         expandNode(d, false, element.parentNode);
                     }
@@ -1202,8 +1198,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         // Shows growing or shrinking pin animation
         function showPinAnimation(d, type) {
-            var startSize, endSize, startOpacity, endOpacity,
-                animate = true;
+            let startSize;
+            let endSize;
+            let startOpacity;
+            let endOpacity;
+            let animate = true;
 
             if (type === 'down') {
                 startSize = d.size * 2;
@@ -1228,7 +1227,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 return; // unknown
             }
 
-            var pin = container.selectAll('.node-wrapper')
+            let pin = container.selectAll('.node-wrapper')
                 .filter(function (innerD) {
                     return innerD === d;
                 })
@@ -1251,7 +1250,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             if (animate) {
                 pin = pin.transition()
                     .duration(1000)
-                    .style('font-size', function (d) {
+                    .style('font-size', function () {
                         return endSize + 'px';
                     })
                     .attr('opacity', endOpacity);
@@ -1267,7 +1266,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         // Unfixes nodes that were dragged previously
-        var rightClickHandler = function (d) {
+        const rightClickHandler = function (d) {
             if (d3.event.shiftKey) {
                 // Do nothing with shift key, use to access context menu
                 return;
@@ -1294,7 +1293,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             updateTipForNode(d);
         };
 
-        var drag = d3.behavior.drag()
+        const drag = d3.behavior.drag()
             .origin(function (d) {
                 return d;
             })
@@ -1346,7 +1345,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }
         }
 
-        var node = container.selectAll(".node")
+        node = container.selectAll(".node")
             .data(graph.nodes)
             .enter().append("g")
             .attr("class", "node-wrapper")
@@ -1375,23 +1374,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .on("touchend", upEventHandler)
             .on("contextmenu", rightClickHandler);
 
-        var nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
+        const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
             .attr("width", function (d) {
                 return d.size * 2 * nodeLabelRectScaleX;
             });
         // height will be computed by updateNodeLabels
 
-        var menuEventsWrapper = container.insert("g")
-            .attr("class", "menu-events");
+        container.insert("g").attr("class", "menu-events");
 
         updateNodeLabels(nodeLabels);
 
         force.on("tick", function () {
             // recalculate nodes positions and repel them if they collide
-            var q = d3.geom.quadtree(graph.nodes),
-                i = 0,
-                n = graph.nodes.length;
+            let q = d3.geom.quadtree(graph.nodes);
+            let i = 0;
+            const n = graph.nodes.length;
             // FIXME while (++i < n) q.visit(collide(graph.nodes[i]));
 
             // recalculate links attributes
@@ -1411,7 +1409,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }).attr("y", function (d) {
                 return d.y = (d.source.y + d.target.y) * 0.5;
             }).attr("transform", function (d) {
-                var angle = findAngleBetweenNodes(d, d.direction);
+                const angle = findAngleBetweenNodes(d, d.direction);
                 return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
             });
 
@@ -1465,14 +1463,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         d3.selectAll('.link-wrapper').each(function () {
-            var source = $(this).attr("id").split(">")[0];
-            var target = $(this).attr("id").split(">")[1];
+            const source = $(this).attr("id").split(">")[0];
+            const target = $(this).attr("id").split(">")[1];
             d3.selectAll('.link').each(function (link) {
                 if (link.source.iri === target && link.target.iri === source) {
-                    var twoWayLinkID = link.source.iri;
+                    let twoWayLinkID = link.source.iri;
                     twoWayLinkID += ">";
                     twoWayLinkID += link.target.iri;
-                    var textNode = document.createTextNode('  \u27F6');
+                    const textNode = document.createTextNode('  \u27F6');
                     document.getElementById(twoWayLinkID).lastChild.appendChild(textNode);
                     link.direction = "double";
                 }
@@ -1482,7 +1480,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         d3.selectAll('.d3-actions-tip').remove();
 
         force.start();
-
     }
 
     /* FIXME
@@ -1511,23 +1508,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // find angle between pair of nodes so we can position predicates
     function findAngleBetweenNodes(linkedNodes, direction) {
-        var sourceNode = linkedNodes.source;
-        var targetNode = linkedNodes.target;
+        const sourceNode = linkedNodes.source;
+        const targetNode = linkedNodes.target;
 
-        var p1 = {
+        const p1 = {
             x: sourceNode.x,
             y: sourceNode.y
         };
 
-        var p2 = {
+        const p2 = {
             x: targetNode.x,
             y: targetNode.y
         };
         if (direction) {
             return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-        }
-        else {
-            var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+        } else {
+            const angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
             if (angleDeg <= 90 && angleDeg >= -90) {
                 return angleDeg;
             }
@@ -1535,7 +1531,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
     }
 
-    var menuEvents = new MenuEvents();
+    const menuEvents = new MenuEvents();
 
     // expanding and collapsing of the nodes
     function clickedNode(d, element, event) {
@@ -1598,8 +1594,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         draw();
     }
 
-    var loader = new Loader();
-
     function initGraph(response) {
         $scope.nodeSelected = true;
         if (response.data.types === null) {
@@ -1617,25 +1611,25 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     }
 
     function renderGraphFromResponse(response, d, isStartNode) {
-        var linksFound = response.data;
+        let linksFound = response.data;
         // filter existing links
         linksFound = _.filter(linksFound, function (newLink) {
             return _.findIndex(graph.links,
                 function (existingLink) {
-                    return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri
+                    return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
         // filter reflexive links until we find a way to render them  GDB-1853
         linksFound = _.filter(linksFound, function (newLink) {
             return newLink.source !== newLink.target;
         });
-        var nodesFromLinks = _.union(_.flatten(_.map(response.data, function (d) {
+        const nodesFromLinks = _.union(_.flatten(_.map(response.data, function (d) {
             return [d.source, d.target];
         })));
-        var existingNodes = _.map(graph.nodes, function (n) {
+        const existingNodes = _.map(graph.nodes, function (n) {
             return n.iri;
         });
-        var newNodes = _.reject(nodesFromLinks, function (n) {
+        const newNodes = _.reject(nodesFromLinks, function (n) {
             return _.includes(existingNodes, n);
         });
 
@@ -1649,8 +1643,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             graph.addAndMatchLinks(linksFound);
             draw();
         } else {
-            var promises = [];
-            var newNodesData = [];
+            const promises = [];
+            const newNodesData = [];
 
             _.forEach(newNodes, function (newNode, index) {
                 promises.push($http({
@@ -1675,9 +1669,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 _.forEach(newNodesData, function (newNodeData, index) {
                     // Calculate initial positions for the new nodes based on spreading them evenly
                     // on a circle around the node we came from.
-                    var theta = 2 * Math.PI * index / newNodesData.length;
-                    var x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
-                    var y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
+                    const theta = 2 * Math.PI * index / newNodesData.length;
+                    const x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
+                    const y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
                     graph.addNode(newNodeData, x, y);
                 });
 
@@ -1696,7 +1690,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
         loader.init(d, parentNode);
 
-        var expandIri = d.iri;
+        const expandIri = d.iri;
         $http({
             url: 'rest/explore-graph/links',
             method: 'GET',
@@ -1716,7 +1710,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
         }, function (response) {
-            let msg = getError(response.data);
+            const msg = getError(response.data);
             toastr.error(msg, 'Error exploring node');
             $scope.loading = false;
             loader.setLoadingState(false);
@@ -1761,17 +1755,17 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         this.expandedState = false;
 
         function getPositionAndAngle(angle, d) {
-            var x = d.x - 14 + (d.size + 15) * Math.cos(angle * Math.PI / 180 - Math.PI / 2);
-            var y = d.y - 14 + (d.size + 15) * Math.sin(angle * Math.PI / 180 - Math.PI / 2);
+            const x = d.x - 14 + (d.size + 15) * Math.cos(angle * Math.PI / 180 - Math.PI / 2);
+            const y = d.y - 14 + (d.size + 15) * Math.sin(angle * Math.PI / 180 - Math.PI / 2);
             return "translate(" + x + "," + y + ")";
         }
 
         this.initIcons = function (node, parentNode) {
             // init action tips on hover of the icons
-            var actionsTip = d3tip()
+            const actionsTip = d3tip()
                 .attr('class', 'd3-tip d3-actions-tip')
                 .customPosition(function () {
-                    var bbox = d3.event.target.getBoundingClientRect();
+                    const bbox = d3.event.target.getBoundingClientRect();
                     return {
                         top: (bbox.top - 20) + 'px',
                         left: (bbox.right + 10) + 'px'
@@ -1781,7 +1775,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     return name;
                 });
             svg.call(actionsTip);
-            var angle = 20;
+            const angle = 20;
             if (node.isExpanded) {
                 this.collapseIcon = d3.select('.menu-events').append("g")
                     .attr("class", "collapse-icon")
@@ -1869,7 +1863,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 }, 500);
             });
 
-
             this.copyURIIcon = d3.select('.menu-events').append("g")
                 .attr("class", "icon-link")
                 .attr("name", "link")
@@ -1932,12 +1925,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         this.animateMenu = function (node) {
-            var animationDuration = 100;
-            var easeEffects = ["linear", "quad", "cubic", "sin", "exp", "circle", "elastic", "back", "bounce"]; // https://github.com/d3/d3-3.x-api-reference/blob/master/Transitions.md#easing
-            var easeEffect = easeEffects[3];
-            var delay = 0;
-            var dellayAddition = 35;
-            var angle = 20; // angle of the first icon 0 is at 12 o'clock
+            const animationDuration = 100;
+            const easeEffects = ["linear", "quad", "cubic", "sin", "exp", "circle", "elastic", "back", "bounce"]; // https://github.com/d3/d3-3.x-api-reference/blob/master/Transitions.md#easing
+            const easeEffect = easeEffects[3];
+            let delay = 0;
+            const dellayAddition = 35;
+            let angle = 20; // angle of the first icon 0 is at 12 o'clock
 
             if (this.expandIcon) {
                 this.expandIcon
@@ -1945,7 +1938,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     .duration(animationDuration)
                     .style("opacity", 1)
                     .ease(easeEffect)
-                    .attr("transform", function (d) {
+                    .attr("transform", function () {
                         return getPositionAndAngle(angle, node);
                     })
                     .delay(delay += dellayAddition);
@@ -1957,7 +1950,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     .duration(animationDuration)
                     .style("opacity", 1)
                     .ease(easeEffect)
-                    .attr("transform", function (d) {
+                    .attr("transform", function () {
                         return getPositionAndAngle(angle, node);
                     })
                     .delay(delay += dellayAddition);
@@ -1968,7 +1961,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function (d) {
+                .attr("transform", function () {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -1979,7 +1972,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function (d) {
+                .attr("transform", function () {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -1991,7 +1984,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function (d) {
+                .attr("transform", function () {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -2086,7 +2079,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
             $scope.propertiesNotFiltered = $scope.propertiesObj.items;
 
-            var imageVal = _.find($scope.propertiesObj.items, function (o) {
+            const imageVal = _.find($scope.propertiesObj.items, function (o) {
                 return o.key === 'image';
             });
             if (imageVal) {
@@ -2122,23 +2115,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         if (d.predicates.length > 1) {
             $scope.predicates = _.map(d.predicates, function (p) {
-                return getShortPredicate(p)
+                return getShortPredicate(p);
             });
             $scope.showInfoPanel = true;
         }
     }
 
     // get each predicate and check if there are more than one for same source and target
-    function getPredicate(d, index) {
+    function getPredicate(d) {
         if (d.predicates.length > 1) {
             return d.predicates.length + " predicates";
         }
         return getShortPredicate(d.predicates[0]);
-
     }
 
     function getShortPredicate(p) {
-        var shortIRI = $scope.replaceIRIWithPrefix(p);
+        const shortIRI = $scope.replaceIRIWithPrefix(p);
         if (shortIRI.length === p.length) {
             return p.split('/')[p.split('/').length - 1];
         } else {
@@ -2148,12 +2140,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // calculate predicate text length so we can have dynamic link lengths
     function getPredicateTextLength(link) {
-        var span = $('<span></span>'),
-            splitedLink = link.predicates[0].split('/'),
-            predicateText = splitedLink[splitedLink.length - 1];
+        const span = $('<span></span>');
+        const splitedLink = link.predicates[0].split('/');
+        const predicateText = splitedLink[splitedLink.length - 1];
         span.addClass('predicate-text').text(predicateText);
         $('body').append(span);
-        var textLength = span.width() + link.source.size * 2 + link.target.size * 2 + 50;
+        const textLength = span.width() + link.source.size * 2 + link.target.size * 2 + 50;
         span.remove();
         return textLength * 0.75;
     }
@@ -2178,11 +2170,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         removeMenuIfVisible();
 
         // compute common rotation math such as the angle, its sine and cosine and the pivot point
-        var theta = (isLeft ? 1 : -1) * 2 * Math.PI / 180; // + rotates left, - rotates right
-        var cos = Math.cos(theta);
-        var sin = Math.sin(theta);
-        var pivotX = width / 2; // i.e. centre of viewport
-        var pivotY = height / 2;
+        const theta = (isLeft ? 1 : -1) * 2 * Math.PI / 180; // + rotates left, - rotates right
+        const cos = Math.cos(theta);
+        const sin = Math.sin(theta);
+        const pivotX = width / 2; // i.e. centre of viewport
+        const pivotY = height / 2;
 
         // rotates each node around the pivot
         d3.selectAll(".node-wrapper")
@@ -2201,7 +2193,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.openUri = function (uri, noHistory) {
         if (!noHistory) {
-            var searchParams = {};
+            const searchParams = {};
             if ($scope.configLoaded.id !== $scope.defaultGraphConfig.id) {
                 searchParams.config = $scope.configLoaded.id;
             }
@@ -2226,15 +2218,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 if (status === 422) {
                     $scope.saveGraphModal('new', graph, true);
                 } else {
-                    let msg = getError(data);
+                    const msg = getError(data);
                     toastr.error(msg, 'Error! Cannot create saved graph');
                 }
             });
     }
 
     $scope.saveOrUpdateGraph = function () {
-        var data = JSON.stringify(graph.copyState());
-        var graphToSave = {id: $scope.lastSavedGraphId, name: $scope.lastSavedGraphName, data: data};
+        const data = JSON.stringify(graph.copyState());
+        const graphToSave = {id: $scope.lastSavedGraphId, name: $scope.lastSavedGraphName, data: data};
 
         if (graphToSave.id) {
             $scope.saveGraphModal('update', graphToSave);
@@ -2248,7 +2240,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.saveGraphModal('rename', {id: graphToRename.id, name: graphToRename.name, config: graphToRename.config});
     };
 
-    var editSavedGraphHttp = function (savedGraph) {
+    const editSavedGraphHttp = function (savedGraph) {
         SavedGraphsService.editSavedGraph(savedGraph)
             .success(function () {
                 $scope.lastSavedGraphName = savedGraph.name;
@@ -2256,13 +2248,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 toastr.success('Saved graph ' + savedGraph.name + ' was edited.');
             })
             .error(function (data) {
-                let msg = getError(data);
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Cannot edit saved graph');
             });
     };
 
     $scope.saveGraphModal = function (mode, graphToSave, graphExists) {
-        var modalInstance = $modal.open({
+        const modalInstance = $modal.open({
             templateUrl: 'js/angular/graphexplore/templates/modal/save-graph.html',
             controller: 'SaveGraphModalCtrl',
             resolve: {
@@ -2271,7 +2263,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                         mode: mode,
                         graph: graphToSave,
                         graphExists: graphExists
-                    }
+                    };
                 }
             }
         });
@@ -2292,7 +2284,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     editSavedGraphHttp(data.graph);
                     break;
             }
-        }, function () {
         });
     };
 
@@ -2302,7 +2293,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 $scope.savedGraphs = data;
             })
             .error(function (data) {
-                let msg = getError(data);
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Could not get saved graphs');
             });
     };
@@ -2332,7 +2323,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.copyToClipboardSavedGraph = function (savedGraph) {
-        var url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
+        const url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
         copyToClipboard(url);
     };
 
@@ -2343,7 +2334,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 toastr.success('Saved graph ' + savedGraph.name + ' was deleted.');
             })
             .error(function (data) {
-                let msg = getError(data);
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Cannot delete saved graph');
             });
     }
@@ -2371,7 +2362,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     $scope.togglePinAllNodes = function () {
         removeMenuIfVisible();
 
-        var value = $scope.numberOfPinnedNodes > 0 ? false : true;
+        const value = $scope.numberOfPinnedNodes <= 0;
 
         $scope.numberOfPinnedNodes = 0;
         d3.selectAll('.node').each(function (d) {

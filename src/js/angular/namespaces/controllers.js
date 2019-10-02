@@ -13,18 +13,18 @@ const sparqlCtrl = angular.module('graphdb.framework.namespaces.controllers', mo
 
 // A regular expression that validates a prefix according to the SPARQL 1.1 specification.
 // XXX: Technically this should include Unicode chars > 0xFFFF but those aren't fully supported in JavaScript
-var pn_prefix_re = function () {
-    var pn_chars_base = "[A-Z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]"
-        + "|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]"
-        + "|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]";
-    var pn_chars_u = pn_chars_base + "|_";
-    var pn_chars = pn_chars_u + "|-|[0-9]|\u00B7|[\u0300-\u036F]|[\u203F-\u2040]";
+const pnPrefixRe = function () {
+    const pnCharsBase = '[A-Z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]'
+        + '|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]'
+        + '|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]';
+    const pnCharsU = pnCharsBase + '|_';
+    const pnChars = pnCharsU + '|-|[0-9]|\u00B7|[\u0300-\u036F]|[\u203F-\u2040]';
 
-    return new RegExp("^(?:" + pn_chars_base + ")(?:(?:" + pn_chars + "|\\.)*(?:" + pn_chars + "))?$");
+    return new RegExp('^(?:' + pnCharsBase + ')(?:(?:' + pnChars + '|\\.)*(?:' + pnChars + '))?$');
 }();
 
 function validatePrefix(prefix) {
-    return prefix === "" || prefix.match(pn_prefix_re);
+    return prefix === '' || prefix.match(pnPrefixRe);
 }
 
 sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService',
@@ -48,7 +48,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
             $http({
                 url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces',
                 method: 'GET'
-            }).success(function (data, status, headers, config) {
+            }).success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
                     return {
                         prefix: e.prefix.value,
@@ -57,12 +57,12 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                 });
                 if ($scope.namespaces.length > 0) {
                     $scope.namespaces.sort(function (a, b) {
-                        var prefix_A = a.prefix.toUpperCase(), // ignore upper and lowercase
-                            prefix_B = b.prefix.toUpperCase(); // ignore upper and lowercase
-                        if (prefix_A < prefix_B) {
+                        const prefixA = a.prefix.toUpperCase(); // ignore upper and lowercase
+                        const prefixB = b.prefix.toUpperCase(); // ignore upper and lowercase
+                        if (prefixA < prefixB) {
                             return -1;
                         }
-                        if (prefix_A > prefix_B) {
+                        if (prefixA > prefixB) {
                             return 1;
                         }
                         return 0;
@@ -74,8 +74,8 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                     // Remove the loader ourselves
                     $scope.loader = false;
                 } // else let the loaderPostRepeatDirective do it
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg);
                 $scope.loader = false;
             });
@@ -117,11 +117,11 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                 url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces/' + prefix,
                 method: 'PUT',
                 data: namespace
-            }).success(function (data, status, headers, config) {
+            }).success(function () {
                 $scope.getNamespaces();
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -130,14 +130,14 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         $scope.editPrefix = function (oldPrefix, newPrefix) {
             $scope.loader = true;
             $http({
-                url: "rest/repositories/" + $repositories.getActiveRepository() + "/prefix",
-                method: "POST",
+                url: 'rest/repositories/' + $repositories.getActiveRepository() + '/prefix',
+                method: 'POST',
                 params: {from: oldPrefix, to: newPrefix}
-            }).success(function (data, status, headers, config) {
+            }).success(function () {
                 $scope.getNamespaces();
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -153,15 +153,15 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
 
         $scope.editPrefixAndNamespace = function (prefix, namespace, namespaceObject) {
             if (angular.isUndefined(prefix)) {
-                prefix = "";
+                prefix = '';
             }
 
             if (!validatePrefixAndNamespace(prefix, namespace)) {
-                return "";
+                return '';
             }
 
-            var prefixExist = false;
-            var oldPrefix = namespaceObject.prefix;
+            let prefixExist = false;
+            const oldPrefix = namespaceObject.prefix;
             angular.forEach($scope.namespaces, function (elem) {
                 if (elem.prefix === prefix && oldPrefix !== prefix) {
                     prefixExist = true;
@@ -188,7 +188,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
 
         $scope.addNamespace = function () {
             if (angular.isUndefined($scope.namespace.prefix)) {
-                $scope.namespace.prefix = "";
+                $scope.namespace.prefix = '';
             }
 
             if (!validatePrefixAndNamespace($scope.namespace.prefix, $scope.namespace.namespace)) {
@@ -196,9 +196,9 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
             }
 
             $scope.selectedAll = false;
-            var prefixExist = false;
-            for (var i = 0; i < $scope.namespaces.length; i++) {
-                if ($scope.namespaces[i].prefix == $scope.namespace.prefix) {
+            let prefixExist = false;
+            for (let i = 0; i < $scope.namespaces.length; i++) {
+                if ($scope.namespaces[i].prefix === $scope.namespace.prefix) {
                     prefixExist = true;
                 }
             }
@@ -216,7 +216,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         $scope.removeNamespace = function (namespace) {
             ModalService.openSimpleModal({
                 title: 'Confirm delete',
-                message: "Are you sure you want to delete the namespace '" + namespace.prefix + "'?",
+                message: 'Are you sure you want to delete the namespace \'' + namespace.prefix + '\'?',
                 warning: true
             }).result.then(function () {
                 deleteNamespace(namespace);
@@ -230,28 +230,15 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         };
 
         $scope.deleteSelected = function () {
-            var modalInstanceOpened = false;
-            angular.forEach($scope.displayedNamespaces, function (namespace) {
-                if (!modalInstanceOpened) {
-                    if (namespace.selected) {
-                        modalInstanceOpened = true;
-                        openModalInstance();
-                    }
-                }
-            });
-            if (!$scope.selectedAll) {
-                return;
-            }
-
-            function openModalInstance() {
+            const openModalInstance = function () {
                 ModalService.openSimpleModal({
                     title: 'Confirm delete',
-                    message: "Are you sure you want to delete the selected namespace(s)?",
+                    message: 'Are you sure you want to delete the selected namespace(s)?',
                     warning: true
                 }).result.then(function () {
                     $scope.loader = true;
-                    var namespaces = [];
-                    angular.forEach($scope.displayedNamespaces, function (namespace, index) {
+                    const namespaces = [];
+                    angular.forEach($scope.displayedNamespaces, function (namespace) {
                         if (namespace.selected) {
                             namespaces.push(namespace);
                         }
@@ -263,21 +250,30 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                     $scope.selectedAll = false;
                     $scope.searchNamespaces = '';
                 });
-            }
+            };
+
+            let modalInstanceOpened = false;
+            angular.forEach($scope.displayedNamespaces, function (namespace) {
+                if (!modalInstanceOpened) {
+                    if (namespace.selected) {
+                        modalInstanceOpened = true;
+                        openModalInstance();
+                    }
+                }
+            });
         };
 
         function deleteNamespace(namespace, namespaces) {
-            var prefix;
-            if (typeof namespace === "object") {
+            let prefix;
+            if (typeof namespace === 'object') {
                 prefix = namespace.prefix;
-            }
-            else {
+            } else {
                 prefix = namespace;
             }
             $http({
-                url: "repositories/" + $repositories.getActiveRepository() + "/namespaces/" + prefix,
-                method: "DELETE"
-            }).success(function (data, status, headers, config) {
+                url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces/' + prefix,
+                method: 'DELETE'
+            }).success(function () {
                 if (namespaces && namespaces.length > 0) {
                     namespace = namespaces.shift();
                     deleteNamespace(namespace, namespaces);
@@ -290,14 +286,14 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
                     $scope.loader = false;
                     $scope.displayedNamespaces = [];
                     if (namespaces === undefined) {
-                        toastr.success("Namespace with prefix \"" + prefix + "\" was deleted successfully.", "");
+                        toastr.success('Namespace with prefix \'' + prefix + '\' was deleted successfully.', '');
                     } else {
-                        toastr.success("Selected namespaces were deleted successfully.", "");
+                        toastr.success('Selected namespaces were deleted successfully.', '');
                     }
                 }
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
-                toastr.error(msg, "Error");
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
         }
@@ -312,19 +308,19 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         };
 
         $scope.deselectAll = function () {
-            angular.forEach($scope.namespaces, function (item, index) {
+            angular.forEach($scope.namespaces, function (item) {
                 item.selected = false;
             });
         };
 
         function validatePrefixAndNamespace(prefix, namespace) {
             if (!validatePrefix(prefix)) {
-                toastr.error("Invalid prefix: " + prefix, "Error");
+                toastr.error('Invalid prefix: ' + prefix, 'Error');
                 return false;
             }
 
-            if (angular.isUndefined(namespace) || namespace === "") {
-                toastr.error("Please provide namespace.", "Error");
+            if (angular.isUndefined(namespace) || namespace === '') {
+                toastr.error('Please provide namespace.', 'Error');
                 return false;
             }
 
@@ -332,10 +328,10 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         }
     }]);
 
-sparqlCtrl.controller('StandartModalCtrl', ["$scope", "$modalInstance", function ($scope, $modalInstance) {
+sparqlCtrl.controller('StandartModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
 
     $scope.ok = function () {
-        var result = true;
+        const result = true;
         $modalInstance.close(result);
     };
 

@@ -29,7 +29,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
-    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
+    $scope.onopen = $scope.onclose = () => angular.noop();
 
     $scope.currentBrowserLimit = 2000;
     if (bowser.firefox) {
@@ -39,9 +39,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     }
 
     // creating datasource for class instances data
-    var datasource = {};
-    var position = 0;
-    var current = 0;
+    const datasource = {};
+    let position = 0;
+    let current = 0;
     $rootScope.key = "";
     datasource.get = function (index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
@@ -109,7 +109,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     function searchedClassCallback(selected) {
         if (selected) {
-            var searchedClass = {name: selected.title};
+            const searchedClass = {name: selected.title};
             $rootScope.$broadcast('searchedClass', searchedClass);
         }
     }
@@ -120,6 +120,18 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             // the broadcast class count.
             $scope.classCountSlider = {};
         }
+
+        const showBrowserCompatibleClassLimitWarning = function (classLimit) {
+            if (bowser.chrome) {
+                toastr.warning("Disabling animations for more than " + classLimit + " classes.",
+                    "Reducing visual effects");
+            } else {
+                toastr.warning(bowser.name + " performs poorly with more than " +
+                    classLimit + " classes. " +
+                    "Please consider using Chrome for more optimal performance.",
+                    "Reducing visual effects");
+            }
+        };
 
         if (!$scope.classCountSlider.value) {
             $scope.showExternalElements = true;
@@ -136,18 +148,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
                 }
             };
 
-            function showBrowserCompatibleClassLimitWarning(classLimit) {
-                if (bowser.chrome) {
-                    toastr.warning("Disabling animations for more than " + classLimit + " classes.",
-                        "Reducing visual effects")
-                } else {
-                    toastr.warning(bowser.name + " performs poorly with more than " +
-                        classLimit + " classes. " +
-                        "Please consider using Chrome for more optimal performance.",
-                        "Reducing visual effects");
-                }
-            }
-
             if (localStorageService.get("classHierarchy-currentSliderValue") === null) {
                 if (classCount > $scope.currentBrowserLimit) {
                     showBrowserCompatibleClassLimitWarning($scope.currentBrowserLimit);
@@ -155,8 +155,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             }
         }
 
-        var s = localStorageService.get("classHierarchy-switchPrefixes");
-        var noSwitchPrefixes = (s != null) && (s !== "true");
+        const s = localStorageService.get("classHierarchy-switchPrefixes");
+        const noSwitchPrefixes = (s != null) && (s !== "true");
         if (noSwitchPrefixes) {
             $scope.showExternalElements = true;
         }
@@ -182,13 +182,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         setNewCurrentSliderValue();
 
         // Modify the slider with the mouse wheel
-        var lastTimeWheel = 0;
+        let lastTimeWheel = 0;
         $('rzslider').on('wheel', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             // at least 100ms must have passed since last time we updated
-            var now = new Date().getTime();
+            const now = new Date().getTime();
             if (now - lastTimeWheel > 100) {
                 lastTimeWheel = now;
             } else {
@@ -197,7 +197,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
             e = e.originalEvent;
 
-            var newValue = $scope.classCountSlider.value;
+            let newValue = $scope.classCountSlider.value;
             if (e.deltaY <= -1) {
                 newValue += 1;
             } else if (e.deltaY >= 1) {
@@ -220,8 +220,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     }
 
     function goToDomainRangeGraphView(selectedClass) {
-        var uri = selectedClass.fullName;
-        var name = selectedClass.name;
+        const uri = selectedClass.fullName;
+        const name = selectedClass.name;
 
         GraphDataService.checkDomainRangeData(uri)
             .success(function (response, status) {
@@ -235,9 +235,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
                         .search("uri", uri)
                         .search("name", name);
                 }
-            }).error(function (response) {
-            toastr.error("Request for " + name + " failed!");
-        });
+            }).error(function () {
+                toastr.error("Request for " + name + " failed!");
+            });
     }
 
     function onGoToDomainRangeGraphView(event, selectedClass) {
@@ -250,20 +250,20 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     function prepareDataForClassInfoSidePanel(selectedClass) {
         // generate SPARQL query for listing class instances in sparql view
-        var uri = selectedClass.fullName;
-        var name = selectedClass.name;
+        const uri = selectedClass.fullName;
+        let name = selectedClass.name;
 
         // in case of no prefix available both name and uri are the same
         // so only take the local name of the uri a tab name for the SPARQL view
         if (name === uri) {
-            var localNameStartIdx = name.lastIndexOf("#");
+            const localNameStartIdx = name.lastIndexOf("#");
             name = name.substring(localNameStartIdx + 1);
         }
         $scope.encodedUri = encodeURIComponent(uri);
 
-        var query = "prefix onto:<http://www.ontotext.com/> select ?s from onto:disable-sameAs { ?s a <" + uri + "> . }";
+        const query = "prefix onto:<http://www.ontotext.com/> select ?s from onto:disable-sameAs { ?s a <" + uri + "> . }";
 
-        var encodedQuery = encodeURIComponent(query);
+        const encodedQuery = encodeURIComponent(query);
 
         // generate url for redirecting to sparql view, opening a new tab, writing the generated query and executing it
         $scope.viewInstancesUri = 'sparql?name=' + name + '&infer=true&sameAs=false&query=' + encodedQuery + '&execute=true';
@@ -288,7 +288,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             .success(function (response) {
                 $scope.instancesObj.items = [];
                 _.each(response, function (value, key) {
-                    var obj = {};
+                    const obj = {};
                     obj.absUri = encodeURIComponent(value);
                     obj.absUriNonEncoded = value;
                     obj.resolvedUri = key;
@@ -346,7 +346,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
         angular.forEach(localStorageService.keys(), function (key) {
             // remove everything but the hide prefixes setting, it should always persist
-            if (key.indexOf("classHierarchy-") == 0 && key !== "classHierarchy-hidePrefixes") {
+            if (key.indexOf("classHierarchy-") === 0 && key !== "classHierarchy-hidePrefixes") {
                 localStorageService.remove(key);
             }
         });
@@ -401,9 +401,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             });
     }
 
-    var currentActiveRepository = $repositories.getActiveRepository();
+    let currentActiveRepository = $repositories.getActiveRepository();
 
-    function onRepositoryIsSet(event) {
+    function onRepositoryIsSet() {
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
@@ -433,5 +433,5 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     $scope.hasClassHierarchy = function () {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
-    }
+    };
 }

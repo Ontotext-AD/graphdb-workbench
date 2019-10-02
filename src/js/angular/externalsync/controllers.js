@@ -8,16 +8,16 @@ angular
     .filter('ceil', ceil);
 
 function jsonToFormData(data) {
-    var str = [];
-    for (var p in data) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(data[p]));
-    }
-    return str.join("&");
+    const str = [];
+    Object.keys(data).forEach(function (key) {
+        str.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    });
+    return str.join('&');
 }
 
 function toArrayMap(map) {
     return _.map(map, function (value, key) {
-        return {key: key, value: value}
+        return {key: key, value: value};
     });
 }
 
@@ -32,13 +32,13 @@ function fromArrayMap(arrayMap) {
         } else {
             acc[value.key] = value.value;
         }
-        return acc
+        return acc;
     }, {});
 }
 
 function mapCreateValuesToUiValues(values, options) {
-    for (var i = 0; i < options.length; i++) {
-        var option = options[i];
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
         if (option.__type === 'StringArray') {
             if (!values[option.__name]) {
                 values[option.__name] = [''];
@@ -46,7 +46,7 @@ function mapCreateValuesToUiValues(values, options) {
         } else if (option.__type === 'OptionArray') {
             if (!values[option.__name]) { // values has no entry for this option
                 values[option.__name] = [];
-                var optionEl = {};
+                const optionEl = {};
                 for (let j = 0; j < option.__childOptions.length; j++) {
                     const child = option.__childOptions[j];
                     if (child.__type === 'StringArray') {
@@ -102,13 +102,13 @@ function _evaluateSparqlQuery(http, repository, query) {
 }
 
 function buildNamePrefix(prefix) {
-    return prefix.substring(0, prefix.length - 1) + "/instance#";
+    return prefix.substring(0, prefix.length - 1) + '/instance#';
 }
 
 function createConnectorQuery(name, prefix, fields, options, reportError) {
     // Returns a copy of the parameter obj sorted according to the order in options
     function sortObject(obj, options) {
-        var newObject = {};
+        const newObject = {};
         _.each(options, function (option) {
             if (angular.isDefined(obj[option.__name])) {
                 if (option.__type === 'OptionArray') {
@@ -124,14 +124,14 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
         return newObject;
     }
 
-    var fcopy = sortObject(fields, options);
+    const fcopy = sortObject(fields, options);
 
-    for (var i = 0; i < options.length; i++) {
+    for (let i = 0; i < options.length; i++) {
         try {
-            if (options[i].__type == 'Map') {
+            if (options[i].__type === 'Map') {
                 fcopy[options[i].__name] = fromArrayMap(fcopy[options[i].__name]);
-            } else if (options[i].__type == 'JsonString') {
-                fcopy[options[i].__name] = angular.fromJson(fcopy[options[i].__name])
+            } else if (options[i].__type === 'JsonString') {
+                fcopy[options[i].__name] = angular.fromJson(fcopy[options[i].__name]);
             }
         } catch (e) {
             reportError(options[i].__label, e.message);
@@ -141,71 +141,68 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
 
     removeEmptyValues(fcopy);
     //escapeValues(fields);
-    var finalString = '';
+    let finalString = '';
     finalString += 'PREFIX :<' + prefix + '>\n';
-    var namePrefix = buildNamePrefix(prefix);
+    const namePrefix = buildNamePrefix(prefix);
     finalString += 'PREFIX inst:<' + namePrefix + '>\n';
     finalString += 'INSERT DATA {\n';
-    finalString += "\tinst:" + name + " :createConnector '''\n";
+    finalString += "\tinst:" + name + " :createConnector '''\n"; // eslint-disable-line quotes
     finalString += angular.toJson(fcopy, 2);
-    finalString += "\n''' .\n}\n";
+    finalString += "\n''' .\n}\n"; // eslint-disable-line quotes
     finalString = finalString.replace(/\\/g, '\\\\\\');
     return finalString;
 }
 
 function createStatusQueryForIri(iri) {
-    var statusIri = iri.replace(/\/instance#.+$/, "#connectorStatus");
-    var finalString = '';
+    const statusIri = iri.replace(/\/instance#.+$/, '#connectorStatus');
+    let finalString = '';
     finalString += 'SELECT ?status {\n';
-    finalString += "\t<" + iri + "> <" + statusIri + "> ?status";
-    finalString += "\n}";
+    finalString += '\t<' + iri + '> <' + statusIri + '> ?status';
+    finalString += '\n}';
     return finalString;
 }
 
 function createStatusQueryForAny(connectors) {
-    var connectorIris = _.map(connectors,
+    const connectorIris = _.map(connectors,
         function (k) {
             return '<' + k.value + 'connectorStatus' + '>';
         }).join('|');
 
     if (connectorIris) {
-        return "SELECT ?connector ?status { ?connector " + connectorIris + " ?status }";
+        return 'SELECT ?connector ?status { ?connector ' + connectorIris + ' ?status }';
     }
 
     return null;
 }
 
 function repairConnectorQuery(name, prefix) {
-    var namePrefix = buildNamePrefix(prefix);
-    var query = 'PREFIX prefix:<' + prefix + '>\n' +
+    const namePrefix = buildNamePrefix(prefix);
+    return 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
         '\t<' + namePrefix + name + '> prefix:repairConnector ""\n' +
         '}';
-    return query;
 }
 
 function deleteConnectorQuery(name, prefix, force) {
-    var namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
-    var query = 'PREFIX prefix:<' + prefix + '>\n' +
+    const namePrefix = prefix.substring(0, prefix.length - 1) + "/instance#";
+    return 'PREFIX prefix:<' + prefix + '>\n' +
         'INSERT DATA {\n' +
         '\t<' + namePrefix + name + '> prefix:dropConnector "' + (force ? "force" : "") + '"\n' +
         '}';
-    return query;
 }
 
 function removeEmptyValues(o) {
     // remove empty values from array
     if (Array.isArray(o)) {
         o = _.filter(o, function (item) {
-            return item !== null && (!item.trim || item.trim() != "")
-        })
+            return item !== null && (!item.trim || item.trim() !== '');
+        });
     }
     // remove empty values from object values
     Object.keys(o).forEach(function (k) {
-        if ((o[k] == "" || o[k] == null) && o[k] !== false) {
+        if ((o[k] === '' || o[k] == null) && o[k] !== false) {
             delete o[k];
-        }
-        else if (typeof o[k] == 'object') {
+        } else if (typeof o[k] === 'object') {
             o[k] = removeEmptyValues(o[k]);
         }
     });
@@ -214,9 +211,9 @@ function removeEmptyValues(o) {
 
 function parseFirstBuildingResult(results) {
     if (results.bindings) {
-        for (var i = 0; i < results.bindings.length; i++) {
+        for (let i = 0; i < results.bindings.length; i++) {
             try {
-                var statusObject = JSON.parse(results.bindings[i].status.value);
+                const statusObject = JSON.parse(results.bindings[i].status.value);
                 if (statusObject.status === 'BUILDING') {
                     return {
                         connector: results.bindings[i].connector.value,
@@ -224,6 +221,7 @@ function parseFirstBuildingResult(results) {
                     };
                 }
             } catch (e) {
+                console.error(e); // eslint-disable-line no-console
             }
         }
     }
@@ -243,16 +241,16 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     $scope.definitions = {};
 
     $scope.getLoaderMessage = function () {
-        var timeSeconds = (Date.now() - $scope.loaderStartTime) / 1000;
-        var timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
-        var message = "";
+        const timeSeconds = (Date.now() - $scope.loaderStartTime) / 1000;
+        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
+        let message = '';
         if ($scope.progressMessage) {
-            message = $scope.progressMessage + "... " + timeHuman;
+            message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = "Running operation..." + timeHuman;
+            message = 'Running operation...' + timeHuman;
         }
         if ($scope.extraMessage && timeSeconds > 10) {
-            message += "\n" + $scope.extraMessage;
+            message += '\n' + $scope.extraMessage;
         }
 
         return message;
@@ -266,8 +264,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             $scope.extraMessage = extraMessage;
         } else {
             $scope.loader = false;
-            $scope.progressMessage = "";
-            $scope.extraMessage = "";
+            $scope.progressMessage = '';
+            $scope.extraMessage = '';
         }
     };
 
@@ -293,7 +291,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
         $http.get('rest/connectors').then(function (res) {
             $scope.connectors = Object.keys(res.data).map(function (key) {
-                return {key: key, value: res.data[key]}
+                return {key: key, value: res.data[key]};
             });
 
             $q.all(_.map($scope.connectors, function (connector) {
@@ -301,16 +299,16 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             })).finally(function () {
                 resetProgress();
 
-                var query = createStatusQueryForAny($scope.connectors);
+                const query = createStatusQueryForAny($scope.connectors);
 
                 if (query) {
                     evaluateSparqlQuery(query)
                         .then(function (res) {
-                            var status = parseFirstBuildingResult(res.data.results);
+                            const status = parseFirstBuildingResult(res.data.results);
                             if (status.connector) {
                                 // has a building connector, open progress indicator
-                                var d = status.connector.split(/#/);
-                                d[0] = d[0].replace(/\/instance$/, "#");
+                                const d = status.connector.split(/#/);
+                                d[0] = d[0].replace(/\/instance$/, '#');
                                 showProgress(d[0], d[1]);
                             }
                         })
@@ -363,11 +361,11 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                 entitiesPerSecond: 0
             },
             actionName: repair ? 'Repairing' : 'Creating',
-            waitOnRepairStartOnce: repair ? true : false,
-            eta: "-",
+            waitOnRepairStartOnce: !!repair,
+            eta: '-',
             inline: false,
             iri: null
-        }
+        };
     }
 
     function openProgressModal(prefix, name, repair) {
@@ -407,30 +405,31 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     }
 
     function executeCreate(connector, obj, errorCallback) {
-        var modal = openProgressModal(connector.value, obj.name, false);
+        const modal = openProgressModal(connector.value, obj.name, false);
 
-        $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: obj.query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function (res) {
-            $http.get('rest/connectors').then(function (res) {
-                $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(connector.value)).then(function (res) {
-                    $scope.existing[connector.key] = res.data;
+        $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: obj.query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .then(function () {
+                $http.get('rest/connectors').then(function () {
+                    $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(connector.value)).then(function (res) {
+                        $scope.existing[connector.key] = res.data;
+                    });
                 });
+                toastr.success('Created connector ' + obj.name);
+            }, function (err) {
+                toastr.error(getError(err));
+                errorCallback();
+            }).finally(function () {
+                modal.dismiss('cancel');
             });
-            toastr.success("Created connector " + obj.name);
-        }, function (err) {
-            toastr.error(getError(err));
-            errorCallback();
-        }).finally(function () {
-            modal.dismiss('cancel');
-        })
     }
 
     $scope.copyConnector = function (connector, values) {
-        var newValues;
+        let newValues;
         if (!angular.isUndefined(values)) {
             newValues = angular.copy(values);
-            newValues.name = newValues.name + '-copy'
+            newValues.name = newValues.name + '-copy';
         }
-        var modal = $modal.open({
+        const modal = $modal.open({
             templateUrl: 'pages/createConnector.html',
             controller: 'CreateConnectorCtrl',
             size: 'lg',
@@ -440,7 +439,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                     return connector;
                 },
                 values: function () {
-                    return angular.isUndefined(newValues) ? {name: "", values: {}} : newValues;
+                    return angular.isUndefined(newValues) ? {name: '', values: {}} : newValues;
                 },
                 options: function () {
                     return $scope.getOptions(connector);
@@ -451,13 +450,13 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         modal.result.then(function (obj) {
             executeCreate(connector, obj, function () {
                 obj.skipConversion = true;
-                $scope.newConnector(connector, obj)
+                $scope.newConnector(connector, obj);
             });
         });
     };
 
     $scope.newConnector = function (connector, values) {
-        var modal = $modal.open({
+        const modal = $modal.open({
             templateUrl: 'pages/createConnector.html',
             controller: 'CreateConnectorCtrl',
             size: 'lg',
@@ -467,7 +466,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                     return connector;
                 },
                 values: function () {
-                    return angular.isUndefined(values) ? {name: "", values: {}} : values;
+                    return angular.isUndefined(values) ? {name: '', values: {}} : values;
                 },
                 options: function () {
                     return $scope.getOptions(connector);
@@ -478,10 +477,9 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         modal.result.then(function (obj) {
             executeCreate(connector, obj, function () {
                 obj.skipConversion = true;
-                $scope.newConnector(connector, obj)
+                $scope.newConnector(connector, obj);
             });
         });
-
     };
 
     $scope.repair = function (inst, type) {
@@ -491,27 +489,28 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             warning: true
         }).result
             .then(function () {
-                var modal = openProgressModal(type.value, inst.name, true);
+                const modal = openProgressModal(type.value, inst.name, true);
 
-                var query = repairConnectorQuery(inst.name, type.value);
+                const query = repairConnectorQuery(inst.name, type.value);
 
-                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function (res) {
-                    $http.get('rest/connectors').then(function (res) {
-                        $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
-                            $scope.existing[type.key] = res.data;
+                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                    .then(function () {
+                        $http.get('rest/connectors').then(function () {
+                            $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
+                                $scope.existing[type.key] = res.data;
+                            });
                         });
+                        toastr.success('Repaired connector ' + inst.name);
+                    }, function (err) {
+                        toastr.error(getError(err));
+                    }).finally(function () {
+                        modal.dismiss('cancel');
                     });
-                    toastr.success("Repaired connector " + inst.name);
-                }, function (err) {
-                    toastr.error(getError(err));
-                }).finally(function () {
-                    modal.dismiss('cancel');
-                });
             });
     };
 
     $scope.delete = function (inst, type) {
-        var isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
+        const isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
 
         $modal.open({
             templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',
@@ -528,9 +527,9 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             .then(function(force) {
                 $scope.setLoader(true, 'Deleting connector ' + inst.name, 'This is usually a fast operation but it might take a while.');
 
-                var query = deleteConnectorQuery(inst.name, type.value, force);
-                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function (res) {
-                    $http.get('rest/connectors').then(function (res) {
+                const query = deleteConnectorQuery(inst.name, type.value, force);
+                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function () {
+                    $http.get('rest/connectors').then(function () {
                         $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
                             $scope.existing[type.key] = res.data;
                         });
@@ -552,19 +551,18 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.viewQuery = function (connector, inst) {
-        var modal = $modal.open({
+        $modal.open({
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
                 query: function () {
-                    var options = $scope.getOptions(connector);
+                    const options = $scope.getOptions(connector);
                     return createConnectorQuery(inst.name, connector.value,
                         mapCreateValuesToUiValues(inst.values, options), options);
                 }
             }
         });
     };
-
 }
 
         DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
@@ -589,7 +587,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     $scope.connector = connector;
 
     $scope.addField = function (index, optionName) {
-        var newField = angular.copy($scope.defaultValues[optionName][0]);
+        const newField = angular.copy($scope.defaultValues[optionName][0]);
         $scope.values[optionName].splice(index + 1, 0, newField);
     };
 
@@ -618,7 +616,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
     $scope.ok = function () {
         if ($scope.form.$valid) {
-            var query = toQuery();
+            const query = toQuery();
 
             if (query) {
                 $modalInstance.close({name: $scope.name, values: $scope.values, options: $scope.options, query: query});
@@ -627,10 +625,10 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.viewQuery = function () {
-        var query = toQuery();
+        const query = toQuery();
 
         if (query) {
-            var modal = $modal.open({
+            $modal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {
@@ -676,7 +674,7 @@ function CreateProgressCtrl($scope, $interval, $http, $repositories) {
     }
 
     function initProgress() {
-        var query = createStatusQueryForIri($scope.beingBuiltConnector.iri);
+        const query = createStatusQueryForIri($scope.beingBuiltConnector.iri);
 
         // reset iri value so that watch will fire again when we do something with the same connector
         $scope.beingBuiltConnector.iri = null;
@@ -688,6 +686,7 @@ function CreateProgressCtrl($scope, $interval, $http, $repositories) {
                         try {
                             return JSON.parse(results.bindings[0].status.value);
                         } catch (e) {
+                            console.error(e); // eslint-disable-line no-console
                         }
                     }
                 }
@@ -697,14 +696,14 @@ function CreateProgressCtrl($scope, $interval, $http, $repositories) {
 
             evaluateSparqlQuery(query)
                 .then(function (res) {
-                    var status = getFirstStatusFromResult(res.data.results);
-                    if (status.status === "BUILDING") {
+                    const status = getFirstStatusFromResult(res.data.results);
+                    if (status.status === 'BUILDING') {
                         $scope.beingBuiltConnector.status = status;
                         $scope.beingBuiltConnector.percentDone = (100 * status.processedEntities / status.estimatedEntities).toFixed(0);
                         $scope.beingBuiltConnector.eta = $scope.getHumanReadableSeconds(status.etaSeconds);
                         $scope.beingBuiltConnector.actionName = status.repair ? 'Repairing' : 'Creating';
                         $scope.beingBuiltConnector.waitOnRepairStartOnce = false;
-                    } else if (status.status === "BUILT" && !$scope.beingBuiltConnector.waitOnRepairStartOnce) {
+                    } else if (status.status === 'BUILT' && !$scope.beingBuiltConnector.waitOnRepairStartOnce) {
                         // done
                         $interval.cancel($scope.progressInterval);
                         if ($scope.beingBuiltConnector.doneCallback) {

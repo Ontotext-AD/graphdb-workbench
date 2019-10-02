@@ -11,11 +11,11 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
         $scope.loader = true;
         $scope.stringLimit = 500;
         $scope.expanded = {};
-        $scope.jolokiaError = "";
+        $scope.jolokiaError = '';
 
         function containsIPV4(ip) {
-            var blocks = ip.split(".");
-            for (var i = 0, sequence = 0; i < blocks.length; i++) {
+            const blocks = ip.split('.');
+            for (let i = 0, sequence = 0; i < blocks.length; i++) {
                 if (parseInt(blocks[i], 10) >= 0 && parseInt(blocks[i], 10) <= 255) {
                     sequence++;
                 } else {
@@ -28,25 +28,25 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
             return false;
         }
 
-        var parser = document.createElement('a');
+        const parser = document.createElement('a');
 
         $scope.parseTrackId = function (trackId) {
             if (trackId.indexOf('#') < 0) {
                 return [trackId, '', $repositories.getActiveRepository()];
             }
 
-            var shortUrl = 'local';
+            let shortUrl = 'local';
             if (trackId.indexOf('://localhost:') < 0 && trackId.indexOf('://localhost/') < 0) {
                 parser.href = trackId;
-                var hostname = parser.hostname;
+                let hostname = parser.hostname;
                 if (!containsIPV4(parser.hostname)) {
                     hostname = parser.hostname.split('.')[0];
                 }
-                shortUrl = hostname + ":" + parser.port;
+                shortUrl = hostname + ':' + parser.port;
             }
-            var m = trackId.match(/\/repositories\/([^\/]+)#(\d+)/);
+            const match = trackId.match(/\/repositories\/([^\/]+)#(\d+)/); // eslint-disable-line no-useless-escape
 
-            return [m[2], shortUrl, m[1]];
+            return [match[2], shortUrl, match[1]];
         };
 
         $scope.getQueries = function () {
@@ -57,18 +57,14 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
             }
 
             $scope.getQueriesRunning = true;
-            $http.get('rest/monitor/query').success(function (data, status, headers, config) {
-                var newQueries = data;
-                if (newQueries.length === 0) {
-                    $scope.noQueries = true;
-                } else {
-                    $scope.noQueries = false;
-                }
+            $http.get('rest/monitor/query').success(function (data) {
+                const newQueries = data;
+                $scope.noQueries = newQueries.length === 0;
 
                 // Converts array to object. Angular seems to handle updates on objects better, i.e.
                 // it doesn't recreate DOM elements for queries that are already displayed.
                 $scope.queries = {};
-                for (var i = 0; i < newQueries.length; i++) {
+                for (let i = 0; i < newQueries.length; i++) {
                     newQueries[i].compositeTrackId = $scope.parseTrackId(newQueries[i].trackId);
                     $scope.queries[newQueries[i].trackId] = newQueries[i];
                 }
@@ -76,29 +72,29 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
                 $scope.noActiveRepository = false;
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
-            }).error(function (data, status, headers, config) {
+            }).error(function (data) {
                 $scope.jolokiaError = getError(data);
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
             });
         };
 
-        var timer = $interval(function () {
+        const timer = $interval(function () {
             $scope.getQueries();
         }, 1000);
 
-        $scope.$on("$destroy", function (event) {
+        $scope.$on('$destroy', function () {
             $interval.cancel(timer);
         });
 
         $scope.deleteQueryHttp = function (queryId) {
 
             $scope.loader = true;
-            $http.delete('rest/monitor/query?queryId=' + encodeURIComponent(queryId)).success(function (data, status, headers, config) {
+            $http.delete('rest/monitor/query?queryId=' + encodeURIComponent(queryId)).success(function () {
                 toastr.success('Abort request sent.');
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
 
                 $scope.loader = false;
@@ -116,17 +112,17 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
         };
 
         $scope.downloadQuery = function (queryId) {
-            var parsed = $scope.parseTrackId(queryId);
-            var filename = "query_" + parsed[0] + "_" + parsed[2];
+            const parsed = $scope.parseTrackId(queryId);
+            let filename = 'query_' + parsed[0] + '_' + parsed[2];
             if (parsed[1]) {
-                filename += "_" + parsed[1];
+                filename += '_' + parsed[1];
             }
-            filename += ".rq";
-            var link = "rest/monitor/query/download?queryId=" + encodeURIComponent(queryId)
-                + "&repository=" + encodeURIComponent($repositories.getActiveRepository())
-                + "&filename=" + encodeURIComponent(filename);
+            filename += '.rq';
+            let link = 'rest/monitor/query/download?queryId=' + encodeURIComponent(queryId)
+                + '&repository=' + encodeURIComponent($repositories.getActiveRepository())
+                + '&filename=' + encodeURIComponent(filename);
             if ($jwtAuth.isAuthenticated()) {
-                link = link + "&authToken=" + encodeURIComponent($jwtAuth.getAuthToken());
+                link = link + '&authToken=' + encodeURIComponent($jwtAuth.getAuthToken());
             }
 
             window.open(link, '_blank');
@@ -138,7 +134,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
     }]);
 
 
-queriesCtrl.controller('DeleteQueryCtrl', ["$scope", "$modalInstance", function ($scope, $modalInstance) {
+queriesCtrl.controller('DeleteQueryCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
 
     $scope.ok = function () {
         $modalInstance.close();

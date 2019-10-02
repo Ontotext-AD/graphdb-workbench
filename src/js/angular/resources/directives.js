@@ -1,3 +1,3 @@
 import 'angular/core/services';
 
-const resourcesDirectives = angular.module('graphdb.framework.jmx.resources.directives', []);
+angular.module('graphdb.framework.jmx.resources.directives', []);
