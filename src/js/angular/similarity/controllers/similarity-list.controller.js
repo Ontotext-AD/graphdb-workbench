@@ -332,14 +332,6 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         ModalService.openCopyToClipboardModal(uri);
     };
 
-    var iriForQuery = function (iri) {
-        return '<' + iri + '>';
-    };
-
-    var literalForQuery = function (literal) {
-        return '"' + literal + '"';
-    };
-
     $scope.trimIRI = function (iri) {
         return _.trim(iri, "<>");
     }
