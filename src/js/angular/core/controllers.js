@@ -26,12 +26,12 @@ function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
 
     $scope.ok = function () {
         try {
-            var copyText = document.getElementById("clipboardURI");
+            const copyText = document.getElementById('clipboardURI');
             copyText.select();
-            document.execCommand("copy");
-            toastr.success("URL copied successfully to clipboard.");
+            document.execCommand('copy');
+            toastr.success('URL copied successfully to clipboard.');
         } catch (e) {
-            toastr.error("Your browser doesn't support \"copy\" operation.\nPress Ctrl-C / Cmd-C to copy URL manually.");
+            toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy URL manually.');
         }
         $modalInstance.close();
     };
@@ -50,17 +50,17 @@ function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
     };
 
     $scope.selectQuery = function () {
-        $scope.selectElement($("#create-query"));
+        $scope.selectElement($('#create-query'));
     };
 
     $scope.copyQueryToClipboard = function () {
         try {
             $scope.selectQuery();
-            document.execCommand("copy");
+            document.execCommand('copy');
             $modalInstance.close();
-            toastr.success("Query copied successfully to clipboard.");
+            toastr.success('Query copied successfully to clipboard.');
         } catch (e) {
-            toastr.error("Your browser doesn't support \"copy\" operation.\nPress Ctrl-C / Cmd-C to copy query to clipboard manually.");
+            toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy query to clipboard manually.');
         }
     };
 
@@ -68,16 +68,16 @@ function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
     $scope.selectElement = function (elements) {
         if (elements.length > 0) {
             if (window.getSelection) {
-                var sel = window.getSelection();
+                const sel = window.getSelection();
                 sel.removeAllRanges();
-                var range = document.createRange();
+                const range = document.createRange();
                 range.selectNodeContents(elements[0].firstChild);
                 sel.addRange(range);
             } else if (document.selection) {
-                var textRange = document.body.createTextRange();
+                const textRange = document.body.createTextRange();
                 textRange.moveToElementText(elements[0]);
                 textRange.select();
             }
         }
-    }
+    };
 }

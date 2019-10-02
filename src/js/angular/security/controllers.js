@@ -10,10 +10,10 @@ const modules = [
 
 const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
 
-var setGrantedAuthorities = function ($scope) {
+const setGrantedAuthorities = function ($scope) {
     function pushAuthority() {
-        for (var i = 0; i < arguments.length; i++) {
-            var authority = arguments[i];
+        for (let i = 0; i < arguments.length; i++) {
+            const authority = arguments[i];
             if (_.indexOf($scope.user.grantedAuthorities, authority) < 0) {
                 $scope.user.grantedAuthorities.push(authority);
             }
@@ -31,22 +31,22 @@ var setGrantedAuthorities = function ($scope) {
         pushAuthority('ROLE_REPO_MANAGER');
     } else {
         pushAuthority('ROLE_USER');
-        for (var index in $scope.grantedAuthorities.WRITE_REPO) {
+        for (const index in $scope.grantedAuthorities.WRITE_REPO) {
             if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                 $scope.repositoryCheckError = false;
                 pushAuthority('WRITE_REPO_' + index, 'READ_REPO_' + index);
             }
         }
-        for (var index in $scope.grantedAuthorities.READ_REPO) {
+        for (const index in $scope.grantedAuthorities.READ_REPO) {
             if ($scope.grantedAuthorities.READ_REPO[index]) {
                 $scope.repositoryCheckError = false;
                 pushAuthority('READ_REPO_' + index);
             }
         }
     }
-}
+};
 
-var getUserRoleName = function (userType) {
+const getUserRoleName = function (userType) {
     switch (userType) {
         case 'user':
             return 'User';
@@ -59,12 +59,12 @@ var getUserRoleName = function (userType) {
     }
 };
 
-var parseAuthorities = function (authorities) {
-    var userType = 'user';
-    var grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
-    var repositories = {};
-    for (var i = 0; i < authorities.length; i++) {
-        var role = authorities[i];
+const parseAuthorities = function (authorities) {
+    let userType = 'user';
+    const grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+    const repositories = {};
+    for (let i = 0; i < authorities.length; i++) {
+        const role = authorities[i];
         if (role === 'ROLE_ADMIN') {
             userType = 'admin';
         } else if (role === 'ROLE_REPO_MANAGER') {
@@ -74,9 +74,9 @@ var parseAuthorities = function (authorities) {
         } else if (role === 'ROLE_USER') {
             userType = 'user';
         } else if (role.indexOf('ROLE_') !== 0) {
-            var index = role.indexOf('_', role.indexOf('_') + 1);
-            var op = role.substr(0, index);
-            var repo = role.substr(index + 1);
+            const index = role.indexOf('_', role.indexOf('_') + 1);
+            const op = role.substr(0, index);
+            const repo = role.substr(index + 1);
             grantedAuthorities[op][repo] = true;
             repositories[repo] = repositories[repo] || {};
             if (op === 'READ_REPO') {
@@ -92,13 +92,13 @@ var parseAuthorities = function (authorities) {
         userTypeDescription: getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
         repositories: repositories
-    }
+    };
 };
 
 securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$window', '$timeout', '$location', '$cookies', '$rootScope',
     function ($scope, $http, toastr, $jwtAuth, $window, $timeout, $location, $cookies, $rootScope) {
-        $scope.username = "";
-        $scope.password = "";
+        $scope.username = '';
+        $scope.password = '';
 
         $scope.login = function () {
             $http({
@@ -107,10 +107,9 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                 headers: {
                     'X-GraphDB-Password': $scope.password
                 }
-            }).success(function (data, status, headers, config) {
+            }).success(function (data, status, headers) {
                 $jwtAuth.authenticate(data, headers);
-                // toastr.success("Signed in", "Welcome");
-                var timer = $timeout(function () {
+                const timer = $timeout(function () {
                     if ($rootScope.returnToUrl) {
                         // go back to remembered url
                         $location.url($rootScope.returnToUrl);
@@ -119,23 +118,22 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                         $location.path('/');
                     }
                 }, 500);
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
-            }).error(function (data, status, headers, config) {
-                if (status == 401) {
+            }).error(function (data, status) {
+                if (status === 401) {
                     toastr.error('Wrong credentials!', 'Error');
                     $scope.wrongCredentials = true;
-                    $scope.username = "";
-                    $scope.password = "";
-                }
-                else {
-                    let msg = getError(data);
+                    $scope.username = '';
+                    $scope.password = '';
+                } else {
+                    const msg = getError(data);
                     toastr.error(msg, status);
                 }
 
             });
-        }
+        };
     }]);
 
 securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService',
@@ -155,17 +153,17 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
             return $jwtAuth.isFreeAccessEnabled();
         };
         $scope.getUsers = function () {
-            $http.get('rest/security/user').success(function (data, status, headers, config) {
+            $http.get('rest/security/user').success(function (data) {
                 $scope.users = data;
-                for (var i = 0; i < $scope.users.length; i++) {
-                    var pa = parseAuthorities($scope.users[i].grantedAuthorities);
+                for (let i = 0; i < $scope.users.length; i++) {
+                    const pa = parseAuthorities($scope.users[i].grantedAuthorities);
                     $scope.users[i].userType = pa.userType;
                     $scope.users[i].userTypeDescription = pa.userTypeDescription;
                     $scope.users[i].repositories = pa.repositories;
                 }
                 $scope.loader = false;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
                 $scope.loader = false;
             });
@@ -179,10 +177,10 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
         $scope.toggleSecurity = function () {
             $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled());
             if ($jwtAuth.isSecurityEnabled()) {
-                var timer = $timeout(function () {
+                const timer = $timeout(function () {
                     $window.location.reload();
                 }, 500);
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
             }
@@ -191,14 +189,14 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
                 $http.get('rest/security/freeaccess').then(function (res) {
-                    var authorities = res.data.authorities;
-                    var appSettings = res.data.appSettings || {
+                    let authorities = res.data.authorities;
+                    let appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,
                         'IGNORE_SHARED_QUERIES': false
                     };
-                    var modalInstance = $modal.open({
+                    const modalInstance = $modal.open({
                         templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
                         controller: 'DefaultAuthoritiesCtrl',
                         resolve: {
@@ -206,10 +204,10 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                                 return {
                                     // converts the array rights to hash ones. why, oh, why do we have both formats?
                                     defaultAuthorities: function () {
-                                        var defaultAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+                                        const defaultAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
                                         // We might have old (no longer existing) repositories so we have to check that
-                                        var repoIds = _.mapKeys($scope.getRepositories(), function (r) {
-                                            return r.id
+                                        const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
+                                            return r.id;
                                         });
                                         _.each(authorities, function (a) {
                                             // indexOf works in IE 11, startsWith doesn't
@@ -226,7 +224,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                                         return defaultAuthorities;
                                     },
                                     appSettings: appSettings
-                                }
+                                };
                             }
                         }
                     });
@@ -236,40 +234,38 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                         $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
                     });
                 });
-            }
-            else {
+            } else {
                 $jwtAuth.toggleFreeAccess(!$jwtAuth.isFreeAccessEnabled(), []);
             }
-        }
+        };
 
         $scope.editFreeAccess = function () {
             $scope.toggleFreeAccess(true);
-        }
+        };
 
         $scope.removeUser = function (username) {
             ModalService.openSimpleModal({
                 title: 'Confirm delete',
-                message: "Are you sure you want to delete the user '" + username + "'?",
+                message: 'Are you sure you want to delete the user \'' + username + '\'?',
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
-                $http.delete('rest/security/user/' + encodeURIComponent(username)).success(function (data, status, headers, config) {
+                $http.delete('rest/security/user/' + encodeURIComponent(username)).success(function () {
                     $scope.getUsers();
-
-                }).error(function (data, status, headers, config) {
-                    let msg = getError(data);
+                }).error(function (data) {
+                    const msg = getError(data);
                     toastr.error(msg, 'Error');
 
                     $scope.loader = false;
                 });
 
             });
-        }
+        };
 
         // Should be able to send the original username to $routeParams
         $scope.encodeURIComponent = function (name) {
             return encodeURIComponent(name);
-        }
+        };
     }]);
 
 securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalInstance', 'data', '$rootScope',
@@ -288,17 +284,17 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
         };
 
         $scope.ok = function () {
-            var auth = [];
+            const auth = [];
             $scope.repositoryCheckError = true;
-            for (var index in $scope.grantedAuthorities.WRITE_REPO) {
+            for (const index in $scope.grantedAuthorities.WRITE_REPO) {
                 if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                     auth.push('WRITE_REPO_' + index);
                     auth.push('READ_REPO_' + index);
                     $scope.repositoryCheckError = false;
                 }
             }
-            for (var index in $scope.grantedAuthorities.READ_REPO) {
-                if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf('READ_REPO_' + index) == -1) {
+            for (const index in $scope.grantedAuthorities.READ_REPO) {
+                if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf('READ_REPO_' + index) === -1) {
                     auth.push('READ_REPO_' + index);
                     $scope.repositoryCheckError = false;
                 }
@@ -310,7 +306,7 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
-        }
+        };
     }]);
 
 securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth',
@@ -371,24 +367,24 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
         $scope.mode = 'add';
-        $scope.saveButtonText = "Create";
+        $scope.saveButtonText = 'Create';
         $scope.goBack = function () {
-            var timer = $timeout(function () {
+            const timer = $timeout(function () {
                 $window.history.back();
             }, 100);
-            $scope.$on("$destroy", function (event) {
+            $scope.$on('$destroy', function () {
                 $timeout.cancel(timer);
             });
         };
         $scope.pageTitle = 'Create new user';
-        $scope.passwordPlaceholder = "Password";
+        $scope.passwordPlaceholder = 'Password';
 
         $scope.user = {
-            "username": "",
-            "password": "",
-            "confirmpassword": "",
-            "grantedAuthorities": [],
-            "appSettings": {
+            'username': '',
+            'password': '',
+            'confirmpassword': '',
+            'grantedAuthorities': [],
+            'appSettings': {
                 'DEFAULT_SAMEAS': true,
                 'DEFAULT_INFERENCE': true,
                 'EXECUTE_COUNT': true,
@@ -400,12 +396,11 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
             $scope.createUser();
         };
 
-
         $scope.createUserHttp = function () {
             $scope.loader = true;
             $http({
                 method: 'POST',
-                url: "rest/security/user/" + encodeURIComponent($scope.user.username),
+                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
                 headers: {
                     'X-GraphDB-Password': $scope.user.password
                 },
@@ -413,24 +408,23 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                     appSettings: $scope.user.appSettings,
                     grantedAuthorities: $scope.user.grantedAuthorities
                 }
-            }).success(function (data, status, headers, config) {
+            }).success(function () {
                 toastr.success('The user ' + $scope.user.username + ' has been created.');
-                var timer = $timeout(function () {
+                const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
                 }, 2000);
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
         };
 
         $scope.createUser = function () {
-
             if ($scope.validateForm()) {
                 $scope.setGrantedAuthorities();
 
@@ -441,7 +435,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
 
         $scope.validateForm = function () {
-            var result = true;
+            let result = true;
             if (!$scope.user.username) {
                 $scope.usernameError = 'Enter username!';
                 result = false;
@@ -461,7 +455,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 $scope.confirmPasswordError = '';
             }
             return result;
-        }
+        };
     }]);
 
 securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller',
@@ -470,20 +464,20 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
         $scope.mode = 'edit';
-        $scope.saveButtonText = "Save";
+        $scope.saveButtonText = 'Save';
         $scope.goBack = function () {
-            var timer = $timeout(function () {
+            const timer = $timeout(function () {
                 $window.history.back();
             }, 100);
-            $scope.$on("$destroy", function (event) {
+            $scope.$on('$destroy', function () {
                 $timeout.cancel(timer);
             });
         };
         $scope.params = $routeParams;
         $scope.pageTitle = 'Edit user: ' + $scope.params.userId;
-        $scope.passwordPlaceholder = "New password";
+        $scope.passwordPlaceholder = 'New password';
         $scope.userType = 'user';
-        var defaultUserSettings = {
+        const defaultUserSettings = {
             'DEFAULT_SAMEAS': true,
             'DEFAULT_INFERENCE': true,
             'EXECUTE_COUNT': true,
@@ -494,19 +488,19 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $location.url('settings');
         }
         $scope.getUserData = function () {
-            $http.get('rest/security/user/' + encodeURIComponent($scope.params.userId)).success(function (data, status, headers, config) {
+            $http.get('rest/security/user/' + encodeURIComponent($scope.params.userId)).success(function (data) {
                 $scope.userData = data;
-                $scope.user = {username: $scope.userData.username}
+                $scope.user = {username: $scope.userData.username};
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
                 $scope.user.external = $scope.userData.external;
-                $scope.user.appSettings = data.appSettings || defaultUserSettings
+                $scope.user.appSettings = data.appSettings || defaultUserSettings;
                 $scope.userType = 'user';
-                var pa = parseAuthorities(data.grantedAuthorities);
+                const pa = parseAuthorities(data.grantedAuthorities);
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error');
             });
         };
@@ -521,7 +515,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $scope.loader = true;
             $http({
                 method: 'PUT',
-                url: "rest/security/user/" + encodeURIComponent($scope.user.username),
+                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
                 headers: {
                     'X-GraphDB-Password': $scope.user.password
                 },
@@ -529,21 +523,21 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                     appSettings: $scope.user.appSettings,
                     grantedAuthorities: $scope.user.grantedAuthorities
                 }
-            }).success(function (data, status, headers, config) {
+            }).success(function () {
                 toastr.success('The user ' + $scope.user.username + ' was updated.');
-                var timer = $timeout(function () {
+                const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
                 }, 2000);
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
                 // if we update the settings of the currently logged user, update the principal
                 if ($scope.user.username === $jwtAuth.getPrincipal().username) {
                     $jwtAuth.getPrincipal().appSettings = $scope.user.appSettings;
                 }
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
@@ -563,7 +557,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
 
         $scope.validateForm = function () {
-            var result = true;
+            const result = true;
             if ($scope.user.password !== $scope.user.confirmpassword) {
                 if (!$scope.user.password) {
                     $scope.passwordError = 'Enter password!';
@@ -578,45 +572,44 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.confirmPasswordError = '';
             }
             return result;
-        }
-
+        };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', '$http', function ($scope, $http) {
+securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', function ($scope, $http, toastr) {
     $scope.debugMapping = function (role, mapping) {
-        var method = mapping.split(':');
+        const method = mapping.split(':');
         $http.get('rest/roles/mapping', {
             params: {
                 role: role,
-                method: mapping.split(':')[1],
-                mapping: mapping.split(':')[0]
+                method: method[1],
+                mapping: method[0]
             }
-        })
-    }
+        });
+    };
 
-    var loadRoles = function () {
+    const loadRoles = function () {
         $http.get('rest/roles')
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 $scope.roleMappings = data;
                 $scope.roles = _.keys($scope.roleMappings);
                 $scope.mappings = _.keys($scope.roleMappings[$scope.roles[0]]);
-                var permissionsCount = _.map($scope.roles, function (role) {
-                    return [role, _.filter($scope.roleMappings[role]).length]
+                const permissionsCount = _.map($scope.roles, function (role) {
+                    return [role, _.filter($scope.roleMappings[role]).length];
                 });
                 $scope.roles = _.reverse(_.map(_.orderBy(permissionsCount, function (p) {
-                    return p[1]
+                    return p[1];
                 }), function (p) {
-                    return p[0]
-                }))
+                    return p[0];
+                }));
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
     };
 
-    $scope.$on("repositoryIsSet", function (event) {
+    $scope.$on('repositoryIsSet', function () {
         loadRoles();
     });
 }]);
@@ -628,14 +621,14 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
 
         $scope.mode = 'settings';
         $scope.hasEditRestrictions = function () {
-            return true
+            return true;
         };
-        $scope.saveButtonText = "Save";
+        $scope.saveButtonText = 'Save';
         $scope.goBack = function () {
-            var timer = $timeout(function () {
+            const timer = $timeout(function () {
                 $window.history.back();
             }, 100);
-            $scope.$on("$destroy", function (event) {
+            $scope.$on('$destroy', function () {
                 $timeout.cancel(timer);
             });
         };
@@ -655,11 +648,11 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
         };
 
         $scope.pageTitle = 'Settings';
-        $scope.passwordPlaceholder = "New password";
+        $scope.passwordPlaceholder = 'New password';
         $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
 
 
-        var initUserData = function (scope) {
+        const initUserData = function (scope) {
             // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
             scope.userData = angular.copy(scope.currentUserData());
             scope.user = {username: scope.userData.username};
@@ -668,7 +661,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
             scope.user.external = scope.userData.external;
             scope.user.appSettings = scope.userData.appSettings;
 
-            var pa = parseAuthorities(scope.userData.authorities);
+            const pa = parseAuthorities(scope.userData.authorities);
             $scope.userType = pa.userType;
             $scope.grantedAuthorities = pa.grantedAuthorities;
         };
@@ -676,7 +669,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
         if ($scope.currentUserData()) {
             initUserData($scope);
         } else {
-            $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+            $scope.$on('securityInit', function (scope) {
                 scope.currentScope.redirectAdmin();
                 initUserData(scope.currentScope);
             });
@@ -692,25 +685,25 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
             $scope.loader = true;
             $http({
                 method: 'PATCH',
-                url: "rest/security/user/" + encodeURIComponent($scope.user.username),
+                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
                 headers: {
                     'X-GraphDB-Password': $scope.user.password
                 },
                 data: {
                     appSettings: $scope.user.appSettings
                 }
-            }).success(function (data, status, headers, config) {
+            }).success(function () {
                 $scope.updateCurrentUserData();
                 toastr.success('The user ' + $scope.user.username + ' was updated.');
-                var timer = $timeout(function () {
+                const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
                 }, 2000);
-                $scope.$on("$destroy", function (event) {
+                $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
-            }).error(function (data, status, headers, config) {
-                let msg = getError(data);
+            }).error(function (data) {
+                const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
@@ -731,7 +724,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
 
 
         $scope.validateForm = function () {
-            var result = true;
+            const result = true;
             if ($scope.user.password !== $scope.user.confirmpassword) {
                 if (!$scope.user.password) {
                     $scope.passwordError = 'Enter password!';
@@ -746,10 +739,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
                 $scope.confirmPasswordError = '';
             }
             return result;
-        }
+        };
     }]);
 
-securityCtrl.controller('DeleteUserCtrl', ["$scope", "$modalInstance", "username", function ($scope, $modalInstance, username) {
+securityCtrl.controller('DeleteUserCtrl', ['$scope', '$modalInstance', 'username', function ($scope, $modalInstance, username) {
     $scope.username = username;
 
     $scope.ok = function () {

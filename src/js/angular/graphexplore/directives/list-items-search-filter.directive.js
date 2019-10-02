@@ -20,7 +20,7 @@ function listItemsSearchFilterDirective() {
             function filter(searchQuery, data, nonFilteredData, customFilter) {
                 if (searchQuery.length > 0) {
                     return _.filter(nonFilteredData, customFilter);
-                } else if (data.length != nonFilteredData.length) {
+                } else if (data.length !== nonFilteredData.length) {
                     return nonFilteredData;
                 }
                 return data;

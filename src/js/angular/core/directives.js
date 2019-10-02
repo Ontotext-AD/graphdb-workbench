@@ -16,7 +16,7 @@ ontoLoader.$inject = [];
 function ontoLoader() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg">Loading...</object>'
+            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg">Loading...</object>';
         }
     };
 }
@@ -35,10 +35,10 @@ function ontoLoaderFancy() {
 ontoLoaderNew.$inject = ['$timeout'];
 
 function ontoLoaderNew($timeout) {
-    var restartTimeout = function ($timeout, scope) {
+    const restartTimeout = function ($timeout, scope) {
         scope.timer = undefined;
         scope.currentMessage = scope.getMessage();
-        var time = scope.timeout[scope.index % scope.timeout.length];
+        const time = scope.timeout[scope.index % scope.timeout.length];
         if (time) {
             scope.timer = $timeout(function () {
                 if (scope.index + 1 < scope.message.length || scope.message.length === 0) {
@@ -59,9 +59,7 @@ function ontoLoaderNew($timeout) {
             ngShow: '=',
             ngHide: '='
         },
-        link: function (scope, element, attrs) {
-            // element.addClass('ot-loader-new');
-
+        link: function (scope) {
             scope.message = scope.messageAttr;
             scope.getMessage = function () {
                 return scope.message[scope.index];
@@ -85,7 +83,7 @@ function ontoLoaderNew($timeout) {
             scope.index = 0;
             restartTimeout($timeout, scope);
 
-            var triggerFunction = function (show) {
+            const triggerFunction = function (show) {
                 if (scope.timer) {
                     $timeout.cancel(scope.timer);
                 }
@@ -103,7 +101,7 @@ function ontoLoaderNew($timeout) {
                 triggerFunction(!value);
             });
 
-            scope.$on('$destroy', function (event) {
+            scope.$on('$destroy', function () {
                 if (scope.timer) {
                     $timeout.cancel(scope.timer);
                 }
@@ -129,13 +127,13 @@ function coreErrors($timeout) {
             // If the attribute "write" is provided then this directive will require a repository with write access.
             scope.isWriteRequired = attrs.hasOwnProperty('write');
 
-            var previousElement;
+            let previousElement;
 
             scope.getAccessibleRepositories = function () {
                 if (scope.isWriteRequired) {
                     return scope.getWritableRepositories();
                 } else {
-                    return scope.getReadableRepositories()
+                    return scope.getReadableRepositories();
                 }
             };
 
@@ -143,7 +141,7 @@ function coreErrors($timeout) {
                 scope.hidePopoverForRepo();
                 scope.setPopoverRepo(repository);
                 $timeout(function () {
-                    var element = $(event.toElement).find('.popover-anchor')[0];
+                    const element = $(event.toElement).find('.popover-anchor')[0];
                     previousElement = element;
                     if (element && !scope.getActiveRepository()) {
                         element.dispatchEvent(new Event('show'));
@@ -155,9 +153,9 @@ function coreErrors($timeout) {
             scope.hidePopoverForRepo = function (event) {
                 if (event) {
                     // Prevents hiding if we move the mouse over the popover
-                    var el = event.relatedTarget;
+                    let el = event.relatedTarget;
                     while (el) {
-                        if (el.className.indexOf("popover") === 0) {
+                        if (el.className.indexOf('popover') === 0) {
                             return;
                         }
                         el = el.parentElement;
@@ -182,12 +180,12 @@ function coreErrors($timeout) {
 eatClick.$inject = [];
 
 function eatClick() {
-    return function (scope, element, attrs) {
+    return function (scope, element) {
         $(element).click(function (event) {
             event.preventDefault();
             event.stopPropagation();
         });
-    }
+    };
 }
 
 multiRequired.$inject = [];
@@ -201,18 +199,18 @@ function multiRequired() {
                 scope.multiRequired = [];
             }
 
-            var element = attrs.multiRequireElement;
+            const element = attrs.multiRequireElement;
 
-            var setMultiValue = function (value) {
+            const setMultiValue = function (value) {
 
                 if (element && element % 1 === 0) {
                     scope.multiRequired[element - 1] = value;
                 }
             };
-            var checkMultiValueError = function () {
-                var filledData = false;
-                var emptyData = false;
-                for (var i = 0; i < scope.multiRequired.length; i++) {
+            const checkMultiValueError = function () {
+                let filledData = false;
+                let emptyData = false;
+                for (let i = 0; i < scope.multiRequired.length; i++) {
                     if (scope.multiRequired[i]) {
                         filledData = true;
                     } else {
@@ -238,15 +236,13 @@ function multiRequired() {
             $('[multi-required]').on('blur keyup change focusout', function () {
                 checkMultiValueError();
             });
-
-
         }
     };
 }
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteService', '$rootScope', '$q'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteService, $rootScope, $q) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q) {
     return {
         restrict: 'EA',
         scope: {
@@ -259,7 +255,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             placeholder: '@',
             uriValidation: '@',
             preserveInput: '@',
-            empty: '=',
+            empty: '='
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function ($scope, scope, element) {
@@ -267,12 +263,12 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             scope.autoCompleteWarning = false;
             $scope.empty = false;
             $scope.searchInput = "";
-            var MIN_CHAR_LEN = 0;
+            const MIN_CHAR_LEN = 0;
 
             // use a global var to keep old uri in order to change it when a new one appears
-            var expandedUri;
+            let expandedUri;
 
-            var canceler;
+            let canceler;
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
@@ -284,7 +280,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             };
                         });
                     }).error(function (data) {
-                        let msg = getError(data);
+                        const msg = getError(data);
                         toastr.error(msg, 'Error getting namespaces for repository.');
                     });
                 }
@@ -296,7 +292,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     $scope.autocompletepromisestatus.success(function (response) {
                         scope.autoCompleteStatus = !!response;
                     }).error(function () {
-                        toastr.error("Error attempting to check autocomplete capability!");
+                        toastr.error('Error attempting to check autocomplete capability!');
                     });
                 }
             });
@@ -304,13 +300,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.$watch('empty', function () {
                 $scope.searchInput = '';
                 $scope.empty = false;
-            })
+            });
 
-            var defaultTextCallback = function (params) {
+            const defaultTextCallback = function (params) {
                 $location.path('resource').search('uri', params.uri);
             };
 
-            var defaultVisualCallback = function (params) {
+            const defaultVisualCallback = function (params) {
                 $location.path('graphs-visualizations').search('uri', params.uri);
             };
 
@@ -331,7 +327,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             if (element.$attr.placeholder) {
                 $scope.placeholder = element.$attr.placeholder;
             } else {
-                $scope.placeholder = "Search RDF resources...";
+                $scope.placeholder = 'Search RDF resources...';
             }
 
 
@@ -346,11 +342,11 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             }
 
             $scope.searchRdfResource = function (uri, callback) {
-                if (uri.type === "prefix") {
+                if (uri.type === 'prefix') {
                     $scope.searchInput = expandPrefix(uri.value + ':');
                     $scope.autoCompleteUriResults = [];
                 } else {
-                    var textUri;
+                    let textUri;
                     if (angular.isUndefined(uri)) {
                         textUri = $scope.searchInput;
                     }
@@ -362,10 +358,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
                     // Parse the description to determine the label
                     // TODO: we should rather introduce direct support for this in the autocomplete plugin
-                    var label = "";
+                    let label = '';
                     if (uri.description) {
-                        var suffixedEscapedUri = '&lt;' + textUri + '&gt;';
-                        var indexOfSuffixed = uri.description.indexOf(suffixedEscapedUri);
+                        const suffixedEscapedUri = '&lt;' + textUri + '&gt;';
+                        const indexOfSuffixed = uri.description.indexOf(suffixedEscapedUri);
                         if (indexOfSuffixed > 0) {
                             label = uri.description.substring(0, indexOfSuffixed).replace(/<\/?b>/g, "");
                         }
@@ -390,8 +386,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            var checkIfValidAndSearch = function (callback) {
-                var uri = $scope.searchInput;
+            const checkIfValidAndSearch = function (callback) {
+                const uri = $scope.searchInput;
                 if (uri === '') {
                     toastr.error('Please fill input field!');
                     return;
@@ -411,8 +407,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             toastr.error('Invalid URI');
                         }
                     }
-                }
-                else {
+                } else {
                     $scope.searchRdfResource(uri, callback);
                 }
             };
@@ -493,9 +488,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
 
             function scrollContentToBottom() {
-                var $autoCompleteWrapper = $("#auto-complete-results-wrapper"),
-                    $autoCompleteWrapperDiv = $autoCompleteWrapper.children("div"),
-                    $autoCompleteWrappreDivActive = $autoCompleteWrapper.children("div.active");
+                const $autoCompleteWrapper = $("#auto-complete-results-wrapper");
+                const $autoCompleteWrapperDiv = $autoCompleteWrapper.children("div");
+                const $autoCompleteWrappreDivActive = $autoCompleteWrapper.children("div.active");
                 if ($autoCompleteWrappreDivActive[0] !== undefined &&
                     ($autoCompleteWrappreDivActive[0].offsetTop - $autoCompleteWrapperDiv.height() - 6) - $autoCompleteWrapper.scrollTop() > 170) {
                     $autoCompleteWrapper.scrollTop($autoCompleteWrappreDivActive[0].offsetTop - $autoCompleteWrapperDiv.height() - 6 - 170);
@@ -503,9 +498,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             }
 
             function scrollContentToTop() {
-                var $autoCompleteWrapper = $("#auto-complete-results-wrapper"),
-                    $autoCompleteWrapperDiv = $autoCompleteWrapper.children("div"),
-                    $autoCompleteWrappreDivActive = $autoCompleteWrapper.children("div.active");
+                const $autoCompleteWrapper = $("#auto-complete-results-wrapper");
+                const $autoCompleteWrapperDiv = $autoCompleteWrapper.children("div");
+                const $autoCompleteWrappreDivActive = $autoCompleteWrapper.children("div.active");
                 if ($autoCompleteWrappreDivActive[0] !== undefined &&
                     $autoCompleteWrappreDivActive[0].offsetTop - $autoCompleteWrapperDiv.height() - 40 <= $autoCompleteWrapper.scrollTop()) {
                     $autoCompleteWrapper.scrollTop($autoCompleteWrapper.scrollTop() - 34);
@@ -513,14 +508,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             }
 
             function validateRdfUri(value) {
-                var hasAngleBrackets = value.indexOf("<") >= 0 && value.indexOf(">") >= 0,
-                    noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1,
-                    validProtocol = /^<?(http|urn).*>?/.test(value) && (hasAngleBrackets || noAngleBrackets),
-                    validPath = false;
+                const hasAngleBrackets = value.indexOf("<") >= 0 && value.indexOf(">") >= 0;
+                const noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
+                const validProtocol = /^<?(http|urn).*>?/.test(value) && (hasAngleBrackets || noAngleBrackets);
+                let validPath = false;
 
                 if (validProtocol) {
                     if (value.indexOf("http") >= 0) {
-                        var schemaSlashesIdx = value.indexOf('//');
+                        const schemaSlashesIdx = value.indexOf('//');
                         validPath = schemaSlashesIdx > 4 && value.substring(schemaSlashesIdx + 2).length > 0;
                     } else if (value.indexOf("urn") >= 0) {
                         validPath = value.substring(4).length > 0;
@@ -530,13 +525,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             }
 
             function expandPrefix(str) {
-                var ABS_URI_REGEX = /^<?(http|urn).*>?/;
+                const ABS_URI_REGEX = /^<?(http|urn).*>?/;
                 if (!ABS_URI_REGEX.test(str)) {
-                    var uriParts = str.split(':'),
-                        uriPart = uriParts[0],
-                        localName = uriParts[1];
+                    const uriParts = str.split(':');
+                    const uriPart = uriParts[0];
+                    const localName = uriParts[1];
                     if (!angular.isUndefined(localName)) {
-                        var newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(scope.namespaces, uriPart);
+                        const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(scope.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
                             $(".view-res-input").val(expandedUri);
@@ -551,8 +546,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 function handleAbsUris(absUri) {
                     if (absUri.indexOf(';') === -1 && validateRdfUri(absUri)) {
                         absUri = absUri.replace(/<|>/g, '');
-                        var localName = /[^/^#]*$/.exec(absUri)[0],
-                            uriPart = absUri.split(localName)[0];
+                        const localName = /[^/^#]*$/.exec(absUri)[0];
+                        const uriPart = absUri.split(localName)[0];
                         return uriPart + ";" + localName;
                     }
                     return absUri;
@@ -570,7 +565,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         canceler.resolve();
                     }
                     canceler = $q.defer();
-                    AutocompleteService.getAutocompleteSuggestions(searchInput, canceler.promise)
+                    AutocompleteRestService.getAutocompleteSuggestions(searchInput, canceler.promise)
                         .then(function (results) {
                             canceler = null;
                             $scope.activeSearchElm = 0;
@@ -588,7 +583,7 @@ function keyboardShortcutsDirective($document) {
     return {
         restrict: 'AE',
         link: linkFunc,
-        template: '<ng-include src="getTemplateUrl()" />',
+        template: '<ng-include src="getTemplateUrl()" />'
     };
 
     function linkFunc(scope, element, attrs) {

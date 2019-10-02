@@ -5,35 +5,31 @@ const securityServices = angular.module('graphdb.framework.security.services', [
     'toastr'
 ]);
 
-
-securityServices.factory('$unauthorizedInterceptor', ["$q", "$location", "$cookies", "$rootScope", function ($q, $location, $cookies, $rootScope) {
+securityServices.factory('$unauthorizedInterceptor', ['$q', '$location', '$cookies', '$rootScope', function ($q, $location, $cookies, $rootScope) {
     return {
         'responseError': function (response) {
             if (response.status === 401) {
                 $rootScope.redirectToLogin();
                 return $q.reject(response);
-            }
-            else if (response.status === 403) {
+            } else if (response.status === 403) {
                 if ($rootScope.setPermissionDenied($location.path())) {
-                    console.log("Permission to page denied. Some errors in the console are normal.");
+                    console.log('Permission to page denied. Some errors in the console are normal.'); // eslint-disable-line no-console
                 } else {
                     $rootScope.redirectToLogin();
                 }
                 return $q.reject(response);
-            }
-            else if (response.status === 409) {
+            } else if (response.status === 409) {
                 $rootScope.redirectToLogin(true);
                 return $q.reject(response);
-            }
-            else {
+            } else {
                 return $q.reject(response);
             }
         }
     };
 }]);
 
-securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toastr", "$location", "$rootScope", function ($http, $cookies, $cookieStore, toastr, $location, $rootScope) {
-    var jwtAuth = this;
+securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', function ($http, $cookies, $cookieStore, toastr, $location, $rootScope) {
+    const jwtAuth = this;
 
     $rootScope.deniedPermissions = {};
     $rootScope.setPermissionDenied = function (path) {
@@ -44,7 +40,7 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
         return true;
     };
     $rootScope.hasPermission = function () {
-        var path = $location.path();
+        const path = $location.path();
         return !$rootScope.deniedPermissions[path];
     };
     $rootScope.redirectToLogin = function (expired) {
@@ -67,12 +63,12 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
     this.freeAccess = false;
     this.hasOverrideAuth = false;
 
-    var that = this;
+    const that = this;
 
     this.clearCookies = function () {
         delete $cookies[that.authCookieName];
         $cookieStore.remove(that.principalCookieName);
-    }
+    };
 
     this.initSecurity = function () {
         this.auth = $cookies[this.authCookieName];
@@ -84,7 +80,7 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
             that.authImplementation = res.data.authImplementation;
 
             if (that.securityEnabled) {
-                var freeAccessData = res.data.freeAccess;
+                const freeAccessData = res.data.freeAccess;
                 that.freeAccess = freeAccessData.enabled;
                 if (that.freeAccess) {
                     that.freeAccessPrincipal = {authorities: freeAccessData.authorities, appSettings: freeAccessData.appSettings};
@@ -111,7 +107,7 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
                 }
             } else {
                 that.clearCookies();
-                var overrideAuthData = res.data.overrideAuth;
+                const overrideAuthData = res.data.overrideAuth;
                 that.hasOverrideAuth = overrideAuthData.enabled;
                 if (that.hasOverrideAuth) {
                     that.principal = {
@@ -129,7 +125,7 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
                 }
             }
         });
-    }
+    };
 
     this.initSecurity();
 
@@ -152,27 +148,27 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
 
     this.isDefaultAuthEnabled = function () {
         return this.hasOverrideAuth && this.principal && this.principal.username === 'overrideauth';
-    }
+    };
 
     this.getAuthToken = function () {
         return this.auth;
-    }
+    };
 
     this.toggleSecurity = function (enabled) {
-        if (enabled != this.securityEnabled) {
+        if (enabled !== this.securityEnabled) {
             this.securityEnabled = enabled;
-            $http.post('rest/security', enabled ? "true" : "false").then(function (res) {
-                toastr.success("Security has been " + (enabled ? 'enabled.' : 'disabled.'));
+            $http.post('rest/security', enabled ? 'true' : 'false').then(function (res) {
+                toastr.success('Security has been ' + (enabled ? 'enabled.' : 'disabled.'));
                 that.clearCookies();
                 that.initSecurity();
             }, function (err) {
-                toastr.error(err.data.error.message, "Error");
+                toastr.error(err.data.error.message, 'Error');
             });
         }
     };
 
     this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
-        if (enabled != this.freeAccess || updateFreeAccess) {
+        if (enabled !== this.freeAccess || updateFreeAccess) {
             this.freeAccess = enabled;
             if (enabled) {
                 this.freeAccessPrincipal = {authorities: authorities, appSettings: appSettings};
@@ -180,32 +176,31 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
                 this.freeAccessPrincipal = undefined;
             }
             $http.post('rest/security/freeaccess', {
-                enabled: enabled ? "true" : "false",
+                enabled: enabled ? 'true' : 'false',
                 authorities: authorities,
                 appSettings: appSettings
-            }).then(function (res) {
+            }).then(function () {
                 if (updateFreeAccess) {
-                    toastr.success("Free access settings have been updated.");
+                    toastr.success('Free access settings have been updated.');
                 } else {
-                    toastr.success("Free access has been " + (enabled ? 'enabled.' : 'disabled.'));
+                    toastr.success('Free access has been ' + (enabled ? 'enabled.' : 'disabled.'));
                 }
-
             }, function (err) {
-                toastr.error(err.data.error.message, "Error");
+                toastr.error(err.data.error.message, 'Error');
             });
             $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
         }
     };
 
     this.setAuthHeaders = function () {
-        $http.defaults.headers.common["Authorization"] = this.auth;
+        $http.defaults.headers.common['Authorization'] = this.auth;
         $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-        $.ajaxSetup()['headers']["Authorization"] = this.auth;
+        $.ajaxSetup()['headers']['Authorization'] = this.auth;
     };
     this.setAuthHeaders();
 
     this.authenticate = function (data, headers) {
-        this.auth = headers("Authorization");
+        this.auth = headers('Authorization');
         this.principal = data;
         $cookies[this.authCookieName] = this.auth;
         $cookieStore.put(this.principalCookieName, this.principal);
@@ -216,7 +211,7 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
 
     this.getPrincipal = function () {
         return this.principal;
-    }
+    };
 
     this.clearAuthentication = function () {
         this.auth = undefined;
@@ -224,21 +219,21 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
         this.clearCookies();
         this.setAuthHeaders();
         $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
-    }
+    };
 
     this.isAuthenticated = function () {
         return !this.securityEnabled || this.auth !== undefined;
-    }
+    };
 
     this.hasPermission = function () {
-    }
+    };
 
     this.hasRole = function (role) {
         if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
-            if ("string" === typeof role) {
+            if ('string' === typeof role) {
                 role = [role];
             }
-            var hasPrincipal = !_.isEmpty(this.principal);
+            const hasPrincipal = !_.isEmpty(this.principal);
             if (!hasPrincipal) {
                 return false;
             }
@@ -247,22 +242,21 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
             } else {
                 return _.intersection(role, this.principal.authorities).length > 0;
             }
-        }
-        else {
+        } else {
             return true;
         }
-    }
+    };
 
     this.checkForWrite = function (menuRole, location, repo) {
         if ('WRITE_REPO' === menuRole) {
             return this.canWriteRepo(location, repo);
         }
         return this.hasRole(menuRole);
-    }
+    };
 
     this.hasAdminRole = function () {
         return this.hasRole('ROLE_ADMIN') || this.hasRole('ROLE_REPO_MANAGER');
-    }
+    };
 
     this.canWriteRepo = function (location, repo) {
         if (_.isEmpty(location) || _.isEmpty(repo)) {
@@ -271,16 +265,14 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
         if (this.securityEnabled || this.hasOverrideAuth) {
             if (_.isEmpty(this.principal)) {
                 return false;
-            }
-            else if (this.hasAdminRole()) {
+            } else if (this.hasAdminRole()) {
                 return true;
             }
             return this.checkRights(location, repo, 'WRITE');
-        }
-        else {
+        } else {
             return true;
         }
-    }
+    };
 
     this.canReadRepo = function (location, repo) {
         if (_.isEmpty(location) || _.isEmpty(repo)) {
@@ -289,27 +281,24 @@ securityServices.service('$jwtAuth', ["$http", "$cookies", "$cookieStore", "toas
         if (this.securityEnabled) {
             if (_.isEmpty(this.principal)) {
                 return false;
-            }
-            else if (this.hasAdminRole()) {
+            } else if (this.hasAdminRole()) {
                 return true;
             }
             return this.checkRights(location, repo, 'READ');
-        }
-        else {
+        } else {
             return true;
         }
-    }
+    };
 
     this.checkRights = function (location, repo, action) {
-        var canRead = false;
-        for (var i = 0; i < this.principal.authorities.length; i++) {
-            var authRole = this.principal.authorities[i];
-            var parts = authRole.split('_', 2);
-            var repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
+        for (let i = 0; i < this.principal.authorities.length; i++) {
+            const authRole = this.principal.authorities[i];
+            const parts = authRole.split('_', 2);
+            const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
             if (parts[0] === action && (repoPart === repo || repo !== 'SYSTEM' && repoPart === '*')) {
                 return true;
             }
         }
         return false;
-    }
+    };
 }]);

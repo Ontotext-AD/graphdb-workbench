@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.graphexplore.services.graphconfig', [])
     .factory('GraphConfigService', GraphConfigService);
 
-GraphConfigService.$inject = ['$http', '$repositories'];
+GraphConfigService.$inject = ['$http'];
 
-function GraphConfigService($http, $repositories) {
+function GraphConfigService($http) {
     return {
         getGraphConfigs: getGraphConfigs,
         getGraphConfigSamples: getGraphConfigSamples,
@@ -58,6 +58,4 @@ function GraphConfigService($http, $repositories) {
             }
         });
     }
-
-
 }

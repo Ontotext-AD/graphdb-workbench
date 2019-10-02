@@ -22,7 +22,7 @@ connectors.config(['$routeProvider', '$menuItemsProvider', function ($routeProvi
         helpInfo: 'The Connector management view is used to create and manage GraphDB connector instances.'
     });
 
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: "IS_AUTHENTICATED_FULLY", icon: "icon-settings"});
+    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
     $menuItemsProvider.addItem({label: 'Connectors', href: 'connectors', order: 10, parent: 'Setup', role: 'IS_AUTHENTICATED_FULLY'});
 }]);
 
@@ -30,9 +30,8 @@ connectors.filter('singular', function () {
     return function (noun) {
         if (angular.isUndefined(noun)) {
             return noun;
-        }
-        else {
+        } else {
             return noun.replace(/ies$/, 'y').replace(/s$/, '');
         }
-    }
+    };
 });

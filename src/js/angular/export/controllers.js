@@ -13,17 +13,16 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ["$scope",
+    ['$scope',
         '$http',
-        "$cookies",
-        "$location",
-        "$timeout",
+        '$cookies',
+        '$location',
+        '$timeout',
         'ModalService',
         'filterFilter',
         '$repositories',
         'toastr',
-        '$jwtAuth',
-        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr, $jwtAuth) {
+        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr) {
 
 
             $scope.getActiveRepository = function () {
@@ -73,41 +72,42 @@ exportCtrl.controller('ExportCtrl',
 
             /// <summary>Get Graphs that are part of the Active Repository.</summary>
             $scope.getGraphs = function () {
-                if ($scope.getActiveRepository() !== "") {
+                if ($scope.getActiveRepository() !== '') {
                     $scope.loader = true;
-                    $http.get('repositories/' + $scope.getActiveRepository() + '/contexts').success(function (data, status, headers, config) {
+                    $http.get('repositories/' + $scope.getActiveRepository() + '/contexts').success(function (data) {
                         data.results.bindings.unshift({
                             contextID: {
-                                type: "default",
-                                value: "The default graph"
+                                type: 'default',
+                                value: 'The default graph'
                             }
                         });
                         $scope.graphsByValue = {};
-                        for (let i in data.results.bindings) {
-                            if (data.results.bindings[i].contextID.type === "bnode") {
-                                data.results.bindings[i].contextID.value = '_:' + data.results.bindings[i].contextID.value;
-                            } else if (data.results.bindings[i].contextID.type === "default") {
-                                data.results.bindings[i].contextID.uri = encodeURIComponent("http://www.openrdf.org/schema/sesame#nil");
-                                data.results.bindings[i].contextID.clearUri = "DEFAULT";
-                                data.results.bindings[i].contextID.exportUri = "null";
-                                data.results.bindings[i].contextID.longName = "default graph";
+                        Object.keys(data.results.bindings).forEach(function (key) {
+                            const binding = data.results.bindings[key];
+                            if (binding.contextID.type === 'bnode') {
+                                binding.contextID.value = '_:' + binding.contextID.value;
+                            } else if (binding.contextID.type === 'default') {
+                                binding.contextID.uri = encodeURIComponent('http://www.openrdf.org/schema/sesame#nil');
+                                binding.contextID.clearUri = 'DEFAULT';
+                                binding.contextID.exportUri = 'null';
+                                binding.contextID.longName = 'default graph';
                             } else {
-                                data.results.bindings[i].contextID.uri = encodeURIComponent(data.results.bindings[i].contextID.value);
-                                data.results.bindings[i].contextID.clearUri = "GRAPH <" + data.results.bindings[i].contextID.value + ">";
-                                data.results.bindings[i].contextID.exportUri = encodeURIComponent("<" + data.results.bindings[i].contextID.value + ">");
-                                data.results.bindings[i].contextID.longName = "named graph " + data.results.bindings[i].contextID.value;
+                                binding.contextID.uri = encodeURIComponent(binding.contextID.value);
+                                binding.contextID.clearUri = 'GRAPH <' + binding.contextID.value + '>';
+                                binding.contextID.exportUri = encodeURIComponent('<' + binding.contextID.value + '>');
+                                binding.contextID.longName = 'named graph ' + binding.contextID.value;
                             }
-                            $scope.graphsByValue[data.results.bindings[i].contextID.value] = data.results.bindings[i].contextID;
-                        }
+                            $scope.graphsByValue[binding.contextID.value] = binding.contextID;
+                        });
                         $scope.graphs = data.results.bindings;
                         $scope.filteredGraphs = angular.copy($scope.graphs);
                         $scope.displayGraphs = $scope.filteredGraphs.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
                         $scope.loader = false;
                         $scope.selectedGraphs.exportGraphs = {};
                         $scope.matchedElements = $scope.graphs;
-                    }).error(function (data, status, headers, config) {
-                        let msg = getError(data, status);
-                        if (msg === "There is no active location!") {
+                    }).error(function (data, status) {
+                        const msg = getError(data, status);
+                        if (msg === 'There is no active location!') {
                             $repositories.setRepository('');
                             toastr.error(msg, 'Error');
                         }
@@ -119,17 +119,16 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.downloadExport = function (downloadUrl, format) {
-                var url = downloadUrl + "&Accept=" + encodeURIComponent(format.type);
-                var cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
+                let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type);
+                const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
                 if (cookie) {
                     url = url + '&authToken=' + encodeURIComponent(cookie);
                 }
                 window.open(url);
             };
 
-
             /// <summary>Trigger the custom event for DD tooltip.</summary>
-            $scope.openExportDDTooltip = function (e) {
+            $scope.openExportDDTooltip = function () {
                 if ($scope.showExportDDTooltip) {
                     $timeout(function () {
                         $('#tooltipTarget').trigger('showExportDDTooltip');
@@ -146,8 +145,7 @@ exportCtrl.controller('ExportCtrl',
 
             /// <summary>Fill the hidden form and submit it to start download document.</summary>
             $scope.exportRepo = function (format, contextID) {
-
-                if (format.type == 'application/rdf+xml' || format.type == 'text/plain' || format.type == 'text/turtle' || format.type == 'text/rdf+n3') {
+                if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'text/rdf+n3') {
                     ModalService.openSimpleModal({
                         title: 'Warning',
                         message: 'This format does not support graphs.<br>Graph information will not be available in the export.',
@@ -162,9 +160,8 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.startDownload = function (format, contextID) {
-
                 //If it's graph set the url for ?context=
-                var downloadUrl;
+                let downloadUrl;
                 if (contextID) {
                     downloadUrl = 'repositories/' + $scope.getActiveRepository() + '/statements?infer=false&context=' + $scope.graphsByValue[contextID.value].exportUri;
                 } else {
@@ -177,33 +174,31 @@ exportCtrl.controller('ExportCtrl',
                 if (_.isEmpty($scope.selectedGraphs.exportGraphs)) {
                     return !_.isEmpty($scope.selectedGraphs.exportGraphs);
                 } else {
-                    for (var index in $scope.selectedGraphs.exportGraphs) {
-                        if ($scope.selectedGraphs.exportGraphs[index] == true) {
+                    for (const index in $scope.selectedGraphs.exportGraphs) {
+                        if ($scope.selectedGraphs.exportGraphs[index] === true) {
                             return true;
                         }
                     }
                     return false;
                 }
-
             };
 
             $scope.exportSelectedGraphs = function (format) {
-                var contextStr = '';
-                for (var index in $scope.selectedGraphs.exportGraphs) {
+                let contextStr = '';
+                for (const index in $scope.selectedGraphs.exportGraphs) {
                     if ($scope.selectedGraphs.exportGraphs[index]) {
                         contextStr += 'context=' + $scope.graphsByValue[index].exportUri + '&';
                     }
                 }
 
                 if (contextStr) {
-
-                    var startDownload = function () {
+                    const startDownload = function () {
                         contextStr = contextStr.substring(0, contextStr.length - 1);
-                        var downloadUrl = 'repositories/' + $scope.getActiveRepository() + '/statements?infer=false&' + contextStr;
+                        const downloadUrl = 'repositories/' + $scope.getActiveRepository() + '/statements?infer=false&' + contextStr;
                         $scope.downloadExport(downloadUrl, format);
                     };
 
-                    if (format.type == 'application/rdf+xml' || format.type == 'text/plain' || format.type == 'text/turtle' || format.type == 'text/rdf+n3') {
+                    if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'text/rdf+n3') {
                         ModalService.openSimpleModal({
                             title: 'Warning',
                             message: 'This format does not support graphs.<br>Graph information will not be available in the export.',
@@ -224,15 +219,15 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.$watch('exportFilter', function (newValue, oldValue) {
+            $scope.$watch('exportFilter', function () {
                 $scope.filteredGraphs = filterFilter($scope.graphs, $scope.exportFilter);
-                if ($scope.getActiveRepository() !== "" && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
-                    var valueOfFilteredGraphsButton = angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span')[0].innerHTML.trim();
-                    var valueOfFilteredGraphs;
-                    if (valueOfFilteredGraphsButton === "All") {
+                if ($scope.getActiveRepository() !== '' && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
+                    const valueOfFilteredGraphsButton = angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span')[0].innerHTML.trim();
+                    let valueOfFilteredGraphs;
+                    if (valueOfFilteredGraphsButton === 'All') {
                         valueOfFilteredGraphs = $scope.filteredGraphs.length;
                     }
-                    if ($scope.filteredGraphs && $scope.filteredGraphs.length > $scope.pageSize && valueOfFilteredGraphsButton !== "All") {
+                    if ($scope.filteredGraphs && $scope.filteredGraphs.length > $scope.pageSize && valueOfFilteredGraphsButton !== 'All') {
                         valueOfFilteredGraphs = $scope.pageSize;
                     }
                     $scope.changePageSize(valueOfFilteredGraphs);
@@ -260,12 +255,9 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.checkAll = function () {
-                if ($scope.selectedAll) {
-                    $scope.selectedAll = true;
-                } else {
-                    $scope.selectedAll = false;
-                }
-                angular.forEach($scope.displayGraphs, function (item, index) {
+                $scope.selectedAll = $scope.selectedAll || false;
+
+                angular.forEach($scope.displayGraphs, function (item) {
                     if (item.contextID.uri) {
                         $scope.selectedGraphs.exportGraphs[item.contextID.value] = $scope.selectedAll;
                     }
@@ -274,7 +266,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.deselectAll = function () {
                 $scope.selectedAll = false;
-                angular.forEach($scope.displayGraphs, function (item, index) {
+                angular.forEach($scope.displayGraphs, function (item) {
                     if (item.contextID.uri) {
                         $scope.selectedGraphs.exportGraphs[item.contextID.value] = false;
                     }
@@ -289,19 +281,19 @@ exportCtrl.controller('ExportCtrl',
 
                 ModalService.openSimpleModal({
                     title: 'Confirm clear repository',
-                    message: "Are you sure you want to clear repository " + $repositories.getActiveRepository() + "?",
+                    message: 'Are you sure you want to clear repository ' + $repositories.getActiveRepository() + '?',
                     warning: true
                 }).result
                     .then(function () {
                         $timeout(function () {
-                            var url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
+                            const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
                             $http({
                                 method: 'POST',
                                 url: url,
-                                data: "update=CLEAR ALL",
+                                data: 'update=CLEAR ALL',
                                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                             })
-                                .then(function (res) {
+                                .then(function () {
                                     $scope.deleting['*'] = false;
                                     toastr.success('Cleared repository ' + $repositories.getActiveRepository());
                                     $scope.getGraphs();
@@ -318,27 +310,27 @@ exportCtrl.controller('ExportCtrl',
                     return;
                 }
                 if (angular.isDefined(ctx)) {
-                    var longName = ctx.contextID.longName;
+                    const longName = ctx.contextID.longName;
                     $scope.deleting[ctx] = true;
                     ModalService.openSimpleModal({
                         title: 'Confirm clear graph',
-                        message: "Are you sure you want to clear the " + longName + "?",
+                        message: 'Are you sure you want to clear the ' + longName + '?',
                         warning: true
                     }).result
                         .then(function () {
                             $timeout(function () {
-                                var url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
-                                var clearUri = ctx.contextID.clearUri;
+                                const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
+                                const clearUri = ctx.contextID.clearUri;
                                 $http({
                                     method: 'POST',
                                     url: url,
-                                    data: "update=CLEAR " + clearUri,
+                                    data: 'update=CLEAR ' + clearUri,
                                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                                }).then(function (res) {
+                                }).then(function () {
                                     $scope.deleting[ctx] = false;
                                     toastr.success('Cleared the ' + longName);
                                     $scope.getGraphs();
-                                    $scope.exportFilter = "";
+                                    $scope.exportFilter = '';
                                     $scope.filteredGraphs.length = 0;
                                     $scope.updateResults();
                                     $scope.changePageSize($scope.pageSize);
@@ -350,9 +342,8 @@ exportCtrl.controller('ExportCtrl',
                         }, function () {
                             $scope.deleting[ctx] = false;
                         });
-                }
-                else {
-                    var selectedGraphsForDelete = [];
+                } else {
+                    const selectedGraphsForDelete = [];
                     angular.forEach($scope.selectedGraphs.exportGraphs, function (value, key) {
                         if (value) {
                             selectedGraphsForDelete.push(key);
@@ -363,28 +354,28 @@ exportCtrl.controller('ExportCtrl',
                         $scope.deleting[ctx] = true;
                         ModalService.openSimpleModal({
                             title: 'Confirm clear graphs',
-                            message: "Are you sure you want to clear the selected graphs?",
+                            message: 'Are you sure you want to clear the selected graphs?',
                             warning: true
                         }).result.then(function () {
                             $timeout(function () {
-                                var counterOfClearedGraphs = 0;
-                                var url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
+                                let counterOfClearedGraphs = 0;
+                                const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
                                 angular.forEach(selectedGraphsForDelete, function (contextID) {
-                                    var clearUri = $scope.graphsByValue[contextID].clearUri;
-                                    var longName = $scope.graphsByValue[contextID].longName;
+                                    const clearUri = $scope.graphsByValue[contextID].clearUri;
+                                    const longName = $scope.graphsByValue[contextID].longName;
                                     $http({
                                         method: 'POST',
                                         url: url,
-                                        data: "update=CLEAR " + clearUri,
+                                        data: 'update=CLEAR ' + clearUri,
                                         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                                    }).then(function (res) {
+                                    }).then(function () {
                                         $scope.loader = true;
                                         $scope.selectedGraphs.exportGraphs[contextID] = false;
                                         delete $scope.selectedGraphs.exportGraphs[contextID];
                                         counterOfClearedGraphs++;
                                         if (selectedGraphsForDelete.length === counterOfClearedGraphs) {
                                             $scope.selectedAll = false;
-                                            $scope.exportFilter = "";
+                                            $scope.exportFilter = '';
                                             $scope.filteredGraphs.length = 0;
                                             $scope.getGraphs();
                                             $scope.updateResults();

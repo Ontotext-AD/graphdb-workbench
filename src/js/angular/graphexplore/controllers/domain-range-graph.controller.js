@@ -6,25 +6,25 @@ angular
     ])
     .controller('DomainRangeGraphCtlr', DomainRangeGraphCtlr);
 
-DomainRangeGraphCtlr.$inject = ["$scope", "$location", "$rootScope", "$timeout", "$repositories", "$window", "localStorageService", "GraphDataService", "UiScrollService", "ModalService", "toastr"];
+DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'localStorageService', 'GraphDataService', 'UiScrollService', 'ModalService', 'toastr'];
 
 function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, localStorageService, GraphDataService, UiScrollService, ModalService, toastr) {
     $scope.predicatesObj = {};
     $scope.predicatesQueryObj = {};
     $scope.predicatesObj.items = [];
-    $scope.predicatesQueryObj.query = "";
+    $scope.predicatesQueryObj.query = '';
     $scope.predicatesListNotFiltered = [];
-    $scope.predicatesSearchPlaceholder = "Search predicates";
+    $scope.predicatesSearchPlaceholder = 'Search predicates';
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
-    $scope.onopen = $scope.onclose = () => { return angular.noop(); };
+    $scope.onopen = $scope.onclose = () => angular.noop();
 
     // creating datasource for predicates data
-    var datasource = {},
-        position = 0,
-        current = 0;
-    $rootScope.key = "";
+    const datasource = {};
+    let position = 0;
+    let current = 0;
+    $rootScope.key = '';
     datasource.get = function (index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.predicatesObj.items);
     };
@@ -46,13 +46,12 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.adapterContainer = {adapter: {remain: true}};
 
 
-    var doCollapseEdges = localStorageService.get("domainRange-collapseEdges");
-    if (doCollapseEdges == null) {
+    const doCollapseEdges = localStorageService.get('domainRange-collapseEdges');
+    if (doCollapseEdges === null) {
         $scope.collapseEdges = true;
     } else {
-        $scope.collapseEdges = doCollapseEdges === "true";
+        $scope.collapseEdges = doCollapseEdges === 'true';
     }
-
 
     $scope.datasource = datasource;
 
@@ -61,7 +60,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.$on('repositoryIsSet', onRepositoryIsSet);
     $scope.$on('changeCollapsedEdgesState', function (event, collapsed) {
         $scope.collapseEdges = !collapsed;
-        localStorageService.set("domainRange-collapseEdges", $scope.collapseEdges);
+        localStorageService.set('domainRange-collapseEdges', $scope.collapseEdges);
     });
 
     $scope.goToClassHierarchyView = goToClassHierarchyView;
@@ -90,8 +89,8 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     }
 
     function prepareDataForPredicatesInfoSidePanel(selectedPredicate) {
-        var targetNode = selectedPredicate.target;
-        var sourceNode = selectedPredicate.source;
+        const targetNode = selectedPredicate.target;
+        const sourceNode = selectedPredicate.source;
 
         $scope.encodedUri = encodeURIComponent(selectedPredicate.uri);
 
@@ -107,14 +106,14 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
                 ? sourceNode.objectPropClassName
                 : '<i>Literal</i>';
 
-        if ($scope.sourceTargetObjectNodeName.indexOf("Literal") == -1) {
+        if ($scope.sourceTargetObjectNodeName.indexOf('Literal') === -1) {
             GraphDataService.getRdfsLabelAndComment($scope.sourceTargetObjectNodeUri)
                 .success(function (response) {
                     $scope.rdfsLabel = response.label;
                     $scope.rdfsComment = response.comment;
                 })
                 .error(function () {
-                    toastr.error("Error getting rdfs:label and rdfs:comment");
+                    toastr.error('Error getting rdfs:label and rdfs:comment');
                 });
         } else {
             $scope.rdfsComment = undefined;
@@ -128,12 +127,12 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
 
         // if target node of selected predicate has no edges then it is a left edge and edges should
         // come from the source node
-        var allEdges = targetNode.allEdges
+        const allEdges = targetNode.allEdges
             ? targetNode.allEdges
             : sourceNode.allEdges;
 
         _.each(allEdges, function (pred) {
-            var obj = {};
+            const obj = {};
             obj.absUri = encodeURIComponent(pred.uri);
             obj.absUriNonEncoded = pred.uri;
             obj.resolvedUri = pred.name;
@@ -147,41 +146,41 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     // Hack needed to force hide collapsed-mode toggle tooltip in order not be
     // visible after icon is switched
     $(document).ready(function () {
-        $(".compact-mode-toggle").click(function () {
-            $(".tooltip").hide();
+        $('.compact-mode-toggle').click(function () {
+            $('.tooltip').hide();
         });
     });
 
-    function reloadDomainRangeGraphView(event, selectedClass, collapsed) {
-        var uri = selectedClass.objectPropClassUri;
-        var name = selectedClass.objectPropClassName;
+    function reloadDomainRangeGraphView(event, selectedClass) {
+        const uri = selectedClass.objectPropClassUri;
+        const name = selectedClass.objectPropClassName;
 
         $location
-            .path("domain-range-graph")
-            .search("uri", uri)
-            .search("name", name);
+            .path('domain-range-graph')
+            .search('uri', uri)
+            .search('name', name);
     }
 
     function switchEdgeMode(event, selectedClass) {
         $location
-            .path("domain-range-graph")
-            .search("uri", selectedClass.uri)
-            .search("name", selectedClass.name)
-            .search("collapsed", selectedClass.collapsed);
+            .path('domain-range-graph')
+            .search('uri', selectedClass.uri)
+            .search('name', selectedClass.name)
+            .search('collapsed', selectedClass.collapsed);
     }
 
     function goToClassHierarchyView() {
-        var lastSelectedClass = localStorageService.get('classHierarchy-lastSelectedClass');
+        const lastSelectedClass = localStorageService.get('classHierarchy-lastSelectedClass');
 
         $location
-            .search("")
+            .search('')
             .hash(lastSelectedClass)
-            .path("hierarchy");
+            .path('hierarchy');
     }
 
     function toggleCollapseEdgesState() {
         $scope.collapseEdges = !$scope.collapseEdges;
-        $window.history.pushState({collapsed: $scope.collapseEdges}, "domainRangePage", null);
+        $window.history.pushState({collapsed: $scope.collapseEdges}, 'domainRangePage', null);
     }
 
     function copyToClipboard(uri) {
@@ -189,9 +188,9 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     }
 
 
-    var currentActiveRepository = $repositories.getActiveRepository();
+    let currentActiveRepository = $repositories.getActiveRepository();
 
-    function onRepositoryIsSet(event) {
+    function onRepositoryIsSet() {
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {

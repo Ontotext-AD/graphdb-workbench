@@ -33,7 +33,7 @@ function config($httpProvider, $routeProvider) {
             templateUrl: 'pages/licenseInfo.html',
             controller: 'LicenseCtrl',
             title: 'Current license for this location',
-            helpInfo: "The GraphDB License Information view allows you to check the details of your current license. "
+            helpInfo: 'The GraphDB License Information view allows you to check the details of your current license. '
         })
         .when('/alert-samples', {
             templateUrl: 'pages/alert-samples.html'
@@ -50,12 +50,12 @@ function config($httpProvider, $routeProvider) {
         });
 }
 
-run.$inject = ['$rootScope', '$location', '$cookieStore'];
+run.$inject = ['$rootScope', '$location'];
 
-function run($rootScope, $location, $cookieStore) {
-    $rootScope.$on('$locationChangeStart', function (event, next, current) {
-        if ($rootScope.isLicenseHardcoded && $location.url() === "/license/register") {
-            $location.path("license");
+function run($rootScope, $location) {
+    $rootScope.$on('$locationChangeStart', function () {
+        if ($rootScope.isLicenseHardcoded && $location.url() === '/license/register') {
+            $location.path('license');
         }
     });
 }

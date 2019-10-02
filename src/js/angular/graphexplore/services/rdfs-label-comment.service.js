@@ -2,19 +2,17 @@ angular
     .module('graphdb.framework.graphexplore.services.rdfsdetails', [])
     .factory('RdfsLabelCommentService', RdfsLabelCommentService);
 
-RdfsLabelCommentService.$inject = ['$http'];
-
-function RdfsLabelCommentService($http) {
+function RdfsLabelCommentService() {
     return {
         processAndFilterLabelAndComment: processAndFilterLabelAndComment
     };
 
     function processAndFilterLabelAndComment(response) {
         function processKeysWithColon(obj) {
-            var newObj = {};
-            for (var k in obj) {
+            const newObj = {};
+            for (let k in obj) {
                 if (obj.hasOwnProperty(k)) {
-                    var origKey = k;
+                    let origKey = k;
                     if (k.indexOf(':') > -1) {
                         origKey = k;
                         k = k.split(':')[1].toLowerCase();
@@ -25,11 +23,11 @@ function RdfsLabelCommentService($http) {
             return newObj;
         }
 
-        var results = response.results.bindings,
-            labels = [],
-            comments = [];
+        const results = response.results.bindings;
+        const labels = [];
+        const comments = [];
         _.each(results, function (value) {
-            var processedObj;
+            let processedObj;
             if (!angular.isUndefined(value.label)) {
                 processedObj = processKeysWithColon(value.label);
                 labels.push(processedObj);
@@ -41,20 +39,20 @@ function RdfsLabelCommentService($http) {
             }
         });
 
-        var langFilter = function (item) {
-            return item.lang === "en" || item.lang === "de";
+        const langFilter = function (item) {
+            return item.lang === 'en' || item.lang === 'de';
         };
 
-        var filteredRdfsLabel = $.grep(labels, langFilter)[0],
-            filteredRdfsComment = $.grep(comments, langFilter)[0];
+        const filteredRdfsLabel = $.grep(labels, langFilter)[0];
+        const filteredRdfsComment = $.grep(comments, langFilter)[0];
 
-        var rdfsLabel = !angular.isUndefined(filteredRdfsLabel)
+        const rdfsLabel = !angular.isUndefined(filteredRdfsLabel)
             ? filteredRdfsLabel.value
             : labels.length > 0
                 ? labels[0].value
                 : undefined;
 
-        var rdfsComment = !angular.isUndefined(filteredRdfsComment)
+        const rdfsComment = !angular.isUndefined(filteredRdfsComment)
             ? filteredRdfsComment.value
             : comments.length > 0
                 ? comments[0].value
@@ -63,6 +61,6 @@ function RdfsLabelCommentService($http) {
         return {
             rdfsLabel: rdfsLabel,
             rdfsComment: rdfsComment
-        }
+        };
     }
 }
