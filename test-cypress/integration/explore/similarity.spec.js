@@ -450,7 +450,7 @@ describe('Similarity screen validation', () => {
     }
 
     function verifyQueryIsChanged() {
-        cy.get('.CodeMirror:contains("OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .")');
+        cy.get('#queryEditor .CodeMirror').should('contain', 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .');
     }
 
     function getToast() {
