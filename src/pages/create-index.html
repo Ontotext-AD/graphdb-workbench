@@ -105,7 +105,7 @@
                         Search query
                     </a>
                 </li>
-                <li class="nav-item" ng-show="viewType == 'predication'">
+                <li class="nav-item analogical-query-tab" ng-show="viewType == 'predication'">
                     <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link" href>
                         Analogical query
                     </a>
@@ -178,7 +178,7 @@
             <div class="clearfix">
                 <div class="pull-right">
                     <a ng-href="/similarity" class="btn btn-lg btn-secondary"
-                       popover="Closes index creation without saving the changes."
+                       popover="{{getCloseBtnMsg()}}"
                        popover-placement="top"
                        popover-trigger="mouseenter">
                         Cancel
@@ -189,7 +189,7 @@
                             popover-trigger="mouseenter">
                         Create
                     </button>
-                    <button ng-if="editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="saveSearchQuery()"
+                    <button ng-if="editSearchQuery" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
                             popover="Edit query"
                             popover-placement="top"
                             popover-trigger="mouseenter">

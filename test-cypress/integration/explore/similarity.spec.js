@@ -4,6 +4,29 @@ const INDEX_CREATE_URL = '/similarity/index/create';
 const BUILD_PARAM = ' -trainingcycles 4';
 const STOP_WORD = 'stopword';
 const LUCENE_ANALYZER = 'org.apache.lucene.analysis.de.GermanAnalyzer';
+const MODIFIED_SEARCH_QUERY = 'PREFIX :<http://www.ontotext.com/graphdb/similarity/> \n' +
+    'SELECT ?documentID ?score { \n' +
+    '?search a ?index ; \n' +
+    '?searchType ?query; \n' +
+    ':searchParameters ?parameters; \n' +
+    '?resultType ?result . \n' +
+    '?result :value ?documentID ; \n' +
+    ':score ?score. \n' +
+    'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate . }}';
+const MODIFIED_ANALOGICAL_QUERY = 'PREFIX :<http://www.ontotext.com/graphdb/similarity/>\n' +
+    'PREFIX psi:<http://www.ontotext.com/graphdb/similarity/psi/>\n' +
+    'PREFIX inst:<http://www.ontotext.com/graphdb/similarity/instance/>\n' +
+    '\n' +
+    'SELECT ?resultValue ?score {\n' +
+    '    ?search a ?index ;\n' +
+    '        psi:givenSubject ?givenSubject;\n' +
+    '        psi:givenObject ?givenObject;\n' +
+    '        psi:searchSubject ?searchSubject;\n' +
+    '        :searchParameters ?parameters;\n' +
+    '        psi:resultObject ?result .\n' +
+    '    ?result :value ?resultValue;\n' +
+    '            :score ?score .\n' +
+    'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate . }}';
 
 describe('Similarity screen validation', () => {
 
@@ -85,6 +108,36 @@ describe('Similarity screen validation', () => {
             setIndexName();
             changeSearchQuery();
             createSimilarityIndex();
+        });
+
+        it('Change Search query of existing text index', () => {
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+            openEditQueryView();
+            changeSearchQuery();
+            getSaveEditedQueryButton().click();
+            getToast().find('.toast-success')
+                .should('be.visible')
+                .and('contain', 'Changed search query');
+            openEditQueryView();
+            verifyQueryIsChanged();
+        });
+
+        it('Change Analogical query of existing predication index', () => {
+            openCreateNewIndexForm();
+            switchToPredicationIndex();
+            setIndexName();
+            createSimilarityIndex();
+            openEditQueryView(true);
+            changeAnalogicalQuery();
+            getSaveEditedQueryButton().click();
+            getToast().find('.toast-success')
+                .should('be.visible')
+                .and('contain', 'Changed analogical query');
+            openEditQueryView(true);
+            getAnalogicalQueryTab().click();
+            verifyQueryIsChanged();
         });
 
         it('Clone existing similarity index', () => {
@@ -229,8 +282,8 @@ describe('Similarity screen validation', () => {
 
     function setIndexName() {
         cy.url().should('eq', Cypress.config('baseUrl') + INDEX_CREATE_URL);
-        cy.get('.similarity-index-name').type(INDEX_NAME);
-        cy.get('.similarity-index-name').invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
+        getSimilarity().type(INDEX_NAME);
+        getSimilarity().invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
     }
 
     function clickMoreOptionsMenu() {
@@ -319,6 +372,17 @@ describe('Similarity screen validation', () => {
         cy.get('.modal-backdrop').should('not.be.visible');
     }
 
+    function openEditQueryView(isPredication) {
+        cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
+        // Open "Edit search query" view
+        cy.get('.edit-query-btn').click();
+        // Verify that 'similarity-index-name' input field is disabled
+        getSimilarity().should('be.disabled');
+        getSearchQueryTab().should('be.visible');
+        let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
+        getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
+    }
+
     function changeDataQuery() {
         const MODIFIED_DATA_QUERY = 'SELECT ?documentID ?documentText { \n' +
             '?documentID <http://dbpedia.org/ontology/birthDate> ?documentText . \n' +
@@ -333,18 +397,13 @@ describe('Similarity screen validation', () => {
     }
 
     function changeSearchQuery() {
-        const MODIFIED_SEARCH_QUERY = 'PREFIX :<http://www.ontotext.com/graphdb/similarity/> \n' +
-            'SELECT ?documentID ?score { \n' +
-            '?search a ?index ; \n' +
-            '?searchType ?query; \n' +
-            ':searchParameters ?parameters; \n' +
-            '?resultType ?result . \n' +
-            '?result :value ?documentID ; \n' +
-            ':score ?score. \n' +
-            'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate . }}';
-
-        cy.get('.search-query-tab').click();
+        getSearchQueryTab().click();
         setNewQuery(MODIFIED_SEARCH_QUERY);
+    }
+
+    function changeAnalogicalQuery() {
+        getAnalogicalQueryTab().click();
+        setNewQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 
     function getDeleteIndexButton() {
@@ -353,6 +412,22 @@ describe('Similarity screen validation', () => {
 
     function getCreateIndexButton() {
         return cy.get('.create-similarity-index-btn');
+    }
+
+    function getSearchQueryTab() {
+        return cy.get('.search-query-tab');
+    }
+
+    function getAnalogicalQueryTab() {
+        return cy.get('.analogical-query-tab');
+    }
+
+    function getSaveEditedQueryButton() {
+        return cy.get('.save-query-btn');
+    }
+
+    function getSimilarity() {
+        return cy.get('.similarity-index-name');
     }
 
     function getExistingIndexesPanel() {
@@ -372,5 +447,13 @@ describe('Similarity screen validation', () => {
             const cm = codeMirrorEl[0].CodeMirror;
             expect(cm.getValue().trim().length > 0).to.be.true;
         });
+    }
+
+    function verifyQueryIsChanged() {
+        cy.get('.CodeMirror:contains("OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .")');
+    }
+
+    function getToast() {
+        return cy.get('#toast-container');
     }
 });
