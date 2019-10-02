@@ -4,7 +4,6 @@ angular
 
 CreateSimilarityIdxCtrl.$inject = [ '$scope',
                                     '$http',
-                                    '$interval',
                                     'localStorageService',
                                     'toastr',
                                     '$repositories',
@@ -13,11 +12,11 @@ CreateSimilarityIdxCtrl.$inject = [ '$scope',
                                     'SimilarityService',
                                     'SparqlService',
                                     '$location',
+                                    'UtilService',
                                     'productInfo'];
 
 function CreateSimilarityIdxCtrl($scope,
                                  $http,
-                                 $interval,
                                  localStorageService,
                                  toastr,
                                  $repositories,
@@ -26,6 +25,7 @@ function CreateSimilarityIdxCtrl($scope,
                                  SimilarityService,
                                  SparqlService,
                                  $location,
+                                 UtilService,
                                  productInfo) {
 
     let indexType = $location.search().type;
@@ -774,19 +774,17 @@ function CreateSimilarityIdxCtrl($scope,
             changedQuery: $scope.currentQuery.query,
             isSearchQuery: $scope.page === 2
         };
-        $.ajax({
-            type: "put",
+
+        return $http({
+            method: "put",
             url: "/rest/similarity/search-query",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function (result) {
-                toastr.success($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
-            },
-            error: function () {
-                toastr.error(getError(data), 'Could not change query!');
-            }
+            data: JSON.stringify(data)
+        }).then(async function () {
+            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+            $location.url('similarity');
+        }, function (response) {
+            toastr.error(getError(response), 'Could not change query!');
         });
-        $location.url('similarity');
     };
 
     $scope.getCloseBtnMsg = function () {

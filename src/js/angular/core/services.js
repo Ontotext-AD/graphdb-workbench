@@ -280,14 +280,28 @@ try {
     iriRegExp = new RegExp("^[a-z](?:[-a-z0-9\\+\\.])*:", "i");
 }
 
-UtilService.$inject = [];
+UtilService.$inject = ['toastr'];
 
-function UtilService() {
+function UtilService(toastr) {
     return {
-        isValidIri: isValidIri
+        isValidIri: isValidIri,
+        showToastMessageWithDelay: showToastMessageWithDelay
     };
 
     function isValidIri(iri) {
         return iri !== undefined && !!iri.match(iriRegExp);
+    }
+
+    /**
+     *  This method will show message with tiny delay and only after completion
+     *  of latter redirection to "graphs-visualizations" page will happen.
+     * @param message
+     * @returns {Promise<any>}
+     */
+    function showToastMessageWithDelay(message) {
+        return new Promise(r => {
+            toastr.success(message);
+            setTimeout(r, 200)
+        });
     }
 }
