@@ -6,7 +6,7 @@ angular
 QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', '$window', '$jwtAuth'];
 
 function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlService, $filter, $window, $jwtAuth) {
-    var defaultTabConfig = {
+    const defaultTabConfig = {
         id: "1",
         name: '',
         query: 'select * where { \n' +
@@ -15,13 +15,13 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         inference: true,
         sameAs: true
     };
-    var principal = $jwtAuth.getPrincipal();
-    var checkQueryIntervalId;
+    let principal = $jwtAuth.getPrincipal();
+    let checkQueryIntervalId;
     if (principal) {
         initTabs($scope, principal);
         // principal is not yet set, wait for its initialization
     } else {
-        $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+        $scope.$on('securityInit', function (scope) {
             principal = $jwtAuth.getPrincipal();
             initTabs(scope.currentScope, principal);
         });
@@ -86,11 +86,11 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     $scope.changeViewMode = changeViewMode;
     $scope.showHideEditor = showHideEditor;
     $scope.focusQueryEditor = focusQueryEditor;
-    $scope.orientationViewMode = localStorageService.get('viewMode') ? localStorageService.get('viewMode') == "true" : true;
+    $scope.orientationViewMode = localStorageService.get('viewMode') ? localStorageService.get('viewMode') === "true" : true;
     $scope.viewMode = 'none';
 
     // start of repository actions
-    let backendRepositoryID = $scope.getActiveRepository();
+    $scope.getActiveRepository();
     $scope.getActiveRepository = function () {
         // same as getActiveRepository() but takes into account repo errors
         return $repositories.getActiveRepository();
@@ -114,7 +114,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function setLoader(isRunning, progressMessage, extraMessage, noTimer) {
-        var yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
+        const yasrInnerContainer = angular.element(document.getElementById("yasr-inner"));
         $scope.queryIsRunning = isRunning;
         if (isRunning) {
             $scope.queryStartTime = Date.now();
@@ -138,9 +138,9 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function getLoaderMessage() {
-        var timeSeconds = (Date.now() - $scope.queryStartTime) / 1000,
-            timeHuman = "",
-            message = "";
+        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
+        let timeHuman = "";
+        let message = "";
 
         if (!$scope.noLoaderTimer) {
             timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
@@ -170,27 +170,28 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
             // window.editor is undefined if no repo is selected
             if (window.editor && document.querySelector('.CodeMirror-wrap')) {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
                 //window.editor.refresh();
             } else {
+                let timer;
                 if (verticalView) {
-                    var timer = $timeout(function () {
-                        $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
+                    timer = $timeout(function () {
+                        $scope.fixSizesOnHorizontalViewModeSwitch(verticalView);
                     }, 100);
                 } else {
-                    var timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
+                    timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
                 }
 
-                $scope.$on("$destroy", function (event) {
+                $scope.$on("$destroy", function () {
                     $timeout.cancel(timer);
                 });
             }
         } else {
             if ($scope.viewMode === 'yasr') {
-                var newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
+                let newHeight = visibleWindowHeight() - (document.querySelector('.CodeMirror-wrap').getBoundingClientRect().top);
                 newHeight -= 40;
                 document.querySelector('.CodeMirror-wrap').style.height = newHeight + 'px';
                 //window.editor.refresh();
@@ -212,8 +213,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         showHideEditor();
     }
 
-
-    function changeViewMode(tabID) {
+    function changeViewMode() {
         $scope.viewMode = 'none';
         $scope.orientationViewMode = !$scope.orientationViewMode;
         localStorageService.set('viewMode', $scope.orientationViewMode);
@@ -295,9 +295,9 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
             if ($scope.viewMode !== 'none') {
                 $scope.viewMode = 'none';
                 if ($scope.orientationViewMode) {
-                    $scope.fixSizesOnHorizontalViewModeSwitch()
+                    $scope.fixSizesOnHorizontalViewModeSwitch();
                 }
-                var timer = $timeout(window.editor.query, 500);
+                const timer = $timeout(window.editor.query, 500);
                 $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
@@ -318,11 +318,10 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
         $scope.namespacesLoading = true;
-        // $scope.queryIsRunning = true;
-        ////console.log("Send namespaces request. Default token is : " + $http.defaults.headers.common["Authorization"]);
+
         SparqlService.getRepositoryNamespaces()
             .success(function (data) {
-                var usedPrefixes = {};
+                const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
                     usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
@@ -342,7 +341,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         runQuery(true, $scope.explainRequested);
     }
 
-    $scope.$on("$destroy", function (event) {
+    $scope.$on("$destroy", function () {
         clearInterval(checkQueryIntervalId);
         window.editor = null;
         window.yasr = null;
@@ -352,12 +351,12 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         $scope.showSampleQueries = !$scope.showSampleQueries;
         if ($scope.showSampleQueries) {
             SparqlService.getSavedQueries()
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.sampleQueries = data;
                     $('#sampleQueriesCollapse').collapse('show').width('300px');
                 })
-                .error(function (data, status, headers, config) {
-                    let msg = getError(data);
+                .error(function (data) {
+                    const msg = getError(data);
                     toastr.error(msg, 'Error! Could not get saved queries');
                 });
         } else {
@@ -367,7 +366,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     // Hide the sample queries when the user clicks somewhere else in the UI.
     $(document).mouseup(function (event) {
-        var container = $('#sampleQueriesCollapse');
+        const container = $('#sampleQueriesCollapse');
         if (!container.is(event.target) // if the target of the click isn't the container..
             && container.has(event.target).length === 0 //... nor a descendant of the container
             && $scope.showSampleQueries) {
@@ -378,20 +377,20 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     // Add known prefixes
     function addKnownPrefixes() {
         SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
-            .success(function (data, status, headers, config) {
+            .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);
                 }
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Could not add known prefixes');
                 return true;
             });
     }
 
     function querySelected(query) {
-        var tabId = getExistingTabId(query);
+        const tabId = getExistingTabId(query);
         $scope.toggleSampleQueries();
 
         if ($scope.isTabChangeOk(false)) {
@@ -405,8 +404,8 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function getExistingTabId(query) {
-        var existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item, index) {
+        let existingTabId = undefined;
+        angular.forEach($scope.tabsData, function (item) {
             if (item.name === query.name && item.query === query.body) {
                 existingTabId = item.id;
                 return item;
@@ -417,7 +416,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function editQuery(query) {
-        var modalInstance = $modal.open({
+        const modalInstance = $modal.open({
             templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
@@ -433,46 +432,45 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         });
 
         modalInstance.result.then(function (queryModal) {
-            var data = {
+            const data = {
                 name: queryModal.name,
                 body: queryModal.body,
                 shared: queryModal.shared
             };
             if (query.name !== queryModal.name) {
                 SparqlService.addNewSavedQuery(data)
-                    .success(function (data, status, headers, config) {
+                    .success(function () {
                         $scope.deleteQueryHttp(query.name, true);
                     })
-                    .error(function (data, status, headers, config) {
-                        let msg = getError(data);
+                    .error(function (data) {
+                        const msg = getError(data);
                         toastr.error(msg, 'Error! Cannot edit saved query');
                     });
             } else {
                 SparqlService.editSavedQuery(data)
-                    .success(function (data, status, headers, config) {
+                    .success(function () {
                         $('#editQueryContainer').modal('hide');
                         $scope.toggleSampleQueries();
                         toastr.success('Saved query ' + query.name + ' was edited.');
                     })
-                    .error(function (data, status, headers, config) {
-                        let msg = getError(data);
+                    .error(function (data) {
+                        const msg = getError(data);
                         toastr.error(msg, 'Error! Cannot edit Saved query');
                     });
             }
-        }, function () {
         });
     }
 
     function deleteQueryHttp(savedQueryName, edit) {
         SparqlService.deleteSavedQuery(savedQueryName)
-            .success(function (data, status, headers, config) {
+            .success(function () {
                 $scope.toggleSampleQueries();
                 if (!edit) {
                     toastr.success('Saved query: ' + savedQueryName + ' was deleted.');
                 }
             })
-            .error(function (data, status, headers, config) {
-                let msg = getError(data);
+            .error(function (data) {
+                const msg = getError(data);
                 toastr.error(msg, 'Error! Cannot delete saved query');
             });
     }
@@ -490,23 +488,23 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function saveQueryHttp(query) {
         SparqlService.addNewSavedQuery(query)
-            .success(function (data, status, headers, config) {
+            .success(function () {
                 toastr.success('Saved query ' + query.name + ' was saved.');
             })
-            .error(function (data, status, headers, config) {
+            .error(function (data) {
                 let msg = getError(data);
                 toastr.error(msg, 'Error! Cannot create saved query');
                 // TODO: This condition will always be true
                 if (msg = "Query '" + query.name + "' already exists!") {
                     query.query = query.body;
-                    var queryExists = true;
+                    const queryExists = true;
                     $scope.saveQuery(query, queryExists);
                 }
             });
     }
 
     function saveQuery(query, queryExists) {
-        var modalInstance = $modal.open({
+        const modalInstance = $modal.open({
             templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
@@ -517,7 +515,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                         edit: false,
                         okButtonText: 'Create',
                         queryExists: queryExists
-                    }
+                    };
                 }
             }
         });
@@ -527,7 +525,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         }, function () {
         });
     }
-
 
     // end of query operations
 
@@ -545,45 +542,43 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     // start of query tab operations
     function findTabIndexByID(id) {
-        for (var i = 0; i < $scope.tabsData.length; i++) {
-            var tab = $scope.tabsData[i];
+        for (let i = 0; i < $scope.tabsData.length; i++) {
+            const tab = $scope.tabsData[i];
             if (tab.id === id) {
                 return i;
             }
         }
     }
 
-
     function saveTab(id) {
-        var idx = findTabIndexByID(id);
+        const idx = findTabIndexByID(id);
         // Tab was deleted, don't try to save it's state
         if (idx === undefined) {
             return {};
         }
-        var tab = $scope.tabsData[idx];
+        const tab = $scope.tabsData[idx];
         //tab.query = window.editor.getValue();
         $scope.saveQueryToLocal(tab);
         return tab;
     }
 
-    var maxID = localStorageService.get('tabs-state-maxid') || 1;
+    let maxID = localStorageService.get('tabs-state-maxid') || 1;
 
     function addNewTab(callback, tabName, savedQuery) { // optional callback to call after tab has been added
         if (!isTabChangeOk(true)) {
             return;
         }
-
+        let defaultTabConfig;
         if (tabName || savedQuery) {
-            var defaultTabConfig = {
+            defaultTabConfig = {
                 id: "1",
                 name: tabName,
                 query: savedQuery,
                 inference: principal.appSettings.DEFAULT_INFERENCE,
                 sameAs: principal.appSettings.DEFAULT_SAMEAS
             };
-        }
-        else {
-            var defaultTabConfig = {
+        } else {
+            defaultTabConfig = {
                 id: "1",
                 name: '',
                 query: 'select * where { \n' +
@@ -595,17 +590,17 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         }
 
         maxID++;
-        var newID = '' + maxID;
+        const newID = '' + maxID;
         $scope.tabsData = $scope.tabs;
 
-        var newTab = defaultTabConfig;
+        const newTab = defaultTabConfig;
         newTab.id = newID;
 
         $scope.tabsData.push(newTab);
 
         localStorageService.set('tabs-state-maxid', maxID);
         localStorageService.set('tabs-state', $scope.tabsData);
-        var callbackArgs = Array.prototype.slice.call(arguments, 1); // skip one argument, i.e. the callback itself
+        const callbackArgs = Array.prototype.slice.call(arguments, 1); // skip one argument, i.e. the callback itself
         $timeout(function () {
             $scope.$apply();
             selectTab(newID);
@@ -620,9 +615,8 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         $scope.tabsData = localStorageService.get("tabs-state") || [defaultTabConfig];
 
         // find available tab
-        var tab;
-        var idx = findTabIndexByID(id);
-        tab = $scope.tabsData[idx];
+        const idx = findTabIndexByID(id);
+        const tab = $scope.tabsData[idx];
 
         if (tab.yasrData) {
             setLoader(true, 'Rendering results', null, true);
@@ -647,7 +641,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                         // Our injected custom (not real HTTP) error
                         $scope.yasr.results = {
                             getException: function () {
-                                return tab.yasrData.customError
+                                return tab.yasrData.customError;
                             }
                         };
                         setLoader(false);
@@ -709,9 +703,10 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         // If selected tab has results and query in editor controller is invalid save as
         // dropdown menu will be removed and on fixing query latter will be added
         if ($scope.currentTabConfig.resultsCount >= 0) {
-            if ($('.saveAsDropDown').length > 0 && !window.editor.queryValid) {
+            const $saveAsDropDown = $('.saveAsDropDown');
+            if ($saveAsDropDown.length > 0 && !window.editor.queryValid) {
                 yasr.header.find('.saveAsDropDown').remove();
-            } else if ($('.saveAsDropDown').length === 0 && window.editor.queryValid) {
+            } else if ($saveAsDropDown.length === 0 && window.editor.queryValid) {
                 yasr.updateDownloadDropdown();
             }
         }
@@ -749,13 +744,13 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         // colors contains the colors to set to the tab name,
         // while times defines the times in milliseconds to keep each color.
         // Once we cycle through the arrays we restore the default color.
-        var colors = ['#ED4F2F', '', '#ED4F2F'];
-        var times = [400, 400, 400];
+        const colors = ['#ED4F2F', '', '#ED4F2F'];
+        const times = [400, 400, 400];
         if ($scope.highlightNextTabChange) {
             $scope.highlightNextTabChange = false;
-            var index = 0;
+            let index = 0;
             $(tabEvent.target).css('color', colors[index]);
-            var highlightFun = function () {
+            const highlightFun = function () {
                 index++;
                 if (index < colors.length) {
                     $(tabEvent.target).css('color', colors[index]);
@@ -784,7 +779,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     $scope.saveQueryModal = showModal('#saveQueryContainer');
 
     $scope.getResultsDescription = function () {
-        var desc;
+        let desc;
         if ($scope.currentTabConfig.resultsCount === 0) {
             desc = "No results.";
         } else {
@@ -802,7 +797,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     $scope.getUpdateDescription = function () {
         if ($scope.currentTabConfig.customUpdateMessage) {
             return $scope.currentTabConfig.customUpdateMessage;
-        } else if ($scope.currentTabConfig.sizeDelta == undefined) {
+        } else if ($scope.currentTabConfig.sizeDelta === undefined) {
             return '';
         } else if ($scope.currentTabConfig.sizeDelta < 0) {
             return 'Removed ' + Math.abs($scope.currentTabConfig.sizeDelta) + ' statements.';
@@ -814,13 +809,13 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     };
 
     $scope.getStaleWarningMessage = function () {
-        var secondsAgo = Math.round((Date.now() - $scope.currentTabConfig.timeFinished) / 60000) * 60;
+        const secondsAgo = Math.round((Date.now() - $scope.currentTabConfig.timeFinished) / 60000) * 60;
         if (secondsAgo >= 3600) { // must be at least an hour
-            return "Possibly stale result (obtained " + $scope.getHumanReadableSeconds(secondsAgo) + " ago)."
+            return "Possibly stale result (obtained " + $scope.getHumanReadableSeconds(secondsAgo) + " ago).";
         }
     };
 
-    var resize = function () {
+    const resize = function () {
         // $scope.fixSizesOnHorizontalViewModeSwitch();
     };
 

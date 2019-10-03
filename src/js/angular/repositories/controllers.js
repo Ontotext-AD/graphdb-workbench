@@ -279,7 +279,7 @@ UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toa
 function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr) {
     $scope.upload = function (files) {
         if (files && files.length) {
-            $scope.uploadFile = file = files[0];
+            $scope.uploadFile = files[0];
         }
     };
     $scope.ok = function () {
@@ -376,7 +376,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
     let isInvalidPieFile = false;
     $scope.upload = function (files) {
         if (files && files.length) {
-            $scope.uploadFile = file = files[0];
+            $scope.uploadFile = files[0];
             $scope.uploadFileLoader = true;
             Upload.upload({
                 url: 'rest/repositories/uploadRuleSet',

@@ -76,7 +76,7 @@
 											</span>
 										</div>
 										<div ng-if="child.__type == 'OptionArray'" class="col-form-label">
-											<i>Defining nested objects is not supported through this interface.</i>
+											<em>Defining nested objects is not supported through this interface.</em>
 										</div>
 									</div>
 								</div>
@@ -105,7 +105,7 @@
                 </div>
 				<div ng-if="option.__type == 'Map'" ng-show="values[option.__name].length === 0">
 					<div class="col-form-label mb-1">
-						<label><i>No {{option.__label}} added</i></label>
+						<label><em>No {{option.__label}} added</em></label>
 						<span class="btn-group-sm">
 							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>

@@ -63,7 +63,7 @@
                                              ng-init="key = option.__name; value = exist.values[key] != null ? exist.values[key] : option.__defaultValue">
                                             <label class="col-xs-2 col-form-label">{{option.__label}}</label>
                                             <div ng-if="value == null" class="col-xs-10">
-                                                <div class="form-control"><i>No value set</i></div>
+                                                <div class="form-control"><em>No value set</em></div>
                                             </div>
                                             <div ng-if="value != null" class="col-xs-10">
                                                 <div ng-if="option.__type == 'String'">
@@ -104,7 +104,7 @@
                                                     </div>
 
                                                     <div class="col-form-label mb-1" ng-show="isEmpty(value)">
-                                                        <label><i>No {{option.__label}} added</i></label>
+                                                        <label><em>No {{option.__label}} added</em></label>
                                                     </div>
 
                                                 </div>
@@ -129,7 +129,7 @@
                                                                     <!-- Handles other types, e.g. OptionArray -->
                                                                     <div ng-if="child.__type != 'String' && child.__type != 'StringArray'"
                                                                          class="col-form-label">
-                                                                        <label ng-show="!field[child.__name]"><i>No value set</i></label>
+                                                                        <label ng-show="!field[child.__name]"><em>No value set</em></label>
                                                                         <pre class="form-control" ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
                                                                     </div>
                                                                 </div>

@@ -6,9 +6,7 @@ import 'angular/sparql/services/sparql.service';
 import 'angular/sparql/directives/sparql-tab.directive';
 import 'angular/sparql/controllers/query-editor.controller';
 import 'angular/security/services';
-// import 'angular/sparql/controllers';
 import 'angular/sparql/directives/query-editor.directive';
-// import 'angular/sparql/directives';
 import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/FileSaver-patch';
 

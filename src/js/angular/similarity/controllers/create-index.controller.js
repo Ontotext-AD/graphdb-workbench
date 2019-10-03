@@ -108,6 +108,8 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         }
     };
 
+    const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
+
     const validateIndex = function () {
         $scope.invalidIndexName = false;
         $scope.saveQueries();
@@ -181,7 +183,6 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             $scope.helpHidden = false;
         }
     };
-    const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 
     $scope.viewQuery = function () {
         if (!validateIndex()) {
