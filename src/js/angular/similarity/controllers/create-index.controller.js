@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.similarity.controllers.create', [])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityService', 'SparqlService', '$location', 'productInfo'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityService', 'SparqlService', '$location', 'productInfo', 'UtilService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityService, SparqlService, $location, productInfo) {
+function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityService, SparqlService, $location, productInfo, UtilService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -28,10 +28,22 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         sameAs: true
     };
 
+    var getNewIndexName = function (indexNameFromLocation) {
+        if (indexNameFromLocation) {
+            if ($scope.page !== 1) {
+                return indexNameFromLocation;
+            } else {
+                return 'Copy_of_' + indexNameFromLocation;
+            }
+        }
+        return '';
+    };
+
     const initForViewType = function () {
-        $scope.page = 1;
-        $scope.newIndex.name = ($location.search().name ? 'Copy_of_' + $location.search().name : '');
-        $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === 'text') ? textDefaultOptions : predDefaultOptions);
+        $scope.editSearchQuery = $location.search().editSearchQuery;
+        $scope.page = $scope.editSearchQuery ? 2 : 1;
+        $scope.newIndex.name = getNewIndexName($location.search().name);
+        $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === "text") ? textDefaultOptions : predDefaultOptions);
 
         if ($scope.searchQueries) {
             $scope.newIndex.searchQuery = $location.search().searchQuery ? $location.search().searchQuery : $scope.searchQueries[$scope.viewType];
@@ -40,28 +52,34 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             }
         }
 
-        if ($scope.viewType === 'text' && $scope.allSamples) {
-            $scope.samples = $scope.allSamples['text'];
-            $scope.newIndex.stopList = ($location.search().stopList ? $location.search().stopList : undefined);
-            $scope.newIndex.analyzer = ($location.search().analyzer ? $location.search().analyzer : 'org.apache.lucene.analysis.en.EnglishAnalyzer');
-            const isLiteralIndex = getAndRemoveOption('-literal_index');
-            if (isLiteralIndex !== undefined) {
-                $scope.newIndex.isLiteralIndex = isLiteralIndex;
+        if ($scope.editSearchQuery) {
+            // Default will be opened search query tab for edition
+            $scope.currentQuery.query = $scope.newIndex.searchQuery;
+            $scope.notoolbarInference = true;
+            $scope.notoolbarSameAs = true;
+        } else {
+            if ($scope.viewType === 'text' && $scope.allSamples) {
+                $scope.samples = $scope.allSamples['text'];
+                $scope.newIndex.stopList = ($location.search().stopList ? $location.search().stopList : undefined);
+                $scope.newIndex.analyzer = ($location.search().analyzer ? $location.search().analyzer : 'org.apache.lucene.analysis.en.EnglishAnalyzer');
+                const isLiteralIndex = getAndRemoveOption('-literal_index');
+                if (isLiteralIndex !== undefined) {
+                    $scope.newIndex.isLiteralIndex = isLiteralIndex;
+                }
+                if (window.editor) {
+                    $scope.setQuery($scope.samples['literals']);
+                }
             }
-            if (window.editor) {
-                $scope.setQuery($scope.samples['literals']);
-            }
-        }
-        if ($scope.viewType === 'predication' && $scope.allSamples) {
-            SimilarityService.getIndexes()
-                .success(function (data) {
-                    $scope.literalIndexes = ['no-index'].concat(data
-                        .filter(function (idx) {
-                            return idx.type === 'textLiteral' && (idx.status === 'BUILT' || idx.status === 'OUTDATED');
-                        })
-                        .map(function (idx) {
-                            return idx.name;
-                        }));
+            if ($scope.viewType === 'predication' && $scope.allSamples) {
+                SimilarityService.getIndexes()
+                    .success(function (data) {
+                        $scope.literalIndexes = ['no-index'].concat(data
+                            .filter(function (idx) {
+                                return idx.type === 'textLiteral' && (idx.status === 'BUILT' || idx.status === 'OUTDATED')
+                            })
+                            .map(function (idx) {
+                                return idx.name;
+                            }));
 
                     if ($scope.newIndex.inputIndex === undefined) {
                         const desiredIdx = getAndRemoveOption('-input_index');
@@ -82,9 +100,10 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                     toastr.error(msg, 'Could not get indexes');
                 });
 
-            $scope.samples = $scope.allSamples['predication'];
-            if (window.editor) {
-                $scope.setQuery($scope.samples['predication']);
+                $scope.samples = $scope.allSamples['predication'];
+                if (window.editor) {
+                    $scope.setQuery($scope.samples['predication']);
+                }
             }
         }
     };
@@ -284,7 +303,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                         .error(function (err) {
                             toastr.error(getError(err), 'Could not create index');
                         });
-                    $location.path('similarity');
+                    $location.url('similarity');
                 }
 
             })
@@ -653,7 +672,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
         const tab = $scope.currentQuery;
 
-        if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
+        if ($scope.currentQuery.query === null || $scope.currentQuery.query === '') {
             // hack for YASQE bug
             window.editor.setValue(' ');
         } else {
@@ -711,4 +730,32 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
     $scope.getStaleWarningMessage = function () {
     };
+
+    $scope.saveSearchQuery = function () {
+        // Should validate that query is SELECT
+        if (window.editor.getQueryType() !== 'SELECT') {
+            toastr.error('Similarity index requires SELECT queries.');
+            return;
+        }
+        let data = {
+            name: $scope.newIndex.name,
+            changedQuery: $scope.currentQuery.query,
+            isSearchQuery: $scope.page === 2
+        };
+
+        return $http({
+            method: "put",
+            url: "/rest/similarity/search-query",
+            data: JSON.stringify(data)
+        }).then(async function () {
+            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+            $location.url('similarity');
+        }, function (response) {
+            toastr.error(getError(response), 'Could not change query!');
+        });
+    };
+
+    $scope.getCloseBtnMsg = function () {
+        return "Closes " + ($scope.editSearchQuery ? "query edition": "index creation") + " without saving the changes."
+    }
 }
