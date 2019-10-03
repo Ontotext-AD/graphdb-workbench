@@ -49,6 +49,12 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             });
         };
 
+        const refreshPage = function () {
+            refreshStatus();
+            refreshFilteringStatus();
+            refreshFilteringConfig();
+        };
+
         const checkForPlugin = function () {
             $scope.pluginFound = false;
 
@@ -278,12 +284,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
             $scope.$on('$destroy', function () {
                 $interval.cancel(timer);
             });
-        };
-
-        const refreshPage = function () {
-            refreshStatus();
-            refreshFilteringStatus();
-            refreshFilteringConfig();
         };
 
         function expandPrefix(str, namespaces) {

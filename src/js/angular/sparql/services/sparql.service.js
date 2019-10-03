@@ -30,7 +30,7 @@ function SparqlService($http, $repositories) {
     }
 
     function getSavedQuery(savedQueryName, owner) {
-        var ownerQuery = '';
+        let ownerQuery = '';
         if (owner != null) {
             ownerQuery = '&owner=' + encodeURIComponent(owner);
         }

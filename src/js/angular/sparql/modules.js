@@ -9,6 +9,5 @@ angular.module('graphdb.framework.sparql', [
     'graphdb.framework.sparql.services',
     'graphdb.framework.sparql.controllers.queryeditor',
     'graphdb.framework.sparql.directives.sparqltab',
-    // 'graphdb.framework.core.directives.keyboardshortcuts',
     'graphdb.framework.sparql.directives.queryeditor'
 ]);

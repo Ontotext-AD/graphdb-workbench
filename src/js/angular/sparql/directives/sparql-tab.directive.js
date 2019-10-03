@@ -5,7 +5,7 @@ angular
 sparqlTabDirective.$inject = ['$rootScope', 'localStorageService', 'ModalService'];
 
 function sparqlTabDirective($rootScope, localStorageService, ModalService) {
-    var SparqlTabCtrl = ['$scope', '$element', '$rootScope', 'ModalService', 'toastr', function ($scope, $element, $rootScope, ModalService, toastr) {
+    const SparqlTabCtrl = ['$scope', '$element', '$rootScope', 'ModalService', 'toastr', function ($scope, $element, $rootScope, ModalService, toastr) {
         $scope.state = {};
 
         function getQueryID(element) {
@@ -13,8 +13,8 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
         }
 
         function findTabIndexByID(id) {
-            for (var i = 0; i < $scope.tabs.length; i++) {
-                var tab = $scope.tabs[i];
+            for (let i = 0; i < $scope.tabs.length; i++) {
+                const tab = $scope.tabs[i];
                 if (tab.id === id) {
                     return i;
                 }
@@ -60,8 +60,7 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
                 }).result.then(function () {
                     deleteAllTabsExceptSelected($scope.state.selectedTabId);
                 });
-            }
-            else {
+            } else {
                 $scope.state.idForDelete = getQueryID($element);
 
                 ModalService.openSimpleModal({
@@ -81,7 +80,7 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
             }
             $scope.editCurrentlySelectedOnly.$show();
             //fix for buttons for edit
-            var $editableButtons = $(".editable-buttons");
+            const $editableButtons = $(".editable-buttons");
             $editableButtons.children(".btn.btn-primary").addClass('btn-sm');
             $editableButtons.children(".btn.btn-default").addClass('btn-sm');
             $('.editable-controls .editable-input').addClass('form-control-sm').on('change', function ($el) {
@@ -101,7 +100,7 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
             if (angular.isUndefined(id)) {
                 throw 'Delete by id was called with undefined id';
             }
-            var idx = findTabIndexByID(id);
+            const idx = findTabIndexByID(id);
             $scope.tabs.splice(idx, 1);
 
             if (id === $scope.currentQuery.id) {

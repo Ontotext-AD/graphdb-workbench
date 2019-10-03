@@ -49,7 +49,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         // Custom callback to call when the content changes (fired within timeout of 200)
         if (attrs.callbackOnChange) {
-            var callback = scope[attrs.callbackOnChange];
+            const callback = scope[attrs.callbackOnChange];
             if (typeof callback === 'function') {
                 callbackOnChange = callback;
             }
@@ -80,9 +80,9 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
                 return;
             }
-            var idx = findTabIndexByID(scope.currentQuery.id);
+            let idx = findTabIndexByID(scope.currentQuery.id);
             idx = (idx + 1) % scope.tabs.length;
-            var tab = scope.tabs[idx];
+            const tab = scope.tabs[idx];
             selectTab(tab.id);
         }
 
@@ -90,12 +90,12 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
                 return;
             }
-            var idx = findTabIndexByID(scope.currentQuery.id);
+            let idx = findTabIndexByID(scope.currentQuery.id);
             idx--;
             if (idx === -1) {
                 idx = scope.tabs.length - 1;
             }
-            var tab = scope.tabs[idx];
+            const tab = scope.tabs[idx];
             selectTab(tab.id);
         }
 
@@ -141,9 +141,9 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             angular.element('.CodeMirror-linenumbers').css('width', '1px');
             angular.element('.CodeMirror-sizer').css('margin-left', '0px');
             clearTimeout(scope.changesTimeout);
-            var hasError = !window.editor.queryValid;
+            const hasError = !window.editor.queryValid;
             scope.changesTimeout = setTimeout(callbackOnChange ? callbackOnChange() : function () {
-                var idx = findTabIndexByID(scope.currentQuery.id) + 1;
+                const idx = findTabIndexByID(scope.currentQuery.id) + 1;
                 $('a[data-id = "' + idx + '"]')
                     .toggleClass('query-has-error', hasError)
                     .attr('title', hasError ?
@@ -157,7 +157,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         function selectTab(id) {
             $timeout(function () {
-                var requestedTab = $('a[data-id = "' + id + '"]');
+                let requestedTab = $('a[data-id = "' + id + '"]');
                 if (requestedTab.length === 0) {
                     // tab has been deleted in another browser window or something else occurred,
                     // select first tab instead
@@ -170,17 +170,14 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         // hide unneeded yasqe fullscreen button
         $(".fullscreenToggleBtns").hide();
 
-        var afterCopy = function (event) {
-            $(event.target).removeClass('fa-link');
-            $(event.target).addClass('fa-check');
-            $(event.target).blur();
+        const afterCopy = function (event) {
+            $(event.target).removeClass('fa-link').addClass('fa-check').blur();
             setTimeout(function () {
-                $(event.target).removeClass('fa-check');
-                $(event.target).addClass('fa-link');
+                $(event.target).removeClass('fa-check').addClass('fa-link');
             }, 1000);
         };
 
-        window.onbeforeunload = function (event) {
+        window.onbeforeunload = function () {
             if (!scope.nostorage) {
                 localStorageService.set('tabs-state', scope.tabs);
             }
@@ -191,8 +188,8 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
          * Patch the execute query to take into account the inference
          * and the same as options
          */
-        var originalExecuteQuery = YASQE.executeQuery;
-        var originalGetUrlArguments = YASQE.getUrlArguments;
+        const originalExecuteQuery = YASQE.executeQuery;
+        const originalGetUrlArguments = YASQE.getUrlArguments;
 
         scope.$on('$destroy', function () {
             if (!scope.nostorage) {
@@ -216,8 +213,8 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         };
 
         YASQE.getUrlArguments = function (yasqe, config) {
-            var data = originalGetUrlArguments(yasqe, config);
-            var qType = window.editor.getQueryType();
+            const data = originalGetUrlArguments(yasqe, config);
+            const qType = window.editor.getQueryType();
             if ('SELECT' === qType || 'CONSTRUCT' === qType || 'DESCRIBE' === qType) {
                 data.push({name: 'limit', value: scope.currentTabConfig.pageSize});
                 scope.currentTabConfig.offset = (scope.currentTabConfig.page - 1) * scope.currentTabConfig.pageSize + 1;
@@ -235,7 +232,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 status: status,
                 statusText: statusText,
                 responseText: responseText
-            }
+            };
         }
 
         // Generates a new tracking alias for queries based on time
@@ -243,9 +240,10 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             return "query-editor-" + performance.now() + "-" + Date.now();
         }
 
-        var connectorProgressModal;
+        let connectorProgressModal;
+        let yasr;
 
-        YASQE.executeQuery = function (cm, callBackOrConfig) {
+        YASQE.executeQuery = function (cm) {
             if (yasr && $(yasr.resultsContainer).length) {
                 $(yasr.resultsContainer).empty();
             }
@@ -259,7 +257,6 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             } else if (cm.getQueryMode() === 'update') {
                 cm.options.sparql.endpoint = 'repositories/' + $repositories.getActiveRepository() + '/statements';
             }
-            var infElements = $('#inference');
             cm.options.sparql.args = [{
                 name: 'infer',
                 value: scope.currentQuery.inference
@@ -272,7 +269,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             scope.currentTabConfig.customUpdateMessage = "";
 
             if (window.editor.getQueryMode() === "update") {
-                var doExecute = function () {
+                const doExecute = function () {
                     scope.currentTabConfig.queryType = "UPDATE";
 
                     SparqlService.getRepositorySize()
@@ -300,7 +297,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                             scope.currentTabConfig.timeFinished = Date.now();
                             scope.currentTabConfig.timeTook = (scope.currentTabConfig.timeFinished - scope.queryStartTime) / 1000;
 
-                            var customError = createCustomError(-1, 'No support for ' + res.data.connectorName, res.data.connectorName
+                            const customError = createCustomError(-1, 'No support for ' + res.data.connectorName, res.data.connectorName
                                 + ' connectors are not supported because the plugin ' + res.data.pluginName + ' is not active.');
 
                             yasr.results = {
@@ -317,7 +314,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                         }
 
                         if (res.data.command === 'create' || res.data.command === 'repair') {
-                            var repair = res.data.command === 'repair';
+                            const repair = res.data.command === 'repair';
                             if (repair) {
                                 scope.setLoader(true, 'Repairing connector ' + res.data.name);
                                 scope.currentTabConfig.customUpdateMessage = 'Repaired connector ' + res.data.name + '.';
@@ -326,7 +323,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                                 scope.currentTabConfig.customUpdateMessage = 'Created connector ' + res.data.name + '.';
                             }
 
-                            var progressScope = scope.$new(true);
+                            const progressScope = scope.$new(true);
 
                             // This duplicates code in the externalsync module but we can't get it from there
                             progressScope.beingBuiltConnector = {
@@ -361,7 +358,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                         }
 
                         doExecute();
-                    }, function (err) {
+                    }, function () {
                         // for some reason we couldn't check if this is a connector update, so just execute it
                         doExecute();
                     });
@@ -370,7 +367,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 // Tell YASR what format we want, or else it will mess it up when switching between tabs.
                 if (scope.currentQuery.outputType != null) {
                     yasr.options.output = scope.currentQuery.outputType;
-                } else {  // Default to table if no format has been configured yet.
+                } else { // Default to table if no format has been configured yet.
                     yasr.options.output = "table";
                 }
                 scope.currentTabConfig.queryType = window.editor.getQueryType();
@@ -387,9 +384,9 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         };
 
         // Override yasqe's getAjaxConfig() so we can inject our authorization header
-        var originalGetAjaxConfig = YASQE.getAjaxConfig;
+        const originalGetAjaxConfig = YASQE.getAjaxConfig;
         YASQE.getAjaxConfig = function (yasqe, callbackOrConfig) {
-            var config = originalGetAjaxConfig(yasqe, callbackOrConfig);
+            const config = originalGetAjaxConfig(yasqe, callbackOrConfig);
 
             _.extend(config.headers, {
                 'Authorization': $jwtAuth.getAuthToken()
@@ -399,7 +396,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         };
 
         function createQueryURL(savedQueryName, owner) {
-            var url = [location.protocol, '//', location.host, location.pathname].join('');
+            let url = [location.protocol, '//', location.host, location.pathname].join('');
             if (savedQueryName) {
                 url = url + '?savedQueryName=' + encodeURIComponent(savedQueryName);
                 if (owner != null) {
@@ -425,7 +422,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         };
 
         scope.goToVisual = function () {
-            var paramsToParse = {
+            const paramsToParse = {
                 query: window.editor.getValue(),
                 sameAs: scope.currentQuery.sameAs,
                 inference: scope.currentQuery.inference
@@ -448,9 +445,9 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 dataOrJqXhr.contentType = dataOrJqXhr.getResponseHeader("content-type");
             }
 
-            var executedQueryTabIdx = findTabIndexByID(scope.executedQueryTab.id),
-                executedQueryTab = scope.tabs[executedQueryTabIdx],
-                queryResultState = {
+            const executedQueryTabIdx = findTabIndexByID(scope.executedQueryTab.id);
+            const executedQueryTab = scope.tabs[executedQueryTabIdx];
+            const queryResultState = {
                     queryType: scope.currentTabConfig.queryType,
                     yasrData: dataOrJqXhr,
                     textStatus: textStatus,
@@ -486,10 +483,8 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             $('a[data-id = "' + scope.executedQueryTab.id + '"]').tab('show');
         }
 
-        var yasr;
-
         function initYasr() {
-            yasr = YASR(document.getElementById("yasr"), {
+            yasr = YASR(document.getElementById("yasr"), { // eslint-disable-line new-cap
                 getUsedPrefixes: {}, // initially blank, populated when we fetch the namespaces
                 persistency: false
             });
@@ -497,18 +492,19 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             yasr.afterCopy = afterCopy;
             yasr.getQueryResultsAsFormat = function (downloadFormat) {
                 // Simple cross-browser download with a form
-                $('#wb-download').attr('action', 'repositories/' + $repositories.getActiveRepository());
+                const $wbDownload = $('#wb-download');
+                $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
                 $('#wb-download-query').val(scope.currentQuery.query);
                 if (window.editor.getValue() !== scope.currentQuery.query) {
                     toastr.warning('The query in your editor does not match the query results. Download will save the results from the last executed query.');
                 }
                 $('#wb-download-infer').val(scope.currentQuery.inference);
-                var cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
+                const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
                 if (cookie) {
                     $('#wb-auth-token').val(cookie);
                 }
                 $('#wb-download-accept').val(downloadFormat);
-                $('#wb-download').submit();
+                $wbDownload.submit();
             };
             window.editor.options.sparql.handlers.complete = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
                 function setNewTabStateForThis() {
@@ -553,7 +549,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
                     scope.currentTabConfig.queryType = 'ERROR';
 
-                    var customError = createCustomError(-1, 'Request was aborted', 'The request has been aborted. There are no results to show.');
+                    const customError = createCustomError(-1, 'Request was aborted', 'The request has been aborted. There are no results to show.');
 
                     yasr.results = {
                         getException: function () {
@@ -570,29 +566,29 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
                 scope.setLoader(false);
 
-                var updateResultsCallback;
+                let updateResultsCallback;
 
                 if (window.editor.getQueryMode() === "update") {
                     updateResultsCallback = function () {
                         SparqlService.getRepositorySize()
                             .success(function (data) {
-                                var repoSizeDiff;
+                                let repoSizeDiff;
                                 if (scope.repoSize !== undefined) {
                                     repoSizeDiff = Number(data) - scope.repoSize;
                                 }
                                 scope.currentTabConfig.sizeDelta = repoSizeDiff;
                                 setNewTabStateForThis();
-                            }).error(function () {
-                            toastr.warning('Could not get repository size for: ' + scope.getActiveRepository() + '; ' + getError(data));
-                            scope.currentTabConfig.sizeDelta = undefined;
-                            setNewTabStateForThis();
-                        });
+                            }).error(function (data) {
+                                toastr.warning('Could not get repository size for: ' + scope.getActiveRepository() + '; ' + getError(data));
+                                scope.currentTabConfig.sizeDelta = undefined;
+                                setNewTabStateForThis();
+                            });
                     };
                 } else {
                     if (dataOrJqXhr.status === 200) {
-                        var size = -1;
+                        let size = -1;
 
-                        var contentType = dataOrJqXhr.getResponseHeader('Content-Type');
+                        const contentType = dataOrJqXhr.getResponseHeader('Content-Type');
 
                         if (contentType.indexOf('application/sparql-results+json') === 0) {
                             if (dataOrJqXhr.responseJSON.results) {
@@ -602,7 +598,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                         } else if (contentType.indexOf('application/rdf+json') === 0) {
                             // CONSTRUCT or DESCRIBE results, a bit tricky to count
                             size = 0;
-                            _.each(dataOrJqXhr.responseJSON, function (e, key) {
+                            _.each(dataOrJqXhr.responseJSON, function (e) {
                                 _.each(e, function (e) {
                                     size += e.length;
                                 });
@@ -672,7 +668,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             window.editor.options.sparql.handlers.countCallback = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
                 // We used to check if query is running but that doesn't make sense as this won't be called before
                 // query is completed. Besides, the check stopped working since we made things a bit more async, see GDB-1979
-                if (dataOrJqXhr.status == 200) {
+                if (dataOrJqXhr.status === 200) {
                     yasr.setResultsCount(dataOrJqXhr, textStatus, jqXhrOrErrorString);
                 } else {
                     // count query timeouted or something else went wrong
@@ -682,7 +678,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 scope.$apply(function () {
                     scope.currentTabConfig.allResultsCount = yasr.allCount;
                 });
-                var tab = scope.tabs[findTabIndexByID(scope.currentQuery.id)];
+                const tab = scope.tabs[findTabIndexByID(scope.currentQuery.id)];
                 tab.allResultsCount = yasr.allCount;
                 scope.saveTab(tab.id);
                 // count query completed successfully
@@ -697,8 +693,8 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
             // the rest of the tab's data.
             scope.$watch('yasr.options.output', function (value) {
                 // Save the output type only if it isn't an update or an ask query (see comment where we save all properties).
-                if (value && scope.currentTabConfig.queryType != "UPDATE" && scope.currentTabConfig.queryType != "ASK") {
-                    var tab = scope.tabs[findTabIndexByID(scope.currentQuery.id)];
+                if (value && scope.currentTabConfig.queryType !== "UPDATE" && scope.currentTabConfig.queryType !== "ASK") {
+                    const tab = scope.tabs[findTabIndexByID(scope.currentQuery.id)];
                     // Do not save tab on default yasr initalization since default table overrides saved value
                     if (angular.isDefined(tab) && scope.currentTabConfig.queryType) {
                         if (tab.outputType !== value) {
@@ -730,7 +726,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         // Hide the sample queries when the user clicks somewhere else in the UI.
         $(document).mouseup(function (event) {
-            var container = $('#sampleQueriesCollapse');
+            const container = $('#sampleQueriesCollapse');
             if (!container.is(event.target) // if the target of the click isn't the container..
                 && container.has(event.target).length === 0 //... nor a descendant of the container
                 && scope.showSampleQueries) {
@@ -739,8 +735,8 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         });
 
         function findTabIndexByID(id) {
-            for (var i = 0; i < scope.tabs.length; i++) {
-                var tab = scope.tabs[i];
+            for (let i = 0; i < scope.tabs.length; i++) {
+                const tab = scope.tabs[i];
                 if (tab.id === id) {
                     return i;
                 }
@@ -749,14 +745,14 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         // functions to load query param or saved queries
         function toBoolean(v) {
-            return angular.isDefined(v) && v != 'false';
+            return angular.isDefined(v) && v !== 'false';
         }
 
         function autoexecuteQueryIfRequested() {
-            var isRequested = toBoolean($location.search().execute);
+            const isRequested = toBoolean($location.search().execute);
 
             if (isRequested) {
-                if (window.editor.getQueryMode() == 'update') {
+                if (window.editor.getQueryMode() === 'update') {
                     ModalService.openSimpleModal({
                         title: 'Confirm execute',
                         message: 'This is an update and it may change the data in the repository.<br>Are you sure you want to execute it automatically?',
@@ -772,9 +768,9 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         }
 
         function loadQueryIntoExistingOrNewTab(query, infer, sameAs) {
-            var tabId = scope.getExistingTabId(query);
+            const tabId = scope.getExistingTabId(query);
             // Ah, the joys of non-synchronous events
-            var onHandler = scope.$on('tabLoaded', function () {
+            const onHandler = scope.$on('tabLoaded', function () {
                 if (angular.isDefined(infer)) {
                     scope.currentQuery.inference = toBoolean(infer);
                 }
@@ -812,11 +808,11 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 loadSavedQueryIntoExistingOrNewTab($location.search().savedQueryName, $location.search().owner,
                     $location.search().infer, $location.search().sameAs);
             } else if ($location.search().query) {
-                var query = {name: $location.search().name, body: $location.search().query};
+                const query = {name: $location.search().name, body: $location.search().query};
                 loadQueryIntoExistingOrNewTab(query, $location.search().infer, $location.search().sameAs);
             } else {
                 // Restore the previous tab after the dom has loaded
-                var currentid = localStorageService.get('tabs-state-currentid');
+                const currentid = localStorageService.get('tabs-state-currentid');
                 selectTab(currentid);
             }
         }
