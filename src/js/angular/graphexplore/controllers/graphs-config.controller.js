@@ -5,9 +5,9 @@ angular
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams'];
+GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'UtilService'];
 
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams) {
+function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, UtilService) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -115,38 +115,24 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
     function initForConfig() {
         getGraphConfigSamples();
-
-        /**
-         *  This method will show message with tiny delay and only after completion
-         *  of latter redirection to 'graphs-visualizations' page will happen.
-         * @param message
-         * @returns {Promise<any>}
-         */
-        let showSuccessMessage = function (message) {
-            return new Promise(r => {
-                toastr.success(message);
-                setTimeout(r, 300)
-            });
-        };
-
         $scope.createGraphConfig = function () {
             GraphConfigService.createGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await showSuccessMessage('Saved new graph config');
+                    await UtilService.showToastMessageWithDelay('Saved new graph config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
-                    toastr.error(getError(data), 'Error! Could not create graph config');
-                });
+                toastr.error(getError(data), 'Error! Could not create graph config');
+            });
         };
 
         $scope.updateGraphConfig = function () {
             GraphConfigService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await showSuccessMessage('Graph config saved');
+                    await UtilService.showToastMessageWithDelay('Graph config saved');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
-                    toastr.error(getError(data), 'Error! Could not save graph config');
-                });
+                toastr.error(getError(data), 'Error! Could not save graph config');
+            });
         };
 
         $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
