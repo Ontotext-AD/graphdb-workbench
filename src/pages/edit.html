@@ -11,8 +11,7 @@
             <a href="{{details.uri}}" tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
-            <a class="btn btn-link" tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><i
-                    class="icon-close"></i></a>
+            <a class="btn btn-link" tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
         </h1>
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
