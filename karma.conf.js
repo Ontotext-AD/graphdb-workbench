@@ -54,7 +54,7 @@ module.exports = function(config) {
     webpackMiddleware: {
       // webpack-dev-middleware configuration
       // i. e.
-      stats: 'errors-only',
+      stats: 'errors-only'
     },
 
 
@@ -101,5 +101,5 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity
-  })
+  });
 };
