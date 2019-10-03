@@ -120,7 +120,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
                 .success(async function () {
                     await UtilService.showToastMessageWithDelay('Saved new graph config');
                     $location.url('graphs-visualizations');
-                }).error(function (data, status, headers, config) {
+                }).error(function (data) {
                 toastr.error(getError(data), 'Error! Could not create graph config');
             });
         };
@@ -130,7 +130,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
                 .success(async function () {
                     await UtilService.showToastMessageWithDelay('Graph config saved');
                     $location.url('graphs-visualizations');
-                }).error(function (data, status, headers, config) {
+                }).error(function (data) {
                 toastr.error(getError(data), 'Error! Could not save graph config');
             });
         };
