@@ -1,4 +1,5 @@
 import YASR from 'lib/yasr.bundled';
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'ngCookies',
@@ -186,8 +187,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
             } else {
                 const file = new Blob([data], {type: format.type});
-                // saveAs is a global function exposed from FileSaver-patch.js
-                saveAs(file, 'statements' + format.extension); // eslint-disable-line no-undef
+                saveAs(file, 'statements' + format.extension);
             }
         }).error(function (data) {
             const msg = getError(data);
