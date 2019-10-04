@@ -28,6 +28,8 @@ const MODIFIED_ANALOGICAL_QUERY = 'PREFIX :<http://www.ontotext.com/graphdb/simi
     '            :score ?score .\n' +
     'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate . }}';
 
+const MODIFIED_QUERY_CONTAINS = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
+
 describe('Similarity screen validation', () => {
 
     let repositoryId;
@@ -117,11 +119,9 @@ describe('Similarity screen validation', () => {
             openEditQueryView();
             changeSearchQuery();
             getSaveEditedQueryButton().click();
-            getToast().find('.toast-success')
-                .should('be.visible')
-                .and('contain', 'Changed search query');
             openEditQueryView();
-            verifyQueryIsChanged();
+            cy.waitUntilQueryIsVisible();
+            cy.verifyQueryAreaContains(MODIFIED_QUERY_CONTAINS);
         });
 
         it('Change Analogical query of existing predication index', () => {
@@ -132,12 +132,10 @@ describe('Similarity screen validation', () => {
             openEditQueryView(true);
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
-            getToast().find('.toast-success')
-                .should('be.visible')
-                .and('contain', 'Changed analogical query');
             openEditQueryView(true);
             getAnalogicalQueryTab().click();
-            verifyQueryIsChanged();
+            cy.waitUntilQueryIsVisible();
+            cy.verifyQueryAreaContains(MODIFIED_QUERY_CONTAINS);
         });
 
         it('Clone existing similarity index', () => {
@@ -447,13 +445,5 @@ describe('Similarity screen validation', () => {
             const cm = codeMirrorEl[0].CodeMirror;
             expect(cm.getValue().trim().length > 0).to.be.true;
         });
-    }
-
-    function verifyQueryIsChanged() {
-        cy.get('#queryEditor .CodeMirror').should('contain', 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .');
-    }
-
-    function getToast() {
-        return cy.get('#toast-container');
     }
 });

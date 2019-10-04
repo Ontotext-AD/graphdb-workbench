@@ -57,6 +57,9 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             $scope.currentQuery.query = $scope.newIndex.searchQuery;
             $scope.notoolbarInference = true;
             $scope.notoolbarSameAs = true;
+            if (window.editor) {
+                $scope.setQuery($scope.newIndex.searchQuery);
+            }
         } else {
             if ($scope.viewType === 'text' && $scope.allSamples) {
                 $scope.samples = $scope.allSamples['text'];
@@ -749,7 +752,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             url: "/rest/similarity/search-query",
             data: JSON.stringify(data)
         }).then(async function () {
-            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query', 300);
             $location.url('similarity');
         }, function (response) {
             toastr.error(getError(response), 'Could not change query!');

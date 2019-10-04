@@ -276,10 +276,10 @@ function UtilService(toastr) {
      * @param message
      * @returns {Promise<any>}
      */
-    function showToastMessageWithDelay(message) {
+    function showToastMessageWithDelay(message, delay) {
         return new Promise(r => {
             toastr.success(message);
-            setTimeout(r, 200)
+            setTimeout(r, delay ? delay : 200);
         });
     }
 }

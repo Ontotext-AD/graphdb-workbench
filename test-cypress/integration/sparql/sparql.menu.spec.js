@@ -51,7 +51,7 @@ describe('SPARQL screen validation', () => {
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryIsVisible();
+        cy.waitUntilQueryIsVisible();
 
         // Editor should have a visible tab
         getTabs().find('.nav-link').should('be.visible');
@@ -70,7 +70,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute default query', () => {
             getTabs().should('have.length', 1);
 
-            verifyQueryAreaEquals(DEFAULT_QUERY);
+            cy.verifyQueryAreaEquals(DEFAULT_QUERY);
 
             // No queries should have been run for this tab
             getNoQueryRun().should('be.visible');
@@ -84,12 +84,12 @@ describe('SPARQL screen validation', () => {
             // Run custom query returning 1001 results
             typeQuery(DEFAULT_QUERY_MODIFIED);
 
-            verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
+            cy.verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             // Verify pasting also works
             pasteQuery(DEFAULT_QUERY_MODIFIED);
 
-            verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
+            cy.verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             executeQuery();
 
@@ -126,8 +126,8 @@ describe('SPARQL screen validation', () => {
             });
 
             // Should have inserted the prefixes
-            verifyQueryAreaContains('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>');
-            verifyQueryAreaContains('PREFIX owl: <http://www.w3.org/2002/07/owl#>');
+            cy.verifyQueryAreaContains('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>');
+            cy.verifyQueryAreaContains('PREFIX owl: <http://www.w3.org/2002/07/owl#>');
 
             executeQuery();
 
@@ -142,7 +142,7 @@ describe('SPARQL screen validation', () => {
 
             pasteQuery(describeQuery);
 
-            verifyQueryAreaEquals(describeQuery);
+            cy.verifyQueryAreaEquals(describeQuery);
 
             executeQuery();
 
@@ -334,7 +334,7 @@ describe('SPARQL screen validation', () => {
                 .find('.nav-link')
                 .should('have.text', 'Unnamed');
 
-            verifyQueryAreaContains(DEFAULT_QUERY);
+            cy.verifyQueryAreaContains(DEFAULT_QUERY);
 
             // No queries for new tab
             getNoQueryRun().should('be.visible');
@@ -653,7 +653,7 @@ describe('SPARQL screen validation', () => {
             selectSavedQuery('Add statements');
             getTabs().should('have.length', 2);
             getActiveTabLink().should('have.text', 'Add statements');
-            getQueryArea().should('contain', 'INSERT DATA');
+            cy.getQueryArea().should('contain', 'INSERT DATA');
             executeQuery();
             // Verify query information: “Added 2 statements”
             getUpdateMessage()
@@ -664,7 +664,7 @@ describe('SPARQL screen validation', () => {
             selectSavedQuery('Remove statements');
             getTabs().should('have.length', 3);
             getActiveTabLink().should('have.text', 'Remove statements');
-            getQueryArea().should('contain', 'DELETE DATA');
+            cy.getQueryArea().should('contain', 'DELETE DATA');
             executeQuery();
             getUpdateMessage()
                 .should('contain', 'Removed 2 statements.')
@@ -674,7 +674,7 @@ describe('SPARQL screen validation', () => {
             selectSavedQuery('Clear graph');
             getTabs().should('have.length', 4);
             getActiveTabLink().should('have.text', 'Clear graph');
-            getQueryArea().should('contain', 'CLEAR GRAPH');
+            cy.getQueryArea().should('contain', 'CLEAR GRAPH');
             executeQuery();
             getUpdateMessage()
                 .should('contain', 'The number of statements did not change.')
@@ -684,7 +684,7 @@ describe('SPARQL screen validation', () => {
             selectSavedQuery('SPARQL Select template');
             getTabs().should('have.length', 5);
             getActiveTabLink().should('have.text', 'SPARQL Select template');
-            getQueryArea().should('contain', 'SELECT');
+            cy.getQueryArea().should('contain', 'SELECT');
             executeQuery();
             getUpdateMessage().should('not.be.visible');
             getResultsMessage()
@@ -715,9 +715,9 @@ describe('SPARQL screen validation', () => {
             getActiveTabLink().should('have.text', queryName);
 
             // Wait until editor is initialized with the query and then assert the whole query
-            getQueryArea().should('contain', 'INSERT DATA');
+            cy.getQueryArea().should('contain', 'INSERT DATA');
             cy.fixture('queries/add-statement.txt').then((query) => {
-                verifyQueryAreaEquals(query);
+                cy.verifyQueryAreaEquals(query);
             });
         });
 
@@ -746,8 +746,8 @@ describe('SPARQL screen validation', () => {
             getTabs().should('have.length', 1);
 
             // Wait until editor is initialized with the query and then assert the whole query
-            getQueryArea().should('contain', 'SELECT');
-            verifyQueryAreaEquals(query);
+            cy.getQueryArea().should('contain', 'SELECT');
+            cy.verifyQueryAreaEquals(query);
         });
     });
 
@@ -780,7 +780,7 @@ describe('SPARQL screen validation', () => {
 
             typeQuery(queryEnd, false);
 
-            verifyQueryAreaEquals(expectedQuery);
+            cy.verifyQueryAreaEquals(expectedQuery);
 
             executeQuery();
 
@@ -913,44 +913,13 @@ describe('SPARQL screen validation', () => {
         getTabCloseBtn(position).click();
     }
 
-    function verifyQueryAreaContains(query) {
-        // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().includes(query)).to.be.true;
-        });
-    }
-
-    function verifyQueryAreaEquals(query) {
-        // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim()).to.equal(query.trim());
-        });
-    }
-
-    function waitUntilQueryIsVisible() {
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
-    }
-
-    function getQueryArea() {
-        return cy.get('#queryEditor .CodeMirror');
-    }
-
-    function getQueryTextArea() {
-        return getQueryArea().find('textarea');
-    }
-
     function getNoQueryRun() {
         return cy.get('#yasr-inner .no-query-run');
     }
 
     function clearQuery() {
         // Using force because the textarea is not visible
-        getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
+        cy.getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
     }
 
     function typeQuery(query, clear = true, parseSpecialCharSequences = false) {
@@ -958,14 +927,14 @@ describe('SPARQL screen validation', () => {
             clearQuery();
         }
         // Using force because the textarea is not visible
-        getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
+        cy.getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
     }
 
     function pasteQuery(query) {
         clearQuery();
         // Using force because the textarea is not visible
-        getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        waitUntilQueryIsVisible();
+        cy.getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+        cy.waitUntilQueryIsVisible();
     }
 
     function goToPage(page) {
