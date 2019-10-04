@@ -117,7 +117,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getConnectorCreationDialog() {
-        return cy.get('.creating-connector-dialog');
+        return cy.get('.modal-content > .modal-header.creating-connector-dialog');
     }
 
     function getConnectorStatusToastMessage() {
