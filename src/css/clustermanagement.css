@@ -181,11 +181,11 @@ path.REPLICATION_CLIENT {
 }
 
 svg:not(.active):not(.ctrl) path.link {
-    cursor: url(img/remove-16x16.svg) 8 8, crosshair;
+    cursor: url(images/remove-16x16.svg) 8 8, crosshair;
     /* workaround for webkit bug on retina displays */
     cursor: -webkit-image-set(
-            url(img/remove-16x16.svg) 1x,
-            url(img/remove-32x32.svg) 2x
+            url(images/remove-16x16.svg) 1x,
+            url(images/remove-32x32.svg) 2x
     ) 8 8, crosshair;
 }
 
