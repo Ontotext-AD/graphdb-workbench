@@ -1,6 +1,6 @@
-define(['require', 'lib/yasr.bundled'],
+define(['require', 'lib/yasr.bundled', 'lib/FileSaver-patch'],
 
-    function (require) {
+    function (require, _yasr, FileSaver) {
 
         function transformToTrig(statements) {
             var data = '';
@@ -253,7 +253,7 @@ define(['require', 'lib/yasr.bundled'],
                     }
                     else {
                         var file = new Blob([data], {type: format.type});
-                        saveAs(file, 'statements' + format.extension);
+                        FileSaver.saveAs(file, 'statements' + format.extension);
                     }
                 }).error(function (data, status, headers, config) {
                     msg = getError(data);
