@@ -5,6 +5,7 @@ describe('User and Access', () => {
     let repoManager = "repoManager";
     let admin = "admin-new";
     let password = "1234";
+    let adminPassword = "root";
 
     before(() => {
         repositoryId = 'setup-repo' + Date.now();
@@ -47,7 +48,8 @@ describe('User and Access', () => {
         cy.get('@user').find('.date-created').should('be.visible');
     });
 
-    it('Create user - read-only', () => {
+    it.only('Create user - read-only and verify that security works', () => {
+        cy.wait(500); //sometimes repositories list cannot be fetched.
         getCreateNewUserButton().click();
         getUsernameField().type(user);
         getPasswordField().type(password);
@@ -59,13 +61,14 @@ describe('User and Access', () => {
             .click();
         findUserInTable(user);
         getSecuritySwitch().click({force:true});
-        getLoginUsernameField().type(user);
-        getLoginPasswordField().type(password);
-        getUserLoginButton().click();
+        performLogin(user, password);
         cy.url().should('eq', Cypress.config('baseUrl') + '/users');
         cy.get('.container-fluid').should('contain', 'You have no permission to access this functionality with your current credentials')
+        getUserLogoutButton().click();
+        performLogin("admin", adminPassword);
         getDeleteUserButton(user).click();
         getDeleteUserConfirmButton().click();
+        getSecuritySwitch().click({force:true});
     });
 
     it('Create user - read/write', () => {
@@ -187,4 +190,20 @@ describe('User and Access', () => {
     function getUserLoginButton() {
         return cy.get('#wb-login-submitLogin');
     }
+
+    function performLogin(username, password) {
+        getLoginUsernameField().type(username);
+        getLoginPasswordField().type(password);
+        getUserLoginButton().click();
+    }
+
+    function getUserLogoutButton() {
+        cy.get('#btnGroupDrop2').click();
+        return cy.get('a.dropdown-item.logout-button');
+    }
+
+    function getToast() {
+        return cy.get('#toast-container');
+    }
+
 });
