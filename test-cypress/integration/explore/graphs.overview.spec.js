@@ -113,5 +113,10 @@ describe('Graphs overview screen validation', () => {
         confirmDelete();
         verifyVisibleGraphsCount(1);
         verifyGraphExistence('The default graph');
+        // open default graph through the link and verify that the table view is rendered
+        cy.contains('The default graph').click();
+        cy.url().should('contain', Cypress.config('baseUrl') + '/resource');
+        cy.get('.resultsTable').should('be.visible')
+            .find('thead th').should('have.length', 5);
     });
 });
