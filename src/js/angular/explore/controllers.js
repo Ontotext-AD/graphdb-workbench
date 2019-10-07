@@ -161,9 +161,10 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 sameAs: $scope.sameAs
             },
             headers: headers
-        }).done(function (data, textStatus, jqXhrOrErrorString) {
+        }).done(function (data, textStatus, jqXhr) {
             toggleOntoLoader(false);
-            yasr.setResponse(data, textStatus, jqXhrOrErrorString);
+            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
+            yasr.setResponse(jqXhr, textStatus);
         }).fail(function (data) {
             toastr.error('Could not get resource; ' + getError(data));
             toggleOntoLoader(false);
