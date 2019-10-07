@@ -8,11 +8,11 @@ function AutocompleteRestService($http) {
     return {
         checkAutocompleteStatus: checkAutocompleteStatus,
         refreshIndexStatus: refreshIndexStatus,
-        refreshIndexIRIs: refreshIndexIRIs,
         refreshLabelConfig: refreshLabelConfig,
         addLabelConfig: addLabelConfig,
         removeLabelConfig: removeLabelConfig,
         toggleAutocomplete: toggleAutocomplete,
+        refreshIndexIRIs: refreshIndexIRIs,
         toggleIndexIRIs: toggleIndexIRIs,
         buildIndex: buildIndex,
         interruptIndexing: interruptIndexing,
@@ -24,12 +24,41 @@ function AutocompleteRestService($http) {
         return $http.get('rest/autocomplete/enabled');
     }
 
-    function refreshIndexStatus() {
-        return $http.get('rest/autocomplete/status');
+    function toggleAutocomplete(newValue) {
+        return $http.post('rest/autocomplete/enabled?enabled=' + newValue);
     }
 
     function refreshIndexIRIs() {
         return $http.get('rest/autocomplete/iris');
+    }
+
+    function toggleIndexIRIs(newValue) {
+        return $http.post('rest/autocomplete/iris?enabled=' + newValue);
+    }
+
+    function buildIndex() {
+        return $http.post('rest/autocomplete/reIndex');
+    }
+
+    function interruptIndexing() {
+        return $http.post('rest/autocomplete/interrupt');
+    }
+
+    function refreshIndexStatus() {
+        return $http.get('rest/autocomplete/status');
+    }
+
+    function checkForPlugin() {
+        return $http.get('rest/autocomplete/pluginFound');
+    }
+
+    function getAutocompleteSuggestions(str, cancelerPromise) {
+        return $http.get('rest/autocomplete/query', {
+            params: {
+                q: str
+            },
+            timeout: cancelerPromise
+        });
     }
 
     function refreshLabelConfig() {
@@ -46,35 +75,6 @@ function AutocompleteRestService($http) {
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             }
-        });
-    }
-
-    function toggleAutocomplete(newValue) {
-        return $http.post('rest/autocomplete/enabled?enabled=' + newValue);
-    }
-
-    function toggleIndexIRIs(newValue) {
-        return $http.post('rest/autocomplete/iris?enabled=' + newValue);
-    }
-
-    function buildIndex() {
-        return $http.post('rest/autocomplete/reIndex');
-    }
-
-    function interruptIndexing() {
-        return $http.post('rest/autocomplete/interrupt');
-    }
-
-    function checkForPlugin() {
-        return $http.get('rest/autocomplete/pluginFound');
-    }
-
-    function getAutocompleteSuggestions(str, cancelerPromise) {
-        return $http.get('rest/autocomplete/query', {
-            params: {
-                q: str
-            },
-            timeout: cancelerPromise
         });
     }
 }

@@ -19,8 +19,8 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
             .success(function (data) {
                 $scope.autocompleteEnabled = data;
             }).error(function (data) {
-            toastr.error(getError(data));
-        });
+                toastr.error(getError(data));
+            });
     };
 
     const refreshIndexIRIs = function () {
@@ -28,8 +28,8 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
             .success(function (data) {
                 $scope.shouldIndexIRIs = data;
             }).error(function (data) {
-            toastr.error(getError(data));
-        });
+                toastr.error(getError(data));
+            });
     };
 
     const refreshIndexStatus = function () {
@@ -47,8 +47,8 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
             .success(function (data) {
                 $scope.labelConfig = data;
             }).error(function (data) {
-            toastr.error(getError(data));
-        });
+                toastr.error(getError(data));
+            });
     };
 
     const addLabelConfig = function (label) {
@@ -59,10 +59,10 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
                 refreshLabelConfig();
                 refreshIndexStatus();
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
-        });
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     const removeLabelConfig = function (label) {
@@ -73,10 +73,58 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
                 refreshLabelConfig();
                 refreshIndexStatus();
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
+    };
+
+    const checkForPlugin = function () {
+        $scope.pluginFound = false;
+
+        if (!$repositories.getActiveRepository()) {
+            return;
+        }
+
+        $scope.setLoader(true);
+
+        AutocompleteRestService.checkForPlugin()
+            .success(function (data) {
+                $scope.pluginFound = data === true;
+                if ($scope.pluginFound) {
+                    refreshEnabledStatus();
+                    refreshIndexIRIs();
+                    refreshIndexStatus();
+                    refreshLabelConfig();
+                } else {
+                    $scope.autocompleteEnabled = false;
+                    $scope.loading = false;
+                }
+            }).error(function (data) {
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
+    };
+
+    const pullStatus = function () {
+        const timer = $interval(function () {
+            if ($scope.autocompleteEnabled) {
+                refreshIndexStatus();
+            }
+        }, 5000);
+
+        $scope.$on("$destroy", function () {
+            $interval.cancel(timer);
         });
+    };
+
+    const init = function() {
+        if ($repositories.getActiveRepository()) {
+            checkForPlugin();
+        }
+
+        pullStatus();
     };
 
     $scope.setLoader = function (loader, message) {
@@ -104,10 +152,10 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
                 refreshEnabledStatus();
                 refreshIndexStatus();
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
-        });
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.toggleIndexIRIs = function () {
@@ -118,10 +166,10 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
                 refreshIndexIRIs();
                 refreshIndexStatus();
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
-        });
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.buildIndex = function () {
@@ -131,22 +179,10 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
             .success(function () {
                 $scope.indexStatus = 'BUILDING';
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
-        });
-    };
-
-    const pullStatus = function () {
-        const timer = $interval(function () {
-            if ($scope.autocompleteEnabled) {
-                refreshIndexStatus();
-            }
-        }, 5000);
-
-        $scope.$on("$destroy", function () {
-            $interval.cancel(timer);
-        });
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.interruptIndexing = function () {
@@ -156,43 +192,14 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
             .success(function () {
                 refreshIndexStatus();
             }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
-            $scope.setLoader(false);
-        });
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.getDegradedReason = function () {
         return $repositories.getDegradedReason();
-    };
-
-    const checkForPlugin = function () {
-        $scope.pluginFound = false;
-
-        if (!$repositories.getActiveRepository()) {
-            return;
-        }
-
-        $scope.setLoader(true);
-
-        AutocompleteRestService.checkForPlugin()
-            .success(function (data) {
-                $scope.pluginFound = (data === true);
-                if ($scope.pluginFound) {
-                    refreshEnabledStatus();
-                    refreshIndexIRIs();
-                    refreshIndexStatus();
-                    refreshLabelConfig();
-                } else {
-                    $scope.autocompleteEnabled = false;
-                    $scope.loading = false;
-                }
-            })
-            .error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-            $scope.setLoader(false);
-        });
     };
 
     $scope.addLabel = function () {
@@ -222,10 +229,6 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
         removeLabelConfig(label);
     };
 
-    if ($repositories.getActiveRepository()) {
-        checkForPlugin();
-    }
-
     $scope.$on('repositoryIsSet', function () {
         if (!$repositories.getActiveRepository()) {
             return;
@@ -233,8 +236,7 @@ function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $moda
         checkForPlugin();
     });
 
-    pullStatus();
-
+    init();
 }
 
 AddLabelCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'data'];
