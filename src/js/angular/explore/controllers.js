@@ -1,4 +1,5 @@
 import YASR from 'lib/yasr.bundled';
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'ngCookies',
@@ -160,9 +161,10 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 sameAs: $scope.sameAs
             },
             headers: headers
-        }).done(function (data, textStatus, jqXhrOrErrorString) {
+        }).done(function (data, textStatus, jqXhr) {
             toggleOntoLoader(false);
-            yasr.setResponse(data, textStatus, jqXhrOrErrorString);
+            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
+            yasr.setResponse(jqXhr, textStatus);
         }).fail(function (data) {
             toastr.error('Could not get resource; ' + getError(data));
             toggleOntoLoader(false);
@@ -186,8 +188,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
             } else {
                 const file = new Blob([data], {type: format.type});
-                // saveAs is a global function exposed from FileSaver-patch.js
-                saveAs(file, 'statements' + format.extension); // eslint-disable-line no-undef
+                saveAs(file, 'statements' + format.extension);
             }
         }).error(function (data) {
             const msg = getError(data);
