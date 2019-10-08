@@ -48,7 +48,7 @@ describe('User and Access', () => {
         cy.get('@user').find('.date-created').should('be.visible');
     });
 
-    it.only('Create user - read-only and verify that security works', () => {
+    it('Create user - read-only and verify that security works', () => {
         cy.wait(500); //sometimes repositories list cannot be fetched.
         getCreateNewUserButton().click();
         getUsernameField().type(user);
@@ -62,8 +62,30 @@ describe('User and Access', () => {
         findUserInTable(user);
         getSecuritySwitch().click({force:true});
         performLogin(user, password);
-        cy.url().should('eq', Cypress.config('baseUrl') + '/users');
-        cy.get('.container-fluid').should('contain', 'You have no permission to access this functionality with your current credentials')
+        //when logging in with a non admin user you will be redirected to the last page you logged out from and in this case the user does not have rights to view it.
+        cy.url()
+            .should('eq', Cypress.config('baseUrl') + '/users');
+        cy.get('.container-fluid')
+            .should('contain', 'You have no permission to access this functionality with your current credentials');
+        //verify user rights
+        getMenuItem("Repositories")
+            .should('not.be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        //verify no access message is displayed
+        getNoPermissionMessage("import")
+            .should('be.visible')
+            .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
+        getNoPermissionMessage("connectors")
+            .should('be.visible')
+            .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
+        getNoPermissionMessage("autocomplete")
+            .should('be.visible')
+            .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
+        getNoPermissionMessage("rdfrank")
+            .should('be.visible')
+            .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
+        cy.visit('/users');
         getUserLogoutButton().click();
         performLogin("admin", adminPassword);
         getDeleteUserButton(user).click();
@@ -82,8 +104,26 @@ describe('User and Access', () => {
             .should('be.visible')
             .click();
         findUserInTable(user);
+        getSecuritySwitch().click({force:true});
+        performLogin(user, password);
+        getMenuItem("Repositories")
+            .should('not.be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        getNoPermissionMessage("import")
+            .should('not.be.visible');
+        getNoPermissionMessage("connectors")
+            .should('not.be.visible');
+        getNoPermissionMessage("autocomplete")
+            .should('not.be.visible');
+        getNoPermissionMessage("rdfrank")
+            .should('not.be.visible');
+        cy.visit('/users');
+        getUserLogoutButton().click();
+        performLogin("admin", adminPassword);
         getDeleteUserButton(user).click();
         getDeleteUserConfirmButton().click();
+        getSecuritySwitch().click({force:true});
     });
 
     it('Create user - repository manager', () => {
@@ -96,8 +136,26 @@ describe('User and Access', () => {
             .should('be.visible')
             .click();
         findUserInTable(repoManager);
+        getSecuritySwitch().click({force:true});
+        performLogin(repoManager, password);
+        getMenuItem("Repositories")
+            .should('be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        getNoPermissionMessage("import")
+            .should('not.be.visible');
+        getNoPermissionMessage("connectors")
+            .should('not.be.visible');
+        getNoPermissionMessage("autocomplete")
+            .should('not.be.visible');
+        getNoPermissionMessage("rdfrank")
+            .should('not.be.visible');
+        cy.visit('/users');
+        getUserLogoutButton().click();
+        performLogin("admin", adminPassword);
         getDeleteUserButton(repoManager).click();
         getDeleteUserConfirmButton().click();
+        getSecuritySwitch().click({force:true});
     });
 
     it('Create user - admin', () => {
@@ -110,17 +168,28 @@ describe('User and Access', () => {
             .should('be.visible')
             .click();
         findUserInTable(admin);
+        getSecuritySwitch().click({force:true});
+        performLogin(admin, password);
+        getMenuItem("Repositories")
+            .should('be.visible');
+        getMenuItem("Users and Access")
+            .should('be.visible');
+        getNoPermissionMessage("import")
+            .should('not.be.visible');
+        getNoPermissionMessage("connectors")
+            .should('not.be.visible');
+        getNoPermissionMessage("autocomplete")
+            .should('not.be.visible');
+        getNoPermissionMessage("rdfrank")
+            .should('not.be.visible');
+        cy.visit('/users');
+        getUserLogoutButton().click();
+        performLogin("admin", adminPassword);
         getDeleteUserButton(admin).click();
         getDeleteUserConfirmButton().click();
-    });
-
-    it('Enable security and login with read-only user', () => {
-        getSecuritySwitch().click();
-        getLoginUsernameField().type()
+        getSecuritySwitch().click({force:true});
 
     });
-
-
 
     function getCreateNewUserButton() {
         return cy.get('#wb-users-userCreateLink');
@@ -204,6 +273,15 @@ describe('User and Access', () => {
 
     function getToast() {
         return cy.get('#toast-container');
+    }
+
+    function getMenuItem(menuItem) {
+        return cy.get(`a:contains(${menuItem})`);
+    }
+
+    function getNoPermissionMessage(pageToVerify) {
+        cy.visit('/' + pageToVerify);
+        return cy.get('.repository-errors');
     }
 
 });
