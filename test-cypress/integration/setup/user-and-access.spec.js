@@ -7,20 +7,17 @@ describe('User and Access', () => {
     let password = "1234";
     let adminPassword = "root";
 
-    before(() => {
+    beforeEach(() => {
+    //create/delete repo before/after each tests, due to cy.visit making the tests flaky.
         repositoryId = 'setup-repo' + Date.now();
         cy.createRepository({id: repositoryId});
-    });
-
-    beforeEach(() => {
         cy.presetRepositoryCookie(repositoryId);
-
         cy.visit('/users');
         // Users table should be visible
         getUsersTable().should('be.visible');
     });
 
-    after(() => {
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -50,16 +47,7 @@ describe('User and Access', () => {
 
     it('Create user - read-only and verify that security works', () => {
         cy.wait(500); //sometimes repositories list cannot be fetched.
-        getCreateNewUserButton().click();
-        getUsernameField().type(user);
-        getPasswordField().type(password);
-        getConfirmPasswordField().type(password);
-        getUserRoleRadioButton("roleUser").click();
-        getRepositoryRights(repositoryId, "read").click();
-        getCreateButton()
-            .should('be.visible')
-            .click();
-        findUserInTable(user);
+        createUser(user, "roleUser", "read");
         getSecuritySwitch().click({force:true});
         performLogin(user, password);
         //when logging in with a non admin user you will be redirected to the last page you logged out from and in this case the user does not have rights to view it.
@@ -85,25 +73,12 @@ describe('User and Access', () => {
         getNoPermissionMessage("rdfrank")
             .should('be.visible')
             .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
-        cy.visit('/users');
-        getUserLogoutButton().click();
-        performLogin("admin", adminPassword);
-        getDeleteUserButton(user).click();
-        getDeleteUserConfirmButton().click();
-        getSecuritySwitch().click({force:true});
+        logOutAndDeleteUser(user);
     });
 
     it('Create user - read/write', () => {
-        getCreateNewUserButton().click();
-        getUsernameField().type(user);
-        getPasswordField().type(password);
-        getConfirmPasswordField().type(password);
-        getUserRoleRadioButton("roleUser").click();
-        getRepositoryRights(repositoryId, "write").click();
-        getCreateButton()
-            .should('be.visible')
-            .click();
-        findUserInTable(user);
+        cy.wait(500); //sometimes repositories list cannot be fetched.
+        createUser(user, "roleUser", "write");
         getSecuritySwitch().click({force:true});
         performLogin(user, password);
         getMenuItem("Repositories")
@@ -118,24 +93,12 @@ describe('User and Access', () => {
             .should('not.be.visible');
         getNoPermissionMessage("rdfrank")
             .should('not.be.visible');
-        cy.visit('/users');
-        getUserLogoutButton().click();
-        performLogin("admin", adminPassword);
-        getDeleteUserButton(user).click();
-        getDeleteUserConfirmButton().click();
-        getSecuritySwitch().click({force:true});
+        logOutAndDeleteUser(user);
     });
 
     it('Create user - repository manager', () => {
-        getCreateNewUserButton().click();
-        getUsernameField().type(repoManager);
-        getPasswordField().type(password);
-        getConfirmPasswordField().type(password);
-        getUserRoleRadioButton("roleRepoAdmin").click();
-        getCreateButton()
-            .should('be.visible')
-            .click();
-        findUserInTable(repoManager);
+
+        createUser(repoManager, "roleRepoAdmin", "");
         getSecuritySwitch().click({force:true});
         performLogin(repoManager, password);
         getMenuItem("Repositories")
@@ -150,24 +113,11 @@ describe('User and Access', () => {
             .should('not.be.visible');
         getNoPermissionMessage("rdfrank")
             .should('not.be.visible');
-        cy.visit('/users');
-        getUserLogoutButton().click();
-        performLogin("admin", adminPassword);
-        getDeleteUserButton(repoManager).click();
-        getDeleteUserConfirmButton().click();
-        getSecuritySwitch().click({force:true});
+        logOutAndDeleteUser(repoManager);
     });
 
     it('Create user - admin', () => {
-        getCreateNewUserButton().click();
-        getUsernameField().type(admin);
-        getPasswordField().type(password);
-        getConfirmPasswordField().type(password);
-        getUserRoleRadioButton("roleAdmin").click();
-        getCreateButton()
-            .should('be.visible')
-            .click();
-        findUserInTable(admin);
+        createUser(admin, "roleAdmin", "");
         getSecuritySwitch().click({force:true});
         performLogin(admin, password);
         getMenuItem("Repositories")
@@ -182,13 +132,7 @@ describe('User and Access', () => {
             .should('not.be.visible');
         getNoPermissionMessage("rdfrank")
             .should('not.be.visible');
-        cy.visit('/users');
-        getUserLogoutButton().click();
-        performLogin("admin", adminPassword);
-        getDeleteUserButton(admin).click();
-        getDeleteUserConfirmButton().click();
-        getSecuritySwitch().click({force:true});
-
+        logOutAndDeleteUser(admin);
     });
 
     function getCreateNewUserButton() {
@@ -282,6 +226,31 @@ describe('User and Access', () => {
     function getNoPermissionMessage(pageToVerify) {
         cy.visit('/' + pageToVerify);
         return cy.get('.repository-errors');
+    }
+
+    function createUser(username, role, rights) {
+        getCreateNewUserButton().click();
+        getUsernameField().type(username);
+        getPasswordField().type(password);
+        getConfirmPasswordField().type(password);
+        getUserRoleRadioButton(role).click();
+        //conditional below is to filter cases where creating admin or repo-manager, as they have full repository rights.
+        if(username == "user") {
+            getRepositoryRights(repositoryId, rights).click();
+        }
+        getCreateButton()
+            .should('be.visible')
+            .click();
+        findUserInTable(username);
+    }
+
+    function logOutAndDeleteUser(username) {
+        cy.visit('/users');
+        getUserLogoutButton().click();
+        performLogin("admin", adminPassword);
+        getDeleteUserButton(username).click();
+        getDeleteUserConfirmButton().click();
+        getSecuritySwitch().click({force:true});
     }
 
 });
