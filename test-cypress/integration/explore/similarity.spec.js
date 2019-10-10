@@ -117,9 +117,6 @@ describe('Similarity screen validation', () => {
             openEditQueryView();
             changeSearchQuery();
             getSaveEditedQueryButton().click();
-            getToast().find('.toast-success')
-                .should('be.visible')
-                .and('contain', 'Changed search query');
             openEditQueryView();
             verifyQueryIsChanged();
         });
@@ -132,9 +129,6 @@ describe('Similarity screen validation', () => {
             openEditQueryView(true);
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
-            getToast().find('.toast-success')
-                .should('be.visible')
-                .and('contain', 'Changed analogical query');
             openEditQueryView(true);
             getAnalogicalQueryTab().click();
             verifyQueryIsChanged();

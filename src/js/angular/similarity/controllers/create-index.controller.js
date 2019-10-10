@@ -57,6 +57,9 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             $scope.currentQuery.query = $scope.newIndex.searchQuery;
             $scope.notoolbarInference = true;
             $scope.notoolbarSameAs = true;
+            if (window.editor) {
+                $scope.setQuery($scope.newIndex.searchQuery);
+            }
         } else {
             if ($scope.viewType === 'text' && $scope.allSamples) {
                 $scope.samples = $scope.allSamples['text'];
