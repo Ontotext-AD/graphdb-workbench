@@ -350,9 +350,9 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', '$http', '$modal', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams'];
+AddRepositoryCtrl.$inject = ['$scope', '$http', '$modal', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams) {
+function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -416,11 +416,10 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
     $scope.isFreeEdition = isFreeEdition;
 
     $scope.getConfig = function (repoType) {
-        $http.get('rest/repositories/defaultConfig/' + repoType).success(function (data) {
+        RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             $scope.loader = false;
-
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Error');
@@ -503,9 +502,9 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
 
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$http', '$modal', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition'];
+EditRepositoryCtrl.$inject = ['$scope', '$http', '$modal', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition) {
+function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -526,7 +525,7 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            $http.get('rest/repositories/' + $scope.repositoryInfo.id)
+            RepositoriesRestService.getRepository($scope.repositoryInfo.id)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;

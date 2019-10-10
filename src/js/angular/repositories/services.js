@@ -1,15 +1,18 @@
 import 'angular/core/services';
 import 'angular/security/services';
+import 'angular/repositories/repositories.rest.service';
 
 const modules = [
     'ngCookies',
     'graphdb.framework.security.services',
+    'graphdb.framework.repositories.rest.service',
     'toastr'
 ];
 
 const repoServices = angular.module('graphdb.framework.repositories.services', modules);
 
-repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$interval', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', function ($http, $cookies, $cookieStore, $interval, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth) {
+repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$interval', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService',
+    function ($http, $cookies, $cookieStore, $interval, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService) {
     this.repositoryCookieName = 'com.ontotext.graphdb.repository' + $location.port();
 
     this.location = '';
@@ -264,7 +267,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.deleteRepository = function (repositoryId) {
-        $http.delete('rest/repositories/' + repositoryId)
+        RepositoriesRestService.deleteRepository(repositoryId)
             .success(function () {
                 that.init();
             }).error(function (data) {
