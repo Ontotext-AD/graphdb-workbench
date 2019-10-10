@@ -9,7 +9,7 @@ module.exports = merge(commonConfig, {
     devtool: 'source-map',
     // devtool: 'none',
     output: {
-        filename: '[name].js',
+        filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
