@@ -1,11 +1,11 @@
 import 'angular/core/services';
 import 'angular/security/services';
-import 'angular/repositories/repositories.rest.service';
+import 'angular/rest/repositories.rest.service';
 
 const modules = [
     'ngCookies',
     'graphdb.framework.security.services',
-    'graphdb.framework.repositories.rest.service',
+    'graphdb.framework.rest.repositories.service',
     'toastr'
 ];
 

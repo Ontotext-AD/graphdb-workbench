@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.repositories.rest.service', [])
+    .module('graphdb.framework.rest.repositories.service', [])
     .factory('RepositoriesRestService', RepositoriesRestService);
 
 RepositoriesRestService.$inject = ['$http'];

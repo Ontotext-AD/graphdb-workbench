@@ -1,8 +1,8 @@
-import 'angular/autocomplete/autocomplete.rest.service';
+import 'angular/rest/autocomplete.rest.service';
 
 const modules = [
     'toastr',
-    'graphdb.framework.autocomplete.rest.service'
+    'graphdb.framework.rest.autocomplete.service'
 ];
 
 angular

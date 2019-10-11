@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.autocomplete.rest.service', [])
+    .module('graphdb.framework.rest.autocomplete.service', [])
     .factory('AutocompleteRestService', AutocompleteRestService);
 
 AutocompleteRestService.$inject = ['$http'];

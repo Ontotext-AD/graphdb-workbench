@@ -4,27 +4,29 @@ import 'angular/core/services';
 angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core',
-        'graphdb.framework.explore'
+        'graphdb.framework.explore',
+        'graphdb.framework.settings.services',
+        'graphdb.framework.rest.autocomplete.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'LicenseService'];
 
-function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService) {
-    $http.get('rest/graphdb-settings/license/hardcoded')
+function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseService) {
+    LicenseService.getHardcodedLicense()
         .success(function (res) {
-            $scope.isLicenseHardcoded = (res === "true");
+            $scope.isLicenseHardcoded = (res === 'true');
         })
         .error(function () {
             $scope.isLicenseHardcoded = true;
         })
         .then(function () {
-            $http.get('rest/graphdb-settings/license').then(function (res) {
+            LicenseService.getLicenseInfo().then(function (res) {
                 $scope.license = res.data;
             }, function () {
-                $scope.license = {message: "No license was set.", valid: false};
+                $scope.license = {message: 'No license was set.', valid: false};
             });
         });
 
@@ -54,9 +56,9 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseService) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -689,16 +691,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     });
 
     $scope.checkLicenseStatus = function () {
-        $http.get('rest/graphdb-settings/license/hardcoded').success(function (res) {
-            $scope.isLicenseHardcoded = (res === "true");
+        LicenseService.getHardcodedLicense().success(function (res) {
+            $scope.isLicenseHardcoded = (res === 'true');
         }).error(function () {
             $scope.isLicenseHardcoded = true;
         }).then(function () {
-            $http.get('rest/graphdb-settings/license').then(function (res) {
+            LicenseService.getLicenseInfo().then(function (res) {
                 $scope.license = res.data;
                 $scope.showLicense = true;
             }, function () {
-                $scope.license = {message: "No license was set.", valid: false};
+                $scope.license = {message: 'No license was set.', valid: false};
                 $scope.showLicense = true;
             });
         });

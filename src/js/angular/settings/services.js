@@ -1,5 +1,7 @@
 angular
-    .module('graphdb.framework.settings.services', [])
+    .module('graphdb.framework.settings.services', [
+        'ngFileUpload'
+    ])
     .factory('LicenseService', LicenseService);
 
 LicenseService.$inject = ['$http', 'Upload'];
@@ -8,6 +10,7 @@ function LicenseService($http, Upload) {
     const factory = {};
 
     factory.getLicenseInfo = getLicenseInfo;
+    factory.getHardcodedLicense = getHardcodedLicense;
     factory.sendLicenseToValidate = sendLicenseToValidate;
     factory.extractFromLicenseFile = extractFromLicenseFile;
     factory.checkLicenseHardcoded = checkLicenseHardcoded;
@@ -18,6 +21,10 @@ function LicenseService($http, Upload) {
     // get activated license details
     function getLicenseInfo() {
         return $http.get('rest/graphdb-settings/license');
+    }
+
+    function getHardcodedLicense() {
+        return $http.get('rest/graphdb-settings/license/hardcoded');
     }
 
     // send license to be validated and parsed before activation
