@@ -5,7 +5,9 @@ const modules = [
     'ngCookies',
     'ngRoute',
     'ui.bootstrap',
+    'graphdb.framework.core',
     'graphdb.framework.repositories.services',
+    'graphdb.framework.explore.services',
     'toastr'
 ];
 
@@ -40,7 +42,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.getLocalName = function (uri) {
         return ClassInstanceDetailsService.getLocalName(uri);
     };
-
 
     $scope.blanks = true;
     $scope.sameAs = true;
