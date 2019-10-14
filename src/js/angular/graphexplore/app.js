@@ -18,7 +18,7 @@ import 'angular/rest/graph-data.rest.service';
 import 'angular/graphexplore/services/ui-scroll.service';
 import 'angular/graphexplore/services/rdfs-label-comment.service';
 import 'angular/rest/saved-graphs.rest.service';
-import 'angular/graphexplore/services/graph-config.service';
+import 'angular/rest/graph-config.rest.service';
 import 'angular/graphexplore/controllers/rdf-class-hierarchy.controller';
 import 'angular/graphexplore/controllers/domain-range-graph.controller';
 import 'angular/graphexplore/controllers/dependencies-chord.controller';

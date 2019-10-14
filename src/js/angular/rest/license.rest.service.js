@@ -1,12 +1,12 @@
 angular
-    .module('graphdb.framework.settings.services', [
+    .module('graphdb.framework.rest.license.service', [
         'ngFileUpload'
     ])
-    .factory('LicenseService', LicenseService);
+    .factory('LicenseRestService', LicenseRestService);
 
-LicenseService.$inject = ['$http', 'Upload'];
+LicenseRestService.$inject = ['$http', 'Upload'];
 
-function LicenseService($http, Upload) {
+function LicenseRestService($http, Upload) {
     const factory = {};
 
     factory.getLicenseInfo = getLicenseInfo;

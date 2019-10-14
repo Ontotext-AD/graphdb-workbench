@@ -3,9 +3,9 @@ angular
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
-QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', '$window', '$jwtAuth'];
+QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth'];
 
-function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlService, $filter, $window, $jwtAuth) {
+function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth) {
     const defaultTabConfig = {
         id: "1",
         name: '',
@@ -308,7 +308,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function abortCurrentQuery() {
-        SparqlService.abortQueryByAlias($scope.currentTrackAlias)
+        SparqlRestService.abortQueryByAlias($scope.currentTrackAlias)
             .success(function () {
                 $scope.abortRequested = true;
             });
@@ -319,7 +319,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
         $scope.namespacesLoading = true;
 
-        SparqlService.getRepositoryNamespaces()
+        SparqlRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
@@ -350,7 +350,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     function toggleSampleQueries() {
         $scope.showSampleQueries = !$scope.showSampleQueries;
         if ($scope.showSampleQueries) {
-            SparqlService.getSavedQueries()
+            SparqlRestService.getSavedQueries()
                 .success(function (data) {
                     $scope.sampleQueries = data;
                     $('#sampleQueriesCollapse').collapse('show').width('300px');
@@ -376,7 +376,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     // Add known prefixes
     function addKnownPrefixes() {
-        SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
+        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
             .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);
@@ -438,7 +438,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                 shared: queryModal.shared
             };
             if (query.name !== queryModal.name) {
-                SparqlService.addNewSavedQuery(data)
+                SparqlRestService.addNewSavedQuery(data)
                     .success(function () {
                         $scope.deleteQueryHttp(query.name, true);
                     })
@@ -447,7 +447,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                         toastr.error(msg, 'Error! Cannot edit saved query');
                     });
             } else {
-                SparqlService.editSavedQuery(data)
+                SparqlRestService.editSavedQuery(data)
                     .success(function () {
                         $('#editQueryContainer').modal('hide');
                         $scope.toggleSampleQueries();
@@ -462,7 +462,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function deleteQueryHttp(savedQueryName, edit) {
-        SparqlService.deleteSavedQuery(savedQueryName)
+        SparqlRestService.deleteSavedQuery(savedQueryName)
             .success(function () {
                 $scope.toggleSampleQueries();
                 if (!edit) {
@@ -487,7 +487,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function saveQueryHttp(query) {
-        SparqlService.addNewSavedQuery(query)
+        SparqlRestService.addNewSavedQuery(query)
             .success(function () {
                 toastr.success('Saved query ' + query.name + ' was saved.');
             })

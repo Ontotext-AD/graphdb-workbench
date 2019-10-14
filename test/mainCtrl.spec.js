@@ -1,7 +1,7 @@
 import 'angular/controllers';
 import 'angular/core/services';
 import 'angular/explore/app';
-import 'angular/settings/services';
+import 'angular/rest/license.rest.service';
 import {FakeModal} from "./mocks";
 
 describe('mainCtrl', function () {
@@ -31,13 +31,13 @@ describe('mainCtrl', function () {
     let ModalService;
     let $interval;
     let $filter;
-    let LicenseService;
+    let LicenseRestService;
     let $controller;
     let $httpBackend;
     let createController;
     let $modal;
 
-    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _$cookies_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseService_, _$controller_, _$httpBackend_, $q) {
+    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _$cookies_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _$controller_, _$httpBackend_, $q) {
         $scope = _$rootScope_.$new();
         $rootScope = _$rootScope_;
         menuItems = $menuItems;
@@ -53,13 +53,13 @@ describe('mainCtrl', function () {
         ModalService = _ModalService_;
         $interval = _$interval_;
         $filter = _$filter_;
-        LicenseService = _LicenseService_;
+        LicenseRestService = _LicenseRestService_;
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $modal = new FakeModal($q, _$rootScope_);
 
         createController = () => $controller('mainCtrl', {
-            $scope, menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseService
+            $scope, menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService
         });
 
         createController();

@@ -19,9 +19,9 @@ angular
     }]);
 
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -568,7 +568,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // Graph Config
     $scope.getGraphConfigs = function (graphCallback) {
-        GraphConfigService.getGraphConfigs()
+        GraphConfigRestService.getGraphConfigs()
             .success(function (data) {
                 $scope.graphConfigs = data;
                 if (graphCallback) {
@@ -583,7 +583,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         if (configId === $scope.defaultGraphConfig.id) {
             $scope.loadGraphConfig($scope.defaultGraphConfig);
         } else {
-            GraphConfigService.getConfig(configId)
+            GraphConfigRestService.getConfig(configId)
                 .success(function (data) {
                     $scope.loadGraphConfig(data);
                     successCallback();
@@ -618,7 +618,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }, 0);
         } else if (config.startMode === 'query' && config.startGraphQuery) {
             $scope.loading = true;
-            GraphConfigService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.saveSettings['linksLimit'], config.startQuerySameAs)
+            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.saveSettings['linksLimit'], config.startQuerySameAs)
                 .then(function (response) {
                     // Node drawing will turn off loader
                     initGraphFromResponse(response);
@@ -636,7 +636,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             warning: true
         }).result
             .then(function () {
-                GraphConfigService.deleteGraphConfig(config)
+                GraphConfigRestService.deleteGraphConfig(config)
                     .success(function () {
                         $scope.getGraphConfigs();
                         $scope.refreshSavedGraphs();

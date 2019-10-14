@@ -1,10 +1,10 @@
 angular
-    .module('graphdb.framework.graphexplore.services.graphconfig', [])
-    .factory('GraphConfigService', GraphConfigService);
+    .module('graphdb.framework.rest.graphconfig.service', [])
+    .factory('GraphConfigRestService', GraphConfigRestService);
 
-GraphConfigService.$inject = ['$http'];
+GraphConfigRestService.$inject = ['$http'];
 
-function GraphConfigService($http) {
+function GraphConfigRestService($http) {
     return {
         getGraphConfigs: getGraphConfigs,
         getGraphConfigSamples: getGraphConfigSamples,

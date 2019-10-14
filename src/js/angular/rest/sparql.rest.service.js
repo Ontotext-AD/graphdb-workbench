@@ -1,10 +1,10 @@
 angular
-    .module('graphdb.framework.sparql.services', [])
-    .factory('SparqlService', SparqlService);
+    .module('graphdb.framework.rest.sparql.service', [])
+    .factory('SparqlRestService', SparqlRestService);
 
-SparqlService.$inject = ['$http', '$repositories'];
+SparqlRestService.$inject = ['$http', '$repositories'];
 
-function SparqlService($http, $repositories) {
+function SparqlRestService($http, $repositories) {
     return {
         getRepositorySize: getRepositorySize,
         getRepositoryNamespaces: getRepositoryNamespaces,

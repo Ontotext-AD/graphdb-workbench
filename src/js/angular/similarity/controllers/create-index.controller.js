@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.similarity.controllers.create', [])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlService', '$location', 'productInfo', 'UtilService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'UtilService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlService, $location, productInfo, UtilService) {
+function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, UtilService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -563,7 +563,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
         // $scope.queryIsRunning = true;
         ////console.log('Send namespaces request. Default token is : ' + $http.defaults.headers.common['Authorization']);
-        SparqlService.getRepositoryNamespaces()
+        SparqlRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
@@ -598,7 +598,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
     // Add known prefixes
     function addKnownPrefixes() {
-        SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
+        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
             .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);

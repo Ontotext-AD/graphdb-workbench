@@ -13,18 +13,18 @@ describe('homeCtrl', function () {
     let $scope;
     let $http;
     let $repositories;
-    let LicenseService;
+    let LicenseRestService;
     let ClassInstanceDetailsService;
     let AutocompleteRestService;
     let $controller;
     let $httpBackend;
     let createController;
 
-    beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$repositories_, _ClassInstanceDetailsService_, _AutocompleteRestService_, _LicenseService_, _$controller_, _$httpBackend_) {
+    beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$repositories_, _ClassInstanceDetailsService_, _AutocompleteRestService_, _LicenseRestService_, _$controller_, _$httpBackend_) {
         $scope = _$rootScope_.$new();
         $http = _$http_;
         $repositories = _$repositories_;
-        LicenseService = _LicenseService_;
+        LicenseRestService = _LicenseRestService_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         AutocompleteRestService = _AutocompleteRestService_;
         $controller = _$controller_;
@@ -35,7 +35,7 @@ describe('homeCtrl', function () {
         $scope.getActiveRepository = () => {};
 
         createController = () => $controller('homeCtrl', {
-            $scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseService
+            $scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService
         });
 
         createController();
