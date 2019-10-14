@@ -9,9 +9,9 @@ angular
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataService', '$window', '$timeout', '$repositories', 'localStorageService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'localStorageService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataService, $window, $timeout, $repositories, localStorageService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, localStorageService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME) {
     return {
         restrict: 'AE',
         template: '<div id="classChart"></div>',
@@ -118,7 +118,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataService, $windo
         if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
-            GraphDataService.getClassHierarchyData()
+            GraphDataRestService.getClassHierarchyData()
                 .success(function (response, status, headers) {
                     $rootScope.loader = false;
                     if (status === 207) {

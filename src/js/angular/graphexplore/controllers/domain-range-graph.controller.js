@@ -6,9 +6,9 @@ angular
     ])
     .controller('DomainRangeGraphCtlr', DomainRangeGraphCtlr);
 
-DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'localStorageService', 'GraphDataService', 'UiScrollService', 'ModalService', 'toastr'];
+DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'localStorageService', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'toastr'];
 
-function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, localStorageService, GraphDataService, UiScrollService, ModalService, toastr) {
+function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, localStorageService, GraphDataRestService, UiScrollService, ModalService, toastr) {
     $scope.predicatesObj = {};
     $scope.predicatesQueryObj = {};
     $scope.predicatesObj.items = [];
@@ -107,7 +107,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
                 : '<i>Literal</i>';
 
         if ($scope.sourceTargetObjectNodeName.indexOf('Literal') === -1) {
-            GraphDataService.getRdfsLabelAndComment($scope.sourceTargetObjectNodeUri)
+            GraphDataRestService.getRdfsLabelAndComment($scope.sourceTargetObjectNodeUri)
                 .success(function (response) {
                     $scope.rdfsLabel = response.label;
                     $scope.rdfsComment = response.comment;

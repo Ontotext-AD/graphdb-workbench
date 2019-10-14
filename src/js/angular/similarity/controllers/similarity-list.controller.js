@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
+SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityRestService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
+function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityRestService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -33,7 +33,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository()) {
             return;
         }
-        SimilarityService.checkPluginEnabled()
+        SimilarityRestService.checkPluginEnabled()
             .done(function (data) {
                 $scope.pluginDisabled = data.indexOf('false') > 0;
             })
@@ -43,7 +43,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.enabledSimilarityPlugin = function () {
-        SimilarityService.enableSimilarityPlugin()
+        SimilarityRestService.enableSimilarityPlugin()
             .done(function () {
                 $scope.pluginDisabled = false;
                 $scope.getSimilarityIndexes();
@@ -53,7 +53,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             });
     };
 
-    SimilarityService.getSearchQueries().success(function (data) {
+    SimilarityRestService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
     }).error(function (data) {
         const msg = getError(data);
@@ -69,7 +69,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository() || $scope.pluginDisabled) {
             return;
         }
-        SimilarityService.getIndexes()
+        SimilarityRestService.getIndexes()
             .success(function (data) {
                 $scope.similarityIndexes = data;
             })
@@ -273,7 +273,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             warning: true
         }).result
             .then(function () {
-                SimilarityService.deleteIndex(index)
+                SimilarityRestService.deleteIndex(index)
                     .then(function () {
                         $scope.getSimilarityIndexes();
                     }, function (err) {
@@ -320,7 +320,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         }).result
             .then(function () {
                 index.status = 'BUILDING';
-                SimilarityService.rebuildIndex(index)
+                SimilarityRestService.rebuildIndex(index)
                     .then(function (res) {
                     }, function (err) {
                         toastr.error(getError(err));

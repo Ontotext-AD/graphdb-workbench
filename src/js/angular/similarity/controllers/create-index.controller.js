@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.similarity.controllers.create', [])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityService', 'SparqlService', '$location', 'productInfo', 'UtilService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlService', '$location', 'productInfo', 'UtilService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityService, SparqlService, $location, productInfo, UtilService) {
+function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlService, $location, productInfo, UtilService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -74,7 +74,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                 }
             }
             if ($scope.viewType === 'predication' && $scope.allSamples) {
-                SimilarityService.getIndexes()
+                SimilarityRestService.getIndexes()
                     .success(function (data) {
                         $scope.literalIndexes = ['no-index'].concat(data
                             .filter(function (idx) {
@@ -152,9 +152,9 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + ' ' + value;
     };
 
-    SimilarityService.getSearchQueries().success(function (data) {
+    SimilarityRestService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
-        SimilarityService.getSamples().success(function (samples) {
+        SimilarityRestService.getSamples().success(function (samples) {
             defaultTabConfig.query = $location.search().selectQuery ? $location.search().selectQuery : samples['text']['literals'];
             defaultTabConfig.inference = !($location.search().infer === 'false');
             defaultTabConfig.sameAs = !($location.search().sameAs === 'false');
@@ -272,7 +272,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             return;
         }
         // Check existing indexes
-        SimilarityService.getIndexes()
+        SimilarityRestService.getIndexes()
             .success(function (data) {
                 data.forEach(function (index) {
                     if (index.name === $scope.newIndex.name) {
@@ -293,7 +293,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                         indexType = 'textLiteral';
                     }
 
-                    SimilarityService.createIndex('POST',
+                    SimilarityRestService.createIndex('POST',
                         $scope.newIndex.name,
                         $scope.newIndex.options,
                         $scope.newIndex.query,

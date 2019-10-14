@@ -16,9 +16,9 @@ angular
     .constant("CLASS_COUNT_THRESHOLD", 1500)
     .constant("CLASS_COUNT_THRESHOLD_IE", 25);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "localStorageService", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "localStorageService", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, localStorageService, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, localStorageService, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -223,7 +223,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         const uri = selectedClass.fullName;
         const name = selectedClass.name;
 
-        GraphDataService.checkDomainRangeData(uri)
+        GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
                 if (status === 204) {
                     toastr.warning("No domain-range data available for '" + name + "' !");
@@ -268,7 +268,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         // generate url for redirecting to sparql view, opening a new tab, writing the generated query and executing it
         $scope.viewInstancesUri = 'sparql?name=' + name + '&infer=true&sameAs=false&query=' + encodedQuery + '&execute=true';
 
-        GraphDataService.getRdfsLabelAndComment(uri)
+        GraphDataRestService.getRdfsLabelAndComment(uri)
             .success(function (response) {
                 // var result = RdfsLabelCommentService.processAndFilterLabelAndComment(response);
                 $scope.rdfsLabel = response.label;
@@ -284,7 +284,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
         // get class instances for selected rdf class
         $scope.instancesLoader = true;
-        GraphDataService.getClassInstances(uri)
+        GraphDataRestService.getClassInstances(uri)
             .success(function (response) {
                 $scope.instancesObj.items = [];
                 _.each(response, function (value, key) {
@@ -376,7 +376,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         refreshDiagramExternalElements();
         $scope.loader = true;
         $scope.hierarchyError = false;
-        GraphDataService.reloadClassHierarchy()
+        GraphDataRestService.reloadClassHierarchy()
             .success(function (response) {
                 $scope.loader = false;
                 $scope.classHierarchyData = response;
@@ -415,7 +415,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         if (!$scope.isSystemRepository()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
-            GraphDataService.getClassHierarchyData()
+            GraphDataRestService.getClassHierarchyData()
                 .success(function (response, status) {
                     $scope.loader = false;
                     $scope.classHierarchyData = response;

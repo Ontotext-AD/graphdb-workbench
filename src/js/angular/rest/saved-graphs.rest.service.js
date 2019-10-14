@@ -1,12 +1,12 @@
 const SAVED_GRAPHS_ENDPOINT = 'rest/explore-graph/saved';
 
 angular
-    .module('graphdb.framework.graphexplore.services.savedgraphs', [])
-    .factory('SavedGraphsService', SavedGraphsService);
+    .module('graphdb.framework.rest.graphexplore.savedgraphs.service', [])
+    .factory('SavedGraphsRestService', SavedGraphsRestService);
 
-SavedGraphsService.$inject = ['$http'];
+SavedGraphsRestService.$inject = ['$http'];
 
-function SavedGraphsService($http) {
+function SavedGraphsRestService($http) {
     return {
         getSavedGraphs: getSavedGraphs,
         getSavedGraph: getSavedGraph,

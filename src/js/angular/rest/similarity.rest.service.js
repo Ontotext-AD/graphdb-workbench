@@ -1,8 +1,8 @@
 angular
-    .module('graphdb.framework.similarity.services', [])
-    .factory('SimilarityService', SimilarityService);
+    .module('graphdb.framework.rest.similarity.service', [])
+    .factory('SimilarityRestService', SimilarityRestService);
 
-SimilarityService.$inject = ['$http', '$repositories'];
+SimilarityRestService.$inject = ['$http', '$repositories'];
 
 const SIMILARITY_ENABLED = 'select ?o where {\n' +
     '?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n' +
@@ -11,7 +11,7 @@ const SIMILARITY_ENABLED = 'select ?o where {\n' +
 
 const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
 
-function SimilarityService($http, $repositories) {
+function SimilarityRestService($http, $repositories) {
 
     return {
         getIndexes: getIndexes,

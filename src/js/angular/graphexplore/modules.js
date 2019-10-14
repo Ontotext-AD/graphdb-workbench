@@ -1,8 +1,8 @@
 angular.module('graphdb.framework.graphexplore', [
-    'graphdb.framework.graphexplore.services.data',
+    'graphdb.framework.rest.graphexplore.data.service',
     'graphdb.framework.graphexplore.services.uiscroll',
     'graphdb.framework.graphexplore.services.rdfsdetails',
-    'graphdb.framework.graphexplore.services.savedgraphs',
+    'graphdb.framework.rest.graphexplore.savedgraphs.service',
     'graphdb.framework.graphexplore.services.graphconfig',
     'graphdb.framework.graphexplore.controllers.class',
     'graphdb.framework.graphexplore.controllers.domainrange',

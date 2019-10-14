@@ -1,10 +1,10 @@
 angular
-    .module('graphdb.framework.graphexplore.services.data', [])
-    .factory('GraphDataService', GraphDataService);
+    .module('graphdb.framework.rest.graphexplore.data.service', [])
+    .factory('GraphDataRestService', GraphDataRestService);
 
-GraphDataService.$inject = ['$http'];
+GraphDataRestService.$inject = ['$http'];
 
-function GraphDataService($http) {
+function GraphDataRestService($http) {
     return {
         // class hierarchy
         getClassHierarchyData: getClassHierarchyData,

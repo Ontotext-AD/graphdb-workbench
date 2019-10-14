@@ -19,9 +19,9 @@ angular
     }]);
 
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -718,7 +718,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         if ($location.search().saved) {
-            SavedGraphsService.getSavedGraph($location.search().saved)
+            SavedGraphsRestService.getSavedGraph($location.search().saved)
                 .success(function (data) {
                     $scope.loadSavedGraph(data);
                 })
@@ -2207,7 +2207,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         if ($scope.configLoaded) {
             graph.config = $scope.configLoaded.id;
         }
-        SavedGraphsService.addNewSavedGraph(graph)
+        SavedGraphsRestService.addNewSavedGraph(graph)
             .success(function (data, status, headers) {
                 $scope.lastSavedGraphName = graph.name;
                 $scope.lastSavedGraphId = headers()['x-saved-graph-id'];
@@ -2241,7 +2241,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     const editSavedGraphHttp = function (savedGraph) {
-        SavedGraphsService.editSavedGraph(savedGraph)
+        SavedGraphsRestService.editSavedGraph(savedGraph)
             .success(function () {
                 $scope.lastSavedGraphName = savedGraph.name;
                 $scope.refreshSavedGraphs();
@@ -2288,7 +2288,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.refreshSavedGraphs = function () {
-        SavedGraphsService.getSavedGraphs()
+        SavedGraphsRestService.getSavedGraphs()
             .success(function (data) {
                 $scope.savedGraphs = data;
             })
@@ -2328,7 +2328,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     function deleteSavedGraphHttp(savedGraph) {
-        SavedGraphsService.deleteSavedGraph(savedGraph)
+        SavedGraphsRestService.deleteSavedGraph(savedGraph)
             .success(function () {
                 $scope.refreshSavedGraphs();
                 toastr.success('Saved graph ' + savedGraph.name + ' was deleted.');
