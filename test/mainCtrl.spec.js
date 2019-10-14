@@ -32,12 +32,13 @@ describe('mainCtrl', function () {
     let $interval;
     let $filter;
     let LicenseRestService;
+    let RepositoriesRestService;
     let $controller;
     let $httpBackend;
     let createController;
     let $modal;
 
-    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _$cookies_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _$controller_, _$httpBackend_, $q) {
+    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _$cookies_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_, $q) {
         $scope = _$rootScope_.$new();
         $rootScope = _$rootScope_;
         menuItems = $menuItems;
@@ -54,12 +55,13 @@ describe('mainCtrl', function () {
         $interval = _$interval_;
         $filter = _$filter_;
         LicenseRestService = _LicenseRestService_;
+        RepositoriesRestService = _RepositoriesRestService_;
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $modal = new FakeModal($q, _$rootScope_);
 
         createController = () => $controller('mainCtrl', {
-            $scope, menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService
+            $scope, menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService
         });
 
         createController();
@@ -126,6 +128,42 @@ describe('mainCtrl', function () {
             expect($scope.isLicenseHardcoded).toBeTruthy();
             expect($scope.license).toBeUndefined();
             expect($scope.showLicense).toBeFalsy();
+        });
+    });
+
+    describe('getRepositorySize', () => {
+        it('should set repository size variable when repository is hovered', () => {
+            $httpBackend.when('GET', 'rest/repositories/repoId/size').respond(200, '2000000');
+            $scope.popoverRepo = { id: 'repoId' };
+            $scope.repositorySize = undefined;
+
+            $scope.getRepositorySize();
+            $httpBackend.flush();
+
+            expect($scope.repositorySize).toEqual('2000000');
+        });
+
+        it('should not set repository size variable if repository is not hovered', () => {
+            $scope.popoverRepo = undefined;
+            $scope.repositorySize = undefined;
+
+            $scope.getRepositorySize();
+
+            expect($scope.repositorySize).toEqual({});
+        });
+
+        // TODO: Disabled because the method in controller doesn't handle possible http errors and it seems that the loading flag may be left active.
+        xit('should not set repository size variable if get repository size fails', () => {
+            $httpBackend.when('GET', 'rest/repositories/repoId/size').respond(500, {
+                message: 'Get repository size error!'
+            });
+            $scope.popoverRepo = { id: 'repoId' };
+            $scope.repositorySize = undefined;
+
+            $scope.getRepositorySize();
+            $httpBackend.flush();
+
+            expect($scope.repositorySize).toEqual({});
         });
     });
 

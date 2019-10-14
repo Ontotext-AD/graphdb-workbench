@@ -6,6 +6,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.repositories.services',
     'graphdb.framework.security.services',
+    'graphdb.framework.rest.repositories.service',
     'toastr'
 ];
 
@@ -27,8 +28,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService',
-    function ($scope, $http, $timeout, $repositories, toastr, $modal, $jwtAuth, ModalService) {
+sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService', 'RepositoriesRestService',
+    function ($scope, $http, $timeout, $repositories, toastr, $modal, $jwtAuth, ModalService, RepositoriesRestService) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -129,18 +130,15 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
 
         $scope.editPrefix = function (oldPrefix, newPrefix) {
             $scope.loader = true;
-            $http({
-                url: 'rest/repositories/' + $repositories.getActiveRepository() + '/prefix',
-                method: 'POST',
-                params: {from: oldPrefix, to: newPrefix}
-            }).success(function () {
-                $scope.getNamespaces();
-                $scope.loader = false;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+            RepositoriesRestService.getPrefix($repositories.getActiveRepository(), {from: oldPrefix, to: newPrefix})
+                .success(function () {
+                    $scope.getNamespaces();
+                    $scope.loader = false;
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                    $scope.loader = false;
+                });
         };
 
         $scope.confirmReplace = function (okCallback, cancelCallback) {

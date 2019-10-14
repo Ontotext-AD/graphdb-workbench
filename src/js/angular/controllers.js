@@ -6,15 +6,16 @@ angular
         'graphdb.framework.core',
         'graphdb.framework.explore',
         'graphdb.framework.rest.license.service',
-        'graphdb.framework.rest.autocomplete.service'
+        'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.repositories.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'LicenseRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService) {
+function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -36,7 +37,7 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
             return;
         }
         $scope.activeRepositorySizeError = undefined;
-        $http.get('rest/repositories/' + repo + '/size').then(function (res) {
+        RepositoriesRestService.getSize(repo).then(function (res) {
             $scope.activeRepositorySize = res.data;
         }).catch(function (e) {
             $scope.activeRepositorySizeError = e.data.message;
@@ -56,9 +57,9 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -350,7 +351,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            $http.get('rest/repositories/' + $scope.popoverRepo.id + '/size').then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo.id).then(function (res) {
                 $scope.repositorySize = res.data;
             });
         }
@@ -760,11 +761,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 }
 
-repositorySizeCtrl.$inject = ['$scope', '$http'];
+repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
 
-function repositorySizeCtrl($scope, $http) {
+function repositorySizeCtrl($scope, $http, RepositoriesRestService) {
     $scope.getRepositorySize = function (repository) {
-        $http.get('rest/repositories/' + repository + '/size').then(function (res) {
+        RepositoriesRestService.getSize(repository).then(function (res) {
             $scope.size = res.data;
         });
     };

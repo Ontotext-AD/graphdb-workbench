@@ -106,7 +106,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
                 if (res.data) {
                     const location = res.data;
                     if (location.active) {
-                        $http.get('rest/repositories').then(function (res) {
+                        RepositoriesRestService.getRepositories().then(function (res) {
                                 that.location = location;
                                 that.repositories = res.data;
                                 that.resetActiveRepository();

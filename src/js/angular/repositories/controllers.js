@@ -450,7 +450,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
 
     $scope.createRepoHttp = function () {
         $scope.loader = true;
-        $http.post('rest/repositories', $scope.repositoryInfo).success(function () {
+        RepositoriesRestService.createRepository($scope.repositoryInfo).success(function () {
             toastr.success('The repository ' + $scope.repositoryInfo.id + ' has been created.');
             $repositories.init($scope.goBackToPreviousLocation);
         }).error(function (data) {
@@ -574,14 +574,15 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
 
     $scope.editRepoHttp = function () {
         $scope.loader = true;
-        $http.put('rest/repositories/' + $scope.repositoryInfo.saveId, $scope.repositoryInfo).success(function () {
-            toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
-            $repositories.init($scope.goBackToPreviousLocation);
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.loader = false;
-        });
+        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
+            .success(function () {
+                toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
+                $repositories.init($scope.goBackToPreviousLocation);
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                $scope.loader = false;
+            });
     };
 
     $scope.editRepository = function () {

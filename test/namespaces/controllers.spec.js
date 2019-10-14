@@ -2,7 +2,7 @@ import "angular/core/services";
 import "angular/security/services";
 import "angular/repositories/services";
 import "angular/namespaces/controllers";
-
+import {FakeModal} from '../mocks';
 
 beforeEach(angular.mock.module('graphdb.framework.namespaces.controllers', function ($provide) {
     $provide.constant("productInfo", {
@@ -16,31 +16,19 @@ describe('=> NamespacesCtrl tests', function () {
         $timeout,
         $scope,
         $repositories,
+        toastr,
         httpGetNamespaces,
         modalInstance;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
-
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
         $repositories = _$repositories_;
+        toastr = _toastr_;
+        $scope = $rootScope.$new();
 
-        function FakeModal() {
-            this.resultDeferred = $q.defer();
-            this.result = this.resultDeferred.promise;
-        }
-
-        FakeModal.prototype.open = function (options) {
-            return this;
-        };
-
-        FakeModal.prototype.close = function (item) {
-            this.resultDeferred.resolve(item);
-            $rootScope.$apply(); // Propagate promise resolution to 'then' functions using $apply().
-        };
-
-        modalInstance = new FakeModal();
+        modalInstance = new FakeModal($q, $rootScope);
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: false,
@@ -81,16 +69,14 @@ describe('=> NamespacesCtrl tests', function () {
             }
         });
 
-
-        $scope = $rootScope.$new();
-
         $repositories.getActiveRepository = function () {
             return 'activeRepository';
-        }
+        };
 
         var controller = $controller('NamespacesCtrl', {
             $scope: $scope,
             $modal: modalInstance,
+            toastr: toastr,
             ModalService: {
                 openSimpleModal: function () {
                     return modalInstance;
@@ -123,7 +109,7 @@ describe('=> NamespacesCtrl tests', function () {
             var getNamespaces = false;
             $scope.getNamespaces = function () {
                 getNamespaces = true;
-            }
+            };
             $scope.saveNamespace('prefix', 'namespace');
             $httpBackend.flush();
             expect(getNamespaces).toBeTruthy();
@@ -138,7 +124,7 @@ describe('=> NamespacesCtrl tests', function () {
             var saveNamespace = {};
             $scope.saveNamespace = function (prefix, namespace) {
                 saveNamespace = {prefix: prefix, namespace: namespace}
-            }
+            };
             $scope.addNamespace();
             modalInstance.close();
             expect(saveNamespace).toEqual({prefix: 'prefix', namespace: 'newNamespace'});
@@ -151,19 +137,49 @@ describe('=> NamespacesCtrl tests', function () {
             var saveNamespace = {};
             $scope.saveNamespace = function (prefix, namespace) {
                 saveNamespace = {prefix: prefix, namespace: namespace}
-            }
+            };
             $scope.addNamespace();
             modalInstance.close();
             expect(saveNamespace).toEqual({prefix: 'prefix2', namespace: 'newNamespace'});
             expect($scope.namespace).toEqual({});
         });
     });
+
+    describe('editPrefix', () => {
+        it('should edit prefix', () => {
+            $scope.loader = undefined;
+            spyOn($scope, 'getNamespaces').and.callThrough();
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(200);
+
+            $scope.editPrefix();
+            $httpBackend.flush();
+
+            expect($scope.loader).toEqual(false);
+            expect($scope.getNamespaces).toHaveBeenCalled();
+        });
+
+        it('should show notification when edit prefix fails', () => {
+            $scope.loader = undefined;
+            spyOn(toastr, 'error');
+            spyOn($scope, 'getNamespaces').and.callThrough();
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(500, {
+                message: 'Edit prefix error!'
+            });
+
+            $scope.editPrefix();
+            $httpBackend.flush();
+
+            expect(toastr.error).toHaveBeenCalledWith('Edit prefix error!', 'Error');
+            expect($scope.loader).toEqual(false);
+        });
+    });
+
     describe('$scope.removeNamespace()', function () {
         it('should call $scope.getNamespaces() on success', function () {
             var getNamespaces = false;
             $scope.getNamespaces = function () {
                 getNamespaces = true;
-            }
+            };
             $scope.removeNamespace('namespace');
             $httpBackend.flush();
             expect(getNamespaces).toBeTruthy();
