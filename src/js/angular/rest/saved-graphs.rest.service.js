@@ -1,18 +1,18 @@
-const SAVED_GRAPHS_ENDPOINT = 'rest/explore-graph/saved';
-
 angular
     .module('graphdb.framework.rest.graphexplore.savedgraphs.service', [])
     .factory('SavedGraphsRestService', SavedGraphsRestService);
 
 SavedGraphsRestService.$inject = ['$http'];
 
+const SAVED_GRAPHS_ENDPOINT = 'rest/explore-graph/saved';
+
 function SavedGraphsRestService($http) {
     return {
-        getSavedGraphs: getSavedGraphs,
-        getSavedGraph: getSavedGraph,
-        editSavedGraph: editSavedGraph,
-        deleteSavedGraph: deleteSavedGraph,
-        addNewSavedGraph: addNewSavedGraph
+        getSavedGraphs,
+        getSavedGraph,
+        editSavedGraph,
+        deleteSavedGraph,
+        addNewSavedGraph
     };
 
     function getSavedGraphs() {
@@ -20,15 +20,15 @@ function SavedGraphsRestService($http) {
     }
 
     function getSavedGraph(id) {
-        return $http.get(SAVED_GRAPHS_ENDPOINT + '/' + encodeURIComponent(id));
+        return $http.get(`${SAVED_GRAPHS_ENDPOINT}/${encodeURIComponent(id)}`);
     }
 
     function editSavedGraph(graph) {
-        return $http.put(SAVED_GRAPHS_ENDPOINT + '/' + encodeURIComponent(graph.id), graph);
+        return $http.put(`${SAVED_GRAPHS_ENDPOINT}/${encodeURIComponent(graph.id)}`, graph);
     }
 
     function deleteSavedGraph(graph) {
-        return $http.delete(SAVED_GRAPHS_ENDPOINT + '/' + encodeURIComponent(graph.id));
+        return $http.delete(`${SAVED_GRAPHS_ENDPOINT}/${encodeURIComponent(graph.id)}`);
     }
 
     function addNewSavedGraph(graph) {

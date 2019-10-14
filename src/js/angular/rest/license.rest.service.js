@@ -6,25 +6,26 @@ angular
 
 LicenseRestService.$inject = ['$http', 'Upload'];
 
+const LICENSE_ENDPOINT = 'rest/graphdb-settings/license';
+const LICENSE_INFO_ENDPOINT = 'rest/info/license/';
+
 function LicenseRestService($http, Upload) {
-    const factory = {};
-
-    factory.getLicenseInfo = getLicenseInfo;
-    factory.getHardcodedLicense = getHardcodedLicense;
-    factory.sendLicenseToValidate = sendLicenseToValidate;
-    factory.extractFromLicenseFile = extractFromLicenseFile;
-    factory.checkLicenseHardcoded = checkLicenseHardcoded;
-    factory.registerLicense = registerLicense;
-
-    return factory;
+    return {
+        getLicenseInfo,
+        getHardcodedLicense,
+        sendLicenseToValidate,
+        extractFromLicenseFile,
+        checkLicenseHardcoded,
+        registerLicense
+    };
 
     // get activated license details
     function getLicenseInfo() {
-        return $http.get('rest/graphdb-settings/license');
+        return $http.get(LICENSE_ENDPOINT);
     }
 
     function getHardcodedLicense() {
-        return $http.get('rest/graphdb-settings/license/hardcoded');
+        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
     }
 
     // send license to be validated and parsed before activation
@@ -35,14 +36,14 @@ function LicenseRestService($http, Upload) {
                 'Content-Type': 'text/plain'
             }
         };
-        return $http.post('rest/info/license/validate', licenseCode, headers);
+        return $http.post(`${LICENSE_INFO_ENDPOINT}validate`, licenseCode, headers);
     }
 
     // read license file on backend and send string content back
     function extractFromLicenseFile(file) {
         return Upload.upload({
-            url: 'rest/info/license/toBase64',
-            file: file,
+            url: `${LICENSE_INFO_ENDPOINT}toBase64`,
+            file,
             headers: {
                 'Accept': 'text/plain'
             }
@@ -58,7 +59,7 @@ function LicenseRestService($http, Upload) {
 
         const request = {
             method: 'POST',
-            url: 'rest/graphdb-settings/license',
+            url: LICENSE_ENDPOINT,
             headers: {
                 'Content-Type': 'application/octet-stream'
             },
@@ -70,6 +71,6 @@ function LicenseRestService($http, Upload) {
 
     // check if distribution has an already activated license
     function checkLicenseHardcoded() {
-        return $http.get('rest/graphdb-settings/license/hardcoded');
+        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
     }
 }

@@ -11,48 +11,49 @@ const SIMILARITY_ENABLED = 'select ?o where {\n' +
 
 const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
 
+const SIMILARITY_ENDPOINT = 'rest/similarity';
+
 function SimilarityRestService($http, $repositories) {
 
     return {
-        getIndexes: getIndexes,
-        getSearchQueries: getSearchQueries,
-        rebuildIndex: rebuildIndex,
-        deleteIndex: deleteIndex,
-        createIndex: createIndex,
-        getSamples: getSamples,
-        checkPluginEnabled: checkPluginEnabled,
-        enableSimilarityPlugin: enableSimilarityPlugin
-
+        getIndexes,
+        getSearchQueries,
+        rebuildIndex,
+        deleteIndex,
+        createIndex,
+        getSamples,
+        checkPluginEnabled,
+        enableSimilarityPlugin
     };
 
     function getIndexes() {
-        return $http.get('rest/similarity');
+        return $http.get(SIMILARITY_ENDPOINT);
     }
 
     function getSamples() {
-        return $http.get('rest/similarity/samples');
+        return $http.get(`${SIMILARITY_ENDPOINT}/samples`);
     }
 
     function getSearchQueries() {
-        return $http.get('rest/similarity/config');
+        return $http.get(`${SIMILARITY_ENDPOINT}/config`);
     }
 
-    function createIndex(method, name, options, selectQuery, searchQuery, analogicalQuery, stopList, inference, sameAs, indexType, analyzer) {
+    function createIndex(method, name, options, selectQuery, searchQuery, analogicalQuery, stopList, infer, sameAs, type, analyzer) {
         return $http({
-                method: method,
-                url: '/rest/similarity',
+                method,
+                url: `/${SIMILARITY_ENDPOINT}`,
                 noCancelOnRouteChange: true,
                 data: {
-                    name: name,
-                    options: options,
-                    selectQuery: selectQuery,
-                    stopList: stopList,
-                    infer: inference,
-                    sameAs: sameAs,
-                    type: indexType,
-                    analyzer: analyzer,
-                    searchQuery: searchQuery,
-                    analogicalQuery: analogicalQuery
+                    name,
+                    options,
+                    selectQuery,
+                    stopList,
+                    infer,
+                    sameAs,
+                    type,
+                    analyzer,
+                    searchQuery,
+                    analogicalQuery
                 }
             }
         );
@@ -63,13 +64,13 @@ function SimilarityRestService($http, $repositories) {
     }
 
     function deleteIndex(index) {
-        return $http.delete('rest/similarity?name=' + index.name);
+        return $http.delete(`${SIMILARITY_ENDPOINT}?name=${index.name}`);
     }
 
     function checkPluginEnabled() {
         return $.ajax({
             method: 'GET',
-            url: 'repositories/' + $repositories.getActiveRepository(),
+            url: `repositories/${$repositories.getActiveRepository()}`,
             data: {
                 query: SIMILARITY_ENABLED
             }
@@ -79,7 +80,7 @@ function SimilarityRestService($http, $repositories) {
     function enableSimilarityPlugin() {
         return $.ajax({
             method: 'POST',
-            url: 'repositories/' + $repositories.getActiveRepository() + '/statements',
+            url: `repositories/${$repositories.getActiveRepository()}/statements`,
             data: {
                 update: ENABLE_SIMILARITY
             }

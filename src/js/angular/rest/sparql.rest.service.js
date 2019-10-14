@@ -4,37 +4,40 @@ angular
 
 SparqlRestService.$inject = ['$http', '$repositories'];
 
+const SAVED_QUERIES_ENDPOINT = 'rest/sparql/saved-queries';
+const REPOSITORIES_ENDPOINT = 'repositories/';
+
 function SparqlRestService($http, $repositories) {
     return {
-        getRepositorySize: getRepositorySize,
-        getRepositoryNamespaces: getRepositoryNamespaces,
-        getSavedQueries: getSavedQueries,
-        getSavedQuery: getSavedQuery,
-        addKnownPrefixes: addKnownPrefixes,
-        editSavedQuery: editSavedQuery,
-        deleteSavedQuery: deleteSavedQuery,
-        addNewSavedQuery: addNewSavedQuery,
-        abortQueryByAlias: abortQueryByAlias
+        getRepositorySize,
+        getRepositoryNamespaces,
+        getSavedQueries,
+        getSavedQuery,
+        addKnownPrefixes,
+        editSavedQuery,
+        deleteSavedQuery,
+        addNewSavedQuery,
+        abortQueryByAlias
     };
 
     function getRepositorySize() {
-        return $http.get('repositories/' + $repositories.getActiveRepository() + '/size');
+        return $http.get(`${REPOSITORIES_ENDPOINT}${$repositories.getActiveRepository()}/size`);
     }
 
     function getRepositoryNamespaces() {
-        return $http.get('repositories/' + $repositories.getActiveRepository() + '/namespaces');
+        return $http.get(`${REPOSITORIES_ENDPOINT}${$repositories.getActiveRepository()}/namespaces`);
     }
 
     function getSavedQueries() {
-        return $http.get('rest/sparql/saved-queries');
+        return $http.get(SAVED_QUERIES_ENDPOINT);
     }
 
     function getSavedQuery(savedQueryName, owner) {
         let ownerQuery = '';
         if (owner != null) {
-            ownerQuery = '&owner=' + encodeURIComponent(owner);
+            ownerQuery = `&owner=${encodeURIComponent(owner)}`;
         }
-        return $http.get('rest/sparql/saved-queries?name=' + encodeURIComponent(savedQueryName) + ownerQuery);
+        return $http.get(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}${ownerQuery}`);
     }
 
     function addKnownPrefixes(prefixes) {
@@ -42,18 +45,18 @@ function SparqlRestService($http, $repositories) {
     }
 
     function editSavedQuery(query) {
-        return $http.put('rest/sparql/saved-queries', query);
+        return $http.put(SAVED_QUERIES_ENDPOINT, query);
     }
 
     function deleteSavedQuery(savedQueryName) {
-        return $http.delete('rest/sparql/saved-queries?name=' + encodeURIComponent(savedQueryName));
+        return $http.delete(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}`);
     }
 
     function addNewSavedQuery(query) {
-        return $http.post('rest/sparql/saved-queries', query);
+        return $http.post(SAVED_QUERIES_ENDPOINT, query);
     }
 
     function abortQueryByAlias(alias) {
-        return $http.delete('rest/monitor/query?queryAlias=' + encodeURIComponent(alias));
+        return $http.delete(`rest/monitor/query?queryAlias=${encodeURIComponent(alias)}`);
     }
 }

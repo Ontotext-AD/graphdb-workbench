@@ -6,7 +6,7 @@ MonitoringRestService.$inject = ['$http'];
 
 function MonitoringRestService($http) {
     return {
-        checkAutocompleteStatus: checkAutocompleteStatus
+        checkAutocompleteStatus
     };
 
     function checkAutocompleteStatus() {

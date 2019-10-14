@@ -4,37 +4,42 @@ angular
 
 GraphDataRestService.$inject = ['$http'];
 
+const CLASS_HIERARCHY_ENDPOINT = 'rest/class-hierarchy';
+const DOMAIN_RANGE_ENDPOINT = 'rest/domain-range';
+const DEPENDENCIES_ENDPOINT = 'rest/dependencies/';
+const EXPORE_GRAPH_ENDPOINT = 'rest/explore-graph/';
+
 function GraphDataRestService($http) {
     return {
         // class hierarchy
-        getClassHierarchyData: getClassHierarchyData,
-        reloadClassHierarchy: reloadClassHierarchy,
-        getClassInstances: getClassInstances,
+        getClassHierarchyData,
+        reloadClassHierarchy,
+        getClassInstances,
 
         // domain-range graph
-        getDomainRangeData: getDomainRangeData,
-        checkDomainRangeData: checkDomainRangeData,
+        getDomainRangeData,
+        checkDomainRangeData,
 
         // class relationships
-        getRelationshipsData: getRelationshipsData,
-        getRelationshipsClasses: getRelationshipsClasses,
-        getRelationshipsStatus: getRelationshipsStatus,
-        calculateRelationships: calculateRelationships,
+        getRelationshipsData,
+        getRelationshipsClasses,
+        getRelationshipsStatus,
+        calculateRelationships,
 
         // instances graph
-        getInstanceNode: getInstanceNode,
-        getInstanceNodeLinks: getInstanceNodeLinks,
+        getInstanceNode,
+        getInstanceNodeLinks,
 
         // common
-        getRdfsLabelAndComment: getRdfsLabelAndComment
+        getRdfsLabelAndComment
     };
 
     function getClassHierarchyData() {
-        return $http.get('rest/class-hierarchy');
+        return $http.get(CLASS_HIERARCHY_ENDPOINT);
     }
 
     function reloadClassHierarchy() {
-        return $http.get('rest/class-hierarchy', {
+        return $http.get(CLASS_HIERARCHY_ENDPOINT, {
             params: {
                 doReload: true
             }
@@ -42,32 +47,32 @@ function GraphDataRestService($http) {
     }
 
     function getClassInstances(targetUri) {
-        return $http.get('rest/class-hierarchy/class-instances', {
+        return $http.get(`${CLASS_HIERARCHY_ENDPOINT}/class-instances`, {
             params: {
-                targetUri: targetUri
+                targetUri
             }
         });
     }
 
     function checkDomainRangeData(targetUri) {
-        return $http.head('rest/domain-range', {
+        return $http.head(DOMAIN_RANGE_ENDPOINT, {
             params: {
-                targetUri: targetUri
+                targetUri
             }
         });
     }
 
     function getDomainRangeData(targetUri, collapsed) {
-        return $http.get('rest/domain-range', {
+        return $http.get(DOMAIN_RANGE_ENDPOINT, {
             params: {
-                targetUri: targetUri,
-                collapsed: collapsed
+                targetUri,
+                collapsed
             }
         });
     }
 
     function getRelationshipsData(selectedClasses, direction) {
-        return $http.get('rest/dependencies/matrix', {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/matrix`, {
             params: {
                 'mode': direction,
                 'classes': _.map(selectedClasses, function (c) {
@@ -78,7 +83,7 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsClasses(direction) {
-        return $http.get('rest/dependencies/classes', {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}classes`, {
             params: {
                 'mode': direction
             }
@@ -86,35 +91,35 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsStatus() {
-        return $http.get('rest/dependencies/status');
+        return $http.get(`${DEPENDENCIES_ENDPOINT}status`);
     }
 
     function calculateRelationships() {
-        return $http.get('rest/dependencies/update');
+        return $http.get(`${DEPENDENCIES_ENDPOINT}update`);
     }
 
     function getInstanceNode(iri) {
-        return $http.get('rest/explore-graph/node', {
+        return $http.get(`${EXPORE_GRAPH_ENDPOINT}node`, {
             params: {
-                iri: iri
+                iri
             }
         });
     }
 
     function getInstanceNodeLinks(iri) {
-        return $http.get('rest/explore-graph/links', {
+        return $http.get(`${EXPORE_GRAPH_ENDPOINT}links`, {
             params: {
-                iri: iri
+                iri
             }
         });
     }
 
     function getRdfsLabelAndComment(targetUri, languages, extraParams) {
-        extraParams = extraParams || {};
+        const requestParams = extraParams || {};
         return $http({
             url: 'rest/explore/details',
             method: 'GET',
-            params: _.extend(extraParams, {uri: targetUri, languages: languages}),
+            params: _.extend(requestParams, {uri: targetUri, languages}),
             headers: {
                 'Accept': 'application/json'
             }

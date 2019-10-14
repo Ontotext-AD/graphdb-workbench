@@ -4,29 +4,29 @@ angular
 
 RepositoriesRestService.$inject = ['$http'];
 
+const REPOSITORIES_ENDPOINT = 'rest/repositories';
+
 function RepositoriesRestService($http) {
     return {
-        getRepositories: getRepositories,
-        getRepository: getRepository,
-        // createRepository: createRepository,
-        deleteRepository: deleteRepository,
-        // editRepository: editRepository,
-        getRepositoryConfiguration: getRepositoryConfiguration
+        getRepositories,
+        getRepository,
+        deleteRepository,
+        getRepositoryConfiguration
     };
 
     function getRepository(repositoryid) {
-        return $http.get('rest/repositories/' + repositoryid);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}`);
     }
 
     function getRepositories() {
-        return $http.get('rest/repositories');
+        return $http.get(REPOSITORIES_ENDPOINT);
     }
 
     function deleteRepository(repositoryId) {
-        return $http.delete('rest/repositories/' + repositoryId);
+        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}`);
     }
 
     function getRepositoryConfiguration(repositoryType) {
-        return $http.get('rest/repositories/defaultConfig/' + repositoryType);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/defaultConfig/${repositoryType}`);
     }
 }

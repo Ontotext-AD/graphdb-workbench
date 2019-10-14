@@ -2,59 +2,61 @@ angular
     .module('graphdb.framework.rest.graphconfig.service', [])
     .factory('GraphConfigRestService', GraphConfigRestService);
 
+const EXPLORE_GRAPH_ENDPOINT = 'rest/explore-graph/';
+const EXPLORE_GRAPH_CONFIG_ENDPOINT = `${EXPLORE_GRAPH_ENDPOINT}config`;
+
 GraphConfigRestService.$inject = ['$http'];
 
 function GraphConfigRestService($http) {
     return {
-        getGraphConfigs: getGraphConfigs,
-        getGraphConfigSamples: getGraphConfigSamples,
-        loadGraphForConfig: loadGraphForConfig,
-        getConfig: getConfig,
-        createGraphConfig: createGraphConfig,
-        updateGraphConfig: updateGraphConfig,
-        deleteGraphConfig: deleteGraphConfig,
-        validateQuery: validateQuery
+        getGraphConfigs,
+        getGraphConfigSamples,
+        loadGraphForConfig,
+        getConfig,
+        createGraphConfig,
+        updateGraphConfig,
+        deleteGraphConfig,
+        validateQuery
     };
 
     function getGraphConfigs() {
-        return $http.get('rest/explore-graph/config');
+        return $http.get(EXPLORE_GRAPH_CONFIG_ENDPOINT);
     }
 
     function getGraphConfigSamples() {
-        return $http.get('rest/explore-graph/samples');
+        return $http.get(`${EXPLORE_GRAPH_ENDPOINT}samples`);
     }
 
     function loadGraphForConfig(config, includeInferred, linksLimit, startQuerySameAs) {
-        return $http.get('rest/explore-graph/config/graph/' + encodeURIComponent(config.id) + '?'
-            + 'includeInferred=' + includeInferred + '&' + 'linksLimit=' + linksLimit + '&' + 'sameAsState=' + startQuerySameAs);
+        return $http.get(`${EXPLORE_GRAPH_CONFIG_ENDPOINT}/graph/${encodeURIComponent(config.id)}?includeInferred=${includeInferred}&linksLimit=${linksLimit}&sameAsState=${startQuerySameAs}`);
     }
 
     function getConfig(id) {
-        return $http.get('rest/explore-graph/config/' + encodeURIComponent(id));
+        return $http.get(`${EXPLORE_GRAPH_CONFIG_ENDPOINT}/${encodeURIComponent(id)}`);
     }
 
     function createGraphConfig(config) {
-        return $http.post('rest/explore-graph/config', config);
+        return $http.post(EXPLORE_GRAPH_CONFIG_ENDPOINT, config);
     }
 
     function updateGraphConfig(config) {
-        return $http.put('rest/explore-graph/config/' + encodeURIComponent(config.id), config);
+        return $http.put(`${EXPLORE_GRAPH_CONFIG_ENDPOINT}/${encodeURIComponent(config.id)}`, config);
     }
 
     function deleteGraphConfig(config) {
-        return $http.delete('rest/explore-graph/config/' + encodeURIComponent(config.id));
+        return $http.delete(`${EXPLORE_GRAPH_CONFIG_ENDPOINT}/${encodeURIComponent(config.id)}`);
     }
 
     function validateQuery(query, queryType, params, all, oneOf) {
         return $http({
             method: 'POST',
-            url: 'rest/explore-graph/validate',
+            url: `${EXPLORE_GRAPH_ENDPOINT}validate`,
             data: {
-                query: query,
-                queryType: queryType,
-                params: params,
-                all: all,
-                oneOf: oneOf
+                query,
+                queryType,
+                params,
+                all,
+                oneOf
             }
         });
     }

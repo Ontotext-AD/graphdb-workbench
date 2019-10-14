@@ -2,58 +2,63 @@ angular
     .module('graphdb.framework.rest.autocomplete.service', [])
     .factory('AutocompleteRestService', AutocompleteRestService);
 
+const AUTOCOMPLETE_ENDPOINT = 'rest/autocomplete/';
+const AUTOCOMPLETE_LABELS_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}labels`;
+const AUTOCOMPLETE_ENABLED_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}enabled`;
+const AUTOCOMPLETE_IRIS_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}iris`;
+
 AutocompleteRestService.$inject = ['$http'];
 
 function AutocompleteRestService($http) {
     return {
-        checkAutocompleteStatus: checkAutocompleteStatus,
-        refreshIndexStatus: refreshIndexStatus,
-        refreshLabelConfig: refreshLabelConfig,
-        addLabelConfig: addLabelConfig,
-        removeLabelConfig: removeLabelConfig,
-        toggleAutocomplete: toggleAutocomplete,
-        refreshIndexIRIs: refreshIndexIRIs,
-        toggleIndexIRIs: toggleIndexIRIs,
-        buildIndex: buildIndex,
-        interruptIndexing: interruptIndexing,
-        checkForPlugin: checkForPlugin,
-        getAutocompleteSuggestions: getAutocompleteSuggestions
+        checkAutocompleteStatus,
+        refreshIndexStatus,
+        refreshLabelConfig,
+        addLabelConfig,
+        removeLabelConfig,
+        toggleAutocomplete,
+        refreshIndexIRIs,
+        toggleIndexIRIs,
+        buildIndex,
+        interruptIndexing,
+        checkForPlugin,
+        getAutocompleteSuggestions
     };
 
     function checkAutocompleteStatus() {
-        return $http.get('rest/autocomplete/enabled');
+        return $http.get(AUTOCOMPLETE_ENABLED_ENDPOINT);
     }
 
     function toggleAutocomplete(newValue) {
-        return $http.post('rest/autocomplete/enabled?enabled=' + newValue);
+        return $http.post(`${AUTOCOMPLETE_ENABLED_ENDPOINT}?enabled=${newValue}`);
     }
 
     function refreshIndexIRIs() {
-        return $http.get('rest/autocomplete/iris');
+        return $http.get(AUTOCOMPLETE_IRIS_ENDPOINT);
     }
 
     function toggleIndexIRIs(newValue) {
-        return $http.post('rest/autocomplete/iris?enabled=' + newValue);
+        return $http.post(`${AUTOCOMPLETE_IRIS_ENDPOINT}?enabled=${newValue}`);
     }
 
     function buildIndex() {
-        return $http.post('rest/autocomplete/reIndex');
+        return $http.post(`${AUTOCOMPLETE_ENDPOINT}reIndex`);
     }
 
     function interruptIndexing() {
-        return $http.post('rest/autocomplete/interrupt');
+        return $http.post(`${AUTOCOMPLETE_ENDPOINT}interrupt`);
     }
 
     function refreshIndexStatus() {
-        return $http.get('rest/autocomplete/status');
+        return $http.get(`${AUTOCOMPLETE_ENDPOINT}status`);
     }
 
     function checkForPlugin() {
-        return $http.get('rest/autocomplete/pluginFound');
+        return $http.get(`${AUTOCOMPLETE_ENDPOINT}pluginFound`);
     }
 
     function getAutocompleteSuggestions(str, cancelerPromise) {
-        return $http.get('rest/autocomplete/query', {
+        return $http.get(`${AUTOCOMPLETE_ENDPOINT}query`, {
             params: {
                 q: str
             },
@@ -62,15 +67,15 @@ function AutocompleteRestService($http) {
     }
 
     function refreshLabelConfig() {
-        return $http.get('rest/autocomplete/labels');
+        return $http.get(AUTOCOMPLETE_LABELS_ENDPOINT);
     }
 
     function addLabelConfig(label) {
-        return $http.put('rest/autocomplete/labels', label);
+        return $http.put(AUTOCOMPLETE_LABELS_ENDPOINT, label);
     }
 
     function removeLabelConfig(label) {
-        return $http.delete('rest/autocomplete/labels', {
+        return $http.delete(AUTOCOMPLETE_LABELS_ENDPOINT, {
             data: label,
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
