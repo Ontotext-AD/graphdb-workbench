@@ -45,7 +45,7 @@ describe('User and Access', () => {
         cy.get('@user').find('.date-created').should('be.visible');
     });
 
-    it('Create user - read-only and verify that security works', () => {
+    it('Create user - read-only and verify that security works - /import', () => {
         cy.wait(500); //sometimes repositories list cannot be fetched.
         createUser(user, "roleUser", "read");
         getSecuritySwitch().click({force:true});
@@ -61,16 +61,73 @@ describe('User and Access', () => {
         getMenuItem("Users and Access")
             .should('not.be.visible');
         //verify no access message is displayed
-        getNoPermissionMessage("import")
+        getNoPermissionMessage("/import")
             .should('be.visible')
             .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
-        getNoPermissionMessage("connectors")
+        logOutAndDeleteUser(user);
+    });
+
+    it('Create user - read-only and verify that security works - /connectors', () => {
+        cy.wait(500); //sometimes repositories list cannot be fetched.
+        createUser(user, "roleUser", "read");
+        getSecuritySwitch().click({force:true});
+        performLogin(user, password);
+        //when logging in with a non admin user you will be redirected to the last page you logged out from and in this case the user does not have rights to view it.
+        cy.url()
+            .should('eq', Cypress.config('baseUrl') + '/users');
+        cy.get('.container-fluid')
+            .should('contain', 'You have no permission to access this functionality with your current credentials');
+        //verify user rights
+        getMenuItem("Repositories")
+            .should('not.be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        //verify no access message is displayed
+        getNoPermissionMessage("/connectors")
             .should('be.visible')
             .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
-        getNoPermissionMessage("autocomplete")
+        logOutAndDeleteUser(user);
+    });
+
+    it('Create user - read-only and verify that security works - /autocomplete', () => {
+        cy.wait(500); //sometimes repositories list cannot be fetched.
+        createUser(user, "roleUser", "read");
+        getSecuritySwitch().click({force:true});
+        performLogin(user, password);
+        //when logging in with a non admin user you will be redirected to the last page you logged out from and in this case the user does not have rights to view it.
+        cy.url()
+            .should('eq', Cypress.config('baseUrl') + '/users');
+        cy.get('.container-fluid')
+            .should('contain', 'You have no permission to access this functionality with your current credentials');
+        //verify user rights
+        getMenuItem("Repositories")
+            .should('not.be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        //verify no access message is displayed
+        getNoPermissionMessage("/autocomplete")
             .should('be.visible')
             .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
-        getNoPermissionMessage("rdfrank")
+        logOutAndDeleteUser(user);
+    });
+
+    it('Create user - read-only and verify that security works - /rdf-rank', () => {
+        cy.wait(500); //sometimes repositories list cannot be fetched.
+        createUser(user, "roleUser", "read");
+        getSecuritySwitch().click({force:true});
+        performLogin(user, password);
+        //when logging in with a non admin user you will be redirected to the last page you logged out from and in this case the user does not have rights to view it.
+        cy.url()
+            .should('eq', Cypress.config('baseUrl') + '/users');
+        cy.get('.container-fluid')
+            .should('contain', 'You have no permission to access this functionality with your current credentials');
+        //verify user rights
+        getMenuItem("Repositories")
+            .should('not.be.visible');
+        getMenuItem("Users and Access")
+            .should('not.be.visible');
+        //verify no access message is displayed
+        getNoPermissionMessage("/rdfrank")
             .should('be.visible')
             .and('contain', 'Some functionality is not available because you have no write permission to repository ' + repositoryId);
         logOutAndDeleteUser(user);
@@ -85,34 +142,34 @@ describe('User and Access', () => {
             .should('not.be.visible');
         getMenuItem("Users and Access")
             .should('not.be.visible');
-        getNoPermissionMessage("import")
+        getNoPermissionMessage("/import")
             .should('not.be.visible');
-        getNoPermissionMessage("connectors")
+        getNoPermissionMessage("/connectors")
             .should('not.be.visible');
-        getNoPermissionMessage("autocomplete")
+        getNoPermissionMessage("/autocomplete")
             .should('not.be.visible');
-        getNoPermissionMessage("rdfrank")
+        getNoPermissionMessage("/rdfrank")
             .should('not.be.visible');
         logOutAndDeleteUser(user);
     });
 
     it('Create user - repository manager', () => {
-
         createUser(repoManager, "roleRepoAdmin", "");
         getSecuritySwitch().click({force:true});
-        performLogin(repoManager, password);
+        performLogin(repoManager, password);+
+        getNoPermissionMessage("/import")
+            .should('not.be.visible');
+        getNoPermissionMessage("/connectors")
+            .should('not.be.visible');
+        getNoPermissionMessage("/autocomplete")
+            .should('not.be.visible');
+        getNoPermissionMessage("/rdfrank")
+            .should('not.be.visible');
         getMenuItem("Repositories")
             .should('be.visible');
         getMenuItem("Users and Access")
             .should('not.be.visible');
-        getNoPermissionMessage("import")
-            .should('not.be.visible');
-        getNoPermissionMessage("connectors")
-            .should('not.be.visible');
-        getNoPermissionMessage("autocomplete")
-            .should('not.be.visible');
-        getNoPermissionMessage("rdfrank")
-            .should('not.be.visible');
+
         logOutAndDeleteUser(repoManager);
     });
 
@@ -120,18 +177,18 @@ describe('User and Access', () => {
         createUser(admin, "roleAdmin", "");
         getSecuritySwitch().click({force:true});
         performLogin(admin, password);
+        getNoPermissionMessage("/import")
+            .should('not.be.visible');
+        getNoPermissionMessage("/connectors")
+            .should('not.be.visible');
+        getNoPermissionMessage("/autocomplete")
+            .should('not.be.visible');
+        getNoPermissionMessage("/rdfrank")
+            .should('not.be.visible');
         getMenuItem("Repositories")
             .should('be.visible');
         getMenuItem("Users and Access")
             .should('be.visible');
-        getNoPermissionMessage("import")
-            .should('not.be.visible');
-        getNoPermissionMessage("connectors")
-            .should('not.be.visible');
-        getNoPermissionMessage("autocomplete")
-            .should('not.be.visible');
-        getNoPermissionMessage("rdfrank")
-            .should('not.be.visible');
         logOutAndDeleteUser(admin);
     });
 
@@ -220,11 +277,12 @@ describe('User and Access', () => {
     }
 
     function getMenuItem(menuItem) {
-        return cy.get(`a:contains(${menuItem})`);
+        return cy.get('.sub-menu-item').contains(menuItem);
     }
 
     function getNoPermissionMessage(pageToVerify) {
-        cy.visit('/' + pageToVerify);
+        cy.presetRepositoryCookie(repositoryId);
+        cy.visit(pageToVerify);
         return cy.get('.repository-errors');
     }
 
