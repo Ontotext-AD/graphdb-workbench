@@ -1,17 +1,19 @@
 import 'angular/core/services';
 import 'angular/repositories/services';
+import 'angular/rest/monitoring.rest.service';
 import 'lib/nvd3/nv.d3';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.repositories.services',
+    'graphdb.framework.rest.monitoring.service',
     'toastr'
 ];
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$filter', '$timeout',
-    function ($scope, $http, $modal, toastr, $interval, $filter, $timeout) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$filter', '$timeout', 'MonitoringRestService',
+    function ($scope, $http, $modal, toastr, $interval, $filter, $timeout, MonitoringRestService) {
         $scope.data = {
             classCount: [{
                 key: 'Classes',
@@ -39,7 +41,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
             if ($scope.jolokiaError) {
                 return;
             }
-            $http.get('rest/monitor/resource').success(function (data) {
+            MonitoringRestService.monitorResources().success(function (data) {
                 if (data) {
                     if ($scope.data.classCount[0].values.length === 100) {
                         $scope.clearData();
@@ -168,7 +170,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr'
         $scope.garbadgeCollector = function () {
 
             $scope.garbadgeCollectorLoader = true;
-            $http.post('rest/monitor/resource/gc').success(function () {
+            MonitoringRestService.monitorGC().success(function () {
                 toastr.success('Garbage collection performed.');
                 $scope.garbadgeCollectorLoader = false;
             }).error(function (data) {

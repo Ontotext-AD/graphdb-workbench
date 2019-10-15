@@ -1,12 +1,14 @@
 import 'angular/core/services';
+import 'angular/rest/monitoring.rest.service';
 
 const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', [
     'ui.bootstrap',
-    'toastr'
+    'toastr',
+    'graphdb.framework.rest.monitoring.service'
 ]);
 
-queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',
-    function ($scope, $http, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService) {
+queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService',
+    function ($scope, $http, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;
@@ -57,7 +59,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
             }
 
             $scope.getQueriesRunning = true;
-            $http.get('rest/monitor/query').success(function (data) {
+            MonitoringRestService.monitorQuery().success(function (data) {
                 const newQueries = data;
                 $scope.noQueries = newQueries.length === 0;
 
@@ -90,7 +92,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$
         $scope.deleteQueryHttp = function (queryId) {
 
             $scope.loader = true;
-            $http.delete('rest/monitor/query?queryId=' + encodeURIComponent(queryId)).success(function () {
+            MonitoringRestService.deleteQuery(queryId).success(function () {
                 toastr.success('Abort request sent.');
                 $scope.loader = false;
             }).error(function (data) {

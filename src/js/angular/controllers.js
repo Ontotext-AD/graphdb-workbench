@@ -57,9 +57,9 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -650,11 +650,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         }
 
         $scope.getQueriesRunning = true;
-        $http({
-            url: 'rest/monitor/query/count',
-            method: 'GET',
-            timeout: 10000
-        })
+        MonitoringRestService.getQueryCount()
             .success(function (data) {
                 $scope.queryCount = data;
                 fibo.reset();
