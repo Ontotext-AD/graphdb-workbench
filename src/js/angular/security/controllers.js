@@ -1,10 +1,12 @@
 import 'angular/core/services';
 import 'angular/security/services';
+import 'angular/rest/security.rest.service';
 
 const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.security.services',
+    'graphdb.framework.rest.security.service',
     'toastr'
 ];
 
@@ -136,8 +138,8 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService',
-    function ($scope, $http, $modal, toastr, $window, $jwtAuth, $timeout, ModalService) {
+securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
+    function ($scope, $http, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -153,20 +155,21 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
             return $jwtAuth.isFreeAccessEnabled();
         };
         $scope.getUsers = function () {
-            $http.get('rest/security/user').success(function (data) {
-                $scope.users = data;
-                for (let i = 0; i < $scope.users.length; i++) {
-                    const pa = parseAuthorities($scope.users[i].grantedAuthorities);
-                    $scope.users[i].userType = pa.userType;
-                    $scope.users[i].userTypeDescription = pa.userTypeDescription;
-                    $scope.users[i].repositories = pa.repositories;
-                }
-                $scope.loader = false;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+            SecurityRestService.getUsers()
+                .success(function (data) {
+                    $scope.users = data;
+                    for (let i = 0; i < $scope.users.length; i++) {
+                        const pa = parseAuthorities($scope.users[i].grantedAuthorities);
+                        $scope.users[i].userType = pa.userType;
+                        $scope.users[i].userTypeDescription = pa.userTypeDescription;
+                        $scope.users[i].repositories = pa.repositories;
+                    }
+                    $scope.loader = false;
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                    $scope.loader = false;
+                });
         };
         $scope.getUsers();
 
@@ -188,7 +191,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
-                $http.get('rest/security/freeaccess').then(function (res) {
+                SecurityRestService.toggleFreeAccess().then(function (res) {
                     let authorities = res.data.authorities;
                     let appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
@@ -250,7 +253,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
-                $http.delete('rest/security/user/' + encodeURIComponent(username)).success(function () {
+                SecurityRestService.deleteUser(username).success(function () {
                     $scope.getUsers();
                 }).error(function (data) {
                     const msg = getError(data);
@@ -361,8 +364,8 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
 
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller) {
+securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -398,16 +401,11 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
-            $http({
-                method: 'POST',
-                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
-                headers: {
-                    'X-GraphDB-Password': $scope.user.password
-                },
-                data: {
-                    appSettings: $scope.user.appSettings,
-                    grantedAuthorities: $scope.user.grantedAuthorities
-                }
+            SecurityRestService.createUser({
+                username: $scope.user.username,
+                pass: $scope.user.password,
+                appSettings: $scope.user.appSettings,
+                grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
                 toastr.success('The user ' + $scope.user.username + ' has been created.');
                 const timer = $timeout(function () {
@@ -458,8 +456,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller) {
+securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -488,7 +486,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $location.url('settings');
         }
         $scope.getUserData = function () {
-            $http.get('rest/security/user/' + encodeURIComponent($scope.params.userId)).success(function (data) {
+            SecurityRestService.getUser($scope.params.userId).success(function (data) {
                 $scope.userData = data;
                 $scope.user = {username: $scope.userData.username};
                 $scope.user.password = '';
@@ -513,16 +511,11 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
-            $http({
-                method: 'PUT',
-                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
-                headers: {
-                    'X-GraphDB-Password': $scope.user.password
-                },
-                data: {
-                    appSettings: $scope.user.appSettings,
-                    grantedAuthorities: $scope.user.grantedAuthorities
-                }
+            SecurityRestService.updateUser({
+                username: $scope.user.username,
+                pass: $scope.user.password,
+                appSettings: $scope.user.appSettings,
+                grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
                 toastr.success('The user ' + $scope.user.username + ' was updated.');
                 const timer = $timeout(function () {
@@ -614,8 +607,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', 
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$rootScope', '$controller',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $rootScope, $controller) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $rootScope, $controller, SecurityRestService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -651,7 +644,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
         $scope.passwordPlaceholder = 'New password';
         $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
 
-
         const initUserData = function (scope) {
             // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
             scope.userData = angular.copy(scope.currentUserData());
@@ -683,15 +675,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
-            $http({
-                method: 'PATCH',
-                url: 'rest/security/user/' + encodeURIComponent($scope.user.username),
-                headers: {
-                    'X-GraphDB-Password': $scope.user.password
-                },
-                data: {
-                    appSettings: $scope.user.appSettings
-                }
+            SecurityRestService.updateUserData({
+                username: $scope.user.username,
+                pass: $scope.user.password,
+                appSettings: $scope.user.appSettings
             }).success(function () {
                 $scope.updateCurrentUserData();
                 toastr.success('The user ' + $scope.user.username + ' was updated.');
@@ -721,7 +708,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
                 $scope.updateUserHttp();
             }
         };
-
 
         $scope.validateForm = function () {
             const result = true;
