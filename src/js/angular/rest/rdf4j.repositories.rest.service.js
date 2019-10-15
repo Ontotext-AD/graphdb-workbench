@@ -11,7 +11,8 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         getNamespaces,
         getRepositoryNamespaces,
         updateNamespacePrefix,
-        deleteNamespacePrefix
+        deleteNamespacePrefix,
+        addStatements
     };
 
     function getNamespaces(repositoryId) {
@@ -27,13 +28,22 @@ function RDF4JRepositoriesRestService($http, $repositories) {
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
             method: 'PUT',
             data: namespace
-        })
+        });
     }
 
     function deleteNamespacePrefix(repositoryId, prefix) {
         return $http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
             method: 'DELETE'
-        })
+        });
+    }
+
+    function addStatements(repositoryId, data) {
+        return $http({
+            url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
+            method: 'POST',
+            data,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        });
     }
 }

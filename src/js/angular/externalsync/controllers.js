@@ -229,9 +229,9 @@ function parseFirstBuildingResult(results) {
     return {};
 }
 
-ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q'];
+ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService'];
 
-function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q) {
+function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService) {
     $scope.loader = false;
 
     $scope.controllers = [];
@@ -406,8 +406,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
     function executeCreate(connector, obj, errorCallback) {
         const modal = openProgressModal(connector.value, obj.name, false);
-
-        $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: obj.query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+        RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: obj.query}))
             .then(function () {
                 $http.get('rest/connectors').then(function () {
                     $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(connector.value)).then(function (res) {
@@ -493,7 +492,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
                 const query = repairConnectorQuery(inst.name, type.value);
 
-                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: query}))
                     .then(function () {
                         $http.get('rest/connectors').then(function () {
                             $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
@@ -528,25 +527,26 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                 $scope.setLoader(true, 'Deleting connector ' + inst.name, 'This is usually a fast operation but it might take a while.');
 
                 const query = deleteConnectorQuery(inst.name, type.value, force);
-                $http.post('repositories/' + $repositories.getActiveRepository() + '/statements', jsonToFormData({update: query}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(function () {
-                    $http.get('rest/connectors').then(function () {
-                        $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
-                            $scope.existing[type.key] = res.data;
+                RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: query}))
+                    .then(function () {
+                        $http.get('rest/connectors').then(function () {
+                            $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
+                                $scope.existing[type.key] = res.data;
+                            });
                         });
-                    });
-                    if (force) {
-                        toastr.success("Deleted (with force) connector " + inst.name);
-                        if (isExternal) {
-                            toastr.warning("You may have to remove the index manually from " + type.key);
+                        if (force) {
+                            toastr.success("Deleted (with force) connector " + inst.name);
+                            if (isExternal) {
+                                toastr.warning("You may have to remove the index manually from " + type.key);
+                            }
+                        } else {
+                            toastr.success("Deleted connector " + inst.name);
                         }
-                    } else {
-                        toastr.success("Deleted connector " + inst.name);
-                    }
-                }, function (err) {
-                    toastr.error(getError(err));
-                }).finally(function() {
-                    $scope.setLoader(false);
-                });
+                    }, function (err) {
+                        toastr.error(getError(err));
+                    }).finally(function() {
+                        $scope.setLoader(false);
+                    });
             });
     };
 

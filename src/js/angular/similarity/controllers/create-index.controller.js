@@ -558,6 +558,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         }
     }
 
+    // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
