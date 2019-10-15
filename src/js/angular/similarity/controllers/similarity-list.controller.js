@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityRestService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
+SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityRestService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
+function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -109,22 +109,23 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         return $repositories.getActiveRepository();
     }, function () {
         if ($scope.getActiveRepository()) {
-            $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-                $scope.usedPrefixes = {};
-                data.results.bindings.forEach(function (e) {
-                    $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                .success(function (data) {
+                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
+                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                    $scope.usedPrefixes = {};
+                    data.results.bindings.forEach(function (e) {
+                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                    });
+                    yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                        //this way, the URLs in the results are prettified using the defined prefixes
+                        getUsedPrefixes: $scope.usedPrefixes,
+                        persistency: false,
+                        hideHeader: true
+                    });
+                }).error(function (data) {
+                    toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
                 });
-                yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                    //this way, the URLs in the results are prettified using the defined prefixes
-                    getUsedPrefixes: $scope.usedPrefixes,
-                    persistency: false,
-                    hideHeader: true
-                });
-            }).error(function (data) {
-                toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
-            });
         }
     });
 

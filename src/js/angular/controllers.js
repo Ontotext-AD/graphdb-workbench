@@ -13,9 +13,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService) {
+function homeCtrl($scope, $http, $repositories, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -46,7 +46,7 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
 
     $scope.$watch($scope.getActiveRepository, function () {
         if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-            $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository())
+            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
                     $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
                         .success(function () {

@@ -10,7 +10,6 @@ const REPOSITORIES_ENDPOINT = 'repositories/';
 function SparqlRestService($http, $repositories) {
     return {
         getRepositorySize,
-        getRepositoryNamespaces,
         getSavedQueries,
         getSavedQuery,
         addKnownPrefixes,
@@ -22,10 +21,6 @@ function SparqlRestService($http, $repositories) {
 
     function getRepositorySize() {
         return $http.get(`${REPOSITORIES_ENDPOINT}${$repositories.getActiveRepository()}/size`);
-    }
-
-    function getRepositoryNamespaces() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}${$repositories.getActiveRepository()}/namespaces`);
     }
 
     function getSavedQueries() {

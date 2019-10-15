@@ -166,17 +166,12 @@ ClassInstanceDetailsService.$inject = ['$http'];
 
 function ClassInstanceDetailsService($http) {
     return {
-        getNamespaces: getNamespaces,
         getDetails: getDetails,
         getGraph: getGraph,
         getNamespaceUriForPrefix: getNamespaceUriForPrefix,
         getNamespacePrefixForUri: getNamespacePrefixForUri,
         getLocalName: getLocalName
     };
-
-    function getNamespaces(activeRepository) {
-        return $http.get('repositories/' + activeRepository + '/namespaces');
-    }
 
     function getDetails(uriParam) {
         return $http.get('rest/explore/details', {

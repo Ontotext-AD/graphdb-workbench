@@ -4,10 +4,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
+GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'UtilService', 'RDF4JRepositoriesRestService'];
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'UtilService'];
-
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, UtilService) {
+function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, UtilService, RDF4JRepositoriesRestService) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -136,7 +135,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         };
 
         $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
+        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
 
         const validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {
             if (!query) {
@@ -510,7 +509,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
-        SparqlRestService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {

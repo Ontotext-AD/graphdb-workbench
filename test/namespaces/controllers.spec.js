@@ -2,6 +2,7 @@ import "angular/core/services";
 import "angular/security/services";
 import "angular/repositories/services";
 import "angular/namespaces/controllers";
+import "angular/rest/rdf4j.repositories.rest.service";
 import {FakeModal} from '../mocks';
 
 beforeEach(angular.mock.module('graphdb.framework.namespaces.controllers', function ($provide) {
@@ -16,15 +17,17 @@ describe('=> NamespacesCtrl tests', function () {
         $timeout,
         $scope,
         $repositories,
+        RDF4JRepositoriesRestService,
         toastr,
         httpGetNamespaces,
         modalInstance;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _RDF4JRepositoriesRestService_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
         $repositories = _$repositories_;
+        RDF4JRepositoriesRestService = _RDF4JRepositoriesRestService_;
         toastr = _toastr_;
         $scope = $rootScope.$new();
 
@@ -76,6 +79,7 @@ describe('=> NamespacesCtrl tests', function () {
         var controller = $controller('NamespacesCtrl', {
             $scope: $scope,
             $modal: modalInstance,
+            RDF4JRepositoriesRestService: RDF4JRepositoriesRestService,
             toastr: toastr,
             ModalService: {
                 openSimpleModal: function () {

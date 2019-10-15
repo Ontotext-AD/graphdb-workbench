@@ -18,10 +18,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigRestService"];
-
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -781,19 +780,20 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         // Inits namespaces for repo
-        $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-            const nss = _.map(data.results.bindings, function (o) {
-                return {"uri": o.namespace.value, "prefix": o.prefix.value};
-            });
-            $scope.namespaces = _.sortBy(nss, function (n) {
-                return n.uri.length;
-            });
+        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+            .success(function (data) {
+                const nss = _.map(data.results.bindings, function (o) {
+                    return {"uri": o.namespace.value, "prefix": o.prefix.value};
+                });
+                $scope.namespaces = _.sortBy(nss, function (n) {
+                    return n.uri.length;
+                });
 
-            $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }).error(function (data) {
-            toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
-        });
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
+                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+            }).error(function (data) {
+                toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
+            });
     }
 
     $scope.$on('repositoryIsSet', function (event, args) {
