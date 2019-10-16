@@ -1,14 +1,16 @@
-
 <link href='css/lib/swagger-ui.min.css' rel='stylesheet' type='text/css'/>
 <link href='css/swagger.custom.css' rel='stylesheet' type='text/css'/>
 
 <h1>
-	{{title}}
-	<span class="btn btn-link"
-	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-	   popover-trigger="mouseenter"
-	   popover-placement="bottom"
-	   popover-append-to-body="true"><span class="icon-info"></span></span>
+    {{title}}
+    <span class="btn btn-link"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
-<iframe id="webapi_frame" title="Web api module" src="res/swagger/index.html" style="width: 100%; height: 90vh; border: none"></iframe>
+<div id="web-api-wrapper">
+    <div id="swagger-ui-container-graphdb" class="swagger-ui-wrap"></div>
+    <div id="swagger-ui-container-rdf4j" class="swagger-ui-wrap"></div>
+</div>
