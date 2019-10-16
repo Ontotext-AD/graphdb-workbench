@@ -15,7 +15,8 @@ function RepositoriesRestService($http) {
         editRepository,
         getRepositoryConfiguration,
         getSize,
-        getPrefix
+        getPrefix,
+        getCluster
     };
 
     function getRepository(repositoryid) {
@@ -48,5 +49,9 @@ function RepositoriesRestService($http) {
 
     function getPrefix(repositoryId, params) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/prefix`, null, { params })
+    }
+
+    function getCluster() {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/cluster`);
     }
 }

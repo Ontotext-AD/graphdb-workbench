@@ -1,5 +1,6 @@
 /* eslint quotes: "off" */
 import 'angular/core/services';
+import 'angular/rest/sparql.rest.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -7,7 +8,8 @@ angular
         'graphdb.framework.explore',
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
-        'graphdb.framework.rest.repositories.service'
+        'graphdb.framework.rest.repositories.service',
+        'graphdb.framework.rest.sparql.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -57,9 +59,9 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -366,7 +368,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.getSavedQueries = function () {
-        $http.get('rest/sparql/saved-queries')
+        SparqlRestService.getSavedQueries()
             .success(function (data) {
                 $scope.sampleQueries = data;
             })

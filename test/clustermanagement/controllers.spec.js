@@ -20,23 +20,26 @@ describe('==> Repository module controllers tests', function () {
             $scope,
             $window,
             httpGetCluster,
-            httpGetMaster;
+            httpGetMaster,
+            toastr;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$location_, _$window_, _$timeout_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _toastr_, _$location_, _$window_, _$timeout_, $rootScope) {
             $httpBackend = _$httpBackend_;
             $location = _$location_;
             $controller = _$controller_;
             $window = _$window_;
             $timeout = _$timeout_;
-
+            toastr = _toastr_;
             $scope = $rootScope.$new();
+
             $scope.height = function () {
                 return 600;
             };
             $scope.width = function () {
                 return 1000;
             };
-            var controller = $controller('ClusterManagementCtrl', {
+
+            $controller('ClusterManagementCtrl', {
                 $scope: $scope,
                 ModalService: {
                     openSimpleModal: function () {
@@ -44,7 +47,6 @@ describe('==> Repository module controllers tests', function () {
                     }
                 }
             });
-
 
             httpGetCluster = $httpBackend.when('GET', 'rest/repositories/cluster').respond(200, [
                 {
@@ -109,7 +111,6 @@ describe('==> Repository module controllers tests', function () {
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
             });
-
         }));
 
         afterEach(function () {
@@ -117,11 +118,112 @@ describe('==> Repository module controllers tests', function () {
             $httpBackend.verifyNoOutstandingRequest();
         });
 
+        describe('getMaster', () => {
+            it('should load info for the master', () => {
+                $httpBackend.expectGET('rest/cluster/masters/masterRepositoryID').respond(200, {
+                    masterInfo: 'masterInformation'
+                });
+
+                $scope.getMaster('masterRepositoryID');
+                $httpBackend.flush();
+
+                expect($scope.masterInformation).toEqual({masterInfo: 'masterInformation'});
+            });
+
+            it('should not set master info if load fails', () => {
+                $httpBackend.expectGET('rest/cluster/masters/masterRepositoryID').respond(500, {
+                    message: 'Master info load error!'
+                });
+
+                $scope.getMaster('masterRepositoryID');
+                $httpBackend.flush();
+
+                expect($scope.masterInformation).toBeUndefined();
+            });
+        });
+
+        describe('setMasterAttribute', () => {
+            it('should configure master', () => {
+                $scope.refreshMastersIcons = jasmine.createSpy();
+                spyOn(toastr, 'success');
+                $httpBackend.expectPOST('rest/cluster/masters/location?masterLocation=http%3A%2F%2Fmasterlocation').respond(200);
+
+                $scope.setMasterAttribute({ location: 'http://masterlocation'}, 'attr1', 'value1');
+                $httpBackend.flush();
+                $timeout.flush();
+
+                expect($scope.attributeChange).toEqual(false);
+                expect(toastr.success).toHaveBeenCalledWith('Set attr1 to value1.', '');
+                expect($scope.refreshMastersIcons).toHaveBeenCalled();
+                expect($scope.loader).toEqual(false);
+            });
+
+            it('should show notification if configuring fails', () => {
+                $scope.refreshMastersIcons = jasmine.createSpy();
+                spyOn(toastr, 'error');
+                $httpBackend.expectPOST('rest/cluster/masters/location?masterLocation=http%3A%2F%2Fmasterlocation').respond(500, {
+                    message: 'Configuring master error!'
+                });
+
+                $scope.setMasterAttribute({location: 'http://masterlocation'}, 'attr1', 'value1');
+                $httpBackend.flush();
+                $timeout.flush();
+
+                expect($scope.attributeChange).toEqual(false);
+                expect(toastr.error).toHaveBeenCalledWith('Configuring master error!', 'Error setting attribute attr1');
+            });
+        });
+
+        describe('cloneCurrentRepository', () => {
+            it('should clone repository', () => {
+                $scope.selectedNode = {
+                    local: 'http://masterlocation'
+                };
+                $scope.clone = {
+                    repositoryId: 'repoId',
+                    location: {uri: 'http://targetlocation'}
+                };
+                spyOn(toastr, 'success');
+                spyOn($scope, 'getNodes');
+                $httpBackend.expectPOST('rest/cluster/nodes/clone').respond(200);
+
+                $scope.cloneCurrentRepository();
+                $httpBackend.flush();
+                $timeout.flush();
+
+                expect(toastr.success).toHaveBeenCalled();
+                expect($scope.getNodes).toHaveBeenCalled();
+                expect($scope.loader).toEqual(false);
+            });
+
+            it('should show notification if clone fails', () => {
+                $scope.selectedNode = {
+                    local: 'http://masterlocation'
+                };
+                $scope.clone = {
+                    repositoryId: 'repoId',
+                    location: {uri: 'http://targetlocation'}
+                };
+                spyOn(toastr, 'error');
+                $httpBackend.expectPOST('rest/cluster/nodes/clone').respond(500, {
+                    message: 'Clone repository error!'
+                });
+
+                $scope.cloneCurrentRepository();
+                $httpBackend.flush();
+                $timeout.flush();
+
+                expect(toastr.error).toHaveBeenCalledWith('Clone repository error!', 'Error cloning node');
+                expect($scope.loader).toEqual(false);
+            });
+        });
+
         describe('$scope.hasInfo()', function () {
             it('should return true when node is undefined', function () {
                 $httpBackend.flush();
                 expect($scope.hasInfo(undefined)).toBeTruthy();
             });
+
             it('should return correct data when node is worker', function () {
                 $httpBackend.flush();
                 $scope.isWorker = function () {
@@ -160,13 +262,13 @@ describe('==> Repository module controllers tests', function () {
                 expect($scope.selectedNode).toBeUndefined();
                 expect(apply).toBeTruthy();
 
-                var apply = false;
+                apply = false;
                 var node = {
                     name: "master",
                     local: true,
                     location: "http://localhost:8080/graphdb-workbench/repositories/master",
                     repositoryType: "master"
-                }
+                };
                 $scope.selectNode(node);
                 expect($scope.selectedNode).toEqual({
                     name: "master",
@@ -176,7 +278,7 @@ describe('==> Repository module controllers tests', function () {
                 });
                 expect(apply).toBeTruthy();
 
-                var apply = false;
+                apply = false;
                 $scope.selectNode(node);
                 expect($scope.selectedNode).toBeNull();
                 expect(apply).toBeTruthy();
@@ -268,8 +370,5 @@ describe('==> Repository module controllers tests', function () {
 
             })
         })
-
-
     });
-
 });
