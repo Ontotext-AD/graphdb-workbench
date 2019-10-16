@@ -4,6 +4,8 @@ angular
 
 ClusterRestService.$inject = ['$http'];
 
+const CLUSTER_MASTERS_ENDPOINT = 'rest/cluster/masters';
+
 function ClusterRestService($http) {
     return {
         getMaster,
@@ -16,12 +18,12 @@ function ClusterRestService($http) {
     };
 
     function getMaster(masterRepositoryID, data = {}) {
-        return $http.get(`rest/cluster/masters/${masterRepositoryID}`, data);
+        return $http.get(`${CLUSTER_MASTERS_ENDPOINT}/${masterRepositoryID}`, data);
     }
 
     function configureMaster(master, location, data) {
         return $http({
-            url: `rest/cluster/masters/${master}?masterLocation=${encodeURIComponent(location)}`,
+            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}?masterLocation=${encodeURIComponent(location)}`,
             method: 'POST',
             data
         });
@@ -39,7 +41,7 @@ function ClusterRestService($http) {
 
     function connectWorker(master, masterLocation, workerLocation) {
         return $http({
-            url: `rest/cluster/masters/${master}/workers/`,
+            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/workers/`,
             method: 'POST',
             data: {
                 workerURL: workerLocation,
@@ -50,7 +52,7 @@ function ClusterRestService($http) {
 
     function disconnectWorker(master, params) {
         return $http({
-            url: `rest/cluster/masters/${master}/workers?${params}`,
+            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/workers?${params}`,
             method: 'DELETE',
             dataType: 'text'
         });
@@ -58,7 +60,7 @@ function ClusterRestService($http) {
 
     function disconnectNodes(master, params) {
         return $http({
-            url: `rest/cluster/masters/${master}/peers?${params}`,
+            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/peers?${params}`,
             method: 'DELETE',
             dataType: 'text'
         });
@@ -66,7 +68,7 @@ function ClusterRestService($http) {
 
     function connectNodes(master, data) {
         return $http({
-            url: 'rest/cluster/masters/' + firstConfigs[1] + '/peers',
+            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/peers`,
             method: 'POST',
             data
         });

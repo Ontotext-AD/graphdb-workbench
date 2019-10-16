@@ -4,6 +4,10 @@ angular
 
 SecurityRestService.$inject = ['$http'];
 
+const SECURITY_ENDPOINT = 'rest/security';
+const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/user`;
+const SECURITY_FREEACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/freeaccess`;
+
 function SecurityRestService($http) {
     return {
         getUser,
@@ -20,21 +24,21 @@ function SecurityRestService($http) {
     };
 
     function getUser(username) {
-        return $http.get('rest/security/user/' + encodeURIComponent(username));
+        return $http.get(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
     }
 
     function getAdminUser() {
-        return $http.get('rest/security/user/admin');
+        return $http.get(`${SECURITY_USER_ENDPOINT}/admin`);
     }
 
     function getUsers() {
-        return $http.get('rest/security/user');
+        return $http.get(SECURITY_USER_ENDPOINT);
     }
 
     function createUser(data) {
         return $http({
             method: 'POST',
-            url: 'rest/security/user/' + encodeURIComponent(data.username),
+            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
             headers: {
                 'X-GraphDB-Password': data.pass
             },
@@ -48,7 +52,7 @@ function SecurityRestService($http) {
     function updateUser(data) {
         return $http({
             method: 'PUT',
-            url: 'rest/security/user/' + encodeURIComponent(data.username),
+            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
             headers: {
                 'X-GraphDB-Password': data.pass
             },
@@ -62,7 +66,7 @@ function SecurityRestService($http) {
     function updateUserData(data) {
         return $http({
             method: 'PATCH',
-            url: 'rest/security/user/' + encodeURIComponent(data.username),
+            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
             headers: {
                 'X-GraphDB-Password': data.pass
             },
@@ -73,22 +77,22 @@ function SecurityRestService($http) {
     }
 
     function deleteUser(username) {
-        return $http.delete('rest/security/user/' + encodeURIComponent(username));
+        return $http.delete(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
     }
 
     function toggleFreeAccess() {
-        return $http.get('rest/security/freeaccess');
+        return $http.get(SECURITY_FREEACCESS_ENDPOINT);
     }
 
     function setFreeAccess(data) {
-        return $http.post('rest/security/freeaccess', data);
+        return $http.post(SECURITY_FREEACCESS_ENDPOINT, data);
     }
 
     function getSecurityConfig() {
-        return $http.get('rest/security/all');
+        return $http.get(`${SECURITY_ENDPOINT}/all`);
     }
 
     function toggleSecurity(enable) {
-        return $http.post('rest/security', enable ? 'true' : 'false');
+        return $http.post(SECURITY_ENDPOINT, enable ? 'true' : 'false');
     }
 }

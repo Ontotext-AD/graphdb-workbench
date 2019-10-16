@@ -3,9 +3,9 @@ angular
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
-QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService'];
+QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService'];
 
-function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService) {
+function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService) {
     const defaultTabConfig = {
         id: "1",
         name: '',
@@ -308,7 +308,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function abortCurrentQuery() {
-        SparqlRestService.abortQueryByAlias($scope.currentTrackAlias)
+        MonitoringRestService.abortQueryByAlias($scope.currentTrackAlias)
             .success(function () {
                 $scope.abortRequested = true;
             });

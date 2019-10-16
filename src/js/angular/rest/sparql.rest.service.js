@@ -16,7 +16,6 @@ function SparqlRestService($http, $repositories) {
         editSavedQuery,
         deleteSavedQuery,
         addNewSavedQuery,
-        abortQueryByAlias
     };
 
     function getRepositorySize() {
@@ -49,9 +48,5 @@ function SparqlRestService($http, $repositories) {
 
     function addNewSavedQuery(query) {
         return $http.post(SAVED_QUERIES_ENDPOINT, query);
-    }
-
-    function abortQueryByAlias(alias) {
-        return $http.delete(`rest/monitor/query?queryAlias=${encodeURIComponent(alias)}`);
     }
 }
