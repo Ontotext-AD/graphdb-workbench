@@ -3,6 +3,9 @@ import ImportSteps from '../../steps/import-steps';
 describe('Import screen validation - user data', () => {
 
     let repositoryId;
+    let initialData = "<urn:s1> <urn:p1> <urn:o1>. <urn:s2> <urn:p2> <urn:o2>.";
+    let replacementData = "<urn:s1-replaced> <urn:p1-replaced> <urn:o1-replaced>. <urn:s2-replaced> <urn:p2-replaced> <urn:o2-replaced>.";
+    let preDefinedGraphData = "<urn:graph1> {<urn:s1-custom> <urn:p1-custon> <urn:o1-custon>. <urn:s2-custon> <urn:p2-custon> <urn:o2-custon>.}";
 
     const RDF_TEXT_SNIPPET_1 = '@prefix d:<http://learningsparql.com/ns/data#>.\n' +
         '@prefix dm:<http://learningsparql.com/ns/demo#>.\n\n' +
@@ -123,4 +126,65 @@ describe('Import screen validation - user data', () => {
             .verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE)
             .removeUploadedFiles();
     });
+
+    it.only('Import RDF snippet in the default graph (from data)', () => {
+        prepareImportRDFSnippet(initialData);
+        getImportFromDataRadioButton().click();
+        getImportSettingsImportButton().click();
+    });
+
+
+    //below import-related functions are for testing the graph replacement functionality window, as it is skipped in the original import tests.
+    function getImportRDFTextSnippetButton() {
+        return cy.get('.import-rdf-snippet-btn');
+    }
+
+    function getImportTextArea() {
+        return cy.get('#wb-import-textarea');
+    }
+
+    function getImportRDFFormatButton() {
+        return cy.get('.import-format-dropdown');
+    }
+
+    function selectRDFImportFormat(format) {
+        cy.get('.import-format-dropdown-btn').click();
+        return cy.get(`.dropdown-item:contains(${format})`);
+    }
+
+    function getTextSnippetImportButton() {
+        return cy.get('#wb-import-importText');
+    }
+
+    function getImportFromDataRadioButton() {
+        return cy.get('.from-data-btn');
+    }
+
+    function getImportInDefaultGraphRadioButton() {
+        return cy.get('.default-graph-btn');
+    }
+
+    function getImportInNamedGraphRadioButton() {
+        return cy.get('.named-graph-btn');
+    }
+
+    function getExistingDataReplacementCheckbox() {
+        return cy.get('.existing-data-replacement');
+    }
+
+    function getReplacedGraphsInputField() {
+        return cy.get('.replaced-graphs-input');
+    }
+
+    function getImportSettingsImportButton() {
+        return cy.get('.import-settings-import-button');
+    }
+
+    function prepareImportRDFSnippet(snippetToImport) {
+        getImportRDFTextSnippetButton().click();
+        getImportTextArea().type('{ctrl}a{backspace}', {force: true});
+        getImportTextArea().invoke('val', snippetToImport).trigger('change', {force: true});
+        selectRDFImportFormat("TriG").click();
+        getTextSnippetImportButton().click();
+    }
 });
