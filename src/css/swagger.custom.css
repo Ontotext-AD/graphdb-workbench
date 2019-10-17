@@ -1,3 +1,36 @@
-.api-infos {
+/*TODO: Less?*/
+
+.swagger-ui-wrap {
+    padding-bottom: 30px;
+}
+
+.swagger-ui-wrap .wrapper {
+    max-width: 100%;
+    padding: 0;
+}
+
+.swagger-ui-wrap .information-container .info {
+    margin: 0;
+}
+
+.swagger-ui-wrap .information-container .info .main {
+    margin: 0;
+}
+
+.swagger-ui-wrap .information-container .info .title {
+    font-size: 20px;
+}
+
+/*Hides API version TODO: do we need to hide it ?*/
+.swagger-ui-wrap .information-container .info .title small {
     display: none;
+}
+
+.swagger-ui-wrap .information-container .info a.link {
+    display: none;
+}
+
+.swagger-ui-wrap .opblock-tag {
+    font-size: 20px;
+    padding: 0;
 }
