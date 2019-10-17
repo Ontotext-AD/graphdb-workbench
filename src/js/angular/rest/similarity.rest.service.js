@@ -4,16 +4,9 @@ angular
 
 SimilarityRestService.$inject = ['$http', '$repositories'];
 
-const SIMILARITY_ENABLED = 'select ?o where {\n' +
-    '?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n' +
-    'filter(str(?s) = \'similarity\')\n' +
-    '} ';
-
-const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
-
 const SIMILARITY_ENDPOINT = 'rest/similarity';
 
-function SimilarityRestService($http, $repositories) {
+function SimilarityRestService($http) {
 
     return {
         getIndexes,
@@ -21,9 +14,7 @@ function SimilarityRestService($http, $repositories) {
         rebuildIndex,
         deleteIndex,
         createIndex,
-        getSamples,
-        checkPluginEnabled,
-        enableSimilarityPlugin
+        getSamples
     };
 
     function getIndexes() {
@@ -65,25 +56,5 @@ function SimilarityRestService($http, $repositories) {
 
     function deleteIndex(index) {
         return $http.delete(`${SIMILARITY_ENDPOINT}?name=${index.name}`);
-    }
-
-    function checkPluginEnabled() {
-        return $.ajax({
-            method: 'GET',
-            url: `repositories/${$repositories.getActiveRepository()}`,
-            data: {
-                query: SIMILARITY_ENABLED
-            }
-        });
-    }
-
-    function enableSimilarityPlugin() {
-        return $.ajax({
-            method: 'POST',
-            url: `repositories/${$repositories.getActiveRepository()}/statements`,
-            data: {
-                update: ENABLE_SIMILARITY
-            }
-        });
     }
 }

@@ -33,7 +33,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository()) {
             return;
         }
-        SimilarityRestService.checkPluginEnabled()
+        RDF4JRepositoriesRestService.checkSimilarityPluginEnabled()
             .done(function (data) {
                 $scope.pluginDisabled = data.indexOf('false') > 0;
             })
@@ -43,7 +43,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.enabledSimilarityPlugin = function () {
-        SimilarityRestService.enableSimilarityPlugin()
+        RDF4JRepositoriesRestService.enableSimilarityPlugin()
             .done(function () {
                 $scope.pluginDisabled = false;
                 $scope.getSimilarityIndexes();

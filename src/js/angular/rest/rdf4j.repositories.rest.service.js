@@ -4,6 +4,12 @@ angular
 
 RDF4JRepositoriesRestService.$inject = ['$http', '$repositories'];
 
+const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
+const SIMILARITY_ENABLED = 'select ?o where {\n' +
+    '?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n' +
+    'filter(str(?s) = \'similarity\')\n' +
+    '} ';
+
 const REPOSITORIES_ENDPOINT = 'repositories';
 
 function RDF4JRepositoriesRestService($http, $repositories) {
@@ -12,7 +18,10 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         getRepositoryNamespaces,
         updateNamespacePrefix,
         deleteNamespacePrefix,
-        addStatements
+        addStatements,
+        enableSimilarityPlugin,
+        checkSimilarityPluginEnabled,
+        getRepositorySize
     };
 
     function getNamespaces(repositoryId) {
@@ -45,5 +54,29 @@ function RDF4JRepositoriesRestService($http, $repositories) {
             data,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         });
+    }
+
+    function enableSimilarityPlugin() {
+        return $.ajax({
+            method: 'POST',
+            url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/statements`,
+            data: {
+                update: ENABLE_SIMILARITY
+            }
+        });
+    }
+
+    function checkSimilarityPluginEnabled() {
+        return $.ajax({
+            method: 'GET',
+            url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}`,
+            data: {
+                query: SIMILARITY_ENABLED
+            }
+        });
+    }
+
+    function getRepositorySize() {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/size`);
     }
 }

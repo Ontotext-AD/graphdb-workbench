@@ -6,9 +6,9 @@ angular
     .module('graphdb.framework.sparql.directives.queryeditor', [])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$http', '$jwtAuth'];
+queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$http', '$jwtAuth', 'RDF4JRepositoriesRestService'];
 
-function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $http, $jwtAuth) {
+function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $http, $jwtAuth, RDF4JRepositoriesRestService) {
     return {
         restrict: 'AE',
         scope: false,
@@ -272,7 +272,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 const doExecute = function () {
                     scope.currentTabConfig.queryType = "UPDATE";
 
-                    SparqlRestService.getRepositorySize()
+                    RDF4JRepositoriesRestService.getRepositorySize()
                         .success(function (data) {
                             scope.repoSize = parseInt(data);
                             scope.queryStartTime = new Date().getTime();
@@ -570,7 +570,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
                 if (window.editor.getQueryMode() === "update") {
                     updateResultsCallback = function () {
-                        SparqlRestService.getRepositorySize()
+                        RDF4JRepositoriesRestService.getRepositorySize()
                             .success(function (data) {
                                 let repoSizeDiff;
                                 if (scope.repoSize !== undefined) {

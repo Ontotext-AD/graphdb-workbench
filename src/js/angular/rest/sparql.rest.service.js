@@ -2,14 +2,13 @@ angular
     .module('graphdb.framework.rest.sparql.service', [])
     .factory('SparqlRestService', SparqlRestService);
 
-SparqlRestService.$inject = ['$http', '$repositories'];
+SparqlRestService.$inject = ['$http'];
 
-const SAVED_QUERIES_ENDPOINT = 'rest/sparql/saved-queries';
-const REPOSITORIES_ENDPOINT = 'repositories/';
+const SPARQL_ENDPOINT = 'rest/sparql';
+const SAVED_QUERIES_ENDPOINT = `${SPARQL_ENDPOINT}/saved-queries`;
 
-function SparqlRestService($http, $repositories) {
+function SparqlRestService($http) {
     return {
-        getRepositorySize,
         getSavedQueries,
         getSavedQuery,
         addKnownPrefixes,
@@ -17,10 +16,6 @@ function SparqlRestService($http, $repositories) {
         deleteSavedQuery,
         addNewSavedQuery,
     };
-
-    function getRepositorySize() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}${$repositories.getActiveRepository()}/size`);
-    }
 
     function getSavedQueries() {
         return $http.get(SAVED_QUERIES_ENDPOINT);
@@ -35,7 +30,7 @@ function SparqlRestService($http, $repositories) {
     }
 
     function addKnownPrefixes(prefixes) {
-        return $http.post('rest/sparql/addKnownPrefixes', prefixes);
+        return $http.post(`${SPARQL_ENDPOINT}/addKnownPrefixes`, prefixes);
     }
 
     function editSavedQuery(query) {
