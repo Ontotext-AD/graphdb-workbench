@@ -229,9 +229,9 @@ function parseFirstBuildingResult(results) {
     return {};
 }
 
-ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService'];
+ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
 
-function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService) {
+function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService) {
     $scope.loader = false;
 
     $scope.controllers = [];
@@ -270,11 +270,11 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.initConnector = function (connector) {
-        return $http.get('rest/connectors/options?prefix=' + encodeURIComponent(connector.value))
+        return ConnectorsRestService.initConnector(encodeURIComponent(connector.value))
             .then(function (res) {
                 $scope.definitions[connector.key] = res.data;
 
-                return $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(connector.value))
+                return ConnectorsRestService.hasConnector(encodeURIComponent(connector.value))
                     .then(function (res) {
                         $scope.existing[connector.key] = res.data;
 
@@ -289,40 +289,41 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
         $scope.setLoader(true, 'Fetching connectors', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
 
-        $http.get('rest/connectors').then(function (res) {
-            $scope.connectors = Object.keys(res.data).map(function (key) {
-                return {key: key, value: res.data[key]};
+        ConnectorsRestService.getConnectors()
+            .then(function (res) {
+                $scope.connectors = Object.keys(res.data).map(function (key) {
+                    return {key: key, value: res.data[key]};
+                });
+
+                $q.all(_.map($scope.connectors, function (connector) {
+                    return $scope.initConnector(connector);
+                })).finally(function () {
+                    resetProgress();
+
+                    const query = createStatusQueryForAny($scope.connectors);
+
+                    if (query) {
+                        evaluateSparqlQuery(query)
+                            .then(function (res) {
+                                const status = parseFirstBuildingResult(res.data.results);
+                                if (status.connector) {
+                                    // has a building connector, open progress indicator
+                                    const d = status.connector.split(/#/);
+                                    d[0] = d[0].replace(/\/instance$/, '#');
+                                    showProgress(d[0], d[1]);
+                                }
+                            })
+                            .finally(function () {
+                                $scope.setLoader(false);
+                            });
+                    } else {
+                        $scope.setLoader(false);
+                    }
+                });
+            }).catch(function (e) {
+                $scope.setLoader(false);
+                toastr.error(getError(e), 'Could not get connectors');
             });
-
-            $q.all(_.map($scope.connectors, function (connector) {
-                return $scope.initConnector(connector);
-            })).finally(function () {
-                resetProgress();
-
-                const query = createStatusQueryForAny($scope.connectors);
-
-                if (query) {
-                    evaluateSparqlQuery(query)
-                        .then(function (res) {
-                            const status = parseFirstBuildingResult(res.data.results);
-                            if (status.connector) {
-                                // has a building connector, open progress indicator
-                                const d = status.connector.split(/#/);
-                                d[0] = d[0].replace(/\/instance$/, '#');
-                                showProgress(d[0], d[1]);
-                            }
-                        })
-                        .finally(function () {
-                            $scope.setLoader(false);
-                        });
-                } else {
-                    $scope.setLoader(false);
-                }
-            });
-        }).catch(function (e) {
-            $scope.setLoader(false);
-            toastr.error(getError(e), 'Could not get connectors');
-        });
 
         $scope.existing = {};
     };
@@ -408,8 +409,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         const modal = openProgressModal(connector.value, obj.name, false);
         RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: obj.query}))
             .then(function () {
-                $http.get('rest/connectors').then(function () {
-                    $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(connector.value)).then(function (res) {
+                ConnectorsRestService.getConnectors().then(function () {
+                    ConnectorsRestService.hasConnector(encodeURIComponent(connector.value)).then(function (res) {
                         $scope.existing[connector.key] = res.data;
                     });
                 });
@@ -494,8 +495,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
                 RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: query}))
                     .then(function () {
-                        $http.get('rest/connectors').then(function () {
-                            $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
+                        ConnectorsRestService.getConnectors().then(function () {
+                            ConnectorsRestService.hasConnector(encodeURIComponent(type.value)).then(function (res) {
                                 $scope.existing[type.key] = res.data;
                             });
                         });
@@ -529,8 +530,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                 const query = deleteConnectorQuery(inst.name, type.value, force);
                 RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: query}))
                     .then(function () {
-                        $http.get('rest/connectors').then(function () {
-                            $http.get('rest/connectors/existing?prefix=' + encodeURIComponent(type.value)).then(function (res) {
+                        ConnectorsRestService.getConnectors().then(function () {
+                            ConnectorsRestService.hasConnector(encodeURIComponent(type.value)).then(function (res) {
                                 $scope.existing[type.key] = res.data;
                             });
                         });

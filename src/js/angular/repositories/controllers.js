@@ -17,7 +17,7 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$http', '$modal', '$timeout', 'toastr', '$repositories', 'ModalService', '$jwtAuth'];
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$http', '$modal', '$timeout', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService'];
 
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
@@ -37,7 +37,7 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $repositories, ModalService, $jwtAuth) {
+function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -82,7 +82,7 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
 
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
-        $http.post('rest/locations', dataAddLocation)
+        LocationsRestService.addLocation(dataAddLocation)
             .success(function (data) {
                 $scope.locations = data;
                 //Reload locations and repositories
@@ -117,16 +117,17 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
     //Edit location
     $scope.editLocationHttp = function (dataEditLocation) {
         $scope.loader = true;
-        $http.put('rest/locations', dataEditLocation).success(function (data) {
-            $scope.locations = data;
-            //Reload locations and repositories
-            $repositories.init();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
+        LocationsRestService.editLocation(dataEditLocation)
+            .success(function (data) {
+                $scope.locations = data;
+                //Reload locations and repositories
+                $repositories.init();
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
 
-            $scope.loader = false;
-        });
+                $scope.loader = false;
+            });
     };
 
     $scope.editLocation = function (location) {
@@ -151,14 +152,15 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
         const data = {
             'uri': location.uri
         };
-        $http.post('rest/locations/activate', data).success(function () {
-            $repositories.setRepository('');
-            $repositories.init();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            document.getElementById('switch-' + location.$$hashKey).checked = false;
-        });
+        LocationsRestService.enableLocation(data)
+            .success(function () {
+                $repositories.setRepository('');
+                $repositories.init();
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                document.getElementById('switch-' + location.$$hashKey).checked = false;
+            });
     };
 
     //Activate location

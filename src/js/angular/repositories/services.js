@@ -1,18 +1,20 @@
 import 'angular/core/services';
 import 'angular/security/services';
 import 'angular/rest/repositories.rest.service';
+import 'angular/rest/locations.rest.service';
 
 const modules = [
     'ngCookies',
     'graphdb.framework.security.services',
     'graphdb.framework.rest.repositories.service',
+    'graphdb.framework.rest.locations.service',
     'toastr'
 ];
 
 const repoServices = angular.module('graphdb.framework.repositories.services', modules);
 
-repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$interval', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService',
-    function ($http, $cookies, $cookieStore, $interval, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService) {
+repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$interval', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService',
+    function ($http, $cookies, $cookieStore, $interval, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService) {
     this.repositoryCookieName = 'com.ontotext.graphdb.repository' + $location.port();
 
     this.location = '';
@@ -97,11 +99,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
         this.locationsShouldReload = true;
         this.loading = true;
         // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
-        $http({
-            method: 'GET',
-            url: 'rest/locations/active',
-            noCancelOnRouteChange: true
-        }).then(
+        LocationsRestService.getActiveLocation().then(
             function (res) {
                 if (res.data) {
                     const location = res.data;
@@ -150,7 +148,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
             this.locationsShouldReload = false;
             this.locations = [this.location];
             const that = this;
-            $http.get('rest/locations')
+            LocationsRestService.getLocations()
                 .success(function (data) {
                     that.locations = data;
                 })
@@ -235,11 +233,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
             return;
         }
         const that = this;
-        $http({
-            url: 'rest/locations/active/default-repository',
-            method: 'POST',
-            data: {defaultRepository: id}
-        })
+        LocationsRestService.setDefaultRepository(id)
             .success(function () {
                 // XXX maybe we should reload the active location but oh well
                 that.location.defaultRepository = id;
@@ -251,8 +245,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
     };
 
     this.deleteLocation = function (uri) {
-        const escUri = encodeURIComponent(uri);
-        $http.delete('rest/locations?uri=' + escUri)
+        LocationsRestService.deleteLocation(encodeURIComponent(uri))
             .success(function () {
                 //Reload locations and repositories
                 if (that.getActiveLocation().uri === uri) {

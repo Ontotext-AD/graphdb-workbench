@@ -14,7 +14,9 @@ function SimilarityRestService($http) {
         rebuildIndex,
         deleteIndex,
         createIndex,
-        getSamples
+        getSamples,
+        getQuery,
+        saveSearchQuery
     };
 
     function getIndexes() {
@@ -56,5 +58,29 @@ function SimilarityRestService($http) {
 
     function deleteIndex(index) {
         return $http.delete(`${SIMILARITY_ENDPOINT}?name=${index.name}`);
+    }
+
+    function getQuery(data) {
+        return $http.get('/rest/similarity/query',
+            {
+                params: {
+                    name: data.indexName,
+                    options: data.indexOptions,
+                    stopList: data.indexStopList,
+                    selectQuery: data.query,
+                    infer: data.queryInference,
+                    sameAs: data.querySameAs,
+                    type: data.viewType,
+                    analyzer: data.indexAnalyzer
+                }
+            });
+    }
+
+    function saveSearchQuery(data) {
+        return $http({
+            method: 'put',
+            url: '/rest/similarity/search-query',
+            data
+        });
     }
 }

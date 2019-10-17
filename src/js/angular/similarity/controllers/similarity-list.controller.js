@@ -284,29 +284,26 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.viewCreateQuery = function (index) {
-        $http.get('/rest/similarity/query',
-            {
-                params: {
-                    name: index.name,
-                    options: index.options,
-                    selectQuery: index.selectQuery,
-                    stopList: index.stopList,
-                    infer: index.infer,
-                    sameAs: index.sameAs,
-                    type: index.type,
-                    analyzer: index.analyzer
-                }
-            }).success(function (query) {
-                $modal.open({
-                    templateUrl: 'pages/viewQuery.html',
-                    controller: 'ViewQueryCtrl',
-                    resolve: {
-                        query: function () {
-                            return query;
-                        }
+        SimilarityRestService.getQuery({
+            indexName: index.name,
+            indexOptions: index.options,
+            query: index.selectQuery,
+            indexStopList: index.stopList,
+            queryInference: index.infer,
+            querySameAs: index.sameAs,
+            viewType: index.type,
+            indexAnalyzer: index.analyzer
+        }).success(function (query) {
+            $modal.open({
+                templateUrl: 'pages/viewQuery.html',
+                controller: 'ViewQueryCtrl',
+                resolve: {
+                    query: function () {
+                        return query;
                     }
-                });
+                }
             });
+        });
     };
 
     $scope.rebuildIndex = function (index) {

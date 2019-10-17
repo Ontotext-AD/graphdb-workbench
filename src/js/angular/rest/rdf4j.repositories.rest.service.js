@@ -21,7 +21,8 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         addStatements,
         enableSimilarityPlugin,
         checkSimilarityPluginEnabled,
-        getRepositorySize
+        getRepositorySize,
+        getGraphs
     };
 
     function getNamespaces(repositoryId) {
@@ -78,5 +79,9 @@ function RDF4JRepositoriesRestService($http, $repositories) {
 
     function getRepositorySize() {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/size`);
+    }
+
+    function getGraphs(repositoryId) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`);
     }
 }

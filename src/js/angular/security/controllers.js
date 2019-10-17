@@ -191,7 +191,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
-                SecurityRestService.toggleFreeAccess().then(function (res) {
+                SecurityRestService.getFreeAccess().then(function (res) {
                     let authorities = res.data.authorities;
                     let appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
@@ -568,20 +568,18 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', function ($scope, $http, toastr) {
+securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', 'SecurityRestService', function ($scope, $http, toastr, SecurityRestService) {
     $scope.debugMapping = function (role, mapping) {
         const method = mapping.split(':');
-        $http.get('rest/roles/mapping', {
-            params: {
-                role: role,
-                method: method[1],
-                mapping: method[0]
-            }
+        SecurityRestService.getRolesMapping({
+            role: role,
+            method: method[1],
+            mapping: method[0]
         });
     };
 
     const loadRoles = function () {
-        $http.get('rest/roles')
+        SecurityRestService.getRoles()
             .success(function (data) {
                 $scope.roleMappings = data;
                 $scope.roles = _.keys($scope.roleMappings);

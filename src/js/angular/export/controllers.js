@@ -65,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
             $scope.getGraphs = function () {
                 if ($scope.getActiveRepository() !== '') {
                     $scope.loader = true;
-                    $http.get('repositories/' + $scope.getActiveRepository() + '/contexts').success(function (data) {
+                    RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository()).success(function (data) {
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',

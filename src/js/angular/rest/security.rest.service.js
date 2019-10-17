@@ -7,6 +7,7 @@ SecurityRestService.$inject = ['$http'];
 const SECURITY_ENDPOINT = 'rest/security';
 const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/user`;
 const SECURITY_FREEACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/freeaccess`;
+const ROLES_ENDPOINT = 'rest/roles';
 
 function SecurityRestService($http) {
     return {
@@ -17,10 +18,12 @@ function SecurityRestService($http) {
         updateUser,
         updateUserData,
         deleteUser,
-        toggleFreeAccess,
+        getFreeAccess,
         setFreeAccess,
         getSecurityConfig,
-        toggleSecurity
+        toggleSecurity,
+        getRoles,
+        getRolesMapping
     };
 
     function getUser(username) {
@@ -80,7 +83,7 @@ function SecurityRestService($http) {
         return $http.delete(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
     }
 
-    function toggleFreeAccess() {
+    function getFreeAccess() {
         return $http.get(SECURITY_FREEACCESS_ENDPOINT);
     }
 
@@ -94,5 +97,13 @@ function SecurityRestService($http) {
 
     function toggleSecurity(enable) {
         return $http.post(SECURITY_ENDPOINT, enable ? 'true' : 'false');
+    }
+
+    function getRoles() {
+        return $http.get(ROLES_ENDPOINT);
+    }
+
+    function getRolesMapping(params) {
+        return $http.get(`${ROLES_ENDPOINT}/mapping`, {params});
     }
 }

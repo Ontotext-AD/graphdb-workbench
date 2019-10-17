@@ -192,31 +192,28 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             return;
         }
 
-        $http.get('/rest/similarity/query',
-            {
-                params: {
-                    name: $scope.newIndex.name,
-                    options: $scope.newIndex.options,
-                    selectQuery: $scope.currentQuery.query,
-                    stopList: $scope.newIndex.stopList,
-                    infer: $scope.currentQuery.inference,
-                    sameAs: $scope.currentQuery.sameAs,
-                    type: $scope.viewType,
-                    analyzer: $scope.newIndex.analyzer
-                }
-            }).success(function (query) {
-                if (query) {
-                    $modal.open({
-                        templateUrl: 'pages/viewQuery.html',
-                        controller: 'ViewQueryCtrl',
-                        resolve: {
-                            query: function () {
-                                return query;
-                            }
+        SimilarityRestService.getQuery({
+            indexName: $scope.newIndex.name,
+            indexOptions: $scope.newIndex.options,
+            query: $scope.currentQuery.query,
+            indexStopList: $scope.newIndex.stopList,
+            queryInference: $scope.currentQuery.inference,
+            querySameAs: $scope.currentQuery.sameAs,
+            viewType: $scope.viewType,
+            indexAnalyzer: $scope.newIndex.analyzer
+        }).success(function (query) {
+            if (query) {
+                $modal.open({
+                    templateUrl: 'pages/viewQuery.html',
+                    controller: 'ViewQueryCtrl',
+                    resolve: {
+                        query: function () {
+                            return query;
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
+        });
     };
 
     $scope.$watch('newIndex.name', function () {
@@ -746,16 +743,13 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             isSearchQuery: $scope.page === 2
         };
 
-        return $http({
-            method: "put",
-            url: "/rest/similarity/search-query",
-            data: JSON.stringify(data)
-        }).then(async function () {
-            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
-            $location.url('similarity');
-        }, function (response) {
-            toastr.error(getError(response), 'Could not change query!');
-        });
+        return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
+            .then(async function () {
+                await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+                $location.url('similarity');
+            }, function (response) {
+                toastr.error(getError(response), 'Could not change query!');
+            });
     };
 
     $scope.getCloseBtnMsg = function () {
