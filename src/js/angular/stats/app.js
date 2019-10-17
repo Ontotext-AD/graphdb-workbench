@@ -1,4 +1,6 @@
 import 'angular/core/services';
+import SwaggerUI from 'swagger-ui'
+import 'swagger-ui/dist/swagger-ui.css'
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
@@ -13,6 +15,7 @@ adminInfoApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider'
         }).when('/webapi', {
             templateUrl: 'pages/webapi.html',
             title: 'REST API documentation',
+            controller: 'WebApiController',
             helpInfo: 'The REST API view documents the available public RESTful endpoints and '
             + 'provides an interactive interface to execute the requests.'
         });
@@ -108,3 +111,22 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
                 });
         };
     }]);
+
+adminInfoApp.controller('WebApiController', ['$scope', '$timeout', function ($scope, $timeout) {
+    newSwaggerUi("/rest/api/workbench", "#swagger-ui-container-graphdb");
+    newSwaggerUi("/rest/api/rdf4j", "#swagger-ui-container-rdf4j");
+}]);
+
+function newSwaggerUi(url, dom_id) {
+    return new SwaggerUI({
+        url: url,
+        validatorUrl: null,
+        dom_id: dom_id,
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        docExpansion: "none",
+        defaultModelRendering: 'example',
+        // TODO: should we hide them?> rdf4j lack those, also, can't rdf4j expose them?
+        defaultModelsExpandDepth: -1,
+        // filter: true
+    });
+}
