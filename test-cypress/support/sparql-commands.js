@@ -22,8 +22,24 @@ Cypress.Commands.add('verifyResultsMessage', (msg) => {
         .and('contain', msg);
 });
 
-Cypress.Commands.add('waitUntilQueryIsVisible', (query) => {
+Cypress.Commands.add('waitUntilQueryIsVisible', () => {
     waitUntilQueryIsVisible();
+});
+
+Cypress.Commands.add('verifyQueryAreaContains', (query) => {
+    verifyQueryAreaContains(query);
+});
+
+Cypress.Commands.add('verifyQueryAreaEquals', (query) => {
+    verifyQueryAreaEquals(query);
+});
+
+Cypress.Commands.add('getQueryTextArea', () => {
+    getQueryTextArea();
+});
+
+Cypress.Commands.add('getQueryArea', () => {
+    getQueryArea();
 });
 
 // Helper functions
@@ -42,9 +58,26 @@ function getQueryTextArea() {
 }
 
 function waitUntilQueryIsVisible() {
-    getQueryArea().should(codeMirrorEl => {
+    getQueryArea().should('be.visible')
+        .and(codeMirrorEl => {
         const cm = codeMirrorEl[0].CodeMirror;
         expect(cm.getValue().trim().length > 0).to.be.true;
+    });
+}
+
+function verifyQueryAreaContains(query) {
+    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
+    getQueryArea().should(codeMirrorEl => {
+        const cm = codeMirrorEl[0].CodeMirror;
+        expect(cm.getValue().includes(query)).to.be.true;
+    });
+}
+
+function verifyQueryAreaEquals(query) {
+    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
+    getQueryArea().should(codeMirrorEl => {
+        const cm = codeMirrorEl[0].CodeMirror;
+        expect(cm.getValue().trim()).to.equal(query.trim());
     });
 }
 
