@@ -9,7 +9,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = merge(commonConfig, {
     mode: 'production',
     output: {
-        filename: '[name].[contentHash].js',
+        filename: '[name].[contentHash].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
