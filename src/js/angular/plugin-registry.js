@@ -1,8 +1,8 @@
 window.PluginRegistry = (function() {
 
-    let plugins = [];
+    const plugins = [];
 
-    let registry = {};
+    const registry = {};
 
     function processOrderedPlugin(pluginDefinition, currentExtensions) {
         let sameOrderPluginIndex;
@@ -10,14 +10,14 @@ window.PluginRegistry = (function() {
         currentExtensions.forEach(function(element, index) {
             if (pluginDefinition.order === element.order) {
                 sameOrderPluginIndex = index;
-                return false;
+                return false; // NOSONAR
             }
         });
 
         // If there is an existing plugin with the same order, the one with higher priority gets added
         // An error gets thrown for two plugins with the same order and same priority
         if (isDefined(sameOrderPluginIndex)) {
-            let sameOrderPlugin = currentExtensions[sameOrderPluginIndex];
+            const sameOrderPlugin = currentExtensions[sameOrderPluginIndex];
 
             if (pluginDefinition.priority === sameOrderPlugin.priority) {
                 throw new Error('There is already a plugin with the same order and priority. Extension point "' + currentExtensions.extensionPoint
@@ -54,7 +54,7 @@ window.PluginRegistry = (function() {
 
     function registerPlugin(extensionPoint, pluginDefinition) {
         if (pluginDefinition.disabled) {
-            return false;
+            return;
         }
 
         let currentPointPlugins = plugins[extensionPoint];

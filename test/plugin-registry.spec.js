@@ -80,8 +80,8 @@ describe('PluginRegistry', function () {
 
         expect(result.length).toEqual(2);
 
-        expect(result[0].order).toEqual(1);
-        expect(result[1].order).toEqual(2);
+        expect(result[0]).toEqual({'order': 1, 'stateName': 'login', 'priority': 0});
+        expect(result[1]).toEqual({'order': 2, 'stateName': 'search', 'priority': 0});
     });
 
     it('add two plugins with the same order', function () {
@@ -114,6 +114,7 @@ describe('PluginRegistry', function () {
         });
 
         expect(registry.get('route').length).toEqual(1);
+        expect(registry.get('route')[0]).toEqual({'stateName': 'login', 'order': 2, 'priority': 2});
     });
 
     it('add two plugins with the same order but lower priority', function () {
