@@ -23,8 +23,8 @@ rdfRankApp.config(['$routeProvider', '$menuItemsProvider', function ($routeProvi
     });
 }]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService',
-    function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService', 'RDF4JRepositoriesRestService',
+    function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService, RDF4JRepositoriesRestService) {
 
         const refreshStatus = function () {
             $http.get('rest/rdfrank/status')
@@ -36,17 +36,17 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
         };
 
         const initNamespaces = function () {
-            $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                const nss = _.map(data.results.bindings, function (o) {
-                    return {'uri': o.namespace.value, 'prefix': o.prefix.value};
+            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                .success(function (data) {
+                    const nss = _.map(data.results.bindings, function (o) {
+                        return {'uri': o.namespace.value, 'prefix': o.prefix.value};
+                    });
+                    $scope.namespaces = _.sortBy(nss, function (n) {
+                        return n.uri.length;
+                    });
+                }).error(function (data) {
+                    toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
                 });
-                $scope.namespaces = _.sortBy(nss, function (n) {
-                    return n.uri.length;
-                });
-
-            }).error(function (data) {
-                toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
-            });
         };
 
         const refreshPage = function () {

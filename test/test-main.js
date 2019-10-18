@@ -1,4 +1,5 @@
 import 'jquery';
+import 'angular/plugin-registry';
 import 'lib/angularjs/1.3.8/angular.js';
 import './lib/angularjs/1.3.8/angular-mocks';
 

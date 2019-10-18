@@ -1,8 +1,11 @@
 import 'angular/core/services';
+import 'angular/rest/cluster.rest.service';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.repositories.services',
+    'graphdb.framework.rest.repositories.service',
+    'graphdb.framework.rest.cluster.service',
     'toastr'
 ];
 
@@ -18,9 +21,10 @@ function getLocation(node) {
     return node.location.split('/repositories/')[0];
 }
 
-ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$window', '$interval', 'ModalService', '$timeout'];
+ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService'];
 
-function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $window, $interval, ModalService, $timeout) {
+function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $window, $interval, ModalService, $timeout, ClusterRestService, RepositoriesRestService) {
+    // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
     $scope.setLoader = function (loader, message) {
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
@@ -38,37 +42,30 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.getMaster = function (masterRepositoryID) {
-        $http.get('rest/cluster/masters/' + masterRepositoryID)
+        ClusterRestService.getMaster(masterRepositoryID)
             .success(function (data) {
                 $scope.masterInformation = data;
             });
     };
 
     $scope.setMasterAttribute = function (master, attribute, value) {
-        var attrData = {};
+        let attrData = {};
         attrData[attribute] = value;
 
         $scope.setLoader(true, 'Setting attribute...');
-        $http({
-            url: 'rest/cluster/masters/' + $scope.getLabel(master.location) + '?' + $.param({
-                masterLocation: getLocation(master)
-            }),
-            data: attrData,
-            method: 'POST'
-        })
+        ClusterRestService.configureMaster($scope.getLabel(master.location), getLocation(master), attrData)
             .success(function () {
                 $scope.attributeChange = false;
                 toastr.success("Set " + attribute + " to " + value + ".", "");
                 $scope.refreshMastersIcons();
                 return true;
             }).error(function (data) {
-            $scope.attributeChange = false;
-            toastr.error(getError(data), "Error setting attribute " + attribute);
-            return true;
-        }).finally(function () {
-            $scope.setLoader(false);
-
-        });
+                $scope.attributeChange = false;
+                toastr.error(getError(data), "Error setting attribute " + attribute);
+                return true;
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.hasInfo = function (node) {
@@ -111,12 +108,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         $scope.setLoader(true, 'Cloning worker...');
 
-        $http.post('rest/cluster/nodes/clone', {
-            cloningNodeLocation: currentNodeLocation,
-            cloningNodeRepositoryID: $scope.selectedNode.name,
-            newNodeRepositoryID: $scope.clone.repositoryID,
-            newNodeLocation: $scope.clone.location.uri,
-            newNodeTitle: $scope.clone.repositoryTitle
+        ClusterRestService.cloneRepository({
+            currentNodeLocation: currentNodeLocation,
+            selectedNodeName: $scope.selectedNode.name,
+            repositoryID: $scope.clone.repositoryID,
+            locationUri: $scope.clone.location.uri,
+            repositoryTitle: $scope.clone.repositoryTitle
         }).success(function () {
             toastr.success('Cloned node into ' + $scope.clone.location);
             $scope.getNodes();
@@ -181,32 +178,25 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         $scope.setLoader(true, 'Connecting nodes...');
 
-        $http({
-            url: 'rest/cluster/masters/' + $scope.getLabel(master.location) + '/workers/',
-            data: {
-                workerURL: worker.location,
-                masterLocation: getLocation(master)
-            },
-            method: 'POST'
-        }).success(function () {
-            var timestamp = Date.now();
+        ClusterRestService.connectWorker($scope.getLabel(master.location), getLocation(master), worker.location)
+            .success(function () {
+                let timestamp = Date.now();
 
-            worker.cluster = worker.cluster || [];
-            worker.cluster.push(master.cluster);
+                worker.cluster = worker.cluster || [];
+                worker.cluster.push(master.cluster);
 
-            $scope.addOrUpdateLink(master, worker, '', timestamp);
+                $scope.addOrUpdateLink(master, worker, '', timestamp);
 
-            master.workers[worker.location] = 1;
+                master.workers[worker.location] = 1;
 
-            onSuccess();
+                onSuccess();
 
-            toastr.success("Connected worker to master.", "");
-        }).error(function (data) {
-            toastr.error(getError(data), "Error connecting worker");
-        }).finally(function () {
-            $scope.setLoader(false);
-        })
-
+                toastr.success("Connected worker to master.", "");
+            }).error(function (data) {
+                toastr.error(getError(data), "Error connecting worker");
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
     };
 
     $scope.disconnectLinkConfirm = function (d, onSuccess) {
@@ -219,6 +209,52 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 $scope.disconnectLink(d, onSuccess);
             });
     };
+
+    function disconnectWorker(master, worker, onSuccess) {
+        ClusterRestService.disconnectWorker($scope.getLabel(master.location), $.param({
+            workerURL: worker.location,
+            masterLocation: getLocation(master)
+        })).success(function () {
+            $scope.deleteLink(d);
+
+            worker.cluster = worker.cluster.filter(function (x) {
+                return x !== master.cluster;
+            });
+
+            delete master.workers[worker.location];
+
+            onSuccess();
+
+            toastr.success("Disconnected worker from master.", "");
+        }).error(function (data) {
+            toastr.error(getError(data), "Error disconnecting worker");
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
+    }
+
+    function disconnectNodes(master, worker, onSuccess) {
+        ClusterRestService.disconnectNodes($scope.getLabel(master.location), $.param({
+            masterLocation: getLocation(master),
+            masterNodeID: master.nodeID,
+            peerLocation: getLocation(worker),
+            peerRepositoryID: $scope.getLabel(worker.location),
+            peerNodeID: worker.nodeID
+        })).success(function (data) {
+            $scope.deleteLink(d, true);
+
+            delete worker.peers[master.location];
+            delete master.peers[worker.location];
+
+            onSuccess();
+
+            toastr.success(data, "");
+        }).error(function (data) {
+            toastr.error(getError(data), "Error disconnecting masters");
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
+    }
 
     $scope.disconnectLink = function (d, onSuccess, overrideDisabled) {
         var master = {};
@@ -248,56 +284,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         $scope.setLoader(true, 'Disconnecting nodes...');
 
         if (worker.repositoryType === 'worker') {
-            $http({
-                url: 'rest/cluster/masters/' + $scope.getLabel(master.location) + '/workers?' + $.param({
-                    workerURL: worker.location,
-                    masterLocation: getLocation(master)
-                }),
-                method: 'DELETE',
-                dataType: 'text'
-            }).success(function () {
-                $scope.deleteLink(d);
-
-                worker.cluster = worker.cluster.filter(function (x) {
-                    return x !== master.cluster;
-                });
-
-                delete master.workers[worker.location];
-
-                onSuccess();
-
-                toastr.success("Disconnected worker from master.", "");
-            }).error(function (data) {
-                toastr.error(getError(data), "Error disconnecting worker");
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            disconnectWorker(master, worker, onSuccess);
         } else {
             // Both are masters, despite the var name worker
-            $http({
-                url: 'rest/cluster/masters/' + $scope.getLabel(master.location) + '/peers?' + $.param({
-                    masterLocation: getLocation(master),
-                    masterNodeID: master.nodeID,
-                    peerLocation: getLocation(worker),
-                    peerRepositoryID: $scope.getLabel(worker.location),
-                    peerNodeID: worker.nodeID
-                }),
-                method: 'DELETE',
-                dataType: 'text'
-            }).success(function (data) {
-                $scope.deleteLink(d, true);
-
-                delete worker.peers[master.location];
-                delete master.peers[worker.location];
-
-                onSuccess();
-
-                toastr.success(data, "");
-            }).error(function (data) {
-                toastr.error(getError(data), "Error disconnecting masters");
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            disconnectNodes(master, worker, onSuccess);
         }
     };
 
@@ -321,17 +311,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         $scope.setLoader(true, 'Connecting nodes...');
 
-        $http({
-            url: 'rest/cluster/masters/' + firstConfigs[1] + '/peers',
-            data: {
-                masterLocation: first.local ? 'local' : firstConfigs[0],
-                masterNodeID: first.nodeID,
-                peerLocation: second.local ? 'local' : secondConfigs[0],
-                peerRepositoryID: secondConfigs[1],
-                peerNodeID: second.nodeID,
-                bidirectional: bidirectional
-            },
-            method: 'POST'
+        ClusterRestService.connectNodes(firstConfigs[1], {
+            masterLocation: first.local ? 'local' : firstConfigs[0],
+            masterNodeID: first.nodeID,
+            peerLocation: second.local ? 'local' : secondConfigs[0],
+            peerRepositoryID: secondConfigs[1],
+            peerNodeID: second.nodeID,
+            bidirectional: bidirectional
         }).success(function (data) {
             // FIXME?? is there a proper connection between the masters. We don't know so we use 'ON'
             var timestamp = Date.now();
@@ -407,7 +393,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.updateMasterNode = function (node, timestamp, isUpdate, isRandomLink) {
-        return $http.get('rest/cluster/masters/' + node.name, {
+        return ClusterRestService.getMaster(node.name, {
             params: {
                 masterLocation: getLocation(node)
             }
@@ -531,7 +517,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         $scope.setLoader(true);
 
-        return $http.get('rest/repositories/cluster')
+        return RepositoriesRestService.getCluster()
             .success(function (data) {
                 $scope.hasNodes = data.length > 0;
                 $scope.links = [];
@@ -590,7 +576,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             })
             .error(function (data) {
                 $scope.hasNodes = false;
-                toastr.error(getError(data), "Error getting nodes")
+                toastr.error(getError(data), "Error getting nodes");
                 $scope.setLoader(false);
             })
             .finally(function () {
@@ -599,7 +585,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.trackAddedOrRemovedNodes = function (timestamp) {
-        return $http.get('rest/repositories/cluster')
+        return RepositoriesRestService.getCluster()
             .success(function (data) {
                 var uri2tempNode = data.reduce(function (result, node) {
                     if (node.type === "master" || node.type === "worker") {

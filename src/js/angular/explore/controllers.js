@@ -5,7 +5,9 @@ const modules = [
     'ngCookies',
     'ngRoute',
     'ui.bootstrap',
+    'graphdb.framework.core',
     'graphdb.framework.repositories.services',
+    'graphdb.framework.explore.services',
     'toastr'
 ];
 
@@ -16,9 +18,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService) {
 
     $scope.loading = false;
 
@@ -40,7 +42,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.getLocalName = function (uri) {
         return ClassInstanceDetailsService.getLocalName(uri);
     };
-
 
     $scope.blanks = true;
     $scope.sameAs = true;
@@ -73,7 +74,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {
-                $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces')
+                RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                     .success(function (data) {
                         $scope.usedPrefixes = {};
                         data.results.bindings.forEach(function (e) {
@@ -211,9 +212,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 }
 
-FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams'];
+FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService'];
 
-function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams) {
+function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, RDF4JRepositoriesRestService) {
     $scope.submit = submit;
     $scope.getAutocompleteSuggestions = getAutocompleteSuggestions;
     $scope.inputChangedFn = inputChangedFn;
@@ -245,7 +246,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 
     function getAllNamespacesForActiveRepository() {
-        ClassInstanceDetailsService.getNamespaces($repositories.getActiveRepository())
+        RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
                     return {
@@ -358,9 +359,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, StatementsService) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -386,7 +387,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
     $scope.save = save;
 
     function getClassInstancesDetails() {
-        ClassInstanceDetailsService.getNamespaces($scope.activeRepository())
+        RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())
             .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
                     return {

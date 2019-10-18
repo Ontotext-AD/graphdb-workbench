@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityService', 'ClassInstanceDetailsService', 'AutocompleteRestService', 'productInfo'];
+SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityService, ClassInstanceDetailsService, AutocompleteRestService, productInfo) {
+function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -33,7 +33,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository()) {
             return;
         }
-        SimilarityService.checkPluginEnabled()
+        RDF4JRepositoriesRestService.checkSimilarityPluginEnabled()
             .done(function (data) {
                 $scope.pluginDisabled = data.indexOf('false') > 0;
             })
@@ -43,7 +43,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.enabledSimilarityPlugin = function () {
-        SimilarityService.enableSimilarityPlugin()
+        RDF4JRepositoriesRestService.enableSimilarityPlugin()
             .done(function () {
                 $scope.pluginDisabled = false;
                 $scope.getSimilarityIndexes();
@@ -53,7 +53,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             });
     };
 
-    SimilarityService.getSearchQueries().success(function (data) {
+    SimilarityRestService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
     }).error(function (data) {
         const msg = getError(data);
@@ -69,7 +69,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         if (!$scope.getActiveRepository() || $scope.pluginDisabled) {
             return;
         }
-        SimilarityService.getIndexes()
+        SimilarityRestService.getIndexes()
             .success(function (data) {
                 $scope.similarityIndexes = data;
             })
@@ -109,22 +109,23 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         return $repositories.getActiveRepository();
     }, function () {
         if ($scope.getActiveRepository()) {
-            $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-                $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-                $scope.usedPrefixes = {};
-                data.results.bindings.forEach(function (e) {
-                    $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                .success(function (data) {
+                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
+                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                    $scope.usedPrefixes = {};
+                    data.results.bindings.forEach(function (e) {
+                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                    });
+                    yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                        //this way, the URLs in the results are prettified using the defined prefixes
+                        getUsedPrefixes: $scope.usedPrefixes,
+                        persistency: false,
+                        hideHeader: true
+                    });
+                }).error(function (data) {
+                    toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
                 });
-                yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                    //this way, the URLs in the results are prettified using the defined prefixes
-                    getUsedPrefixes: $scope.usedPrefixes,
-                    persistency: false,
-                    hideHeader: true
-                });
-            }).error(function (data) {
-                toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
-            });
         }
     });
 
@@ -273,7 +274,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
             warning: true
         }).result
             .then(function () {
-                SimilarityService.deleteIndex(index)
+                SimilarityRestService.deleteIndex(index)
                     .then(function () {
                         $scope.getSimilarityIndexes();
                     }, function (err) {
@@ -283,29 +284,26 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     };
 
     $scope.viewCreateQuery = function (index) {
-        $http.get('/rest/similarity/query',
-            {
-                params: {
-                    name: index.name,
-                    options: index.options,
-                    selectQuery: index.selectQuery,
-                    stopList: index.stopList,
-                    infer: index.infer,
-                    sameAs: index.sameAs,
-                    type: index.type,
-                    analyzer: index.analyzer
-                }
-            }).success(function (query) {
-                $modal.open({
-                    templateUrl: 'pages/viewQuery.html',
-                    controller: 'ViewQueryCtrl',
-                    resolve: {
-                        query: function () {
-                            return query;
-                        }
+        SimilarityRestService.getQuery({
+            indexName: index.name,
+            indexOptions: index.options,
+            query: index.selectQuery,
+            indexStopList: index.stopList,
+            queryInference: index.infer,
+            querySameAs: index.sameAs,
+            viewType: index.type,
+            indexAnalyzer: index.analyzer
+        }).success(function (query) {
+            $modal.open({
+                templateUrl: 'pages/viewQuery.html',
+                controller: 'ViewQueryCtrl',
+                resolve: {
+                    query: function () {
+                        return query;
                     }
-                });
+                }
             });
+        });
     };
 
     $scope.rebuildIndex = function (index) {
@@ -320,7 +318,7 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
         }).result
             .then(function () {
                 index.status = 'BUILDING';
-                SimilarityService.rebuildIndex(index)
+                SimilarityRestService.rebuildIndex(index)
                     .then(function (res) {
                     }, function (err) {
                         toastr.error(getError(err));

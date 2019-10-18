@@ -18,10 +18,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsService", "GraphConfigService"];
-
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsService, GraphConfigService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -568,7 +567,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // Graph Config
     $scope.getGraphConfigs = function (graphCallback) {
-        GraphConfigService.getGraphConfigs()
+        GraphConfigRestService.getGraphConfigs()
             .success(function (data) {
                 $scope.graphConfigs = data;
                 if (graphCallback) {
@@ -583,7 +582,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         if (configId === $scope.defaultGraphConfig.id) {
             $scope.loadGraphConfig($scope.defaultGraphConfig);
         } else {
-            GraphConfigService.getConfig(configId)
+            GraphConfigRestService.getConfig(configId)
                 .success(function (data) {
                     $scope.loadGraphConfig(data);
                     successCallback();
@@ -618,7 +617,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             }, 0);
         } else if (config.startMode === 'query' && config.startGraphQuery) {
             $scope.loading = true;
-            GraphConfigService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.saveSettings['linksLimit'], config.startQuerySameAs)
+            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.saveSettings['linksLimit'], config.startQuerySameAs)
                 .then(function (response) {
                     // Node drawing will turn off loader
                     initGraphFromResponse(response);
@@ -636,7 +635,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             warning: true
         }).result
             .then(function () {
-                GraphConfigService.deleteGraphConfig(config)
+                GraphConfigRestService.deleteGraphConfig(config)
                     .success(function () {
                         $scope.getGraphConfigs();
                         $scope.refreshSavedGraphs();
@@ -718,7 +717,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         if ($location.search().saved) {
-            SavedGraphsService.getSavedGraph($location.search().saved)
+            SavedGraphsRestService.getSavedGraph($location.search().saved)
                 .success(function (data) {
                     $scope.loadSavedGraph(data);
                 })
@@ -781,19 +780,20 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         // Inits namespaces for repo
-        $http.get('repositories/' + $scope.getActiveRepository() + '/namespaces').success(function (data) {
-            const nss = _.map(data.results.bindings, function (o) {
-                return {"uri": o.namespace.value, "prefix": o.prefix.value};
-            });
-            $scope.namespaces = _.sortBy(nss, function (n) {
-                return n.uri.length;
-            });
+        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+            .success(function (data) {
+                const nss = _.map(data.results.bindings, function (o) {
+                    return {"uri": o.namespace.value, "prefix": o.prefix.value};
+                });
+                $scope.namespaces = _.sortBy(nss, function (n) {
+                    return n.uri.length;
+                });
 
-            $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }).error(function (data) {
-            toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
-        });
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
+                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+            }).error(function (data) {
+                toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
+            });
     }
 
     $scope.$on('repositoryIsSet', function (event, args) {
@@ -2207,7 +2207,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         if ($scope.configLoaded) {
             graph.config = $scope.configLoaded.id;
         }
-        SavedGraphsService.addNewSavedGraph(graph)
+        SavedGraphsRestService.addNewSavedGraph(graph)
             .success(function (data, status, headers) {
                 $scope.lastSavedGraphName = graph.name;
                 $scope.lastSavedGraphId = headers()['x-saved-graph-id'];
@@ -2241,7 +2241,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     const editSavedGraphHttp = function (savedGraph) {
-        SavedGraphsService.editSavedGraph(savedGraph)
+        SavedGraphsRestService.editSavedGraph(savedGraph)
             .success(function () {
                 $scope.lastSavedGraphName = savedGraph.name;
                 $scope.refreshSavedGraphs();
@@ -2288,7 +2288,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.refreshSavedGraphs = function () {
-        SavedGraphsService.getSavedGraphs()
+        SavedGraphsRestService.getSavedGraphs()
             .success(function (data) {
                 $scope.savedGraphs = data;
             })
@@ -2328,7 +2328,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     function deleteSavedGraphHttp(savedGraph) {
-        SavedGraphsService.deleteSavedGraph(savedGraph)
+        SavedGraphsRestService.deleteSavedGraph(savedGraph)
             .success(function () {
                 $scope.refreshSavedGraphs();
                 toastr.success('Saved graph ' + savedGraph.name + ' was deleted.');

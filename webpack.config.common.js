@@ -1,10 +1,16 @@
+const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 
 module.exports = {
     entry: {
         vendor: './src/vendor.js',
         main: './src/main.js',
         bundle: './src/app.js'
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist')
     },
     resolve: {
         modules: [
@@ -14,7 +20,18 @@ module.exports = {
         extensions: ['.js']
     },
     plugins: [
+        new MergeIntoSingleFilePlugin({
+            files: {
+                "plugins.js": [
+                    'src/**/plugin.js'
+                ]
+            }
+        }),
         new CopyPlugin([
+            {
+                from: 'src/js/angular/plugin-registry.js',
+                to: 'plugin-registry.js'
+            },
             {
                 from: 'node_modules/angularjs-slider/dist/rzslider.min.css',
                 to: 'js/lib/rzslider/rzslider.min.css'
@@ -118,7 +135,7 @@ module.exports = {
             {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
-            },
+            }
         ])
     ],
     module: {

@@ -17,7 +17,7 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$http', '$modal', '$timeout', 'toastr', '$repositories', 'ModalService', '$jwtAuth'];
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$http', '$modal', '$timeout', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService'];
 
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
@@ -37,7 +37,7 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $repositories, ModalService, $jwtAuth) {
+function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -82,7 +82,7 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
 
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
-        $http.post('rest/locations', dataAddLocation)
+        LocationsRestService.addLocation(dataAddLocation)
             .success(function (data) {
                 $scope.locations = data;
                 //Reload locations and repositories
@@ -117,16 +117,17 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
     //Edit location
     $scope.editLocationHttp = function (dataEditLocation) {
         $scope.loader = true;
-        $http.put('rest/locations', dataEditLocation).success(function (data) {
-            $scope.locations = data;
-            //Reload locations and repositories
-            $repositories.init();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
+        LocationsRestService.editLocation(dataEditLocation)
+            .success(function (data) {
+                $scope.locations = data;
+                //Reload locations and repositories
+                $repositories.init();
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
 
-            $scope.loader = false;
-        });
+                $scope.loader = false;
+            });
     };
 
     $scope.editLocation = function (location) {
@@ -151,14 +152,15 @@ function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $
         const data = {
             'uri': location.uri
         };
-        $http.post('rest/locations/activate', data).success(function () {
-            $repositories.setRepository('');
-            $repositories.init();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            document.getElementById('switch-' + location.$$hashKey).checked = false;
-        });
+        LocationsRestService.enableLocation(data)
+            .success(function () {
+                $repositories.setRepository('');
+                $repositories.init();
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                document.getElementById('switch-' + location.$$hashKey).checked = false;
+            });
     };
 
     //Activate location
@@ -350,9 +352,9 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', '$http', '$modal', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams'];
+AddRepositoryCtrl.$inject = ['$scope', '$http', '$modal', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams) {
+function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -416,11 +418,10 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
     $scope.isFreeEdition = isFreeEdition;
 
     $scope.getConfig = function (repoType) {
-        $http.get('rest/repositories/defaultConfig/' + repoType).success(function (data) {
+        RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             $scope.loader = false;
-
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Error');
@@ -451,7 +452,7 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
 
     $scope.createRepoHttp = function () {
         $scope.loader = true;
-        $http.post('rest/repositories', $scope.repositoryInfo).success(function () {
+        RepositoriesRestService.createRepository($scope.repositoryInfo).success(function () {
             toastr.success('The repository ' + $scope.repositoryInfo.id + ' has been created.');
             $repositories.init($scope.goBackToPreviousLocation);
         }).error(function (data) {
@@ -503,9 +504,9 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
 
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$http', '$modal', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition'];
+EditRepositoryCtrl.$inject = ['$scope', '$http', '$modal', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition) {
+function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -526,7 +527,7 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            $http.get('rest/repositories/' + $scope.repositoryInfo.id)
+            RepositoriesRestService.getRepository($scope.repositoryInfo.id)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;
@@ -575,14 +576,15 @@ function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $reposi
 
     $scope.editRepoHttp = function () {
         $scope.loader = true;
-        $http.put('rest/repositories/' + $scope.repositoryInfo.saveId, $scope.repositoryInfo).success(function () {
-            toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
-            $repositories.init($scope.goBackToPreviousLocation);
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.loader = false;
-        });
+        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
+            .success(function () {
+                toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
+                $repositories.init($scope.goBackToPreviousLocation);
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                $scope.loader = false;
+            });
     };
 
     $scope.editRepository = function () {

@@ -1,6 +1,8 @@
-import "angular/security/controllers";
+import 'angular/security/controllers';
+import {FakeModal} from '../mocks';
 
 beforeEach(angular.mock.module('graphdb.framework.security.controllers'));
+
 describe('==> Controllers tests', function () {
 
     describe('=> LoginCtrl tests', function () {
@@ -55,7 +57,7 @@ describe('==> Controllers tests', function () {
             $timeout.flush();
 
             expect($location.url()).toEqual('/');
-        })
+        });
 
         it('should redirect to saved page on login', function () {
             $httpBackend.flush();
@@ -69,7 +71,7 @@ describe('==> Controllers tests', function () {
             $timeout.flush();
 
             expect($location.url()).toEqual('/sparql');
-        })
+        });
 
         it('should clear login data on wrong credentials', function () {
             $httpBackend.flush();
@@ -85,9 +87,7 @@ describe('==> Controllers tests', function () {
             expect($scope.username).toEqual('');
             expect($scope.password).toEqual('');
             expect($scope.wrongCredentials).toEqual(true);
-
         })
-
     });
 
     describe('=> UsersCtrl tests', function () {
@@ -107,25 +107,7 @@ describe('==> Controllers tests', function () {
             $location = _$location_;
             $controller = _$controller_;
             $timeout = _$timeout_;
-
-
-            function FakeModal() {
-                this.resultDeferred = $q.defer();
-                this.result = this.resultDeferred.promise;
-            }
-
-            FakeModal.prototype.open = function (options) {
-                return this;
-            };
-            FakeModal.prototype.close = function (item) {
-                this.resultDeferred.resolve(item);
-                $rootScope.$apply(); // Propagate promise resolution to 'then' functions using $apply().
-            };
-            FakeModal.prototype.dismiss = function (item) {
-                this.resultDeferred.reject(item);
-                $rootScope.$apply(); // Propagate promise resolution to 'then' functions using $apply().
-            };
-            modalInstance = new FakeModal();
+            modalInstance = new FakeModal($q, $rootScope);
 
             windowMock = {location: {reload: jasmine.createSpy('windowMock.location.reload')}};
             $scope = $rootScope.$new();
@@ -165,56 +147,57 @@ describe('==> Controllers tests', function () {
                 expect($scope.users).toEqual([]);
                 expect($scope.loader).toEqual(false);
             })
-        })
+        });
 
         describe('$scope.toggleSecurity', function () {
             it('should reload location when toggle to true', function () {
                 $httpBackend.expectGET('rest/security/user');
                 $httpBackend.flush();
                 $jwtAuth.toggleSecurity = function () {
-                    return
-                }
+                    return;
+                };
                 $jwtAuth.isSecurityEnabled = function () {
                     return true;
-                }
+                };
 
                 $scope.toggleSecurity();
                 $timeout.flush();
                 expect(windowMock.location.reload).toHaveBeenCalled();
             })
-        })
+        });
 
         describe('$scope.toggleFreeAccess()', function () {
             it('should call $jwtAuth.toggleFreeAccess() on isFreeAccessEnabled == true', function () {
                 $httpBackend.flush();
                 $jwtAuth.isFreeAccessEnabled = function () {
                     return true;
-                }
-                var toggleFreeAccess = {}
+                };
+                var toggleFreeAccess = {};
                 $jwtAuth.toggleFreeAccess = function (isFreeAccessDisabled, authorities) {
                     toggleFreeAccess = {isFreeAccessDisabled: isFreeAccessDisabled, authorities: authorities}
-                }
+                };
                 modalInstance.open = jasmine.createSpy('modal.open');
                 $scope.toggleFreeAccess();
                 expect(modalInstance.open).not.toHaveBeenCalled();
                 expect(toggleFreeAccess).toEqual({isFreeAccessDisabled: false, authorities: []})
-            })
+            });
+
             it('should open $modal and call $jwtAuth.toggleFreeAccess() on $modal.close', function () {
                 $httpBackend.expectGET('rest/security/freeaccess');
                 $jwtAuth.isFreeAccessEnabled = function () {
                     return false;
-                }
-                var toggleFreeAccess = {}
+                };
+                var toggleFreeAccess = {};
                 $jwtAuth.toggleFreeAccess = function (isFreeAccessDisabled, authorities, appSettings) {
                     toggleFreeAccess = {isFreeAccessDisabled: isFreeAccessDisabled, authorities: authorities, appSettings: appSettings}
-                }
+                };
 
                 $scope.toggleFreeAccess();
                 modalInstance.close({authorities: ['someAuthorities'], appSettings: {'s1': 'v1'}});
                 $httpBackend.flush();
                 expect(toggleFreeAccess).toEqual({isFreeAccessDisabled: true, authorities: ['someAuthorities'], appSettings: {'s1': 'v1'}})
-            })
-        })
+            });
+        });
 
         describe('$scope.removeUser()', function () {
             it('should open $modal and call $http.delete on $modal.close', function () {
@@ -226,22 +209,22 @@ describe('==> Controllers tests', function () {
                 modalInstance.close();
                 $httpBackend.flush();
                 expect($scope.getUsers).toHaveBeenCalled();
-            })
+            });
+
             it('should open $modal and not call $http.delete on $modal.dismiss', function () {
                 $httpBackend.flush();
                 $scope.getUsers = jasmine.createSpy('scope.getUsers');
                 $scope.removeUser('username');
                 modalInstance.dismiss();
                 expect($scope.getUsers).not.toHaveBeenCalled();
-            })
-        })
-
+            });
+        });
     });
 
     describe('=> DefaultAuthoritiesCtrl tests', function () {
         var $controller,
             $scope,
-            modalInstance
+            modalInstance;
 
         beforeEach(angular.mock.inject(function (_$controller_, $rootScope) {
             $controller = _$controller_;
@@ -253,7 +236,7 @@ describe('==> Controllers tests', function () {
 
             $scope.getActiveLocation = function () {
                 return {uri: ''}
-            }
+            };
 
             var controller = $controller('DefaultAuthoritiesCtrl', {
                 $scope: $scope, $modalInstance: modalInstance,
@@ -269,46 +252,50 @@ describe('==> Controllers tests', function () {
             //All cases are in different "it" because otherwise toHaveBeenCalledWith() return true even if the array is wrong one
             it('should return correct auth obj on close', function () {
                 $scope.grantedAuthorities = {'READ_REPO': {'myrepo': true}, 'WRITE_REPO': {}};
-                $scope.appSettings = {'s1': 'v1'}
+                $scope.appSettings = {'s1': 'v1'};
                 $scope.ok();
                 expect(modalInstance.close).toHaveBeenCalledWith({authorities: ['READ_REPO_myrepo'], appSettings: {'s1': 'v1'}});
             });
+
             it('should validate at least one authority', function () {
                 $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
-                $scope.appSettings = {'s1': 'v1'}
+                $scope.appSettings = {'s1': 'v1'};
                 $scope.ok();
                 expect(modalInstance.close).not.toHaveBeenCalled();
             });
+
             it('should return correct auth obj on close', function () {
                 $scope.grantedAuthorities = {
                     'READ_REPO': {'myrepo': true},
                     'WRITE_REPO': {'myrepo': true, 'location2_repo': true}
                 };
-                $scope.appSettings = {'s1': 'v1'}
+                $scope.appSettings = {'s1': 'v1'};
                 $scope.ok();
                 expect(modalInstance.close).toHaveBeenCalledWith({
                     authorities: ['WRITE_REPO_myrepo', 'READ_REPO_myrepo', 'WRITE_REPO_location2_repo', 'READ_REPO_location2_repo'],
                     appSettings: {'s1': 'v1'}
                 });
             });
+
             it('should return correct auth obj on close', function () {
                 $scope.grantedAuthorities = {
                     'READ_REPO': {'myrepo2': true},
                     'WRITE_REPO': {'myrepo': true, 'location2_repo': true}
                 };
-                $scope.appSettings = {'s1': 'v1'}
+                $scope.appSettings = {'s1': 'v1'};
                 $scope.ok();
                 expect(modalInstance.close).toHaveBeenCalledWith({
                     authorities: ['WRITE_REPO_myrepo', 'READ_REPO_myrepo', 'WRITE_REPO_location2_repo', 'READ_REPO_location2_repo', 'READ_REPO_myrepo2'],
                     appSettings: {'s1': 'v1'}
                 });
             });
+
             it('should return correct auth obj on close', function () {
                 $scope.grantedAuthorities = {
                     'READ_REPO': {'myrepo2': false},
                     'WRITE_REPO': {'myrepo': true, 'location2_repo': false}
                 };
-                $scope.appSettings = {'s1': 'v1'}
+                $scope.appSettings = {'s1': 'v1'};
                 $scope.ok();
                 expect(modalInstance.close).toHaveBeenCalledWith({
                     authorities: ['WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
@@ -344,7 +331,7 @@ describe('==> Controllers tests', function () {
 
             $scope.getActiveLocation = function () {
                 return {uri: ''}
-            }
+            };
 
             var controller = $controller('AddUserCtrl', {$scope: $scope, $window: windowMock});
 
@@ -399,7 +386,7 @@ describe('==> Controllers tests', function () {
                 $scope.setGrantedAuthorities();
                 expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo']);
                 expect($scope.repositoryCheckError).toEqual(false);
-            })
+            });
         });
 
         describe('$scope.createUserHttp', function () {
@@ -410,8 +397,8 @@ describe('==> Controllers tests', function () {
                 $httpBackend.flush();
                 $timeout.flush();
                 expect(windowMock.history.back).toHaveBeenCalled();
-            })
-        })
+            });
+        });
 
         describe('$scope.validateForm', function () {
             it('should return correct value', function () {
@@ -458,8 +445,8 @@ describe('==> Controllers tests', function () {
                 expect($scope.usernameError).toEqual('Enter username!');
                 expect($scope.passwordError).toEqual('');
                 expect($scope.confirmPasswordError).toEqual('');
-            })
-        })
+            });
+        });
     });
 
     describe('=> EditUserCtrl tests', function () {
@@ -516,7 +503,7 @@ describe('==> Controllers tests', function () {
 
             $scope.getActiveLocation = function () {
                 return {uri: 'locationUri'}
-            }
+            };
 
             var controller = $controller('EditUserCtrl',
                 {
@@ -604,8 +591,8 @@ describe('==> Controllers tests', function () {
                 $timeout.flush();
                 expect($scope.loader).toEqual(false);
                 expect(windowMock.history.back).toHaveBeenCalled();
-            })
-        })
+            });
+        });
 
         describe('$scope.validateForm', function () {
             it('should return correct value', function () {
@@ -636,9 +623,8 @@ describe('==> Controllers tests', function () {
                 expect($scope.validateForm()).toEqual(true);
                 expect($scope.passwordError).toEqual('');
                 expect($scope.confirmPasswordError).toEqual('');
-
-            })
-        })
+            });
+        });
     });
 
     describe('=> ChangeUserPasswordSettingsCtrl tests', function () {
@@ -675,13 +661,13 @@ describe('==> Controllers tests', function () {
                 isSecurityEnabled: function () {
                     return true;
                 }
-            }
+            };
 
             $scope = $rootScope.$new();
 
             $scope.getActiveLocation = function () {
                 return {uri: 'locationUri'}
-            }
+            };
 
             var controller = $controller('ChangeUserPasswordSettingsCtrl',
                 {
@@ -751,9 +737,7 @@ describe('==> Controllers tests', function () {
                 expect($scope.validateForm()).toEqual(true);
                 expect($scope.passwordError).toEqual('');
                 expect($scope.confirmPasswordError).toEqual('');
-            })
-        })
-
+            });
+        });
     });
-
 });

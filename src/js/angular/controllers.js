@@ -1,30 +1,35 @@
 /* eslint quotes: "off" */
 import 'angular/core/services';
+import 'angular/rest/sparql.rest.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core',
-        'graphdb.framework.explore'
+        'graphdb.framework.explore',
+        'graphdb.framework.rest.license.service',
+        'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.repositories.service',
+        'graphdb.framework.rest.sparql.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'ClassInstanceDetailsService', 'AutocompleteRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService) {
-    $http.get('rest/graphdb-settings/license/hardcoded')
+function homeCtrl($scope, $http, $repositories, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+    LicenseRestService.getHardcodedLicense()
         .success(function (res) {
-            $scope.isLicenseHardcoded = (res === "true");
+            $scope.isLicenseHardcoded = (res === 'true');
         })
         .error(function () {
             $scope.isLicenseHardcoded = true;
         })
         .then(function () {
-            $http.get('rest/graphdb-settings/license').then(function (res) {
+            LicenseRestService.getLicenseInfo().then(function (res) {
                 $scope.license = res.data;
             }, function () {
-                $scope.license = {message: "No license was set.", valid: false};
+                $scope.license = {message: 'No license was set.', valid: false};
             });
         });
 
@@ -34,7 +39,7 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
             return;
         }
         $scope.activeRepositorySizeError = undefined;
-        $http.get('rest/repositories/' + repo + '/size').then(function (res) {
+        RepositoriesRestService.getSize(repo).then(function (res) {
             $scope.activeRepositorySize = res.data;
         }).catch(function (e) {
             $scope.activeRepositorySizeError = e.data.message;
@@ -43,7 +48,7 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
 
     $scope.$watch($scope.getActiveRepository, function () {
         if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-            $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository())
+            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
                     $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
                         .success(function () {
@@ -54,9 +59,9 @@ function homeCtrl($scope, $http, $repositories, ClassInstanceDetailsService, Aut
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -348,7 +353,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            $http.get('rest/repositories/' + $scope.popoverRepo.id + '/size').then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo.id).then(function (res) {
                 $scope.repositorySize = res.data;
             });
         }
@@ -363,7 +368,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.getSavedQueries = function () {
-        $http.get('rest/sparql/saved-queries')
+        SparqlRestService.getSavedQueries()
             .success(function (data) {
                 $scope.sampleQueries = data;
             })
@@ -647,11 +652,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         }
 
         $scope.getQueriesRunning = true;
-        $http({
-            url: 'rest/monitor/query/count',
-            method: 'GET',
-            timeout: 10000
-        })
+        MonitoringRestService.getQueryCount()
             .success(function (data) {
                 $scope.queryCount = data;
                 fibo.reset();
@@ -689,16 +690,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     });
 
     $scope.checkLicenseStatus = function () {
-        $http.get('rest/graphdb-settings/license/hardcoded').success(function (res) {
-            $scope.isLicenseHardcoded = (res === "true");
+        LicenseRestService.getHardcodedLicense().success(function (res) {
+            $scope.isLicenseHardcoded = (res === 'true');
         }).error(function () {
             $scope.isLicenseHardcoded = true;
         }).then(function () {
-            $http.get('rest/graphdb-settings/license').then(function (res) {
+            LicenseRestService.getLicenseInfo().then(function (res) {
                 $scope.license = res.data;
                 $scope.showLicense = true;
             }, function () {
-                $scope.license = {message: "No license was set.", valid: false};
+                $scope.license = {message: 'No license was set.', valid: false};
                 $scope.showLicense = true;
             });
         });
@@ -758,11 +759,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 }
 
-repositorySizeCtrl.$inject = ['$scope', '$http'];
+repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
 
-function repositorySizeCtrl($scope, $http) {
+function repositorySizeCtrl($scope, $http, RepositoriesRestService) {
     $scope.getRepositorySize = function (repository) {
-        $http.get('rest/repositories/' + repository + '/size').then(function (res) {
+        RepositoriesRestService.getSize(repository).then(function (res) {
             $scope.size = res.data;
         });
     };
