@@ -64,12 +64,12 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
     };
 }
 
-LicenseCtrl.$inject = ['$scope', '$http', '$location', '$cookieStore', 'LicenseService', 'toastr', '$rootScope'];
+LicenseCtrl.$inject = ['$scope', '$http', '$location', '$cookieStore', 'LicenseRestService', 'toastr', '$rootScope'];
 
-function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseService, toastr, $rootScope) {
+function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseRestService, toastr, $rootScope) {
     $scope.loader = true;
 
-    LicenseService.checkLicenseHardcoded()
+    LicenseRestService.checkLicenseHardcoded()
         .success(function (res) {
             $rootScope.isLicenseHardcoded = (res === 'true');
         })
@@ -78,7 +78,7 @@ function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseService, toa
             toastr.error('Error checking license availability');
         })
         .then(function () {
-            LicenseService.getLicenseInfo()
+            LicenseRestService.getLicenseInfo()
                 .success(function (res) {
                     $scope.loader = false;
                     $scope.license = res;
@@ -94,9 +94,9 @@ function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseService, toa
         });
 }
 
-RegisterLicenseCtrl.$inject = ['$scope', 'LicenseService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
+RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
 
-function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, $window, $jwtAuth) {
+function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
     $scope.$on('securityInit', function () {
         if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
             $location.path('/license');
@@ -111,7 +111,7 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
     $scope.$watch('currentFile', function () {
         if ($scope.currentFile) {
             const file = $scope.currentFile;
-            LicenseService.extractFromLicenseFile(file)
+            LicenseRestService.extractFromLicenseFile(file)
                 .success(function (licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
                 }).error(function () {
@@ -126,7 +126,7 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
 
     // send license code for validation and activation
     function sendLicenseToValidateAndActivate(licenseCode) {
-        LicenseService.sendLicenseToValidate(licenseCode)
+        LicenseRestService.sendLicenseToValidate(licenseCode)
             .success(function (validatedLicense) {
                 if (validatedLicense.licensee !== 'Invalid') {
                     // write code to textarea
@@ -174,7 +174,7 @@ function RegisterLicenseCtrl($scope, LicenseService, $location, $modal, toastr, 
             // replacing whitespace makes this work on Safari too,
             // whereas other browser happily ignore the whitespace
             const decodedLicense = atob(licenseCode.replace(/\s/g, ''));
-            LicenseService.registerLicense(decodedLicense)
+            LicenseRestService.registerLicense(decodedLicense)
                 .success(function () {
                     $window.history.back();
                     // $location.path('license');

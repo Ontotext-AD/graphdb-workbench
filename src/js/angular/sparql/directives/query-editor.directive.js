@@ -1,14 +1,17 @@
 import 'lib/bootstrap/bootstrap.min';
 import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
+import 'angular/rest/connectors.rest.service';
 
 angular
-    .module('graphdb.framework.sparql.directives.queryeditor', [])
+    .module('graphdb.framework.sparql.directives.queryeditor', [
+        'graphdb.framework.rest.connectors.service'
+    ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlService', 'ModalService', '$modal', '$http', '$jwtAuth'];
+queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$http', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
 
-function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlService, ModalService, $modal, $http, $jwtAuth) {
+function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $http, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService) {
     return {
         restrict: 'AE',
         scope: false,
@@ -272,7 +275,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 const doExecute = function () {
                     scope.currentTabConfig.queryType = "UPDATE";
 
-                    SparqlService.getRepositorySize()
+                    RDF4JRepositoriesRestService.getRepositorySize()
                         .success(function (data) {
                             scope.repoSize = parseInt(data);
                             scope.queryStartTime = new Date().getTime();
@@ -285,11 +288,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                         });
                 };
 
-                $http.post('rest/connectors/check', window.editor.getValue(), {
-                    headers: {
-                        'Content-Type': 'text/plain'
-                    }
-                })
+                ConnectorsRestService.checkConnector(window.editor.getValue())
                     .then(function (res) {
                         if (res.data.command && !res.data.hasSupport) {
                             // it's a connector query but the relevant plugin isn't active, stop executing and warn the user
@@ -570,7 +569,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
                 if (window.editor.getQueryMode() === "update") {
                     updateResultsCallback = function () {
-                        SparqlService.getRepositorySize()
+                        RDF4JRepositoriesRestService.getRepositorySize()
                             .success(function (data) {
                                 let repoSizeDiff;
                                 if (scope.repoSize !== undefined) {
@@ -793,7 +792,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
         }
 
         function loadSavedQueryIntoExistingOrNewTab(savedQueryName, owner, infer, sameAs) {
-            SparqlService.getSavedQuery(savedQueryName, owner)
+            SparqlRestService.getSavedQuery(savedQueryName, owner)
                 .success(function (data) {
                     loadQueryIntoExistingOrNewTab(data, infer, sameAs);
                 })

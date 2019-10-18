@@ -4,10 +4,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
+GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'UtilService', 'RDF4JRepositoriesRestService'];
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlService', '$filter', 'GraphConfigService', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'UtilService'];
-
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlService, $filter, GraphConfigService, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, UtilService) {
+function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, UtilService, RDF4JRepositoriesRestService) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -51,7 +50,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     };
 
     const getGraphConfigSamples = function () {
-        GraphConfigService.getGraphConfigSamples()
+        GraphConfigRestService.getGraphConfigSamples()
             .success(function (data) {
                 $scope.samples = _.filter(data, function (s) {
                     // Skip the currently edited config from samples and store it into a revert variable
@@ -82,7 +81,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
     if (configName) {
         $scope.isUpdate = true;
-        GraphConfigService.getConfig(configName)
+        GraphConfigRestService.getConfig(configName)
             .success(function (data) {
                 $scope.newConfig = data;
                 initForConfig();
@@ -116,7 +115,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     function initForConfig() {
         getGraphConfigSamples();
         $scope.createGraphConfig = function () {
-            GraphConfigService.createGraphConfig($scope.newConfig)
+            GraphConfigRestService.createGraphConfig($scope.newConfig)
                 .success(async function () {
                     await UtilService.showToastMessageWithDelay('Saved new graph config');
                     $location.url('graphs-visualizations');
@@ -126,7 +125,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         };
 
         $scope.updateGraphConfig = function () {
-            GraphConfigService.updateGraphConfig($scope.newConfig)
+            GraphConfigRestService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
                     await UtilService.showToastMessageWithDelay('Graph config saved');
                     $location.url('graphs-visualizations');
@@ -136,13 +135,13 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
         };
 
         $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        $scope.getNamespacesPromise = ClassInstanceDetailsService.getNamespaces($scope.getActiveRepository());
+        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
 
         const validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {
             if (!query) {
                 successCallback();
             } else {
-                GraphConfigService.validateQuery(query, queryType, params, all, oneOf)
+                GraphConfigRestService.validateQuery(query, queryType, params, all, oneOf)
                     .success(function () {
                         successCallback();
                     }).error(function (data) {
@@ -510,7 +509,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
-        SparqlService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
@@ -545,7 +544,7 @@ function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $loc
 
     // Add known prefixes
     function addKnownPrefixes() {
-        SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
+        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
             .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);

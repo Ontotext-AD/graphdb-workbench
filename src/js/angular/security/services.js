@@ -1,8 +1,10 @@
 import 'angular/core/services';
+import 'angular/rest/security.rest.service';
 
 const securityServices = angular.module('graphdb.framework.security.services', [
     'ngCookies',
-    'toastr'
+    'toastr',
+    'graphdb.framework.rest.security.service'
 ]);
 
 securityServices.factory('$unauthorizedInterceptor', ['$q', '$location', '$cookies', '$rootScope', function ($q, $location, $cookies, $rootScope) {
@@ -28,7 +30,8 @@ securityServices.factory('$unauthorizedInterceptor', ['$q', '$location', '$cooki
     };
 }]);
 
-securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', function ($http, $cookies, $cookieStore, toastr, $location, $rootScope) {
+securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService',
+    function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService) {
     const jwtAuth = this;
 
     $rootScope.deniedPermissions = {};
@@ -74,7 +77,7 @@ securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toas
         this.auth = $cookies[this.authCookieName];
         this.principal = $cookieStore.get(this.principalCookieName);
 
-        $http.get('rest/security/all').then(function (res) {
+        SecurityRestService.getSecurityConfig().then(function (res) {
             that.securityEnabled = res.data.enabled;
             that.externalAuth = res.data.hasExternalAuth;
             that.authImplementation = res.data.authImplementation;
@@ -92,13 +95,12 @@ securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toas
                 } else {
                     // update the user principal only when there is one
                     if (that.principal) {
-                        $http.get('rest/security/user/' + encodeURIComponent(that.principal.username)).then(function (res) {
+                        SecurityRestService.getUser(that.principal.username).then(function (res) {
                             that.principal.appSettings = res.data.appSettings;
                             // Don't update the authorities for the time being as those returned by this API
                             // aren't expanded. User will need to logout and login again to get updated authorities.
                             // that.principal.authorities = res.data.grantedAuthorities;
                             $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
-
                         });
                     } else {
                         // we should always broadcast securityInit
@@ -118,7 +120,7 @@ securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toas
                     $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.hasOverrideAuth);
 
                 } else {
-                    $http.get('rest/security/user/admin').then(function (res) {
+                    SecurityRestService.getAdminUser().then(function (res) {
                         that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities}
                         $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.hasOverrideAuth);
                     });
@@ -157,7 +159,7 @@ securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toas
     this.toggleSecurity = function (enabled) {
         if (enabled !== this.securityEnabled) {
             this.securityEnabled = enabled;
-            $http.post('rest/security', enabled ? 'true' : 'false').then(function (res) {
+            SecurityRestService.toggleSecurity(enabled).then(function () {
                 toastr.success('Security has been ' + (enabled ? 'enabled.' : 'disabled.'));
                 that.clearCookies();
                 that.initSecurity();
@@ -175,7 +177,7 @@ securityServices.service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toas
             } else {
                 this.freeAccessPrincipal = undefined;
             }
-            $http.post('rest/security/freeaccess', {
+            SecurityRestService.setFreeAccess({
                 enabled: enabled ? 'true' : 'false',
                 authorities: authorities,
                 appSettings: appSettings

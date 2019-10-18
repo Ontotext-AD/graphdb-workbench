@@ -1,6 +1,6 @@
 import 'angular/autocomplete/app';
 import 'angular/autocomplete/controllers';
-import 'angular/autocomplete/autocomplete.rest.service';
+import 'angular/rest/autocomplete.rest.service';
 import {FakeModal} from '../mocks';
 
 let mocks = angular.module('Mocks', []);

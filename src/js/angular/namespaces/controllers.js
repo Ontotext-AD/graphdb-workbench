@@ -1,11 +1,14 @@
 import 'angular/core/services';
 import 'angular/security/services';
 import 'angular/repositories/services';
+import 'angular/rest/rdf4j.repositories.rest.service';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.repositories.services',
     'graphdb.framework.security.services',
+    'graphdb.framework.rest.repositories.service',
+    'graphdb.framework.rest.rdf4j.repositories.service',
     'toastr'
 ];
 
@@ -27,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService',
-    function ($scope, $http, $timeout, $repositories, toastr, $modal, $jwtAuth, ModalService) {
+sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService',
+    function ($scope, $http, $timeout, $repositories, toastr, $modal, $jwtAuth, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -45,40 +48,38 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
 
             $scope.loader = true;
             $scope.namespaces = {};
-            $http({
-                url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces',
-                method: 'GET'
-            }).success(function (data) {
-                $scope.namespaces = data.results.bindings.map(function (e) {
-                    return {
-                        prefix: e.prefix.value,
-                        namespace: e.namespace.value
-                    };
-                });
-                if ($scope.namespaces.length > 0) {
-                    $scope.namespaces.sort(function (a, b) {
-                        const prefixA = a.prefix.toUpperCase(); // ignore upper and lowercase
-                        const prefixB = b.prefix.toUpperCase(); // ignore upper and lowercase
-                        if (prefixA < prefixB) {
-                            return -1;
-                        }
-                        if (prefixA > prefixB) {
-                            return 1;
-                        }
-                        return 0;
+            RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
+                .success(function (data) {
+                    $scope.namespaces = data.results.bindings.map(function (e) {
+                        return {
+                            prefix: e.prefix.value,
+                            namespace: e.namespace.value
+                        };
                     });
-                    $scope.matchedElements = $scope.namespaces;
-                    $scope.changePagination();
-                }
-                if ($scope.namespaces.length === 0) {
-                    // Remove the loader ourselves
+                    if ($scope.namespaces.length > 0) {
+                        $scope.namespaces.sort(function (a, b) {
+                            const prefixA = a.prefix.toUpperCase(); // ignore upper and lowercase
+                            const prefixB = b.prefix.toUpperCase(); // ignore upper and lowercase
+                            if (prefixA < prefixB) {
+                                return -1;
+                            }
+                            if (prefixA > prefixB) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        $scope.matchedElements = $scope.namespaces;
+                        $scope.changePagination();
+                    }
+                    if ($scope.namespaces.length === 0) {
+                        // Remove the loader ourselves
+                        $scope.loader = false;
+                    } // else let the loaderPostRepeatDirective do it
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg);
                     $scope.loader = false;
-                } // else let the loaderPostRepeatDirective do it
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg);
-                $scope.loader = false;
-            });
+                });
         };
 
         $scope.changePagination = function () {
@@ -113,34 +114,28 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
 
         $scope.saveNamespace = function (prefix, namespace) {
             $scope.loader = true;
-            return $http({
-                url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces/' + prefix,
-                method: 'PUT',
-                data: namespace
-            }).success(function () {
-                $scope.getNamespaces();
-                $scope.loader = false;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+            return RDF4JRepositoriesRestService.updateNamespacePrefix($repositories.getActiveRepository(), namespace, prefix)
+                .success(function () {
+                    $scope.getNamespaces();
+                    $scope.loader = false;
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                    $scope.loader = false;
+                });
         };
 
         $scope.editPrefix = function (oldPrefix, newPrefix) {
             $scope.loader = true;
-            $http({
-                url: 'rest/repositories/' + $repositories.getActiveRepository() + '/prefix',
-                method: 'POST',
-                params: {from: oldPrefix, to: newPrefix}
-            }).success(function () {
-                $scope.getNamespaces();
-                $scope.loader = false;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+            RepositoriesRestService.getPrefix($repositories.getActiveRepository(), {from: oldPrefix, to: newPrefix})
+                .success(function () {
+                    $scope.getNamespaces();
+                    $scope.loader = false;
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                    $scope.loader = false;
+                });
         };
 
         $scope.confirmReplace = function (okCallback, cancelCallback) {
@@ -270,32 +265,30 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
             } else {
                 prefix = namespace;
             }
-            $http({
-                url: 'repositories/' + $repositories.getActiveRepository() + '/namespaces/' + prefix,
-                method: 'DELETE'
-            }).success(function () {
-                if (namespaces && namespaces.length > 0) {
-                    namespace = namespaces.shift();
-                    deleteNamespace(namespace, namespaces);
-                } else {
-                    $scope.selectedAll = false;
-                    $scope.namespace = {};
-                    $scope.getNamespaces();
-                    $scope.searchNamespaces = '';
-                    $scope.haveSelected = false;
-                    $scope.loader = false;
-                    $scope.displayedNamespaces = [];
-                    if (namespaces === undefined) {
-                        toastr.success('Namespace with prefix \'' + prefix + '\' was deleted successfully.', '');
+            RDF4JRepositoriesRestService.deleteNamespacePrefix($repositories.getActiveRepository(), prefix)
+                .success(function () {
+                    if (namespaces && namespaces.length > 0) {
+                        namespace = namespaces.shift();
+                        deleteNamespace(namespace, namespaces);
                     } else {
-                        toastr.success('Selected namespaces were deleted successfully.', '');
+                        $scope.selectedAll = false;
+                        $scope.namespace = {};
+                        $scope.getNamespaces();
+                        $scope.searchNamespaces = '';
+                        $scope.haveSelected = false;
+                        $scope.loader = false;
+                        $scope.displayedNamespaces = [];
+                        if (namespaces === undefined) {
+                            toastr.success('Namespace with prefix \'' + prefix + '\' was deleted successfully.', '');
+                        } else {
+                            toastr.success('Selected namespaces were deleted successfully.', '');
+                        }
                     }
-                }
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                    $scope.loader = false;
+                });
         }
 
         $scope.checkIfSelectedNamespace = function () {
