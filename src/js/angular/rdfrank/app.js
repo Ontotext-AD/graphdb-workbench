@@ -3,26 +3,6 @@ import 'angular/core/directives';
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', ['ngRoute']);
 
-rdfRankApp.config(['$routeProvider', '$menuItemsProvider', function ($routeProvider, $menuItemsProvider) {
-    $routeProvider.when('/rdfrank', {
-        templateUrl: 'pages/rdfrank.html',
-        controller: 'RDFRankCtrl',
-        title: 'RDF Rank',
-        helpInfo: 'RDF Rank is an algorithm that identifies the more important or more popular ' +
-        'entities in the repository by examining their interconnectedness. The popularity of entities' +
-        ' can then be used to order the query results.'
-    });
-
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
-    $menuItemsProvider.addItem({
-        label: 'RDF Rank',
-        href: 'rdfrank',
-        order: 45,
-        parent: 'Setup',
-        role: 'IS_AUTHENTICATED_FULLY'
-    });
-}]);
-
 rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService', 'RDF4JRepositoriesRestService',
     function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService, RDF4JRepositoriesRestService) {
 

@@ -21,35 +21,4 @@ const modules = [
     'graphdb.framework.settings'
 ];
 
-const repositoriesApp = angular.module('graphdb.framework.repositories', modules);
-
-repositoriesApp.config(['$menuItemsProvider', '$routeProvider', function ($menuItemsProvider, $routeProvider) {
-
-    $routeProvider.when('/repository', {
-        templateUrl: 'pages/repositories.html',
-        controller: 'LocationsAndRepositoriesCtrl',
-        title: 'Repositories',
-        helpInfo: 'The Repositories view is used to manage repositories and connect to remote locations. '
-        + 'A location represents a local or remote instance of GraphDB. '
-        + 'Only a single location can be active at a given time.'
-    }).when('/repository/create', {
-        templateUrl: 'pages/repository.html',
-        controller: 'AddRepositoryCtrl',
-        title: 'Create Repository'
-    }).when('/repository/edit/:repositoryId', {
-        templateUrl: 'pages/repository.html',
-        controller: 'EditRepositoryCtrl',
-        title: 'Edit Repository'
-    });
-
-    $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
-    $menuItemsProvider.addItem({
-        label: 'Repositories', href: 'repository', order: 1, role: 'ROLE_REPO_MANAGER', parent: 'Setup',
-        children: [{
-            href: 'repository/create',
-            children: []
-        }]
-    });
-
-}]);
-
+angular.module('graphdb.framework.repositories', modules);
