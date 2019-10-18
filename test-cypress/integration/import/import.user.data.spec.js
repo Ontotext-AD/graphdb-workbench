@@ -3,9 +3,10 @@ import ImportSteps from '../../steps/import-steps';
 describe('Import screen validation - user data', () => {
 
     let repositoryId;
-    let initialData = "<urn:s1> <urn:p1> <urn:o1>. <urn:s2> <urn:p2> <urn:o2>.";
-    let replacementData = "<urn:s1-replaced> <urn:p1-replaced> <urn:o1-replaced>. <urn:s2-replaced> <urn:p2-replaced> <urn:o2-replaced>.";
-    let preDefinedGraphData = "<urn:graph1> {<urn:s1-custom> <urn:p1-custon> <urn:o1-custon>. <urn:s2-custon> <urn:p2-custon> <urn:o2-custon>.}";
+    const INITIAL_DATA = "<urn:s1> <urn:p1> <urn:o1>.";
+    const REPLACEMENT_DATA = "<urn:replaced-s1> <urn:replaced-p1> <urn:replaced-o1>.";
+    const PRE_DEFINED_INITIAL_GRAPH_DATA = "<urn:graph1> {<urn:s1-custom> <urn:p1-custom> <urn:o1-custom>.}";
+    const PRE_DEFINED_REPLACED_GRAPH_DATA = "<urn:graph1> {<urn:replaced-s1-custom> <urn:replaced-p1-custom> <urn:replaced-o1-custom>.}";
 
     const RDF_TEXT_SNIPPET_1 = '@prefix d:<http://learningsparql.com/ns/data#>.\n' +
         '@prefix dm:<http://learningsparql.com/ns/demo#>.\n\n' +
@@ -127,34 +128,81 @@ describe('Import screen validation - user data', () => {
             .removeUploadedFiles();
     });
 
-    it.only('Import RDF snippet in the default graph (from data)', () => {
-        prepareImportRDFSnippet(initialData);
-        getImportFromDataRadioButton().click();
-        getImportSettingsImportButton().click();
+    it('Import RDF snippet in the default graph (from data) and replace data in the default graph', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(INITIAL_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
+        getDeleteImportEntryButton().click();
+        verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(REPLACEMENT_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importFromData(true, "http://www.openrdf.org/schema/sesame#nil")
+        verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
+    it('Import RDF snippet with a custom graph (from data) and replace data in the custom graph', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(PRE_DEFINED_INITIAL_GRAPH_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
+        getDeleteImportEntryButton().click();
+        verifyGraphData("urn:graph1", "urn:s1-custom", "urn:p1-custom", "urn:o1-custom", "urn:graph1", false, "urn:s1-custom");
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(PRE_DEFINED_REPLACED_GRAPH_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importFromData(true, "urn:graph1")
+        verifyGraphData("urn:graph1", "urn:replaced-s1-custom", "urn:replaced-p1-custom", "urn:replaced-o1-custom", "urn:graph1", true, "urn:s1-custom");
+    })
 
-    //below import-related functions are for testing the graph replacement functionality window, as it is skipped in the original import tests.
-    function getImportRDFTextSnippetButton() {
-        return cy.get('.import-rdf-snippet-btn');
-    }
+    it('Import RDF snippet in the default graph (The default graph) and replace data in the default graph', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(INITIAL_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importInTheDefaultGraph(false);
+        getDeleteImportEntryButton().click();
+        verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(REPLACEMENT_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importInTheDefaultGraph(true)
+        verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
+    })
 
-    function getImportTextArea() {
-        return cy.get('#wb-import-textarea');
-    }
-
-    function getImportRDFFormatButton() {
-        return cy.get('.import-format-dropdown');
-    }
-
-    function selectRDFImportFormat(format) {
-        cy.get('.import-format-dropdown-btn').click();
-        return cy.get(`.dropdown-item:contains(${format})`);
-    }
-
-    function getTextSnippetImportButton() {
-        return cy.get('#wb-import-importText');
-    }
+    it('Import RDF snippet in a named graph (Named graph) and replace data in the named graph', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(INITIAL_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importInNamedGraph(false, "http://graph1");
+        getDeleteImportEntryButton().click();
+        verifyGraphData("http://graph1", "urn:s1", "urn:p1", "urn:o1", "http://graph1", false, "urn:s1");
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(REPLACEMENT_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton();
+        importInNamedGraph(true, "http://graph1")
+        verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
+    });
 
     function getImportFromDataRadioButton() {
         return cy.get('.from-data-btn');
@@ -176,15 +224,74 @@ describe('Import screen validation - user data', () => {
         return cy.get('.replaced-graphs-input');
     }
 
+    function getAddGraphToReplaceButton() {
+        return cy.get('.add-graph-btn');
+    }
+
     function getImportSettingsImportButton() {
         return cy.get('.import-settings-import-button');
     }
 
-    function prepareImportRDFSnippet(snippetToImport) {
-        getImportRDFTextSnippetButton().click();
-        getImportTextArea().type('{ctrl}a{backspace}', {force: true});
-        getImportTextArea().invoke('val', snippetToImport).trigger('change', {force: true});
-        selectRDFImportFormat("TriG").click();
-        getTextSnippetImportButton().click();
+    function getReplaceGraphConfirmationCheckbox() {
+        return cy.get('.graph-replace-confirm-checkbox');
+    }
+
+    function getNamedGraphInputField() {
+        return cy.get('.named-graph-input');
+    }
+
+    function getImportSuccessMessage() {
+        return cy.get('.text-success');
+    }
+
+    function getDeleteImportEntryButton() {
+        return cy.get('.icon-trash');
+    }
+
+    //verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
+    function verifyGraphData(graphName, s, p, o, c, checkForReplacedData, oldData) {
+        cy.visit('/graphs');
+        cy.get(`#export-graphs td a:contains(${graphName})`).click();
+        cy.get(`.uri-cell:contains(${s})`).should('be.visible');
+        cy.get(`.uri-cell:contains(${p})`).should('be.visible');
+        cy.get(`.uri-cell:contains(${o})`).should('be.visible');
+        cy.get(`.uri-cell:contains(${c})`).should('be.visible');
+
+        if (checkForReplacedData) {
+            cy.get(`.uri-cell:contains(${oldData})`).should('not.be.visible');
+        }
+    }
+
+    function importFromData(shouldReplaceGraph, graphToReplace) {
+        getImportFromDataRadioButton().click();
+        if (shouldReplaceGraph) {
+            getExistingDataReplacementCheckbox().click();
+            getReplacedGraphsInputField().type(graphToReplace);
+            getAddGraphToReplaceButton().click();
+            getReplaceGraphConfirmationCheckbox().click();
+        }
+        getImportSettingsImportButton().click();
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
+    }
+
+    function importInTheDefaultGraph(shouldReplaceGraph) {
+        getImportInDefaultGraphRadioButton().click();
+        if (shouldReplaceGraph) {
+            getExistingDataReplacementCheckbox().click();
+            getReplaceGraphConfirmationCheckbox().click();
+        }
+        getImportSettingsImportButton().click();
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
+    }
+
+    function importInNamedGraph(shouldReplaceGraph, graph) {
+        getImportInNamedGraphRadioButton().click();
+        getNamedGraphInputField().type(graph);
+        if (shouldReplaceGraph) {
+            getExistingDataReplacementCheckbox().click();
+            getReplaceGraphConfirmationCheckbox().click();
+        }
+        getImportSettingsImportButton().click();
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
     }
 });

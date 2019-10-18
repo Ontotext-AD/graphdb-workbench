@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-lg-3 col-lg-no-padding">
                             <div class="btn-group" dropdown>
-                                <button type="button" class="btn btn-primary" ng-click="addReplaceGraph(replaceGraph)">
+                                <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
                                     <span class="icon-plus"></span> Add graph
                                 </button>
                                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
@@ -140,7 +140,7 @@
                 </div>
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label">
-                        <input type="checkbox" ng-model="agree" ng-required="enableReplace">
+                        <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree" ng-required="enableReplace">
                         <strong>I understand that data in the replaced graphs will be cleared before importing new data.</strong>
                     </label>
                 </div>
