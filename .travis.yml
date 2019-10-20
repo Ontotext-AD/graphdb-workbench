@@ -23,6 +23,7 @@ addons:
   apt:
     packages:
       - libgconf-2-4
+      - parallel
 
 script:
   - npm run test:coverage

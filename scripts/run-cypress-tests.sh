@@ -28,4 +28,6 @@ echo "Installing Cypress tests module"
 npm install
 
 echo "Starting Cypress tests against GraphDB version ${GRAPHDB_VERSION}"
-npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
+#npm run test -- --record=false --config baseUrl=http://localhost:7200,video=false
+
+ls -1 ./integration/**/*.spec.js | parallel -I% --jobs 2 npm run test -- --spec % --record=false --config baseUrl=http://localhost:7200,video=false
