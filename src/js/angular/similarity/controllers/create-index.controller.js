@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.similarity.controllers.create', [])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityService', 'SparqlService', '$location', 'productInfo', 'UtilService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'UtilService', 'RDF4JRepositoriesRestService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityService, SparqlService, $location, productInfo, UtilService) {
+function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, UtilService, RDF4JRepositoriesRestService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -74,7 +74,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                 }
             }
             if ($scope.viewType === 'predication' && $scope.allSamples) {
-                SimilarityService.getIndexes()
+                SimilarityRestService.getIndexes()
                     .success(function (data) {
                         $scope.literalIndexes = ['no-index'].concat(data
                             .filter(function (idx) {
@@ -152,9 +152,9 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         $scope.newIndex.options = $scope.newIndex.options + ($scope.newIndex.options === '' ? '' : ' ') + option + ' ' + value;
     };
 
-    SimilarityService.getSearchQueries().success(function (data) {
+    SimilarityRestService.getSearchQueries().success(function (data) {
         $scope.searchQueries = data;
-        SimilarityService.getSamples().success(function (samples) {
+        SimilarityRestService.getSamples().success(function (samples) {
             defaultTabConfig.query = $location.search().selectQuery ? $location.search().selectQuery : samples['text']['literals'];
             defaultTabConfig.inference = !($location.search().infer === 'false');
             defaultTabConfig.sameAs = !($location.search().sameAs === 'false');
@@ -192,31 +192,28 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             return;
         }
 
-        $http.get('/rest/similarity/query',
-            {
-                params: {
-                    name: $scope.newIndex.name,
-                    options: $scope.newIndex.options,
-                    selectQuery: $scope.currentQuery.query,
-                    stopList: $scope.newIndex.stopList,
-                    infer: $scope.currentQuery.inference,
-                    sameAs: $scope.currentQuery.sameAs,
-                    type: $scope.viewType,
-                    analyzer: $scope.newIndex.analyzer
-                }
-            }).success(function (query) {
-                if (query) {
-                    $modal.open({
-                        templateUrl: 'pages/viewQuery.html',
-                        controller: 'ViewQueryCtrl',
-                        resolve: {
-                            query: function () {
-                                return query;
-                            }
+        SimilarityRestService.getQuery({
+            indexName: $scope.newIndex.name,
+            indexOptions: $scope.newIndex.options,
+            query: $scope.currentQuery.query,
+            indexStopList: $scope.newIndex.stopList,
+            queryInference: $scope.currentQuery.inference,
+            querySameAs: $scope.currentQuery.sameAs,
+            viewType: $scope.viewType,
+            indexAnalyzer: $scope.newIndex.analyzer
+        }).success(function (query) {
+            if (query) {
+                $modal.open({
+                    templateUrl: 'pages/viewQuery.html',
+                    controller: 'ViewQueryCtrl',
+                    resolve: {
+                        query: function () {
+                            return query;
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
+        });
     };
 
     $scope.$watch('newIndex.name', function () {
@@ -272,7 +269,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             return;
         }
         // Check existing indexes
-        SimilarityService.getIndexes()
+        SimilarityRestService.getIndexes()
             .success(function (data) {
                 data.forEach(function (index) {
                     if (index.name === $scope.newIndex.name) {
@@ -293,7 +290,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
                         indexType = 'textLiteral';
                     }
 
-                    SimilarityService.createIndex('POST',
+                    SimilarityRestService.createIndex('POST',
                         $scope.newIndex.name,
                         $scope.newIndex.options,
                         $scope.newIndex.query,
@@ -558,12 +555,11 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         }
     }
 
+    // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
-        // $scope.queryIsRunning = true;
-        ////console.log('Send namespaces request. Default token is : ' + $http.defaults.headers.common['Authorization']);
-        SparqlService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {
@@ -598,7 +594,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
     // Add known prefixes
     function addKnownPrefixes() {
-        SparqlService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
+        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
             .success(function (data) {
                 if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
                     window.editor.setValue(data);
@@ -747,16 +743,13 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
             isSearchQuery: $scope.page === 2
         };
 
-        return $http({
-            method: "put",
-            url: "/rest/similarity/search-query",
-            data: JSON.stringify(data)
-        }).then(async function () {
-            await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
-            $location.url('similarity');
-        }, function (response) {
-            toastr.error(getError(response), 'Could not change query!');
-        });
+        return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
+            .then(async function () {
+                await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+                $location.url('similarity');
+            }, function (response) {
+                toastr.error(getError(response), 'Could not change query!');
+            });
     };
 
     $scope.getCloseBtnMsg = function () {

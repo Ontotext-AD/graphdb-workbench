@@ -27,9 +27,9 @@ function humanize(number) {
     return result + si[exp - 1];
 }
 
-DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataService', 'UiScrollService', 'ModalService'];
+DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService'];
 
-function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataService, UiScrollService, ModalService) {
+function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService) {
 
     let timer;
 
@@ -40,7 +40,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
         $scope.status = 'WAIT';
 
-        GraphDataService.getRelationshipsData(selectedClasses, $scope.direction)
+        GraphDataRestService.getRelationshipsData(selectedClasses, $scope.direction)
             .success(function (matrixData) {
                 // Check classes empty
                 $scope.dependenciesData = {
@@ -59,7 +59,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const getRelationshipsClasses = function () {
-        GraphDataService.getRelationshipsClasses($scope.direction)
+        GraphDataRestService.getRelationshipsClasses($scope.direction)
             .success(function (classesData, status) {
                 $scope.allClasses.items = _.filter(classesData, classFilterFunc);
                 $scope.allNotFilteredClasses = classesData;
@@ -78,7 +78,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             return;
         }
         $scope.status = 'WAIT';
-        GraphDataService.getRelationshipsStatus()
+        GraphDataRestService.getRelationshipsStatus()
             .success(function (data) {
                 $scope.status = data;
                 if ($scope.status === 'IN_PROGRESS') {
@@ -187,7 +187,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.calculateDependencies = function () {
         $scope.status = 'WAIT';
         $scope.selectedClasses = undefined;
-        GraphDataService.calculateRelationships()
+        GraphDataRestService.calculateRelationships()
             .success(function (data) {
                 if (data.indexOf('ERROR;') === 0) {
                     toastr.error('There was an error while calculating dependencies: ' + data.substring('ERROR;'.length));

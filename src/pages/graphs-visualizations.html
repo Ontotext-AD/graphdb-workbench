@@ -88,7 +88,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h3>{{configLoaded.name}}</h3>
-                        <p>Search for an IRI to view it. This is a user defined advanced configuration.</p>
+                        <p>Search for an IRI to view it. <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span></p>
                         <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"

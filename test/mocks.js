@@ -8,6 +8,14 @@ FakeModal.prototype.open = function (options) {
     return this;
 };
 
+FakeModal.prototype.openSimpleModal = function () {
+    return this;
+};
+
+FakeModal.prototype.openCopyToClipboardModal = function () {
+    return this;
+};
+
 FakeModal.prototype.close = function (item) {
     this.resultDeferred.resolve(item);
     // Propagate promise resolution to 'then' functions using $apply().

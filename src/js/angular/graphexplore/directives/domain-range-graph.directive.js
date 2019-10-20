@@ -9,9 +9,9 @@ angular
     .constant('NON_COLLAPSED_REFLEXIVE_LINK_LIMIT', 6)
     .directive('domainRangeGraph', domainRangeGraphDirective);
 
-domainRangeGraphDirective.$inject = ['$rootScope', '$window', '$repositories', 'GraphDataService', '$location', 'localStorageService', '$timeout', 'toastr', 'ONTO_RED', 'ONTO_GREEN', 'ONTO_BLUE', 'NON_COLLAPSED_REFLEXIVE_LINK_LIMIT'];
+domainRangeGraphDirective.$inject = ['$rootScope', '$window', '$repositories', 'GraphDataRestService', '$location', 'localStorageService', '$timeout', 'toastr', 'ONTO_RED', 'ONTO_GREEN', 'ONTO_BLUE', 'NON_COLLAPSED_REFLEXIVE_LINK_LIMIT'];
 
-function domainRangeGraphDirective($rootScope, $window, $repositories, GraphDataService, $location, localStorageService, $timeout, toastr, ONTO_RED, ONTO_GREEN, ONTO_BLUE, NON_COLLAPSED_REFLEXIVE_LINK_LIMIT) {
+function domainRangeGraphDirective($rootScope, $window, $repositories, GraphDataRestService, $location, localStorageService, $timeout, toastr, ONTO_RED, ONTO_GREEN, ONTO_BLUE, NON_COLLAPSED_REFLEXIVE_LINK_LIMIT) {
     return {
         restrict: 'AE',
         template: '<div id="domain-range"></div>',
@@ -315,7 +315,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         var classNodeLabel = $location.search().name;
         var collapsed = $location.search().collapsed;
 
-        GraphDataService.getDomainRangeData(selectedRdfUri, collapsed)
+        GraphDataRestService.getDomainRangeData(selectedRdfUri, collapsed)
             .success(function (response, status, headers) {
                 scope.domainRangeGraphData = response;
             }).error(function (response) {

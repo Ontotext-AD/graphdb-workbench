@@ -13,17 +13,8 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ['$scope',
-        '$http',
-        '$cookies',
-        '$location',
-        '$timeout',
-        'ModalService',
-        'filterFilter',
-        '$repositories',
-        'toastr',
-        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr) {
-
+    ['$scope', '$http', '$cookies', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
+        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -74,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
             $scope.getGraphs = function () {
                 if ($scope.getActiveRepository() !== '') {
                     $scope.loader = true;
-                    $http.get('repositories/' + $scope.getActiveRepository() + '/contexts').success(function (data) {
+                    RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository()).success(function (data) {
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',
@@ -286,13 +277,7 @@ exportCtrl.controller('ExportCtrl',
                 }).result
                     .then(function () {
                         $timeout(function () {
-                            const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
-                            $http({
-                                method: 'POST',
-                                url: url,
-                                data: 'update=CLEAR ALL',
-                                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                            })
+                            RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), 'update=CLEAR ALL')
                                 .then(function () {
                                     $scope.deleting['*'] = false;
                                     toastr.success('Cleared repository ' + $repositories.getActiveRepository());
@@ -305,28 +290,19 @@ exportCtrl.controller('ExportCtrl',
                     });
             };
 
-            $scope.dropContext = function (ctx) {
-                if (!$scope.canWriteActiveRepo()) {
-                    return;
-                }
-                if (angular.isDefined(ctx)) {
-                    const longName = ctx.contextID.longName;
-                    $scope.deleting[ctx] = true;
-                    ModalService.openSimpleModal({
-                        title: 'Confirm clear graph',
-                        message: 'Are you sure you want to clear the ' + longName + '?',
-                        warning: true
-                    }).result
-                        .then(function () {
-                            $timeout(function () {
-                                const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
-                                const clearUri = ctx.contextID.clearUri;
-                                $http({
-                                    method: 'POST',
-                                    url: url,
-                                    data: 'update=CLEAR ' + clearUri,
-                                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                                }).then(function () {
+            function dropGraph(ctx) {
+                const longName = ctx.contextID.longName;
+                $scope.deleting[ctx] = true;
+                ModalService.openSimpleModal({
+                    title: 'Confirm clear graph',
+                    message: 'Are you sure you want to clear the ' + longName + '?',
+                    warning: true
+                }).result
+                    .then(function () {
+                        $timeout(function () {
+                            const data = `update=CLEAR ${ctx.contextID.clearUri}`;
+                            RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), data)
+                                .then(function () {
                                     $scope.deleting[ctx] = false;
                                     toastr.success('Cleared the ' + longName);
                                     $scope.getGraphs();
@@ -338,37 +314,33 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.deleting[ctx] = false;
                                     toastr.error('Failed to clear the ' + longName, getError(err, err.status));
                                 });
-                            }, 100);
-                        }, function () {
-                            $scope.deleting[ctx] = false;
-                        });
-                } else {
-                    const selectedGraphsForDelete = [];
-                    angular.forEach($scope.selectedGraphs.exportGraphs, function (value, key) {
-                        if (value) {
-                            selectedGraphsForDelete.push(key);
-                        }
+                        }, 100);
+                    }, function () {
+                        $scope.deleting[ctx] = false;
                     });
-                    if (selectedGraphsForDelete.length > 0) {
+            }
 
-                        $scope.deleting[ctx] = true;
-                        ModalService.openSimpleModal({
-                            title: 'Confirm clear graphs',
-                            message: 'Are you sure you want to clear the selected graphs?',
-                            warning: true
-                        }).result.then(function () {
-                            $timeout(function () {
-                                let counterOfClearedGraphs = 0;
-                                const url = 'repositories/' + $repositories.getActiveRepository() + '/statements';
-                                angular.forEach(selectedGraphsForDelete, function (contextID) {
-                                    const clearUri = $scope.graphsByValue[contextID].clearUri;
-                                    const longName = $scope.graphsByValue[contextID].longName;
-                                    $http({
-                                        method: 'POST',
-                                        url: url,
-                                        data: 'update=CLEAR ' + clearUri,
-                                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                                    }).then(function () {
+            function dropSelectedGraphs(ctx) {
+                const selectedGraphsForDelete = [];
+                angular.forEach($scope.selectedGraphs.exportGraphs, function (value, key) {
+                    if (value) {
+                        selectedGraphsForDelete.push(key);
+                    }
+                });
+
+                if (selectedGraphsForDelete.length > 0) {
+                    $scope.deleting[ctx] = true;
+                    ModalService.openSimpleModal({
+                        title: 'Confirm clear graphs',
+                        message: 'Are you sure you want to clear the selected graphs?',
+                        warning: true
+                    }).result.then(function () {
+                        $timeout(function () {
+                            let counterOfClearedGraphs = 0;
+                            angular.forEach(selectedGraphsForDelete, function (contextID) {
+                                const data = `update=CLEAR ${$scope.graphsByValue[contextID].clearUri}`;
+                                RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), data)
+                                    .then(function () {
                                         $scope.loader = true;
                                         $scope.selectedGraphs.exportGraphs[contextID] = false;
                                         delete $scope.selectedGraphs.exportGraphs[contextID];
@@ -384,15 +356,26 @@ exportCtrl.controller('ExportCtrl',
                                             $scope.loader = false;
                                         }
                                     }, function (err) {
+                                        const longName = $scope.graphsByValue[contextID].longName;
                                         toastr.error('Failed to clear the ' + longName, getError(err, err.status));
                                         $scope.selectedAll = false;
                                     });
-                                });
-                            }, 100);
-                        }, function () {
-                            $scope.deleting[ctx] = false;
-                        });
-                    }
+                            });
+                        }, 100);
+                    }, function () {
+                        $scope.deleting[ctx] = false;
+                    });
+                }
+            }
+
+            $scope.dropContext = function (ctx) {
+                if (!$scope.canWriteActiveRepo()) {
+                    return;
+                }
+                if (angular.isDefined(ctx)) {
+                    dropGraph(ctx);
+                } else {
+                    dropSelectedGraphs(ctx);
                 }
             };
         }]);

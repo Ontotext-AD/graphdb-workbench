@@ -2,28 +2,27 @@ import "angular/repositories/services";
 import "angular/repositories/controllers";
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
+import {FakeModal} from '../mocks';
 
 describe('==> Repository module controllers tests', function () {
 
     beforeEach(angular.mock.module('graphdb.framework.repositories.controllers'));
 
-
     describe('=> LocationsAndRepositories tests', function () {
-        var $repositories,
-            $httpBackend,
-            $location,
-            $window,
-            $controller,
-            $timeout,
-            $scope,
-            httpGetLocation,
-            httpGetActiveLocation,
-            httpGetRepositories,
-            modalInstance,
-            modalServiceMock,
-            jwtAuthMock,
-            httpSecurity,
-            httpDefaultUser;
+        let $repositories;
+        let $httpBackend;
+        let $location;
+        let $window;
+        let $controller;
+        let $timeout;
+        let $scope;
+        let httpGetLocation;
+        let httpGetActiveLocation;
+        let httpGetRepositories;
+        let modalInstance;
+        let jwtAuthMock;
+        let httpSecurity;
+        let httpDefaultUser;
 
         beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
             $repositories = _$repositories_;
@@ -33,33 +32,7 @@ describe('==> Repository module controllers tests', function () {
             $window = _$window_;
             $timeout = _$timeout_;
 
-            function FakeModal() {
-                this.resultDeferred = $q.defer();
-                this.result = this.resultDeferred.promise;
-            }
-
-            FakeModal.prototype.open = function () {
-                return this;
-            };
-
-            FakeModal.prototype.openSimpleModal = function () {
-                return this;
-            };
-
-            FakeModal.prototype.openCopyToClipboardModal = function () {
-                return this;
-            };
-
-            FakeModal.prototype.close = function (item) {
-                this.resultDeferred.resolve(item);
-                $rootScope.$apply(); // Propagate promise resolution to 'then' functions using $apply().
-            };
-            FakeModal.prototype.dismiss = function (item) {
-                this.resultDeferred.reject(item);
-                $rootScope.$apply(); // Propagate promise resolution to 'then' functions using $apply().
-            };
-
-            modalInstance = new FakeModal();
+            modalInstance = new FakeModal($q, $rootScope);
 
             jwtAuthMock = {};
 
@@ -70,7 +43,6 @@ describe('==> Repository module controllers tests', function () {
                 ModalService: modalInstance,
                 $jwtAuth: jwtAuthMock
             });
-
 
             httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, {});
             httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
@@ -85,7 +57,6 @@ describe('==> Repository module controllers tests', function () {
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
             });
-
         }));
 
         afterEach(function () {
@@ -256,32 +227,44 @@ describe('==> Repository module controllers tests', function () {
 
         describe('$scope.deleteRepository()', function () {
             it('should call $repositories.deleteRepository() on modal.close()', function () {
-                $httpBackend.flush();
-                var deleteRepository = '';
-                $repositories.deleteRepository = function (id) {
-                    deleteRepository = id;
-                };
-                $scope.deleteRepository('id');
+                const repoId = 'testrepo';
+                spyOn(modalInstance, 'openSimpleModal').and.returnValue(modalInstance);
+                $httpBackend.expectDELETE(`rest/repositories/${repoId}`).respond(200);
+
+                $scope.deleteRepository(repoId);
+
+                const argument = modalInstance.openSimpleModal.calls.first().args[0];
+                expect(argument).toEqual({
+                    title: 'Confirm delete',
+                    message: `Are you sure you want to delete the repository '${repoId}'?<p>All data in the repository will be lost.</p>`,
+                    warning: true
+                });
+
                 modalInstance.close();
-                expect(deleteRepository).toEqual('id');
-            })
+                $httpBackend.flush();
+
+                expect($scope.loader).toEqual(true);
+            });
         });
     });
 
     describe('=> AddRepositoryCtrl tests', function () {
         describe('isEnterprice == true', function () {
-            var $repositories,
-                $httpBackend,
-                $controller,
-                $scope,
-                locationMock,
-                routeParamsMock,
-                isEnterprise,
-                isFreeEdition,
-                httpDefaultUser,
-                httpSecurity;
+            let $repositories;
+            let $httpBackend;
+            let $controller;
+            let $scope;
+            let locationMock;
+            let routeParamsMock;
+            let isEnterprise;
+            let isFreeEdition;
+            let httpDefaultUser;
+            let httpSecurity;
+            let toastr;
+            let createController;
 
-            beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$controller_, $rootScope) {
+            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope) {
+                toastr = _toastr_;
                 $repositories = _$repositories_;
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
@@ -292,13 +275,19 @@ describe('==> Repository module controllers tests', function () {
                 routeParamsMock = {repositoryId: 'repo'};
 
                 $scope = $rootScope.$new();
-                var controller = $controller('AddRepositoryCtrl', {
-                    $scope: $scope,
-                    $location: locationMock,
-                    $routeParams: routeParamsMock,
-                    isEnterprise: isEnterprise,
-                    isFreeEdition: isFreeEdition
-                });
+
+                createController = () => {
+                    $controller('AddRepositoryCtrl', {
+                        $scope: $scope,
+                        $location: locationMock,
+                        $routeParams: routeParamsMock,
+                        isEnterprise: isEnterprise,
+                        isFreeEdition: isFreeEdition
+                    });
+                };
+
+                createController();
+
                 httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
                     username: 'admin',
                     appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
@@ -309,7 +298,6 @@ describe('==> Repository module controllers tests', function () {
                     overrideAuth: {enabled: false},
                     freeAccess: {enabled: false}
                 });
-
             }));
 
             afterEach(function () {
@@ -318,10 +306,40 @@ describe('==> Repository module controllers tests', function () {
             });
 
             it('should call $scope.getConfig with "worker" when isEnterprise', function () {
+                $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(200, {
+                    params: { param1: 'param1'},
+                    type: 'worker'
+                });
+
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/worker').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
-                expect($httpBackend.flush).not.toThrow();
+                // TODO: we should define expectation for this request as well but for some reason we get error for unsatisfied request
+                // $httpBackend.expectGET('rest/repositories/defaultConfig/worker').respond(200, {
+                //     params: { param1: 'param1'},
+                //     type: 'worker'
+                // });
+
+                $httpBackend.flush();
+
+                expect($scope.repositoryInfo.params).toEqual({ param1: 'param1'});
+                expect($scope.repositoryInfo.type).toEqual('worker');
+                expect($scope.loader).toEqual(false);
+            });
+
+            it('should show notification if getting configuration fails', () => {
+                spyOn(toastr, 'error');
+                $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(500, {
+                    error: {
+                        message: 'Get repo config error!'
+                    }
+                });
+
+                $httpBackend.flush();
+
+                expect(toastr.error).toHaveBeenCalledWith('Get repo config error!', 'Error');
+                expect($scope.loader).toEqual(false);
             });
 
             it('$scope.createRepoHttp() should call $repositories.init() and change location to /repository', function () {
