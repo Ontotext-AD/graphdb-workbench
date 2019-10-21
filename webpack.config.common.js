@@ -143,6 +143,14 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(js)$/,
+                exclude: [
+                    /node_modules/,
+                    path.resolve(__dirname, '/src/js/lib/')
+                ],
+                use: ['babel-loader']
+            },
+            {
                 test: /jquery.js/,
                 use: [
                     {
