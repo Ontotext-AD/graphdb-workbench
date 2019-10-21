@@ -12,7 +12,17 @@ PluginRegistry.add('route', {
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Monitor', href: '#', order: 1, role: 'ROLE_REPO_MANAGER', icon: 'icon-monitoring'},
-        {label: 'Queries and Updates', href: 'monitor/queries', order: 1, parent: 'Monitor'}
+        {
+            label: 'Monitor',
+            href: '#',
+            order: 1,
+            role: 'ROLE_REPO_MANAGER',
+            icon: 'icon-monitoring'
+        }, {
+            label: 'Queries and Updates',
+            href: 'monitor/queries',
+            order: 1,
+            parent: 'Monitor'
+        }
     ]
 });

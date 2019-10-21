@@ -44,9 +44,6 @@ PluginRegistry.add('route', [
         'title': 'Settings'
     }, {
         'url': '/accessdenied',
-        'module': 'graphdb.framework.security',
-        'path': 'security/app',
-        'chunk': 'security',
         'templateUrl': 'pages/accessdenied.html',
         'title': 'Access Denied'
     }, {
@@ -76,6 +73,12 @@ PluginRegistry.add('main.menu', {
                 children: []
             }]
         },
-        {label: 'My Settings', href: 'settings', order: 6, parent: 'Setup', role: 'ROLE_USER'}
+        {
+            label: 'My Settings',
+            href: 'settings',
+            order: 6,
+            parent: 'Setup',
+            role: 'ROLE_USER'
+        }
     ]
 });

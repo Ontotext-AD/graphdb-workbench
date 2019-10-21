@@ -10,7 +10,7 @@ module.exports = merge(commonConfig, {
     mode: 'production',
     output: {
         filename: '[name].[contentHash].bundle.js',
-        chunkFilename: '[name].[contentHash].bundle.js',
+        chunkFilename: 'chunks/[name].[contentHash].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {

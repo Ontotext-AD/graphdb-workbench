@@ -94,7 +94,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         return $('.main-menu').hasClass('collapsed');
     };
 
-    ///Copy to clipboard popover options
+    //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
         ModalService.openCopyToClipboardModal(uri);
     };

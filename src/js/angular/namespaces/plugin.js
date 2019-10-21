@@ -12,7 +12,17 @@ PluginRegistry.add('route', {
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
-        {label: 'Namespaces', href: 'namespaces', order: 30, parent: 'Setup'}
+        {
+            label: 'Setup',
+            href: '#',
+            order: 5,
+            role: 'IS_AUTHENTICATED_FULLY',
+            icon: "icon-settings"
+        }, {
+            label: 'Namespaces',
+            href: 'namespaces',
+            order: 30,
+            parent: 'Setup'
+        }
     ]
 });

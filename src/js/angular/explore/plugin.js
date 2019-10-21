@@ -2,7 +2,7 @@ PluginRegistry.add('route', [
     {
         'url': '/resource',
         'module': 'graphdb.framework.explore',
-        'chunk': 'explore-resource',
+        'chunk': 'explore',
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
@@ -10,7 +10,7 @@ PluginRegistry.add('route', [
     }, {
         'url': '/resource/edit',
         'module': 'graphdb.framework.explore',
-        'chunk': 'edit-resource',
+        'chunk': 'explore',
         'path': 'explore/app',
         'controller': 'EditResourceCtrl',
         'templateUrl': 'pages/edit.html',
@@ -18,7 +18,7 @@ PluginRegistry.add('route', [
     }, {
         'url': '/resource/:any*',
         'module': 'graphdb.framework.explore',
-        'chunk': 'any-resource',
+        'chunk': 'explore',
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
@@ -27,7 +27,11 @@ PluginRegistry.add('route', [
 ]);
 
 PluginRegistry.add('main.menu', {
-    'items': [
-        {label: 'Explore', href: '#', order: 1, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-data"}
-    ]
+    'items': [{
+        label: 'Explore',
+        href: '#',
+        order: 1,
+        role: 'IS_AUTHENTICATED_FULLY',
+        icon: "icon-data"
+    }]
 });

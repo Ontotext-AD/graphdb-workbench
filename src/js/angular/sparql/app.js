@@ -12,29 +12,7 @@ import 'lib/FileSaver-patch';
 
 angular
     .module('graphdb.framework.sparql')
-    .config(config)
     .run(run);
-
-config.$inject = ['$routeProvider', '$menuItemsProvider'];
-
-function config($routeProvider, $menuItemsProvider) {
-
-    $menuItemsProvider.addItem({
-        label: 'SPARQL',
-        href: 'sparql',
-        order: 2,
-        role: 'IS_AUTHENTICATED_FULLY',
-        icon: "icon-sparql"
-    });
-
-    $routeProvider.when('/sparql', {
-        templateUrl: 'pages/sparql.html',
-        controller: 'QueryEditorCtrl',
-        title: 'SPARQL Query & Update',
-        helpInfo: 'The SPARQL Query & Update view is a unified editor for queries and updates. '
-        + 'Use any type of SPARQL query and click Run to execute it.'
-    });
-}
 
 run.$inject = ['editableOptions'];
 

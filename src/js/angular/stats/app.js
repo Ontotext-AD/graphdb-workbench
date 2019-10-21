@@ -4,19 +4,6 @@ const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
 adminInfoApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider',
     function ($routeProvider, $locationProvider, $menuItemsProvider) {
-        $routeProvider.when('/sysinfo', {
-            templateUrl: 'pages/info.html',
-            controller: 'AdminInfoCtrl',
-            title: 'System information',
-            helpInfo: 'The System information view shows the configuration values of the JVM '
-            + 'running the GraphDB Workbench as well generate a detailed server report file you can use to hunt down issues'
-        }).when('/webapi', {
-            templateUrl: 'pages/webapi.html',
-            title: 'REST API documentation',
-            helpInfo: 'The REST API view documents the available public RESTful endpoints and '
-            + 'provides an interactive interface to execute the requests.'
-        });
-
         const getDocLink = function () {
             const pi = $menuItemsProvider.getProductInfo();
             if (pi.productType) {
@@ -44,6 +31,7 @@ adminInfoApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider'
             }
         };
 
+        // FIXME: These are dynamic. Test and find a way how to provide them through the plugin definition.
         $menuItemsProvider.addItem({label: 'Setup', href: '#', order: 7, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-settings'});
         $menuItemsProvider.addItem({label: 'Help', href: '#', order: 8, icon: 'icon-help'});
         $menuItemsProvider.addItem({label: 'System information', href: 'sysinfo', order: 50, parent: 'Help', role: 'ROLE_ADMIN'});
@@ -53,6 +41,7 @@ adminInfoApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider'
         $menuItemsProvider.addItem({label: 'Support', hrefFun: getSupportLink, order: 4, parent: 'Help', icon: 'icon-external'});
     }]);
 
+// FIXME: Move this in separate file.
 adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth',
     function ($scope, $http, toastr, $timeout, $jwtAuth) {
 
