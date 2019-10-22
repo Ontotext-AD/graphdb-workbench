@@ -26,17 +26,3 @@ exportDirectives.directive('paginations', function () {
         }
     };
 });
-
-exportDirectives.directive('formatDropdown', function () {
-    return {
-        restrict: 'A',
-        scope: {
-            selectFormat: '&'
-        },
-        controller: function ($scope, $element) {
-
-        },
-        templateUrl: 'res/formatsDropdown.html',
-        replace: true
-    };
-});
