@@ -6,7 +6,7 @@ import 'angular/security/app';
 import 'angular/sparql/app';
 // import 'angular/graphexplore/app';
 // import 'angular/namespaces/app';
-import 'angular/explore/app';
+// import 'angular/explore/app';
 import 'angular/stats/app';
 import 'angular/resources/app';
 // import 'angular/queries/app';
@@ -27,7 +27,7 @@ const modules = [
     // 'graphdb.framework.impex.export',
     // 'graphdb.framework.impex.import',
     'graphdb.framework.security',
-    'graphdb.framework.explore',
+    // 'graphdb.framework.explore',
     'graphdb.framework.sparql',
     // 'graphdb.framework.graphexplore',
     // 'graphdb.framework.namespaces',
@@ -75,7 +75,6 @@ const moduleDefinition = function (productInfo) {
                             }
                             console.log('route: ', route);
                             return import(`angular/${route.path}`).then(module => {
-                                console.log('module: ', module);
                                 $ocLazyLoad.inject(route.module);
                                 console.log('LAZY: ', route.module);
                             });

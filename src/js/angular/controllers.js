@@ -6,7 +6,6 @@ import 'angular/rest/rdf4j.repositories.rest.service';
 angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core',
-        'graphdb.framework.explore',
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',
