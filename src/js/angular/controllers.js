@@ -1,6 +1,7 @@
 /* eslint quotes: "off" */
 import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
+import 'angular/rest/rdf4j.repositories.rest.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -9,7 +10,8 @@ angular
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',
-        'graphdb.framework.rest.sparql.service'
+        'graphdb.framework.rest.sparql.service',
+        'graphdb.framework.rest.rdf4j.repositories.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -59,9 +61,9 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -447,6 +449,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             $($pageSlider[$scope.activePage]).css("left", 0 + "px");
             $($(".btn-toolbar.pull-right .btn-group .btn")[0]).focus();
         }, 50);
+    };
+
+    $scope.getTutorialPageHtml = function(page) {
+        return $sce.trustAsHtml(page.info);
     };
 
     $scope.checkSubMenuPosition = function (index) {

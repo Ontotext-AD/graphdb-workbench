@@ -1,8 +1,8 @@
 PluginRegistry.add('route', {
     'url': '/',
-    'module': 'graphdb.workbench.se.controllers',
+    'module': 'graphdb.workbench',
     'chunk': 'home',
     'path': 'controllers',
-    'controller': 'mainCtrl',
+    'controller': 'homeCtrl',
     'templateUrl': 'pages/home.html'
 });
