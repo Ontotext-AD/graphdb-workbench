@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$rootScope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'UtilService', 'RDF4JRepositoriesRestService'];
+GraphConfigCtrl.$inject = ['$scope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'UtilService', 'RDF4JRepositoriesRestService'];
 
-function GraphConfigCtrl($scope, $rootScope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, UtilService, RDF4JRepositoriesRestService) {
+function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, UtilService, RDF4JRepositoriesRestService) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
