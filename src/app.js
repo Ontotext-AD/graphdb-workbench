@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import 'angular/repositories/app';
+// import 'angular/repositories/app';
 // import 'angular/export/app';
 // import 'angular/import/app';
 import 'angular/security/app';
@@ -23,7 +23,7 @@ const modules = [
     'ngRoute',
     'graphdb.workbench.se.controllers',
     'graphdb.framework.core',
-    'graphdb.framework.repositories',
+    // 'graphdb.framework.repositories',
     // 'graphdb.framework.impex.export',
     // 'graphdb.framework.impex.import',
     'graphdb.framework.security',
