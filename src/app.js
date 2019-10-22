@@ -8,7 +8,7 @@ import 'angular/sparql/app';
 // import 'angular/namespaces/app';
 // import 'angular/explore/app';
 import 'angular/stats/app';
-import 'angular/resources/app';
+// import 'angular/resources/app';
 // import 'angular/queries/app';
 // import 'angular/externalsync/app';
 import 'angular/controllers';
@@ -32,7 +32,7 @@ const modules = [
     // 'graphdb.framework.graphexplore',
     // 'graphdb.framework.namespaces',
     'graphdb.framework.stats',
-    'graphdb.framework.jmx.resources',
+    // 'graphdb.framework.jmx.resources',
     // 'graphdb.framework.jmx.queries',
     // 'graphdb.framework.externalsync',
     // 'graphdb.framework.autocomplete',

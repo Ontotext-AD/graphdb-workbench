@@ -1,6 +1,7 @@
 import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
+import 'angular/rest/monitoring.rest.service';
 import 'angular/rest/rdf4j.repositories.rest.service';
 
 angular
@@ -11,6 +12,7 @@ angular
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service'
     ])
     .controller('mainCtrl', mainCtrl)
