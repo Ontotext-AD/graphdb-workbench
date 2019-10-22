@@ -1,7 +1,7 @@
 import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/export/controllers';
-import 'angular/export/directives';
+import 'angular/directives/paginations';
 import 'angular/repositories/services';
 import 'lib/FileSaver-patch';
 
@@ -11,7 +11,7 @@ const modules = [
     'ngRoute',
     'ngCookies',
     'graphdb.framework.impex.export.controllers',
-    'graphdb.framework.impex.export.directives',
+    'graphdb.framework.directives.paginations',
     'graphdb.framework.repositories.services',
     'graphdb.framework.core.directives'
 ];

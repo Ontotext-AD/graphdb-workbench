@@ -6,9 +6,9 @@ import 'angular/utils/file-types';
 const modules = [
     'ngCookies',
     'ui.bootstrap',
+    'toastr',
     'graphdb.framework.repositories.services',
     'graphdb.framework.security.services',
-    'toastr',
     'graphdb.workbench.utils.filetypes'
 ];
 
@@ -98,6 +98,20 @@ exportCtrl.controller('ExportCtrl',
                 } else {
                     $scope.loader = false;
                 }
+            };
+
+            $scope.onGraphSearch = function() {
+                $scope.matchedElements = [];
+                $scope.deselectAll();
+                $scope.filterResults();
+            };
+
+            $scope.filterResults = function() {
+                angular.forEach($scope.graphs, function (item) {
+                    if (item.contextID.value.indexOf($scope.exportFilter) !== -1) {
+                        $scope.matchedElements.push(item);
+                    }
+                });
             };
 
             $scope.downloadExport = function (downloadUrl, format) {
