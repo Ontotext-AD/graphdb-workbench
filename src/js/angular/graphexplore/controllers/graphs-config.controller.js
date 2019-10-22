@@ -1,12 +1,16 @@
+import 'angular/utils/notifications';
+
 const HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY = 'hide-graph-config-help';
 
 angular
-    .module('graphdb.framework.graphexplore.controllers.graphviz.config', [])
+    .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
+        'graphdb.framework.utils.notifications'
+    ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'UtilService', 'RDF4JRepositoriesRestService'];
+GraphConfigCtrl.$inject = ['$scope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService'];
 
-function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, UtilService, RDF4JRepositoriesRestService) {
+function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -117,7 +121,7 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
         $scope.createGraphConfig = function () {
             GraphConfigRestService.createGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await UtilService.showToastMessageWithDelay('Saved new graph config');
+                    await Notifications.showToastMessageWithDelay('Saved new graph config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
                 toastr.error(getError(data), 'Error! Could not create graph config');
@@ -127,7 +131,7 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
         $scope.updateGraphConfig = function () {
             GraphConfigRestService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await UtilService.showToastMessageWithDelay('Graph config saved');
+                    await Notifications.showToastMessageWithDelay('Graph config saved');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
                 toastr.error(getError(data), 'Error! Could not save graph config');

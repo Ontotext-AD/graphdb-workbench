@@ -1,10 +1,14 @@
 import 'angular/core/services';
 import 'angular/core/directives';
+import 'angular/utils/uri-utils';
 
-const rdfRankApp = angular.module('graphdb.framework.rdfrank', ['ngRoute']);
+const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
+    'ngRoute',
+    'graphdb.framework.utils.uriutils'
+]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UtilService', 'RDF4JRepositoriesRestService',
-    function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UtilService, RDF4JRepositoriesRestService) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService',
+    function ($scope, $http, $interval, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService) {
 
         const refreshStatus = function () {
             $http.get('rest/rdfrank/status')
@@ -226,7 +230,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$http', '$interval', 'toastr', 
         };
 
         $scope.addToList = function (list, iri) {
-            if (UtilService.isValidIri(iri.text)) {
+            if (UriUtils.isValidIri(iri.text)) {
                 _addToList(list, expandPrefix(iri.text, $scope.namespaces));
             } else {
                 refreshFilteringConfig();

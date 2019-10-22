@@ -1,10 +1,14 @@
+import 'angular/utils/notifications';
+
 angular
-    .module('graphdb.framework.similarity.controllers.create', [])
+    .module('graphdb.framework.similarity.controllers.create', [
+        'graphdb.framework.utils.notifications'
+    ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'UtilService', 'RDF4JRepositoriesRestService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, UtilService, RDF4JRepositoriesRestService) {
+function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -745,7 +749,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
             .then(async function () {
-                await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+                await Notifications.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
                 $location.url('similarity');
             }, function (response) {
                 toastr.error(getError(response), 'Could not change query!');

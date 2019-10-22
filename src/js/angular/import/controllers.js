@@ -1,15 +1,17 @@
 import 'angular/core/services';
+import 'angular/utils/uri-utils';
 
 const modules = [
     'ui.bootstrap',
+    'toastr',
     'graphdb.framework.repositories.services',
-    'toastr'
+    'graphdb.framework.utils.uriutils'
 ];
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$timeout', '$repositories', '$modal', '$filter', '$rootScope', '$jwtAuth', '$location',
-    function ($scope, $http, toastr, $interval, $timeout, $repositories, $modal, $filter, $rootScope, $jwtAuth, $location) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location',
+    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -366,7 +368,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         };
     }]);
 
-importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$interval', '$controller', function ($scope, $http, toastr, $interval, $controller) {
+importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller', function ($scope, $http, toastr, $controller) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'server';
@@ -406,7 +408,7 @@ importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$interval', '
     $scope.init();
 }]);
 
-importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$rootScope', '$modal', function ($scope, Upload, $http, toastr, $controller, $rootScope, $modal) {
+importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$modal', function ($scope, Upload, $http, toastr, $controller, $modal) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'upload';
@@ -627,7 +629,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.init();
 }]);
 
-importCtrl.controller('UrlCtrl', ['$scope', '$controller', '$modalInstance', 'toastr', function ($scope, $controller, $modalInstance) {
+importCtrl.controller('UrlCtrl', ['$scope', '$modalInstance', 'toastr', function ($scope, $modalInstance) {
     $scope.importFormat = {name: 'Auto', type: ''};
     $scope.startImport = true;
 
@@ -644,7 +646,7 @@ importCtrl.controller('UrlCtrl', ['$scope', '$controller', '$modalInstance', 'to
     };
 }]);
 
-importCtrl.controller('TextCtrl', ['$scope', '$controller', '$modalInstance', 'toastr', 'text', 'format', function ($scope, $controller, $modalInstance, toastr, text, format) {
+importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format', function ($scope, $modalInstance, text, format) {
     $scope.importFormats = [
         {name: 'RDF/JSON', type: 'application/rdf+json'},
         {name: 'JSON-LD', type: 'application/ld+json'},
@@ -678,8 +680,7 @@ importCtrl.controller('TextCtrl', ['$scope', '$controller', '$modalInstance', 't
     };
 }]);
 
-
-importCtrl.controller('TabCtrl', ['$scope', '$rootScope', '$location', function ($scope, $rootScope, $location) {
+importCtrl.controller('TabCtrl', ['$scope', '$location', function ($scope, $location) {
     $scope.viewType = $location.hash();
     if ($scope.viewType !== 'user' && $scope.viewType !== 'server') {
         $scope.viewType = 'user';
@@ -696,7 +697,8 @@ importCtrl.controller('TabCtrl', ['$scope', '$rootScope', '$location', function 
     $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
 }]);
 
-importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UtilService', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', function ($scope, $modalInstance, toastr, UtilService, settings, hasParserSettings, defaultSettings, isMultiple) {
+importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple',
+    function ($scope, $modalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple) {
     $scope.hasError = function (error, input) {
         return _.find(error, function (o) {
             return input === o['$name'];
@@ -756,7 +758,7 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr'
     $scope.addReplaceGraph = function (graph) {
         let valid = true;
         if (graph !== 'default') {
-            valid = UtilService.isValidIri(graph);
+            valid = UriUtils.isValidIri(graph);
         }
         $scope.settingsForm.replaceGraph.$setTouched();
         $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', valid);
