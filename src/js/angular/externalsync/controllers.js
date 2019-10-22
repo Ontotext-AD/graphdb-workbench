@@ -566,24 +566,23 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 }
 
-        DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
-        function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
-            $scope.force = false;
-            $scope.type = type;
-            $scope.isExternal = isExternal;
+DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
+function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+    $scope.force = false;
+    $scope.type = type;
+    $scope.isExternal = isExternal;
 
-            $scope.ok = function () {
-                $modalInstance.close($scope.force);
-            };
+    $scope.ok = function () {
+        $modalInstance.close($scope.force);
+    };
 
-            $scope.cancel = function () {
-                $modalInstance.dismiss();
-            };
-        }
+    $scope.cancel = function () {
+        $modalInstance.dismiss();
+    };
+}
 
-
-        ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
-        function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
+ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
+function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
 
     $scope.connector = connector;
 
