@@ -1,21 +1,5 @@
 import 'angular/core/services';
-// import 'angular/repositories/app';
-// import 'angular/export/app';
-// import 'angular/import/app';
-// import 'angular/security/app';
-// import 'angular/sparql/app';
-// import 'angular/graphexplore/app';
-// import 'angular/namespaces/app';
-// import 'angular/explore/app';
-// import 'angular/stats/app';
-// import 'angular/resources/app';
-// import 'angular/queries/app';
-// import 'angular/externalsync/app';
 import 'angular/controllers';
-// import 'angular/autocomplete/app';
-// import 'angular/ontorefine/app';
-// import 'angular/rdfrank/app';
-// import 'angular/similarity/app';
 import 'angular/angularCancelOnNavigateModule';
 import 'oclazyload';
 
@@ -23,22 +7,6 @@ const modules = [
     'ngRoute',
     'graphdb.workbench.se.controllers',
     'graphdb.framework.core',
-    // 'graphdb.framework.repositories',
-    // 'graphdb.framework.impex.export',
-    // 'graphdb.framework.impex.import',
-    // 'graphdb.framework.security',
-    // 'graphdb.framework.explore',
-    // 'graphdb.framework.sparql',
-    // 'graphdb.framework.graphexplore',
-    // 'graphdb.framework.namespaces',
-    // 'graphdb.framework.stats',
-    // 'graphdb.framework.jmx.resources',
-    // 'graphdb.framework.jmx.queries',
-    // 'graphdb.framework.externalsync',
-    // 'graphdb.framework.autocomplete',
-    // 'graphdb.framework.ontorefine',
-    // 'graphdb.framework.rdfrank',
-    // 'graphdb.framework.similarity',
     'angularCancelOnNavigateModule',
     'oc.lazyLoad'
 ];
@@ -73,10 +41,8 @@ const moduleDefinition = function (productInfo) {
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
-                            console.log('route: ', route);
                             return import(`angular/${route.path}`).then(module => {
                                 $ocLazyLoad.inject(route.module);
-                                console.log('LAZY: ', route.module);
                             });
                         }
                     }
