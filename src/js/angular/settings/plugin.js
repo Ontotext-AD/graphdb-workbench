@@ -18,21 +18,5 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/licenseInfo.html',
         'title': 'Current license for this location',
         'helpInfo': 'The GraphDB License Information view allows you to check the details of your current license. '
-    }, {
-        'url': '/alert-samples',
-        'templateUrl': 'pages/alert-samples.html'
-    }, {
-        'url': '/toast-samples',
-        'templateUrl': 'pages/toast-samples.html'
-    }, {
-        'url': '/loader-samples',
-        'templateUrl': 'pages/loader-samples.html'
-    }, {
-        'url': '/loader-test',
-        'module': 'graphdb.framework.settings',
-        'path': 'settings/app',
-        'chunk': 'settings',
-        'controller': 'LoaderSamplesCtrl',
-        'templateUrl': 'pages/loader-samples.html'
     }
 ]);
