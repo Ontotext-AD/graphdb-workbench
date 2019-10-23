@@ -85,6 +85,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.showLicense = false;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
+    $scope.productInfo = productInfo;
 
     const setYears = function () {
         const date = new Date();
