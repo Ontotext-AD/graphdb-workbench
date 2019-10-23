@@ -6,9 +6,9 @@ angular
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', 'localStorageService', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService) {
+function CreateSimilarityIdxCtrl($scope, localStorageService, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -32,7 +32,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         sameAs: true
     };
 
-    var getNewIndexName = function (indexNameFromLocation) {
+    let getNewIndexName = function (indexNameFromLocation) {
         if (indexNameFromLocation) {
             if ($scope.page !== 1) {
                 return indexNameFromLocation;

@@ -15,7 +15,7 @@ import 'angular/controllers';
 // import 'angular/autocomplete/app';
 // import 'angular/ontorefine/app';
 // import 'angular/rdfrank/app';
-import 'angular/similarity/app';
+// import 'angular/similarity/app';
 import 'angular/angularCancelOnNavigateModule';
 import 'oclazyload';
 
@@ -38,7 +38,7 @@ const modules = [
     // 'graphdb.framework.autocomplete',
     // 'graphdb.framework.ontorefine',
     // 'graphdb.framework.rdfrank',
-    'graphdb.framework.similarity',
+    // 'graphdb.framework.similarity',
     'angularCancelOnNavigateModule',
     'oc.lazyLoad'
 ];
