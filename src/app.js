@@ -3,7 +3,7 @@ import 'angular/core/services';
 // import 'angular/export/app';
 // import 'angular/import/app';
 // import 'angular/security/app';
-import 'angular/sparql/app';
+// import 'angular/sparql/app';
 // import 'angular/graphexplore/app';
 // import 'angular/namespaces/app';
 // import 'angular/explore/app';
@@ -28,7 +28,7 @@ const modules = [
     // 'graphdb.framework.impex.import',
     // 'graphdb.framework.security',
     // 'graphdb.framework.explore',
-    'graphdb.framework.sparql',
+    // 'graphdb.framework.sparql',
     // 'graphdb.framework.graphexplore',
     // 'graphdb.framework.namespaces',
     'graphdb.framework.stats',

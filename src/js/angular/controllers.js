@@ -2,10 +2,20 @@ import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
 import 'angular/rest/monitoring.rest.service';
+import 'angular/rest/license.rest.service';
+import 'angular/rest/repositories.rest.service';
 import 'angular/rest/rdf4j.repositories.rest.service';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
+import 'angular/security/services';
+import 'angular/repositories/services';
 
 angular
     .module('graphdb.workbench.se.controllers', [
+        'graphdb.framework.security.services',
+        'graphdb.framework.repositories.services',
+        'ngCookies',
+        'ngFileUpload',
         'graphdb.framework.core',
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',

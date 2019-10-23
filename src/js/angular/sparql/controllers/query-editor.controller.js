@@ -55,7 +55,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     $scope.resetCurrentTabConfig();
 
-
     // query tab operations
     $scope.saveTab = saveTab;
     $scope.loadTab = loadTab;
@@ -158,7 +157,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         return message;
     }
 
-
     // start of query editor results orientation operations
     function fixSizesOnHorizontalViewModeSwitch(verticalView) {
         function visibleWindowHeight() {
@@ -255,7 +253,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
             $('a[data-id = "' + id + '"]').tab('show');
         }, 0);
     }
-
 
     window.onbeforeunload = function () {
         if ($scope.currentQuery) {

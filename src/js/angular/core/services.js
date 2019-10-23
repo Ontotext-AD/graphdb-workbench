@@ -15,7 +15,8 @@ import 'angular/core/controllers';
 const modules = [
     'ui.bootstrap',
     'jlareau.bowser',
-    'LocalStorageModule'
+    'LocalStorageModule',
+    'graphdb.framework.core.controllers'
 ];
 
 angular
