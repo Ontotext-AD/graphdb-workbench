@@ -36,15 +36,15 @@ const moduleDefinition = function (productInfo) {
                     helpInfo: route.helpInfo,
                     reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
                     resolve: {
-                        preload: function ($ocLazyLoad, $q) {
+                        preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
                             // some modules define routes to just static pages
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
                             return import(`angular/${route.path}`).then(module => {
                                 $ocLazyLoad.inject(route.module);
-                            });
-                        }
+                            })
+                        }]
                     }
                 });
             });
