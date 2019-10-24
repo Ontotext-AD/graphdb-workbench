@@ -17,6 +17,8 @@ angular
         'ngCookies',
         'ngFileUpload',
         'graphdb.framework.core',
+        'graphdb.framework.core.controllers',
+        'graphdb.framework.core.directives',
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',

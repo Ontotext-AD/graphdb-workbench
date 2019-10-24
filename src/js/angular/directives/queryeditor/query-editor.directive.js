@@ -4,7 +4,7 @@ import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
 
 angular
-    .module('graphdb.framework.sparql.directives.queryeditor', [
+    .module('graphdb.framework.directives.queryeditor.queryeditor', [
         'ngCookies',
         'graphdb.framework.rest.connectors.service'
     ])
@@ -19,7 +19,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
     return {
         restrict: 'AE',
         scope: false,
-        templateUrl: 'js/angular/sparql/templates/query-editor.html',
+        templateUrl: 'js/angular/directives/queryeditor/templates/query-editor.html',
         link: linkFunc
     };
 

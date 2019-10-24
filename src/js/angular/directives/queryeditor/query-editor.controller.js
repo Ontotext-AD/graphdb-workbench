@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.sparql.controllers.queryeditor', [])
+    .module('graphdb.framework.directives.queryeditor.controllers', [])
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
@@ -414,7 +414,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function editQuery(query) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
+            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {
@@ -502,7 +502,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function saveQuery(query, queryExists) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
+            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {

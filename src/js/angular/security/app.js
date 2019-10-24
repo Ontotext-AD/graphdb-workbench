@@ -13,8 +13,8 @@ const modules = [
 
 const securityApp = angular.module('graphdb.framework.security', modules);
 
-securityApp.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', '$httpProvider',
-    function ($routeProvider, $locationProvider, $menuItemsProvider, $httpProvider) {
+securityApp.config(['$locationProvider', '$httpProvider',
+    function ($locationProvider, $httpProvider) {
         $httpProvider.interceptors.push('$unauthorizedInterceptor');
 
         // use the HTML5 History API

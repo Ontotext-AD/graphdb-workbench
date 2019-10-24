@@ -15,7 +15,7 @@ PluginRegistry.add('main.menu', {
         {
             label: 'Monitor',
             href: '#',
-            order: 4,
+            order: 3,
             role: 'ROLE_REPO_MANAGER',
             icon: 'icon-monitoring'
         }, {

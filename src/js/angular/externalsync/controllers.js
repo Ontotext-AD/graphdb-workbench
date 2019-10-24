@@ -1,5 +1,13 @@
+import 'angular/rest/rdf4j.repositories.rest.service';
+import 'angular/rest/connectors.rest.service';
+
+const modules = [
+    'graphdb.framework.rest.rdf4j.repositories.service',
+    'graphdb.framework.rest.connectors.service'
+];
+
 angular
-    .module('graphdb.framework.externalsync.controllers', [])
+    .module('graphdb.framework.externalsync.controllers', modules)
     .controller('ConnectorsCtrl', ConnectorsCtrl)
     .controller('ExtendNewConnectorCtrl', ExtendNewConnectorCtrl)
     .controller('CreateConnectorCtrl', CreateConnectorCtrl)
