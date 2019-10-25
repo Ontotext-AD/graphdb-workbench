@@ -14,21 +14,21 @@ angular
   }])
   .run(['$rootScope', 'HttpPendingRequestsService', function ($rootScope, HttpPendingRequestsService) {
     $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
-      var newUrlObj = new URL(newUrl);
-      var oldUrlObj = new URL(oldUrl);
+      const newUrlObj = new URL(newUrl);
+      const oldUrlObj = new URL(oldUrl);
       // cancel only if the URLs have different origin (proto + host + port) or pathname but not different hash
       if (newUrlObj.origin !== oldUrlObj.origin || newUrlObj.pathname !== oldUrlObj.pathname) {
         HttpPendingRequestsService.cancelAll();
       }
-    })
+    });
   }]);
 
 angular.module('angularCancelOnNavigateModule')
   .service('HttpPendingRequestsService', ['$q', function ($q) {
-    var cancelPromises = [];
+    const cancelPromises = [];
 
     function newTimeout() {
-      var cancelPromise = $q.defer();
+      const cancelPromise = $q.defer();
       cancelPromises.push(cancelPromise);
       return cancelPromise.promise;
     }

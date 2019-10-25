@@ -1,6 +1,6 @@
 import 'angular/core/services';
 import 'angular/controllers';
-import 'angular/angularCancelOnNavigateModule';
+import 'angular/core/angularCancelOnNavigateModule';
 import 'oclazyload';
 
 const modules = [
