@@ -1,5 +1,3 @@
-import 'angular/core/services';
-
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
 

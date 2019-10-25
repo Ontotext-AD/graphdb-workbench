@@ -1,11 +1,11 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 
 angular
     .module('graphdb.framework.settings.controllers', [
         'ngCookies',
         'ui.bootstrap',
-        'graphdb.framework.security.services',
+        'graphdb.framework.core.services.jwtauth',
         'toastr'
     ])
     .controller('ActiveLocationSettingsCtrl', ActiveLocationSettingsCtrl)

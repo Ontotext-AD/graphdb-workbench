@@ -1,5 +1,6 @@
 import "angular/core/services";
-import "angular/security/services";
+import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import "angular/namespaces/controllers";
 import "angular/rest/rdf4j.repositories.rest.service";

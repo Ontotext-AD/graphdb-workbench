@@ -2,7 +2,8 @@ import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/rest/license.rest.service';
 import 'angular/settings/controllers';
-import 'angular/security/services';
+import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/services/jwt-auth.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
@@ -11,7 +12,8 @@ angular.module('graphdb.framework.settings', [
     'ui.bootstrap',
     'graphdb.framework.rest.license.service',
     'graphdb.framework.settings.controllers',
-    'graphdb.framework.security.services'
+    'graphdb.framework.core.interceptors.unauthorized',
+    'graphdb.framework.core.services.jwtauth'
 ])
     .config(config)
     .run(run);

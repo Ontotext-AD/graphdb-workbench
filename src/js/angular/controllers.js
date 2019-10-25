@@ -7,12 +7,12 @@ import 'angular/rest/repositories.rest.service';
 import 'angular/rest/rdf4j.repositories.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
-        'graphdb.framework.security.services',
+        'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'ngCookies',
         'ngFileUpload',

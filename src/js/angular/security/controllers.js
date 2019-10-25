@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/rest/security.rest.service';
 
 const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -19,7 +19,7 @@ const USER_TYPE_MANAGER = 'repoManager';
 const modules = [
     'ngCookies',
     'ui.bootstrap',
-    'graphdb.framework.security.services',
+    'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];

@@ -1,6 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/directives';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/rest/sparql.rest.service';
 import 'angular/directives/queryeditor/sparql-tab.directive';

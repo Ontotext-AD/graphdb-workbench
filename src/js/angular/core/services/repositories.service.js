@@ -1,5 +1,4 @@
 import 'angular/core/services';
-import 'angular/security/services';
 import 'angular/rest/repositories.rest.service';
 import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
@@ -8,7 +7,6 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 const modules = [
     'ngCookies',
-    'graphdb.framework.security.services',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.locations.service',
     'graphdb.framework.rest.license.service',

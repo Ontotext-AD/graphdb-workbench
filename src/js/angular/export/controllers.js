@@ -1,6 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/services/repositories.service';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
 
 const modules = [
@@ -8,7 +8,7 @@ const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core.services.repositories',
-    'graphdb.framework.security.services',
+    'graphdb.framework.core.services.jwtauth',
     'graphdb.workbench.utils.filetypes'
 ];
 

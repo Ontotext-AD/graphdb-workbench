@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService'];
 
-function AutocompleteCtrl($scope, $http, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService) {
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()

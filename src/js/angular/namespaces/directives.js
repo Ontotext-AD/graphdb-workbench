@@ -1,5 +1,3 @@
-import 'angular/core/services';
-
 const namespacesDirectives = angular.module('graphdb.framework.namespaces.directives', ['ngRoute']);
 
 // This directive will set the loader to false once the respective ngRepeat is done loading
