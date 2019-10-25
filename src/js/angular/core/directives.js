@@ -1,6 +1,6 @@
 angular
     .module('graphdb.framework.core.directives', [
-        'graphdb.framework.repositories.services'
+        'graphdb.framework.core.services.repositories'
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -286,7 +286,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             });
 
-
             $scope.$watch('autocompletepromisestatus', function () {
                 if (angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
@@ -329,7 +328,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             } else {
                 $scope.placeholder = 'Search RDF resources...';
             }
-
 
             if (angular.isDefined(attrs.$attr.uriValidation)) {
                 $scope.uriValidation = attrs.$attr.uriValidation;

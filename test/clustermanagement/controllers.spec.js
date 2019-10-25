@@ -1,5 +1,5 @@
 import "angular/core/services";
-import "angular/repositories/services";
+import 'angular/core/services/repositories.service';
 import "angular/clustermanagement/app";
 import "angular/clustermanagement/controllers";
 import "angular/clustermanagement/directives";

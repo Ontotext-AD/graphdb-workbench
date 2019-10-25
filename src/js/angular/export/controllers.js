@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/security/services';
 import 'angular/utils/file-types';
 
@@ -7,7 +7,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'toastr',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.security.services',
     'graphdb.workbench.utils.filetypes'
 ];

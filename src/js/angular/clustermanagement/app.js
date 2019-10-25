@@ -2,7 +2,7 @@ import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/clustermanagement/controllers';
 import 'angular/clustermanagement/directives';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'd3/build/d3';
 import 'lib/d3-ONTO-chord-patch';
 

@@ -1,11 +1,11 @@
 import 'angular/core/services';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'lib/nvd3/nv.d3';
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr'
 ];

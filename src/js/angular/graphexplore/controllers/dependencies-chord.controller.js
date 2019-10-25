@@ -3,7 +3,7 @@ const modules = [
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'graphdb.framework.repositories.services'
+    'graphdb.framework.core.services.repositories'
 ];
 
 angular

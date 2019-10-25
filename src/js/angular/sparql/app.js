@@ -1,7 +1,7 @@
 import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/security/services';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/rest/sparql.rest.service';
 import 'angular/directives/queryeditor/sparql-tab.directive';
 import 'angular/directives/queryeditor/query-editor.directive';
@@ -17,7 +17,7 @@ angular
         'ngRoute',
         'toastr',
         'graphdb.framework.core.directives',
-        'graphdb.framework.repositories.services',
+        'graphdb.framework.core.services.repositories',
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.directives.queryeditor.controllers',
         'graphdb.framework.directives.queryeditor.sparqltab',

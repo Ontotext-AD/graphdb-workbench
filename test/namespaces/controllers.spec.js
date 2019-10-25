@@ -1,6 +1,6 @@
 import "angular/core/services";
 import "angular/security/services";
-import "angular/repositories/services";
+import 'angular/core/services/repositories.service';
 import "angular/namespaces/controllers";
 import "angular/rest/rdf4j.repositories.rest.service";
 import {FakeModal} from '../mocks';

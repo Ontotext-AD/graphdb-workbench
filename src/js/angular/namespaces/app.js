@@ -1,6 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/directives';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/namespaces/controllers';
 import 'angular/namespaces/directives';
 import 'angular/directives/paginations';
@@ -14,7 +14,7 @@ const modules = [
     'toastr',
     'graphdb.framework.namespaces.controllers',
     'graphdb.framework.namespaces.directives',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
     'graphdb.framework.directives.paginations'
 ];

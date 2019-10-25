@@ -8,7 +8,7 @@ const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
     'graphdb.workbench.utils.filetypes'
 ];

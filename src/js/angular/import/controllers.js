@@ -4,7 +4,7 @@ import 'angular/utils/uri-utils';
 const modules = [
     'ui.bootstrap',
     'toastr',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.utils.uriutils'
 ];
 

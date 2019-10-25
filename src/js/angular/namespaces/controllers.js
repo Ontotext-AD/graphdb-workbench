@@ -1,11 +1,11 @@
 import 'angular/core/services';
 import 'angular/security/services';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/rest/rdf4j.repositories.rest.service';
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.security.services',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.rdf4j.repositories.service',

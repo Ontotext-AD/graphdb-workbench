@@ -23,7 +23,7 @@ importDirectives.directive('validateUri', ['UriUtils', function (UriUtils) {
             });
         }
     };
-}]);// defined in workbench-core.js
+}]);
 
 importDirectives.directive('filesTable', function () {
     return {
