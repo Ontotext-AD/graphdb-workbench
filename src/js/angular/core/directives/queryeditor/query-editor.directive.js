@@ -3,7 +3,7 @@ import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
 
 angular
-    .module('graphdb.framework.directives.queryeditor.queryeditor', [
+    .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
         'ngCookies',
         'graphdb.framework.rest.connectors.service'
     ])
@@ -18,7 +18,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
     return {
         restrict: 'AE',
         scope: false,
-        templateUrl: 'js/angular/directives/queryeditor/templates/query-editor.html',
+        templateUrl: 'js/angular/core/directives/queryeditor/templates/query-editor.html',
         link: linkFunc
     };
 

@@ -1,4 +1,4 @@
-const exportDirectives = angular.module('graphdb.framework.directives.paginations', []);
+const exportDirectives = angular.module('graphdb.framework.core.directives.paginations', []);
 
 exportDirectives.directive('paginations', function () {
     return {

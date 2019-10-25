@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.directives.queryeditor.sparqltab', [
+    .module('graphdb.framework.core.directives.queryeditor.sparqltab', [
         'graphdb.framework.core'
     ])
     .directive('sparqlTab', sparqlTabDirective);

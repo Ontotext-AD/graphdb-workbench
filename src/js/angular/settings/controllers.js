@@ -108,8 +108,8 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
                 .success(function (licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
                 }).error(function () {
-                toastr.error('Could not upload file');
-            });
+                    toastr.error('Could not upload file');
+                });
         }
     });
 

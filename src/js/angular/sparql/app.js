@@ -3,9 +3,9 @@ import 'angular/core/directives';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/rest/sparql.rest.service';
-import 'angular/directives/queryeditor/sparql-tab.directive';
-import 'angular/directives/queryeditor/query-editor.directive';
-import 'angular/directives/queryeditor/query-editor.controller';
+import 'angular/core/directives/queryeditor/sparql-tab.directive';
+import 'angular/core/directives/queryeditor/query-editor.directive';
+import 'angular/core/directives/queryeditor/query-editor.controller';
 import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/FileSaver-patch';
 
@@ -19,9 +19,9 @@ angular
         'graphdb.framework.core.directives',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.rest.sparql.service',
-        'graphdb.framework.directives.queryeditor.controllers',
-        'graphdb.framework.directives.queryeditor.sparqltab',
-        'graphdb.framework.directives.queryeditor.queryeditor'
+        'graphdb.framework.core.directives.queryeditor.controllers',
+        'graphdb.framework.core.directives.queryeditor.sparqltab',
+        'graphdb.framework.core.directives.queryeditor.queryeditor'
     ])
     .run(run);
 

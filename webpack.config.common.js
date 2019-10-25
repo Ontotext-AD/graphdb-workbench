@@ -130,8 +130,8 @@ module.exports = {
                 to: 'js/angular/settings/modal'
             },
             {
-                from: 'src/js/angular/directives/queryeditor/templates',
-                to: 'js/angular/directives/queryeditor/templates'
+                from: 'src/js/angular/core/directives/queryeditor/templates',
+                to: 'js/angular/core/directives/queryeditor/templates'
             },
             {
                 from: 'src/js/angular/templates',
