@@ -12,7 +12,7 @@ const modules = [
     'toastr'
 ];
 
-const sparqlCtrl = angular.module('graphdb.framework.namespaces.controllers', modules);
+const namespaces = angular.module('graphdb.framework.namespaces.controllers', modules);
 
 // A regular expression that validates a prefix according to the SPARQL 1.1 specification.
 // XXX: Technically this should include Unicode chars > 0xFFFF but those aren't fully supported in JavaScript
@@ -30,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$repositories', 'toastr', '$modal', '$jwtAuth', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService',
-    function ($scope, $http, $timeout, $repositories, toastr, $modal, $jwtAuth, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService',
+    function ($scope, $http, $repositories, toastr, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -111,6 +111,22 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
             $scope.getNamespaces();
             $scope.selectedAll = false;
         });
+
+        $scope.onNamespaceSearch = function() {
+            $scope.haveSelected = false;
+            $scope.selectedAll = false;
+            $scope.matchedElements = [];
+            $scope.deselectAll();
+            $scope.filterResults();
+        };
+
+        $scope.filterResults = function() {
+            angular.forEach($scope.namespaces, function (item) {
+                if (item.namespace.indexOf($scope.searchNamespaces) !== -1 || item.prefix.indexOf($scope.searchNamespaces) !== -1) {
+                    $scope.matchedElements.push(item);
+                }
+            });
+        };
 
         $scope.saveNamespace = function (prefix, namespace) {
             $scope.loader = true;
@@ -321,7 +337,7 @@ sparqlCtrl.controller('NamespacesCtrl', ['$scope', '$http', '$timeout', '$reposi
         }
     }]);
 
-sparqlCtrl.controller('StandartModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+namespaces.controller('StandartModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
 
     $scope.ok = function () {
         const result = true;

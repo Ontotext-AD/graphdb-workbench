@@ -1,15 +1,31 @@
-/* eslint quotes: "off" */
 import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
+import 'angular/rest/autocomplete.rest.service';
+import 'angular/rest/monitoring.rest.service';
+import 'angular/rest/license.rest.service';
+import 'angular/rest/repositories.rest.service';
+import 'angular/rest/rdf4j.repositories.rest.service';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
+import 'angular/security/services';
+import 'angular/repositories/services';
 
 angular
     .module('graphdb.workbench.se.controllers', [
+        'graphdb.framework.security.services',
+        'graphdb.framework.repositories.services',
+        'ngCookies',
+        'ngFileUpload',
         'graphdb.framework.core',
-        'graphdb.framework.explore',
+        'graphdb.framework.core.controllers',
+        'graphdb.framework.core.directives',
         'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',
-        'graphdb.framework.rest.sparql.service'
+        'graphdb.framework.rest.sparql.service',
+        'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.monitoring.service',
+        'graphdb.framework.rest.rdf4j.repositories.service'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -59,9 +75,9 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -71,6 +87,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.showLicense = false;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
+    $scope.productInfo = productInfo;
 
     const setYears = function () {
         const date = new Date();
@@ -94,7 +111,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         return $('.main-menu').hasClass('collapsed');
     };
 
-    ///Copy to clipboard popover options
+    //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
         ModalService.openCopyToClipboardModal(uri);
     };
@@ -447,6 +464,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             $($pageSlider[$scope.activePage]).css("left", 0 + "px");
             $($(".btn-toolbar.pull-right .btn-group .btn")[0]).focus();
         }, 50);
+    };
+
+    $scope.getTutorialPageHtml = function(page) {
+        return $sce.trustAsHtml(page.info);
     };
 
     $scope.checkSubMenuPosition = function (index) {

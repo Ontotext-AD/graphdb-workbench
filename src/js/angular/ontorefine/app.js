@@ -5,11 +5,6 @@ import 'lib/yasr.bundled';
 
 const ontorefine = angular.module('graphdb.framework.ontorefine', ['graphdb.framework.core.directives']);
 
-const ontoRefineText = 'GraphDB OntoRefine is a data transformation tool, based on OpenRefine and integrated in GraphDB Workbench, for ' +
-    'converting tabular data into RDF and importing it into a GraphDB repository, using simple SPARQL queries and a virtual endpoint.  ' +
-    'The supported formats are TSV, CSV, *SV, Excel (.xls and. xlsx), JSON, XML, RDF as XML, and Google sheet. ' +
-    'Using OntoRefine you can easily filter your data, edit the inconsistencies, convert it into RDF, and import it into your repository.';
-
 ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$location', '$timeout', function ($scope, $routeParams, $window, $location, $timeout) {
     $scope.refineDisabled = false;
     if ($routeParams.project) {
@@ -53,37 +48,4 @@ ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$
             iframeElement.style.height = 'calc(100vh - 75px)';
         }
     };
-}]);
-
-ontorefine.config(['$routeProvider', '$menuItemsProvider', function ($routeProvider, $menuItemsProvider) {
-
-    $routeProvider.when('/ontorefine', {
-        templateUrl: 'pages/ontorefine.html',
-        controller: 'OntoRefineCtrl',
-        title: 'OntoRefine',
-        helpInfo: ontoRefineText
-    });
-
-    $routeProvider.when('/ontorefine/:page', {
-        templateUrl: 'pages/ontorefine.html',
-        controller: 'OntoRefineCtrl',
-        title: 'OntoRefine',
-        helpInfo: ontoRefineText
-    });
-
-    $routeProvider.when('/ontorefine/project?project=:project', {
-        templateUrl: 'pages/ontorefine.html',
-        controller: 'OntoRefineCtrl',
-        title: 'OntoRefine',
-        helpInfo: ontoRefineText
-    });
-
-    $menuItemsProvider.addItem({label: 'Import', href: '#', order: 0, role: 'IS_AUTHENTICATED_FULLY', icon: 'icon-import'});
-    $menuItemsProvider.addItem({
-        label: 'Tabular (OntoRefine)',
-        href: 'ontorefine',
-        order: 2,
-        parent: 'Import',
-        role: 'IS_AUTHENTICATED_FULLY'
-    });
 }]);

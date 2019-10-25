@@ -1,25 +1,27 @@
+import 'angular/rest/connectors.rest.service';
 import 'lib/bootstrap/bootstrap.min';
 import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
-import 'angular/rest/connectors.rest.service';
 
 angular
-    .module('graphdb.framework.sparql.directives.queryeditor', [
+    .module('graphdb.framework.directives.queryeditor.queryeditor', [
+        'ngCookies',
         'graphdb.framework.rest.connectors.service'
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$http', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
+queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
 
-function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $http, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService) {
+function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService) {
+
+    let callbackOnChange;
+
     return {
         restrict: 'AE',
         scope: false,
-        templateUrl: 'js/angular/sparql/templates/query-editor.html',
+        templateUrl: 'js/angular/directives/queryeditor/templates/query-editor.html',
         link: linkFunc
     };
-
-    var callbackOnChange;
 
     //function updateLineGutter() in Yasqe receive wrong data and line numbers div have width 100%
     // magic value 150 seems to work well (including Safari), smaller values work on other browsers but not always on Safari

@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.sparql.controllers.queryeditor', [])
+    .module('graphdb.framework.directives.queryeditor.controllers', [])
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
@@ -54,7 +54,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     $scope.queryExists = false;
 
     $scope.resetCurrentTabConfig();
-
 
     // query tab operations
     $scope.saveTab = saveTab;
@@ -158,7 +157,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         return message;
     }
 
-
     // start of query editor results orientation operations
     function fixSizesOnHorizontalViewModeSwitch(verticalView) {
         function visibleWindowHeight() {
@@ -255,7 +253,6 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
             $('a[data-id = "' + id + '"]').tab('show');
         }, 0);
     }
-
 
     window.onbeforeunload = function () {
         if ($scope.currentQuery) {
@@ -417,7 +414,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function editQuery(query) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
+            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {
@@ -505,7 +502,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function saveQuery(query, queryExists) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/sparql/templates/modal/query-sample.html',
+            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {

@@ -240,9 +240,9 @@ function multiRequired() {
     };
 }
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce) {
     return {
         restrict: 'EA',
         scope: {
@@ -258,9 +258,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             empty: '='
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
-        link: function ($scope, scope, element) {
-            scope.autoCompleteStatus = undefined;
-            scope.autoCompleteWarning = false;
+        link: function ($scope, element, attrs) {
+            element.autoCompleteStatus = undefined;
+            element.autoCompleteWarning = false;
             $scope.empty = false;
             $scope.searchInput = "";
             const MIN_CHAR_LEN = 0;
@@ -273,7 +273,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
                     $scope.namespacespromise.success(function (data) {
-                        scope.namespaces = data.results.bindings.map(function (e) {
+                        element.namespaces = data.results.bindings.map(function (e) {
                             return {
                                 prefix: e.prefix.value,
                                 uri: e.namespace.value
@@ -290,7 +290,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.$watch('autocompletepromisestatus', function () {
                 if (angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
-                        scope.autoCompleteStatus = !!response;
+                        element.autoCompleteStatus = !!response;
                     }).error(function () {
                         toastr.error('Error attempting to check autocomplete capability!');
                     });
@@ -310,36 +310,40 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $location.path('graphs-visualizations').search('uri', params.uri);
             };
 
-            if (angular.isUndefined(element.$attr.textCallback)) {
+            if (angular.isUndefined(attrs.$attr.textCallback)) {
                 $scope.textCallback = defaultTextCallback;
             }
 
-            if (angular.isUndefined(element.$attr.visualCallback)) {
+            if (angular.isUndefined(attrs.$attr.visualCallback)) {
                 $scope.visualCallback = defaultVisualCallback;
             }
 
-            if (element.$attr.textButton && !$scope.textButton) {
+            if (attrs.$attr.textButton && !$scope.textButton) {
                 $scope.textCallback = $scope.visualCallback;
-            } else if (element.$attr.visualButton && !$scope.visualButton) {
+            } else if (attrs.$attr.visualButton && !$scope.visualButton) {
                 $scope.visualCallback = $scope.textCallback;
             }
 
-            if (element.$attr.placeholder) {
-                $scope.placeholder = element.$attr.placeholder;
+            if (attrs.$attr.placeholder) {
+                $scope.placeholder = attrs.$attr.placeholder;
             } else {
                 $scope.placeholder = 'Search RDF resources...';
             }
 
 
-            if (angular.isDefined(element.$attr.uriValidation)) {
-                $scope.uriValidation = element.$attr.uriValidation;
+            if (angular.isDefined(attrs.$attr.uriValidation)) {
+                $scope.uriValidation = attrs.$attr.uriValidation;
             } else {
                 $scope.uriValidation = 'true';
             }
 
-            if (angular.isDefined(element.$attr.preserveInput)) {
-                $scope.preserveInput = element.$attr.preserveInput;
+            if (angular.isDefined(attrs.$attr.preserveInput)) {
+                $scope.preserveInput = attrs.$attr.preserveInput;
             }
+
+            $scope.getResultItemHtml = function(resultItem) {
+                return $sce.trustAsHtml(resultItem.description);
+            };
 
             $scope.searchRdfResource = function (uri, callback) {
                 if (uri.type === 'prefix') {
@@ -393,7 +397,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {
-                    if (scope.autoCompleteStatus && $scope.autoCompleteUriResults && $scope.autoCompleteUriResults.length > 0) {
+                    if (element.autoCompleteStatus && $scope.autoCompleteUriResults && $scope.autoCompleteUriResults.length > 0) {
                         if ($scope.autoCompleteUriResults[$scope.activeSearchElm].type === 'prefix') {
                             $scope.searchInput = expandPrefix($scope.autoCompleteUriResults[$scope.activeSearchElm].value + ':');
                             $scope.autoCompleteUriResults = [];
@@ -431,7 +435,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.onChange = function () {
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
-                    if (scope.autoCompleteStatus) {
+                    if (element.autoCompleteStatus) {
                         checkUriAutocomplete($scope.searchInput);
                     }
                 }
@@ -441,7 +445,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     if ($scope.uriValidation !== 'false') {
-                        if (scope.autoCompleteStatus) {
+                        if (element.autoCompleteStatus) {
                             $scope.checkIfValidAndSearchEvent(event);
                         } else {
                             if (validateRdfUri(event.target.value)) {
@@ -453,13 +457,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     } else {
                         $scope.searchRdfResourceByEvent(event.target.value, event);
                     }
-                } else if ($scope.searchInput.length > MIN_CHAR_LEN && !scope.autoCompleteWarning && !scope.autoCompleteStatus) {
-                    scope.autoCompleteWarning = true;
+                } else if ($scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
+                    element.autoCompleteWarning = true;
                     toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
                         {allowHtml: true});
                 }
 
-                if (!scope.autoCompleteStatus || angular.isUndefined($scope.autoCompleteUriResults)) {
+                if (!element.autoCompleteStatus || angular.isUndefined($scope.autoCompleteUriResults)) {
                     return;
                 }
                 if (event.keyCode === 40 && $scope.activeSearchElm < $scope.autoCompleteUriResults.length - 1) {
@@ -480,7 +484,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.setActiveClassOnHover = function (index) {
-                if (!scope.autoCompleteStatus) {
+                if (!element.autoCompleteStatus) {
                     return;
                 }
                 $scope.activeSearchElm = index;
@@ -531,7 +535,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     const uriPart = uriParts[0];
                     const localName = uriParts[1];
                     if (!angular.isUndefined(localName)) {
-                        const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(scope.namespaces, uriPart);
+                        const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(element.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
                             $(".view-res-input").val(expandedUri);
@@ -556,7 +560,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 // add semicolon after the expanded uri in order to filter only by local names for this uri
                 searchInput = searchInput.replace(expandedUri, expandedUri + ';');
 
-                if (scope.autoCompleteStatus) {
+                if (element.autoCompleteStatus) {
                     if (searchInput.charAt(0) === ';') {
                         searchInput = searchInput.slice(1);
                     }

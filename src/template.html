@@ -108,25 +108,25 @@
             <span class="product-version" title="GraphDB {{mainTitle}}">{{mainTitle}}</span>
         </a>
     </li>
-    <li ng-repeat="item in menu" ng-if="hasRole(item.role)"
+    <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
         ng-class="{open: $index === selected, clicked: clicked && $index === selected}"
         class="menu-element" ng-click="checkSubMenuPosition($index)">
         <div class="menu-element-root" ng-if="item.children.length" ng-click="select($index, $event, clicked);">
             <span ng-class=item.icon class="menu-item-icon"></span>
             <span class="menu-item">{{item.label}}</span>
         </div>
-        <a class="menu-element-root" ng-href="{{item.hrefFun ? item.hrefFun() : item.href}}" ng-if="!item.children.length"
+        <a class="menu-element-root" ng-href="{{::item.hrefFun ? item.hrefFun(productInfo) : item.href}}" ng-if="!item.children.length"
            ng-click="select($index, $event, clicked)">
             <span ng-class=item.icon class="menu-item-icon"></span>
             <span class="menu-item" ng-if="!checkMenu()">{{item.label}}</span>
         </a>
         <ul ng-if="item.children.length" class="sub-menu">
             <li class="submenu-title">{{item.label}}</li>
-            <li ng-repeat="submenu in item.children"
+            <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
                 ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
-                <a ng-href="{{submenu.hrefFun ? submenu.hrefFun() : submenu.href}}">{{submenu.label}}
+                <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
                 </a>
             </li>

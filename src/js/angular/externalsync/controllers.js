@@ -1,5 +1,13 @@
+import 'angular/rest/rdf4j.repositories.rest.service';
+import 'angular/rest/connectors.rest.service';
+
+const modules = [
+    'graphdb.framework.rest.rdf4j.repositories.service',
+    'graphdb.framework.rest.connectors.service'
+];
+
 angular
-    .module('graphdb.framework.externalsync.controllers', [])
+    .module('graphdb.framework.externalsync.controllers', modules)
     .controller('ConnectorsCtrl', ConnectorsCtrl)
     .controller('ExtendNewConnectorCtrl', ExtendNewConnectorCtrl)
     .controller('CreateConnectorCtrl', CreateConnectorCtrl)
@@ -566,24 +574,23 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 }
 
-        DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
-        function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
-            $scope.force = false;
-            $scope.type = type;
-            $scope.isExternal = isExternal;
+DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
+function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+    $scope.force = false;
+    $scope.type = type;
+    $scope.isExternal = isExternal;
 
-            $scope.ok = function () {
-                $modalInstance.close($scope.force);
-            };
+    $scope.ok = function () {
+        $modalInstance.close($scope.force);
+    };
 
-            $scope.cancel = function () {
-                $modalInstance.dismiss();
-            };
-        }
+    $scope.cancel = function () {
+        $modalInstance.dismiss();
+    };
+}
 
-
-        ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
-        function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
+ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
+function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
 
     $scope.connector = connector;
 

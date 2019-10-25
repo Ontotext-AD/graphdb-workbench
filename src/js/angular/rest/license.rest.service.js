@@ -16,7 +16,10 @@ function LicenseRestService($http, Upload) {
         sendLicenseToValidate,
         extractFromLicenseFile,
         checkLicenseHardcoded,
-        registerLicense
+        registerLicense,
+        getVersion,
+        getStatistics,
+        toggleStatistics
     };
 
     // get activated license details
@@ -72,5 +75,22 @@ function LicenseRestService($http, Upload) {
     // check if distribution has an already activated license
     function checkLicenseHardcoded() {
         return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
+    }
+
+    function getVersion() {
+        return $http.get('rest/info/version');
+    }
+
+    function getStatistics() {
+        return $http.get('rest/graphdb-settings/statistics');
+    }
+
+    function toggleStatistics(enable) {
+        return $http({
+            method: 'POST',
+            url: 'rest/graphdb-settings/statistics',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            data: `enabled=${enable}`
+        });
     }
 }

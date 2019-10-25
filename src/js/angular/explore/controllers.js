@@ -1,3 +1,4 @@
+import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 
@@ -5,10 +6,11 @@ const modules = [
     'ngCookies',
     'ngRoute',
     'ui.bootstrap',
+    'toastr',
     'graphdb.framework.core',
     'graphdb.framework.repositories.services',
     'graphdb.framework.explore.services',
-    'toastr'
+    'graphdb.workbench.utils.filetypes'
 ];
 
 angular
@@ -18,9 +20,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes) {
 
     $scope.loading = false;
 
@@ -46,19 +48,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.blanks = true;
     $scope.sameAs = true;
 
-    $scope.formats = [
-        {name: 'JSON', type: 'application/rdf+json', extension: '.json'},
-        {name: 'JSON-LD', type: 'application/ld+json', extension: '.jsonld'},
-        {name: 'RDF-XML', type: 'application/rdf+xml', extension: '.rdf'},
-        {name: 'N3', type: 'text/rdf+n3', extension: '.n3'},
-        {name: 'N-Triples', type: 'text/plain', extension: '.nt'},
-        {name: 'N-Quads', type: 'text/x-nquads', extension: '.nq'},
-        {name: 'Turtle', type: 'text/turtle', extension: '.ttl'},
-        {name: 'TriX', type: 'application/trix', extension: '.trix'},
-        {name: 'TriG', type: 'application/x-trig', extension: '.trig'},
-        {name: 'Binary RDF', type: 'application/x-binary-rdf', extension: '.brf'}
-    ];
-
+    $scope.formats = FileTypes;
 
     let yasr;
 
