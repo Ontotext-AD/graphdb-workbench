@@ -2,19 +2,23 @@ import 'angular/core/services';
 import 'angular/security/services';
 import 'angular/rest/repositories.rest.service';
 import 'angular/rest/locations.rest.service';
+import 'angular/rest/license.rest.service';
+import 'ng-file-upload/dist/ng-file-upload.min';
+import 'ng-file-upload/dist/ng-file-upload-shim.min';
 
 const modules = [
     'ngCookies',
     'graphdb.framework.security.services',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.locations.service',
+    'graphdb.framework.rest.license.service',
     'toastr'
 ];
 
 const repoServices = angular.module('graphdb.framework.repositories.services', modules);
 
-repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$interval', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService',
-    function ($http, $cookies, $cookieStore, $interval, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService) {
+repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
+    function ($http, $cookies, $cookieStore, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
     this.repositoryCookieName = 'com.ontotext.graphdb.repository' + $location.port();
 
     this.location = '';
@@ -71,7 +75,7 @@ repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', '$in
             return;
         }
         const that = this;
-        $http.get('rest/info/version')
+        LicenseRestService.getVersion()
             .success(function (res) {
                 if (typeof res === 'object') {
                     // New style, check version and product

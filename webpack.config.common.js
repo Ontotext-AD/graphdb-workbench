@@ -10,6 +10,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
+        chunkFilename: '[name].js',
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -129,8 +130,8 @@ module.exports = {
                 to: 'js/angular/settings/modal'
             },
             {
-                from: 'src/js/angular/sparql/templates',
-                to: 'js/angular/sparql/templates'
+                from: 'src/js/angular/directives/queryeditor/templates',
+                to: 'js/angular/directives/queryeditor/templates'
             },
             {
                 from: 'src/js/angular/templates',

@@ -12,8 +12,8 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$filter', '$timeout', 'MonitoringRestService',
-    function ($scope, $http, $modal, toastr, $interval, $filter, $timeout, MonitoringRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$timeout', 'MonitoringRestService',
+    function ($scope, toastr, $interval, $timeout, MonitoringRestService) {
         $scope.data = {
             classCount: [{
                 key: 'Classes',

@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$http', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', '$timeout', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalService, $modal, $timeout, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -27,7 +27,6 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
     $scope.getActiveRepository = function () {
         return $repositories.getActiveRepository();
     };
-
 
     $scope.checkPluginEnabled = function () {
         if (!$scope.getActiveRepository()) {
@@ -332,5 +331,5 @@ function SimilarityCtrl($scope, $http, $interval, toastr, $repositories, ModalSe
 
     $scope.trimIRI = function (iri) {
         return _.trim(iri, "<>");
-    }
+    };
 }

@@ -7,8 +7,8 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
     'graphdb.framework.rest.monitoring.service'
 ]);
 
-queriesCtrl.controller('QueriesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService',
-    function ($scope, $http, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService) {
+queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService',
+    function ($scope, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;

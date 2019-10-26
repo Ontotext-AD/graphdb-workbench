@@ -1,5 +1,7 @@
 angular
-    .module('graphdb.framework.sparql.directives.sparqltab', [])
+    .module('graphdb.framework.directives.queryeditor.sparqltab', [
+        'graphdb.framework.core'
+    ])
     .directive('sparqlTab', sparqlTabDirective);
 
 sparqlTabDirective.$inject = ['$rootScope', 'localStorageService', 'ModalService'];

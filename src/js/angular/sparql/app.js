@@ -1,40 +1,29 @@
 import 'angular/core/services';
 import 'angular/core/directives';
-import 'angular/repositories/services';
-import 'angular/sparql/modules';
-import 'angular/rest/sparql.rest.service';
-import 'angular/sparql/directives/sparql-tab.directive';
-import 'angular/sparql/controllers/query-editor.controller';
 import 'angular/security/services';
-import 'angular/sparql/directives/query-editor.directive';
+import 'angular/repositories/services';
+import 'angular/rest/sparql.rest.service';
+import 'angular/directives/queryeditor/sparql-tab.directive';
+import 'angular/directives/queryeditor/query-editor.directive';
+import 'angular/directives/queryeditor/query-editor.controller';
 import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/FileSaver-patch';
 
 angular
-    .module('graphdb.framework.sparql')
-    .config(config)
+    .module('graphdb.framework.sparql', [
+        'LocalStorageModule',
+        'xeditable',
+        'ngAnimate',
+        'ngRoute',
+        'toastr',
+        'graphdb.framework.core.directives',
+        'graphdb.framework.repositories.services',
+        'graphdb.framework.rest.sparql.service',
+        'graphdb.framework.directives.queryeditor.controllers',
+        'graphdb.framework.directives.queryeditor.sparqltab',
+        'graphdb.framework.directives.queryeditor.queryeditor'
+    ])
     .run(run);
-
-config.$inject = ['$routeProvider', '$menuItemsProvider'];
-
-function config($routeProvider, $menuItemsProvider) {
-
-    $menuItemsProvider.addItem({
-        label: 'SPARQL',
-        href: 'sparql',
-        order: 2,
-        role: 'IS_AUTHENTICATED_FULLY',
-        icon: "icon-sparql"
-    });
-
-    $routeProvider.when('/sparql', {
-        templateUrl: 'pages/sparql.html',
-        controller: 'QueryEditorCtrl',
-        title: 'SPARQL Query & Update',
-        helpInfo: 'The SPARQL Query & Update view is a unified editor for queries and updates. '
-        + 'Use any type of SPARQL query and click Run to execute it.'
-    });
-}
 
 run.$inject = ['editableOptions'];
 
