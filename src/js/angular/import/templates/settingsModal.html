@@ -37,21 +37,21 @@
                     <div>
                         <label popover="Import into the graph(s) specified by the data source."
                                popover-trigger="mouseenter">
-                            <input type="radio" ng-model="target" value="data"
+                            <input type="radio" class="from-data-btn" ng-model="target" value="data"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
                             From data
                         </label>
                         &nbsp;
                         <label popover="Import everything into the default graph."
                                popover-trigger="mouseenter">
-                            <input type="radio" ng-model="target" value="default"
+                            <input type="radio" class="default-graph-btn" ng-model="target" value="default"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
                             The default graph
                         </label>
                         &nbsp;
                         <label popover="Import everything into a user-specified named graph."
                                popover-trigger="mouseenter">
-                            <input type="radio" ng-model="target" value="named" class="named-graph-option">
+                            <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
                             Named graph
                         </label>
                     </div>
@@ -68,7 +68,7 @@
                            popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
                            popover-trigger="mouseenter"
                            popover-placement="top">
-                        <input type="checkbox" ng-model="enableReplace" ng-disabled="isMultiple">
+                        <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
                         Enable replacement of existing data
                     </label>
                 </div>
@@ -91,7 +91,7 @@
                 <div class="col-lg-9" ng-show="target === 'data'">
                     <div class="row">
                         <div class="col-lg-9">
-                            <input name="replaceGraph" ng-model="replaceGraph" type="text" class="form-control"
+                            <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
                                    placeholder="http://example.com/graph..."
                                    ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
                                    popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-lg-3 col-lg-no-padding">
                             <div class="btn-group" dropdown>
-                                <button type="button" class="btn btn-primary" ng-click="addReplaceGraph(replaceGraph)">
+                                <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
                                     <span class="icon-plus"></span> Add graph
                                 </button>
                                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
@@ -140,7 +140,7 @@
                 </div>
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label">
-                        <input type="checkbox" ng-model="agree" ng-required="enableReplace">
+                        <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree" ng-required="enableReplace">
                         <strong>I understand that data in the replaced graphs will be cleared before importing new data.</strong>
                     </label>
                 </div>
@@ -265,6 +265,6 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-link pull-left" ng-click="reset()">Restore defaults</button>
         <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-        <button type="submit" class="btn btn-primary" ng-click="ok()"><span class="import"></span> Import</button>
+        <button type="submit" class="btn btn-primary import-settings-import-button" ng-click="ok()"><span class="import"></span> Import</button>
     </div>
 </form>

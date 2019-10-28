@@ -60,7 +60,7 @@ class ImportSteps {
     }
 
     static fillRDFTextSnippet(snippet) {
-        ImportSteps.getSnippetTextarea().type(snippet).should('have.value', snippet);
+        ImportSteps.getSnippetTextarea().type(snippet, { parseSpecialCharSequences: false }).should('have.value', snippet);
 
         return ImportSteps;
     }
@@ -143,7 +143,7 @@ class ImportSteps {
     }
 
     static selectNamedGraph() {
-        ImportSteps.getSettingsForm().find('.named-graph-option').check();
+        ImportSteps.getSettingsForm().find('.named-graph-btn').check();
 
         return ImportSteps;
     }
