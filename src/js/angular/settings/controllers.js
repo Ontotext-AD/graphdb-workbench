@@ -91,7 +91,7 @@ RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$mo
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
     $scope.$on('securityInit', function () {
-        if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
+        if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
         }
     });

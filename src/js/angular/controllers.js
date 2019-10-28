@@ -9,6 +9,7 @@ import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
+import {UserRole} from 'angular/utils/user-utils';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -343,6 +344,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             $rootScope.redirectToLogin();
         }
     };
+
+    $scope.isAdmin = function () {
+        return $scope.hasRole(UserRole.ROLE_ADMIN);
+    };
+
+    $scope.isUser = function () {
+        return $scope.hasRole(UserRole.ROLE_USER);
+    };
+
     $scope.hasRole = function (role) {
         if (!angular.isUndefined(role)) {
             return $jwtAuth.hasRole(role);
@@ -381,7 +391,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.canManageRepositories = function () {
-        return $jwtAuth.hasRole('ROLE_REPO_MANAGER') && !$repositories.getDegradedReason();
+        return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
     $scope.getSavedQueries = function () {
@@ -665,7 +675,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         }
 
         if (!$repositories.getActiveRepository() || $repositories.getActiveRepository() === 'SYSTEM'
-            || !$scope.hasRole('ROLE_REPO_MANAGER')) {
+            || !$scope.hasRole(UserRole.ROLE_REPO_MANAGER)) {
             // No monitoring if no active repo, the active repo is the system repo or the current user
             // isn't a repo admin.
             $scope.queryCount = 0;

@@ -66,7 +66,7 @@
                 tooltip="Save graph snapshot"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
-                ng-if="hasRole('ROLE_USER') && !embedded"
+                ng-if="isUser() && !embedded"
                 ng-disabled="!nodeSelected"
                 ng-click="saveOrUpdateGraph()">
             <em class="icon-save icon-2x"></em>
@@ -120,7 +120,7 @@
                         </search-resource-input>
                     </div>
                 </div>
-                <div ng-show="hasRole('ROLE_USER')" class="card mb-2">
+                <div ng-show="isUser()" class="card mb-2">
                     <div class="card-block" ng-init="getGraphConfigs()">
                         <div class="clearfix">
                             <a ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right"><span class="icon-plus"></span> Create graph config</a>
@@ -155,7 +155,7 @@
                     </div>
                 </div>
 
-                <div ng-show="hasRole('ROLE_USER')" class="card mb-2">
+                <div ng-show="isUser()" class="card mb-2">
                     <div class="card-block">
                         <h3 class="mb-2">Saved graphs</h3>
                         <div ng-show="savedGraphs.length == 0">No saved visual graph snapshots</div>

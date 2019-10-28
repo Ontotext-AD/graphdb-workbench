@@ -1,5 +1,6 @@
 import 'angular/core/services';
 import 'angular/rest/security.rest.service';
+import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'ngCookies',
@@ -225,6 +226,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
+            this.isAdmin = function () {
+                return this.hasRole(UserRole.ROLE_ADMIN);
+            };
+
             this.checkForWrite = function (menuRole, location, repo) {
                 if ('WRITE_REPO' === menuRole) {
                     return this.canWriteRepo(location, repo);
@@ -233,7 +238,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasAdminRole = function () {
-                return this.hasRole('ROLE_ADMIN') || this.hasRole('ROLE_REPO_MANAGER');
+                return this.isAdmin() || this.hasRole(UserRole.ROLE_REPO_MANAGER);
             };
 
             this.canWriteRepo = function (location, repo) {

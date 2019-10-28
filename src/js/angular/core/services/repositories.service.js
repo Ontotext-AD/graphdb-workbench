@@ -13,9 +13,9 @@ const modules = [
     'toastr'
 ];
 
-const repoServices = angular.module('graphdb.framework.core.services.repositories', modules);
+const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
-repoServices.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
+repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
     function ($http, $cookies, $cookieStore, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
         this.repositoryCookieName = 'com.ontotext.graphdb.repository' + $location.port();
 
