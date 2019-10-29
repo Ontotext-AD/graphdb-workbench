@@ -16,6 +16,7 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
     $scope.totalPages = 5;
 
     $scope.helpHidden = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY) === 1;
+
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
             value = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY);
@@ -408,7 +409,6 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
                 newHeight -= 40;
                 document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
-                //window.editor.refresh();
             } else {
                 let timer;
                 if (verticalView) {
@@ -612,7 +612,6 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
             return {};
         }
         const tab = $scope.tabsData[idx];
-        //tab.query = window.editor.getValue();
         $scope.saveQueryToLocal(tab);
         return tab;
     }

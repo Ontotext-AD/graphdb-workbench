@@ -23,12 +23,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         link: linkFunc
     };
 
-    function linkFunc(scope, element, attrs) {
-        var timer = $timeout(function () {
+    function linkFunc(scope) {
+        const timer = $timeout(function () {
             renderDomainRangeGraph(scope);
         }, 50);
 
-        scope.$on("$destroy", function (event) {
+        scope.$on("$destroy", function () {
             $timeout.cancel(timer);
         });
     }
@@ -42,7 +42,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         d3.selection.prototype.moveToBack = function () {
             return this.each(function () {
-                var firstChild = this.parentNode.firstChild;
+                const firstChild = this.parentNode.firstChild;
                 if (firstChild) {
                     this.parentNode.insertBefore(this, firstChild);
                 }
@@ -153,7 +153,6 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         d3.select("#download-svg")
             .on("mouseover", prepareForSVGImageExport);
 
-
         // start of code for legend
         var legendBackgroundWidth = width / 7;
         var legendBackgroundHeight = legendBackgroundWidth * 1.2;
@@ -161,7 +160,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         var svgLegend = d3.select(".legend-container")
             .append("svg")
             .attr("viewBox", "0 0 " + legendBackgroundWidth + " " + legendBackgroundHeight)
-            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("preserveAspectRatio", "xMidYMid meet");
 
         var legendCellGroup = svgLegend;
 

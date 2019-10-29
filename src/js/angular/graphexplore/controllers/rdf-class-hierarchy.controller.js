@@ -270,7 +270,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
         GraphDataRestService.getRdfsLabelAndComment(uri)
             .success(function (response) {
-                // var result = RdfsLabelCommentService.processAndFilterLabelAndComment(response);
                 $scope.rdfsLabel = response.label;
                 $scope.rdfsComment = response.comment;
                 $scope.expanded = false;

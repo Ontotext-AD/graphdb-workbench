@@ -199,22 +199,22 @@ function deleteConnectorQuery(name, prefix, force) {
         '}';
 }
 
-function removeEmptyValues(o) {
+function removeEmptyValues(data) {
     // remove empty values from array
-    if (Array.isArray(o)) {
-        o = _.filter(o, function (item) {
+    if (Array.isArray(data)) {
+        data = _.filter(data, function (item) {
             return item !== null && (!item.trim || item.trim() !== '');
         });
     }
     // remove empty values from object values
-    Object.keys(o).forEach(function (k) {
-        if ((o[k] === '' || o[k] == null) && o[k] !== false) {
-            delete o[k];
-        } else if (typeof o[k] === 'object') {
-            o[k] = removeEmptyValues(o[k]);
+    Object.keys(data).forEach(function (key) {
+        if ((data[key] === '' || data[key] == null) && data[key] !== false) {
+            delete data[key];
+        } else if (typeof data[key] === 'object') {
+            data[key] = removeEmptyValues(data[key]);
         }
     });
-    return o;
+    return data;
 }
 
 function parseFirstBuildingResult(results) {

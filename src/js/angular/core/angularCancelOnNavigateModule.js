@@ -51,11 +51,11 @@ angular.module('angularCancelOnNavigateModule')
   .factory('HttpRequestTimeoutInterceptor', ['$q', 'HttpPendingRequestsService', function ($q, HttpPendingRequestsService) {
     return {
       request: function (config) {
-        config = config || {};
-        if (config.timeout === undefined && !config.noCancelOnRouteChange) {
-          config.timeout = HttpPendingRequestsService.newTimeout();
+        const requestConfig = config || {};
+        if (requestConfig.timeout === undefined && !requestConfig.noCancelOnRouteChange) {
+          requestConfig.timeout = HttpPendingRequestsService.newTimeout();
         }
-        return config;
+        return requestConfig;
       },
 
       responseError: function (response) {

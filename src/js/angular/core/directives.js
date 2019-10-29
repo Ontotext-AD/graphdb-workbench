@@ -546,28 +546,29 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             function checkUriAutocomplete(searchInput) {
                 function handleAbsUris(absUri) {
-                    if (absUri.indexOf(';') === -1 && validateRdfUri(absUri)) {
-                        absUri = absUri.replace(/<|>/g, '');
-                        const localName = /[^/^#]*$/.exec(absUri)[0];
-                        const uriPart = absUri.split(localName)[0];
+                    let uri = absUri;
+                    if (uri.indexOf(';') === -1 && validateRdfUri(uri)) {
+                        uri = uri.replace(/<|>/g, '');
+                        const localName = /[^/^#]*$/.exec(uri)[0];
+                        const uriPart = uri.split(localName)[0];
                         return uriPart + ";" + localName;
                     }
-                    return absUri;
+                    return uri;
                 }
 
                 // add semicolon after the expanded uri in order to filter only by local names for this uri
-                searchInput = searchInput.replace(expandedUri, expandedUri + ';');
+                let search = searchInput.replace(expandedUri, expandedUri + ';');
 
                 if (element.autoCompleteStatus) {
-                    if (searchInput.charAt(0) === ';') {
-                        searchInput = searchInput.slice(1);
+                    if (search.charAt(0) === ';') {
+                        search = search.slice(1);
                     }
-                    searchInput = handleAbsUris(searchInput);
+                    search = handleAbsUris(search);
                     if (canceler) {
                         canceler.resolve();
                     }
                     canceler = $q.defer();
-                    AutocompleteRestService.getAutocompleteSuggestions(searchInput, canceler.promise)
+                    AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
                         .then(function (results) {
                             canceler = null;
                             $scope.activeSearchElm = 0;

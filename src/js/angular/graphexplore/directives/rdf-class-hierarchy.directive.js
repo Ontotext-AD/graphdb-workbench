@@ -177,7 +177,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         top: 'inherit',
                         bottom: ($window.innerHeight - d3.event.clientY) + 'px',
                         right: ($window.innerWidth - d3.event.clientX) + 'px'
-                    }
+                    };
                 })
                 .html(function (d) {
                     return d.name;
