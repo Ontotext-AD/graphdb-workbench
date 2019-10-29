@@ -1,5 +1,4 @@
 import 'angular/rest/connectors.rest.service';
-import 'lib/bootstrap/bootstrap.min';
 import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
 
