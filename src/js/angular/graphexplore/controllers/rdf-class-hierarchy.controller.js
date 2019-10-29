@@ -1,3 +1,5 @@
+import 'angular/utils/local-storage-adapter';
+
 const modules = [
     'pageslide-directive',
     'ngAnimate',
@@ -5,7 +7,8 @@ const modules = [
     'ui.scroll',
     'angucomplete-alt',
     'rzSlider',
-    'toastr'
+    'toastr',
+    'graphdb.framework.utils.localstorageadapter'
 ];
 
 angular
@@ -16,9 +19,9 @@ angular
     .constant("CLASS_COUNT_THRESHOLD", 1500)
     .constant("CLASS_COUNT_THRESHOLD_IE", 25);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "localStorageService", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, localStorageService, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -148,14 +151,14 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
                 }
             };
 
-            if (localStorageService.get("classHierarchy-currentSliderValue") === null) {
+            if (LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE) === null) {
                 if (classCount > $scope.currentBrowserLimit) {
                     showBrowserCompatibleClassLimitWarning($scope.currentBrowserLimit);
                 }
             }
         }
 
-        const s = localStorageService.get("classHierarchy-switchPrefixes");
+        const s = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_SWITCH_PREFIXES);
         const noSwitchPrefixes = (s != null) && (s !== "true");
         if (noSwitchPrefixes) {
             $scope.showExternalElements = true;
@@ -228,7 +231,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
                 if (status === 204) {
                     toastr.warning("No domain-range data available for '" + name + "' !");
                 } else {
-                    localStorageService.set("classHierarchy-lastSelectedClass", $location.hash());
+                    LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS, $location.hash());
                     $location
                         .hash("")
                         .path("domain-range-graph")
@@ -343,15 +346,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
         $scope.showClassInfoPanel = false;
 
-        angular.forEach(localStorageService.keys(), function (key) {
-            // remove everything but the hide prefixes setting, it should always persist
-            if (key.indexOf("classHierarchy-") === 0 && key !== "classHierarchy-hidePrefixes") {
-                localStorageService.remove(key);
-            }
-        });
+        LocalStorageAdapter.clearClassHieararchyState();
 
         // reset all watched scope variables to undefined in order to stop unwanted triggering of watches
-        $scope.hidePrefixes = localStorageService.get("classHierarchy-hidePrefixes") === "true";
+        $scope.hidePrefixes = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_HIDE_PREFIXES) === "true";
         $scope.currentSliderValue = undefined;
         $scope.classHierarchyData = {};
 

@@ -1,14 +1,16 @@
 import 'angular/utils/notifications';
+import 'angular/utils/local-storage-adapter';
 
 angular
     .module('graphdb.framework.similarity.controllers.create', [
-        'graphdb.framework.utils.notifications'
+        'graphdb.framework.utils.notifications',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', 'localStorageService', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function CreateSimilarityIdxCtrl($scope, localStorageService, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService) {
+function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -176,17 +178,16 @@ function CreateSimilarityIdxCtrl($scope, localStorageService, toastr, $modal, $t
         initForViewType();
     });
 
-    const similarityLocalStorageKey = 'hide-similarity-help';
-    $scope.helpHidden = localStorageService.get(similarityLocalStorageKey) === 1;
+    $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP) === 1;
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
-            value = localStorageService.get(similarityLocalStorageKey);
+            value = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP);
         }
         if (value !== 1) {
-            localStorageService.set(similarityLocalStorageKey, 1);
+            LocalStorageAdapter.set(LSKeys.HIDE_SIMILARITY_HELP, 1);
             $scope.helpHidden = true;
         } else {
-            localStorageService.set(similarityLocalStorageKey, 0);
+            LocalStorageAdapter.set(LSKeys.HIDE_SIMILARITY_HELP, 0);
             $scope.helpHidden = false;
         }
     };

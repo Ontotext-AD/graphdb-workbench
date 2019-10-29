@@ -1,17 +1,19 @@
 import 'angular/rest/connectors.rest.service';
+import 'angular/utils/local-storage-adapter';
 import YASQE from 'lib/yasqe.bundled.min';
 import YASR from 'lib/yasr.bundled';
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
         'ngCookies',
-        'graphdb.framework.rest.connectors.service'
+        'graphdb.framework.rest.connectors.service',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', 'localStorageService', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function queryEditorDirective($timeout, localStorageService, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService) {
+function queryEditorDirective($timeout, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
 
     let callbackOnChange;
 
@@ -183,7 +185,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         window.onbeforeunload = function () {
             if (!scope.nostorage) {
-                localStorageService.set('tabs-state', scope.tabs);
+                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
             }
             scope.saveTab(scope.currentQuery.id);
         };
@@ -197,7 +199,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
         scope.$on('$destroy', function () {
             if (!scope.nostorage) {
-                localStorageService.set('tabs-state', scope.tabs);
+                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
             }
             YASQE.executeQuery = originalExecuteQuery;
             YASQE.getUrlArguments = originalGetUrlArguments;
@@ -478,7 +480,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
 
             angular.extend(executedQueryTab, queryResultState);
             if (!scope.nostorage) {
-                localStorageService.set('tabs-state', scope.tabs);
+                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
             }
             $('a[data-id = "' + scope.executedQueryTab.id + '"]').tab('show');
         }
@@ -812,7 +814,7 @@ function queryEditorDirective($timeout, localStorageService, $location, toastr, 
                 loadQueryIntoExistingOrNewTab(query, $location.search().infer, $location.search().sameAs);
             } else {
                 // Restore the previous tab after the dom has loaded
-                const currentid = localStorageService.get('tabs-state-currentid');
+                const currentid = LocalStorageAdapter.get(LSKeys.TABS_STATE_CURRENT_ID);
                 selectTab(currentid);
             }
         }

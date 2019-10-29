@@ -1,12 +1,15 @@
+import 'angular/utils/local-storage-adapter';
+
 angular
     .module('graphdb.framework.core.directives.queryeditor.sparqltab', [
-        'graphdb.framework.core'
+        'graphdb.framework.core',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('sparqlTab', sparqlTabDirective);
 
-sparqlTabDirective.$inject = ['$rootScope', 'localStorageService', 'ModalService'];
+sparqlTabDirective.$inject = ['$rootScope', 'LocalStorageAdapter', 'LSKeys', 'ModalService'];
 
-function sparqlTabDirective($rootScope, localStorageService, ModalService) {
+function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalService) {
     const SparqlTabCtrl = ['$scope', '$element', '$rootScope', 'ModalService', 'toastr', function ($scope, $element, $rootScope, ModalService, toastr) {
         $scope.state = {};
 
@@ -125,7 +128,7 @@ function sparqlTabDirective($rootScope, localStorageService, ModalService) {
                 }
             });
             selectTab($scope.tabs[0].id);
-            localStorageService.set('tabs-state', $scope.tabs);
+            LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
             $rootScope.$broadcast('deleteAllexeptSelected', $scope.tabs);
         }
     }];

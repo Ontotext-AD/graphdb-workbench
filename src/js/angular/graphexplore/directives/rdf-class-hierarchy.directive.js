@@ -2,16 +2,20 @@ import d3tip from 'lib/d3-tip/d3-tip-patch';
 import CirclePacking from 'lib/common/circle-packing';
 import D3 from 'lib/common/d3-utils';
 import SVG from 'lib/common/svg-export';
+import 'angular/utils/local-storage-adapter';
 
 angular
-    .module('graphdb.framework.graphexplore.directives.class', ['graphdb.framework.graphexplore.controllers.class'])
+    .module('graphdb.framework.graphexplore.directives.class', [
+        'graphdb.framework.graphexplore.controllers.class',
+        'graphdb.framework.utils.localstorageadapter'
+    ])
     .constant("ZOOM_DURATION", 500)
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'localStorageService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, localStorageService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys) {
     return {
         restrict: 'AE',
         template: '<div id="classChart"></div>',
@@ -77,12 +81,12 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         function savePrefixesState(hidePrefixes) {
             if (!angular.isUndefined(hidePrefixes)) {
-                localStorageService.set("classHierarchy-hidePrefixes", hidePrefixes);
+                LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_HIDE_PREFIXES, hidePrefixes);
             }
         }
 
         function getPrefixesState() {
-            return localStorageService.get("classHierarchy-hidePrefixes") === "true";
+            return LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_HIDE_PREFIXES) === "true";
         }
 
         /*
@@ -629,11 +633,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         function sendSliderData() {
             var currentClassCount = scope.classHierarchyData.classCount;
-            let currentSliderValue = localStorageService.get("classHierarchy-currentSliderValue");
+            let currentSliderValue = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE);
 
             if (!currentSliderValue || currentSliderValue > currentClassCount) {
                 currentSliderValue = currentClassCount;
-                localStorageService.set("classHierarchy-currentSliderValue", currentSliderValue);
+                LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE, currentSliderValue);
             }
 
             $rootScope.$broadcast("classCount", currentClassCount, currentSliderValue);
@@ -703,7 +707,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }
 
                     $timeout(function () {
-                        localStorageService.set("classHierarchy-switchPrefixes", switchPrefixes);
+                        LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_SWITCH_PREFIXES, switchPrefixes);
                         autoZoomToPreviousState();
                     }, 70);
                 }
@@ -713,7 +717,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         return;
                     }
 
-                    localStorageService.set("classHierarchy-currentSliderValue", currentSliderValue);
+                    LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE, currentSliderValue);
 
                     newRoot = {
                         name: ROOT_OBJ_NAME,
@@ -768,7 +772,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }
                 }
 
-                var currentSliderValue = localStorageService.get("classHierarchy-currentSliderValue");
+                var currentSliderValue = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE);
                 if (currentSliderValue) {
                     redrawFilteredDiagram(currentSliderValue, sorted);
                 } else {

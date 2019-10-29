@@ -10,6 +10,7 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
+import 'angular/utils/local-storage-adapter';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -26,7 +27,8 @@ angular
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.monitoring.service',
-        'graphdb.framework.rest.rdf4j.repositories.service'
+        'graphdb.framework.rest.rdf4j.repositories.service',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -76,15 +78,15 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'localStorageService', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
     $scope.documentation = '';
     $scope.menu = $menuItems;
-    $scope.tutorialState = localStorageService.get('tutorial-state') !== 1;
+    $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
     $scope.showLicense = false;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
@@ -130,12 +132,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     });
 
     $scope.$on("repositoryIsSet", function () {
-        angular.forEach(localStorageService.keys(), function (key) {
-            // remove everything but the hide prefixes setting, it should always persist
-            if (key.indexOf("classHierarchy-") === 0 && key !== "classHierarchy-hidePrefixes") {
-                localStorageService.remove(key);
-            }
-        });
+        LocalStorageAdapter.clearClassHieararchyState();
     });
 
     $scope.graphdbVersion =
@@ -412,7 +409,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.declineTutorial = function () {
         $('.tutorial-container').slideUp("slow", function () {
             // Animation complete.
-            localStorageService.set("tutorial-state", 1);
+            LocalStorageAdapter.set(LSKeys.TUTORIAL_STATE, 1);
             $scope.tutorialState = false;
         });
     };
@@ -513,7 +510,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             $('.main-menu').addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.toggle-menu').hide();
-        } else if ($(window).width() > 720 && localStorageService.get('menu-state') === 'collapsedMenu') {
+        } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
             $('.container-fluid.main-container').addClass("expanded");
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
@@ -596,9 +593,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
         $scope.menuState = isCollapsed;
         if (isCollapsed) {
-            localStorageService.set("menu-state", 'collapsedMenu');
+            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
         } else {
-            localStorageService.set("menu-state", 'expandedMenu');
+            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'expandedMenu');
         }
         if ($scope.tutorialState && $location.path() === '/') {
             const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;

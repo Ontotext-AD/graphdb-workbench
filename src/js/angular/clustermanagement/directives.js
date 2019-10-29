@@ -1,3 +1,5 @@
+import 'angular/utils/local-storage-adapter';
+
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
@@ -29,15 +31,18 @@ function masterIsConnected(n) {
     return n.weight > 0;
 }
 
-var clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives', []);
+var clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives', [
+    'graphdb.framework.utils.localstorageadapter'
+]);
 
-clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$timeout', 'localStorageService', function ($window, $timeout, localStorageService) {
+clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$timeout', 'LocalStorageAdapter', 'LSKeys',
+    function ($window, $timeout, LocalStorageAdapter, LSKeys) {
     return {
         restrict: 'A',
         //scope: {}, //no need for isolated scope here
         link: function (scope, element) {
             function getWindowWidth() {
-                var collapsed = localStorageService.get('menu-state') === 'collapsedMenu';
+                var collapsed = LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu';
                 navigationBarWidth = collapsed ? navigationBarWidthCollapsed : navigationBarWidthFull;
 
                 // 95% avoids horizontal scrollbars and adds some margin
