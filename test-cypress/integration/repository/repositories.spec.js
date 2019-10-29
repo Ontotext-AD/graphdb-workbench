@@ -71,8 +71,7 @@ describe('Repositories', () => {
             cy.get('.dropdown-menu .dropdown-item')
                 .contains(repositoryId)
                 .closest('a')
-                // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
-                .click({force: true});
+                .click();
 
             // Should visualize the selected repo
             cy.get('.no-selected-repository').should('not.be.visible');
