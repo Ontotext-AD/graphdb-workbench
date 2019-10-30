@@ -433,14 +433,7 @@ describe('Similarity screen validation', () => {
     }
 
     function setNewQuery(newQuery) {
-        // delete default search query and put a new one
-        // forced because the textarea in codemirror is not visible
-        cy.get('.CodeMirror textarea').type('{ctrl}a{backspace}', {force: true});
-        cy.get('.CodeMirror textarea').invoke('val', newQuery).trigger('change', {force: true});
-        cy.get('.CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.pasteQuery(newQuery);
     }
 
     function verifyQueryIsChanged() {

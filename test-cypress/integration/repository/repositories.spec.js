@@ -22,7 +22,7 @@ describe('Repositories', () => {
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
-    it('should allow creation of repositories with default settings', () => {
+    it.only('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
         getLocationsList()
             .should('have.length', 1)
@@ -68,6 +68,10 @@ describe('Repositories', () => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
 
             // The dropdown should contain the newly created repository
+            cy.get('#btnReposGroup').should('have.attr', 'aria-expanded', 'true');
+            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
+            // Alternative is to have the click forced, which might lead to false positive result.
+            cy.get('.dropdown-menu').should('be.visible').wait(500);
             cy.get('.dropdown-menu .dropdown-item')
                 .contains(repositoryId)
                 .closest('a')
