@@ -11,6 +11,10 @@ needed dependencies locally.
 
 ## Development
 
+### Developers guide
+
+https://ontotext-ad.github.io/graphdb-workbench/developers-guide
+
 ### Dev server
 
 Running `npm run start` will bundle application and vendor code in memory and start a webpack 
