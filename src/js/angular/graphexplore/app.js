@@ -4,6 +4,7 @@ import 'angular/core/directives';
 import 'angular/repositories/services';
 import 'angular-ui-scroll/dist/ui-scroll.min';
 import 'angular-ui-scroll/dist/ui-scroll-jqlite.min';
+import 'd3/build/d3';
 import 'lib/d3-ONTO-chord-patch';
 import 'lib/d3-tip/d3-tip-patch';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';

@@ -3,6 +3,7 @@ import 'angular/core/directives';
 import 'angular/clustermanagement/controllers';
 import 'angular/clustermanagement/directives';
 import 'angular/repositories/services';
+import 'd3/build/d3';
 import 'lib/d3-ONTO-chord-patch';
 
 const modules = [
