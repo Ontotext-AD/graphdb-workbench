@@ -6,7 +6,7 @@
 
 ## Bundling
 
-The workbench application consists from many resources: script files, stylesheets, images, fonts. In
+The workbench application consists of many resources: script files, stylesheets, images, fonts. In
 a non optimized build this would lead to hundreds of http requests. Nowadays web applications are
 usually optimized by bundling their resources and minifying them. The reason for this is to have 
 significantly fewer http requests which leads to faster initial load and less traffic. 
@@ -21,7 +21,7 @@ The common config contains shared configuration for the other two.
 There are two ways the application to be built. First is for production and the other is for dev. 
 See the _Build_ and _Dev server_ sections above.
 
-The code for production is build in in the `/dest` folder. The bundling consists from the following
+The code for production is build in in the `/dest` folder. The bundling covers the following
 tasks:
 * Processing the template.html and generating an index.html file. The file is also compressed and 
 optimized. During the process, in the file are injected:
