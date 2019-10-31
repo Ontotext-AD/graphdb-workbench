@@ -1075,7 +1075,6 @@ describe('SPARQL screen validation', () => {
 
     function openSavedQueriesPopup() {
         getSavedQueriesPopupBtn().click();
-
     }
 
     function getSavedQueryFromPopup(savedQueryName) {

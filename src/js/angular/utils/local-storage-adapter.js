@@ -27,6 +27,7 @@ function LocalStorageAdapter(localStorageService, LSKeys) {
         set,
         keys,
         remove,
+        clearAll,
 
         // class hierarchy related
         clearClassHieararchyState
@@ -46,6 +47,10 @@ function LocalStorageAdapter(localStorageService, LSKeys) {
 
     function remove(key) {
         localStorageService.remove(key);
+    }
+
+    function clearAll() {
+        localStorageService.clearAll();
     }
 
     function clearClassHieararchyState() {

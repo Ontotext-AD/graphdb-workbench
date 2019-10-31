@@ -1,8 +1,10 @@
 import 'angular/utils/local-storage-adapter';
+import 'angular/rest/sparql.rest.service';
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.controllers', [
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.rest.sparql.service'
     ])
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
@@ -93,7 +95,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     $scope.viewMode = 'none';
 
     // start of repository actions
-    $scope.getActiveRepository();
+    // FIXME: do we need this??
+    // $scope.getActiveRepository();
     $scope.getActiveRepository = function () {
         // same as getActiveRepository() but takes into account repo errors
         return $repositories.getActiveRepository();
@@ -106,7 +109,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     };
 
     function saveQueryToLocal(currentQueryTab) {
-        angular.forEach($scope.tabs, function (tab, index) {
+        $scope.tabs.forEach(function (tab, index) {
             if (tab.id === currentQueryTab.id) {
                 $scope.tabs[index].query = currentQueryTab.query;
                 $scope.tabs[index].inference = currentQueryTab.inference;
@@ -237,7 +240,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     function deleteCachedSparqlResults(foo, params) {
         if (params.newRepo) {
             $scope.tabsData = LocalStorageAdapter.get(LSKeys.TABS_STATE);
-            _.each($scope.tabsData, function (item) {
+            $scope.tabsData.forEach(function (item) {
                 item.yasrData = undefined;
                 item.queryType = undefined;
                 item.resultsCount = 0;
@@ -404,13 +407,12 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     function getExistingTabId(query) {
         let existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item) {
+        $scope.tabsData.forEach(function (item) {
             if (item.name === query.name && item.query === query.body) {
                 existingTabId = item.id;
                 return item;
             }
         });
-
         return existingTabId;
     }
 
