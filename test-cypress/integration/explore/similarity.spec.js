@@ -383,7 +383,7 @@ describe('Similarity screen validation', () => {
             'filter(isLiteral(?documentText)) \n' +
             '}order by asc(str(?documentID))';
 
-        setNewQuery(MODIFIED_DATA_QUERY);
+        cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
         cy.get('.sparql-loader').should('not.be.visible');
         cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
@@ -392,12 +392,12 @@ describe('Similarity screen validation', () => {
 
     function changeSearchQuery() {
         getSearchQueryTab().click();
-        setNewQuery(MODIFIED_SEARCH_QUERY);
+        cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
         getAnalogicalQueryTab().click();
-        setNewQuery(MODIFIED_ANALOGICAL_QUERY);
+        cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 
     function getDeleteIndexButton() {
@@ -430,10 +430,6 @@ describe('Similarity screen validation', () => {
 
     function waitForIndexBuildingIndicatorToHide() {
         cy.get('.similarity-index-building-loader').should('not.be.visible');
-    }
-
-    function setNewQuery(newQuery) {
-        cy.pasteQuery(newQuery);
     }
 
     function verifyQueryIsChanged() {

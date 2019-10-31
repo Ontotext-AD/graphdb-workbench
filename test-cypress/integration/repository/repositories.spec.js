@@ -22,7 +22,7 @@ describe('Repositories', () => {
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
-    it.only('should allow creation of repositories with default settings', () => {
+    it('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
         getLocationsList()
             .should('have.length', 1)
