@@ -1,9 +1,17 @@
+const STATUS = {
+    'WAIT': 'WAIT',
+    'NO_REPO': 'NO_REPO',
+    'READY': 'READY',
+    'IN_PROGRESS': 'IN_PROGRESS',
+    'ERROR': 'ERROR'
+};
+
 const modules = [
     'ui.scroll.jqlite',
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'graphdb.framework.repositories.services'
+    'graphdb.framework.core.services.repositories'
 ];
 
 angular
@@ -33,12 +41,12 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     let timer;
 
-    $scope.status = !$repositories.getActiveRepository() ? 'NO_REPO' : 'WAIT';
+    $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
 
     const getRelationshipsData = function (selectedClasses) {
         d3.select('#dependencies-chord').html('');
 
-        $scope.status = 'WAIT';
+        $scope.status = STATUS.WAIT;
 
         GraphDataRestService.getRelationshipsData(selectedClasses, $scope.direction)
             .success(function (matrixData) {
@@ -51,9 +59,9 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                     })) > 0,
                     direction: $scope.direction
                 };
-                $scope.status = 'READY';
+                $scope.status = STATUS.READY;
             }).error(function (data) {
-            $scope.status = 'READY';
+            $scope.status = STATUS.READY;
             toastr.error(getError(data), 'Could not get dependencies count');
         });
     };
@@ -74,30 +82,30 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const getRelationshipsStatus = function (force) {
-        if ($scope.status === 'READY' && !force) {
+        if ($scope.status === STATUS.READY && !force) {
             return;
         }
-        $scope.status = 'WAIT';
+        $scope.status = STATUS.WAIT;
         GraphDataRestService.getRelationshipsStatus()
             .success(function (data) {
                 $scope.status = data;
-                if ($scope.status === 'IN_PROGRESS') {
+                if ($scope.status === STATUS.IN_PROGRESS) {
                     if (timer) {
                         return;
                     } else {
                         timer = $timeout(getRelationshipsStatus, 2000);
                     }
                 }
-                if ($scope.status === 'READY') {
+                if ($scope.status === STATUS.READY) {
                     getRelationshipsClasses();
                 }
                 if ($scope.status.indexOf('ERROR;') === 0) {
-                    $scope.status = 'ERROR';
+                    $scope.status = STATUS.ERROR;
                     toastr.error('There was an error while calculating dependencies: ' + $scope.status.substring('ERROR;'.length));
                 }
             })
             .error(function (data) {
-                $scope.status = 'ERROR';
+                $scope.status = STATUS.ERROR;
                 toastr.error(getError(data), 'Could not get dependencies count status!');
             });
     };
@@ -158,7 +166,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
             return;
         }
-        if ($scope.status === 'READY') {
+        if ($scope.status === STATUS.READY) {
             getRelationshipsClasses();
         } else {
             getRelationshipsStatus();
@@ -170,7 +178,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     });
 
     $scope.isLoading = function () {
-        return $scope.status === 'IN_PROGRESS' || $scope.status === 'WAIT';
+        return $scope.status === STATUS.IN_PROGRESS || $scope.status === STATUS.WAIT;
     };
 
     $scope.confirmCalculateDependencies = function () {
@@ -185,7 +193,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.calculateDependencies = function () {
-        $scope.status = 'WAIT';
+        $scope.status = STATUS.WAIT;
         $scope.selectedClasses = undefined;
         GraphDataRestService.calculateRelationships()
             .success(function (data) {
@@ -248,11 +256,11 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         $scope.classQuery.query = '';
 
         if (!$repositories.getActiveRepository()) {
-            $scope.status = 'NO_REPO';
+            $scope.status = STATUS.NO_REPO;
             return;
         }
         if (!$scope.isSystemRepository()) {
-            $scope.status = 'WAIT';
+            $scope.status = STATUS.WAIT;
             $scope.selectedClasses = undefined;
             getRelationshipsStatus(true);
         }

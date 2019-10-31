@@ -1,11 +1,17 @@
+import 'angular/utils/local-storage-adapter';
+import 'angular/rest/sparql.rest.service';
+
 angular
-    .module('graphdb.framework.directives.queryeditor.controllers', [])
+    .module('graphdb.framework.core.directives.queryeditor.controllers', [
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.rest.sparql.service'
+    ])
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
-QueryEditorCtrl.$inject = ['$scope', '$timeout', 'localStorageService', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService'];
+QueryEditorCtrl.$inject = ['$scope', '$timeout', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService) {
+function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService, LocalStorageAdapter, LSKeys) {
     const defaultTabConfig = {
         id: "1",
         name: '',
@@ -33,7 +39,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
         scope.skipCountQuery = !principal.appSettings.EXECUTE_COUNT;
         scope.ignoreSharedQueries = principal.appSettings.IGNORE_SHARED_QUERIES;
-        scope.tabsData = scope.tabs = localStorageService.get('tabs-state') || [defaultTabConfig];
+        scope.tabsData = scope.tabs = LocalStorageAdapter.get(LSKeys.TABS_STATE) || [defaultTabConfig];
 
         scope.$watchCollection('[currentQuery.inference, currentQuery.sameAs]', function (newVal, oldVal, scope) {
             saveQueryToLocal(scope.currentQuery);
@@ -85,11 +91,12 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     $scope.changeViewMode = changeViewMode;
     $scope.showHideEditor = showHideEditor;
     $scope.focusQueryEditor = focusQueryEditor;
-    $scope.orientationViewMode = localStorageService.get('viewMode') ? localStorageService.get('viewMode') === "true" : true;
+    $scope.orientationViewMode = LocalStorageAdapter.get(LSKeys.VIEW_MODE) ? LocalStorageAdapter.get(LSKeys.VIEW_MODE) === "true" : true;
     $scope.viewMode = 'none';
 
     // start of repository actions
-    $scope.getActiveRepository();
+    // FIXME: do we need this??
+    // $scope.getActiveRepository();
     $scope.getActiveRepository = function () {
         // same as getActiveRepository() but takes into account repo errors
         return $repositories.getActiveRepository();
@@ -102,14 +109,14 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     };
 
     function saveQueryToLocal(currentQueryTab) {
-        angular.forEach($scope.tabs, function (tab, index) {
+        $scope.tabs.forEach(function (tab, index) {
             if (tab.id === currentQueryTab.id) {
                 $scope.tabs[index].query = currentQueryTab.query;
                 $scope.tabs[index].inference = currentQueryTab.inference;
                 $scope.tabs[index].sameAs = currentQueryTab.sameAs;
             }
         });
-        localStorageService.set("tabs-state", $scope.tabs);
+        LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
     }
 
     function setLoader(isRunning, progressMessage, extraMessage, noTimer) {
@@ -214,7 +221,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     function changeViewMode() {
         $scope.viewMode = 'none';
         $scope.orientationViewMode = !$scope.orientationViewMode;
-        localStorageService.set('viewMode', $scope.orientationViewMode);
+        LocalStorageAdapter.set(LSKeys.VIEW_MODE, $scope.orientationViewMode);
         fixSizesOnHorizontalViewModeSwitch();
     }
 
@@ -232,8 +239,8 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function deleteCachedSparqlResults(foo, params) {
         if (params.newRepo) {
-            $scope.tabsData = localStorageService.get("tabs-state");
-            _.each($scope.tabsData, function (item) {
+            $scope.tabsData = LocalStorageAdapter.get(LSKeys.TABS_STATE);
+            $scope.tabsData.forEach(function (item) {
                 item.yasrData = undefined;
                 item.queryType = undefined;
                 item.resultsCount = 0;
@@ -241,7 +248,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
                 item.sizeDelta = undefined;
             });
 
-            localStorageService.set("tabs-state", $scope.tabsData);
+            LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabsData);
             $scope.tabs = $scope.tabsData;
 
             $scope.currentQuery = {};
@@ -258,17 +265,15 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         if ($scope.currentQuery) {
             $scope.saveTab($scope.currentQuery.id);
         }
-        localStorageService.set('tabs-state', $scope.tabs);
-        //deleteCachedSparqlResults();
+        LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
     };
 
     $scope.$on('$destroy', function () {
         if ($scope.currentQuery) {
             $scope.saveTab($scope.currentQuery.id);
         }
-        localStorageService.set('tabs-state', $scope.tabs);
+        LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
         clearInterval(checkQueryIntervalId);
-        //deleteCachedSparqlResults();
     });
 
     // start of query operations
@@ -402,19 +407,18 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function getExistingTabId(query) {
         let existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item) {
+        $scope.tabsData.forEach(function (item) {
             if (item.name === query.name && item.query === query.body) {
                 existingTabId = item.id;
                 return item;
             }
         });
-
         return existingTabId;
     }
 
     function editQuery(query) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
+            templateUrl: 'js/angular/core/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {
@@ -502,7 +506,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
     function saveQuery(query, queryExists) {
         const modalInstance = $modal.open({
-            templateUrl: 'js/angular/directives/queryeditor/templates/query-sample.html',
+            templateUrl: 'js/angular/core/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
                 data: function () {
@@ -559,7 +563,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
         return tab;
     }
 
-    let maxID = localStorageService.get('tabs-state-maxid') || 1;
+    let maxID = LocalStorageAdapter.get(LSKeys.TABS_STATE_MAXID) || 1;
 
     function addNewTab(callback, tabName, savedQuery) { // optional callback to call after tab has been added
         if (!isTabChangeOk(true)) {
@@ -595,8 +599,8 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
         $scope.tabsData.push(newTab);
 
-        localStorageService.set('tabs-state-maxid', maxID);
-        localStorageService.set('tabs-state', $scope.tabsData);
+        LocalStorageAdapter.set(LSKeys.TABS_STATE_MAXID, maxID);
+        LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabsData);
         const callbackArgs = Array.prototype.slice.call(arguments, 1); // skip one argument, i.e. the callback itself
         $timeout(function () {
             $scope.$apply();
@@ -609,7 +613,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
     }
 
     function loadTab(id) {
-        $scope.tabsData = localStorageService.get("tabs-state") || [defaultTabConfig];
+        $scope.tabsData = LocalStorageAdapter.get(LSKeys.TABS_STATE) || [defaultTabConfig];
 
         // find available tab
         const idx = findTabIndexByID(id);
@@ -660,7 +664,7 @@ function QueryEditorCtrl($scope, $timeout, localStorageService, toastr, $reposit
 
 
         // persist current tab id in local storage
-        localStorageService.set('tabs-state-currentid', id);
+        LocalStorageAdapter.set(LSKeys.TABS_STATE_CURRENT_ID, id);
 
         $scope.currentQuery = tab;
 

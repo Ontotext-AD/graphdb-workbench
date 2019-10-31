@@ -17,6 +17,7 @@ function LicenseRestService($http, Upload) {
         extractFromLicenseFile,
         checkLicenseHardcoded,
         registerLicense,
+        getInfo,
         getVersion,
         getStatistics,
         toggleStatistics
@@ -75,6 +76,10 @@ function LicenseRestService($http, Upload) {
     // check if distribution has an already activated license
     function checkLicenseHardcoded() {
         return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
+    }
+
+    function getInfo() {
+        return $http.get('rest/info/properties');
     }
 
     function getVersion() {

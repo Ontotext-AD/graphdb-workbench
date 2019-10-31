@@ -1,17 +1,21 @@
 import SVG from 'lib/common/svg-export';
 import D3 from 'lib/common/d3-utils';
+import 'angular/utils/local-storage-adapter';
 
 angular
-    .module('graphdb.framework.graphexplore.directives.domainrange', ['graphdb.framework.graphexplore.controllers.domainrange'])
+    .module('graphdb.framework.graphexplore.directives.domainrange', [
+        'graphdb.framework.graphexplore.controllers.domainrange',
+        'graphdb.framework.utils.localstorageadapter'
+    ])
     .constant('ONTO_RED', '#F04E23')
     .constant('ONTO_GREEN', '#0CB0A0')
     .constant('ONTO_BLUE', '#003663')
     .constant('NON_COLLAPSED_REFLEXIVE_LINK_LIMIT', 6)
     .directive('domainRangeGraph', domainRangeGraphDirective);
 
-domainRangeGraphDirective.$inject = ['$rootScope', '$window', '$repositories', 'GraphDataRestService', '$location', 'localStorageService', '$timeout', 'toastr', 'ONTO_RED', 'ONTO_GREEN', 'ONTO_BLUE', 'NON_COLLAPSED_REFLEXIVE_LINK_LIMIT'];
+domainRangeGraphDirective.$inject = ['$rootScope', '$window', '$repositories', 'GraphDataRestService', '$location', 'LocalStorageAdapter', 'LSKeys', '$timeout', 'toastr', 'ONTO_RED', 'ONTO_GREEN', 'ONTO_BLUE', 'NON_COLLAPSED_REFLEXIVE_LINK_LIMIT'];
 
-function domainRangeGraphDirective($rootScope, $window, $repositories, GraphDataRestService, $location, localStorageService, $timeout, toastr, ONTO_RED, ONTO_GREEN, ONTO_BLUE, NON_COLLAPSED_REFLEXIVE_LINK_LIMIT) {
+function domainRangeGraphDirective($rootScope, $window, $repositories, GraphDataRestService, $location, LocalStorageAdapter, LSKeys, $timeout, toastr, ONTO_RED, ONTO_GREEN, ONTO_BLUE, NON_COLLAPSED_REFLEXIVE_LINK_LIMIT) {
     return {
         restrict: 'AE',
         template: '<div id="domain-range"></div>',
@@ -23,12 +27,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         link: linkFunc
     };
 
-    function linkFunc(scope, element, attrs) {
-        var timer = $timeout(function () {
+    function linkFunc(scope) {
+        const timer = $timeout(function () {
             renderDomainRangeGraph(scope);
         }, 50);
 
-        scope.$on("$destroy", function (event) {
+        scope.$on("$destroy", function () {
             $timeout.cancel(timer);
         });
     }
@@ -42,7 +46,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         d3.selection.prototype.moveToBack = function () {
             return this.each(function () {
-                var firstChild = this.parentNode.firstChild;
+                const firstChild = this.parentNode.firstChild;
                 if (firstChild) {
                     this.parentNode.insertBefore(this, firstChild);
                 }
@@ -153,7 +157,6 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         d3.select("#download-svg")
             .on("mouseover", prepareForSVGImageExport);
 
-
         // start of code for legend
         var legendBackgroundWidth = width / 7;
         var legendBackgroundHeight = legendBackgroundWidth * 1.2;
@@ -161,7 +164,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         var svgLegend = d3.select(".legend-container")
             .append("svg")
             .attr("viewBox", "0 0 " + legendBackgroundWidth + " " + legendBackgroundHeight)
-            .attr("preserveAspectRatio", "xMidYMid meet")
+            .attr("preserveAspectRatio", "xMidYMid meet");
 
         var legendCellGroup = svgLegend;
 
@@ -332,7 +335,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         // intercept back button press and set action to local storage
         $(window).on('popstate', function () {
-            localStorageService.set("domainRange-wentBack", true);
+            LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_WENT_BACK, true);
         });
 
         $window.onpopstate = function (event) {
@@ -343,18 +346,18 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         scope.$watch('collapseEdges', function () {
             if (!angular.isUndefined(scope.collapseEdges)) {
-                localStorageService.set("domainRange-collapseEdges", scope.collapseEdges);
+                LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_COLLAPSE_EDGES, scope.collapseEdges);
 
                 // if the back button has not been pressed, then switch to collapsed or non collapsed mode
                 // otherwise skip, because back button will not function properly and will not pop the entire
                 // history stack
-                if (localStorageService.get("domainRange-wentBack") !== "true") {
+                if (LocalStorageAdapter.get(LSKeys.DOMAIN_RANGE_WENT_BACK) !== "true") {
                     switchEdgeMode(scope.collapseEdges);
                 }
 
                 // after back button status has been checked, remove the action from local storage in order
                 // to be clean for next check
-                localStorageService.remove("domainRange-wentBack");
+                LocalStorageAdapter.remove(LSKeys.DOMAIN_RANGE_WENT_BACK);
             }
         });
 

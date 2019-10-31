@@ -1,17 +1,25 @@
 import 'angular/core/services';
 import 'angular/utils/uri-utils';
 
+const FILE_STATUS = {
+    'UPLOADING': 'UPLOADING',
+    'PENDING': 'PENDING',
+    'ERROR': 'ERROR',
+    'DONE': 'DONE',
+    'NONE': 'NONE'
+};
+
 const modules = [
     'ui.bootstrap',
     'toastr',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.utils.uriutils'
 ];
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location',
-    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', 'LicenseRestService',
+    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, LicenseRestService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -19,7 +27,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         $scope.fileQuery = '';
 
         $scope.getAppData = function () {
-            $http.get('rest/info/properties').success(function (data) {
+            LicenseRestService.getInfo().success(function (data) {
                 $scope.appData = {};
 
                 $scope.appData.properties = {};
@@ -93,7 +101,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                     });
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
-                    return file.status === 'DONE' || file.status === 'ERROR';
+                    return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
                 }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
@@ -477,7 +485,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.type = file.type;
                 $scope.settings.data = file.data;
                 $scope.settings.format = file.format;
-                file.status = 'PENDING';
+                file.status = FILE_STATUS.PENDING;
                 $http({
                     method: 'POST',
                     url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/text',
@@ -486,7 +494,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     $scope.updateList();
                 }).error(function (data) {
                     toastr.error('Could not send data for import; ' + getError(data));
-                    file.status = 'ERROR';
+                    file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
                 });
@@ -496,7 +504,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.type = file.type;
                 $scope.settings.data = file.data;
                 $scope.settings.format = file.format;
-                file.status = 'PENDING';
+                file.status = FILE_STATUS.PENDING;
                 $http({
                     method: 'POST',
                     url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/url',
@@ -522,12 +530,12 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 }).progress(function (evt) {
                     if (file.file) {
                         file.file = null;
-                        file.status = 'UPLOADING';
-                    } else if (file.status !== 'UPLOADING') {
-                        file.status = 'PENDING';
+                        file.status = FILE_STATUS.UPLOADING;
+                    } else if (file.status !== FILE_STATUS.UPLOADING) {
+                        file.status = FILE_STATUS.PENDING;
                     }
 
-                    if (file.status === 'UPLOADING') {
+                    if (file.status === FILE_STATUS.UPLOADING) {
                         const progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                         file.message = progressPercentage + '% uploaded';
                     }
@@ -535,7 +543,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     $scope.updateList();
                 }).error(function (data) {
                     toastr.error('Could not upload file; ' + getError(data));
-                    file.status = 'ERROR';
+                    file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
                 });
@@ -586,8 +594,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
 
         modalInstance.result.then(function (data) {
             if (file) {
-                if ((file.data !== data.text || file.format !== data.format) && file.status !== 'NONE') {
-                    file.status = 'NONE';
+                if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
+                    file.status = FILE_STATUS.NONE;
                     file.message = 'Text snippet was edited but has not been imported again.';
                 }
                 file.data = data.text;

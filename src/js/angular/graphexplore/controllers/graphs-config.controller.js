@@ -1,30 +1,31 @@
 import 'angular/utils/notifications';
-
-const HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY = 'hide-graph-config-help';
+import 'angular/utils/local-storage-adapter';
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
-        'graphdb.framework.utils.notifications'
+        'graphdb.framework.utils.notifications',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$timeout', 'localStorageService', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService'];
+GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService) {
+function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
 
-    $scope.helpHidden = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY) === 1;
+    $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP) === 1;
+
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
-            value = localStorageService.get(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY);
+            value = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP);
         }
         if (value !== 1) {
-            localStorageService.set(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY, 1);
+            LocalStorageAdapter.set(LSKeys.HIDE_GRAPH_CONFIG_HELP, 1);
             $scope.helpHidden = true;
         } else {
-            localStorageService.set(HIDE_GRAPH_CONFIG_HELP_STORAGE_KEY, 0);
+            LocalStorageAdapter.set(LSKeys.HIDE_GRAPH_CONFIG_HELP, 0);
             $scope.helpHidden = false;
         }
     };
@@ -408,7 +409,6 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
                 newHeight -= 40;
                 document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
                 document.getElementById('yasr').style.minHeight = newHeight + 'px';
-                //window.editor.refresh();
             } else {
                 let timer;
                 if (verticalView) {
@@ -612,7 +612,6 @@ function GraphConfigCtrl($scope, $timeout, localStorageService, $location, toast
             return {};
         }
         const tab = $scope.tabsData[idx];
-        //tab.query = window.editor.getValue();
         $scope.saveQueryToLocal(tab);
         return tab;
     }

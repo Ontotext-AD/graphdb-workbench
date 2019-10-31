@@ -1,6 +1,6 @@
-import "angular/repositories/services";
+import 'angular/core/services/repositories.service';
 
-beforeEach(angular.mock.module('graphdb.framework.repositories.services', function ($provide) {
+beforeEach(angular.mock.module('graphdb.framework.core.services.repositories', function ($provide) {
     $provide.constant("productInfo", {
         "productType": "standard", "productVersion": "7.0", "sesame": "2.9.0", "connectors": "5.0.0"
     });

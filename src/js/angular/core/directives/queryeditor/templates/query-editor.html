@@ -23,18 +23,18 @@
                     <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal().username" class="hovered-parent saved-query">
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
-                        <em class="icon-warning" ng-show="query.owner != principal().username && hasRole('ROLE_USER')"
+                        <em class="icon-warning" ng-show="query.owner != principal().username && isUser()"
                            popover="Query shared by another user. You may not edit or delete it."
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && isUser()"
                                     popover="Edit query" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal().username && hasRole('ROLE_USER')"
+                                    ng-show="query.owner == principal().username && isUser()"
                                     popover="Delete query" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
@@ -73,7 +73,7 @@
                 <div id="yasqe_buttons" ng-hide="notoolbar">
                     <div id="buttons">
                         <button class="btn btn-link" id="wb-sparql-saveQuery"
-                                ng-show="!notoolbarSaved && hasRole('ROLE_USER')"
+                                ng-show="!notoolbarSaved && isUser()"
                                 ng-click="saveTab(currentQuery.id); saveQuery(currentQuery);"
                                 data-container="#queryEditor"
                                 tooltip="Create saved query"

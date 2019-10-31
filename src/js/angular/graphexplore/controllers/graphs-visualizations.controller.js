@@ -1,13 +1,15 @@
 import 'angular/core/services';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
+import 'angular/utils/local-storage-adapter';
 
 const modules = [
     'ui.scroll.jqlite',
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'ngTagsInput'
+    'ngTagsInput',
+    'graphdb.framework.utils.localstorageadapter'
 ];
 
 angular
@@ -18,9 +20,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "localStorageService", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, localStorageService, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -231,13 +233,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.saveSettings = angular.copy($scope.defaultSettings);
 
-    const localStorageSettings = localStorageService.get('graphs-viz');
+    const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
     if (localStorageSettings && typeof localStorageSettings === 'object') {
         try {
             $scope.saveSettings = localStorageSettings;
         } catch (e) {
             $scope.saveSettings = angular.copy($scope.defaultSettings);
-            localStorageService.set('graphs-viz', $scope.saveSettings);
+            LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
         }
     }
 
@@ -354,7 +356,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.showInfoPanel = false;
         $scope.showFilter = false;
 
-        localStorageService.set('graphs-viz', $scope.saveSettings);
+        LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
     };
 
     $scope.showInfoPanel = false;

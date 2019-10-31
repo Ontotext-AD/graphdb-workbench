@@ -25,6 +25,7 @@ function GraphDataRestService($http) {
         getRelationshipsClasses,
         getRelationshipsStatus,
         calculateRelationships,
+        getPredicates,
 
         // instances graph
         getInstanceNode,
@@ -96,6 +97,16 @@ function GraphDataRestService($http) {
 
     function calculateRelationships() {
         return $http.get(`${DEPENDENCIES_ENDPOINT}update`);
+    }
+
+    function getPredicates(sourceClass, destinationClass) {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}predicates`, {
+            params: {
+                'from': sourceClass,
+                'to': destinationClass,
+                'mode': 'all'
+            }
+        });
     }
 
     function getInstanceNode(iri) {

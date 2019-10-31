@@ -6,7 +6,7 @@ Notifications.$inject = ['toastr'];
 
 function Notifications(toastr) {
     return {
-        showToastMessageWithDelay: showToastMessageWithDelay
+        showToastMessageWithDelay
     };
 
     /**

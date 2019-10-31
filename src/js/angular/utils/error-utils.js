@@ -1,7 +1,5 @@
 (function(window) {
-    /**
-     * Expose it in the global scope as it is used throughout the whole application.
-     */
+    // Expose it in the global scope as it is used throughout the whole application.
     window.getError = function(data, status) {
         if (angular.isObject(data) && data.status && data.data) {
             // called with the result object instead of its data property
@@ -10,7 +8,7 @@
 
         //To use in future - if we add status code
         if (status && status === 403) {
-            return 'Access is restricted'
+            return 'Access is restricted';
         }
         if (data) {
             let msg = 'Generic error';
@@ -34,7 +32,7 @@
             }
             return msg;
         } else {
-            return 'There is an error'
+            return 'There is an error';
         }
-    }
+    };
 })(window);

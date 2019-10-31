@@ -1,7 +1,7 @@
 import 'angular/core/services';
 import 'angular/core/controllers';
 import 'angular/core/directives';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular-ui-scroll/dist/ui-scroll.min';
 import 'angular-ui-scroll/dist/ui-scroll-jqlite.min';
 import 'd3/build/d3';

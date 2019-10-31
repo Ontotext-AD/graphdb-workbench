@@ -1,10 +1,7 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/rest/security.rest.service';
-
-const ROLE_ADMIN = 'ROLE_ADMIN';
-const ROLE_USER = 'ROLE_USER';
-const ROLE_REPO_MANAGER = 'ROLE_REPO_MANAGER';
+import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 
 const SYSTEM_REPO = 'SYSTEM';
 const READ_REPO = 'READ_REPO';
@@ -12,14 +9,10 @@ const READ_REPO_PREFIX = 'READ_REPO_';
 const WRITE_REPO = 'WRITE_REPO';
 const WRITE_REPO_PREFIX = 'WRITE_REPO_';
 
-const USER_TYPE_ADMIN = 'admin';
-const USER_TYPE_USER = 'user';
-const USER_TYPE_MANAGER = 'repoManager';
-
 const modules = [
     'ngCookies',
     'ui.bootstrap',
-    'graphdb.framework.security.services',
+    'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];
@@ -39,14 +32,14 @@ const setGrantedAuthorities = function ($scope) {
     $scope.user.grantedAuthorities = [];
 
     $scope.repositoryCheckError = true;
-    if ($scope.userType === USER_TYPE_ADMIN) {
+    if ($scope.userType === UserType.ADMIN) {
         $scope.repositoryCheckError = false;
-        pushAuthority(ROLE_ADMIN);
-    } else if ($scope.userType === USER_TYPE_MANAGER) {
+        pushAuthority(UserRole.ROLE_ADMIN);
+    } else if ($scope.userType === UserType.REPO_MANAGER) {
         $scope.repositoryCheckError = false;
-        pushAuthority(ROLE_REPO_MANAGER);
+        pushAuthority(UserRole.ROLE_REPO_MANAGER);
     } else {
-        pushAuthority(ROLE_USER);
+        pushAuthority(UserRole.ROLE_USER);
         for (const index in $scope.grantedAuthorities.WRITE_REPO) {
             if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                 $scope.repositoryCheckError = false;
@@ -62,21 +55,8 @@ const setGrantedAuthorities = function ($scope) {
     }
 };
 
-const getUserRoleName = function (userType) {
-    switch (userType) {
-        case USER_TYPE_USER:
-            return 'User';
-        case USER_TYPE_MANAGER:
-            return 'Repository manager';
-        case USER_TYPE_ADMIN:
-            return 'Administrator';
-        default:
-            return 'Unknown';
-    }
-};
-
 const parseAuthorities = function (authorities) {
-    let userType = USER_TYPE_USER;
+    let userType = UserType.USER;
     const grantedAuthorities = {
         [READ_REPO]: {},
         [WRITE_REPO]: {}
@@ -84,14 +64,14 @@ const parseAuthorities = function (authorities) {
     const repositories = {};
     for (let i = 0; i < authorities.length; i++) {
         const role = authorities[i];
-        if (role === ROLE_ADMIN) {
-            userType = USER_TYPE_ADMIN;
-        } else if (role === ROLE_REPO_MANAGER) {
-            if (userType !== USER_TYPE_ADMIN) {
-                userType = USER_TYPE_MANAGER;
+        if (role === UserRole.ROLE_ADMIN) {
+            userType = UserType.ADMIN;
+        } else if (role === UserRole.ROLE_REPO_MANAGER) {
+            if (userType !== UserType.ADMIN) {
+                userType = UserType.REPO_MANAGER;
             }
-        } else if (role === ROLE_USER) {
-            userType = USER_TYPE_USER;
+        } else if (role === UserRole.ROLE_USER) {
+            userType = UserType.USER;
         } else if (role.indexOf('ROLE_') !== 0) {
             const index = role.indexOf('_', role.indexOf('_') + 1);
             const op = role.substr(0, index);
@@ -108,7 +88,7 @@ const parseAuthorities = function (authorities) {
 
     return {
         userType: userType,
-        userTypeDescription: getUserRoleName(userType),
+        userTypeDescription: UserUtils.getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
         repositories: repositories
     };
@@ -336,13 +316,13 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
     function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth) {
 
         $scope.isAdmin = function () {
-            return $jwtAuth.hasRole(ROLE_ADMIN);
+            return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
         };
         $scope.hasEditRestrictions = function () {
-            return $scope.user && $scope.user.username === USER_TYPE_ADMIN;
+            return $scope.user && $scope.user.username === UserType.ADMIN;
         };
 
         $scope.isOverrideAuth = function () {
@@ -354,7 +334,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
 
         $scope.hasReadPermission = function (repositoryId) {
-            return $scope.userType === USER_TYPE_ADMIN || $scope.userType === USER_TYPE_MANAGER
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || $scope.grantedAuthorities.READ_REPO[repositoryId]
                 || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
                 || repositoryId !== SYSTEM_REPO
@@ -362,7 +342,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
 
         $scope.hasWritePermission = function (repositoryId) {
-            return $scope.userType === USER_TYPE_ADMIN || $scope.userType === USER_TYPE_MANAGER
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
                 || repositoryId !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*'];
         };
@@ -374,12 +354,12 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
 
         $scope.writeCheckDisabled = function (repositoryId) {
-            return $scope.userType === USER_TYPE_ADMIN || $scope.userType === USER_TYPE_MANAGER
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.userType = USER_TYPE_USER;
+        $scope.userType = UserType.USER;
         $scope.grantedAuthorities = {
             [READ_REPO]: {},
             [WRITE_REPO]: {}
@@ -496,7 +476,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.params = $routeParams;
         $scope.pageTitle = 'Edit user: ' + $scope.params.userId;
         $scope.passwordPlaceholder = 'New password';
-        $scope.userType = USER_TYPE_USER;
+        $scope.userType = UserType.USER;
         const defaultUserSettings = {
             'DEFAULT_SAMEAS': true,
             'DEFAULT_INFERENCE': true,
@@ -504,7 +484,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             'IGNORE_SHARED_QUERIES': false
         };
 
-        if (!$jwtAuth.hasRole(ROLE_ADMIN)) {
+        if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
         $scope.getUserData = function () {
@@ -515,7 +495,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.user.confirmpassword = '';
                 $scope.user.external = $scope.userData.external;
                 $scope.user.appSettings = data.appSettings || defaultUserSettings;
-                $scope.userType = USER_TYPE_USER;
+                $scope.userType = UserType.USER;
                 const pa = parseAuthorities(data.grantedAuthorities);
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;

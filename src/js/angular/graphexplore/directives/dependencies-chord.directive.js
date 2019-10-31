@@ -1,12 +1,16 @@
 import SVG from 'lib/common/svg-export';
+import 'angular/rest/graph-data.rest.service';
 
 angular
-    .module('graphdb.framework.graphexplore.directives.dependencies', ['graphdb.framework.graphexplore.controllers.dependencies'])
+    .module('graphdb.framework.graphexplore.directives.dependencies', [
+        'graphdb.framework.graphexplore.controllers.dependencies',
+        'graphdb.framework.rest.graphexplore.data.service'
+    ])
     .directive('dependenciesChord', dependenciesChordDirective);
 
-dependenciesChordDirective.$inject = ['$rootScope', '$location', '$window', '$timeout', '$repositories', '$http', 'toastr', '$filter'];
+dependenciesChordDirective.$inject = ['$repositories', 'GraphDataRestService'];
 
-function dependenciesChordDirective($rootScope, $location, $window, $timeout, $repositories, $http, toastr, $filter) {
+function dependenciesChordDirective($repositories, GraphDataRestService) {
     return {
         restrict: 'A',
         template: '<div id="dependencies-chord"></div>',
@@ -16,38 +20,38 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
         link: linkFunc
     };
 
-    function linkFunc(scope, element, attrs) {
+    function linkFunc(scope) {
         // Used http://bost.ocks.org/mike/uberdata/
 
-        var drawChord = function (matrix, nodes, direction) {
+        const drawChord = function (matrix, nodes) {
 
-            var fill = d3.scale.category20();
+            const fill = d3.scale.category20();
 
-            var tooltip = d3.select("body").append("div")
+            const tooltip = d3.select("body").append("div")
                 .attr("class", "tooltip")
                 .style("opacity", 0);
             d3.select("body").on("click", function () {
                 tooltip.style("opacity", 0);
             });
 
-            var width = 800,
-                height = 800,
-                outerRadius = Math.min(width, height) / 2.8,
-                innerRadius = outerRadius - 24;
+            const width = 800;
+            const height = 800;
+            const outerRadius = Math.min(width, height) / 2.8;
+            const innerRadius = outerRadius - 24;
 
-            var arc = d3.svg.arc()
+            const arc = d3.svg.arc()
                 .innerRadius(innerRadius)
                 .outerRadius(outerRadius);
 
-            var layout = d3.layout.chord()
+            const layout = d3.layout.chord()
                 .padding(.04)
                 .sortSubgroups(d3.descending)
                 .sortChords(d3.ascending);
 
-            var path = d3.svg.chord()
+            const path = d3.svg.chord()
                 .radius(innerRadius);
 
-            var svg = d3.select("#dependencies-chord").append("svg")
+            const svg = d3.select("#dependencies-chord").append("svg")
                 .attr("viewBox", "0 0 " + width + " " + height)
                 .attr("preserveAspectRatio", "xMidYMid meet")
                 .style("font", "10px sans-serif")
@@ -59,12 +63,11 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
                 .attr("r", outerRadius)
                 .style("fill", "none");
 
-
             // Compute the chord layout.
             layout.matrix(matrix);
 
             // Add a group per neighborhood.
-            var group = svg.selectAll(".group")
+            const group = svg.selectAll(".group")
                 .data(layout.groups)
                 .enter().append("g")
                 .attr("class", "group")
@@ -76,7 +79,7 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
             });
 
             // Add the group arc.
-            var groupPath = group.append("path")
+            group.append("path")
                 .attr("id", function (d, i) {
                     return "group" + i;
                 })
@@ -103,12 +106,12 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
                 });
 
             // Add the chords.
-            var chord = svg.selectAll(".chord")
+            const chord = svg.selectAll(".chord")
                 .data(layout.chords)
                 .enter().append("path")
                 .attr("class", "chord")
                 .style("fill", function (d) {
-                    return fill(d.target.index)
+                    return fill(d.target.index);
                 })
                 .style("fill-opacity", ".67")
                 .style("stroke", "#000")
@@ -116,65 +119,50 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
                 .style("cursor", "pointer")
                 .attr("d", path);
 
-            chord.on("mouseover", function (d) {
+            chord.on("mouseover", function () {
                 d3.select(this).style({"fill-opacity": "1"});
             });
 
-            chord.on("mouseout", function (d) {
+            chord.on("mouseout", function () {
                 d3.select(this).style({"fill-opacity": ".67"});
             });
 
             chord.on("click", function (d) {
-                var sourceClass = nodes[d.source.index];
-                var destinationClass = nodes[d.target.index];
-                var px = d3.event.pageX;
-                var py = d3.event.pageY;
-                $http.get("rest/dependencies/predicates", {
-                    params: {
-                        "from": sourceClass,
-                        "to": destinationClass,
-                        "mode": "all"
-                    }
-                })
+                const sourceClass = nodes[d.source.index];
+                const destinationClass = nodes[d.target.index];
+                const px = d3.event.pageX;
+                const py = d3.event.pageY;
+
+                GraphDataRestService.getPredicates(sourceClass, destinationClass)
                     .success(function (predicatesData) {
-                        var directionIcon = " <i class='fa fa-exchange'></i> ";
-                        var header = "<div class='row'>" + sourceClass + directionIcon + destinationClass + "</div>";
-                        var predicatesList = _.map(predicatesData.slice(0, 10), function (p) {
-                            var icon = " <i class='fa fa-long-arrow-" + (p.direction == "out" ? "right" : "left") + "'></i>";
+                        const directionIcon = " <i class='fa fa-exchange'></i> ";
+                        const header = "<div class='row'>" + sourceClass + directionIcon + destinationClass + "</div>";
+                        const predicatesList = _.map(predicatesData.slice(0, 10), function (p) {
+                            const icon = " <i class='fa fa-long-arrow-" + (p.direction === "out" ? "right" : "left") + "'></i>";
                             return "<div class='row'>" + p.predicate + " : " + p.weight + icon + " </div>";
                         }).join("");
-                        var tooltipContent = "<div class='dependencies-tooltip'>" + header + predicatesList;
+
+                        let tooltipContent = "<div class='dependencies-tooltip'>" + header + predicatesList;
                         if (predicatesData.length > 10) {
-                            tooltipContent = tooltipContent + "<div class='pull-right'>And " + (predicatesData.length - 10).toString() + " more...</div></div>"
+                            tooltipContent = tooltipContent + "<div class='pull-right'>And " + (predicatesData.length - 10).toString() + " more...</div></div>";
                         } else {
                             tooltipContent = tooltipContent + "</div>";
                         }
                         tooltip.html(tooltipContent)
                             .style("left", (px) + "px").style("top", (py) + "px");
                     });
+
                 tooltip.transition()
                     .duration(200)
                     .style("opacity", 1);
             });
 
-            // Add an elaborate mouseover title for each chord.
-//                    chord.append("title").text(function (d) {
-//                        return nodes[d.source.index]
-//                            + " → " + nodes[d.target.index]
-//                            + ": " + d.source.value
-//                            + "\n" + nodes[d.target.index]
-//                            + " → " + nodes[d.source.index]
-//                            + ": " + $filter('number')(d.target.value);
-//                    });
-
-
             function mouseover(d, i) {
                 chord.classed("fade", function (p) {
-                    return p.source.index != i
-                        && p.target.index != i;
+                    return p.source.index !== i
+                        && p.target.index !== i;
                 });
             }
-
 
             d3.select("#circle").on("mouseleave", function () {
                 svg.selectAll(".chord").classed("fade", false);
@@ -186,7 +174,7 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
              */
             function prepareForSVGImageExport() {
                 // convert selected html to base64
-                var imgSrc = SVG.Export.generateBase64ImageSource();
+                const imgSrc = SVG.Export.generateBase64ImageSource();
 
                 // set the binary image and a name for the downloadable file on the export button
                 d3.select(this).attr({
@@ -201,7 +189,7 @@ function dependenciesChordDirective($rootScope, $location, $window, $timeout, $r
 
         scope.$watch('dependenciesData', function () {
             if (scope.dependenciesData) {
-                var data = scope.dependenciesData;
+                const data = scope.dependenciesData;
                 drawChord(data.matrix, data.nodes, data.direction);
             }
         });

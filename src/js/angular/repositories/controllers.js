@@ -1,6 +1,3 @@
-import 'angular/core/services';
-import 'angular/repositories/services';
-
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
 
@@ -22,7 +19,7 @@ const staticRulesets = [
 const modules = [
     'ngCookies',
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'toastr',
     'ngFileUpload'
 ];

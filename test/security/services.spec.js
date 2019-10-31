@@ -1,6 +1,7 @@
-import "angular/security/services";
+import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/services/jwt-auth.service';
 
-beforeEach(angular.mock.module('graphdb.framework.security.services', function($provide) {
+beforeEach(angular.mock.module('graphdb.framework.core.interceptors.unauthorized', function($provide) {
     $provide.constant("productInfo", {
         "productType": "standard", "productVersion": "7.0", "sesame": "2.9.0", "connectors": "5.0.0"
     });

@@ -1,14 +1,16 @@
 import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/security/controllers';
-import 'angular/security/services';
+import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/services/jwt-auth.service';
 
 const modules = [
     'toastr',
     'ui.bootstrap',
     'ngRoute',
     'graphdb.framework.security.controllers',
-    'graphdb.framework.security.services'
+    'graphdb.framework.core.interceptors.unauthorized',
+    'graphdb.framework.core.services.jwtauth'
 ];
 
 const securityApp = angular.module('graphdb.framework.security', modules);

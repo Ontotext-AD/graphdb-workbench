@@ -1,5 +1,5 @@
 import "angular/core/services";
-import "angular/repositories/services";
+import 'angular/core/services/repositories.service';
 import "angular/resources/controllers";
 
 beforeEach(angular.mock.module('graphdb.framework.jmx.resources.controllers', function ($provide) {

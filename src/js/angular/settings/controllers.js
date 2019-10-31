@@ -1,11 +1,11 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 
 angular
     .module('graphdb.framework.settings.controllers', [
         'ngCookies',
         'ui.bootstrap',
-        'graphdb.framework.security.services',
+        'graphdb.framework.core.services.jwtauth',
         'toastr'
     ])
     .controller('ActiveLocationSettingsCtrl', ActiveLocationSettingsCtrl)
@@ -91,7 +91,7 @@ RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$mo
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
     $scope.$on('securityInit', function () {
-        if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
+        if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
         }
     });
@@ -108,8 +108,8 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
                 .success(function (licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
                 }).error(function () {
-                toastr.error('Could not upload file');
-            });
+                    toastr.error('Could not upload file');
+                });
         }
     });
 

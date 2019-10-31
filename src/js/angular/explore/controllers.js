@@ -8,7 +8,7 @@ const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
     'graphdb.workbench.utils.filetypes'
 ];
@@ -169,7 +169,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             headers: {
                 'Accept': format.type
             }
-        }).success(function (data) {
+        }).success(function (response) {
+            let data = response;
             if (format.type.indexOf('json') > -1) {
                 data = JSON.stringify(data);
             }
@@ -313,7 +314,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         // expand prefix to uri only if the last character of the input is a colon and
         // there are no angle brackets because they are allowed only for absolute uris
         const ANGLE_BRACKETS_REGEX = /<|>/;
-        if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ":") {
+        if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ':') {
             const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, str.slice(0, -1));
             expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
             if (expandedUri) {
@@ -324,8 +325,8 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         let promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
-            str = str.replace(expandedUri, expandedUri + ";");
-            promise = AutocompleteRestService.getAutocompleteSuggestions(str);
+            const query = str.replace(expandedUri, expandedUri + ';');
+            promise = AutocompleteRestService.getAutocompleteSuggestions(query);
         } else {
             // return empty promise
             promise = $q.when($scope.autocompleteEnabled);
@@ -387,18 +388,18 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 });
                 $scope.loader = false;
             }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.loader = false;
-        });
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                $scope.loader = false;
+            });
 
         ClassInstanceDetailsService.getDetails($scope.uriParam)
             .success(function (data) {
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-            toastr.error('Cannot get resource details; ' + getError(data));
-        });
+                toastr.error('Cannot get resource details; ' + getError(data));
+            });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
             .then(function (res) {
