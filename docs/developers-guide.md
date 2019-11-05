@@ -1,8 +1,196 @@
 # Developers Guide
 
+
+
 ## Extending the GraphDB Workbench
 
+## Plugin system
 
+Since v1.2, GraphDB workbench features a plugin system which allows components to be plugged in 
+without introducing coupling between new and existing components. The new system allows extending or 
+replacing existing components, introduction of new single or compositional components. All this 
+could be achieved without any changes in the rest of the system.
+
+_Currently the new system is integrated in the workbench main components registration. These are the
+components which implement the main workbench views (extension point `route`) and their respective 
+main menu entries (extension point `main.menu`). In next versions more extension points might be 
+introduced._
+
+### What is the plugin system and how a developer can use it?
+
+The plugin system consist of four components. 
+
+The `PluginRegistry` which is a service that has a role to maintain a runtime registry of all 
+registered to given extension point plugins. It has the following interface:
+```javascript
+PluginRegistry {
+    add(extensionPoint:String, pluginDefinition:[Object|Array]),
+    get(extensionPoint:String):Array,
+    clear(extensionPoint:String),
+    listModules()
+}
+```
+
+The second component is the plugin definition which a developer can define for each extension point
+where he needs new behavior or customization. When there is a need given component to be extended or 
+customized, the developer declares an extension point which is the contract to which plugins can be 
+registered. Every plugin should conform to that contract. Plugin definitions are javascript files 
+with mandatory name `plugin.js`.
+
+Example of a plugin definition: 
+```javascript
+// src/js/angular/autocomplete/plugin.js
+PluginRegistry.add('route', {
+    'url': '/autocomplete',
+    'module': 'graphdb.framework.autocomplete',
+    'path': 'autocomplete/app',
+    'chunk': 'autocomplete',
+    'controller': 'AutocompleteCtrl',
+    'templateUrl': 'pages/autocomplete.html',
+    'title': 'Autocomplete index',
+    'helpInfo': 'The Autocomplete index is used for automatic ...'
+});
+```
+
+**In a single plugin.js definition file can be registered plugins to multiple extension points.**
+
+The above `plugin.js` definition can be extended like this: 
+```javascript
+PluginRegistry.add('route', {
+    'url': '/autocomplete',
+    'module': 'graphdb.framework.autocomplete',
+    'path': 'autocomplete/app',
+    'chunk': 'autocomplete',
+    'controller': 'AutocompleteCtrl',
+    'templateUrl': 'pages/autocomplete.html',
+    'title': 'Autocomplete index',
+    'helpInfo': 'The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.'
+});
+
+PluginRegistry.add('main.menu', {
+    'items': [
+        {label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
+        {label: 'Autocomplete', href: 'autocomplete', order: 40, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
+    ]
+});
+```
+
+Plugin definitions can have the following optional attributes: `order`, `priority`, `disabled`.
+* The plugin `order` can be used when the extension point contract requires plugins to be loaded in 
+particular order.
+```javascript
+// src/module_1/plugin.js
+PluginRegistry.add('extension.point', {
+    'label': 'plugin-1',
+    'order': 10
+});
+``` 
+```javascript
+// src/module_2/plugin.js
+PluginRegistry.add('extension.point', {
+    'label': 'plugin-2',
+    'order': 20
+});
+``` 
+```javascript
+// src/main.js
+const plugins = PluginRegistry.get('extension.point');
+// plugins[0] -> `plugin-1`
+// plugins[1] -> `plugin-2`
+```
+If order is not provided, then plugins are loaded in order of their registration which is the order 
+in which the plugin.js files are processed during the application bundling.
+
+* The `priority` attribute can be used when an ordered plugin should be overridden by another plugin. 
+If not provided, priority for every plugin is set by default to `0`. Having two plugins with same 
+order but different priority results in overriding the lower priority plugin by the other. If there 
+are two plugins with equal order and priority, then an error is thrown to warn the developer for the 
+issue.
+ ```javascript
+ // src/module_1/plugin.js
+ PluginRegistry.add('extension.point', {
+     'label': 'plugin-1',
+     'order': 10
+ });
+ ``` 
+ ```javascript
+ // src/module_2/plugin.js
+ PluginRegistry.add('extension.point', {
+     'label': 'plugin-2',
+     'order': 10,
+     'priority': 10
+ });
+ ``` 
+ ```javascript
+ // src/main.js
+ const plugins = PluginRegistry.get('extension.point');
+ // plugins[0] -> `plugin-2`
+ ```
+ 
+ * A plugin can be disabled by setting the `disabled: true` attribute which means that the plugin 
+ won't be loaded. All plugins by default are considered enabled. If a plugin is disabled, its 
+ definition is not validated and processed - it's just skipped.
+ ```javascript
+ // src/module_1/plugin.js
+ PluginRegistry.add('extension.point', {
+     'label': 'plugin-1',
+     'disabled': true
+ });
+ ``` 
+ ```javascript
+ // src/module_2/plugin.js
+ PluginRegistry.add('extension.point', {
+     'label': 'plugin-2',
+ });
+ ``` 
+ ```javascript
+ // src/main.js
+ const plugins = PluginRegistry.get('extension.point');
+ // plugins[0] -> `plugin-2`
+ ```
+
+The third component from the plugin system is the `plugins.js` file which is autogenerated and is 
+composed from all `plugin.js` files during the workbench build. Usually developers don't need to 
+touch this file. 
+
+The last part are the extension points which the developer implements in the application code. An 
+extension point is the place where plugins are loaded and eventually executed. 
+
+Below is an example of extension point in the workbench which allows registering modules that can be
+accessed by navigating to different url (routes).
+```javascript
+// src/app.js
+// 1. Get all registered extension for the "route" extension point. 
+let routes = PluginRegistry.get('route');
+// 2. Loop through all extensions
+routes.forEach(function (route) {
+    // 3. Register every extension with the $routeProvider
+    $routeProvider.when(route.url, {
+        controller: route.controller,
+        templateUrl: route.templateUrl,
+        title: route.title,
+        helpInfo: route.helpInfo,
+        reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true
+    });
+});
+```
+
+### How does the plugin system work? 
+
+* During the workbench packaging with webpack, the source code directory is scanned for plugin 
+definitions.
+* The content of every plugin definition which is found is copied and appended to a file named 
+`plugins.js`. This file is programmatically generated during the bundling.
+* Both `PluginRegistry` and the `plugins.js` are defined in the main application html template.
+```html
+<head>
+    <script src="plugin-registry.js"></script>
+    <script src="plugins.js"></script>
+</head>
+```  
+This allows the plugins to be registered runtime in the registry immediately after the web 
+application is loaded by issuing calls to `PluginRegistry.add(extensionPoint, pluginDefintion)` 
+method.
 
 ## Bundling
 
