@@ -10,6 +10,18 @@ Cypress.Commands.add('executeQuery', () => {
     getLoader().should('not.be.visible');
 });
 
+Cypress.Commands.add('clearQuery', () => {
+    clearQuery();
+});
+
+Cypress.Commands.add('typeQuery', (query, clear = true, parseSpecialCharSequences = false) => {
+    if (clear) {
+        clearQuery();
+    }
+    // Using force because the textarea is not visible
+    getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
+});
+
 Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
     getResultsWrapper().should('be.visible');
     getTableResultRows()
@@ -22,11 +34,43 @@ Cypress.Commands.add('verifyResultsMessage', (msg) => {
         .and('contain', msg);
 });
 
-Cypress.Commands.add('waitUntilQueryIsVisible', (query) => {
+Cypress.Commands.add('waitUntilQueryIsVisible', () => {
+    waitUntilQueryIsVisible();
+});
+
+Cypress.Commands.add('verifyQueryAreaContains', (query) => {
+    verifyQueryAreaContains(query);
+});
+
+Cypress.Commands.add('addNewQueryEditorTab', (expectedTabsCount = 2) => {
+    addTab();
+    getTabs().should('have.length', expectedTabsCount);
+    getLastTab()
+        .should('have.class', 'active')
+        .find('.nav-link')
+        .should('have.text', 'Unnamed');
     waitUntilQueryIsVisible();
 });
 
 // Helper functions
+
+const TABS_SELECTOR = '#sparql-content .nav-tabs .sparql-tab';
+
+function getNewTabButton() {
+    return cy.get('#wb-sparql-addNewTab');
+}
+
+function addTab() {
+    getNewTabButton().click();
+}
+
+function getTabs() {
+    return cy.get(TABS_SELECTOR);
+}
+
+function getLastTab() {
+    return getTabs().last();
+}
 
 function clearQuery() {
     // Using force because the textarea is not visible
@@ -39,6 +83,14 @@ function getQueryArea() {
 
 function getQueryTextArea() {
     return getQueryArea().find('textarea');
+}
+
+function verifyQueryAreaContains(query) {
+    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
+    getQueryArea().should(codeMirrorEl => {
+        const cm = codeMirrorEl[0].CodeMirror;
+        expect(cm.getValue().includes(query)).to.be.true;
+    });
 }
 
 function waitUntilQueryIsVisible() {
