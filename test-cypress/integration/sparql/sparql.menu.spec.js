@@ -5,6 +5,10 @@ const FILE_TO_IMPORT = 'wine.rdf';
 describe('SPARQL screen validation', () => {
     let repositoryId;
 
+    const EDIT_SAVED_QUERY_COMMAND = '.icon-edit';
+    const DELETE_SAVED_QUERY_COMMAND = '.icon-trash';
+    const OPEN_SAVED_QUERY_COMMAND = '.icon-link';
+
     const DEFAULT_QUERY = 'select * where { \n' +
         '\t?s ?p ?o .\n' +
         '} limit 100';
@@ -548,7 +552,7 @@ describe('SPARQL screen validation', () => {
                 .and('contain', savedQueryName);
 
             // Press the pen icon to edit the custom query created earlier
-            editSaveQueryFromPopup(savedQueryName);
+            executeSavedQueryCommand(savedQueryName, EDIT_SAVED_QUERY_COMMAND);
 
             getPopover().should('not.exist');
             waitUntilSavedQueryModalIsVisible();
@@ -570,7 +574,7 @@ describe('SPARQL screen validation', () => {
                 .should('be.visible')
                 .and('contain', savedQueryName);
 
-            editSaveQueryFromPopup(savedQueryName);
+            executeSavedQueryCommand(savedQueryName, EDIT_SAVED_QUERY_COMMAND);
 
             waitUntilSavedQueryModalIsVisible();
 
@@ -587,7 +591,7 @@ describe('SPARQL screen validation', () => {
                 .and('contain', savedQueryName);
 
             // Press the trash bin to delete the custom query created earlier
-            deleteSaveQueryFromPopup(savedQueryName);
+            executeSavedQueryCommand(savedQueryName, DELETE_SAVED_QUERY_COMMAND);
 
             // Confirm dialog
             confirmModal();
@@ -699,7 +703,7 @@ describe('SPARQL screen validation', () => {
             openSavedQueriesPopup();
             getPopover().should('be.visible');
 
-            openSavedQueryLinkFromPopup(queryName);
+            executeSavedQueryCommand(queryName, OPEN_SAVED_QUERY_COMMAND);
 
             const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName) + '&owner=admin';
             getModal()
@@ -1088,37 +1092,18 @@ describe('SPARQL screen validation', () => {
         getPopover().should('be.visible');
         getSavedQueryFromPopup(savedQueryName)
             .find('a')
-            .click();
-    }
-
-    function editSaveQueryFromPopup(savedQueryName) {
-        getSavedQueryFromPopup(savedQueryName)
-            .trigger('mouseover')
-            .find('.actions-bar')
-            .should('be.visible')
-            .find('.icon-edit')
-            .parent('.btn')
-            // Cypress sometimes determines the element has 0x0 dimensions...
+            // the popup is opened and the link with the text is visible but cypress think it's 0x0px width/height
             .click({force: true});
     }
 
-    function deleteSaveQueryFromPopup(savedQueryName) {
+    function executeSavedQueryCommand(savedQueryName, commandSelector) {
         getSavedQueryFromPopup(savedQueryName)
-            .trigger('mouseover')
+        // Current implementation of the saved queries popup always render the action bar next to
+        // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
+            .trigger('mouseover', {force: true})
             .find('.actions-bar')
             .should('be.visible')
-            .find('.icon-trash')
-            .parent('.btn')
-            // Cypress sometimes determines the element has 0x0 dimensions...
-            .click({force: true});
-    }
-
-    function openSavedQueryLinkFromPopup(savedQueryName) {
-        getSavedQueryFromPopup(savedQueryName)
-            .trigger('mouseover')
-            .find('.actions-bar')
-            .should('be.visible')
-            .find('.icon-link')
+            .find(commandSelector)
             .parent('.btn')
             // Cypress sometimes determines the element has 0x0 dimensions...
             .click({force: true});
