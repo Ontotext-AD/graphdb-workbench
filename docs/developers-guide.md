@@ -182,7 +182,7 @@ definitions.
 * The content of every plugin definition which is found is copied and appended to a file named 
 `plugins.js`. This file is programmatically generated during the bundling.
 * Both `PluginRegistry` and the `plugins.js` are defined in the main application html template.
-```html
+```
 <head>
     <script src="plugin-registry.js"></script>
     <script src="plugins.js"></script>
