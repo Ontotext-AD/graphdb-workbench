@@ -106,6 +106,72 @@
                                     </label>
                                 </div>
                             </div>
+                            <div ng-show="repositoryInfo.params.isShacl.value === 'true'">
+                                <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="rdfsSubClassReasoning" name="rdfsSubClassReasoning" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.rdfsSubClassReasoning.value"/>
+                                            {{repositoryInfo.params.rdfsSubClassReasoning.label}}
+                                        </label>
+                                    </div>
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="cacheSelectNodes" name="cacheSelectNodes" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
+                                            {{repositoryInfo.params.cacheSelectNodes.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="logValidationPlans" name="logValidationPlans" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationPlans.value"/>
+                                            {{repositoryInfo.params.logValidationPlans.label}}
+                                        </label>
+                                    </div>
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="logValidationViolations" name="logValidationViolations" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationViolations.value"/>
+                                            {{repositoryInfo.params.logValidationViolations.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="parallelValidation" name="parallelValidation" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.parallelValidation.value"/>
+                                            {{repositoryInfo.params.parallelValidation.label}}
+                                        </label>
+                                    </div>
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="globalLogValidationExecution" name="globalLogValidationExecution" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
+                                            {{repositoryInfo.params.globalLogValidationExecution.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="undefinedTargetValidatesAllSubjects" name="undefinedTargetValidatesAllSubjects" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.undefinedTargetValidatesAllSubjects.value"/>
+                                            {{repositoryInfo.params.undefinedTargetValidatesAllSubjects.label}}
+                                        </label>
+                                    </div>
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="ignoreNoShapesLoadedException" name="ignoreNoShapesLoadedException" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.ignoreNoShapesLoadedException.value"/>
+                                            {{repositoryInfo.params.ignoreNoShapesLoadedException.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-3">
+                                            <input id="performanceLogging" name="performanceLogging" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.performanceLogging.value"/>
+                                            {{repositoryInfo.params.performanceLogging.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 							<div class="form-group row">
 								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.baseURL.label}}</label>
 								<div class="col-xs-4 col-sm-4 col-md-4">
