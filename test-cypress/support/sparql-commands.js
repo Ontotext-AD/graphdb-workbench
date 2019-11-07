@@ -22,8 +22,12 @@ Cypress.Commands.add('verifyResultsMessage', (msg) => {
         .and('contain', msg);
 });
 
-Cypress.Commands.add('waitUntilQueryIsVisible', (query) => {
+Cypress.Commands.add('waitUntilQueryIsVisible', () => {
     waitUntilQueryIsVisible();
+});
+
+Cypress.Commands.add('verifyQueryAreaContains', (query) => {
+    verifyQueryAreaContains(query);
 });
 
 // Helper functions
@@ -45,6 +49,14 @@ function waitUntilQueryIsVisible() {
     getQueryArea().should(codeMirrorEl => {
         const cm = codeMirrorEl[0].CodeMirror;
         expect(cm.getValue().trim().length > 0).to.be.true;
+    });
+}
+
+function verifyQueryAreaContains(query) {
+    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
+    getQueryArea().should(codeMirrorEl => {
+        const cm = codeMirrorEl[0].CodeMirror;
+        expect(cm.getValue().includes(query)).to.be.true;
     });
 }
 
