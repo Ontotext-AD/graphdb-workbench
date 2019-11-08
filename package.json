@@ -34,7 +34,7 @@
         "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
     },
     "versions": {
-        "graphdb": "9.0.0"
+        "graphdb": "9.1.0-TR9"
     },
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
     "devDependencies": {
