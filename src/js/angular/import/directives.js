@@ -1,8 +1,11 @@
 import 'angular/core/services';
+import 'angular/utils/uri-utils';
 
-const importDirectives = angular.module('graphdb.framework.impex.import.directives', []);
+const importDirectives = angular.module('graphdb.framework.impex.import.directives', [
+    'graphdb.framework.utils.uriutils'
+]);
 
-importDirectives.directive('validateUri', ['UtilService', function (UtilService) {
+importDirectives.directive('validateUri', ['UriUtils', function (UriUtils) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -11,7 +14,7 @@ importDirectives.directive('validateUri', ['UtilService', function (UtilService)
                 let valid = true;
 
                 if (scope.target === 'named') {
-                    valid = UtilService.isValidIri(value);
+                    valid = UriUtils.isValidIri(value);
                 }
 
                 ctrl.$setValidity('validateUri', valid);
@@ -20,7 +23,7 @@ importDirectives.directive('validateUri', ['UtilService', function (UtilService)
             });
         }
     };
-}]);// defined in workbench-core.js
+}]);
 
 importDirectives.directive('filesTable', function () {
     return {

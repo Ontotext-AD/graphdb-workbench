@@ -1,15 +1,25 @@
 import 'angular/core/services';
+import 'angular/utils/uri-utils';
+
+const FILE_STATUS = {
+    'UPLOADING': 'UPLOADING',
+    'PENDING': 'PENDING',
+    'ERROR': 'ERROR',
+    'DONE': 'DONE',
+    'NONE': 'NONE'
+};
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
-    'toastr'
+    'toastr',
+    'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.uriutils'
 ];
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$timeout', '$repositories', '$modal', '$filter', '$rootScope', '$jwtAuth', '$location',
-    function ($scope, $http, toastr, $interval, $timeout, $repositories, $modal, $filter, $rootScope, $jwtAuth, $location) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', 'LicenseRestService',
+    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, LicenseRestService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -17,7 +27,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         $scope.fileQuery = '';
 
         $scope.getAppData = function () {
-            $http.get('rest/info/properties').success(function (data) {
+            LicenseRestService.getInfo().success(function (data) {
                 $scope.appData = {};
 
                 $scope.appData.properties = {};
@@ -91,7 +101,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                     });
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
-                    return file.status === 'DONE' || file.status === 'ERROR';
+                    return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
                 }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
@@ -366,7 +376,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         };
     }]);
 
-importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$interval', '$controller', function ($scope, $http, toastr, $interval, $controller) {
+importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller', function ($scope, $http, toastr, $controller) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'server';
@@ -406,7 +416,7 @@ importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$interval', '
     $scope.init();
 }]);
 
-importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$rootScope', '$modal', function ($scope, Upload, $http, toastr, $controller, $rootScope, $modal) {
+importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$modal', function ($scope, Upload, $http, toastr, $controller, $modal) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'upload';
@@ -475,7 +485,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.type = file.type;
                 $scope.settings.data = file.data;
                 $scope.settings.format = file.format;
-                file.status = 'PENDING';
+                file.status = FILE_STATUS.PENDING;
                 $http({
                     method: 'POST',
                     url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/text',
@@ -484,7 +494,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     $scope.updateList();
                 }).error(function (data) {
                     toastr.error('Could not send data for import; ' + getError(data));
-                    file.status = 'ERROR';
+                    file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
                 });
@@ -494,7 +504,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.type = file.type;
                 $scope.settings.data = file.data;
                 $scope.settings.format = file.format;
-                file.status = 'PENDING';
+                file.status = FILE_STATUS.PENDING;
                 $http({
                     method: 'POST',
                     url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/url',
@@ -520,12 +530,12 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 }).progress(function (evt) {
                     if (file.file) {
                         file.file = null;
-                        file.status = 'UPLOADING';
-                    } else if (file.status !== 'UPLOADING') {
-                        file.status = 'PENDING';
+                        file.status = FILE_STATUS.UPLOADING;
+                    } else if (file.status !== FILE_STATUS.UPLOADING) {
+                        file.status = FILE_STATUS.PENDING;
                     }
 
-                    if (file.status === 'UPLOADING') {
+                    if (file.status === FILE_STATUS.UPLOADING) {
                         const progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                         file.message = progressPercentage + '% uploaded';
                     }
@@ -533,7 +543,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     $scope.updateList();
                 }).error(function (data) {
                     toastr.error('Could not upload file; ' + getError(data));
-                    file.status = 'ERROR';
+                    file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
                 });
@@ -584,8 +594,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
 
         modalInstance.result.then(function (data) {
             if (file) {
-                if ((file.data !== data.text || file.format !== data.format) && file.status !== 'NONE') {
-                    file.status = 'NONE';
+                if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
+                    file.status = FILE_STATUS.NONE;
                     file.message = 'Text snippet was edited but has not been imported again.';
                 }
                 file.data = data.text;
@@ -627,7 +637,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.init();
 }]);
 
-importCtrl.controller('UrlCtrl', ['$scope', '$controller', '$modalInstance', 'toastr', function ($scope, $controller, $modalInstance) {
+importCtrl.controller('UrlCtrl', ['$scope', '$modalInstance', 'toastr', function ($scope, $modalInstance) {
     $scope.importFormat = {name: 'Auto', type: ''};
     $scope.startImport = true;
 
@@ -644,7 +654,7 @@ importCtrl.controller('UrlCtrl', ['$scope', '$controller', '$modalInstance', 'to
     };
 }]);
 
-importCtrl.controller('TextCtrl', ['$scope', '$controller', '$modalInstance', 'toastr', 'text', 'format', function ($scope, $controller, $modalInstance, toastr, text, format) {
+importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format', function ($scope, $modalInstance, text, format) {
     $scope.importFormats = [
         {name: 'RDF/JSON', type: 'application/rdf+json'},
         {name: 'JSON-LD', type: 'application/ld+json'},
@@ -678,8 +688,7 @@ importCtrl.controller('TextCtrl', ['$scope', '$controller', '$modalInstance', 't
     };
 }]);
 
-
-importCtrl.controller('TabCtrl', ['$scope', '$rootScope', '$location', function ($scope, $rootScope, $location) {
+importCtrl.controller('TabCtrl', ['$scope', '$location', function ($scope, $location) {
     $scope.viewType = $location.hash();
     if ($scope.viewType !== 'user' && $scope.viewType !== 'server') {
         $scope.viewType = 'user';
@@ -696,7 +705,8 @@ importCtrl.controller('TabCtrl', ['$scope', '$rootScope', '$location', function 
     $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
 }]);
 
-importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UtilService', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', function ($scope, $modalInstance, toastr, UtilService, settings, hasParserSettings, defaultSettings, isMultiple) {
+importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple',
+    function ($scope, $modalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple) {
     $scope.hasError = function (error, input) {
         return _.find(error, function (o) {
             return input === o['$name'];
@@ -756,7 +766,7 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr'
     $scope.addReplaceGraph = function (graph) {
         let valid = true;
         if (graph !== 'default') {
-            valid = UtilService.isValidIri(graph);
+            valid = UriUtils.isValidIri(graph);
         }
         $scope.settingsForm.replaceGraph.$setTouched();
         $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', valid);

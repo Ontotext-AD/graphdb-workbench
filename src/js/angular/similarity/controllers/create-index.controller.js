@@ -1,10 +1,16 @@
+import 'angular/utils/notifications';
+import 'angular/utils/local-storage-adapter';
+
 angular
-    .module('graphdb.framework.similarity.controllers.create', [])
+    .module('graphdb.framework.similarity.controllers.create', [
+        'graphdb.framework.utils.notifications',
+        'graphdb.framework.utils.localstorageadapter'
+    ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', '$http', '$interval', 'localStorageService', 'toastr', '$repositories', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'UtilService', 'RDF4JRepositoriesRestService'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, toastr, $repositories, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, UtilService, RDF4JRepositoriesRestService) {
+function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -28,7 +34,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         sameAs: true
     };
 
-    var getNewIndexName = function (indexNameFromLocation) {
+    let getNewIndexName = function (indexNameFromLocation) {
         if (indexNameFromLocation) {
             if ($scope.page !== 1) {
                 return indexNameFromLocation;
@@ -172,17 +178,16 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
         initForViewType();
     });
 
-    const similarityLocalStorageKey = 'hide-similarity-help';
-    $scope.helpHidden = localStorageService.get(similarityLocalStorageKey) === 1;
+    $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP) === 1;
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
-            value = localStorageService.get(similarityLocalStorageKey);
+            value = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP);
         }
         if (value !== 1) {
-            localStorageService.set(similarityLocalStorageKey, 1);
+            LocalStorageAdapter.set(LSKeys.HIDE_SIMILARITY_HELP, 1);
             $scope.helpHidden = true;
         } else {
-            localStorageService.set(similarityLocalStorageKey, 0);
+            LocalStorageAdapter.set(LSKeys.HIDE_SIMILARITY_HELP, 0);
             $scope.helpHidden = false;
         }
     };
@@ -745,7 +750,7 @@ function CreateSimilarityIdxCtrl($scope, $http, $interval, localStorageService, 
 
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
             .then(async function () {
-                await UtilService.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+                await Notifications.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
                 $location.url('similarity');
             }, function (response) {
                 toastr.error(getError(response), 'Could not change query!');

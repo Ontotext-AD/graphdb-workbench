@@ -6,10 +6,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
     mode: 'development',
-    devtool: 'source-map',
-    // devtool: 'none',
     output: {
         filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {

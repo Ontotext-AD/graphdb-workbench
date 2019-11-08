@@ -1,3 +1,4 @@
+import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 
@@ -5,10 +6,11 @@ const modules = [
     'ngCookies',
     'ngRoute',
     'ui.bootstrap',
+    'toastr',
     'graphdb.framework.core',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'toastr'
+    'graphdb.workbench.utils.filetypes'
 ];
 
 angular
@@ -18,9 +20,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes) {
 
     $scope.loading = false;
 
@@ -46,19 +48,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.blanks = true;
     $scope.sameAs = true;
 
-    $scope.formats = [
-        {name: 'JSON', type: 'application/rdf+json', extension: '.json'},
-        {name: 'JSON-LD', type: 'application/ld+json', extension: '.jsonld'},
-        {name: 'RDF-XML', type: 'application/rdf+xml', extension: '.rdf'},
-        {name: 'N3', type: 'text/rdf+n3', extension: '.n3'},
-        {name: 'N-Triples', type: 'text/plain', extension: '.nt'},
-        {name: 'N-Quads', type: 'text/x-nquads', extension: '.nq'},
-        {name: 'Turtle', type: 'text/turtle', extension: '.ttl'},
-        {name: 'TriX', type: 'application/trix', extension: '.trix'},
-        {name: 'TriG', type: 'application/x-trig', extension: '.trig'},
-        {name: 'Binary RDF', type: 'application/x-binary-rdf', extension: '.brf'}
-    ];
-
+    $scope.formats = FileTypes;
 
     let yasr;
 
@@ -179,7 +169,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             headers: {
                 'Accept': format.type
             }
-        }).success(function (data) {
+        }).success(function (response) {
+            let data = response;
             if (format.type.indexOf('json') > -1) {
                 data = JSON.stringify(data);
             }
@@ -323,7 +314,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         // expand prefix to uri only if the last character of the input is a colon and
         // there are no angle brackets because they are allowed only for absolute uris
         const ANGLE_BRACKETS_REGEX = /<|>/;
-        if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ":") {
+        if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ':') {
             const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, str.slice(0, -1));
             expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
             if (expandedUri) {
@@ -334,8 +325,8 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         let promise;
         if ($scope.autocompleteEnabled) {
             // add semicolon after the expanded uri in order to filter only by local names for this uri
-            str = str.replace(expandedUri, expandedUri + ";");
-            promise = AutocompleteRestService.getAutocompleteSuggestions(str);
+            const query = str.replace(expandedUri, expandedUri + ';');
+            promise = AutocompleteRestService.getAutocompleteSuggestions(query);
         } else {
             // return empty promise
             promise = $q.when($scope.autocompleteEnabled);
@@ -397,18 +388,18 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 });
                 $scope.loader = false;
             }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.loader = false;
-        });
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                $scope.loader = false;
+            });
 
         ClassInstanceDetailsService.getDetails($scope.uriParam)
             .success(function (data) {
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-            toastr.error('Cannot get resource details; ' + getError(data));
-        });
+                toastr.error('Cannot get resource details; ' + getError(data));
+            });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
             .then(function (res) {

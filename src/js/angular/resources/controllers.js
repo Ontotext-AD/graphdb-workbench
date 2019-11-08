@@ -1,19 +1,19 @@
 import 'angular/core/services';
-import 'angular/repositories/services';
+import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'lib/nvd3/nv.d3';
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr'
 ];
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$http', '$modal', 'toastr', '$interval', '$filter', '$timeout', 'MonitoringRestService',
-    function ($scope, $http, $modal, toastr, $interval, $filter, $timeout, MonitoringRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$timeout', 'MonitoringRestService',
+    function ($scope, toastr, $interval, $timeout, MonitoringRestService) {
         $scope.data = {
             classCount: [{
                 key: 'Classes',

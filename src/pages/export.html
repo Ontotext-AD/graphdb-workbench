@@ -45,7 +45,7 @@
 					</div>
 
 					<label class="mr-1 mb-0">
-						<input type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="updateResults();deselectAll()"
+						<input type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="onGraphSearch()"
 							placeholder="Search Graphs"/>
 					</label>
 				</div>
@@ -112,7 +112,7 @@
 							</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="graph in displayGraphs">
+						<tr ng-repeat="graph in displayGraphs track by $index">
 							<td>
 								<label class="form-check-label">
 									<input type="checkbox"

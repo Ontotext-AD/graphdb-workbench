@@ -1,11 +1,11 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 
 angular
     .module('graphdb.framework.settings.controllers', [
         'ngCookies',
         'ui.bootstrap',
-        'graphdb.framework.security.services',
+        'graphdb.framework.core.services.jwtauth',
         'toastr'
     ])
     .controller('ActiveLocationSettingsCtrl', ActiveLocationSettingsCtrl)
@@ -14,16 +14,16 @@ angular
     .controller('RegisterLicenseCtrl', RegisterLicenseCtrl)
     .controller('LoaderSamplesCtrl', LoaderSamplesCtrl);
 
-ActiveLocationSettingsCtrl.$inject = ['$scope', '$http', 'toastr', '$modalInstance'];
+ActiveLocationSettingsCtrl.$inject = ['$scope', 'toastr', '$modalInstance', 'LicenseRestService'];
 
-function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
-    $scope.settings = {statistics: false};
+function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestService) {
     $scope.supportsStatistics = true;
+    $scope.settings = {statistics: false};
     $scope.getSettings = getSettings;
 
     function getSettings() {
         $scope.loader = true;
-        $http.get('rest/graphdb-settings/statistics').then(function (response) {
+        LicenseRestService.getStatistics().then(function (response) {
             $scope.settings.statistics = response.data === 'true';
             $scope.supportsStatistics = true;
         }, function (response) {
@@ -40,19 +40,13 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
 
     $scope.setSettings = function () {
         $scope.loader = true;
-        $http({
-            method: 'POST',
-            url: 'rest/graphdb-settings/statistics',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            data: 'enabled=' + $scope.settings.statistics
-        })
-            .then(function () {
-                $modalInstance.close();
-                toastr.success('Settings have been saved');
-            }, function (response) {
-                const msg = getError(response.data);
-                toastr.error(msg, 'Error saving settings');
-            });
+        LicenseRestService.toggleStatistics($scope.settings.statistics).then(function () {
+            $modalInstance.close();
+            toastr.success('Settings have been saved');
+        }, function (response) {
+            const msg = getError(response.data);
+            toastr.error(msg, 'Error saving settings');
+        });
     };
 
     $scope.submitForm = function () {
@@ -64,9 +58,9 @@ function ActiveLocationSettingsCtrl($scope, $http, toastr, $modalInstance) {
     };
 }
 
-LicenseCtrl.$inject = ['$scope', '$http', '$location', '$cookieStore', 'LicenseRestService', 'toastr', '$rootScope'];
+LicenseCtrl.$inject = ['$scope', 'LicenseRestService', 'toastr', '$rootScope'];
 
-function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseRestService, toastr, $rootScope) {
+function LicenseCtrl($scope, LicenseRestService, toastr, $rootScope) {
     $scope.loader = true;
 
     LicenseRestService.checkLicenseHardcoded()
@@ -89,7 +83,6 @@ function LicenseCtrl($scope, $http, $location, $cookieStore, LicenseRestService,
                     // no license but we need to check for 417
                     $scope.loader = false;
                     $scope.license = {message: 'No license was set.', valid: false};
-                    //$location.path('license/register');
                 });
         });
 }
@@ -98,7 +91,7 @@ RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$mo
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
     $scope.$on('securityInit', function () {
-        if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
+        if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
         }
     });
@@ -177,7 +170,6 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
             LicenseRestService.registerLicense(decodedLicense)
                 .success(function () {
                     $window.history.back();
-                    // $location.path('license');
                 }).error(function () {
                     toastr.error('Error registering GraphDB license');
                 });

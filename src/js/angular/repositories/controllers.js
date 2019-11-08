@@ -1,24 +1,3 @@
-import 'angular/core/services';
-import 'angular/repositories/services';
-
-const modules = [
-    'ngCookies',
-    'ui.bootstrap',
-    'graphdb.framework.repositories.services',
-    'toastr',
-    'ngFileUpload'
-];
-
-angular.module('graphdb.framework.repositories.controllers', modules)
-    .controller('LocationsAndRepositoriesCtrl', LocationsAndRepositoriesCtrl)
-    .controller('AddLocationCtrl', AddLocationCtrl)
-    .controller('EditLocationCtrl', EditLocationCtrl)
-    .controller('AddRepositoryCtrl', AddRepositoryCtrl)
-    .controller('EditRepositoryCtrl', EditRepositoryCtrl)
-    .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
-
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$http', '$modal', '$timeout', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService'];
-
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
 
@@ -37,7 +16,24 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-function LocationsAndRepositoriesCtrl($scope, $http, $modal, $timeout, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService) {
+const modules = [
+    'ngCookies',
+    'ui.bootstrap',
+    'graphdb.framework.core.services.repositories',
+    'toastr',
+    'ngFileUpload'
+];
+
+angular.module('graphdb.framework.repositories.controllers', modules)
+    .controller('LocationsAndRepositoriesCtrl', LocationsAndRepositoriesCtrl)
+    .controller('AddLocationCtrl', AddLocationCtrl)
+    .controller('EditLocationCtrl', EditLocationCtrl)
+    .controller('AddRepositoryCtrl', AddRepositoryCtrl)
+    .controller('EditRepositoryCtrl', EditRepositoryCtrl)
+    .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
+
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService'];
+function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -352,9 +348,9 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', '$http', '$modal', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -504,9 +500,9 @@ function AddRepositoryCtrl($scope, $http, $modal, toastr, $repositories, $locati
 
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$http', '$modal', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $http, $modal, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 

@@ -383,7 +383,7 @@ describe('Similarity screen validation', () => {
             'filter(isLiteral(?documentText)) \n' +
             '}order by asc(str(?documentID))';
 
-        setNewQuery(MODIFIED_DATA_QUERY);
+        cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
         cy.get('.sparql-loader').should('not.be.visible');
         cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
@@ -392,12 +392,12 @@ describe('Similarity screen validation', () => {
 
     function changeSearchQuery() {
         getSearchQueryTab().click();
-        setNewQuery(MODIFIED_SEARCH_QUERY);
+        cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
         getAnalogicalQueryTab().click();
-        setNewQuery(MODIFIED_ANALOGICAL_QUERY);
+        cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 
     function getDeleteIndexButton() {
@@ -432,19 +432,9 @@ describe('Similarity screen validation', () => {
         cy.get('.similarity-index-building-loader').should('not.be.visible');
     }
 
-    function setNewQuery(newQuery) {
-        // delete default search query and put a new one
-        // forced because the textarea in codemirror is not visible
-        cy.get('.CodeMirror textarea').type('{ctrl}a{backspace}', {force: true});
-        cy.get('.CodeMirror textarea').invoke('val', newQuery).trigger('change', {force: true});
-        cy.get('.CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
-    }
-
     function verifyQueryIsChanged() {
-        cy.get('#queryEditor .CodeMirror').should('contain', 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .');
+        const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
+        cy.verifyQueryAreaContains(query);
     }
 
     function getToast() {

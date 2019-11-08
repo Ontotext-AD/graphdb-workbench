@@ -9,7 +9,7 @@
                     <div class="pages-wrapper">
                         <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
                             <h1 class="card-title">{{page.title}}</h1>
-                            <p class="card-text lead" ng-bind-html="page.info"></p>
+                            <p class="card-text lead" ng-bind-html="getTutorialPageHtml(page)"></p>
                         </div>
                     </div>
                 </div>

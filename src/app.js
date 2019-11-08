@@ -1,44 +1,14 @@
 import 'angular/core/services';
-import 'angular/repositories/app';
-import 'angular/export/app';
-import 'angular/import/app';
-import 'angular/security/app';
-import 'angular/sparql/app';
-import 'angular/graphexplore/app';
-import 'angular/namespaces/app';
-import 'angular/explore/app';
-import 'angular/stats/app';
-import 'angular/resources/app';
-import 'angular/queries/app';
-import 'angular/externalsync/app';
 import 'angular/controllers';
-import 'angular/autocomplete/app';
-import 'angular/ontorefine/app';
-import 'angular/rdfrank/app';
-import 'angular/similarity/app';
-import 'angular/angularCancelOnNavigateModule';
+import 'angular/core/angularCancelOnNavigateModule';
+import 'oclazyload';
 
 const modules = [
     'ngRoute',
     'graphdb.workbench.se.controllers',
     'graphdb.framework.core',
-    'graphdb.framework.repositories',
-    'graphdb.framework.impex.export',
-    'graphdb.framework.impex.import',
-    'graphdb.framework.security',
-    'graphdb.framework.explore',
-    'graphdb.framework.sparql',
-    'graphdb.framework.graphexplore',
-    'graphdb.framework.namespaces',
-    'graphdb.framework.stats',
-    'graphdb.framework.jmx.resources',
-    'graphdb.framework.jmx.queries',
-    'graphdb.framework.externalsync',
-    'graphdb.framework.autocomplete',
-    'graphdb.framework.ontorefine',
-    'graphdb.framework.rdfrank',
-    'graphdb.framework.similarity',
-    'angularCancelOnNavigateModule'
+    'angularCancelOnNavigateModule',
+    'oc.lazyLoad'
 ];
 
 const moduleDefinition = function (productInfo) {
@@ -56,10 +26,30 @@ const moduleDefinition = function (productInfo) {
                 .setStorageType('localStorage')
                 .setNotify(true, true);
 
-            $routeProvider.when('/', {
-                templateUrl: 'pages/home.html',
-                controller: 'homeCtrl'
-            }).otherwise({
+            let routes = PluginRegistry.get('route');
+
+            routes.forEach(function (route) {
+                $routeProvider.when(route.url, {
+                    controller: route.controller,
+                    templateUrl: route.templateUrl,
+                    title: route.title,
+                    helpInfo: route.helpInfo,
+                    reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
+                    resolve: {
+                        preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
+                            // some modules define routes to just static pages
+                            if (!route.path) {
+                                return $q.defer().resolve();
+                            }
+                            return import(`angular/${route.path}`).then(module => {
+                                $ocLazyLoad.inject(route.module);
+                            })
+                        }]
+                    }
+                });
+            });
+
+            $routeProvider.otherwise({
                 templateUrl: 'pages/not_found.html'
             });
 
@@ -73,6 +63,13 @@ const moduleDefinition = function (productInfo) {
             // at the time of module creation so we pass it to $menuItemsProvider. The info can be used
             // to construct version/edition-specific links.
             $menuItemsProvider.setProductInfo(productInfo);
+
+            let mainMenu = PluginRegistry.get('main.menu');
+            mainMenu.forEach(function (menu) {
+                menu.items.forEach(function (item) {
+                    $menuItemsProvider.addItem(item);
+                });
+            });
         }]);
 
     workbench.constant('isEnterprise', productInfo.productType === 'enterprise');
@@ -80,14 +77,14 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$cookies', '$rootScope', '$route', 'toastr', function ($cookies, $rootScope, $route, toastr) {
+    workbench.run(['$cookies', '$rootScope', '$route', 'toastr', '$sce', function ($cookies, $rootScope, $route, toastr, $sce) {
         $rootScope.$on('$routeChangeSuccess', function () {
             if ($route.current.title) {
                 document.title = $route.current.title + ' | GraphDB Workbench';
             } else {
                 document.title = 'GraphDB Workbench';
             }
-            $rootScope.helpInfo = $route.current.helpInfo;
+            $rootScope.helpInfo = $sce.trustAsHtml($route.current.helpInfo);
             $rootScope.title = $route.current.title;
 
             toastr.clear();

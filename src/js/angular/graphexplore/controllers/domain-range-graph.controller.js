@@ -1,14 +1,17 @@
+import 'angular/utils/local-storage-adapter';
+
 angular
     .module('graphdb.framework.graphexplore.controllers.domainrange', [
         'ui.scroll.jqlite',
         'ui.scroll',
-        'ngSanitize'
+        'ngSanitize',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .controller('DomainRangeGraphCtlr', DomainRangeGraphCtlr);
 
-DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'localStorageService', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'toastr'];
+DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'LocalStorageAdapter', 'LSKeys', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'toastr'];
 
-function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, localStorageService, GraphDataRestService, UiScrollService, ModalService, toastr) {
+function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, LocalStorageAdapter, LSKeys, GraphDataRestService, UiScrollService, ModalService, toastr) {
     $scope.predicatesObj = {};
     $scope.predicatesQueryObj = {};
     $scope.predicatesObj.items = [];
@@ -46,7 +49,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.adapterContainer = {adapter: {remain: true}};
 
 
-    const doCollapseEdges = localStorageService.get('domainRange-collapseEdges');
+    const doCollapseEdges = LocalStorageAdapter.get(LSKeys.DOMAIN_RANGE_COLLAPSE_EDGES);
     if (doCollapseEdges === null) {
         $scope.collapseEdges = true;
     } else {
@@ -60,7 +63,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.$on('repositoryIsSet', onRepositoryIsSet);
     $scope.$on('changeCollapsedEdgesState', function (event, collapsed) {
         $scope.collapseEdges = !collapsed;
-        localStorageService.set('domainRange-collapseEdges', $scope.collapseEdges);
+        LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_COLLAPSE_EDGES, $scope.collapseEdges);
     });
 
     $scope.goToClassHierarchyView = goToClassHierarchyView;
@@ -170,7 +173,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     }
 
     function goToClassHierarchyView() {
-        const lastSelectedClass = localStorageService.get('classHierarchy-lastSelectedClass');
+        const lastSelectedClass = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS);
 
         $location
             .search('')

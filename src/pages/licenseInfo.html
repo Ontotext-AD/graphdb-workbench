@@ -43,18 +43,18 @@
 			</div>
 			<p class="text-muted">{{license.typeOfUse}}</p>
 			<div>
-				<a href="license/register" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
+				<a href="license/register" ng-hide="isLicenseHardcoded || !isAdmin()" class="btn btn-primary">
 					Set new license
 				</a>
 			</div>
 		</div>
 	</div>
 
-	<div class="alert alert-warning" ng-show="isLicenseHardcoded && hasRole('ROLE_ADMIN') && productType !== 'free'">
+	<div class="alert alert-warning" ng-show="isLicenseHardcoded && isAdmin() && productType !== 'free'">
 		License cannot be changed from the Workbench as it was set through a file or config parameter.
 	</div>
 
-	<div class="alert alert-warning" ng-show="!hasRole('ROLE_ADMIN') && productType !== 'free'">
+	<div class="alert alert-warning" ng-show="!isAdmin() && productType !== 'free'">
 		License can be changed by Admins only.
 	</div>
 </div>

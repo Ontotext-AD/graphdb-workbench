@@ -3,7 +3,7 @@ import 'angular/rest/cluster.rest.service';
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
+    'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.cluster.service',
     'toastr'

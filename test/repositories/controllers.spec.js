@@ -1,4 +1,4 @@
-import "angular/repositories/services";
+import 'angular/core/services/repositories.service';
 import "angular/repositories/controllers";
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';

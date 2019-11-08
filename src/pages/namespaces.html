@@ -60,7 +60,7 @@
             <span class="pull-left">
                 <input type="text" class="form-control namespaces-filter" placeholder="Search namespaces"
                        ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="Search"
-                       ng-change="haveSelected = false;selectedAll = false;deselectAll();updateResults()">
+                       ng-change="onNamespaceSearch()">
             </span>
             <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
             <span class="showing-info-namespaces pull-right">Showing {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} results</span>

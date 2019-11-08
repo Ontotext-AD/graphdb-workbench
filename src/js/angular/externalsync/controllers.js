@@ -1,5 +1,13 @@
+import 'angular/rest/rdf4j.repositories.rest.service';
+import 'angular/rest/connectors.rest.service';
+
+const modules = [
+    'graphdb.framework.rest.rdf4j.repositories.service',
+    'graphdb.framework.rest.connectors.service'
+];
+
 angular
-    .module('graphdb.framework.externalsync.controllers', [])
+    .module('graphdb.framework.externalsync.controllers', modules)
     .controller('ConnectorsCtrl', ConnectorsCtrl)
     .controller('ExtendNewConnectorCtrl', ExtendNewConnectorCtrl)
     .controller('CreateConnectorCtrl', CreateConnectorCtrl)
@@ -191,22 +199,22 @@ function deleteConnectorQuery(name, prefix, force) {
         '}';
 }
 
-function removeEmptyValues(o) {
+function removeEmptyValues(data) {
     // remove empty values from array
-    if (Array.isArray(o)) {
-        o = _.filter(o, function (item) {
+    if (Array.isArray(data)) {
+        data = _.filter(data, function (item) {
             return item !== null && (!item.trim || item.trim() !== '');
         });
     }
     // remove empty values from object values
-    Object.keys(o).forEach(function (k) {
-        if ((o[k] === '' || o[k] == null) && o[k] !== false) {
-            delete o[k];
-        } else if (typeof o[k] === 'object') {
-            o[k] = removeEmptyValues(o[k]);
+    Object.keys(data).forEach(function (key) {
+        if ((data[key] === '' || data[key] == null) && data[key] !== false) {
+            delete data[key];
+        } else if (typeof data[key] === 'object') {
+            data[key] = removeEmptyValues(data[key]);
         }
     });
-    return o;
+    return data;
 }
 
 function parseFirstBuildingResult(results) {
@@ -566,24 +574,23 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 }
 
-        DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
-        function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
-            $scope.force = false;
-            $scope.type = type;
-            $scope.isExternal = isExternal;
+DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
+function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+    $scope.force = false;
+    $scope.type = type;
+    $scope.isExternal = isExternal;
 
-            $scope.ok = function () {
-                $modalInstance.close($scope.force);
-            };
+    $scope.ok = function () {
+        $modalInstance.close($scope.force);
+    };
 
-            $scope.cancel = function () {
-                $modalInstance.dismiss();
-            };
-        }
+    $scope.cancel = function () {
+        $modalInstance.dismiss();
+    };
+}
 
-
-        ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
-        function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
+ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
+function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
 
     $scope.connector = connector;
 

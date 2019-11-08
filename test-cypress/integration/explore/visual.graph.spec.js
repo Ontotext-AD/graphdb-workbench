@@ -101,7 +101,7 @@ describe('Visual graph screen validation', () => {
         it('Test search for a valid resource with links', () => {
             searchForResource(VALID_RESOURCE);
             // Check include inferred
-            enableInferredStatements(true);
+            toggleInferredStatements(true);
             // Navigate to Visual graph menu
             openVisualGraphHome();
             // Search for "USRegion" again
@@ -250,7 +250,7 @@ describe('Visual graph screen validation', () => {
 
         it('Test maximum links to show', () => {
             searchForResource(VALID_RESOURCE);
-            enableInferredStatements(true);
+            toggleInferredStatements(true);
 
             // Verify that 20 links (nodes) are displayed
             getPredicates().should('have.length', 20);
@@ -273,7 +273,7 @@ describe('Visual graph screen validation', () => {
         it('Test include inferred Statements', () => {
             searchForResource(VALID_RESOURCE);
             // Check include inferred
-            enableInferredStatements(true);
+            toggleInferredStatements(true);
 
             // Verify that many results are displayed
             // Verify that 20 links (nodes) are displayed
@@ -282,7 +282,7 @@ describe('Visual graph screen validation', () => {
             getNodes().should('have.length', 21);
 
             // Switch Include Inferred Statements off
-            enableInferredStatements();
+            toggleInferredStatements(false);
 
             // Verify that 20 links (nodes) are displayed
             getPredicates().should('have.length', 2);
@@ -455,7 +455,7 @@ describe('Visual graph screen validation', () => {
 
     function typeInSearchField(resource) {
         // Wait should guarantee that the dropdown has been rendered and the focus is properly set.
-        getSearchField().type(resource).trigger('change').wait(500).type('{enter}');
+        getSearchField().type(resource).trigger('change').wait(1000).type('{enter}');
     }
 
     function searchForResource(resource) {
@@ -498,7 +498,7 @@ describe('Visual graph screen validation', () => {
         getShowPreferredTypesOnlyCheckbox()[command]();
     }
 
-    function enableInferredStatements(enable) {
+    function toggleInferredStatements(enable) {
         openVisualGraphSettings();
         let command = enable ? 'check' : 'uncheck';
         getIncludeInferredStatementsCheckbox()[command]();

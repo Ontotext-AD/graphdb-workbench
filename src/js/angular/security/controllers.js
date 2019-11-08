@@ -1,11 +1,18 @@
 import 'angular/core/services';
-import 'angular/security/services';
+import 'angular/core/services/jwt-auth.service';
 import 'angular/rest/security.rest.service';
+import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
+
+const SYSTEM_REPO = 'SYSTEM';
+const READ_REPO = 'READ_REPO';
+const READ_REPO_PREFIX = 'READ_REPO_';
+const WRITE_REPO = 'WRITE_REPO';
+const WRITE_REPO_PREFIX = 'WRITE_REPO_';
 
 const modules = [
     'ngCookies',
     'ui.bootstrap',
-    'graphdb.framework.security.services',
+    'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];
@@ -25,65 +32,55 @@ const setGrantedAuthorities = function ($scope) {
     $scope.user.grantedAuthorities = [];
 
     $scope.repositoryCheckError = true;
-    if ($scope.userType === 'admin') {
+    if ($scope.userType === UserType.ADMIN) {
         $scope.repositoryCheckError = false;
-        pushAuthority('ROLE_ADMIN');
-    } else if ($scope.userType === 'repoManager') {
+        pushAuthority(UserRole.ROLE_ADMIN);
+    } else if ($scope.userType === UserType.REPO_MANAGER) {
         $scope.repositoryCheckError = false;
-        pushAuthority('ROLE_REPO_MANAGER');
+        pushAuthority(UserRole.ROLE_REPO_MANAGER);
     } else {
-        pushAuthority('ROLE_USER');
+        pushAuthority(UserRole.ROLE_USER);
         for (const index in $scope.grantedAuthorities.WRITE_REPO) {
             if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                 $scope.repositoryCheckError = false;
-                pushAuthority('WRITE_REPO_' + index, 'READ_REPO_' + index);
+                pushAuthority(WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
             }
         }
         for (const index in $scope.grantedAuthorities.READ_REPO) {
             if ($scope.grantedAuthorities.READ_REPO[index]) {
                 $scope.repositoryCheckError = false;
-                pushAuthority('READ_REPO_' + index);
+                pushAuthority(READ_REPO_PREFIX + index);
             }
         }
     }
 };
 
-const getUserRoleName = function (userType) {
-    switch (userType) {
-        case 'user':
-            return 'User';
-        case 'repoManager':
-            return 'Repository manager';
-        case 'admin':
-            return 'Administrator';
-        default:
-            return 'Unknown';
-    }
-};
-
 const parseAuthorities = function (authorities) {
-    let userType = 'user';
-    const grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+    let userType = UserType.USER;
+    const grantedAuthorities = {
+        [READ_REPO]: {},
+        [WRITE_REPO]: {}
+    };
     const repositories = {};
     for (let i = 0; i < authorities.length; i++) {
         const role = authorities[i];
-        if (role === 'ROLE_ADMIN') {
-            userType = 'admin';
-        } else if (role === 'ROLE_REPO_MANAGER') {
-            if (userType !== 'admin') {
-                userType = 'repoManager';
+        if (role === UserRole.ROLE_ADMIN) {
+            userType = UserType.ADMIN;
+        } else if (role === UserRole.ROLE_REPO_MANAGER) {
+            if (userType !== UserType.ADMIN) {
+                userType = UserType.REPO_MANAGER;
             }
-        } else if (role === 'ROLE_USER') {
-            userType = 'user';
+        } else if (role === UserRole.ROLE_USER) {
+            userType = UserType.USER;
         } else if (role.indexOf('ROLE_') !== 0) {
             const index = role.indexOf('_', role.indexOf('_') + 1);
             const op = role.substr(0, index);
             const repo = role.substr(index + 1);
             grantedAuthorities[op][repo] = true;
             repositories[repo] = repositories[repo] || {};
-            if (op === 'READ_REPO') {
+            if (op === READ_REPO) {
                 repositories[repo].read = true;
-            } else if (op === 'WRITE_REPO') {
+            } else if (op === WRITE_REPO) {
                 repositories[repo].write = true;
             }
         }
@@ -91,14 +88,14 @@ const parseAuthorities = function (authorities) {
 
     return {
         userType: userType,
-        userTypeDescription: getUserRoleName(userType),
+        userTypeDescription: UserUtils.getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
         repositories: repositories
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$window', '$timeout', '$location', '$cookies', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $window, $timeout, $location, $cookies, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$timeout', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $timeout, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
 
@@ -138,8 +135,8 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
-    function ($scope, $http, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
+securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
+    function ($scope, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -207,20 +204,23 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$http', '$modal', 'toastr', '$w
                                 return {
                                     // converts the array rights to hash ones. why, oh, why do we have both formats?
                                     defaultAuthorities: function () {
-                                        const defaultAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+                                        const defaultAuthorities = {
+                                            [READ_REPO]: {},
+                                            [WRITE_REPO]: {}
+                                        };
                                         // We might have old (no longer existing) repositories so we have to check that
                                         const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
                                             return r.id;
                                         });
                                         _.each(authorities, function (a) {
                                             // indexOf works in IE 11, startsWith doesn't
-                                            if (a.indexOf('WRITE_REPO_') === 0) {
+                                            if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
                                                 if (repoIds.hasOwnProperty(a.substr(11))) {
-                                                    defaultAuthorities['WRITE_REPO'][a.substr(11)] = true;
+                                                    defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
                                                 }
-                                            } else if (a.indexOf('READ_REPO_') === 0) {
+                                            } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
                                                 if (repoIds.hasOwnProperty(a.substr(10))) {
-                                                    defaultAuthorities['READ_REPO'][a.substr(10)] = true;
+                                                    defaultAuthorities[READ_REPO][a.substr(10)] = true;
                                                 }
                                             }
                                         });
@@ -291,14 +291,14 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
             $scope.repositoryCheckError = true;
             for (const index in $scope.grantedAuthorities.WRITE_REPO) {
                 if ($scope.grantedAuthorities.WRITE_REPO[index]) {
-                    auth.push('WRITE_REPO_' + index);
-                    auth.push('READ_REPO_' + index);
+                    auth.push(WRITE_REPO_PREFIX + index);
+                    auth.push(READ_REPO_PREFIX + index);
                     $scope.repositoryCheckError = false;
                 }
             }
             for (const index in $scope.grantedAuthorities.READ_REPO) {
-                if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf('READ_REPO_' + index) === -1) {
-                    auth.push('READ_REPO_' + index);
+                if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf(READ_REPO_PREFIX + index) === -1) {
+                    auth.push(READ_REPO_PREFIX + index);
                     $scope.repositoryCheckError = false;
                 }
             }
@@ -316,13 +316,13 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
     function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth) {
 
         $scope.isAdmin = function () {
-            return $jwtAuth.hasRole('ROLE_ADMIN');
+            return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
         };
         $scope.hasEditRestrictions = function () {
-            return $scope.user && $scope.user.username === 'admin';
+            return $scope.user && $scope.user.username === UserType.ADMIN;
         };
 
         $scope.isOverrideAuth = function () {
@@ -334,34 +334,36 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
 
         $scope.hasReadPermission = function (repositoryId) {
-            return $scope.userType === 'admin' || $scope.userType === 'repoManager'
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || $scope.grantedAuthorities.READ_REPO[repositoryId]
                 || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== 'SYSTEM'
+                || repositoryId !== SYSTEM_REPO
                 && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*']);
         };
 
         $scope.hasWritePermission = function (repositoryId) {
-            return $scope.userType === 'admin' || $scope.userType === 'repoManager'
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== 'SYSTEM' && $scope.grantedAuthorities.WRITE_REPO['*'];
+                || repositoryId !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*'];
         };
 
         $scope.readCheckDisabled = function (repositoryId) {
             return $scope.hasWritePermission(repositoryId)
-                || repositoryId !== 'SYSTEM' && repositoryId !== '*' && $scope.grantedAuthorities.READ_REPO['*']
+                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
         $scope.writeCheckDisabled = function (repositoryId) {
-            return $scope.userType === 'admin' || $scope.userType === 'repoManager'
-                || repositoryId !== 'SYSTEM' && repositoryId !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
+                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.userType = 'user';
-        $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
-
+        $scope.userType = UserType.USER;
+        $scope.grantedAuthorities = {
+            [READ_REPO]: {},
+            [WRITE_REPO]: {}
+        };
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
@@ -474,7 +476,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.params = $routeParams;
         $scope.pageTitle = 'Edit user: ' + $scope.params.userId;
         $scope.passwordPlaceholder = 'New password';
-        $scope.userType = 'user';
+        $scope.userType = UserType.USER;
         const defaultUserSettings = {
             'DEFAULT_SAMEAS': true,
             'DEFAULT_INFERENCE': true,
@@ -482,7 +484,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             'IGNORE_SHARED_QUERIES': false
         };
 
-        if (!$jwtAuth.hasRole('ROLE_ADMIN')) {
+        if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
         $scope.getUserData = function () {
@@ -493,7 +495,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.user.confirmpassword = '';
                 $scope.user.external = $scope.userData.external;
                 $scope.user.appSettings = data.appSettings || defaultUserSettings;
-                $scope.userType = 'user';
+                $scope.userType = UserType.USER;
                 const pa = parseAuthorities(data.grantedAuthorities);
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
@@ -537,7 +539,6 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
 
         $scope.updateUser = function () {
-
             if (!$scope.validateForm()) {
                 return false;
             }
@@ -568,7 +569,9 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', 'SecurityRestService', function ($scope, $http, toastr, SecurityRestService) {
+securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService',
+    function ($scope, toastr, SecurityRestService) {
+
     $scope.debugMapping = function (role, mapping) {
         const method = mapping.split(':');
         SecurityRestService.getRolesMapping({
@@ -605,8 +608,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', '$http', 'toastr', 
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $rootScope, $controller, SecurityRestService) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -640,7 +643,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
 
         $scope.pageTitle = 'Settings';
         $scope.passwordPlaceholder = 'New password';
-        $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+        $scope.grantedAuthorities = {
+            [READ_REPO]: {},
+            [WRITE_REPO]: {}
+        };
 
         const initUserData = function (scope) {
             // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
@@ -695,7 +701,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', '$http', 't
         };
 
         $scope.updateUser = function () {
-
             if (!$scope.validateForm()) {
                 return false;
             }

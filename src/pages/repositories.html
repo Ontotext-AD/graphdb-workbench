@@ -132,7 +132,7 @@
 
 			</div>
 
-			<div ng-show="hasRole('ROLE_ADMIN')">
+			<div ng-show="isAdmin()">
 				<h3 ng-show="getLocations().length">Repository locations</h3>
 				<table class="table table-hover table-striped locations-table" ng-show="getLocations().length" aria-describedby="Locations table">
 					<tbody>

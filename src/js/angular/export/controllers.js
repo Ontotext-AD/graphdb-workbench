@@ -1,37 +1,28 @@
 import 'angular/core/services';
-import 'angular/repositories/services';
-import 'angular/security/services';
+import 'angular/core/services/repositories.service';
+import 'angular/core/services/jwt-auth.service';
+import 'angular/utils/file-types';
 
 const modules = [
     'ngCookies',
     'ui.bootstrap',
-    'graphdb.framework.repositories.services',
-    'graphdb.framework.security.services',
-    'toastr'
+    'toastr',
+    'graphdb.framework.core.services.repositories',
+    'graphdb.framework.core.services.jwtauth',
+    'graphdb.workbench.utils.filetypes'
 ];
 
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ['$scope', '$http', '$cookies', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
-        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService) {
+    ['$scope', '$http', '$cookies', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes',
+        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
             };
 
-            $scope.exportFormats = [
-                {name: 'JSON', type: 'application/rdf+json', extension: '.json'},
-                {name: 'JSON-LD', type: 'application/ld+json', extension: '.jsonld'},
-                {name: 'RDF-XML', type: 'application/rdf+xml', extension: '.rdf'},
-                {name: 'N3', type: 'text/rdf+n3', extension: '.n3'},
-                {name: 'N-Triples', type: 'text/plain', extension: '.nt'},
-                {name: 'N-Quads', type: 'text/x-nquads', extension: '.nq'},
-                {name: 'Turtle', type: 'text/turtle', extension: '.ttl'},
-                {name: 'TriX', type: 'application/trix', extension: '.trix'},
-                {name: 'TriG', type: 'application/x-trig', extension: '.trig'},
-                {name: 'Binary RDF', type: 'application/x-binary-rdf', extension: '.brf'}
-            ];
+            $scope.exportFormats = FileTypes;
             $scope.deleting = {};
             $scope.showExportDDTooltip = true;
             $scope.page = 1;
@@ -107,6 +98,20 @@ exportCtrl.controller('ExportCtrl',
                 } else {
                     $scope.loader = false;
                 }
+            };
+
+            $scope.onGraphSearch = function() {
+                $scope.matchedElements = [];
+                $scope.deselectAll();
+                $scope.filterResults();
+            };
+
+            $scope.filterResults = function() {
+                angular.forEach($scope.graphs, function (item) {
+                    if (item.contextID.value.indexOf($scope.exportFilter) !== -1) {
+                        $scope.matchedElements.push(item);
+                    }
+                });
             };
 
             $scope.downloadExport = function (downloadUrl, format) {

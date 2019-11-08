@@ -3,6 +3,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 
 module.exports = {
+    devtool: 'source-map',
     entry: {
         vendor: './src/vendor.js',
         main: './src/main.js',
@@ -10,6 +11,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
+        chunkFilename: '[name].js',
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
@@ -129,8 +131,8 @@ module.exports = {
                 to: 'js/angular/settings/modal'
             },
             {
-                from: 'src/js/angular/sparql/templates',
-                to: 'js/angular/sparql/templates'
+                from: 'src/js/angular/core/directives/queryeditor/templates',
+                to: 'js/angular/core/directives/queryeditor/templates'
             },
             {
                 from: 'src/js/angular/templates',
