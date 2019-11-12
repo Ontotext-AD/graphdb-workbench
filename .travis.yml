@@ -17,21 +17,21 @@ addons:
   chrome: stable
   sonarcloud:
     organization: "ontotext-ad"
-    token:
-      secure: $SONAR_TOKEN
+#    token:
+#      secure: $SONAR_TOKEN
   # Needed for Cypress tests
   apt:
     packages:
       - libgconf-2-4
 
 script:
-  - npm run test:coverage
-  - npm run build
+#  - npm run test:coverage
+#  - npm run build
+  - npm run sonar
 
 after_script:
-  - npm run sonar
-  - npm run test:coveralls
-  - npm run test:acceptance
+#  - npm run test:coveralls
+#  - npm run test:acceptance
 
 deploy:
   - provider: npm
