@@ -58,6 +58,7 @@ const moduleDefinition = function (productInfo) {
 
             // Extra triggers for tooltip/popover so we can do fancier stuff (see core-errors for example)
             $tooltipProvider.setTriggers({'show': 'hide'});
+            $tooltipProvider.options({appendToBody: true});
 
             // Due to angular weirdness and what gets injected where we can't inject the productInfo constant
             // at the time of module creation so we pass it to $menuItemsProvider. The info can be used
