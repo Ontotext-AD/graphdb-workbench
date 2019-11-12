@@ -22,7 +22,7 @@
     "dependencies": {
         "cypress": "^3.4.1",
         "cypress-failed-log": "^2.5.1",
-        "cypress-plugin-retries": "^1.2.2"
+        "cypress-plugin-retries": "^1.4.0"
     },
     "bin": {
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
