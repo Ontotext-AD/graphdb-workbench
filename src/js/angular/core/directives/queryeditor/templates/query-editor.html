@@ -211,7 +211,7 @@
                     <h6>Error<span ng-show="yasr.results.getException().status > 0"> {{yasr.results.getException().status}}: {{yasr.results.getException().statusText}}</span></h6>
                 </div>
 
-                <div class="plaintext">{{yasr.results.getException().responseText}}</div>
+                <div class="plaintext" style="white-space: pre-wrap">{{yasr.results.getException().responseText}}</div>
             </div>
             <div class='yasr_results' ng-show="currentTabConfig.queryType && currentTabConfig.queryType != 'UPDATE' && currentTabConfig.queryType != 'ERROR' && !queryIsRunning"></div>
         </div>
