@@ -15,3 +15,7 @@
 .ng-hide.ng-hide-animate {
     display: none !important;
 }
+
+#wb-import-fileInFiles .import-status-message .text-danger small {
+    white-space: pre-wrap;
+}
