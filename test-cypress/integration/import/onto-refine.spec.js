@@ -6,6 +6,9 @@ describe('Import/ OntoRefine', () => {
         repositoryId = 'onto-refine-' + Date.now();
         cy.createRepository({id: repositoryId});
 
+        cy.server();
+        cy.route('https://tools.wmflabs.org/openrefine-wikidata/en/api', response);
+
         cy.visit('/ontorefine');
 
         cy.get('.ot-splash').should('not.be.visible');
@@ -130,5 +133,7 @@ describe('Import/ OntoRefine', () => {
     function getLanguageSettingsPanel() {
         return getOntoRefineRightPanel().find('.action-area-tab-body').eq(3);
     }
+
+    const response = {"name": "Wikidata (en)", "schemaSpace": "http://www.wikidata.org/prop/direct/", "preview": {"url": "https://tools.wmflabs.org/openrefine-wikidata/en/preview?id={{id}}", "width": 400, "height": 100}, "extend": {"propose_properties": {"service_path": "/en/propose_properties", "service_url": "https://tools.wmflabs.org/openrefine-wikidata"}, "property_settings": [{"name": "limit", "label": "Limit", "default": 0, "help_text": "Maximum number of values to return per row (0 for no limit)", "type": "number"}, {"name": "rank", "choices": [{"name": "Any rank", "value": "any"}, {"name": "Only the best rank", "value": "best"}, {"name": "Preferred and normal ranks", "value": "no_deprecated"}], "default": "best", "help_text": "Filter statements by rank", "type": "select", "label": "Ranks"}, {"name": "references", "choices": [{"name": "Any statement", "value": "any"}, {"name": "At least one reference", "value": "referenced"}, {"name": "At least one non-wiki reference", "value": "no_wiki"}], "default": "any", "help_text": "Filter statements by their references", "type": "select", "label": "References"}, {"name": "count", "label": "Return counts instead of values", "default": false, "help_text": "The number of values will be returned.", "type": "checkbox"}]}, "view": {"url": "https://www.wikidata.org/wiki/{{id}}"}, "suggest": {"entity": {"service_path": "/en/suggest/entity", "service_url": "https://tools.wmflabs.org/openrefine-wikidata", "flyout_service_path": "/en/flyout/entity?id=${id}"}, "property": {"service_path": "/en/suggest/property", "service_url": "https://tools.wmflabs.org/openrefine-wikidata", "flyout_service_path": "/en/flyout/property?id=${id}"}, "type": {"service_path": "/en/suggest/type", "service_url": "https://tools.wmflabs.org/openrefine-wikidata", "flyout_service_path": "/en/flyout/type?id=${id}"}}, "defaultTypes": [{"name": "entity", "id": "Q35120"}], "identifierSpace": "http://www.wikidata.org/entity/"};
 
 });
