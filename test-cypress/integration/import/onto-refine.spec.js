@@ -19,7 +19,7 @@ describe('Import/ OntoRefine', () => {
     const REFINE_TABS = ['Create Project', 'Open Project', 'Import Project', 'Language Settings'];
     const CREATE_PROJECT_TABS = ['This Computer', 'Web Addresses (URLs)', 'Clipboard'];
 
-    it('should properly render OntoRefine transformation tool frame', () => {
+    xit('should properly render OntoRefine transformation tool frame', () => {
 
         // Refine should provide navigation tabs
         getOntoRefineTabs()
