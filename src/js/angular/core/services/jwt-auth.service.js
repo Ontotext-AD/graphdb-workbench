@@ -38,26 +38,31 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.principalCookieName = 'com.ontotext.graphdb.principal' + $location.port();
             this.authCookieName = 'com.ontotext.graphdb.auth' + $location.port();
+            this.negotiateCookieName = 'com.ontotext.graphdb.auth.negotiate' + $location.port();
 
             this.securityEnabled = true;
             this.freeAccess = false;
             this.hasOverrideAuth = false;
+            this.negotiateAuth = false;
 
             const that = this;
 
             this.clearCookies = function () {
                 delete $cookies[that.authCookieName];
                 $cookieStore.remove(that.principalCookieName);
+                $cookieStore.remove(that.negotiateCookieName);
             };
 
             this.initSecurity = function () {
                 this.auth = $cookies[this.authCookieName];
+                this.negotiateAuth = $cookieStore.get(this.negotiateCookieName);
                 this.principal = $cookieStore.get(this.principalCookieName);
 
                 SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
+                    that.kerberosEnabled = res.data.isKerberosEnabled;
 
                     if (that.securityEnabled) {
                         const freeAccessData = res.data.freeAccess;
@@ -68,7 +73,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 that.principal = that.freeAccessPrincipal;
 
                             }
-                            $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
+                            $rootScope.$broadcast('securityInit', that.securityEnabled, that.hasAuthentication(), that.freeAccess);
                         } else {
                             // update the user principal only when there is one
                             if (that.principal) {
@@ -77,11 +82,19 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // Don't update the authorities for the time being as those returned by this API
                                     // aren't expanded. User will need to logout and login again to get updated authorities.
                                     // that.principal.authorities = res.data.grantedAuthorities;
-                                    $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
+                                    $rootScope.$broadcast('securityInit', that.securityEnabled, that.hasAuthentication(), that.freeAccess);
                                 });
                             } else {
-                                // we should always broadcast securityInit
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
+                                if (that.kerberosEnabled) {
+                                    SecurityRestService.getAuthenticatedUser().
+                                    success(function(data, status, headers) {
+                                        that.authenticate(data, headers);
+                                        $rootScope.$broadcast('securityInit', that.securityEnabled, that.hasAuthentication(), that.freeAccess);
+                                    })
+                                } else {
+                                    $rootScope.$broadcast('securityInit', that.securityEnabled, that.hasAuthentication(), that.freeAccess);
+                                }
+
                             }
                         }
                     } else {
@@ -167,7 +180,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }, function (err) {
                         toastr.error(err.data.error.message, 'Error');
                     });
-                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasAuthentication(), this.freeAccess);
                 }
             };
 
@@ -179,14 +192,27 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.setAuthHeaders();
 
             this.authenticate = function (data, headers) {
-                this.auth = headers('Authorization');
+                var authHeader = headers('Authorization');
+                if (authHeader && authHeader.indexOf('Negotiate') > -1) {
+                    this.negotiateAuth = true;
+                    $cookies[this.negotiateCookieName] = true;
+                } else {
+                    this.auth = authHeader;
+                    $cookies[this.authCookieName] = this.auth;
+                }
+
                 this.principal = data;
-                $cookies[this.authCookieName] = this.auth;
+
                 $cookieStore.put(this.principalCookieName, this.principal);
                 this.setAuthHeaders();
                 $rootScope.deniedPermissions = {};
-                $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasAuthentication(), this.freeAccess);
             };
+
+            // Tell securityInit that either GDB has auth token or it should leave authentication to negotiation
+            this.hasAuthentication = function() {
+                return this.auth !== undefined || this.negotiateAuth;
+            }
 
             this.getPrincipal = function () {
                 return this.principal;
@@ -197,11 +223,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 this.principal = this.freeAccessPrincipal;
                 this.clearCookies();
                 this.setAuthHeaders();
-                $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasAuthentication(), this.freeAccess);
             };
 
             this.isAuthenticated = function () {
-                return !this.securityEnabled || this.auth !== undefined;
+                return !this.securityEnabled || this.hasAuthentication();
             };
 
             this.hasPermission = function () {
