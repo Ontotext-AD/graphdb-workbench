@@ -447,6 +447,33 @@ describe('Visual graph screen validation', () => {
         });
     });
 
+    it('Test can create custom visual graph', () => {
+        cy.visit('/graphs-visualizations');
+        getCreateCustomGraphLink().click();
+        cy.url().should('include', '/config/save');
+        getGraphConfigName().type('configName');
+
+        cy.get('.page-1-link').should('be.visible')
+            .and('contain', 'Starting point')
+            .and('have.class', 'active');
+        cy.get('.page-2-link').should('be.visible')
+            .and('contain', 'Graph expansion');
+        cy.get('.page-3-link').should('be.visible')
+            .and('contain', 'Node basics')
+        cy.get('.page-4-link').should('be.visible')
+            .and('contain', 'Edge basics');
+        cy.get('.page-5-link').should('be.visible')
+            .and('contain', 'Node extra');
+        cy.get('.page-2-link').click();
+        cy.get('.page-2-link').should('have.class', 'active');
+
+        cy.get('.expand-samples .list-group-item').first().click();
+        getSaveConfig().click();
+        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
+        getGraphConfigurationsArea().should('be.visible')
+            .and('contain', 'configName');
+    });
+
     // Visual graph home view access
 
     function getSearchField() {
@@ -560,6 +587,23 @@ describe('Visual graph screen validation', () => {
     function getIgnoredPredicatesField() {
         return cy.get('.ignored-predicates input');
     }
+
+    function getCreateCustomGraphLink() {
+        return cy.get('.create-graph-config');
+    }
+
+    function getGraphConfigName() {
+        return cy.get('.graph-config-name');
+    }
+
+    function getSaveConfig() {
+        return cy.get('.btn-save-config');
+    }
+
+    function getGraphConfigurationsArea() {
+        return cy.get('.graph-configurations');
+    }
+
 
     // Node actions
 

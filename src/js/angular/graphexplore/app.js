@@ -31,6 +31,8 @@ import 'angular/graphexplore/directives/rdfs-comment-label.directive';
 import 'angular/graphexplore/directives/dependencies-chord.directive';
 import 'angular/graphexplore/directives/list-items-search-filter.directive';
 import 'angular/graphexplore/directives/search-icon-input.directive';
+import 'angular/core/directives/queryeditor/query-editor.controller';
+import 'angular/core/directives/queryeditor/query-editor.directive';
 
 angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.core.controllers',
@@ -51,5 +53,7 @@ angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.graphexplore.directives.class',
     'graphdb.framework.graphexplore.directives.domainrange',
     'graphdb.framework.graphexplore.directives.dependencies',
-    'graphdb.framework.graphexplore.directives.searchcontrols'
+    'graphdb.framework.graphexplore.directives.searchcontrols',
+    'graphdb.framework.core.directives.queryeditor.controllers',
+    'graphdb.framework.core.directives.queryeditor.queryeditor'
 ]);
