@@ -2,20 +2,22 @@ import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
 import 'oclazyload';
+import 'angular/core/interceptors/unauthorized.interceptor';
 
 const modules = [
     'ngRoute',
     'graphdb.workbench.se.controllers',
     'graphdb.framework.core',
     'angularCancelOnNavigateModule',
-    'oc.lazyLoad'
+    'oc.lazyLoad',
+    'graphdb.framework.core.interceptors.unauthorized',
 ];
 
 const moduleDefinition = function (productInfo) {
     const workbench = angular.module('graphdb.workbench', modules);
 
-    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$tooltipProvider',
-        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $tooltipProvider) {
+    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$tooltipProvider', '$httpProvider',
+        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $tooltipProvider, $httpProvider) {
 
             angular.extend(toastrConfig, {
                 timeOut: 5000,
@@ -71,6 +73,8 @@ const moduleDefinition = function (productInfo) {
                     $menuItemsProvider.addItem(item);
                 });
             });
+
+            $httpProvider.interceptors.push('$unauthorizedInterceptor');
         }]);
 
     workbench.constant('isEnterprise', productInfo.productType === 'enterprise');

@@ -1,7 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/security/controllers';
-import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/services/jwt-auth.service';
 
 const modules = [
@@ -13,13 +12,4 @@ const modules = [
     'graphdb.framework.core.services.jwtauth'
 ];
 
-const securityApp = angular.module('graphdb.framework.security', modules);
-
-securityApp.config(['$locationProvider', '$httpProvider',
-    function ($locationProvider, $httpProvider) {
-        $httpProvider.interceptors.push('$unauthorizedInterceptor');
-
-        // use the HTML5 History API
-        $locationProvider.html5Mode(true);
-    }
-]);
+angular.module('graphdb.framework.security', modules);
