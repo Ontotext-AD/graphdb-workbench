@@ -22,7 +22,7 @@
     <div class="card-block" style="padding-top: 1rem">
         <p class="lead">Config name</p>
         <div class="input-group input-group-lg">
-            <input required class="form-control" type="text" placeholder="My graph config (required)" ng-model="newConfig.name" >
+            <input required class="form-control graph-config-name" type="text" placeholder="My graph config (required)" ng-model="newConfig.name" >
         </div>
     </div>
 </div>
@@ -36,28 +36,28 @@
         <span class="hidden-lg-down">Help</span></button>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
+            <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link page-1-link" href>
                 Starting point
             </a>
         </li>
         <li class="nav-item">
-            <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
+            <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link page-2-link" href>
                 Graph expansion
             </a>
         </li>
 
         <li class="nav-item">
-            <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link" href>
+            <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link page-3-link" href>
                 Node basics
             </a>
         </li>
         <li class="nav-item">
-            <a ng-class="page == 4 ? 'active' : ''" ng-click="goToPage(4)" class="nav-link" href>
+            <a ng-class="page == 4 ? 'active' : ''" ng-click="goToPage(4)" class="nav-link page-4-link" href>
                 Edge basics
             </a>
         </li>
         <li class="nav-item">
-            <a ng-class="page == 5 ? 'active' : ''" ng-click="goToPage(5)" class="nav-link" href>
+            <a ng-class="page == 5 ? 'active' : ''" ng-click="goToPage(5)" class="nav-link page-5-link" href>
                 Node extra
             </a>
         </li>
@@ -224,7 +224,7 @@
                             </div>
                         </div>
 
-                        <div ng-show="page == 2" class="list-group">
+                        <div ng-show="page == 2" class="list-group expand-samples">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
                                 <a href="#" ng-if="sample.expandQuery" ng-click="setQuery(sample.expandQuery)" class="list-group-item list-group-item-action">
                                     <strong ng-bind="getSampleName(sample, 'expandQuery')"></strong>
@@ -317,7 +317,7 @@
 
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
     <div class="pull-left">
-        <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary"
+        <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
             popover="Closes configuration and saves all changes."
             popover-placement="top"
             popover-trigger="mouseenter">

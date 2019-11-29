@@ -501,6 +501,7 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                     toastr.warning('The query in your editor does not match the query results. Download will save the results from the last executed query.');
                 }
                 $('#wb-download-infer').val(scope.currentQuery.inference);
+                $('#wb-download-sameAs').val(scope.currentQuery.sameAs);
                 const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
                 if (cookie) {
                     $('#wb-auth-token').val(cookie);

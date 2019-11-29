@@ -121,9 +121,9 @@
                     </div>
                 </div>
                 <div ng-show="isUser()" class="card mb-2">
-                    <div class="card-block" ng-init="getGraphConfigs()">
+                    <div class="card-block graph-configurations" ng-init="getGraphConfigs()">
                         <div class="clearfix">
-                            <a ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right"><span class="icon-plus"></span> Create graph config</a>
+                            <a ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> Create graph config</a>
                             <h3>Advanced graph configurations</h3>
                             <p>Define how the visualisation works by writing your own SPARQL queries</p>
                         </div>
@@ -147,7 +147,7 @@
                                 </td>
                                 <td class="text-xs-right">
                                     <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="Edit configuration"><span class="icon-edit"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link" tooltip="Delete configuration"><span class="icon-trash"></span></button>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="Delete configuration"><span class="icon-trash"></span></button>
                                 </td>
                             </tr>
                             </tbody>
