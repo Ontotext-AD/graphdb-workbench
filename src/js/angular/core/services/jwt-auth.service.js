@@ -214,6 +214,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.auth !== undefined || this.negotiateAuth;
             }
 
+            this.isNegotiateAuth = function () {
+                return this.negotiateAuth;
+            }
+
             this.getPrincipal = function () {
                 return this.principal;
             };
