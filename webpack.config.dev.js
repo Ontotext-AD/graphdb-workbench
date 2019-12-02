@@ -36,7 +36,7 @@ module.exports = merge(commonConfig, {
         port: 9000,
         historyApiFallback: true,
         proxy: [{
-            context: ['/rest', '/repositories', '/orefine', '/protocol'],
+            context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
             target: 'http://localhost:7200'
         }]
     }
