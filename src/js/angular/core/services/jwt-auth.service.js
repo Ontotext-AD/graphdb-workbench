@@ -192,12 +192,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.setAuthHeaders();
 
             this.authenticate = function (data, headers) {
+                this.clearCookies();
                 var authHeader = headers('Authorization');
                 if (authHeader && authHeader.indexOf('Negotiate') > -1) {
                     this.negotiateAuth = true;
                     $cookies[this.negotiateCookieName] = true;
                 } else {
                     this.auth = authHeader;
+                    this.negotiateAuth = false;
                     $cookies[this.authCookieName] = this.auth;
                 }
 
