@@ -12,4 +12,4 @@ const modules = [
     'graphdb.framework.core.services.jwtauth'
 ];
 
-const securityApp = angular.module('graphdb.framework.security', modules);
+angular.module('graphdb.framework.security', modules);
