@@ -31,13 +31,18 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
+    //    disableHostCheck: true,
         contentBase: path.join(__dirname, 'dist/'),
         compress: true,
         port: 9000,
         historyApiFallback: true,
         proxy: [{
             context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
-            target: 'http://localhost:7200'
+            target: 'http://localhost:7200',
+            onProxyRes: proxyRes => {
+                var key = 'www-authenticate';
+                proxyRes.headers[key] = proxyRes.headers[key] && proxyRes.headers[key].split(',');
+            }
         }]
     }
 });
