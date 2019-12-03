@@ -242,7 +242,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
     $scope.isNegotiateAuth = function() {
         return $jwtAuth.isNegotiateAuth();
-    }
+    };
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
     };
