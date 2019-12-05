@@ -240,8 +240,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.isFreeAccessEnabled = function () {
         return $jwtAuth.isFreeAccessEnabled();
     };
-    $scope.isNegotiateAuth = function() {
-        return $jwtAuth.isNegotiateAuth();
+    $scope.hasExternalAuthUser = function() {
+        return $jwtAuth.hasExternalAuthUser();
     };
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
