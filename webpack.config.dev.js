@@ -41,7 +41,9 @@ module.exports = merge(commonConfig, {
             target: 'http://localhost:7200',
             onProxyRes: proxyRes => {
                 var key = 'www-authenticate';
-                proxyRes.headers[key] = proxyRes.headers[key] && proxyRes.headers[key].split(',');
+                if (proxyRes.headers[key]) {
+                    proxyRes.headers[key] = proxyRes.headers[key].split(',');
+                }
             }
         }]
     }
