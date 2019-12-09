@@ -591,7 +591,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         if (!$scope.isInvalidRepoName) {
             ModalService.openSimpleModal({
                 title: 'Confirm edit',
-                message: (($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) ? ' You are changing the repository id. Are you sure?' : 'Save changes to this repository?'),
+                message: (($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) ? ' You are changing the repository id. Are you sure?' :
+                    'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> For the changes to take effect, <br>&nbsp;&nbsp;&nbsp;restart of GraphDB needed!</span>'),
                 warning: true
             }).result
                 .then(function () {
