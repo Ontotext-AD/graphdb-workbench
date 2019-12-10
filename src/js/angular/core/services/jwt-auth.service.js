@@ -229,7 +229,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.isAuthenticated = function () {
-                return !this.securityEnabled || this.principal;
+                return !this.securityEnabled || this.auth !== undefined;
             };
 
             this.hasPermission = function () {
