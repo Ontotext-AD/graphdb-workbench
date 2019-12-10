@@ -4,6 +4,10 @@ const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const host = 'localhost';
+const portHere = 9000;
+const portThere = 7200;
+
 module.exports = merge(commonConfig, {
     mode: 'development',
     output: {
@@ -34,15 +38,16 @@ module.exports = merge(commonConfig, {
     //    disableHostCheck: true,
         contentBase: path.join(__dirname, 'dist/'),
         compress: true,
-        port: 9000,
+        port: portHere,
+        host: host,
         historyApiFallback: true,
         proxy: [{
             context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
-            target: 'http://localhost:7200',
+            target: 'http://' + host + ':' + portThere,
             onProxyRes: proxyRes => {
                 var key = 'www-authenticate';
                 if (proxyRes.headers[key]) {
-                    proxyRes.headers[key] = proxyRes.headers[key].split(',');
+                    proxyRes.headers[key] = proxyRes.headers[key].split(', ');
                 }
             }
         }]
