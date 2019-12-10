@@ -54,6 +54,8 @@ describe('==> ExportCtrl tests', function () {
             freeAccess: {enabled: false},
             overrideAuth: {enabled: false}
         });
+
+        $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
     }));
 
     afterEach(function () {
