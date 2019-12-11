@@ -108,64 +108,50 @@
                             </div>
                             <div ng-show="repositoryInfo.params.isShacl.value === 'true'">
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
-                                            <input id="rdfsSubClassReasoning" name="rdfsSubClassReasoning" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.rdfsSubClassReasoning.value"/>
-                                            {{repositoryInfo.params.rdfsSubClassReasoning.label}}
-                                        </label>
-                                    </div>
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="The SHACL implementation retrieves a lot of its relevant data through running SPARQL Select queries against the repository and against the changes in the transaction. This is usually good for performance, but while validating large amounts of data disabling this cache will use less memory.">
                                             <input id="cacheSelectNodes" name="cacheSelectNodes" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
                                             {{repositoryInfo.params.cacheSelectNodes.label}}
                                         </label>
                                     </div>
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="If no target is defined for a NodeShape, that NodeShape will be ignored. Enabling this will make such NodeShapes wildcard shapes and validate all subjects. Equivalent to setting sh:targetClass to owl:Thing or rdfs:Resource in an environment with a reasoner.">
+                                            <input id="undefinedTargetValidatesAllSubjects" name="undefinedTargetValidatesAllSubjects" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.undefinedTargetValidatesAllSubjects.value"/>
+                                            {{repositoryInfo.params.undefinedTargetValidatesAllSubjects.label}}
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) the executed validation plans as GraphViz DOT. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="logValidationPlans" name="logValidationPlans" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationPlans.value"/>
                                             {{repositoryInfo.params.logValidationPlans.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) a list of violations and the triples that caused the violations. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="logValidationViolations" name="logValidationViolations" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationViolations.value"/>
                                             {{repositoryInfo.params.logValidationViolations.label}}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Run SHACL validation in parallel.">
                                             <input id="parallelValidation" name="parallelValidation" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.parallelValidation.value"/>
                                             {{repositoryInfo.params.parallelValidation.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) every execution step of the SHACL validation. This is fairly costly and should not be used in production. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="globalLogValidationExecution" name="globalLogValidationExecution" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
                                             {{repositoryInfo.params.globalLogValidationExecution.label}}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
-                                            <input id="undefinedTargetValidatesAllSubjects" name="undefinedTargetValidatesAllSubjects" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.undefinedTargetValidatesAllSubjects.value"/>
-                                            {{repositoryInfo.params.undefinedTargetValidatesAllSubjects.label}}
-                                        </label>
-                                    </div>
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
-                                            <input id="ignoreNoShapesLoadedException" name="ignoreNoShapesLoadedException" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.ignoreNoShapesLoadedException.value"/>
-                                            {{repositoryInfo.params.ignoreNoShapesLoadedException.label}}
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-3">
-                                        <label class="col-xs-3 col-md-3">
+                                    <div class="form-group row">
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) the execution time per shape. It is recommended to disable parallel validation and caching of select nodes when this is enabled.">
                                             <input id="performanceLogging" name="performanceLogging" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.performanceLogging.value"/>
                                             {{repositoryInfo.params.performanceLogging.label}}
                                         </label>
