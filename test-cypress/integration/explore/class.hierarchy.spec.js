@@ -3,7 +3,7 @@ const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
 
-describe('Class hierarchy screen validation', () => {
+describe.only('Class hierarchy screen validation', () => {
     let repositoryId;
 
     beforeEach(() => {

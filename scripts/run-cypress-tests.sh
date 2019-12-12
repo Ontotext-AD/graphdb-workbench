@@ -28,4 +28,5 @@ echo "Installing Cypress tests module"
 npm install
 
 echo "Starting Cypress tests against GraphDB version ${GRAPHDB_VERSION}"
-npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
+cd ..
+npm run cover:integration

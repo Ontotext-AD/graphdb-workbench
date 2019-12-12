@@ -4,7 +4,8 @@
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
-        "test": "cypress run"
+        "test": "cypress run",
+        "integration": "cypress run --spec \"integration/setup/my-settings.spec.js\" --record=false --config baseUrl=http://localhost:7200,video=false"
     },
     "author": {
         "name": "\"Sirma AI\" JSC, trading as Ontotext",

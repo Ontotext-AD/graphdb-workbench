@@ -69,7 +69,7 @@ module.exports = function(config) {
       includeAllSources: true,
       type: 'lcov',
       dir : 'coverage/',
-      subdir: '.'
+      subdir: 'unit'
     },
 
     // web server port

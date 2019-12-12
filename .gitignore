@@ -10,5 +10,6 @@ coverage/
 
 # Dev specific
 .env
+.nyc_output
 report/
 cypress/

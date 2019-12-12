@@ -17,4 +17,8 @@ module.exports = (on, config) => {
     on('task', {
         failed: require('cypress-failed-log/src/failed')()
     });
+
+    on('task', require('@cypress/code-coverage/task'));
+
+    return config;
 };
