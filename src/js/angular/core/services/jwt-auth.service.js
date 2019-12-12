@@ -35,6 +35,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
                 $location.path('/login');
             };
+            $rootScope.hasExternalAuthUser = function () {
+                return jwtAuth.hasExternalAuthUser();
+            };
 
             this.principalCookieName = 'com.ontotext.graphdb.principal' + $location.port();
             this.authCookieName = 'com.ontotext.graphdb.auth' + $location.port();
@@ -42,6 +45,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.securityEnabled = true;
             this.freeAccess = false;
             this.hasOverrideAuth = false;
+            this.externalAuthUser = false;
 
             const that = this;
 
@@ -63,27 +67,37 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         const freeAccessData = res.data.freeAccess;
                         that.freeAccess = freeAccessData.enabled;
                         if (that.freeAccess) {
-                            that.freeAccessPrincipal = {authorities: freeAccessData.authorities, appSettings: freeAccessData.appSettings};
-                            if (that.auth === undefined) {
-                                that.principal = that.freeAccessPrincipal;
-
-                            }
-                            $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
-                        } else {
-                            // update the user principal only when there is one
-                            if (that.principal) {
-                                SecurityRestService.getUser(that.principal.username).then(function (res) {
-                                    that.principal.appSettings = res.data.appSettings;
-                                    // Don't update the authorities for the time being as those returned by this API
-                                    // aren't expanded. User will need to logout and login again to get updated authorities.
-                                    // that.principal.authorities = res.data.grantedAuthorities;
-                                    $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
-                                });
-                            } else {
-                                // we should always broadcast securityInit
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.freeAccess);
-                            }
+                            that.freeAccessPrincipal = {
+                                authorities: freeAccessData.authorities,
+                                appSettings: freeAccessData.appSettings
+                            };
                         }
+
+                        SecurityRestService.getAuthenticatedUser().
+                        success(function(data, status, headers) {
+                            if (that.auth) {
+                                // There is a previous authentication via JWT, it's still valid
+                                // so refresh the principal
+                                that.externalAuthUser = false;
+                                that.principal = data;
+                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
+                                // console.log('previous JWT authentication ok');
+                            } else {
+                                // There is no previous authentication but we got a principal via
+                                // an external authentication mechanism (e.g. Kerberos)
+                                that.externalAuthUser = true;
+                                that.authenticate(data, headers); // this will emit securityInit
+                                // console.log('external authentication ok');
+                            }
+                        }).finally(function() {
+                            // Strictly speaking we should try this in the error() callback but
+                            // for some reason it doesn't get called.
+                            if (!that.hasExplicitAuthentication()) {
+                                that.principal = that.freeAccessPrincipal;
+                                $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
+                                // console.log('free access fallback');
+                            }
+                        });
                     } else {
                         that.clearCookies();
                         const overrideAuthData = res.data.overrideAuth;
@@ -94,12 +108,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 authorities: overrideAuthData.authorities,
                                 appSettings: overrideAuthData.appSettings
                             };
-                            $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.hasOverrideAuth);
+                            $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
                             SecurityRestService.getAdminUser().then(function (res) {
                                 that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities}
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, that.auth !== undefined, that.hasOverrideAuth);
+                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
                     }
@@ -167,7 +181,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }, function (err) {
                         toastr.error(err.data.error.message, 'Error');
                     });
-                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
                 }
             };
 
@@ -179,13 +193,27 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.setAuthHeaders();
 
             this.authenticate = function (data, headers) {
-                this.auth = headers('Authorization');
+                this.clearCookies();
+                if (headers('Authorization')) {
+                    this.auth = headers('Authorization');
+                    $cookies[this.authCookieName] = this.auth;
+                    this.externalAuthUser = false;
+                }
+
                 this.principal = data;
-                $cookies[this.authCookieName] = this.auth;
+
                 $cookieStore.put(this.principalCookieName, this.principal);
                 this.setAuthHeaders();
                 $rootScope.deniedPermissions = {};
-                $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
+            };
+
+            this.hasExternalAuthUser = function () {
+                return this.externalAuthUser;
+            };
+
+            this.hasExplicitAuthentication = function () {
+                return this.auth !== undefined || this.externalAuthUser;
             };
 
             this.getPrincipal = function () {
@@ -197,7 +225,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 this.principal = this.freeAccessPrincipal;
                 this.clearCookies();
                 this.setAuthHeaders();
-                $rootScope.$broadcast('securityInit', this.securityEnabled, this.auth !== undefined, this.freeAccess);
+                $rootScope.$broadcast('securityInit', this.securityEnabled, false, this.freeAccess);
             };
 
             this.isAuthenticated = function () {

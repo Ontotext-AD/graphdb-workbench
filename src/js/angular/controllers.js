@@ -240,6 +240,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.isFreeAccessEnabled = function () {
         return $jwtAuth.isFreeAccessEnabled();
     };
+    $scope.hasExternalAuthUser = function() {
+        return $jwtAuth.hasExternalAuthUser();
+    };
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
     };
@@ -326,7 +329,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     };
 
     $scope.isIgnoreSharedQueries = function () {
-        return $jwtAuth.getPrincipal().appSettings.IGNORE_SHARED_QUERIES;
+        return $jwtAuth.getPrincipal() && $jwtAuth.getPrincipal().appSettings.IGNORE_SHARED_QUERIES;
     };
 
     $scope.logout = function () {

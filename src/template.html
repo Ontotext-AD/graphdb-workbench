@@ -85,7 +85,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
                 <a class="dropdown-item" href="settings">My settings</a>
-                <a class="dropdown-item" ng-click="logout()" title="Sign out" ng-href="./login">Logout</a>
+                <a class="dropdown-item" ng-click="logout()" title="Sign out" ng-href="./login" ng-if="!hasExternalAuthUser()">Logout</a>
             </div>
         </div>
         <div class="btn-group" ng-show="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">

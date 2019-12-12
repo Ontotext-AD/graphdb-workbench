@@ -50,12 +50,12 @@
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="Pasword" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external">
-								<span ng-show="user.external">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
+								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()">
+								<span ng-show="user.external || hasExternalAuthUser()">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
 							</div>
 							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
 						</div>
-						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external">
+						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword">

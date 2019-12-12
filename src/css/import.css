@@ -16,6 +16,6 @@
     display: none !important;
 }
 
-#wb-import-fileInFiles .import-status-message .text-danger small {
+#wb-import-fileInFiles .import-status .import-status-message .text-danger small {
     white-space: pre-wrap;
 }

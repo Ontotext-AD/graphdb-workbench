@@ -39,6 +39,8 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
+
+            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -132,6 +134,7 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
             $httpBackend.when('GET', 'rest/security/freeaccess').respond(200, {enabled: false});
+            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -343,6 +346,8 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
 
+            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+
             $scope.user.username = 'testov';
             $scope.user.password = 'testova';
             $scope.user.confirmpassword = 'testova';
@@ -520,6 +525,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
+            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -683,6 +689,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
+            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {

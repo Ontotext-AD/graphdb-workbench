@@ -29,6 +29,8 @@ describe('$jwtAuth tests', function () {
             grantedAuthorities: []
         });
 
+        $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+
         /*
         //requests that starts from repository/services.js after the security is OK
         httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {

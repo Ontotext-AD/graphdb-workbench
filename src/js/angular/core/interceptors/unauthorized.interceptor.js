@@ -7,8 +7,13 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
         return {
             'responseError': function (response) {
                 if (response.status === 401) {
-                    $rootScope.redirectToLogin();
-                    return $q.reject(response);
+                    if (response.config.url.indexOf('rest/security/authenticatedUser') < 0 && !$rootScope.hasExternalAuthUser()) {
+                        // Redirect to login page only if this isn't the endpoint that checks
+                        // the externally logged user and when no external authentication is available.
+                        // This check is essential for making free access and external auth working.
+                        $rootScope.redirectToLogin();
+                        return $q.reject(response);
+                    }
                 } else if (response.status === 403) {
                     if ($rootScope.setPermissionDenied($location.path())) {
                         console.log('Permission to page denied. Some errors in the console are normal.'); // eslint-disable-line no-console

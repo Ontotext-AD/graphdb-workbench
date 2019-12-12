@@ -6,6 +6,7 @@ SecurityRestService.$inject = ['$http'];
 
 const SECURITY_ENDPOINT = 'rest/security';
 const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/user`;
+const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticatedUser`;
 const SECURITY_FREEACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/freeaccess`;
 const ROLES_ENDPOINT = 'rest/roles';
 
@@ -23,11 +24,16 @@ function SecurityRestService($http) {
         getSecurityConfig,
         toggleSecurity,
         getRoles,
-        getRolesMapping
+        getRolesMapping,
+        getAuthenticatedUser
     };
 
     function getUser(username) {
         return $http.get(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
+    }
+
+    function getAuthenticatedUser() {
+        return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`);
     }
 
     function getAdminUser() {
