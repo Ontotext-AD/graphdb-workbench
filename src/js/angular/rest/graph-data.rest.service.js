@@ -73,7 +73,7 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsData(selectedClasses, direction) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}/matrix`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}matrix`, {
             params: {
                 'mode': direction,
                 'classes': _.map(selectedClasses, function (c) {
