@@ -143,6 +143,42 @@ describe('Class hierarchy screen validation', () => {
             });
     });
 
+    it('Test domain range graph', () => {
+        let className = ':Region';
+        searchForClass(className);
+        cy.wait(500);
+        cy.get('.btn-primary').click();
+        cy.wait(500);
+        getDomainRangeGraphHeader().should('contain','Domain-Range graph');
+        getLegendContainer().should('be.visible');
+        getLegendContainer().should('contain', 'main class node');
+        getLegendContainer().should('contain', 'class node');
+        getLegendContainer().should('contain', 'collapsed property');
+        getMainDomainRangeDiagram().should('be.visible').and('contain', className);
+        getMainDomainRangeDiagram().should('be.visible').and('contain', 'locatedIn');
+        getMainDomainRangeDiagram().should('be.visible').and('contain', ':adjacentRegion');
+        getMainDomainRangeDiagram().should('be.visible').and('contain', 'owl:Thing');
+        getReturnButton().should('be.visible').click();
+    });
+
+
+    function getDomainRangeGraphHeader() {
+        return cy.get('h1');
+    }
+
+    function getLegendContainer() {
+        return cy.get('.legend-container');
+    }
+
+
+    function getMainDomainRangeDiagram() {
+        return cy.get('g');
+    }
+
+    function getReturnButton() {
+        return cy.get('.icon-arrow-left');
+    }
+
     function getCurrentSliderValue() {
         // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
         // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
@@ -191,4 +227,7 @@ describe('Class hierarchy screen validation', () => {
         cy.get('.modal-footer .confirm-btn').click();
         cy.get('.modal').should('not.be.visible');
     }
+
+
+
 });
