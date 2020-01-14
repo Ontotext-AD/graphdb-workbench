@@ -146,21 +146,23 @@ describe('Class hierarchy screen validation', () => {
     it('Test domain range graph', () => {
         let className = ':Region';
         searchForClass(className);
-        cy.wait(500);
-        cy.get('.btn-primary').click();
-        cy.wait(500);
+        getDomainRangeGraphButton().click();
         getDomainRangeGraphHeader().should('contain','Domain-Range graph');
         getLegendContainer().should('be.visible');
-        getLegendContainer().should('contain', 'main class node');
-        getLegendContainer().should('contain', 'class node');
-        getLegendContainer().should('contain', 'collapsed property');
-        getMainDomainRangeDiagram().should('be.visible').and('contain', className);
-        getMainDomainRangeDiagram().should('be.visible').and('contain', 'locatedIn');
-        getMainDomainRangeDiagram().should('be.visible').and('contain', ':adjacentRegion');
-        getMainDomainRangeDiagram().should('be.visible').and('contain', 'owl:Thing');
+        getLegendContainer().should('contain', 'main class node').
+            and('contain', 'class node').
+            and('contain', 'collapsed property');
+        getMainDomainRangeDiagram().should('be.visible');
+        getMainDomainRangeDiagram().should('contain', className).
+            and('contain', 'locatedIn').
+            and('contain', ':adjacentRegion').
+            and('contain', 'owl:Thing');
         getReturnButton().should('be.visible').click();
     });
 
+    function getDomainRangeGraphButton() {
+        return cy.get('.domain-range-graph-btn');
+    }
 
     function getDomainRangeGraphHeader() {
         return cy.get('h1');
@@ -169,7 +171,6 @@ describe('Class hierarchy screen validation', () => {
     function getLegendContainer() {
         return cy.get('.legend-container');
     }
-
 
     function getMainDomainRangeDiagram() {
         return cy.get('g');
@@ -227,7 +228,4 @@ describe('Class hierarchy screen validation', () => {
         cy.get('.modal-footer .confirm-btn').click();
         cy.get('.modal').should('not.be.visible');
     }
-
-
-
 });
