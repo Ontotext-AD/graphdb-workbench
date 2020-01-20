@@ -143,6 +143,43 @@ describe('Class hierarchy screen validation', () => {
             });
     });
 
+    it('Test domain range graph', () => {
+        let className = ':Region';
+        searchForClass(className);
+        getDomainRangeGraphButton().click();
+        getDomainRangeGraphHeader().should('contain','Domain-Range graph');
+        getLegendContainer().should('be.visible');
+        getLegendContainer().should('contain', 'main class node').
+            and('contain', 'class node').
+            and('contain', 'collapsed property');
+        getMainDomainRangeDiagram().should('be.visible');
+        getMainDomainRangeDiagram().should('contain', className).
+            and('contain', 'locatedIn').
+            and('contain', ':adjacentRegion').
+            and('contain', 'owl:Thing');
+        getReturnButton().should('be.visible').click();
+    });
+
+    function getDomainRangeGraphButton() {
+        return cy.get('.domain-range-graph-btn');
+    }
+
+    function getDomainRangeGraphHeader() {
+        return cy.get('h1');
+    }
+
+    function getLegendContainer() {
+        return cy.get('.legend-container');
+    }
+
+    function getMainDomainRangeDiagram() {
+        return cy.get('g');
+    }
+
+    function getReturnButton() {
+        return cy.get('.icon-arrow-left');
+    }
+
     function getCurrentSliderValue() {
         // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
         // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
