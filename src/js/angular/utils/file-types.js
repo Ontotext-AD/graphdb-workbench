@@ -7,7 +7,9 @@ angular.module('graphdb.workbench.utils.filetypes', [])
         {name: 'N-Triples', type: 'text/plain', extension: '.nt'},
         {name: 'N-Quads', type: 'text/x-nquads', extension: '.nq'},
         {name: 'Turtle', type: 'text/turtle', extension: '.ttl'},
+        {name: 'Turtle*', type: 'application/x-turtlestar', extension: '.ttls'},
         {name: 'TriX', type: 'application/trix', extension: '.trix'},
         {name: 'TriG', type: 'application/x-trig', extension: '.trig'},
+        {name: 'TriG*', type: 'application/x-trigstar', extension: '.trig'},
         {name: 'Binary RDF', type: 'application/x-binary-rdf', extension: '.brf'}
     ]);
