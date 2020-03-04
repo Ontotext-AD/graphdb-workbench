@@ -88,15 +88,24 @@
 }
 
 .yasr .uri-cell {
+  display: inline;
   word-break: normal !important;
   word-wrap: normal !important;
+}
+
+.yasr .triple-cell {
+    display: inline;
 }
 
 .yasr .yasr_results .uri-cell .share-result {
   display: none;
 }
+.yasr .yasr_results .triple-cell .uri-cell:hover .share-result {
+    display: none;
+}
 
-.yasr .yasr_results td:hover .uri-cell > .share-result {
+
+.yasr .yasr_results .uri-cell:hover > .share-result {
   display: inline;
   position: absolute;
   padding-top: 3px;
