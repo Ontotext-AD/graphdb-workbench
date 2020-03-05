@@ -194,7 +194,7 @@ exportCtrl.controller('ExportCtrl',
                         $scope.downloadExport(downloadUrl, format);
                     };
 
-                    if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type == 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
+                    if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
                         ModalService.openSimpleModal({
                             title: 'Warning',
                             message: 'This format does not support graphs.<br>Graph information will not be available in the export.',
