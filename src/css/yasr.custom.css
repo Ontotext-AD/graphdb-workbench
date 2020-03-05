@@ -97,13 +97,18 @@
     display: inline;
 }
 
+.yasr table.dataTable td div.triple-cell {
+    padding: 0px;
+}
+
+.yasr .triple-list {
+    list-style-type:none;
+    margin-bottom: 0;
+}
+
 .yasr .yasr_results .uri-cell .share-result {
   display: none;
 }
-.yasr .yasr_results .triple-cell .uri-cell:hover .share-result {
-    display: none;
-}
-
 
 .yasr .yasr_results .uri-cell:hover > .share-result {
   display: inline;

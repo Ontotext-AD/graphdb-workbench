@@ -54822,6 +54822,9 @@ module.exports = {
                                         '<a class="format dropdown-item" data-accepts="application/sparql-results+json" href="#">JSON</a>' +
                                     '</li>' + 
                                     '<li>' + 
+                                        '<a class="format dropdown-item" data-accepts="application/x-sparqlstar-results+json" href="#">JSON*</a>' +
+                                    '</li>' + 
+                                    '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/sparql-results+xml" href="#">XML</a>' +
                                     '</li>' + 
                                     '<li>' + 
@@ -54829,6 +54832,9 @@ module.exports = {
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item " data-accepts="text/tab-separated-values" href="#">TSV</a>' +
+                                    '</li>' + 
+                                    '<li>' + 
+                                        '<a class="format dropdown-item " data-accepts="text/x-tab-separated-values-star" href="#">TSV*</a>' +
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/x-binary-rdf-results-table" href="#">Binary RDF Results</a>' +
@@ -57125,7 +57131,10 @@ var getResultEntityValue = function(binding, context) {
 		"<a class='fa fa-link share-result' data-clipboard-text='" + href + "' title='Copy to Clipboard' href='#'></a>";
 	} else if (binding.type == "triple") {
 		divClass = " class = 'triple-cell'"; 
-		value = _.escape("<<") + getResultEntityValue(binding.value['s'], context) + " " + getResultEntityValue(binding.value['p'], context) + " " + getResultEntityValue(binding.value['o'], context) + _.escape(">>");
+		var s = "<li>" + getResultEntityValue(binding.value['s'], context) + "</li>";
+		var p = "<li>" + getResultEntityValue(binding.value['p'], context) + "</li>";
+		var o = "<li>" + getResultEntityValue(binding.value['o'], context) + "</li>";
+		value = _.escape("<<") + "<ul class='triple-list'>" + s + p + o + "</ul>" + _.escape(">>");
 	} else {
 		divClass = " class = 'literal-cell'"
 		value = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, binding) + "</p>";
