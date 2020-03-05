@@ -57095,13 +57095,13 @@ var getCellContent = function(yasr, plugin, bindings, sparqlVar, context) {
 // Custom getCellContent
 var getCellContentCustom = function(yasr, plugin, bindings, sparqlVar, context) {
 	var binding = bindings[sparqlVar];
-	return getResultEntityValue(binding, context);
+	return getEntityHTML(binding, context);
 };
 
-var getResultEntityValue = function(binding, context) {
+var getEntityHTML = function(binding, context) {
 	var divClass = ""
-	var value = null;
-	if (binding.type == "uri") {
+	var entityHtml = null;
+	if (binding.type === "uri") {
 		var title = null;
 		var href = binding.value;
 		var localHref;
@@ -57125,28 +57125,26 @@ var getResultEntityValue = function(binding, context) {
 
         localHref = localHref.replace(/'/g, "&#39;");
         href = href.replace(/'/g, "&#39;");
-        divClass = " class = 'uri-cell'"; 
-
-		value = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + _.escape(visibleString) + "</a> " +
+        entityHtml = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + _.escape(visibleString) + "</a> " +
 		"<a class='fa fa-link share-result' data-clipboard-text='" + href + "' title='Copy to Clipboard' href='#'></a>";
-	} else if (binding.type == "triple") {
-		divClass = " class = 'triple-cell'"; 
-		var sEl = getResultEntityValue(binding.value['s'], context);
-		var pEl = getResultEntityValue(binding.value['p'], context);
-		var oEl = getResultEntityValue(binding.value['o'], context);
+		divClass = " class = 'uri-cell'";
+	} else if (binding.type === "triple") {
+		var sEl = getEntityHTML(binding.value['s'], context);
+		var pEl = getEntityHTML(binding.value['p'], context);
+		var oEl = getEntityHTML(binding.value['o'], context);
 		var tripleList = "<ul class='triple-list'><li>" + sEl + "</li><li>" + pEl + "</li><li>" + oEl + "</li></ul>";
 		var tripleString = getTripleString(yasr, binding, true);
 		var localHref = "resource?uri=" + encodeURIComponent(tripleString).replace(/'/g, "&#39;");
 		var title = _.escape(tripleString);
 		var openLink = "<a title='" + title + "' class='triple-link' href='" + localHref + "'>" + _.escape("<<") + "</a>";
 		var closeLink = "<a title='" + title + "' class='triple-link triple-link-end' href='" + localHref + "'>" + _.escape(">>") + "</a>";
-		value = openLink + tripleList + closeLink + 
-		"<a class='fa fa-link share-result' data-clipboard-text='" + tripleString + "' title='Copy to Clipboard' href='#'></a>";
+		entityHtml = openLink + tripleList + closeLink + "<a class='fa fa-link share-result' data-clipboard-text='" + tripleString + "' title='Copy to Clipboard' href='#'></a>";
+		divClass = " class = 'triple-cell'";
 	} else {
-		divClass = " class = 'literal-cell'"
-		value = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, binding) + "</p>";
+		entityHtml = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, binding) + "</p>";
+		divClass = " class = 'literal-cell'";
 	}
-	return "<div" + divClass +  ">" + value + "</div>";
+	return "<div" + divClass +  ">" + entityHtml + "</div>";
 }
 
 var getTripleString = function(yasr, binding, skipSup) {
