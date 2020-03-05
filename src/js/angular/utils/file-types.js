@@ -10,6 +10,6 @@ angular.module('graphdb.workbench.utils.filetypes', [])
         {name: 'Turtle*', type: 'application/x-turtlestar', extension: '.ttls'},
         {name: 'TriX', type: 'application/trix', extension: '.trix'},
         {name: 'TriG', type: 'application/x-trig', extension: '.trig'},
-        {name: 'TriG*', type: 'application/x-trigstar', extension: '.trig'},
+        {name: 'TriG*', type: 'application/x-trigstar', extension: '.trigs'},
         {name: 'Binary RDF', type: 'application/x-binary-rdf', extension: '.brf'}
     ]);
