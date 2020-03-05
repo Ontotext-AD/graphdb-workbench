@@ -100,17 +100,30 @@
 .yasr table.dataTable td div.triple-cell {
     padding: 0px;
 }
+.yasr table.dataTable td div.triple-cell .triple-link {
+    color: #708;
+ }
 
 .yasr .triple-list {
     list-style-type:none;
     margin-bottom: 0;
+    padding: 0px 20px;
 }
 
-.yasr .yasr_results .uri-cell .share-result {
+.yasr .triple-list .uri-cell,
+.yasr .triple-list .literal-cell{
+    padding: 0px;
+}
+
+
+.yasr .yasr_results .uri-cell .share-result,
+.yasr .yasr_results .triple-cell .share-result{
   display: none;
 }
 
-.yasr .yasr_results .uri-cell:hover > .share-result {
+.yasr .yasr_results .uri-cell:hover > .share-result,
+.yasr .yasr_results .triple-link-end:hover + .share-result,
+.yasr .yasr_results .share-result:hover {
   display: inline;
   position: absolute;
   padding-top: 3px;
