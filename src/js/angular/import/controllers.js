@@ -47,7 +47,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
 
         $scope.getAppData();
 
-        $scope.fileFormats = ['ttl', 'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trix', 'brf', 'owl', 'jsonld'];
+        $scope.fileFormats = ['ttl', 'ttls',  'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld'];
 
         {
             const gzs = _.map($scope.fileFormats, function (f) {
@@ -663,8 +663,10 @@ importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format',
         {name: 'N-Triples', type: 'text/plain'},
         {name: 'N-Quads', type: 'text/x-nquads'},
         {name: 'Turtle', type: 'text/turtle'},
+        {name: 'Turtle*', type: 'application/x-turtlestar'},
         {name: 'TriX', type: 'application/trix'},
-        {name: 'TriG', type: 'application/x-trig'}
+        {name: 'TriG', type: 'application/x-trig'},
+        {name: 'TriG*', type: 'application/x-trigstar'},
     ];
 
     $scope.rdfText = text;

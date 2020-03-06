@@ -3,7 +3,7 @@
 //the current browserify version does not support require-ing js files which are used as entry-point
 //this way, we can still require our main.js file
 module.exports = require('./main.js');
-},{"./main.js":41}],2:[function(require,module,exports){
+},{"./main.js":52}],2:[function(require,module,exports){
 /*! DataTables 1.10.2
  * ©2008-2014 SpryMedia Ltd - datatables.net/license
  */
@@ -52853,244 +52853,1290 @@ return jQuery;
 
 //# sourceMappingURL=pivot.js.map
 },{"jquery":18}],23:[function(require,module,exports){
-(function (global){
-"use strict"
-// Module export pattern from
-// https://github.com/umdjs/umd/blob/master/returnExports.js
-;(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], factory);
-    } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory();
-    } else {
-        // Browser globals (root is window)
-        root.store = factory();
-  }
-}(this, function () {
+var engine = require('../src/store-engine')
+
+var storages = require('../storages/all')
+var plugins = [require('../plugins/json2')]
+
+module.exports = engine.createStore(storages, plugins)
+
+},{"../plugins/json2":24,"../src/store-engine":26,"../storages/all":28}],24:[function(require,module,exports){
+module.exports = json2Plugin
+
+function json2Plugin() {
+	require('./lib/json2')
+	return {}
+}
+
+},{"./lib/json2":25}],25:[function(require,module,exports){
+/* eslint-disable */
+
+//  json2.js
+//  2016-10-28
+//  Public Domain.
+//  NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+//  See http://www.JSON.org/js.html
+//  This code should be minified before deployment.
+//  See http://javascript.crockford.com/jsmin.html
+
+//  USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
+//  NOT CONTROL.
+
+//  This file creates a global JSON object containing two methods: stringify
+//  and parse. This file provides the ES5 JSON capability to ES3 systems.
+//  If a project might run on IE8 or earlier, then this file should be included.
+//  This file does nothing on ES5 systems.
+
+//      JSON.stringify(value, replacer, space)
+//          value       any JavaScript value, usually an object or array.
+//          replacer    an optional parameter that determines how object
+//                      values are stringified for objects. It can be a
+//                      function or an array of strings.
+//          space       an optional parameter that specifies the indentation
+//                      of nested structures. If it is omitted, the text will
+//                      be packed without extra whitespace. If it is a number,
+//                      it will specify the number of spaces to indent at each
+//                      level. If it is a string (such as "\t" or "&nbsp;"),
+//                      it contains the characters used to indent at each level.
+//          This method produces a JSON text from a JavaScript value.
+//          When an object value is found, if the object contains a toJSON
+//          method, its toJSON method will be called and the result will be
+//          stringified. A toJSON method does not serialize: it returns the
+//          value represented by the name/value pair that should be serialized,
+//          or undefined if nothing should be serialized. The toJSON method
+//          will be passed the key associated with the value, and this will be
+//          bound to the value.
+
+//          For example, this would serialize Dates as ISO strings.
+
+//              Date.prototype.toJSON = function (key) {
+//                  function f(n) {
+//                      // Format integers to have at least two digits.
+//                      return (n < 10)
+//                          ? "0" + n
+//                          : n;
+//                  }
+//                  return this.getUTCFullYear()   + "-" +
+//                       f(this.getUTCMonth() + 1) + "-" +
+//                       f(this.getUTCDate())      + "T" +
+//                       f(this.getUTCHours())     + ":" +
+//                       f(this.getUTCMinutes())   + ":" +
+//                       f(this.getUTCSeconds())   + "Z";
+//              };
+
+//          You can provide an optional replacer method. It will be passed the
+//          key and value of each member, with this bound to the containing
+//          object. The value that is returned from your method will be
+//          serialized. If your method returns undefined, then the member will
+//          be excluded from the serialization.
+
+//          If the replacer parameter is an array of strings, then it will be
+//          used to select the members to be serialized. It filters the results
+//          such that only members with keys listed in the replacer array are
+//          stringified.
+
+//          Values that do not have JSON representations, such as undefined or
+//          functions, will not be serialized. Such values in objects will be
+//          dropped; in arrays they will be replaced with null. You can use
+//          a replacer function to replace those with JSON values.
+
+//          JSON.stringify(undefined) returns undefined.
+
+//          The optional space parameter produces a stringification of the
+//          value that is filled with line breaks and indentation to make it
+//          easier to read.
+
+//          If the space parameter is a non-empty string, then that string will
+//          be used for indentation. If the space parameter is a number, then
+//          the indentation will be that many spaces.
+
+//          Example:
+
+//          text = JSON.stringify(["e", {pluribus: "unum"}]);
+//          // text is '["e",{"pluribus":"unum"}]'
+
+//          text = JSON.stringify(["e", {pluribus: "unum"}], null, "\t");
+//          // text is '[\n\t"e",\n\t{\n\t\t"pluribus": "unum"\n\t}\n]'
+
+//          text = JSON.stringify([new Date()], function (key, value) {
+//              return this[key] instanceof Date
+//                  ? "Date(" + this[key] + ")"
+//                  : value;
+//          });
+//          // text is '["Date(---current time---)"]'
+
+//      JSON.parse(text, reviver)
+//          This method parses a JSON text to produce an object or array.
+//          It can throw a SyntaxError exception.
+
+//          The optional reviver parameter is a function that can filter and
+//          transform the results. It receives each of the keys and values,
+//          and its return value is used instead of the original value.
+//          If it returns what it received, then the structure is not modified.
+//          If it returns undefined then the member is deleted.
+
+//          Example:
+
+//          // Parse the text. Values that look like ISO date strings will
+//          // be converted to Date objects.
+
+//          myData = JSON.parse(text, function (key, value) {
+//              var a;
+//              if (typeof value === "string") {
+//                  a =
+//   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+//                  if (a) {
+//                      return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4],
+//                          +a[5], +a[6]));
+//                  }
+//              }
+//              return value;
+//          });
+
+//          myData = JSON.parse('["Date(09/09/2001)"]', function (key, value) {
+//              var d;
+//              if (typeof value === "string" &&
+//                      value.slice(0, 5) === "Date(" &&
+//                      value.slice(-1) === ")") {
+//                  d = new Date(value.slice(5, -1));
+//                  if (d) {
+//                      return d;
+//                  }
+//              }
+//              return value;
+//          });
+
+//  This is a reference implementation. You are free to copy, modify, or
+//  redistribute.
+
+/*jslint
+    eval, for, this
+*/
+
+/*property
+    JSON, apply, call, charCodeAt, getUTCDate, getUTCFullYear, getUTCHours,
+    getUTCMinutes, getUTCMonth, getUTCSeconds, hasOwnProperty, join,
+    lastIndex, length, parse, prototype, push, replace, slice, stringify,
+    test, toJSON, toString, valueOf
+*/
+
+
+// Create a JSON object only if one does not already exist. We create the
+// methods in a closure to avoid creating global variables.
+
+if (typeof JSON !== "object") {
+    JSON = {};
+}
+
+(function () {
+    "use strict";
+
+    var rx_one = /^[\],:{}\s]*$/;
+    var rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+    var rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+    var rx_four = /(?:^|:|,)(?:\s*\[)+/g;
+    var rx_escapable = /[\\"\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+    var rx_dangerous = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+
+    function f(n) {
+        // Format integers to have at least two digits.
+        return n < 10
+            ? "0" + n
+            : n;
+    }
+
+    function this_value() {
+        return this.valueOf();
+    }
+
+    if (typeof Date.prototype.toJSON !== "function") {
+
+        Date.prototype.toJSON = function () {
+
+            return isFinite(this.valueOf())
+                ? this.getUTCFullYear() + "-" +
+                        f(this.getUTCMonth() + 1) + "-" +
+                        f(this.getUTCDate()) + "T" +
+                        f(this.getUTCHours()) + ":" +
+                        f(this.getUTCMinutes()) + ":" +
+                        f(this.getUTCSeconds()) + "Z"
+                : null;
+        };
+
+        Boolean.prototype.toJSON = this_value;
+        Number.prototype.toJSON = this_value;
+        String.prototype.toJSON = this_value;
+    }
+
+    var gap;
+    var indent;
+    var meta;
+    var rep;
+
+
+    function quote(string) {
+
+// If the string contains no control characters, no quote characters, and no
+// backslash characters, then we can safely slap some quotes around it.
+// Otherwise we must also replace the offending characters with safe escape
+// sequences.
+
+        rx_escapable.lastIndex = 0;
+        return rx_escapable.test(string)
+            ? "\"" + string.replace(rx_escapable, function (a) {
+                var c = meta[a];
+                return typeof c === "string"
+                    ? c
+                    : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+            }) + "\""
+            : "\"" + string + "\"";
+    }
+
+
+    function str(key, holder) {
+
+// Produce a string from holder[key].
+
+        var i;          // The loop counter.
+        var k;          // The member key.
+        var v;          // The member value.
+        var length;
+        var mind = gap;
+        var partial;
+        var value = holder[key];
+
+// If the value has a toJSON method, call it to obtain a replacement value.
+
+        if (value && typeof value === "object" &&
+                typeof value.toJSON === "function") {
+            value = value.toJSON(key);
+        }
+
+// If we were called with a replacer function, then call the replacer to
+// obtain a replacement value.
+
+        if (typeof rep === "function") {
+            value = rep.call(holder, key, value);
+        }
+
+// What happens next depends on the value's type.
+
+        switch (typeof value) {
+        case "string":
+            return quote(value);
+
+        case "number":
+
+// JSON numbers must be finite. Encode non-finite numbers as null.
+
+            return isFinite(value)
+                ? String(value)
+                : "null";
+
+        case "boolean":
+        case "null":
+
+// If the value is a boolean or null, convert it to a string. Note:
+// typeof null does not produce "null". The case is included here in
+// the remote chance that this gets fixed someday.
+
+            return String(value);
+
+// If the type is "object", we might be dealing with an object or an array or
+// null.
+
+        case "object":
+
+// Due to a specification blunder in ECMAScript, typeof null is "object",
+// so watch out for that case.
+
+            if (!value) {
+                return "null";
+            }
+
+// Make an array to hold the partial results of stringifying this object value.
+
+            gap += indent;
+            partial = [];
+
+// Is the value an array?
+
+            if (Object.prototype.toString.apply(value) === "[object Array]") {
+
+// The value is an array. Stringify every element. Use null as a placeholder
+// for non-JSON values.
+
+                length = value.length;
+                for (i = 0; i < length; i += 1) {
+                    partial[i] = str(i, value) || "null";
+                }
+
+// Join all of the elements together, separated with commas, and wrap them in
+// brackets.
+
+                v = partial.length === 0
+                    ? "[]"
+                    : gap
+                        ? "[\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "]"
+                        : "[" + partial.join(",") + "]";
+                gap = mind;
+                return v;
+            }
+
+// If the replacer is an array, use it to select the members to be stringified.
+
+            if (rep && typeof rep === "object") {
+                length = rep.length;
+                for (i = 0; i < length; i += 1) {
+                    if (typeof rep[i] === "string") {
+                        k = rep[i];
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (
+                                gap
+                                    ? ": "
+                                    : ":"
+                            ) + v);
+                        }
+                    }
+                }
+            } else {
+
+// Otherwise, iterate through all of the keys in the object.
+
+                for (k in value) {
+                    if (Object.prototype.hasOwnProperty.call(value, k)) {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (
+                                gap
+                                    ? ": "
+                                    : ":"
+                            ) + v);
+                        }
+                    }
+                }
+            }
+
+// Join all of the member texts together, separated with commas,
+// and wrap them in braces.
+
+            v = partial.length === 0
+                ? "{}"
+                : gap
+                    ? "{\n" + gap + partial.join(",\n" + gap) + "\n" + mind + "}"
+                    : "{" + partial.join(",") + "}";
+            gap = mind;
+            return v;
+        }
+    }
+
+// If the JSON object does not yet have a stringify method, give it one.
+
+    if (typeof JSON.stringify !== "function") {
+        meta = {    // table of character substitutions
+            "\b": "\\b",
+            "\t": "\\t",
+            "\n": "\\n",
+            "\f": "\\f",
+            "\r": "\\r",
+            "\"": "\\\"",
+            "\\": "\\\\"
+        };
+        JSON.stringify = function (value, replacer, space) {
+
+// The stringify method takes a value and an optional replacer, and an optional
+// space parameter, and returns a JSON text. The replacer can be a function
+// that can replace values, or an array of strings that will select the keys.
+// A default replacer method can be provided. Use of the space parameter can
+// produce text that is more easily readable.
+
+            var i;
+            gap = "";
+            indent = "";
+
+// If the space parameter is a number, make an indent string containing that
+// many spaces.
+
+            if (typeof space === "number") {
+                for (i = 0; i < space; i += 1) {
+                    indent += " ";
+                }
+
+// If the space parameter is a string, it will be used as the indent string.
+
+            } else if (typeof space === "string") {
+                indent = space;
+            }
+
+// If there is a replacer, it must be a function or an array.
+// Otherwise, throw an error.
+
+            rep = replacer;
+            if (replacer && typeof replacer !== "function" &&
+                    (typeof replacer !== "object" ||
+                    typeof replacer.length !== "number")) {
+                throw new Error("JSON.stringify");
+            }
+
+// Make a fake root object containing our value under the key of "".
+// Return the result of stringifying the value.
+
+            return str("", {"": value});
+        };
+    }
+
+
+// If the JSON object does not yet have a parse method, give it one.
+
+    if (typeof JSON.parse !== "function") {
+        JSON.parse = function (text, reviver) {
+
+// The parse method takes a text and an optional reviver function, and returns
+// a JavaScript value if the text is a valid JSON text.
+
+            var j;
+
+            function walk(holder, key) {
+
+// The walk method is used to recursively walk the resulting structure so
+// that modifications can be made.
+
+                var k;
+                var v;
+                var value = holder[key];
+                if (value && typeof value === "object") {
+                    for (k in value) {
+                        if (Object.prototype.hasOwnProperty.call(value, k)) {
+                            v = walk(value, k);
+                            if (v !== undefined) {
+                                value[k] = v;
+                            } else {
+                                delete value[k];
+                            }
+                        }
+                    }
+                }
+                return reviver.call(holder, key, value);
+            }
+
+
+// Parsing happens in four stages. In the first stage, we replace certain
+// Unicode characters with escape sequences. JavaScript handles many characters
+// incorrectly, either silently deleting them, or treating them as line endings.
+
+            text = String(text);
+            rx_dangerous.lastIndex = 0;
+            if (rx_dangerous.test(text)) {
+                text = text.replace(rx_dangerous, function (a) {
+                    return "\\u" +
+                            ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
+                });
+            }
+
+// In the second stage, we run the text against regular expressions that look
+// for non-JSON patterns. We are especially concerned with "()" and "new"
+// because they can cause invocation, and "=" because it can cause mutation.
+// But just to be safe, we want to reject all unexpected forms.
+
+// We split the second stage into 4 regexp operations in order to work around
+// crippling inefficiencies in IE's and Safari's regexp engines. First we
+// replace the JSON backslash pairs with "@" (a non-JSON character). Second, we
+// replace all simple value tokens with "]" characters. Third, we delete all
+// open brackets that follow a colon or comma or that begin the text. Finally,
+// we look to see that the remaining characters are only whitespace or "]" or
+// "," or ":" or "{" or "}". If that is so, then the text is safe for eval.
+
+            if (
+                rx_one.test(
+                    text
+                        .replace(rx_two, "@")
+                        .replace(rx_three, "]")
+                        .replace(rx_four, "")
+                )
+            ) {
+
+// In the third stage we use the eval function to compile the text into a
+// JavaScript structure. The "{" operator is subject to a syntactic ambiguity
+// in JavaScript: it can begin a block or an object literal. We wrap the text
+// in parens to eliminate the ambiguity.
+
+                j = eval("(" + text + ")");
+
+// In the optional fourth stage, we recursively walk the new structure, passing
+// each name/value pair to a reviver function for possible transformation.
+
+                return (typeof reviver === "function")
+                    ? walk({"": j}, "")
+                    : j;
+            }
+
+// If the text is not JSON parseable, then a SyntaxError is thrown.
+
+            throw new SyntaxError("JSON.parse");
+        };
+    }
+}());
+},{}],26:[function(require,module,exports){
+var util = require('./util')
+var slice = util.slice
+var pluck = util.pluck
+var each = util.each
+var bind = util.bind
+var create = util.create
+var isList = util.isList
+var isFunction = util.isFunction
+var isObject = util.isObject
+
+module.exports = {
+	createStore: createStore
+}
+
+var storeAPI = {
+	version: '2.0.12',
+	enabled: false,
 	
-	// Store.js
-	var store = {},
-		win = (typeof window != 'undefined' ? window : global),
-		doc = win.document,
-		localStorageName = 'localStorage',
-		scriptTag = 'script',
-		storage
+	// get returns the value of the given key. If that value
+	// is undefined, it returns optionalDefaultValue instead.
+	get: function(key, optionalDefaultValue) {
+		var data = this.storage.read(this._namespacePrefix + key)
+		return this._deserialize(data, optionalDefaultValue)
+	},
 
-	store.disabled = false
-	store.version = '1.3.20'
-	store.set = function(key, value) {}
-	store.get = function(key, defaultVal) {}
-	store.has = function(key) { return store.get(key) !== undefined }
-	store.remove = function(key) {}
-	store.clear = function() {}
-	store.transact = function(key, defaultVal, transactionFn) {
-		if (transactionFn == null) {
-			transactionFn = defaultVal
-			defaultVal = null
+	// set will store the given value at key and returns value.
+	// Calling set with value === undefined is equivalent to calling remove.
+	set: function(key, value) {
+		if (value === undefined) {
+			return this.remove(key)
 		}
-		if (defaultVal == null) {
-			defaultVal = {}
-		}
-		var val = store.get(key, defaultVal)
-		transactionFn(val)
-		store.set(key, val)
-	}
-	store.getAll = function() {}
-	store.forEach = function() {}
+		this.storage.write(this._namespacePrefix + key, this._serialize(value))
+		return value
+	},
 
-	store.serialize = function(value) {
-		return JSON.stringify(value)
-	}
-	store.deserialize = function(value) {
-		if (typeof value != 'string') { return undefined }
-		try { return JSON.parse(value) }
-		catch(e) { return value || undefined }
-	}
+	// remove deletes the key and value stored at the given key.
+	remove: function(key) {
+		this.storage.remove(this._namespacePrefix + key)
+	},
 
-	// Functions to encapsulate questionable FireFox 3.6.13 behavior
-	// when about.config::dom.storage.enabled === false
-	// See https://github.com/marcuswestin/store.js/issues#issue/13
-	function isLocalStorageNameSupported() {
-		try { return (localStorageName in win && win[localStorageName]) }
-		catch(err) { return false }
-	}
-
-	if (isLocalStorageNameSupported()) {
-		storage = win[localStorageName]
-		store.set = function(key, val) {
-			if (val === undefined) { return store.remove(key) }
-			storage.setItem(key, store.serialize(val))
-			return val
-		}
-		store.get = function(key, defaultVal) {
-			var val = store.deserialize(storage.getItem(key))
-			return (val === undefined ? defaultVal : val)
-		}
-		store.remove = function(key) { storage.removeItem(key) }
-		store.clear = function() { storage.clear() }
-		store.getAll = function() {
-			var ret = {}
-			store.forEach(function(key, val) {
-				ret[key] = val
-			})
-			return ret
-		}
-		store.forEach = function(callback) {
-			for (var i=0; i<storage.length; i++) {
-				var key = storage.key(i)
-				callback(key, store.get(key))
-			}
-		}
-	} else if (doc && doc.documentElement.addBehavior) {
-		var storageOwner,
-			storageContainer
-		// Since #userData storage applies only to specific paths, we need to
-		// somehow link our data to a specific path.  We choose /favicon.ico
-		// as a pretty safe option, since all browsers already make a request to
-		// this URL anyway and being a 404 will not hurt us here.  We wrap an
-		// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
-		// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
-		// since the iframe access rules appear to allow direct access and
-		// manipulation of the document element, even for a 404 page.  This
-		// document can be used instead of the current document (which would
-		// have been limited to the current path) to perform #userData storage.
-		try {
-			storageContainer = new ActiveXObject('htmlfile')
-			storageContainer.open()
-			storageContainer.write('<'+scriptTag+'>document.w=window</'+scriptTag+'><iframe src="/favicon.ico"></iframe>')
-			storageContainer.close()
-			storageOwner = storageContainer.w.frames[0].document
-			storage = storageOwner.createElement('div')
-		} catch(e) {
-			// somehow ActiveXObject instantiation failed (perhaps some special
-			// security settings or otherwse), fall back to per-path storage
-			storage = doc.createElement('div')
-			storageOwner = doc.body
-		}
-		var withIEStorage = function(storeFunction) {
-			return function() {
-				var args = Array.prototype.slice.call(arguments, 0)
-				args.unshift(storage)
-				// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
-				// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
-				storageOwner.appendChild(storage)
-				storage.addBehavior('#default#userData')
-				storage.load(localStorageName)
-				var result = storeFunction.apply(store, args)
-				storageOwner.removeChild(storage)
-				return result
-			}
-		}
-
-		// In IE7, keys cannot start with a digit or contain certain chars.
-		// See https://github.com/marcuswestin/store.js/issues/40
-		// See https://github.com/marcuswestin/store.js/issues/83
-		var forbiddenCharsRegex = new RegExp("[!\"#$%&'()*+,/\\\\:;<=>?@[\\]^`{|}~]", "g")
-		var ieKeyFix = function(key) {
-			return key.replace(/^d/, '___$&').replace(forbiddenCharsRegex, '___')
-		}
-		store.set = withIEStorage(function(storage, key, val) {
-			key = ieKeyFix(key)
-			if (val === undefined) { return store.remove(key) }
-			storage.setAttribute(key, store.serialize(val))
-			storage.save(localStorageName)
-			return val
+	// each will call the given callback once for each key-value pair
+	// in this store.
+	each: function(callback) {
+		var self = this
+		this.storage.each(function(val, namespacedKey) {
+			callback.call(self, self._deserialize(val), (namespacedKey || '').replace(self._namespaceRegexp, ''))
 		})
-		store.get = withIEStorage(function(storage, key, defaultVal) {
-			key = ieKeyFix(key)
-			var val = store.deserialize(storage.getAttribute(key))
-			return (val === undefined ? defaultVal : val)
-		})
-		store.remove = withIEStorage(function(storage, key) {
-			key = ieKeyFix(key)
-			storage.removeAttribute(key)
-			storage.save(localStorageName)
-		})
-		store.clear = withIEStorage(function(storage) {
-			var attributes = storage.XMLDocument.documentElement.attributes
-			storage.load(localStorageName)
-			for (var i=attributes.length-1; i>=0; i--) {
-				storage.removeAttribute(attributes[i].name)
-			}
-			storage.save(localStorageName)
-		})
-		store.getAll = function(storage) {
-			var ret = {}
-			store.forEach(function(key, val) {
-				ret[key] = val
-			})
-			return ret
-		}
-		store.forEach = withIEStorage(function(storage, callback) {
-			var attributes = storage.XMLDocument.documentElement.attributes
-			for (var i=0, attr; attr=attributes[i]; ++i) {
-				callback(attr.name, store.deserialize(storage.getAttribute(attr.name)))
-			}
-		})
-	}
+	},
 
-	try {
-		var testKey = '__storejs__'
-		store.set(testKey, testKey)
-		if (store.get(testKey) != testKey) { store.disabled = true }
-		store.remove(testKey)
-	} catch(e) {
-		store.disabled = true
-	}
-	store.enabled = !store.disabled
+	// clearAll will remove all the stored key-value pairs in this store.
+	clearAll: function() {
+		this.storage.clearAll()
+	},
+
+	// additional functionality that can't live in plugins
+	// ---------------------------------------------------
+
+	// hasNamespace returns true if this store instance has the given namespace.
+	hasNamespace: function(namespace) {
+		return (this._namespacePrefix == '__storejs_'+namespace+'_')
+	},
+
+	// createStore creates a store.js instance with the first
+	// functioning storage in the list of storage candidates,
+	// and applies the the given mixins to the instance.
+	createStore: function() {
+		return createStore.apply(this, arguments)
+	},
 	
+	addPlugin: function(plugin) {
+		this._addPlugin(plugin)
+	},
+	
+	namespace: function(namespace) {
+		return createStore(this.storage, this.plugins, namespace)
+	}
+}
+
+function _warn() {
+	var _console = (typeof console == 'undefined' ? null : console)
+	if (!_console) { return }
+	var fn = (_console.warn ? _console.warn : _console.log)
+	fn.apply(_console, arguments)
+}
+
+function createStore(storages, plugins, namespace) {
+	if (!namespace) {
+		namespace = ''
+	}
+	if (storages && !isList(storages)) {
+		storages = [storages]
+	}
+	if (plugins && !isList(plugins)) {
+		plugins = [plugins]
+	}
+
+	var namespacePrefix = (namespace ? '__storejs_'+namespace+'_' : '')
+	var namespaceRegexp = (namespace ? new RegExp('^'+namespacePrefix) : null)
+	var legalNamespaces = /^[a-zA-Z0-9_\-]*$/ // alpha-numeric + underscore and dash
+	if (!legalNamespaces.test(namespace)) {
+		throw new Error('store.js namespaces can only have alphanumerics + underscores and dashes')
+	}
+	
+	var _privateStoreProps = {
+		_namespacePrefix: namespacePrefix,
+		_namespaceRegexp: namespaceRegexp,
+
+		_testStorage: function(storage) {
+			try {
+				var testStr = '__storejs__test__'
+				storage.write(testStr, testStr)
+				var ok = (storage.read(testStr) === testStr)
+				storage.remove(testStr)
+				return ok
+			} catch(e) {
+				return false
+			}
+		},
+
+		_assignPluginFnProp: function(pluginFnProp, propName) {
+			var oldFn = this[propName]
+			this[propName] = function pluginFn() {
+				var args = slice(arguments, 0)
+				var self = this
+
+				// super_fn calls the old function which was overwritten by
+				// this mixin.
+				function super_fn() {
+					if (!oldFn) { return }
+					each(arguments, function(arg, i) {
+						args[i] = arg
+					})
+					return oldFn.apply(self, args)
+				}
+
+				// Give mixing function access to super_fn by prefixing all mixin function
+				// arguments with super_fn.
+				var newFnArgs = [super_fn].concat(args)
+
+				return pluginFnProp.apply(self, newFnArgs)
+			}
+		},
+
+		_serialize: function(obj) {
+			return JSON.stringify(obj)
+		},
+
+		_deserialize: function(strVal, defaultVal) {
+			if (!strVal) { return defaultVal }
+			// It is possible that a raw string value has been previously stored
+			// in a storage without using store.js, meaning it will be a raw
+			// string value instead of a JSON serialized string. By defaulting
+			// to the raw string value in case of a JSON parse error, we allow
+			// for past stored values to be forwards-compatible with store.js
+			var val = ''
+			try { val = JSON.parse(strVal) }
+			catch(e) { val = strVal }
+
+			return (val !== undefined ? val : defaultVal)
+		},
+		
+		_addStorage: function(storage) {
+			if (this.enabled) { return }
+			if (this._testStorage(storage)) {
+				this.storage = storage
+				this.enabled = true
+			}
+		},
+
+		_addPlugin: function(plugin) {
+			var self = this
+
+			// If the plugin is an array, then add all plugins in the array.
+			// This allows for a plugin to depend on other plugins.
+			if (isList(plugin)) {
+				each(plugin, function(plugin) {
+					self._addPlugin(plugin)
+				})
+				return
+			}
+
+			// Keep track of all plugins we've seen so far, so that we
+			// don't add any of them twice.
+			var seenPlugin = pluck(this.plugins, function(seenPlugin) {
+				return (plugin === seenPlugin)
+			})
+			if (seenPlugin) {
+				return
+			}
+			this.plugins.push(plugin)
+
+			// Check that the plugin is properly formed
+			if (!isFunction(plugin)) {
+				throw new Error('Plugins must be function values that return objects')
+			}
+
+			var pluginProperties = plugin.call(this)
+			if (!isObject(pluginProperties)) {
+				throw new Error('Plugins must return an object of function properties')
+			}
+
+			// Add the plugin function properties to this store instance.
+			each(pluginProperties, function(pluginFnProp, propName) {
+				if (!isFunction(pluginFnProp)) {
+					throw new Error('Bad plugin property: '+propName+' from plugin '+plugin.name+'. Plugins should only return functions.')
+				}
+				self._assignPluginFnProp(pluginFnProp, propName)
+			})
+		},
+		
+		// Put deprecated properties in the private API, so as to not expose it to accidential
+		// discovery through inspection of the store object.
+		
+		// Deprecated: addStorage
+		addStorage: function(storage) {
+			_warn('store.addStorage(storage) is deprecated. Use createStore([storages])')
+			this._addStorage(storage)
+		}
+	}
+
+	var store = create(_privateStoreProps, storeAPI, {
+		plugins: []
+	})
+	store.raw = {}
+	each(store, function(prop, propName) {
+		if (isFunction(prop)) {
+			store.raw[propName] = bind(store, prop)			
+		}
+	})
+	each(storages, function(storage) {
+		store._addStorage(storage)
+	})
+	each(plugins, function(plugin) {
+		store._addPlugin(plugin)
+	})
 	return store
-}));
+}
+
+},{"./util":27}],27:[function(require,module,exports){
+(function (global){
+var assign = make_assign()
+var create = make_create()
+var trim = make_trim()
+var Global = (typeof window !== 'undefined' ? window : global)
+
+module.exports = {
+	assign: assign,
+	create: create,
+	trim: trim,
+	bind: bind,
+	slice: slice,
+	each: each,
+	map: map,
+	pluck: pluck,
+	isList: isList,
+	isFunction: isFunction,
+	isObject: isObject,
+	Global: Global
+}
+
+function make_assign() {
+	if (Object.assign) {
+		return Object.assign
+	} else {
+		return function shimAssign(obj, props1, props2, etc) {
+			for (var i = 1; i < arguments.length; i++) {
+				each(Object(arguments[i]), function(val, key) {
+					obj[key] = val
+				})
+			}			
+			return obj
+		}
+	}
+}
+
+function make_create() {
+	if (Object.create) {
+		return function create(obj, assignProps1, assignProps2, etc) {
+			var assignArgsList = slice(arguments, 1)
+			return assign.apply(this, [Object.create(obj)].concat(assignArgsList))
+		}
+	} else {
+		function F() {} // eslint-disable-line no-inner-declarations
+		return function create(obj, assignProps1, assignProps2, etc) {
+			var assignArgsList = slice(arguments, 1)
+			F.prototype = obj
+			return assign.apply(this, [new F()].concat(assignArgsList))
+		}
+	}
+}
+
+function make_trim() {
+	if (String.prototype.trim) {
+		return function trim(str) {
+			return String.prototype.trim.call(str)
+		}
+	} else {
+		return function trim(str) {
+			return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+		}
+	}
+}
+
+function bind(obj, fn) {
+	return function() {
+		return fn.apply(obj, Array.prototype.slice.call(arguments, 0))
+	}
+}
+
+function slice(arr, index) {
+	return Array.prototype.slice.call(arr, index || 0)
+}
+
+function each(obj, fn) {
+	pluck(obj, function(val, key) {
+		fn(val, key)
+		return false
+	})
+}
+
+function map(obj, fn) {
+	var res = (isList(obj) ? [] : {})
+	pluck(obj, function(v, k) {
+		res[k] = fn(v, k)
+		return false
+	})
+	return res
+}
+
+function pluck(obj, fn) {
+	if (isList(obj)) {
+		for (var i=0; i<obj.length; i++) {
+			if (fn(obj[i], i)) {
+				return obj[i]
+			}
+		}
+	} else {
+		for (var key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				if (fn(obj[key], key)) {
+					return obj[key]
+				}
+			}
+		}
+	}
+}
+
+function isList(val) {
+	return (val != null && typeof val != 'function' && typeof val.length == 'number')
+}
+
+function isFunction(val) {
+	return val && {}.toString.call(val) === '[object Function]'
+}
+
+function isObject(val) {
+	return val && {}.toString.call(val) === '[object Object]'
+}
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-//# sourceMappingURL=data:application/json;charset:utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vZGVfbW9kdWxlcy9zdG9yZS9zdG9yZS5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBIiwiZmlsZSI6ImdlbmVyYXRlZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzQ29udGVudCI6WyJcInVzZSBzdHJpY3RcIlxuLy8gTW9kdWxlIGV4cG9ydCBwYXR0ZXJuIGZyb21cbi8vIGh0dHBzOi8vZ2l0aHViLmNvbS91bWRqcy91bWQvYmxvYi9tYXN0ZXIvcmV0dXJuRXhwb3J0cy5qc1xuOyhmdW5jdGlvbiAocm9vdCwgZmFjdG9yeSkge1xuICAgIGlmICh0eXBlb2YgZGVmaW5lID09PSAnZnVuY3Rpb24nICYmIGRlZmluZS5hbWQpIHtcbiAgICAgICAgLy8gQU1ELiBSZWdpc3RlciBhcyBhbiBhbm9ueW1vdXMgbW9kdWxlLlxuICAgICAgICBkZWZpbmUoW10sIGZhY3RvcnkpO1xuICAgIH0gZWxzZSBpZiAodHlwZW9mIGV4cG9ydHMgPT09ICdvYmplY3QnKSB7XG4gICAgICAgIC8vIE5vZGUuIERvZXMgbm90IHdvcmsgd2l0aCBzdHJpY3QgQ29tbW9uSlMsIGJ1dFxuICAgICAgICAvLyBvbmx5IENvbW1vbkpTLWxpa2UgZW52aXJvbm1lbnRzIHRoYXQgc3VwcG9ydCBtb2R1bGUuZXhwb3J0cyxcbiAgICAgICAgLy8gbGlrZSBOb2RlLlxuICAgICAgICBtb2R1bGUuZXhwb3J0cyA9IGZhY3RvcnkoKTtcbiAgICB9IGVsc2Uge1xuICAgICAgICAvLyBCcm93c2VyIGdsb2JhbHMgKHJvb3QgaXMgd2luZG93KVxuICAgICAgICByb290LnN0b3JlID0gZmFjdG9yeSgpO1xuICB9XG59KHRoaXMsIGZ1bmN0aW9uICgpIHtcblx0XG5cdC8vIFN0b3JlLmpzXG5cdHZhciBzdG9yZSA9IHt9LFxuXHRcdHdpbiA9ICh0eXBlb2Ygd2luZG93ICE9ICd1bmRlZmluZWQnID8gd2luZG93IDogZ2xvYmFsKSxcblx0XHRkb2MgPSB3aW4uZG9jdW1lbnQsXG5cdFx0bG9jYWxTdG9yYWdlTmFtZSA9ICdsb2NhbFN0b3JhZ2UnLFxuXHRcdHNjcmlwdFRhZyA9ICdzY3JpcHQnLFxuXHRcdHN0b3JhZ2VcblxuXHRzdG9yZS5kaXNhYmxlZCA9IGZhbHNlXG5cdHN0b3JlLnZlcnNpb24gPSAnMS4zLjIwJ1xuXHRzdG9yZS5zZXQgPSBmdW5jdGlvbihrZXksIHZhbHVlKSB7fVxuXHRzdG9yZS5nZXQgPSBmdW5jdGlvbihrZXksIGRlZmF1bHRWYWwpIHt9XG5cdHN0b3JlLmhhcyA9IGZ1bmN0aW9uKGtleSkgeyByZXR1cm4gc3RvcmUuZ2V0KGtleSkgIT09IHVuZGVmaW5lZCB9XG5cdHN0b3JlLnJlbW92ZSA9IGZ1bmN0aW9uKGtleSkge31cblx0c3RvcmUuY2xlYXIgPSBmdW5jdGlvbigpIHt9XG5cdHN0b3JlLnRyYW5zYWN0ID0gZnVuY3Rpb24oa2V5LCBkZWZhdWx0VmFsLCB0cmFuc2FjdGlvbkZuKSB7XG5cdFx0aWYgKHRyYW5zYWN0aW9uRm4gPT0gbnVsbCkge1xuXHRcdFx0dHJhbnNhY3Rpb25GbiA9IGRlZmF1bHRWYWxcblx0XHRcdGRlZmF1bHRWYWwgPSBudWxsXG5cdFx0fVxuXHRcdGlmIChkZWZhdWx0VmFsID09IG51bGwpIHtcblx0XHRcdGRlZmF1bHRWYWwgPSB7fVxuXHRcdH1cblx0XHR2YXIgdmFsID0gc3RvcmUuZ2V0KGtleSwgZGVmYXVsdFZhbClcblx0XHR0cmFuc2FjdGlvbkZuKHZhbClcblx0XHRzdG9yZS5zZXQoa2V5LCB2YWwpXG5cdH1cblx0c3RvcmUuZ2V0QWxsID0gZnVuY3Rpb24oKSB7fVxuXHRzdG9yZS5mb3JFYWNoID0gZnVuY3Rpb24oKSB7fVxuXG5cdHN0b3JlLnNlcmlhbGl6ZSA9IGZ1bmN0aW9uKHZhbHVlKSB7XG5cdFx0cmV0dXJuIEpTT04uc3RyaW5naWZ5KHZhbHVlKVxuXHR9XG5cdHN0b3JlLmRlc2VyaWFsaXplID0gZnVuY3Rpb24odmFsdWUpIHtcblx0XHRpZiAodHlwZW9mIHZhbHVlICE9ICdzdHJpbmcnKSB7IHJldHVybiB1bmRlZmluZWQgfVxuXHRcdHRyeSB7IHJldHVybiBKU09OLnBhcnNlKHZhbHVlKSB9XG5cdFx0Y2F0Y2goZSkgeyByZXR1cm4gdmFsdWUgfHwgdW5kZWZpbmVkIH1cblx0fVxuXG5cdC8vIEZ1bmN0aW9ucyB0byBlbmNhcHN1bGF0ZSBxdWVzdGlvbmFibGUgRmlyZUZveCAzLjYuMTMgYmVoYXZpb3Jcblx0Ly8gd2hlbiBhYm91dC5jb25maWc6OmRvbS5zdG9yYWdlLmVuYWJsZWQgPT09IGZhbHNlXG5cdC8vIFNlZSBodHRwczovL2dpdGh1Yi5jb20vbWFyY3Vzd2VzdGluL3N0b3JlLmpzL2lzc3VlcyNpc3N1ZS8xM1xuXHRmdW5jdGlvbiBpc0xvY2FsU3RvcmFnZU5hbWVTdXBwb3J0ZWQoKSB7XG5cdFx0dHJ5IHsgcmV0dXJuIChsb2NhbFN0b3JhZ2VOYW1lIGluIHdpbiAmJiB3aW5bbG9jYWxTdG9yYWdlTmFtZV0pIH1cblx0XHRjYXRjaChlcnIpIHsgcmV0dXJuIGZhbHNlIH1cblx0fVxuXG5cdGlmIChpc0xvY2FsU3RvcmFnZU5hbWVTdXBwb3J0ZWQoKSkge1xuXHRcdHN0b3JhZ2UgPSB3aW5bbG9jYWxTdG9yYWdlTmFtZV1cblx0XHRzdG9yZS5zZXQgPSBmdW5jdGlvbihrZXksIHZhbCkge1xuXHRcdFx0aWYgKHZhbCA9PT0gdW5kZWZpbmVkKSB7IHJldHVybiBzdG9yZS5yZW1vdmUoa2V5KSB9XG5cdFx0XHRzdG9yYWdlLnNldEl0ZW0oa2V5LCBzdG9yZS5zZXJpYWxpemUodmFsKSlcblx0XHRcdHJldHVybiB2YWxcblx0XHR9XG5cdFx0c3RvcmUuZ2V0ID0gZnVuY3Rpb24oa2V5LCBkZWZhdWx0VmFsKSB7XG5cdFx0XHR2YXIgdmFsID0gc3RvcmUuZGVzZXJpYWxpemUoc3RvcmFnZS5nZXRJdGVtKGtleSkpXG5cdFx0XHRyZXR1cm4gKHZhbCA9PT0gdW5kZWZpbmVkID8gZGVmYXVsdFZhbCA6IHZhbClcblx0XHR9XG5cdFx0c3RvcmUucmVtb3ZlID0gZnVuY3Rpb24oa2V5KSB7IHN0b3JhZ2UucmVtb3ZlSXRlbShrZXkpIH1cblx0XHRzdG9yZS5jbGVhciA9IGZ1bmN0aW9uKCkgeyBzdG9yYWdlLmNsZWFyKCkgfVxuXHRcdHN0b3JlLmdldEFsbCA9IGZ1bmN0aW9uKCkge1xuXHRcdFx0dmFyIHJldCA9IHt9XG5cdFx0XHRzdG9yZS5mb3JFYWNoKGZ1bmN0aW9uKGtleSwgdmFsKSB7XG5cdFx0XHRcdHJldFtrZXldID0gdmFsXG5cdFx0XHR9KVxuXHRcdFx0cmV0dXJuIHJldFxuXHRcdH1cblx0XHRzdG9yZS5mb3JFYWNoID0gZnVuY3Rpb24oY2FsbGJhY2spIHtcblx0XHRcdGZvciAodmFyIGk9MDsgaTxzdG9yYWdlLmxlbmd0aDsgaSsrKSB7XG5cdFx0XHRcdHZhciBrZXkgPSBzdG9yYWdlLmtleShpKVxuXHRcdFx0XHRjYWxsYmFjayhrZXksIHN0b3JlLmdldChrZXkpKVxuXHRcdFx0fVxuXHRcdH1cblx0fSBlbHNlIGlmIChkb2MgJiYgZG9jLmRvY3VtZW50RWxlbWVudC5hZGRCZWhhdmlvcikge1xuXHRcdHZhciBzdG9yYWdlT3duZXIsXG5cdFx0XHRzdG9yYWdlQ29udGFpbmVyXG5cdFx0Ly8gU2luY2UgI3VzZXJEYXRhIHN0b3JhZ2UgYXBwbGllcyBvbmx5IHRvIHNwZWNpZmljIHBhdGhzLCB3ZSBuZWVkIHRvXG5cdFx0Ly8gc29tZWhvdyBsaW5rIG91ciBkYXRhIHRvIGEgc3BlY2lmaWMgcGF0aC4gIFdlIGNob29zZSAvZmF2aWNvbi5pY29cblx0XHQvLyBhcyBhIHByZXR0eSBzYWZlIG9wdGlvbiwgc2luY2UgYWxsIGJyb3dzZXJzIGFscmVhZHkgbWFrZSBhIHJlcXVlc3QgdG9cblx0XHQvLyB0aGlzIFVSTCBhbnl3YXkgYW5kIGJlaW5nIGEgNDA0IHdpbGwgbm90IGh1cnQgdXMgaGVyZS4gIFdlIHdyYXAgYW5cblx0XHQvLyBpZnJhbWUgcG9pbnRpbmcgdG8gdGhlIGZhdmljb24gaW4gYW4gQWN0aXZlWE9iamVjdChodG1sZmlsZSkgb2JqZWN0XG5cdFx0Ly8gKHNlZTogaHR0cDovL21zZG4ubWljcm9zb2Z0LmNvbS9lbi11cy9saWJyYXJ5L2FhNzUyNTc0KHY9VlMuODUpLmFzcHgpXG5cdFx0Ly8gc2luY2UgdGhlIGlmcmFtZSBhY2Nlc3MgcnVsZXMgYXBwZWFyIHRvIGFsbG93IGRpcmVjdCBhY2Nlc3MgYW5kXG5cdFx0Ly8gbWFuaXB1bGF0aW9uIG9mIHRoZSBkb2N1bWVudCBlbGVtZW50LCBldmVuIGZvciBhIDQwNCBwYWdlLiAgVGhpc1xuXHRcdC8vIGRvY3VtZW50IGNhbiBiZSB1c2VkIGluc3RlYWQgb2YgdGhlIGN1cnJlbnQgZG9jdW1lbnQgKHdoaWNoIHdvdWxkXG5cdFx0Ly8gaGF2ZSBiZWVuIGxpbWl0ZWQgdG8gdGhlIGN1cnJlbnQgcGF0aCkgdG8gcGVyZm9ybSAjdXNlckRhdGEgc3RvcmFnZS5cblx0XHR0cnkge1xuXHRcdFx0c3RvcmFnZUNvbnRhaW5lciA9IG5ldyBBY3RpdmVYT2JqZWN0KCdodG1sZmlsZScpXG5cdFx0XHRzdG9yYWdlQ29udGFpbmVyLm9wZW4oKVxuXHRcdFx0c3RvcmFnZUNvbnRhaW5lci53cml0ZSgnPCcrc2NyaXB0VGFnKyc+ZG9jdW1lbnQudz13aW5kb3c8Lycrc2NyaXB0VGFnKyc+PGlmcmFtZSBzcmM9XCIvZmF2aWNvbi5pY29cIj48L2lmcmFtZT4nKVxuXHRcdFx0c3RvcmFnZUNvbnRhaW5lci5jbG9zZSgpXG5cdFx0XHRzdG9yYWdlT3duZXIgPSBzdG9yYWdlQ29udGFpbmVyLncuZnJhbWVzWzBdLmRvY3VtZW50XG5cdFx0XHRzdG9yYWdlID0gc3RvcmFnZU93bmVyLmNyZWF0ZUVsZW1lbnQoJ2RpdicpXG5cdFx0fSBjYXRjaChlKSB7XG5cdFx0XHQvLyBzb21laG93IEFjdGl2ZVhPYmplY3QgaW5zdGFudGlhdGlvbiBmYWlsZWQgKHBlcmhhcHMgc29tZSBzcGVjaWFsXG5cdFx0XHQvLyBzZWN1cml0eSBzZXR0aW5ncyBvciBvdGhlcndzZSksIGZhbGwgYmFjayB0byBwZXItcGF0aCBzdG9yYWdlXG5cdFx0XHRzdG9yYWdlID0gZG9jLmNyZWF0ZUVsZW1lbnQoJ2RpdicpXG5cdFx0XHRzdG9yYWdlT3duZXIgPSBkb2MuYm9keVxuXHRcdH1cblx0XHR2YXIgd2l0aElFU3RvcmFnZSA9IGZ1bmN0aW9uKHN0b3JlRnVuY3Rpb24pIHtcblx0XHRcdHJldHVybiBmdW5jdGlvbigpIHtcblx0XHRcdFx0dmFyIGFyZ3MgPSBBcnJheS5wcm90b3R5cGUuc2xpY2UuY2FsbChhcmd1bWVudHMsIDApXG5cdFx0XHRcdGFyZ3MudW5zaGlmdChzdG9yYWdlKVxuXHRcdFx0XHQvLyBTZWUgaHR0cDovL21zZG4ubWljcm9zb2Z0LmNvbS9lbi11cy9saWJyYXJ5L21zNTMxMDgxKHY9VlMuODUpLmFzcHhcblx0XHRcdFx0Ly8gYW5kIGh0dHA6Ly9tc2RuLm1pY3Jvc29mdC5jb20vZW4tdXMvbGlicmFyeS9tczUzMTQyNCh2PVZTLjg1KS5hc3B4XG5cdFx0XHRcdHN0b3JhZ2VPd25lci5hcHBlbmRDaGlsZChzdG9yYWdlKVxuXHRcdFx0XHRzdG9yYWdlLmFkZEJlaGF2aW9yKCcjZGVmYXVsdCN1c2VyRGF0YScpXG5cdFx0XHRcdHN0b3JhZ2UubG9hZChsb2NhbFN0b3JhZ2VOYW1lKVxuXHRcdFx0XHR2YXIgcmVzdWx0ID0gc3RvcmVGdW5jdGlvbi5hcHBseShzdG9yZSwgYXJncylcblx0XHRcdFx0c3RvcmFnZU93bmVyLnJlbW92ZUNoaWxkKHN0b3JhZ2UpXG5cdFx0XHRcdHJldHVybiByZXN1bHRcblx0XHRcdH1cblx0XHR9XG5cblx0XHQvLyBJbiBJRTcsIGtleXMgY2Fubm90IHN0YXJ0IHdpdGggYSBkaWdpdCBvciBjb250YWluIGNlcnRhaW4gY2hhcnMuXG5cdFx0Ly8gU2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9tYXJjdXN3ZXN0aW4vc3RvcmUuanMvaXNzdWVzLzQwXG5cdFx0Ly8gU2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9tYXJjdXN3ZXN0aW4vc3RvcmUuanMvaXNzdWVzLzgzXG5cdFx0dmFyIGZvcmJpZGRlbkNoYXJzUmVnZXggPSBuZXcgUmVnRXhwKFwiWyFcXFwiIyQlJicoKSorLC9cXFxcXFxcXDo7PD0+P0BbXFxcXF1eYHt8fX5dXCIsIFwiZ1wiKVxuXHRcdHZhciBpZUtleUZpeCA9IGZ1bmN0aW9uKGtleSkge1xuXHRcdFx0cmV0dXJuIGtleS5yZXBsYWNlKC9eZC8sICdfX18kJicpLnJlcGxhY2UoZm9yYmlkZGVuQ2hhcnNSZWdleCwgJ19fXycpXG5cdFx0fVxuXHRcdHN0b3JlLnNldCA9IHdpdGhJRVN0b3JhZ2UoZnVuY3Rpb24oc3RvcmFnZSwga2V5LCB2YWwpIHtcblx0XHRcdGtleSA9IGllS2V5Rml4KGtleSlcblx0XHRcdGlmICh2YWwgPT09IHVuZGVmaW5lZCkgeyByZXR1cm4gc3RvcmUucmVtb3ZlKGtleSkgfVxuXHRcdFx0c3RvcmFnZS5zZXRBdHRyaWJ1dGUoa2V5LCBzdG9yZS5zZXJpYWxpemUodmFsKSlcblx0XHRcdHN0b3JhZ2Uuc2F2ZShsb2NhbFN0b3JhZ2VOYW1lKVxuXHRcdFx0cmV0dXJuIHZhbFxuXHRcdH0pXG5cdFx0c3RvcmUuZ2V0ID0gd2l0aElFU3RvcmFnZShmdW5jdGlvbihzdG9yYWdlLCBrZXksIGRlZmF1bHRWYWwpIHtcblx0XHRcdGtleSA9IGllS2V5Rml4KGtleSlcblx0XHRcdHZhciB2YWwgPSBzdG9yZS5kZXNlcmlhbGl6ZShzdG9yYWdlLmdldEF0dHJpYnV0ZShrZXkpKVxuXHRcdFx0cmV0dXJuICh2YWwgPT09IHVuZGVmaW5lZCA/IGRlZmF1bHRWYWwgOiB2YWwpXG5cdFx0fSlcblx0XHRzdG9yZS5yZW1vdmUgPSB3aXRoSUVTdG9yYWdlKGZ1bmN0aW9uKHN0b3JhZ2UsIGtleSkge1xuXHRcdFx0a2V5ID0gaWVLZXlGaXgoa2V5KVxuXHRcdFx0c3RvcmFnZS5yZW1vdmVBdHRyaWJ1dGUoa2V5KVxuXHRcdFx0c3RvcmFnZS5zYXZlKGxvY2FsU3RvcmFnZU5hbWUpXG5cdFx0fSlcblx0XHRzdG9yZS5jbGVhciA9IHdpdGhJRVN0b3JhZ2UoZnVuY3Rpb24oc3RvcmFnZSkge1xuXHRcdFx0dmFyIGF0dHJpYnV0ZXMgPSBzdG9yYWdlLlhNTERvY3VtZW50LmRvY3VtZW50RWxlbWVudC5hdHRyaWJ1dGVzXG5cdFx0XHRzdG9yYWdlLmxvYWQobG9jYWxTdG9yYWdlTmFtZSlcblx0XHRcdGZvciAodmFyIGk9YXR0cmlidXRlcy5sZW5ndGgtMTsgaT49MDsgaS0tKSB7XG5cdFx0XHRcdHN0b3JhZ2UucmVtb3ZlQXR0cmlidXRlKGF0dHJpYnV0ZXNbaV0ubmFtZSlcblx0XHRcdH1cblx0XHRcdHN0b3JhZ2Uuc2F2ZShsb2NhbFN0b3JhZ2VOYW1lKVxuXHRcdH0pXG5cdFx0c3RvcmUuZ2V0QWxsID0gZnVuY3Rpb24oc3RvcmFnZSkge1xuXHRcdFx0dmFyIHJldCA9IHt9XG5cdFx0XHRzdG9yZS5mb3JFYWNoKGZ1bmN0aW9uKGtleSwgdmFsKSB7XG5cdFx0XHRcdHJldFtrZXldID0gdmFsXG5cdFx0XHR9KVxuXHRcdFx0cmV0dXJuIHJldFxuXHRcdH1cblx0XHRzdG9yZS5mb3JFYWNoID0gd2l0aElFU3RvcmFnZShmdW5jdGlvbihzdG9yYWdlLCBjYWxsYmFjaykge1xuXHRcdFx0dmFyIGF0dHJpYnV0ZXMgPSBzdG9yYWdlLlhNTERvY3VtZW50LmRvY3VtZW50RWxlbWVudC5hdHRyaWJ1dGVzXG5cdFx0XHRmb3IgKHZhciBpPTAsIGF0dHI7IGF0dHI9YXR0cmlidXRlc1tpXTsgKytpKSB7XG5cdFx0XHRcdGNhbGxiYWNrKGF0dHIubmFtZSwgc3RvcmUuZGVzZXJpYWxpemUoc3RvcmFnZS5nZXRBdHRyaWJ1dGUoYXR0ci5uYW1lKSkpXG5cdFx0XHR9XG5cdFx0fSlcblx0fVxuXG5cdHRyeSB7XG5cdFx0dmFyIHRlc3RLZXkgPSAnX19zdG9yZWpzX18nXG5cdFx0c3RvcmUuc2V0KHRlc3RLZXksIHRlc3RLZXkpXG5cdFx0aWYgKHN0b3JlLmdldCh0ZXN0S2V5KSAhPSB0ZXN0S2V5KSB7IHN0b3JlLmRpc2FibGVkID0gdHJ1ZSB9XG5cdFx0c3RvcmUucmVtb3ZlKHRlc3RLZXkpXG5cdH0gY2F0Y2goZSkge1xuXHRcdHN0b3JlLmRpc2FibGVkID0gdHJ1ZVxuXHR9XG5cdHN0b3JlLmVuYWJsZWQgPSAhc3RvcmUuZGlzYWJsZWRcblx0XG5cdHJldHVybiBzdG9yZVxufSkpO1xuIl19
-},{}],24:[function(require,module,exports){
+//# sourceMappingURL=data:application/json;charset:utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vZGVfbW9kdWxlcy9zdG9yZS9zcmMvdXRpbC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSIsImZpbGUiOiJnZW5lcmF0ZWQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlc0NvbnRlbnQiOlsidmFyIGFzc2lnbiA9IG1ha2VfYXNzaWduKClcbnZhciBjcmVhdGUgPSBtYWtlX2NyZWF0ZSgpXG52YXIgdHJpbSA9IG1ha2VfdHJpbSgpXG52YXIgR2xvYmFsID0gKHR5cGVvZiB3aW5kb3cgIT09ICd1bmRlZmluZWQnID8gd2luZG93IDogZ2xvYmFsKVxuXG5tb2R1bGUuZXhwb3J0cyA9IHtcblx0YXNzaWduOiBhc3NpZ24sXG5cdGNyZWF0ZTogY3JlYXRlLFxuXHR0cmltOiB0cmltLFxuXHRiaW5kOiBiaW5kLFxuXHRzbGljZTogc2xpY2UsXG5cdGVhY2g6IGVhY2gsXG5cdG1hcDogbWFwLFxuXHRwbHVjazogcGx1Y2ssXG5cdGlzTGlzdDogaXNMaXN0LFxuXHRpc0Z1bmN0aW9uOiBpc0Z1bmN0aW9uLFxuXHRpc09iamVjdDogaXNPYmplY3QsXG5cdEdsb2JhbDogR2xvYmFsXG59XG5cbmZ1bmN0aW9uIG1ha2VfYXNzaWduKCkge1xuXHRpZiAoT2JqZWN0LmFzc2lnbikge1xuXHRcdHJldHVybiBPYmplY3QuYXNzaWduXG5cdH0gZWxzZSB7XG5cdFx0cmV0dXJuIGZ1bmN0aW9uIHNoaW1Bc3NpZ24ob2JqLCBwcm9wczEsIHByb3BzMiwgZXRjKSB7XG5cdFx0XHRmb3IgKHZhciBpID0gMTsgaSA8IGFyZ3VtZW50cy5sZW5ndGg7IGkrKykge1xuXHRcdFx0XHRlYWNoKE9iamVjdChhcmd1bWVudHNbaV0pLCBmdW5jdGlvbih2YWwsIGtleSkge1xuXHRcdFx0XHRcdG9ialtrZXldID0gdmFsXG5cdFx0XHRcdH0pXG5cdFx0XHR9XHRcdFx0XG5cdFx0XHRyZXR1cm4gb2JqXG5cdFx0fVxuXHR9XG59XG5cbmZ1bmN0aW9uIG1ha2VfY3JlYXRlKCkge1xuXHRpZiAoT2JqZWN0LmNyZWF0ZSkge1xuXHRcdHJldHVybiBmdW5jdGlvbiBjcmVhdGUob2JqLCBhc3NpZ25Qcm9wczEsIGFzc2lnblByb3BzMiwgZXRjKSB7XG5cdFx0XHR2YXIgYXNzaWduQXJnc0xpc3QgPSBzbGljZShhcmd1bWVudHMsIDEpXG5cdFx0XHRyZXR1cm4gYXNzaWduLmFwcGx5KHRoaXMsIFtPYmplY3QuY3JlYXRlKG9iaildLmNvbmNhdChhc3NpZ25BcmdzTGlzdCkpXG5cdFx0fVxuXHR9IGVsc2Uge1xuXHRcdGZ1bmN0aW9uIEYoKSB7fSAvLyBlc2xpbnQtZGlzYWJsZS1saW5lIG5vLWlubmVyLWRlY2xhcmF0aW9uc1xuXHRcdHJldHVybiBmdW5jdGlvbiBjcmVhdGUob2JqLCBhc3NpZ25Qcm9wczEsIGFzc2lnblByb3BzMiwgZXRjKSB7XG5cdFx0XHR2YXIgYXNzaWduQXJnc0xpc3QgPSBzbGljZShhcmd1bWVudHMsIDEpXG5cdFx0XHRGLnByb3RvdHlwZSA9IG9ialxuXHRcdFx0cmV0dXJuIGFzc2lnbi5hcHBseSh0aGlzLCBbbmV3IEYoKV0uY29uY2F0KGFzc2lnbkFyZ3NMaXN0KSlcblx0XHR9XG5cdH1cbn1cblxuZnVuY3Rpb24gbWFrZV90cmltKCkge1xuXHRpZiAoU3RyaW5nLnByb3RvdHlwZS50cmltKSB7XG5cdFx0cmV0dXJuIGZ1bmN0aW9uIHRyaW0oc3RyKSB7XG5cdFx0XHRyZXR1cm4gU3RyaW5nLnByb3RvdHlwZS50cmltLmNhbGwoc3RyKVxuXHRcdH1cblx0fSBlbHNlIHtcblx0XHRyZXR1cm4gZnVuY3Rpb24gdHJpbShzdHIpIHtcblx0XHRcdHJldHVybiBzdHIucmVwbGFjZSgvXltcXHNcXHVGRUZGXFx4QTBdK3xbXFxzXFx1RkVGRlxceEEwXSskL2csICcnKVxuXHRcdH1cblx0fVxufVxuXG5mdW5jdGlvbiBiaW5kKG9iaiwgZm4pIHtcblx0cmV0dXJuIGZ1bmN0aW9uKCkge1xuXHRcdHJldHVybiBmbi5hcHBseShvYmosIEFycmF5LnByb3RvdHlwZS5zbGljZS5jYWxsKGFyZ3VtZW50cywgMCkpXG5cdH1cbn1cblxuZnVuY3Rpb24gc2xpY2UoYXJyLCBpbmRleCkge1xuXHRyZXR1cm4gQXJyYXkucHJvdG90eXBlLnNsaWNlLmNhbGwoYXJyLCBpbmRleCB8fCAwKVxufVxuXG5mdW5jdGlvbiBlYWNoKG9iaiwgZm4pIHtcblx0cGx1Y2sob2JqLCBmdW5jdGlvbih2YWwsIGtleSkge1xuXHRcdGZuKHZhbCwga2V5KVxuXHRcdHJldHVybiBmYWxzZVxuXHR9KVxufVxuXG5mdW5jdGlvbiBtYXAob2JqLCBmbikge1xuXHR2YXIgcmVzID0gKGlzTGlzdChvYmopID8gW10gOiB7fSlcblx0cGx1Y2sob2JqLCBmdW5jdGlvbih2LCBrKSB7XG5cdFx0cmVzW2tdID0gZm4odiwgaylcblx0XHRyZXR1cm4gZmFsc2Vcblx0fSlcblx0cmV0dXJuIHJlc1xufVxuXG5mdW5jdGlvbiBwbHVjayhvYmosIGZuKSB7XG5cdGlmIChpc0xpc3Qob2JqKSkge1xuXHRcdGZvciAodmFyIGk9MDsgaTxvYmoubGVuZ3RoOyBpKyspIHtcblx0XHRcdGlmIChmbihvYmpbaV0sIGkpKSB7XG5cdFx0XHRcdHJldHVybiBvYmpbaV1cblx0XHRcdH1cblx0XHR9XG5cdH0gZWxzZSB7XG5cdFx0Zm9yICh2YXIga2V5IGluIG9iaikge1xuXHRcdFx0aWYgKG9iai5oYXNPd25Qcm9wZXJ0eShrZXkpKSB7XG5cdFx0XHRcdGlmIChmbihvYmpba2V5XSwga2V5KSkge1xuXHRcdFx0XHRcdHJldHVybiBvYmpba2V5XVxuXHRcdFx0XHR9XG5cdFx0XHR9XG5cdFx0fVxuXHR9XG59XG5cbmZ1bmN0aW9uIGlzTGlzdCh2YWwpIHtcblx0cmV0dXJuICh2YWwgIT0gbnVsbCAmJiB0eXBlb2YgdmFsICE9ICdmdW5jdGlvbicgJiYgdHlwZW9mIHZhbC5sZW5ndGggPT0gJ251bWJlcicpXG59XG5cbmZ1bmN0aW9uIGlzRnVuY3Rpb24odmFsKSB7XG5cdHJldHVybiB2YWwgJiYge30udG9TdHJpbmcuY2FsbCh2YWwpID09PSAnW29iamVjdCBGdW5jdGlvbl0nXG59XG5cbmZ1bmN0aW9uIGlzT2JqZWN0KHZhbCkge1xuXHRyZXR1cm4gdmFsICYmIHt9LnRvU3RyaW5nLmNhbGwodmFsKSA9PT0gJ1tvYmplY3QgT2JqZWN0XSdcbn1cbiJdfQ==
+},{}],28:[function(require,module,exports){
+module.exports = [
+	// Listed in order of usage preference
+	require('./localStorage'),
+	require('./oldFF-globalStorage'),
+	require('./oldIE-userDataStorage'),
+	require('./cookieStorage'),
+	require('./sessionStorage'),
+	require('./memoryStorage')
+]
+
+},{"./cookieStorage":29,"./localStorage":30,"./memoryStorage":31,"./oldFF-globalStorage":32,"./oldIE-userDataStorage":33,"./sessionStorage":34}],29:[function(require,module,exports){
+// cookieStorage is useful Safari private browser mode, where localStorage
+// doesn't work but cookies do. This implementation is adopted from
+// https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage
+
+var util = require('../src/util')
+var Global = util.Global
+var trim = util.trim
+
+module.exports = {
+	name: 'cookieStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var doc = Global.document
+
+function read(key) {
+	if (!key || !_has(key)) { return null }
+	var regexpStr = "(?:^|.*;\\s*)" +
+		escape(key).replace(/[\-\.\+\*]/g, "\\$&") +
+		"\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"
+	return unescape(doc.cookie.replace(new RegExp(regexpStr), "$1"))
+}
+
+function each(callback) {
+	var cookies = doc.cookie.split(/; ?/g)
+	for (var i = cookies.length - 1; i >= 0; i--) {
+		if (!trim(cookies[i])) {
+			continue
+		}
+		var kvp = cookies[i].split('=')
+		var key = unescape(kvp[0])
+		var val = unescape(kvp[1])
+		callback(val, key)
+	}
+}
+
+function write(key, data) {
+	if(!key) { return }
+	doc.cookie = escape(key) + "=" + escape(data) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/"
+}
+
+function remove(key) {
+	if (!key || !_has(key)) {
+		return
+	}
+	doc.cookie = escape(key) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/"
+}
+
+function clearAll() {
+	each(function(_, key) {
+		remove(key)
+	})
+}
+
+function _has(key) {
+	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
+}
+
+},{"../src/util":27}],30:[function(require,module,exports){
+var util = require('../src/util')
+var Global = util.Global
+
+module.exports = {
+	name: 'localStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+function localStorage() {
+	return Global.localStorage
+}
+
+function read(key) {
+	return localStorage().getItem(key)
+}
+
+function write(key, data) {
+	return localStorage().setItem(key, data)
+}
+
+function each(fn) {
+	for (var i = localStorage().length - 1; i >= 0; i--) {
+		var key = localStorage().key(i)
+		fn(read(key), key)
+	}
+}
+
+function remove(key) {
+	return localStorage().removeItem(key)
+}
+
+function clearAll() {
+	return localStorage().clear()
+}
+
+},{"../src/util":27}],31:[function(require,module,exports){
+// memoryStorage is a useful last fallback to ensure that the store
+// is functions (meaning store.get(), store.set(), etc will all function).
+// However, stored values will not persist when the browser navigates to
+// a new page or reloads the current page.
+
+module.exports = {
+	name: 'memoryStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var memoryStorage = {}
+
+function read(key) {
+	return memoryStorage[key]
+}
+
+function write(key, data) {
+	memoryStorage[key] = data
+}
+
+function each(callback) {
+	for (var key in memoryStorage) {
+		if (memoryStorage.hasOwnProperty(key)) {
+			callback(memoryStorage[key], key)
+		}
+	}
+}
+
+function remove(key) {
+	delete memoryStorage[key]
+}
+
+function clearAll(key) {
+	memoryStorage = {}
+}
+
+},{}],32:[function(require,module,exports){
+// oldFF-globalStorage provides storage for Firefox
+// versions 6 and 7, where no localStorage, etc
+// is available.
+
+var util = require('../src/util')
+var Global = util.Global
+
+module.exports = {
+	name: 'oldFF-globalStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var globalStorage = Global.globalStorage
+
+function read(key) {
+	return globalStorage[key]
+}
+
+function write(key, data) {
+	globalStorage[key] = data
+}
+
+function each(fn) {
+	for (var i = globalStorage.length - 1; i >= 0; i--) {
+		var key = globalStorage.key(i)
+		fn(globalStorage[key], key)
+	}
+}
+
+function remove(key) {
+	return globalStorage.removeItem(key)
+}
+
+function clearAll() {
+	each(function(key, _) {
+		delete globalStorage[key]
+	})
+}
+
+},{"../src/util":27}],33:[function(require,module,exports){
+// oldIE-userDataStorage provides storage for Internet Explorer
+// versions 6 and 7, where no localStorage, sessionStorage, etc
+// is available.
+
+var util = require('../src/util')
+var Global = util.Global
+
+module.exports = {
+	name: 'oldIE-userDataStorage',
+	write: write,
+	read: read,
+	each: each,
+	remove: remove,
+	clearAll: clearAll,
+}
+
+var storageName = 'storejs'
+var doc = Global.document
+var _withStorageEl = _makeIEStorageElFunction()
+var disable = (Global.navigator ? Global.navigator.userAgent : '').match(/ (MSIE 8|MSIE 9|MSIE 10)\./) // MSIE 9.x, MSIE 10.x
+
+function write(unfixedKey, data) {
+	if (disable) { return }
+	var fixedKey = fixKey(unfixedKey)
+	_withStorageEl(function(storageEl) {
+		storageEl.setAttribute(fixedKey, data)
+		storageEl.save(storageName)
+	})
+}
+
+function read(unfixedKey) {
+	if (disable) { return }
+	var fixedKey = fixKey(unfixedKey)
+	var res = null
+	_withStorageEl(function(storageEl) {
+		res = storageEl.getAttribute(fixedKey)
+	})
+	return res
+}
+
+function each(callback) {
+	_withStorageEl(function(storageEl) {
+		var attributes = storageEl.XMLDocument.documentElement.attributes
+		for (var i=attributes.length-1; i>=0; i--) {
+			var attr = attributes[i]
+			callback(storageEl.getAttribute(attr.name), attr.name)
+		}
+	})
+}
+
+function remove(unfixedKey) {
+	var fixedKey = fixKey(unfixedKey)
+	_withStorageEl(function(storageEl) {
+		storageEl.removeAttribute(fixedKey)
+		storageEl.save(storageName)
+	})
+}
+
+function clearAll() {
+	_withStorageEl(function(storageEl) {
+		var attributes = storageEl.XMLDocument.documentElement.attributes
+		storageEl.load(storageName)
+		for (var i=attributes.length-1; i>=0; i--) {
+			storageEl.removeAttribute(attributes[i].name)
+		}
+		storageEl.save(storageName)
+	})
+}
+
+// Helpers
+//////////
+
+// In IE7, keys cannot start with a digit or contain certain chars.
+// See https://github.com/marcuswestin/store.js/issues/40
+// See https://github.com/marcuswestin/store.js/issues/83
+var forbiddenCharsRegex = new RegExp("[!\"#$%&'()*+,/\\\\:;<=>?@[\\]^`{|}~]", "g")
+function fixKey(key) {
+	return key.replace(/^\d/, '___$&').replace(forbiddenCharsRegex, '___')
+}
+
+function _makeIEStorageElFunction() {
+	if (!doc || !doc.documentElement || !doc.documentElement.addBehavior) {
+		return null
+	}
+	var scriptTag = 'script',
+		storageOwner,
+		storageContainer,
+		storageEl
+
+	// Since #userData storage applies only to specific paths, we need to
+	// somehow link our data to a specific path.  We choose /favicon.ico
+	// as a pretty safe option, since all browsers already make a request to
+	// this URL anyway and being a 404 will not hurt us here.  We wrap an
+	// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
+	// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
+	// since the iframe access rules appear to allow direct access and
+	// manipulation of the document element, even for a 404 page.  This
+	// document can be used instead of the current document (which would
+	// have been limited to the current path) to perform #userData storage.
+	try {
+		/* global ActiveXObject */
+		storageContainer = new ActiveXObject('htmlfile')
+		storageContainer.open()
+		storageContainer.write('<'+scriptTag+'>document.w=window</'+scriptTag+'><iframe src="/favicon.ico"></iframe>')
+		storageContainer.close()
+		storageOwner = storageContainer.w.frames[0].document
+		storageEl = storageOwner.createElement('div')
+	} catch(e) {
+		// somehow ActiveXObject instantiation failed (perhaps some special
+		// security settings or otherwse), fall back to per-path storage
+		storageEl = doc.createElement('div')
+		storageOwner = doc.body
+	}
+
+	return function(storeFunction) {
+		var args = [].slice.call(arguments, 0)
+		args.unshift(storageEl)
+		// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
+		// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
+		storageOwner.appendChild(storageEl)
+		storageEl.addBehavior('#default#userData')
+		storageEl.load(storageName)
+		storeFunction.apply(this, args)
+		storageOwner.removeChild(storageEl)
+		return
+	}
+}
+
+},{"../src/util":27}],34:[function(require,module,exports){
+var util = require('../src/util')
+var Global = util.Global
+
+module.exports = {
+	name: 'sessionStorage',
+	read: read,
+	write: write,
+	each: each,
+	remove: remove,
+	clearAll: clearAll
+}
+
+function sessionStorage() {
+	return Global.sessionStorage
+}
+
+function read(key) {
+	return sessionStorage().getItem(key)
+}
+
+function write(key, data) {
+	return sessionStorage().setItem(key, data)
+}
+
+function each(fn) {
+	for (var i = sessionStorage().length - 1; i >= 0; i--) {
+		var key = sessionStorage().key(i)
+		fn(read(key), key)
+	}
+}
+
+function remove(key) {
+	return sessionStorage().removeItem(key)
+}
+
+function clearAll() {
+	return sessionStorage().clear()
+}
+
+},{"../src/util":27}],35:[function(require,module,exports){
 module.exports={
   "_args": [
     [
-      {
-        "raw": "yasgui-utils@^1.4.1",
-        "scope": null,
-        "escapedName": "yasgui-utils",
-        "name": "yasgui-utils",
-        "rawSpec": "^1.4.1",
-        "spec": ">=1.4.1 <2.0.0",
-        "type": "range"
-      },
-      "/Users/avataar/tmp/tmp/yasr"
+      "yasgui-utils@1.6.7",
+      "/home/desislava/workspace/YASR-Ontotext"
     ]
   ],
-  "_from": "yasgui-utils@>=1.4.1 <2.0.0",
-  "_id": "yasgui-utils@1.6.0",
-  "_inCache": true,
+  "_from": "yasgui-utils@1.6.7",
+  "_id": "yasgui-utils@1.6.7",
+  "_inBundle": false,
+  "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
   "_location": "/yasgui-utils",
-  "_npmUser": {
-    "name": "laurens.rietveld",
-    "email": "laurens.rietveld@gmail.com"
-  },
-  "_npmVersion": "1.4.3",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "yasgui-utils@^1.4.1",
-    "scope": null,
-    "escapedName": "yasgui-utils",
+    "type": "version",
+    "registry": true,
+    "raw": "yasgui-utils@1.6.7",
     "name": "yasgui-utils",
-    "rawSpec": "^1.4.1",
-    "spec": ">=1.4.1 <2.0.0",
-    "type": "range"
+    "escapedName": "yasgui-utils",
+    "rawSpec": "1.6.7",
+    "saveSpec": null,
+    "fetchSpec": "1.6.7"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.0.tgz",
-  "_shasum": "bcb9091109c233e3e82737c94c202e6512389c47",
-  "_shrinkwrap": null,
-  "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/Users/avataar/tmp/tmp/yasr",
+  "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
+  "_spec": "1.6.7",
+  "_where": "/home/desislava/workspace/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -53098,15 +54144,9 @@ module.exports={
     "url": "https://github.com/YASGUI/Utils/issues"
   },
   "dependencies": {
-    "store": "^1.3.14"
+    "store": "^2.0.4"
   },
   "description": "Utils for YASGUI libs",
-  "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "shasum": "bcb9091109c233e3e82737c94c202e6512389c47",
-    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.0.tgz"
-  },
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
     {
@@ -53117,21 +54157,20 @@ module.exports={
   "main": "src/main.js",
   "maintainers": [
     {
-      "name": "laurens.rietveld",
-      "email": "laurens.rietveld@gmail.com"
+      "name": "Laurens Rietveld",
+      "email": "laurens.rietveld@gmail.com",
+      "url": "http://laurensrietveld.nl"
     }
   ],
   "name": "yasgui-utils",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git://github.com/YASGUI/Utils.git"
   },
-  "version": "1.6.0"
+  "version": "1.6.7"
 }
 
-},{}],25:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 window.console = window.console || {"log":function(){}};//make sure any console statements don't break IE
 module.exports = {
 	storage: require("./storage.js"),
@@ -53152,67 +54191,98 @@ module.exports = {
 	}
 };
 
-},{"../package.json":24,"./storage.js":26,"./svg.js":27}],26:[function(require,module,exports){
+},{"../package.json":35,"./storage.js":37,"./svg.js":38}],37:[function(require,module,exports){
 var store = require("store");
 var times = {
-	day: function() {
-		return 1000 * 3600 * 24;//millis to day
-	},
-	month: function() {
-		times.day() * 30;
-	},
-	year: function() {
-		times.month() * 12;
-	}
+  day: function() {
+    return 1000 * 3600 * 24; //millis to day
+  },
+  month: function() {
+    times.day() * 30;
+  },
+  year: function() {
+    times.month() * 12;
+  }
 };
+function isQuotaExceeded(e) {
+  var quotaExceeded = false;
+  if (e) {
+    if (e.code) {
+      switch (e.code) {
+        case 22:
+          quotaExceeded = true;
+          break;
+        case 1014:
+          // Firefox
+          if (e.name === "NS_ERROR_DOM_QUOTA_REACHED") {
+            quotaExceeded = true;
+          }
+          break;
+      }
+    } else if (e.number === -2147024882) {
+      // Internet Explorer 8
+      quotaExceeded = true;
+    }
+  }
+  return quotaExceeded;
+}
+var root = (module.exports = {
+  set: function(key, val, exp, onQuotaExceeded) {
+    if (!store.enabled) return; //this is probably in private mode. Don't run, as we might get Js errors
+    if (key && val !== undefined) {
+      if (typeof exp == "string") {
+        exp = times[exp]();
+      }
+      //try to store string for dom objects (e.g. XML result). Otherwise, we might get a circular reference error when stringifying this
+      if (val.documentElement) val = new XMLSerializer().serializeToString(val.documentElement);
+      try {
+        store.set(key, {
+          val: val,
+          exp: exp,
+          time: new Date().getTime()
+        });
+      } catch (e) {
+        e.quotaExceeded = isQuotaExceeded(e);
+        if (e.quotaExceeded && onQuotaExceeded) {
+          onQuotaExceeded(e);
+        } else {
+          throw e;
+        }
+      }
+    }
+  },
+  remove: function(key) {
+    if (!store.enabled) return; //this is probably in private mode. Don't run, as we might get Js errors
+    if (key) store.remove(key);
+  },
+  removeAll: function(filter) {
+    if (!store.enabled) return; //this is probably in private mode. Don't run, as we might get Js errors
+    if (!filter) {
+      store.clearAll();
+    } else if (typeof filter === "function") {
+      store.each(function(value, key) {
+        if (filter(key, value)) root.remove(key);
+      });
+    }
+  },
+  get: function(key) {
+    if (!store.enabled) return null; //this is probably in private mode. Don't run, as we might get Js errors
+    if (key) {
+      var info = store.get(key);
+      if (!info) {
+        return null;
+      }
+      if (info.exp && new Date().getTime() - info.time > info.exp) {
+        return null;
+      }
+      return info.val;
+    } else {
+      return null;
+    }
+  }
+});
 
-var root = module.exports = {
-	set : function(key, val, exp) {
-    if (!store.enabled) return;//this is probably in private mode. Don't run, as we might get Js errors
-		if (key && val !== undefined) {
-			if (typeof exp == "string") {
-				exp = times[exp]();
-			}
-			//try to store string for dom objects (e.g. XML result). Otherwise, we might get a circular reference error when stringifying this
-			if (val.documentElement) val = new XMLSerializer().serializeToString(val.documentElement);
-			store.set(key, {
-				val : val,
-				exp : exp,
-				time : new Date().getTime()
-			});
-		}
-	},
-	remove: function(key) {
-		if (!store.enabled) return;//this is probably in private mode. Don't run, as we might get Js errors
-		if (key) store.remove(key)
-	},
-	removeAll: function(filter) {
-		if (!store.enabled) return;//this is probably in private mode. Don't run, as we might get Js errors
-		if (typeof filter === 'function') {
-			for (var key in store.getAll()) {
-				if (filter(key, root.get(key))) root.remove(key);
-			}
-		}
-	},
-	get : function(key) {
-    if (!store.enabled) return null;//this is probably in private mode. Don't run, as we might get Js errors
-		if (key) {
-			var info = store.get(key);
-			if (!info) {
-				return null;
-			}
-			if (info.exp && new Date().getTime() - info.time > info.exp) {
-				return null;
-			}
-			return info.val;
-		} else {
-			return null;
-		}
-	}
-
-};
-
-},{"store":23}],27:[function(require,module,exports){
+},{"store":23}],38:[function(require,module,exports){
 module.exports = {
 	draw: function(parent, svgString) {
 		if (!parent) return;
@@ -53241,7 +54311,7 @@ module.exports = {
 		return false;
 	}
 };
-},{}],28:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports={
   "name": "yasgui-yasr",
   "description": "Yet Another SPARQL Resultset GUI",
@@ -53307,13 +54377,14 @@ module.exports={
     "url": "https://github.com/YASGUI/YASR.git"
   },
   "dependencies": {
-    "jquery": "1.11.0",
     "codemirror": "^4.7.0",
-    "yasgui-utils": "^1.4.1",
-    "pivottable": "^1.2.2",
-    "jquery-ui": "1.10.5",
     "cytoscape": "^2.3.11",
-    "lodash": "^3.6.0"
+    "jquery": "1.11.0",
+    "jquery-ui": "1.10.5",
+    "lodash": "^3.6.0",
+    "node-sass": "^4.13.1",
+    "pivottable": "^1.2.2",
+    "yasgui-utils": "^1.4.1"
   },
   "browserify-shim": {
     "google": "global:google"
@@ -53355,7 +54426,7 @@ module.exports={
   }
 }
 
-},{}],29:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 module.exports = function(result) {
 	var quote = "\"";
@@ -53415,7 +54486,7 @@ module.exports = function(result) {
 	createBody();
 	return csvString;
 };
-},{}],30:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 
@@ -53475,7 +54546,7 @@ root.version = {
 };
 
 
-},{"../package.json":28,"./imgs.js":38,"jquery":18,"yasgui-utils":25}],31:[function(require,module,exports){
+},{"../package.json":39,"./imgs.js":49,"jquery":18,"yasgui-utils":36}],42:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 
@@ -53529,7 +54600,7 @@ root.version = {
 };
 
 
-},{"../package.json":28,"jquery":18}],32:[function(require,module,exports){
+},{"../package.json":39,"jquery":18}],43:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 module.exports = {
@@ -53625,7 +54696,7 @@ module.exports = {
 	
 	
 };
-},{"jquery":18}],33:[function(require,module,exports){
+},{"jquery":18}],44:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 
@@ -53719,7 +54790,7 @@ root.defaults = {
 	corsMessage: 'Unable to get response from endpoint',
 	tryQueryLink: null,
 };
-},{"jquery":18}],34:[function(require,module,exports){
+},{"jquery":18}],45:[function(require,module,exports){
 module.exports = {
 	GoogleTypeException:  function(foundTypes, varName) {
 	   this.foundTypes = foundTypes;
@@ -53739,7 +54810,7 @@ module.exports = {
 	   };
 	}
 }
-},{}],35:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 module.exports = {
     selectSaveAsDropDown: '<div class="saveAsDropDown btn-group pull-right">' + 
@@ -53751,6 +54822,9 @@ module.exports = {
                                         '<a class="format dropdown-item" data-accepts="application/sparql-results+json" href="#">JSON</a>' +
                                     '</li>' + 
                                     '<li>' + 
+                                        '<a class="format dropdown-item" data-accepts="application/x-sparqlstar-results+json" href="#">JSON*</a>' +
+                                    '</li>' + 
+                                    '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/sparql-results+xml" href="#">XML</a>' +
                                     '</li>' + 
                                     '<li>' + 
@@ -53758,6 +54832,9 @@ module.exports = {
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item " data-accepts="text/tab-separated-values" href="#">TSV</a>' +
+                                    '</li>' + 
+                                    '<li>' + 
+                                        '<a class="format dropdown-item " data-accepts="text/x-tab-separated-values-star" href="#">TSV*</a>' +
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/x-binary-rdf-results-table" href="#">Binary RDF Results</a>' +
@@ -53803,7 +54880,7 @@ module.exports = {
                             '</div>',
 };
 
-},{}],36:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (global){
 var EventEmitter = require('events').EventEmitter,
 	$ = require('jquery');
@@ -53914,7 +54991,7 @@ module.exports = new loader();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 //# sourceMappingURL=data:application/json;charset:utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9nQ2hhcnRMb2FkZXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EiLCJmaWxlIjoiZ2VuZXJhdGVkLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXNDb250ZW50IjpbInZhciBFdmVudEVtaXR0ZXIgPSByZXF1aXJlKCdldmVudHMnKS5FdmVudEVtaXR0ZXIsXG5cdCQgPSByZXF1aXJlKCdqcXVlcnknKTtcbi8vY2Fubm90IHBhY2thZ2UgZ29vZ2xlIGxvYWRlciB2aWEgYnJvd3NlcmlmeS4uLi5cbnZhciBsb2FkaW5nTWFpbiA9IGZhbHNlO1xudmFyIGxvYWRpbmdGYWlsZWQgPSBmYWxzZTtcbnZhciBsb2FkZXIgPSBmdW5jdGlvbigpIHtcblx0RXZlbnRFbWl0dGVyLmNhbGwodGhpcyk7XG5cdHZhciBtb2QgPSB0aGlzO1xuXHR0aGlzLmluaXQgPSBmdW5jdGlvbigpIHtcblx0XHRpZiAoIWxvYWRpbmdGYWlsZWQgJiYgISh0eXBlb2Ygd2luZG93ICE9PSBcInVuZGVmaW5lZFwiID8gd2luZG93Wydnb29nbGUnXSA6IHR5cGVvZiBnbG9iYWwgIT09IFwidW5kZWZpbmVkXCIgPyBnbG9iYWxbJ2dvb2dsZSddIDogbnVsbCkgJiYgIWxvYWRpbmdNYWluKSB7Ly9ub3QgaW5pdGlhdGVkIHlldCwgbm90IGN1cnJlbnRseSBsb2FkaW5nLCBhbmQgaGFzIG5vdCBmYWlsZWQgdGhlIHByZXZpb3VzIHRpbWVcblx0XHRcdGxvYWRpbmdNYWluID0gdHJ1ZTtcblx0XHRcdC8qKlxuXHRcdFx0ICogSXQgaXMgZXh0cmVtZWx5IGRpZmZpY3VsdCB0byBjYXRjaCBzY3JpcHQgbG9hZGVyIGVycm9ycyAoc2VlIGh0dHA6Ly93d3cuaHRtbDVyb2Nrcy5jb20vZW4vdHV0b3JpYWxzL3NwZWVkL3NjcmlwdC1sb2FkaW5nLylcblx0XHRcdCAqIEV4aXN0aW5nIGxpYnJhcmllcyBlaXRoZXIgaWdub3JlIHNldmVyYWwgYnJvd3NlcnMgKGUuZy4ganF1ZXJ5IDIueCksIG9yIHVzZSB1Z2x5IGhhY2tzICh0aW1lb3V0cyBvciBzb21ldGhpbmcpXG5cdFx0XHQgKiBTbywgd2UgdXNlIG91ciBvd24gY3VzdG9tIHVnbHkgaGFjayAoeWVzLCB0aW1lb3V0cylcblx0XHRcdCAqL1xuXHRcdFx0bG9hZFNjcmlwdCgnaHR0cHM6Ly9nb29nbGUuY29tL2pzYXBpJywgZnVuY3Rpb24oKXtcblx0XHRcdFx0bG9hZGluZ01haW4gPSBmYWxzZTtcblx0XHRcdFx0bW9kLmVtaXQoJ2luaXREb25lJyk7XG5cdFx0XHR9KTtcblxuXHRcdFx0dmFyIHRpbWVvdXQgPSAxMDA7IC8vbXNcblx0XHRcdHZhciBtYXhUaW1lb3V0ID0gNjAwMDsvL3NvIDYgc2VjIG1heFxuXHRcdFx0dmFyIHN0YXJ0VGltZSA9ICtuZXcgRGF0ZSgpO1xuXHRcdFx0dmFyIGNoZWNrQW5kV2FpdCA9IGZ1bmN0aW9uKCkge1xuXHRcdFx0XHRpZiAoISh0eXBlb2Ygd2luZG93ICE9PSBcInVuZGVmaW5lZFwiID8gd2luZG93Wydnb29nbGUnXSA6IHR5cGVvZiBnbG9iYWwgIT09IFwidW5kZWZpbmVkXCIgPyBnbG9iYWxbJ2dvb2dsZSddIDogbnVsbCkpIHtcblx0XHRcdFx0XHRpZiAoKCtuZXcgRGF0ZSgpIC0gc3RhcnRUaW1lKSA+IG1heFRpbWVvdXQpIHtcblx0XHRcdFx0XHRcdC8vb2ssIHdlJ3ZlIHdhaXRlZCBsb25nIGVub3VnaC4gT2J2aW91c2x5IHdlIGNvdWxkIG5vdCBsb2FkIHRoZSBnb29nbGVsb2FkZXIuLi5cblx0XHRcdFx0XHRcdGxvYWRpbmdGYWlsZWQgPSB0cnVlO1xuXHRcdFx0XHRcdFx0bG9hZGluZ01haW4gPSBmYWxzZTtcblx0XHRcdFx0XHRcdG1vZC5lbWl0KCdpbml0RXJyb3InKTtcblxuXHRcdFx0XHRcdFx0Ly9UT0RPOiBjbGVhciBpbml0RG9uZSBjYWxsYmFja3MuIHRoZXkgd29uJ3QgZmlyZSBhbnltb3JlIGFueXdheVxuXG5cdFx0XHRcdFx0fSBlbHNlIHtcblx0XHRcdFx0XHRcdHNldFRpbWVvdXQoY2hlY2tBbmRXYWl0LCB0aW1lb3V0KTtcblx0XHRcdFx0XHR9XG5cdFx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdFx0Ly9UT0RPOiBjbGVhciBpbml0RmFpbGVkIGNhbGxiYWNrcy4gdGhleSB3b24ndCBmaXJlIGFueW1vcmUgYW55d2F5XG5cdFx0XHRcdH1cblx0XHRcdH1cblx0XHRcdGNoZWNrQW5kV2FpdCgpO1xuXHRcdH0gZWxzZSB7XG5cdFx0XHRpZiAoKHR5cGVvZiB3aW5kb3cgIT09IFwidW5kZWZpbmVkXCIgPyB3aW5kb3dbJ2dvb2dsZSddIDogdHlwZW9mIGdsb2JhbCAhPT0gXCJ1bmRlZmluZWRcIiA/IGdsb2JhbFsnZ29vZ2xlJ10gOiBudWxsKSkge1xuXHRcdFx0XHQvL2FscmVhZHkgbG9hZGVkISBldmVyeXRoaW5nIGlzIGZpbmVcblx0XHRcdFx0bW9kLmVtaXQoJ2luaXREb25lJyk7XG5cdFx0XHR9IGVsc2UgaWYgKGxvYWRpbmdGYWlsZWQpIHtcblx0XHRcdFx0bW9kLmVtaXQoJ2luaXRFcnJvcicpXG5cdFx0XHR9IGVsc2Uge1xuXHRcdFx0XHQvL2htbW0sIHNob3VsZCBuZXZlciBnZXQgaGVyZVxuXHRcdFx0fVxuXG5cdFx0fVxuXHR9XG5cdHRoaXMuZ29vZ2xlTG9hZCA9IGZ1bmN0aW9uKCkge1xuXG5cdFx0dmFyIGxvYWQgPSBmdW5jdGlvbigpIHtcblx0XHRcdCh0eXBlb2Ygd2luZG93ICE9PSBcInVuZGVmaW5lZFwiID8gd2luZG93Wydnb29nbGUnXSA6IHR5cGVvZiBnbG9iYWwgIT09IFwidW5kZWZpbmVkXCIgPyBnbG9iYWxbJ2dvb2dsZSddIDogbnVsbCkubG9hZChcInZpc3VhbGl6YXRpb25cIiwgXCIxXCIsIHtcblx0XHRcdFx0cGFja2FnZXMgOiBbXCJjb3JlY2hhcnRcIiwgXCJjaGFydGVkaXRvclwiIF0sXG5cdFx0XHRcdGNhbGxiYWNrIDogZnVuY3Rpb24oKXttb2QuZW1pdCgnZG9uZScpfVxuXHRcdFx0fSlcblx0XHR9XG5cdFx0aWYgKGxvYWRpbmdNYWluKSB7XG5cdFx0XHRtb2Qub25jZSgnaW5pdERvbmUnLCBsb2FkKTtcblx0XHRcdG1vZC5vbmNlKCdpbml0RXJyb3InLCBmdW5jdGlvbigpe1xuXHRcdFx0XHRtb2QuZW1pdCgnZXJyb3InLCAnQ291bGQgbm90IGxvYWQgZ29vZ2xlIGxvYWRlcicpXG5cdFx0XHR9KTtcblx0XHR9IGVsc2UgaWYgKCh0eXBlb2Ygd2luZG93ICE9PSBcInVuZGVmaW5lZFwiID8gd2luZG93Wydnb29nbGUnXSA6IHR5cGVvZiBnbG9iYWwgIT09IFwidW5kZWZpbmVkXCIgPyBnbG9iYWxbJ2dvb2dsZSddIDogbnVsbCkpIHtcblx0XHRcdC8vZ29vZ2xlIGxvYWRlciBpcyB0aGVyZS4gdXNlIGl0XG5cdFx0XHRsb2FkKCk7XG5cdFx0fSBlbHNlIGlmIChsb2FkaW5nRmFpbGVkKSB7XG5cdFx0XHRtb2QuZW1pdCgnZXJyb3InLCAgJ0NvdWxkIG5vdCBsb2FkIGdvb2dsZSBsb2FkZXInKTtcblx0XHR9IGVsc2Uge1xuXHRcdFx0Ly9ub3QgbG9hZGluZywgbm8gbG9hZGluZyBlcnJvciwgYW5kIG5vdCBsb2FkZWQuIGl0IG11c3Qgbm90IGhhdmUgYmVlbiBpbml0aWFsaXplZCB5ZXQuIERvIHRoYXRcblx0XHRcdG1vZC5vbmNlKCdpbml0RG9uZScsIGxvYWQpO1xuXHRcdFx0bW9kLm9uY2UoJ2luaXRFcnJvcicsIGZ1bmN0aW9uKCl7XG5cdFx0XHRcdG1vZC5lbWl0KCdlcnJvcicsICdDb3VsZCBub3QgbG9hZCBnb29nbGUgbG9hZGVyJylcblx0XHRcdH0pO1xuXHRcdH1cblx0fTtcbn1cblxuXG52YXIgbG9hZFNjcmlwdCA9IGZ1bmN0aW9uKHVybCwgY2FsbGJhY2spe1xuICAgIHZhciBzY3JpcHQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwic2NyaXB0XCIpXG4gICAgc2NyaXB0LnR5cGUgPSBcInRleHQvamF2YXNjcmlwdFwiO1xuXG4gICAgaWYgKHNjcmlwdC5yZWFkeVN0YXRlKXsgIC8vSUVcbiAgICAgICAgc2NyaXB0Lm9ucmVhZHlzdGF0ZWNoYW5nZSA9IGZ1bmN0aW9uKCl7XG4gICAgICAgICAgICBpZiAoc2NyaXB0LnJlYWR5U3RhdGUgPT0gXCJsb2FkZWRcIiB8fFxuICAgICAgICAgICAgICAgICAgICBzY3JpcHQucmVhZHlTdGF0ZSA9PSBcImNvbXBsZXRlXCIpe1xuICAgICAgICAgICAgICAgIHNjcmlwdC5vbnJlYWR5c3RhdGVjaGFuZ2UgPSBudWxsO1xuICAgICAgICAgICAgICAgIGNhbGxiYWNrKCk7XG4gICAgICAgICAgICB9XG4gICAgICAgIH07XG4gICAgfSBlbHNlIHsgIC8vT3RoZXJzXG4gICAgICAgIHNjcmlwdC5vbmxvYWQgPSBmdW5jdGlvbigpe1xuICAgICAgICAgICAgY2FsbGJhY2soKTtcbiAgICAgICAgfTtcbiAgICB9XG5cbiAgICBzY3JpcHQuc3JjID0gdXJsO1xuICAgIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoc2NyaXB0KTtcbn1cbmxvYWRlci5wcm90b3R5cGUgPSBuZXcgRXZlbnRFbWl0dGVyO1xubW9kdWxlLmV4cG9ydHMgPSBuZXcgbG9hZGVyKCk7XG4iXX0=
-},{"events":13,"jquery":18}],37:[function(require,module,exports){
+},{"events":13,"jquery":18}],48:[function(require,module,exports){
 (function (global){
 'use strict';
 /**
@@ -54228,8 +55305,8 @@ function deepEq$(x, y, type){
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-//# sourceMappingURL=data:application/json;charset:utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9nY2hhcnQuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSIsImZpbGUiOiJnZW5lcmF0ZWQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlc0NvbnRlbnQiOlsiJ3VzZSBzdHJpY3QnO1xuLyoqXG4gKiB0b2RvOiBjaGFydCBoZWlnaHQgYXMgb3B0aW9uXG4gKiBcbiAqL1xudmFyICQgPSByZXF1aXJlKCdqcXVlcnknKSxcblx0dXRpbHMgPSByZXF1aXJlKCcuL3V0aWxzLmpzJyksXG5cdHlVdGlscyA9IHJlcXVpcmUoJ3lhc2d1aS11dGlscycpO1xuXG52YXIgcm9vdCA9IG1vZHVsZS5leHBvcnRzID0gZnVuY3Rpb24oeWFzcil7XG5cdHZhciBvcHRpb25zID0gJC5leHRlbmQodHJ1ZSwge30sIHJvb3QuZGVmYXVsdHMpO1xuXHR2YXIgaWQgPSB5YXNyLmNvbnRhaW5lci5jbG9zZXN0KCdbaWRdJykuYXR0cignaWQnKTtcblx0aWYgKHlhc3Iub3B0aW9ucy5nY2hhcnQgPT0gbnVsbCkge1xuXHRcdHlhc3Iub3B0aW9ucy5nY2hhcnQgPSB7fTtcblx0fVxuXHR2YXIgcGVyc2lzdGVuY3lJZE1vdGlvbkNoYXJ0ID0geWFzci5nZXRQZXJzaXN0ZW5jeUlkKCdtb3Rpb25jaGFydCcpO1xuXHR2YXIgcGVyc2lzdGVuY3lJZENoYXJ0Q29uZmlnID0geWFzci5nZXRQZXJzaXN0ZW5jeUlkKCdjaGFydENvbmZpZycpO1xuXHRpZiAoeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlID09IG51bGwpIHtcblx0XHR5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUgPSB5VXRpbHMuc3RvcmFnZS5nZXQocGVyc2lzdGVuY3lJZE1vdGlvbkNoYXJ0KTtcblx0fVxuXHRpZiAoeWFzci5vcHRpb25zLmdjaGFydC5jaGFydENvbmZpZyA9PSBudWxsKSB7XG5cdFx0eWFzci5vcHRpb25zLmdjaGFydC5jaGFydENvbmZpZyA9IHlVdGlscy5zdG9yYWdlLmdldChwZXJzaXN0ZW5jeUlkQ2hhcnRDb25maWcpO1xuXHR9XG5cdFxuXHRcblx0dmFyIGVkaXRvciA9IG51bGw7XG5cdFxuXHR2YXIgaW5pdEVkaXRvciA9IGZ1bmN0aW9uKGNhbGxiYWNrKSB7XG5cdFx0dmFyIGdvb2dsZSA9ICh0eXBlb2Ygd2luZG93ICE9PSBcInVuZGVmaW5lZFwiID8gd2luZG93Wydnb29nbGUnXSA6IHR5cGVvZiBnbG9iYWwgIT09IFwidW5kZWZpbmVkXCIgPyBnbG9iYWxbJ2dvb2dsZSddIDogbnVsbCk7XG5cdFx0ZWRpdG9yID0gbmV3IGdvb2dsZS52aXN1YWxpemF0aW9uLkNoYXJ0RWRpdG9yKCk7XG5cdFx0Z29vZ2xlLnZpc3VhbGl6YXRpb24uZXZlbnRzLmFkZExpc3RlbmVyKGVkaXRvciwgJ29rJywgZnVuY3Rpb24oKXtcblx0XHRcdFx0dmFyIGNoYXJ0V3JhcHBlciwgdG1wO1xuXHRcdFx0XHRjaGFydFdyYXBwZXIgPSBlZGl0b3IuZ2V0Q2hhcnRXcmFwcGVyKCk7XG5cdFx0XHRcdGlmICghZGVlcEVxJChjaGFydFdyYXBwZXIuZ2V0Q2hhcnRUeXBlLCBcIk1vdGlvbkNoYXJ0XCIsICc9PT0nKSkge1xuXHRcdFx0XHRcdHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSA9IGNoYXJ0V3JhcHBlci5uO1xuXG5cdFx0XHRcdFx0eVV0aWxzLnN0b3JhZ2Uuc2V0KHBlcnNpc3RlbmN5SWRNb3Rpb25DaGFydCwgeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlKTtcblx0XHRcdFx0XHRjaGFydFdyYXBwZXIuc2V0T3B0aW9uKFwic3RhdGVcIiwgeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlKTtcblx0XHRcdFx0XHRcblx0XHRcdFx0XHRnb29nbGUudmlzdWFsaXphdGlvbi5ldmVudHMuYWRkTGlzdGVuZXIoY2hhcnRXcmFwcGVyLCAncmVhZHknLCBmdW5jdGlvbigpe1xuXHRcdFx0XHRcdFx0dmFyIG1vdGlvbkNoYXJ0O1xuXHRcdFx0XHRcdFx0bW90aW9uQ2hhcnQgPSBjaGFydFdyYXBwZXIuZ2V0Q2hhcnQoKTtcblx0XHRcdFx0XHRcdGdvb2dsZS52aXN1YWxpemF0aW9uLmV2ZW50cy5hZGRMaXN0ZW5lcihtb3Rpb25DaGFydCwgJ3N0YXRlY2hhbmdlJywgZnVuY3Rpb24oKXtcblx0XHRcdFx0XHRcdFx0eWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlID0gbW90aW9uQ2hhcnQuZ2V0U3RhdGUoKTtcblx0XHRcdFx0XHRcdFx0eVV0aWxzLnN0b3JhZ2Uuc2V0KHBlcnNpc3RlbmN5SWRNb3Rpb25DaGFydCwgeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlKTtcblx0XHRcdFx0XHRcdH0pO1xuXHRcdFx0XHRcdH0pO1xuXHRcdFx0XHR9XG5cdFx0XHRcdHRtcCA9IGNoYXJ0V3JhcHBlci5nZXREYXRhVGFibGUoKTtcblx0XHRcdFx0Y2hhcnRXcmFwcGVyLnNldERhdGFUYWJsZShudWxsKTtcblx0XHRcdFx0eWFzci5vcHRpb25zLmdjaGFydC5jaGFydENvbmZpZyA9IGNoYXJ0V3JhcHBlci50b0pTT04oKTtcblx0XHRcdFx0XG5cdFx0XHRcdHlVdGlscy5zdG9yYWdlLnNldChwZXJzaXN0ZW5jeUlkQ2hhcnRDb25maWcsIHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcpO1xuXHRcdFx0XHRjaGFydFdyYXBwZXIuc2V0RGF0YVRhYmxlKHRtcCk7XG5cdFx0XHRcdC8vIEZpeCBmb3IgT1dMSU0tMTk3MVxuXHRcdFx0XHRjaGFydFdyYXBwZXIuc2V0T3B0aW9uKFwid2lkdGhcIiwgb3B0aW9ucy53aWR0aCk7XG5cdFx0XHRcdGNoYXJ0V3JhcHBlci5zZXRPcHRpb24oXCJoZWlnaHRcIiwgb3B0aW9ucy5oZWlnaHQpO1xuXHRcdFx0XHRjaGFydFdyYXBwZXIuZHJhdygpO1xuXHRcdFx0XHR5YXNyLnVwZGF0ZUhlYWRlcigpO1xuXHRcdFx0fSk7XG5cdFx0XHRpZiAoY2FsbGJhY2spIGNhbGxiYWNrKCk7XG5cdH07XG5cblx0cmV0dXJuIHtcblx0XHRuYW1lOiBcIkdvb2dsZSBDaGFydFwiLFxuXHRcdGhpZGVGcm9tU2VsZWN0aW9uOiBmYWxzZSxcblx0XHRwcmlvcml0eTogNyxcblx0XHRjYW5IYW5kbGVSZXN1bHRzOiBmdW5jdGlvbih5YXNyKXtcblx0XHRcdHZhciByZXN1bHRzLCB2YXJpYWJsZXM7XG5cdFx0XHRyZXR1cm4gKHJlc3VsdHMgPSB5YXNyLnJlc3VsdHMpICE9IG51bGwgJiYgKHZhcmlhYmxlcyA9IHJlc3VsdHMuZ2V0VmFyaWFibGVzKCkpICYmIHZhcmlhYmxlcy5sZW5ndGggPiAwO1xuXHRcdH0sXG5cdFx0Z2V0RG93bmxvYWRJbmZvOiBmdW5jdGlvbigpIHtcblx0XHRcdGlmICgheWFzci5yZXN1bHRzKSByZXR1cm4gbnVsbDtcblx0XHRcdHZhciBzdmdFbCA9IHlhc3IucmVzdWx0c0NvbnRhaW5lci5maW5kKCdzdmcnKTtcblx0XHRcdGlmIChzdmdFbC5sZW5ndGggPiAwKSB7XG5cdFx0XHRcblx0XHRcdFx0cmV0dXJuIHtcblx0XHRcdFx0XHRnZXRDb250ZW50OiBmdW5jdGlvbigpe1xuXHRcdFx0XHRcdFx0aWYgKHN2Z0VsWzBdLm91dGVySFRNTCkge1xuXHRcdFx0XHRcdFx0XHRyZXR1cm4gc3ZnRWxbMF0ub3V0ZXJIVE1MO1xuXHRcdFx0XHRcdFx0fSBlbHNlIHtcblx0XHRcdFx0XHRcdFx0Ly9vdXRlckhUTUwgbm90IHN1cHBvcnRlZC4gdXNlIHdvcmthcm91bmRcblx0XHRcdFx0XHRcdFx0cmV0dXJuICQoJzxkaXY+JykuYXBwZW5kKHN2Z0VsLmNsb25lKCkpLmh0bWwoKTtcblx0XHRcdFx0XHRcdH1cblx0XHRcdFx0XHR9LFxuXHRcdFx0XHRcdGZpbGVuYW1lOiBcInF1ZXJ5UmVzdWx0cy5zdmdcIixcblx0XHRcdFx0XHRjb250ZW50VHlwZTogXCJpbWFnZS9zdmcreG1sXCIsXG5cdFx0XHRcdFx0YnV0dG9uVGl0bGU6IFwiRG93bmxvYWQgU1ZHIEltYWdlXCJcblx0XHRcdFx0fTtcblx0XHRcdH1cblx0XHRcdC8vb2ssIG5vdCBhIHN2Zy4gaXMgaXQgYSB0YWJsZT9cblx0XHRcdHZhciAkdGFibGUgPSB5YXNyLnJlc3VsdHNDb250YWluZXIuZmluZCgnLmdvb2dsZS12aXN1YWxpemF0aW9uLXRhYmxlLXRhYmxlJyk7XG5cdFx0XHRpZiAoJHRhYmxlLmxlbmd0aCA+IDApIHtcblx0XHRcdFx0cmV0dXJuIHtcblx0XHRcdFx0XHRnZXRDb250ZW50OiBmdW5jdGlvbigpe1xuXHRcdFx0XHRcdFx0cmV0dXJuICR0YWJsZS50YWJsZVRvQ3N2KCk7XG5cdFx0XHRcdFx0fSxcblx0XHRcdFx0XHRmaWxlbmFtZTogXCJxdWVyeVJlc3VsdHMuY3N2XCIsXG5cdFx0XHRcdFx0Y29udGVudFR5cGU6IFwidGV4dC9jc3ZcIixcblx0XHRcdFx0XHRidXR0b25UaXRsZTogXCJEb3dubG9hZCBhcyBDU1ZcIlxuXHRcdFx0XHR9O1xuXHRcdFx0fSBcblx0XHR9LFxuXHRcdGdldEVtYmVkSHRtbDogZnVuY3Rpb24oKSB7XG5cdFx0XHRpZiAoIXlhc3IucmVzdWx0cykgcmV0dXJuIG51bGw7XG5cdFx0XHRcblx0XHRcdHZhciBzdmdFbCA9IHlhc3IucmVzdWx0c0NvbnRhaW5lci5maW5kKCdzdmcnKVxuXHRcdFx0XHQuY2xvbmUoKS8vY3JlYXRlIGNsb25lLCBhcyB3ZSdkIGxpa2UgdG8gcmVtb3ZlIGhlaWdodC93aWR0aCBhdHRyaWJ1dGVzXG5cdFx0XHRcdC5yZW1vdmVBdHRyKCdoZWlnaHQnKS5yZW1vdmVBdHRyKCd3aWR0aCcpXG5cdFx0XHRcdC5jc3MoJ2hlaWdodCcsICcnKS5jc3MoJ3dpZHRoJywnJyk7XG5cdFx0XHRpZiAoc3ZnRWwubGVuZ3RoID09IDApIHJldHVybiBudWxsO1xuXHRcdFx0XG5cdFx0XHR2YXIgaHRtbFN0cmluZyA9IHN2Z0VsWzBdLm91dGVySFRNTDtcblx0XHRcdGlmICghaHRtbFN0cmluZykge1xuXHRcdFx0XHQvL291dGVySFRNTCBub3Qgc3VwcG9ydGVkLiB1c2Ugd29ya2Fyb3VuZFxuXHRcdFx0XHRodG1sU3RyaW5nID0gJCgnPGRpdj4nKS5hcHBlbmQoc3ZnRWwuY2xvbmUoKSkuaHRtbCgpO1xuXHRcdFx0fVxuXHRcdFx0Ly93cmFwIGluIGRpdiwgc28gdXNlcnMgY2FuIG1vcmUgZWFzaWx5IHR1bmUgd2lkdGgvaGVpZ2h0XG5cdFx0XHQvL2Rvbid0IHVzZSBqcXVlcnksIHNvIHdlIGNhbiBlYXNpbHkgaW5mbHVlbmNlIGluZGVudGF0aW9uXG5cdFx0XHRyZXR1cm4gJzxkaXYgc3R5bGU9XCJ3aWR0aDogODAwcHg7IGhlaWdodDogNjAwcHg7XCI+XFxuJyArIGh0bWxTdHJpbmcgKyAnXFxuPC9kaXY+Jztcblx0XHR9LFxuXHRcdGRyYXc6IGZ1bmN0aW9uKCl7XG5cdFx0XHR2YXIgZG9EcmF3ID0gZnVuY3Rpb24gKCkge1xuXHRcdFx0ICAgIC8vIEZpeCBmb3IgV0ItOTMwXG5cdFx0XHQgICAgeWFzci5yZXN1bHRzQ29udGFpbmVyID0gJCgnLnlhc3JfcmVzdWx0cycpO1xuXG5cdFx0XHRcdC8vY2xlYXIgcHJldmlvdXMgcmVzdWx0cyAoaWYgYW55KVxuXHRcdFx0XHR5YXNyLnJlc3VsdHNDb250YWluZXIuZW1wdHkoKTtcblxuXHRcdFx0XHQvLyB3b3JrYXJvdW5kIGZvciBPV0xJTS0xOTcwXG5cdFx0XHRcdGlmICh5YXNyLm9wdGlvbnMub3V0cHV0ICE9IHJvb3QuZGVmYXVsdHMucGVyc2lzdGVuY3lJZCkge1xuXHRcdFx0XHRcdHJldHVybjtcblx0XHRcdFx0fVxuXG5cdFx0XHRcdHZhciB3cmFwcGVySWQgPSBpZCArICdfZ2NoYXJ0V3JhcHBlcic7XG5cdFx0XHRcdHZhciB3cmFwcGVyID0gbnVsbDtcblxuXHRcdFx0XHR5YXNyLnJlc3VsdHNDb250YWluZXIuYXBwZW5kKFxuXHRcdFx0XHRcdCQoJzxidXR0b24+Jywge2NsYXNzOiAnb3BlbkdjaGFydEJ0biB5YXNyX2J0bid9KVxuXHRcdFx0XHRcdFx0LnRleHQoJ0NoYXJ0IENvbmZpZycpXG5cdFx0XHRcdFx0XHQuY2xpY2soZnVuY3Rpb24oKSB7XG5cdFx0XHRcdFx0XHRcdGVkaXRvci5vcGVuRGlhbG9nKHdyYXBwZXIpO1xuXHRcdFx0XHRcdFx0fSlcblx0XHRcdFx0KS5hcHBlbmQoXG5cdFx0XHRcdFx0JCgnPGRpdj4nLCB7aWQ6IHdyYXBwZXJJZCwgY2xhc3M6ICdnY2hhcnRXcmFwcGVyJ30pXG5cdFx0XHRcdCk7XG5cdFx0XHRcdHZhciBkYXRhVGFibGUgPSBuZXcgZ29vZ2xlLnZpc3VhbGl6YXRpb24uRGF0YVRhYmxlKCk7XG5cdFx0XHRcdHZhciBqc29uUmVzdWx0cyA9IHlhc3IucmVzdWx0cy5nZXRBc0pzb24oKTtcblx0XHRcdFx0XG5cdFx0XHRcdGpzb25SZXN1bHRzLmhlYWQudmFycy5mb3JFYWNoKGZ1bmN0aW9uKHZhcmlhYmxlKSB7XG5cdFx0XHRcdFx0dmFyIHR5cGUgPSAnc3RyaW5nJztcblx0XHRcdFx0XHR0cnkge1xuXHRcdFx0XHRcdFx0dHlwZSA9IHV0aWxzLmdldEdvb2dsZVR5cGVGb3JCaW5kaW5ncyhqc29uUmVzdWx0cy5yZXN1bHRzLmJpbmRpbmdzLCB2YXJpYWJsZSk7XG5cdFx0XHRcdFx0fSBjYXRjaChlKSB7XG5cdFx0XHRcdFx0XHRpZiAoZSBpbnN0YW5jZW9mIHJlcXVpcmUoJy4vZXhjZXB0aW9ucy5qcycpLkdvb2dsZVR5cGVFeGNlcHRpb24pIHtcblx0XHRcdFx0XHRcdFx0eWFzci53YXJuKGUudG9IdG1sKCkpXG5cdFx0XHRcdFx0XHR9IGVsc2Uge1xuXHRcdFx0XHRcdFx0XHR0aHJvdyBlO1xuXHRcdFx0XHRcdFx0fVxuXHRcdFx0XHRcdH1cblx0XHRcdFx0XHRkYXRhVGFibGUuYWRkQ29sdW1uKHR5cGUsIHZhcmlhYmxlKTtcblx0XHRcdFx0fSk7XG5cdFx0XHRcdHZhciB1c2VkUHJlZml4ZXMgPSBudWxsO1xuXHRcdFx0XHRpZiAoeWFzci5vcHRpb25zLmdldFVzZWRQcmVmaXhlcykge1xuXHRcdFx0XHRcdHVzZWRQcmVmaXhlcyA9ICh0eXBlb2YgeWFzci5vcHRpb25zLmdldFVzZWRQcmVmaXhlcyA9PSBcImZ1bmN0aW9uXCI/IHlhc3Iub3B0aW9ucy5nZXRVc2VkUHJlZml4ZXMoeWFzcik6ICB5YXNyLm9wdGlvbnMuZ2V0VXNlZFByZWZpeGVzKTtcblx0XHRcdFx0fVxuXHRcdFx0XHRqc29uUmVzdWx0cy5yZXN1bHRzLmJpbmRpbmdzLmZvckVhY2goZnVuY3Rpb24oYmluZGluZykge1xuXHRcdFx0XHRcdHZhciByb3cgPSBbXTtcblx0XHRcdFx0XHRqc29uUmVzdWx0cy5oZWFkLnZhcnMuZm9yRWFjaChmdW5jdGlvbih2YXJpYWJsZSwgY29sdW1uSWQpIHtcblx0XHRcdFx0XHRcdHJvdy5wdXNoKHV0aWxzLmNhc3RHb29nbGVUeXBlKGJpbmRpbmdbdmFyaWFibGVdLCB1c2VkUHJlZml4ZXMsIGRhdGFUYWJsZS5nZXRDb2x1bW5UeXBlKGNvbHVtbklkKSkpO1xuXHRcdFx0XHRcdH0pXG5cdFx0XHRcdFx0ZGF0YVRhYmxlLmFkZFJvdyhyb3cpO1xuXHRcdFx0XHR9KTtcblxuXHRcdFx0XHRpZiAoeWFzci5vcHRpb25zLmdjaGFydC5jaGFydENvbmZpZykge1xuXG5cdFx0XHRcdFx0d3JhcHBlciA9IG5ldyBnb29nbGUudmlzdWFsaXphdGlvbi5DaGFydFdyYXBwZXIoeWFzci5vcHRpb25zLmdjaGFydC5jaGFydENvbmZpZyk7XG5cdFx0XHRcdFx0XG5cdFx0XHRcdFx0aWYgKHdyYXBwZXIuZ2V0Q2hhcnRUeXBlKCkgPT09IFwiTW90aW9uQ2hhcnRcIiAmJiB5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUgIT0gbnVsbCkge1xuXHRcdFx0XHRcdFx0d3JhcHBlci5zZXRPcHRpb24oXCJzdGF0ZVwiLCB5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUpO1xuXHRcdFx0XHRcdFx0Z29vZ2xlLnZpc3VhbGl6YXRpb24uZXZlbnRzLmFkZExpc3RlbmVyKHdyYXBwZXIsICdyZWFkeScsIGZ1bmN0aW9uKCl7XG5cdFx0XHRcdFx0XHRcdHZhciBtb3Rpb25DaGFydDtcblx0XHRcdFx0XHRcdFx0bW90aW9uQ2hhcnQgPSB3cmFwcGVyLmdldENoYXJ0KCk7XG5cdFx0XHRcdFx0XHRcdGdvb2dsZS52aXN1YWxpemF0aW9uLmV2ZW50cy5hZGRMaXN0ZW5lcihtb3Rpb25DaGFydCwgJ3N0YXRlY2hhbmdlJywgZnVuY3Rpb24oKXtcblx0XHRcdFx0XHRcdFx0XHR5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUgPSBtb3Rpb25DaGFydC5nZXRTdGF0ZSgpO1xuXHRcdFx0XHRcdFx0XHRcdHlVdGlscy5zdG9yYWdlLnNldChwZXJzaXN0ZW5jeUlkTW90aW9uQ2hhcnQsIHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSk7XG5cdFx0XHRcdFx0XHRcdH0pO1xuXHRcdFx0XHRcdFx0fSk7XG5cdFx0XHRcdFx0fVxuXHRcdFx0XHRcdHdyYXBwZXIuc2V0RGF0YVRhYmxlKGRhdGFUYWJsZSk7XG5cdFx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdFx0d3JhcHBlciA9IG5ldyBnb29nbGUudmlzdWFsaXphdGlvbi5DaGFydFdyYXBwZXIoe1xuXHRcdFx0XHRcdFx0Y2hhcnRUeXBlOiAnVGFibGUnLFxuXHRcdFx0XHRcdFx0ZGF0YVRhYmxlOiBkYXRhVGFibGUsXG5cdFx0XHRcdFx0XHRjb250YWluZXJJZDogd3JhcHBlcklkXG5cdFx0XHRcdFx0fSk7XG5cdFx0XHRcdH1cblx0XHRcdFx0d3JhcHBlci5zZXRPcHRpb24oXCJ3aWR0aFwiLCBvcHRpb25zLndpZHRoKTtcblx0XHRcdFx0d3JhcHBlci5zZXRPcHRpb24oXCJoZWlnaHRcIiwgb3B0aW9ucy5oZWlnaHQpO1xuXHRcdFx0XHR3cmFwcGVyLmRyYXcoKTtcblx0XHRcdFx0eWFzci51cGRhdGVIZWFkZXIoKTtcblx0XHRcdH1cblx0XHRcdFxuXHRcdFx0aWYgKCEodHlwZW9mIHdpbmRvdyAhPT0gXCJ1bmRlZmluZWRcIiA/IHdpbmRvd1snZ29vZ2xlJ10gOiB0eXBlb2YgZ2xvYmFsICE9PSBcInVuZGVmaW5lZFwiID8gZ2xvYmFsWydnb29nbGUnXSA6IG51bGwpIHx8ICEodHlwZW9mIHdpbmRvdyAhPT0gXCJ1bmRlZmluZWRcIiA/IHdpbmRvd1snZ29vZ2xlJ10gOiB0eXBlb2YgZ2xvYmFsICE9PSBcInVuZGVmaW5lZFwiID8gZ2xvYmFsWydnb29nbGUnXSA6IG51bGwpLnZpc3VhbGl6YXRpb24gfHwgIWVkaXRvcikge1xuXHRcdFx0XHRyZXF1aXJlKCcuL2dDaGFydExvYWRlci5qcycpXG5cdFx0XHRcdFx0Lm9uKCdkb25lJywgZnVuY3Rpb24oKSB7XG5cdFx0XHRcdFx0XHRpbml0RWRpdG9yKCk7XG5cdFx0XHRcdFx0XHRkb0RyYXcoKTtcblx0XHRcdFx0XHR9KVxuXHRcdFx0XHRcdC5vbignZXJyb3InLCBmdW5jdGlvbigpIHtcblx0XHRcdFx0XHRcdGNvbnNvbGUubG9nKCdlcnJvcnJyJyk7XG5cdFx0XHRcdFx0XHQvL1RPRE86IGRpc2FibGUgb3Igc29tZXRoaW5nP1xuXHRcdFx0XHRcdH0pXG5cdFx0XHRcdFx0Lmdvb2dsZUxvYWQoKTtcblx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdC8vZXZlcnl0aGluZyAoZWRpdG9yIGFzIHdlbGwpIGlzIGFscmVhZHkgaW5pdGlhbGl6ZWRcblx0XHRcdFx0ZG9EcmF3KCk7XG5cdFx0XHR9XG5cdFx0fVxuXHR9O1xufTtcbnJvb3QuZGVmYXVsdHMgPSB7XG5cdGhlaWdodDogXCI2MDBweFwiLFxuXHR3aWR0aDogXCIxMDAlXCIsXG5cdHBlcnNpc3RlbmN5SWQ6ICdnY2hhcnQnLFxufTtcblxuZnVuY3Rpb24gZGVlcEVxJCh4LCB5LCB0eXBlKXtcblx0dmFyIHRvU3RyaW5nID0ge30udG9TdHJpbmcsIGhhc093blByb3BlcnR5ID0ge30uaGFzT3duUHJvcGVydHksXG5cdCAgICBoYXMgPSBmdW5jdGlvbiAob2JqLCBrZXkpIHsgcmV0dXJuIGhhc093blByb3BlcnR5LmNhbGwob2JqLCBrZXkpOyB9O1xuICB2YXIgZmlyc3QgPSB0cnVlO1xuICByZXR1cm4gZXEoeCwgeSwgW10pO1xuICBmdW5jdGlvbiBlcShhLCBiLCBzdGFjaykge1xuICAgIHZhciBjbGFzc05hbWUsIGxlbmd0aCwgc2l6ZSwgcmVzdWx0LCBhbGVuZ3RoLCBibGVuZ3RoLCByLCBrZXksIHJlZiwgc2l6ZUI7XG4gICAgaWYgKGEgPT0gbnVsbCB8fCBiID09IG51bGwpIHsgcmV0dXJuIGEgPT09IGI7IH1cbiAgICBpZiAoYS5fX3BsYWNlaG9sZGVyX18gfHwgYi5fX3BsYWNlaG9sZGVyX18pIHsgcmV0dXJuIHRydWU7IH1cbiAgICBpZiAoYSA9PT0gYikgeyByZXR1cm4gYSAhPT0gMCB8fCAxIC8gYSA9PSAxIC8gYjsgfVxuICAgIGNsYXNzTmFtZSA9IHRvU3RyaW5nLmNhbGwoYSk7XG4gICAgaWYgKHRvU3RyaW5nLmNhbGwoYikgIT0gY2xhc3NOYW1lKSB7IHJldHVybiBmYWxzZTsgfVxuICAgIHN3aXRjaCAoY2xhc3NOYW1lKSB7XG4gICAgICBjYXNlICdbb2JqZWN0IFN0cmluZ10nOiByZXR1cm4gYSA9PSBTdHJpbmcoYik7XG4gICAgICBjYXNlICdbb2JqZWN0IE51bWJlcl0nOlxuICAgICAgICByZXR1cm4gYSAhPSArYSA/IGIgIT0gK2IgOiAoYSA9PSAwID8gMSAvIGEgPT0gMSAvIGIgOiBhID09ICtiKTtcbiAgICAgIGNhc2UgJ1tvYmplY3QgRGF0ZV0nOlxuICAgICAgY2FzZSAnW29iamVjdCBCb29sZWFuXSc6XG4gICAgICAgIHJldHVybiArYSA9PSArYjtcbiAgICAgIGNhc2UgJ1tvYmplY3QgUmVnRXhwXSc6XG4gICAgICAgIHJldHVybiBhLnNvdXJjZSA9PSBiLnNvdXJjZSAmJlxuICAgICAgICAgICAgICAgYS5nbG9iYWwgPT0gYi5nbG9iYWwgJiZcbiAgICAgICAgICAgICAgIGEubXVsdGlsaW5lID09IGIubXVsdGlsaW5lICYmXG4gICAgICAgICAgICAgICBhLmlnbm9yZUNhc2UgPT0gYi5pZ25vcmVDYXNlO1xuICAgIH1cbiAgICBpZiAodHlwZW9mIGEgIT0gJ29iamVjdCcgfHwgdHlwZW9mIGIgIT0gJ29iamVjdCcpIHsgcmV0dXJuIGZhbHNlOyB9XG4gICAgbGVuZ3RoID0gc3RhY2subGVuZ3RoO1xuICAgIHdoaWxlIChsZW5ndGgtLSkgeyBpZiAoc3RhY2tbbGVuZ3RoXSA9PSBhKSB7IHJldHVybiB0cnVlOyB9IH1cbiAgICBzdGFjay5wdXNoKGEpO1xuICAgIHNpemUgPSAwO1xuICAgIHJlc3VsdCA9IHRydWU7XG4gICAgaWYgKGNsYXNzTmFtZSA9PSAnW29iamVjdCBBcnJheV0nKSB7XG4gICAgICBhbGVuZ3RoID0gYS5sZW5ndGg7XG4gICAgICBibGVuZ3RoID0gYi5sZW5ndGg7XG4gICAgICBpZiAoZmlyc3QpIHtcbiAgICAgICAgc3dpdGNoICh0eXBlKSB7XG4gICAgICAgIGNhc2UgJz09PSc6IHJlc3VsdCA9IGFsZW5ndGggPT09IGJsZW5ndGg7IGJyZWFrO1xuICAgICAgICBjYXNlICc8PT0nOiByZXN1bHQgPSBhbGVuZ3RoIDw9IGJsZW5ndGg7IGJyZWFrO1xuICAgICAgICBjYXNlICc8PD0nOiByZXN1bHQgPSBhbGVuZ3RoIDwgYmxlbmd0aDsgYnJlYWs7XG4gICAgICAgIH1cbiAgICAgICAgc2l6ZSA9IGFsZW5ndGg7XG4gICAgICAgIGZpcnN0ID0gZmFsc2U7XG4gICAgICB9IGVsc2Uge1xuICAgICAgICByZXN1bHQgPSBhbGVuZ3RoID09PSBibGVuZ3RoO1xuICAgICAgICBzaXplID0gYWxlbmd0aDtcbiAgICAgIH1cbiAgICAgIGlmIChyZXN1bHQpIHtcbiAgICAgICAgd2hpbGUgKHNpemUtLSkge1xuICAgICAgICAgIGlmICghKHJlc3VsdCA9IHNpemUgaW4gYSA9PSBzaXplIGluIGIgJiYgZXEoYVtzaXplXSwgYltzaXplXSwgc3RhY2spKSl7IGJyZWFrOyB9XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9IGVsc2Uge1xuICAgICAgaWYgKCdjb25zdHJ1Y3RvcicgaW4gYSAhPSAnY29uc3RydWN0b3InIGluIGIgfHwgYS5jb25zdHJ1Y3RvciAhPSBiLmNvbnN0cnVjdG9yKSB7XG4gICAgICAgIHJldHVybiBmYWxzZTtcbiAgICAgIH1cbiAgICAgIGZvciAoa2V5IGluIGEpIHtcbiAgICAgICAgaWYgKGhhcyhhLCBrZXkpKSB7XG4gICAgICAgICAgc2l6ZSsrO1xuICAgICAgICAgIGlmICghKHJlc3VsdCA9IGhhcyhiLCBrZXkpICYmIGVxKGFba2V5XSwgYltrZXldLCBzdGFjaykpKSB7IGJyZWFrOyB9XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICAgIGlmIChyZXN1bHQpIHtcbiAgICAgICAgc2l6ZUIgPSAwO1xuICAgICAgICBmb3IgKGtleSBpbiBiKSB7XG4gICAgICAgICAgaWYgKGhhcyhiLCBrZXkpKSB7ICsrc2l6ZUI7IH1cbiAgICAgICAgfVxuICAgICAgICBpZiAoZmlyc3QpIHtcbiAgICAgICAgICBpZiAodHlwZSA9PT0gJzw8PScpIHtcbiAgICAgICAgICAgIHJlc3VsdCA9IHNpemUgPCBzaXplQjtcbiAgICAgICAgICB9IGVsc2UgaWYgKHR5cGUgPT09ICc8PT0nKSB7XG4gICAgICAgICAgICByZXN1bHQgPSBzaXplIDw9IHNpemVCXG4gICAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICAgIHJlc3VsdCA9IHNpemUgPT09IHNpemVCO1xuICAgICAgICAgIH1cbiAgICAgICAgfSBlbHNlIHtcbiAgICAgICAgICBmaXJzdCA9IGZhbHNlO1xuICAgICAgICAgIHJlc3VsdCA9IHNpemUgPT09IHNpemVCO1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICAgIHN0YWNrLnBvcCgpO1xuICAgIHJldHVybiByZXN1bHQ7XG4gIH1cbn1cbiJdfQ==
-},{"./exceptions.js":34,"./gChartLoader.js":36,"./utils.js":52,"jquery":18,"yasgui-utils":25}],38:[function(require,module,exports){
+//# sourceMappingURL=data:application/json;charset:utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9nY2hhcnQuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0EiLCJmaWxlIjoiZ2VuZXJhdGVkLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXNDb250ZW50IjpbIid1c2Ugc3RyaWN0Jztcbi8qKlxuICogdG9kbzogY2hhcnQgaGVpZ2h0IGFzIG9wdGlvblxuICogXG4gKi9cbnZhciAkID0gcmVxdWlyZSgnanF1ZXJ5JyksXG5cdHV0aWxzID0gcmVxdWlyZSgnLi91dGlscy5qcycpLFxuXHR5VXRpbHMgPSByZXF1aXJlKCd5YXNndWktdXRpbHMnKTtcblxudmFyIHJvb3QgPSBtb2R1bGUuZXhwb3J0cyA9IGZ1bmN0aW9uKHlhc3Ipe1xuXHR2YXIgb3B0aW9ucyA9ICQuZXh0ZW5kKHRydWUsIHt9LCByb290LmRlZmF1bHRzKTtcblx0dmFyIGlkID0geWFzci5jb250YWluZXIuY2xvc2VzdCgnW2lkXScpLmF0dHIoJ2lkJyk7XG5cdGlmICh5YXNyLm9wdGlvbnMuZ2NoYXJ0ID09IG51bGwpIHtcblx0XHR5YXNyLm9wdGlvbnMuZ2NoYXJ0ID0ge307XG5cdH1cblx0dmFyIHBlcnNpc3RlbmN5SWRNb3Rpb25DaGFydCA9IHlhc3IuZ2V0UGVyc2lzdGVuY3lJZCgnbW90aW9uY2hhcnQnKTtcblx0dmFyIHBlcnNpc3RlbmN5SWRDaGFydENvbmZpZyA9IHlhc3IuZ2V0UGVyc2lzdGVuY3lJZCgnY2hhcnRDb25maWcnKTtcblx0aWYgKHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSA9PSBudWxsKSB7XG5cdFx0eWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlID0geVV0aWxzLnN0b3JhZ2UuZ2V0KHBlcnNpc3RlbmN5SWRNb3Rpb25DaGFydCk7XG5cdH1cblx0aWYgKHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcgPT0gbnVsbCkge1xuXHRcdHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcgPSB5VXRpbHMuc3RvcmFnZS5nZXQocGVyc2lzdGVuY3lJZENoYXJ0Q29uZmlnKTtcblx0fVxuXHRcblx0XG5cdHZhciBlZGl0b3IgPSBudWxsO1xuXHRcblx0dmFyIGluaXRFZGl0b3IgPSBmdW5jdGlvbihjYWxsYmFjaykge1xuXHRcdHZhciBnb29nbGUgPSAodHlwZW9mIHdpbmRvdyAhPT0gXCJ1bmRlZmluZWRcIiA/IHdpbmRvd1snZ29vZ2xlJ10gOiB0eXBlb2YgZ2xvYmFsICE9PSBcInVuZGVmaW5lZFwiID8gZ2xvYmFsWydnb29nbGUnXSA6IG51bGwpO1xuXHRcdGVkaXRvciA9IG5ldyBnb29nbGUudmlzdWFsaXphdGlvbi5DaGFydEVkaXRvcigpO1xuXHRcdGdvb2dsZS52aXN1YWxpemF0aW9uLmV2ZW50cy5hZGRMaXN0ZW5lcihlZGl0b3IsICdvaycsIGZ1bmN0aW9uKCl7XG5cdFx0XHRcdHZhciBjaGFydFdyYXBwZXIsIHRtcDtcblx0XHRcdFx0Y2hhcnRXcmFwcGVyID0gZWRpdG9yLmdldENoYXJ0V3JhcHBlcigpO1xuXHRcdFx0XHRpZiAoIWRlZXBFcSQoY2hhcnRXcmFwcGVyLmdldENoYXJ0VHlwZSwgXCJNb3Rpb25DaGFydFwiLCAnPT09JykpIHtcblx0XHRcdFx0XHR5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUgPSBjaGFydFdyYXBwZXIubjtcblxuXHRcdFx0XHRcdHlVdGlscy5zdG9yYWdlLnNldChwZXJzaXN0ZW5jeUlkTW90aW9uQ2hhcnQsIHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSk7XG5cdFx0XHRcdFx0Y2hhcnRXcmFwcGVyLnNldE9wdGlvbihcInN0YXRlXCIsIHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSk7XG5cdFx0XHRcdFx0XG5cdFx0XHRcdFx0Z29vZ2xlLnZpc3VhbGl6YXRpb24uZXZlbnRzLmFkZExpc3RlbmVyKGNoYXJ0V3JhcHBlciwgJ3JlYWR5JywgZnVuY3Rpb24oKXtcblx0XHRcdFx0XHRcdHZhciBtb3Rpb25DaGFydDtcblx0XHRcdFx0XHRcdG1vdGlvbkNoYXJ0ID0gY2hhcnRXcmFwcGVyLmdldENoYXJ0KCk7XG5cdFx0XHRcdFx0XHRnb29nbGUudmlzdWFsaXphdGlvbi5ldmVudHMuYWRkTGlzdGVuZXIobW90aW9uQ2hhcnQsICdzdGF0ZWNoYW5nZScsIGZ1bmN0aW9uKCl7XG5cdFx0XHRcdFx0XHRcdHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSA9IG1vdGlvbkNoYXJ0LmdldFN0YXRlKCk7XG5cdFx0XHRcdFx0XHRcdHlVdGlscy5zdG9yYWdlLnNldChwZXJzaXN0ZW5jeUlkTW90aW9uQ2hhcnQsIHlhc3Iub3B0aW9ucy5nY2hhcnQubW90aW9uQ2hhcnRTdGF0ZSk7XG5cdFx0XHRcdFx0XHR9KTtcblx0XHRcdFx0XHR9KTtcblx0XHRcdFx0fVxuXHRcdFx0XHR0bXAgPSBjaGFydFdyYXBwZXIuZ2V0RGF0YVRhYmxlKCk7XG5cdFx0XHRcdGNoYXJ0V3JhcHBlci5zZXREYXRhVGFibGUobnVsbCk7XG5cdFx0XHRcdHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcgPSBjaGFydFdyYXBwZXIudG9KU09OKCk7XG5cdFx0XHRcdFxuXHRcdFx0XHR5VXRpbHMuc3RvcmFnZS5zZXQocGVyc2lzdGVuY3lJZENoYXJ0Q29uZmlnLCB5YXNyLm9wdGlvbnMuZ2NoYXJ0LmNoYXJ0Q29uZmlnKTtcblx0XHRcdFx0Y2hhcnRXcmFwcGVyLnNldERhdGFUYWJsZSh0bXApO1xuXHRcdFx0XHQvLyBGaXggZm9yIE9XTElNLTE5NzFcblx0XHRcdFx0Y2hhcnRXcmFwcGVyLnNldE9wdGlvbihcIndpZHRoXCIsIG9wdGlvbnMud2lkdGgpO1xuXHRcdFx0XHRjaGFydFdyYXBwZXIuc2V0T3B0aW9uKFwiaGVpZ2h0XCIsIG9wdGlvbnMuaGVpZ2h0KTtcblx0XHRcdFx0Y2hhcnRXcmFwcGVyLmRyYXcoKTtcblx0XHRcdFx0eWFzci51cGRhdGVIZWFkZXIoKTtcblx0XHRcdH0pO1xuXHRcdFx0aWYgKGNhbGxiYWNrKSBjYWxsYmFjaygpO1xuXHR9O1xuXG5cdHJldHVybiB7XG5cdFx0bmFtZTogXCJHb29nbGUgQ2hhcnRcIixcblx0XHRoaWRlRnJvbVNlbGVjdGlvbjogZmFsc2UsXG5cdFx0cHJpb3JpdHk6IDcsXG5cdFx0Y2FuSGFuZGxlUmVzdWx0czogZnVuY3Rpb24oeWFzcil7XG5cdFx0XHR2YXIgcmVzdWx0cywgdmFyaWFibGVzO1xuXHRcdFx0cmV0dXJuIChyZXN1bHRzID0geWFzci5yZXN1bHRzKSAhPSBudWxsICYmICh2YXJpYWJsZXMgPSByZXN1bHRzLmdldFZhcmlhYmxlcygpKSAmJiB2YXJpYWJsZXMubGVuZ3RoID4gMDtcblx0XHR9LFxuXHRcdGdldERvd25sb2FkSW5mbzogZnVuY3Rpb24oKSB7XG5cdFx0XHRpZiAoIXlhc3IucmVzdWx0cykgcmV0dXJuIG51bGw7XG5cdFx0XHR2YXIgc3ZnRWwgPSB5YXNyLnJlc3VsdHNDb250YWluZXIuZmluZCgnc3ZnJyk7XG5cdFx0XHRpZiAoc3ZnRWwubGVuZ3RoID4gMCkge1xuXHRcdFx0XG5cdFx0XHRcdHJldHVybiB7XG5cdFx0XHRcdFx0Z2V0Q29udGVudDogZnVuY3Rpb24oKXtcblx0XHRcdFx0XHRcdGlmIChzdmdFbFswXS5vdXRlckhUTUwpIHtcblx0XHRcdFx0XHRcdFx0cmV0dXJuIHN2Z0VsWzBdLm91dGVySFRNTDtcblx0XHRcdFx0XHRcdH0gZWxzZSB7XG5cdFx0XHRcdFx0XHRcdC8vb3V0ZXJIVE1MIG5vdCBzdXBwb3J0ZWQuIHVzZSB3b3JrYXJvdW5kXG5cdFx0XHRcdFx0XHRcdHJldHVybiAkKCc8ZGl2PicpLmFwcGVuZChzdmdFbC5jbG9uZSgpKS5odG1sKCk7XG5cdFx0XHRcdFx0XHR9XG5cdFx0XHRcdFx0fSxcblx0XHRcdFx0XHRmaWxlbmFtZTogXCJxdWVyeVJlc3VsdHMuc3ZnXCIsXG5cdFx0XHRcdFx0Y29udGVudFR5cGU6IFwiaW1hZ2Uvc3ZnK3htbFwiLFxuXHRcdFx0XHRcdGJ1dHRvblRpdGxlOiBcIkRvd25sb2FkIFNWRyBJbWFnZVwiXG5cdFx0XHRcdH07XG5cdFx0XHR9XG5cdFx0XHQvL29rLCBub3QgYSBzdmcuIGlzIGl0IGEgdGFibGU/XG5cdFx0XHR2YXIgJHRhYmxlID0geWFzci5yZXN1bHRzQ29udGFpbmVyLmZpbmQoJy5nb29nbGUtdmlzdWFsaXphdGlvbi10YWJsZS10YWJsZScpO1xuXHRcdFx0aWYgKCR0YWJsZS5sZW5ndGggPiAwKSB7XG5cdFx0XHRcdHJldHVybiB7XG5cdFx0XHRcdFx0Z2V0Q29udGVudDogZnVuY3Rpb24oKXtcblx0XHRcdFx0XHRcdHJldHVybiAkdGFibGUudGFibGVUb0NzdigpO1xuXHRcdFx0XHRcdH0sXG5cdFx0XHRcdFx0ZmlsZW5hbWU6IFwicXVlcnlSZXN1bHRzLmNzdlwiLFxuXHRcdFx0XHRcdGNvbnRlbnRUeXBlOiBcInRleHQvY3N2XCIsXG5cdFx0XHRcdFx0YnV0dG9uVGl0bGU6IFwiRG93bmxvYWQgYXMgQ1NWXCJcblx0XHRcdFx0fTtcblx0XHRcdH0gXG5cdFx0fSxcblx0XHRnZXRFbWJlZEh0bWw6IGZ1bmN0aW9uKCkge1xuXHRcdFx0aWYgKCF5YXNyLnJlc3VsdHMpIHJldHVybiBudWxsO1xuXHRcdFx0XG5cdFx0XHR2YXIgc3ZnRWwgPSB5YXNyLnJlc3VsdHNDb250YWluZXIuZmluZCgnc3ZnJylcblx0XHRcdFx0LmNsb25lKCkvL2NyZWF0ZSBjbG9uZSwgYXMgd2UnZCBsaWtlIHRvIHJlbW92ZSBoZWlnaHQvd2lkdGggYXR0cmlidXRlc1xuXHRcdFx0XHQuY3NzKCdoZWlnaHQnLCAnJykuY3NzKCd3aWR0aCcsJycpO1xuXHRcdFx0aWYgKHN2Z0VsLmxlbmd0aCA9PSAwKSByZXR1cm4gbnVsbDtcblx0XHRcdFxuXHRcdFx0dmFyIGh0bWxTdHJpbmcgPSBzdmdFbFswXS5vdXRlckhUTUw7XG5cdFx0XHRpZiAoIWh0bWxTdHJpbmcpIHtcblx0XHRcdFx0Ly9vdXRlckhUTUwgbm90IHN1cHBvcnRlZC4gdXNlIHdvcmthcm91bmRcblx0XHRcdFx0aHRtbFN0cmluZyA9ICQoJzxkaXY+JykuYXBwZW5kKHN2Z0VsLmNsb25lKCkpLmh0bWwoKTtcblx0XHRcdH1cblx0XHRcdC8vd3JhcCBpbiBkaXYsIHNvIHVzZXJzIGNhbiBtb3JlIGVhc2lseSB0dW5lIHdpZHRoL2hlaWdodFxuXHRcdFx0Ly9kb24ndCB1c2UganF1ZXJ5LCBzbyB3ZSBjYW4gZWFzaWx5IGluZmx1ZW5jZSBpbmRlbnRhdGlvblxuXHRcdFx0cmV0dXJuICc8ZGl2IHN0eWxlPVwid2lkdGg6IDgwMHB4OyBoZWlnaHQ6IDYwMHB4O1wiPlxcbicgKyBodG1sU3RyaW5nICsgJ1xcbjwvZGl2Pic7XG5cdFx0fSxcblx0XHRkcmF3OiBmdW5jdGlvbigpe1xuXHRcdFx0dmFyIGRvRHJhdyA9IGZ1bmN0aW9uICgpIHtcblx0XHRcdCAgICAvLyBGaXggZm9yIFdCLTkzMFxuXHRcdFx0ICAgIHlhc3IucmVzdWx0c0NvbnRhaW5lciA9ICQoJy55YXNyX3Jlc3VsdHMnKTtcblxuXHRcdFx0XHQvL2NsZWFyIHByZXZpb3VzIHJlc3VsdHMgKGlmIGFueSlcblx0XHRcdFx0eWFzci5yZXN1bHRzQ29udGFpbmVyLmVtcHR5KCk7XG5cblx0XHRcdFx0Ly8gd29ya2Fyb3VuZCBmb3IgT1dMSU0tMTk3MFxuXHRcdFx0XHRpZiAoeWFzci5vcHRpb25zLm91dHB1dCAhPSByb290LmRlZmF1bHRzLnBlcnNpc3RlbmN5SWQpIHtcblx0XHRcdFx0XHRyZXR1cm47XG5cdFx0XHRcdH1cblxuXHRcdFx0XHR2YXIgd3JhcHBlcklkID0gaWQgKyAnX2djaGFydFdyYXBwZXInO1xuXHRcdFx0XHR2YXIgd3JhcHBlciA9IG51bGw7XG5cblx0XHRcdFx0eWFzci5yZXN1bHRzQ29udGFpbmVyLmFwcGVuZChcblx0XHRcdFx0XHQkKCc8YnV0dG9uPicsIHtjbGFzczogJ29wZW5HY2hhcnRCdG4geWFzcl9idG4nfSlcblx0XHRcdFx0XHRcdC50ZXh0KCdDaGFydCBDb25maWcnKVxuXHRcdFx0XHRcdFx0LmNsaWNrKGZ1bmN0aW9uKCkge1xuXHRcdFx0XHRcdFx0XHRlZGl0b3Iub3BlbkRpYWxvZyh3cmFwcGVyKTtcblx0XHRcdFx0XHRcdH0pXG5cdFx0XHRcdCkuYXBwZW5kKFxuXHRcdFx0XHRcdCQoJzxkaXY+Jywge2lkOiB3cmFwcGVySWQsIGNsYXNzOiAnZ2NoYXJ0V3JhcHBlcid9KVxuXHRcdFx0XHQpO1xuXHRcdFx0XHR2YXIgZGF0YVRhYmxlID0gbmV3IGdvb2dsZS52aXN1YWxpemF0aW9uLkRhdGFUYWJsZSgpO1xuXHRcdFx0XHR2YXIganNvblJlc3VsdHMgPSB5YXNyLnJlc3VsdHMuZ2V0QXNKc29uKCk7XG5cdFx0XHRcdFxuXHRcdFx0XHRqc29uUmVzdWx0cy5oZWFkLnZhcnMuZm9yRWFjaChmdW5jdGlvbih2YXJpYWJsZSkge1xuXHRcdFx0XHRcdHZhciB0eXBlID0gJ3N0cmluZyc7XG5cdFx0XHRcdFx0dHJ5IHtcblx0XHRcdFx0XHRcdHR5cGUgPSB1dGlscy5nZXRHb29nbGVUeXBlRm9yQmluZGluZ3MoanNvblJlc3VsdHMucmVzdWx0cy5iaW5kaW5ncywgdmFyaWFibGUpO1xuXHRcdFx0XHRcdH0gY2F0Y2goZSkge1xuXHRcdFx0XHRcdFx0aWYgKGUgaW5zdGFuY2VvZiByZXF1aXJlKCcuL2V4Y2VwdGlvbnMuanMnKS5Hb29nbGVUeXBlRXhjZXB0aW9uKSB7XG5cdFx0XHRcdFx0XHRcdHlhc3Iud2FybihlLnRvSHRtbCgpKVxuXHRcdFx0XHRcdFx0fSBlbHNlIHtcblx0XHRcdFx0XHRcdFx0dGhyb3cgZTtcblx0XHRcdFx0XHRcdH1cblx0XHRcdFx0XHR9XG5cdFx0XHRcdFx0ZGF0YVRhYmxlLmFkZENvbHVtbih0eXBlLCB2YXJpYWJsZSk7XG5cdFx0XHRcdH0pO1xuXHRcdFx0XHR2YXIgdXNlZFByZWZpeGVzID0gbnVsbDtcblx0XHRcdFx0aWYgKHlhc3Iub3B0aW9ucy5nZXRVc2VkUHJlZml4ZXMpIHtcblx0XHRcdFx0XHR1c2VkUHJlZml4ZXMgPSAodHlwZW9mIHlhc3Iub3B0aW9ucy5nZXRVc2VkUHJlZml4ZXMgPT0gXCJmdW5jdGlvblwiPyB5YXNyLm9wdGlvbnMuZ2V0VXNlZFByZWZpeGVzKHlhc3IpOiAgeWFzci5vcHRpb25zLmdldFVzZWRQcmVmaXhlcyk7XG5cdFx0XHRcdH1cblx0XHRcdFx0anNvblJlc3VsdHMucmVzdWx0cy5iaW5kaW5ncy5mb3JFYWNoKGZ1bmN0aW9uKGJpbmRpbmcpIHtcblx0XHRcdFx0XHR2YXIgcm93ID0gW107XG5cdFx0XHRcdFx0anNvblJlc3VsdHMuaGVhZC52YXJzLmZvckVhY2goZnVuY3Rpb24odmFyaWFibGUsIGNvbHVtbklkKSB7XG5cdFx0XHRcdFx0XHRyb3cucHVzaCh1dGlscy5jYXN0R29vZ2xlVHlwZShiaW5kaW5nW3ZhcmlhYmxlXSwgdXNlZFByZWZpeGVzLCBkYXRhVGFibGUuZ2V0Q29sdW1uVHlwZShjb2x1bW5JZCkpKTtcblx0XHRcdFx0XHR9KVxuXHRcdFx0XHRcdGRhdGFUYWJsZS5hZGRSb3cocm93KTtcblx0XHRcdFx0fSk7XG5cblx0XHRcdFx0aWYgKHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcpIHtcblxuXHRcdFx0XHRcdHdyYXBwZXIgPSBuZXcgZ29vZ2xlLnZpc3VhbGl6YXRpb24uQ2hhcnRXcmFwcGVyKHlhc3Iub3B0aW9ucy5nY2hhcnQuY2hhcnRDb25maWcpO1xuXHRcdFx0XHRcdFxuXHRcdFx0XHRcdGlmICh3cmFwcGVyLmdldENoYXJ0VHlwZSgpID09PSBcIk1vdGlvbkNoYXJ0XCIgJiYgeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlICE9IG51bGwpIHtcblx0XHRcdFx0XHRcdHdyYXBwZXIuc2V0T3B0aW9uKFwic3RhdGVcIiwgeWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlKTtcblx0XHRcdFx0XHRcdGdvb2dsZS52aXN1YWxpemF0aW9uLmV2ZW50cy5hZGRMaXN0ZW5lcih3cmFwcGVyLCAncmVhZHknLCBmdW5jdGlvbigpe1xuXHRcdFx0XHRcdFx0XHR2YXIgbW90aW9uQ2hhcnQ7XG5cdFx0XHRcdFx0XHRcdG1vdGlvbkNoYXJ0ID0gd3JhcHBlci5nZXRDaGFydCgpO1xuXHRcdFx0XHRcdFx0XHRnb29nbGUudmlzdWFsaXphdGlvbi5ldmVudHMuYWRkTGlzdGVuZXIobW90aW9uQ2hhcnQsICdzdGF0ZWNoYW5nZScsIGZ1bmN0aW9uKCl7XG5cdFx0XHRcdFx0XHRcdFx0eWFzci5vcHRpb25zLmdjaGFydC5tb3Rpb25DaGFydFN0YXRlID0gbW90aW9uQ2hhcnQuZ2V0U3RhdGUoKTtcblx0XHRcdFx0XHRcdFx0XHR5VXRpbHMuc3RvcmFnZS5zZXQocGVyc2lzdGVuY3lJZE1vdGlvbkNoYXJ0LCB5YXNyLm9wdGlvbnMuZ2NoYXJ0Lm1vdGlvbkNoYXJ0U3RhdGUpO1xuXHRcdFx0XHRcdFx0XHR9KTtcblx0XHRcdFx0XHRcdH0pO1xuXHRcdFx0XHRcdH1cblx0XHRcdFx0XHR3cmFwcGVyLnNldERhdGFUYWJsZShkYXRhVGFibGUpO1xuXHRcdFx0XHR9IGVsc2Uge1xuXHRcdFx0XHRcdHdyYXBwZXIgPSBuZXcgZ29vZ2xlLnZpc3VhbGl6YXRpb24uQ2hhcnRXcmFwcGVyKHtcblx0XHRcdFx0XHRcdGNoYXJ0VHlwZTogJ1RhYmxlJyxcblx0XHRcdFx0XHRcdGRhdGFUYWJsZTogZGF0YVRhYmxlLFxuXHRcdFx0XHRcdFx0Y29udGFpbmVySWQ6IHdyYXBwZXJJZFxuXHRcdFx0XHRcdH0pO1xuXHRcdFx0XHR9XG5cdFx0XHRcdHdyYXBwZXIuc2V0T3B0aW9uKFwid2lkdGhcIiwgb3B0aW9ucy53aWR0aCk7XG5cdFx0XHRcdHdyYXBwZXIuc2V0T3B0aW9uKFwiaGVpZ2h0XCIsIG9wdGlvbnMuaGVpZ2h0KTtcblx0XHRcdFx0d3JhcHBlci5kcmF3KCk7XG5cdFx0XHRcdHlhc3IudXBkYXRlSGVhZGVyKCk7XG5cdFx0XHR9XG5cdFx0XHRcblx0XHRcdGlmICghKHR5cGVvZiB3aW5kb3cgIT09IFwidW5kZWZpbmVkXCIgPyB3aW5kb3dbJ2dvb2dsZSddIDogdHlwZW9mIGdsb2JhbCAhPT0gXCJ1bmRlZmluZWRcIiA/IGdsb2JhbFsnZ29vZ2xlJ10gOiBudWxsKSB8fCAhKHR5cGVvZiB3aW5kb3cgIT09IFwidW5kZWZpbmVkXCIgPyB3aW5kb3dbJ2dvb2dsZSddIDogdHlwZW9mIGdsb2JhbCAhPT0gXCJ1bmRlZmluZWRcIiA/IGdsb2JhbFsnZ29vZ2xlJ10gOiBudWxsKS52aXN1YWxpemF0aW9uIHx8ICFlZGl0b3IpIHtcblx0XHRcdFx0cmVxdWlyZSgnLi9nQ2hhcnRMb2FkZXIuanMnKVxuXHRcdFx0XHRcdC5vbignZG9uZScsIGZ1bmN0aW9uKCkge1xuXHRcdFx0XHRcdFx0aW5pdEVkaXRvcigpO1xuXHRcdFx0XHRcdFx0ZG9EcmF3KCk7XG5cdFx0XHRcdFx0fSlcblx0XHRcdFx0XHQub24oJ2Vycm9yJywgZnVuY3Rpb24oKSB7XG5cdFx0XHRcdFx0XHRjb25zb2xlLmxvZygnZXJyb3JycicpO1xuXHRcdFx0XHRcdFx0Ly9UT0RPOiBkaXNhYmxlIG9yIHNvbWV0aGluZz9cblx0XHRcdFx0XHR9KVxuXHRcdFx0XHRcdC5nb29nbGVMb2FkKCk7XG5cdFx0XHR9IGVsc2Uge1xuXHRcdFx0XHQvL2V2ZXJ5dGhpbmcgKGVkaXRvciBhcyB3ZWxsKSBpcyBhbHJlYWR5IGluaXRpYWxpemVkXG5cdFx0XHRcdGRvRHJhdygpO1xuXHRcdFx0fVxuXHRcdH1cblx0fTtcbn07XG5yb290LmRlZmF1bHRzID0ge1xuXHRoZWlnaHQ6IFwiNjAwcHhcIixcblx0d2lkdGg6IFwiMTAwJVwiLFxuXHRwZXJzaXN0ZW5jeUlkOiAnZ2NoYXJ0Jyxcbn07XG5cbmZ1bmN0aW9uIGRlZXBFcSQoeCwgeSwgdHlwZSl7XG5cdHZhciB0b1N0cmluZyA9IHt9LnRvU3RyaW5nLCBoYXNPd25Qcm9wZXJ0eSA9IHt9Lmhhc093blByb3BlcnR5LFxuXHQgICAgaGFzID0gZnVuY3Rpb24gKG9iaiwga2V5KSB7IHJldHVybiBoYXNPd25Qcm9wZXJ0eS5jYWxsKG9iaiwga2V5KTsgfTtcbiAgdmFyIGZpcnN0ID0gdHJ1ZTtcbiAgcmV0dXJuIGVxKHgsIHksIFtdKTtcbiAgZnVuY3Rpb24gZXEoYSwgYiwgc3RhY2spIHtcbiAgICB2YXIgY2xhc3NOYW1lLCBsZW5ndGgsIHNpemUsIHJlc3VsdCwgYWxlbmd0aCwgYmxlbmd0aCwgciwga2V5LCByZWYsIHNpemVCO1xuICAgIGlmIChhID09IG51bGwgfHwgYiA9PSBudWxsKSB7IHJldHVybiBhID09PSBiOyB9XG4gICAgaWYgKGEuX19wbGFjZWhvbGRlcl9fIHx8IGIuX19wbGFjZWhvbGRlcl9fKSB7IHJldHVybiB0cnVlOyB9XG4gICAgaWYgKGEgPT09IGIpIHsgcmV0dXJuIGEgIT09IDAgfHwgMSAvIGEgPT0gMSAvIGI7IH1cbiAgICBjbGFzc05hbWUgPSB0b1N0cmluZy5jYWxsKGEpO1xuICAgIGlmICh0b1N0cmluZy5jYWxsKGIpICE9IGNsYXNzTmFtZSkgeyByZXR1cm4gZmFsc2U7IH1cbiAgICBzd2l0Y2ggKGNsYXNzTmFtZSkge1xuICAgICAgY2FzZSAnW29iamVjdCBTdHJpbmddJzogcmV0dXJuIGEgPT0gU3RyaW5nKGIpO1xuICAgICAgY2FzZSAnW29iamVjdCBOdW1iZXJdJzpcbiAgICAgICAgcmV0dXJuIGEgIT0gK2EgPyBiICE9ICtiIDogKGEgPT0gMCA/IDEgLyBhID09IDEgLyBiIDogYSA9PSArYik7XG4gICAgICBjYXNlICdbb2JqZWN0IERhdGVdJzpcbiAgICAgIGNhc2UgJ1tvYmplY3QgQm9vbGVhbl0nOlxuICAgICAgICByZXR1cm4gK2EgPT0gK2I7XG4gICAgICBjYXNlICdbb2JqZWN0IFJlZ0V4cF0nOlxuICAgICAgICByZXR1cm4gYS5zb3VyY2UgPT0gYi5zb3VyY2UgJiZcbiAgICAgICAgICAgICAgIGEuZ2xvYmFsID09IGIuZ2xvYmFsICYmXG4gICAgICAgICAgICAgICBhLm11bHRpbGluZSA9PSBiLm11bHRpbGluZSAmJlxuICAgICAgICAgICAgICAgYS5pZ25vcmVDYXNlID09IGIuaWdub3JlQ2FzZTtcbiAgICB9XG4gICAgaWYgKHR5cGVvZiBhICE9ICdvYmplY3QnIHx8IHR5cGVvZiBiICE9ICdvYmplY3QnKSB7IHJldHVybiBmYWxzZTsgfVxuICAgIGxlbmd0aCA9IHN0YWNrLmxlbmd0aDtcbiAgICB3aGlsZSAobGVuZ3RoLS0pIHsgaWYgKHN0YWNrW2xlbmd0aF0gPT0gYSkgeyByZXR1cm4gdHJ1ZTsgfSB9XG4gICAgc3RhY2sucHVzaChhKTtcbiAgICBzaXplID0gMDtcbiAgICByZXN1bHQgPSB0cnVlO1xuICAgIGlmIChjbGFzc05hbWUgPT0gJ1tvYmplY3QgQXJyYXldJykge1xuICAgICAgYWxlbmd0aCA9IGEubGVuZ3RoO1xuICAgICAgYmxlbmd0aCA9IGIubGVuZ3RoO1xuICAgICAgaWYgKGZpcnN0KSB7XG4gICAgICAgIHN3aXRjaCAodHlwZSkge1xuICAgICAgICBjYXNlICc9PT0nOiByZXN1bHQgPSBhbGVuZ3RoID09PSBibGVuZ3RoOyBicmVhaztcbiAgICAgICAgY2FzZSAnPD09JzogcmVzdWx0ID0gYWxlbmd0aCA8PSBibGVuZ3RoOyBicmVhaztcbiAgICAgICAgY2FzZSAnPDw9JzogcmVzdWx0ID0gYWxlbmd0aCA8IGJsZW5ndGg7IGJyZWFrO1xuICAgICAgICB9XG4gICAgICAgIHNpemUgPSBhbGVuZ3RoO1xuICAgICAgICBmaXJzdCA9IGZhbHNlO1xuICAgICAgfSBlbHNlIHtcbiAgICAgICAgcmVzdWx0ID0gYWxlbmd0aCA9PT0gYmxlbmd0aDtcbiAgICAgICAgc2l6ZSA9IGFsZW5ndGg7XG4gICAgICB9XG4gICAgICBpZiAocmVzdWx0KSB7XG4gICAgICAgIHdoaWxlIChzaXplLS0pIHtcbiAgICAgICAgICBpZiAoIShyZXN1bHQgPSBzaXplIGluIGEgPT0gc2l6ZSBpbiBiICYmIGVxKGFbc2l6ZV0sIGJbc2l6ZV0sIHN0YWNrKSkpeyBicmVhazsgfVxuICAgICAgICB9XG4gICAgICB9XG4gICAgfSBlbHNlIHtcbiAgICAgIGlmICgnY29uc3RydWN0b3InIGluIGEgIT0gJ2NvbnN0cnVjdG9yJyBpbiBiIHx8IGEuY29uc3RydWN0b3IgIT0gYi5jb25zdHJ1Y3Rvcikge1xuICAgICAgICByZXR1cm4gZmFsc2U7XG4gICAgICB9XG4gICAgICBmb3IgKGtleSBpbiBhKSB7XG4gICAgICAgIGlmIChoYXMoYSwga2V5KSkge1xuICAgICAgICAgIHNpemUrKztcbiAgICAgICAgICBpZiAoIShyZXN1bHQgPSBoYXMoYiwga2V5KSAmJiBlcShhW2tleV0sIGJba2V5XSwgc3RhY2spKSkgeyBicmVhazsgfVxuICAgICAgICB9XG4gICAgICB9XG4gICAgICBpZiAocmVzdWx0KSB7XG4gICAgICAgIHNpemVCID0gMDtcbiAgICAgICAgZm9yIChrZXkgaW4gYikge1xuICAgICAgICAgIGlmIChoYXMoYiwga2V5KSkgeyArK3NpemVCOyB9XG4gICAgICAgIH1cbiAgICAgICAgaWYgKGZpcnN0KSB7XG4gICAgICAgICAgaWYgKHR5cGUgPT09ICc8PD0nKSB7XG4gICAgICAgICAgICByZXN1bHQgPSBzaXplIDwgc2l6ZUI7XG4gICAgICAgICAgfSBlbHNlIGlmICh0eXBlID09PSAnPD09Jykge1xuICAgICAgICAgICAgcmVzdWx0ID0gc2l6ZSA8PSBzaXplQlxuICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICByZXN1bHQgPSBzaXplID09PSBzaXplQjtcbiAgICAgICAgICB9XG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgZmlyc3QgPSBmYWxzZTtcbiAgICAgICAgICByZXN1bHQgPSBzaXplID09PSBzaXplQjtcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH1cbiAgICBzdGFjay5wb3AoKTtcbiAgICByZXR1cm4gcmVzdWx0O1xuICB9XG59XG4iXX0=
+},{"./exceptions.js":45,"./gChartLoader.js":47,"./utils.js":63,"jquery":18,"yasgui-utils":36}],49:[function(require,module,exports){
 'use strict';
 module.exports = {
 	cross: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><g>	<path d="M83.288,88.13c-2.114,2.112-5.575,2.112-7.689,0L53.659,66.188c-2.114-2.112-5.573-2.112-7.687,0L24.251,87.907   c-2.113,2.114-5.571,2.114-7.686,0l-4.693-4.691c-2.114-2.114-2.114-5.573,0-7.688l21.719-21.721c2.113-2.114,2.113-5.573,0-7.686   L11.872,24.4c-2.114-2.113-2.114-5.571,0-7.686l4.842-4.842c2.113-2.114,5.571-2.114,7.686,0L46.12,33.591   c2.114,2.114,5.572,2.114,7.688,0l21.721-21.719c2.114-2.114,5.573-2.114,7.687,0l4.695,4.695c2.111,2.113,2.111,5.571-0.003,7.686   L66.188,45.973c-2.112,2.114-2.112,5.573,0,7.686L88.13,75.602c2.112,2.111,2.112,5.572,0,7.687L83.288,88.13z"/></g></svg>',
@@ -54242,9 +55319,9 @@ module.exports = {
 	fullscreen: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"      x="0px"   y="0px"   width="100%"   height="100%"   viewBox="5 -10 74.074074 100"   enable-background="new 0 0 100 100"   xml:space="preserve"   inkscape:version="0.48.4 r9939"   sodipodi:docname="noun_2186_cc.svg"><metadata     ><rdf:RDF><cc:Work         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs      /><sodipodi:namedview     pagecolor="#ffffff"     bordercolor="#666666"     borderopacity="1"     objecttolerance="10"     gridtolerance="10"     guidetolerance="10"     inkscape:pageopacity="0"     inkscape:pageshadow="2"     inkscape:window-width="640"     inkscape:window-height="480"          showgrid="false"     fit-margin-top="0"     fit-margin-left="0"     fit-margin-right="0"     fit-margin-bottom="0"     inkscape:zoom="2.36"     inkscape:cx="44.101509"     inkscape:cy="31.481481"     inkscape:window-x="65"     inkscape:window-y="24"     inkscape:window-maximized="0"     inkscape:current-layer="Layer_1" /><path     d="m -7.962963,-10 v 38.889 l 16.667,-16.667 16.667,16.667 5.555,-5.555 -16.667,-16.667 16.667,-16.667 h -38.889 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 92.037037,-10 v 38.889 l -16.667,-16.667 -16.666,16.667 -5.556,-5.555 16.666,-16.667 -16.666,-16.667 h 38.889 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="M -7.962963,90 V 51.111 l 16.667,16.666 16.667,-16.666 5.555,5.556 -16.667,16.666 16.667,16.667 h -38.889 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="M 92.037037,90 V 51.111 l -16.667,16.666 -16.666,-16.666 -5.556,5.556 16.666,16.666 -16.666,16.667 h 38.889 z"          inkscape:connector-curvature="0"     style="fill:#010101" /></svg>',
 	smallscreen: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"      x="0px"   y="0px"   width="100%"   height="100%"   viewBox="5 -10 74.074074 100"   enable-background="new 0 0 100 100"   xml:space="preserve"   inkscape:version="0.48.4 r9939"   sodipodi:docname="noun_2186_cc.svg"><metadata     ><rdf:RDF><cc:Work         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs      /><sodipodi:namedview     pagecolor="#ffffff"     bordercolor="#666666"     borderopacity="1"     objecttolerance="10"     gridtolerance="10"     guidetolerance="10"     inkscape:pageopacity="0"     inkscape:pageshadow="2"     inkscape:window-width="1855"     inkscape:window-height="1056"          showgrid="false"     fit-margin-top="0"     fit-margin-left="0"     fit-margin-right="0"     fit-margin-bottom="0"     inkscape:zoom="2.36"     inkscape:cx="44.101509"     inkscape:cy="31.481481"     inkscape:window-x="65"     inkscape:window-y="24"     inkscape:window-maximized="1"     inkscape:current-layer="Layer_1" /><path     d="m 30.926037,28.889 0,-38.889 -16.667,16.667 -16.667,-16.667 -5.555,5.555 16.667,16.667 -16.667,16.667 38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 53.148037,28.889 0,-38.889 16.667,16.667 16.666,-16.667 5.556,5.555 -16.666,16.667 16.666,16.667 -38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 30.926037,51.111 0,38.889 -16.667,-16.666 -16.667,16.666 -5.555,-5.556 16.667,-16.666 -16.667,-16.667 38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 53.148037,51.111 0,38.889 16.667,-16.666 16.666,16.666 5.556,-5.556 -16.666,-16.666 16.666,-16.667 -38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /></svg>',
 };
-},{}],39:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 require('./tableToCsv.js');
-},{"./tableToCsv.js":40}],40:[function(require,module,exports){
+},{"./tableToCsv.js":51}],51:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 
@@ -54344,7 +55421,7 @@ $.fn.tableToCsv = function(config) {
 }
 
 
-},{"jquery":18}],41:[function(require,module,exports){
+},{"jquery":18}],52:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 var utils = require("yasgui-utils");
@@ -54840,13 +55917,13 @@ try {root.registerOutput('error', require("./error.js"))} catch(e){};
 try {root.registerOutput('pivot', require("./pivot.js"))} catch(e){};
 try {root.registerOutput('gchart', require("./gchart.js"))} catch(e){};
 
-},{"../package.json":28,"./boolean.js":30,"./booleanBootstrap.js":31,"./defaults.js":32,"./error.js":33,"./extensions.js":35,"./gChartLoader.js":36,"./gchart.js":37,"./imgs.js":38,"./jquery/extendJquery.js":39,"./parsers/wrapper.js":47,"./pivot.js":49,"./rawResponse.js":50,"./table.js":51,"./utils.js":52,"jquery":18,"yasgui-utils":25}],42:[function(require,module,exports){
+},{"../package.json":39,"./boolean.js":41,"./booleanBootstrap.js":42,"./defaults.js":43,"./error.js":44,"./extensions.js":46,"./gChartLoader.js":47,"./gchart.js":48,"./imgs.js":49,"./jquery/extendJquery.js":50,"./parsers/wrapper.js":58,"./pivot.js":60,"./rawResponse.js":61,"./table.js":62,"./utils.js":63,"jquery":18,"yasgui-utils":36}],53:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 var root = module.exports = function(queryResponse) {
 	return require("./dlv.js")(queryResponse, ",");
 };
-},{"./dlv.js":43,"jquery":18}],43:[function(require,module,exports){
+},{"./dlv.js":54,"jquery":18}],54:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 require("../../lib/jquery.csv-0.71.js");
@@ -54908,7 +55985,7 @@ var root = module.exports = function(queryResponse, separator) {
 	
 	return json;
 };
-},{"../../lib/jquery.csv-0.71.js":4,"jquery":18}],44:[function(require,module,exports){
+},{"../../lib/jquery.csv-0.71.js":4,"jquery":18}],55:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 var _ = require('lodash');
@@ -54985,7 +56062,7 @@ var root = module.exports = function(responseJson) {
 	return false;
 	
 };
-},{"jquery":18,"lodash":19}],45:[function(require,module,exports){
+},{"jquery":18,"lodash":19}],56:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 
@@ -55004,13 +56081,13 @@ var root = module.exports = function(queryResponse) {
 	return false;
 	
 };
-},{"jquery":18}],46:[function(require,module,exports){
+},{"jquery":18}],57:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 var root = module.exports = function(queryResponse) {
 	return require("./dlv.js")(queryResponse, "\t");
 };
-},{"./dlv.js":43,"jquery":18}],47:[function(require,module,exports){
+},{"./dlv.js":54,"jquery":18}],58:[function(require,module,exports){
 'use strict';
 var $ = require("jquery"),
 	_ = require('lodash');
@@ -55284,7 +56361,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 
 
 
-},{"./csv.js":42,"./graphJson.js":44,"./json.js":45,"./tsv.js":46,"./xml.js":48,"jquery":18,"lodash":19}],48:[function(require,module,exports){
+},{"./csv.js":53,"./graphJson.js":55,"./json.js":56,"./tsv.js":57,"./xml.js":59,"jquery":18,"lodash":19}],59:[function(require,module,exports){
 'use strict';
 var $ = require("jquery");
 var root = module.exports = function(xml) {
@@ -55370,7 +56447,7 @@ var root = module.exports = function(xml) {
 	return json;
 };
 
-},{"jquery":18}],49:[function(require,module,exports){
+},{"jquery":18}],60:[function(require,module,exports){
 'use strict';
 var $ = require("jquery"),
 	utils = require('./utils.js'),
@@ -55596,7 +56673,6 @@ var root = module.exports = function(yasr) {
 		
 		var svgEl = yasr.resultsContainer.find('.pvtRendererArea svg')
 			.clone()//create clone, as we'd like to remove height/width attributes
-			.removeAttr('height').removeAttr('width')
 			.css('height', '').css('width','');
 		if (svgEl.length == 0) return null;
 		
@@ -55635,7 +56711,7 @@ root.version = {
 	"jquery": $.fn.jquery,
 };
 
-},{"../node_modules/pivottable/dist/d3_renderers.js":20,"../node_modules/pivottable/dist/gchart_renderers.js":21,"../package.json":28,"./gChartLoader.js":36,"./imgs.js":38,"./utils.js":52,"jquery":18,"jquery-ui/sortable":16,"pivottable":22,"yasgui-utils":25}],50:[function(require,module,exports){
+},{"../node_modules/pivottable/dist/d3_renderers.js":20,"../node_modules/pivottable/dist/gchart_renderers.js":21,"../package.json":39,"./gChartLoader.js":47,"./imgs.js":49,"./utils.js":63,"jquery":18,"jquery-ui/sortable":16,"pivottable":22,"yasgui-utils":36}],61:[function(require,module,exports){
 'use strict';
 var $ = require("jquery"),
 	CodeMirror = require("codemirror");
@@ -55725,7 +56801,7 @@ root.version = {
 	"jquery": $.fn.jquery,
 	"CodeMirror" : CodeMirror.version
 };
-},{"../package.json":28,"codemirror":10,"codemirror/addon/edit/matchbrackets.js":5,"codemirror/addon/fold/brace-fold.js":6,"codemirror/addon/fold/foldcode.js":7,"codemirror/addon/fold/foldgutter.js":8,"codemirror/addon/fold/xml-fold.js":9,"codemirror/mode/javascript/javascript.js":11,"codemirror/mode/xml/xml.js":12,"jquery":18}],51:[function(require,module,exports){
+},{"../package.json":39,"codemirror":10,"codemirror/addon/edit/matchbrackets.js":5,"codemirror/addon/fold/brace-fold.js":6,"codemirror/addon/fold/foldcode.js":7,"codemirror/addon/fold/foldgutter.js":8,"codemirror/addon/fold/xml-fold.js":9,"codemirror/mode/javascript/javascript.js":11,"codemirror/mode/xml/xml.js":12,"jquery":18}],62:[function(require,module,exports){
 'use strict';
 var $ = require("jquery"),
 	yutils = require("yasgui-utils"),
@@ -56019,9 +57095,13 @@ var getCellContent = function(yasr, plugin, bindings, sparqlVar, context) {
 // Custom getCellContent
 var getCellContentCustom = function(yasr, plugin, bindings, sparqlVar, context) {
 	var binding = bindings[sparqlVar];
-	var value = null;
+	return getEntityHTML(binding, context);
+};
+
+var getEntityHTML = function(binding, context) {
 	var divClass = ""
-	if (binding.type == "uri") {
+	var entityHtml = null;
+	if (binding.type === "uri") {
 		var title = null;
 		var href = binding.value;
 		var localHref;
@@ -56045,27 +57125,49 @@ var getCellContentCustom = function(yasr, plugin, bindings, sparqlVar, context) 
 
         localHref = localHref.replace(/'/g, "&#39;");
         href = href.replace(/'/g, "&#39;");
-
-
-		value = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + _.escape(visibleString) + "</a> " +
+        entityHtml = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + _.escape(visibleString) + "</a> " +
 		"<a class='fa fa-link share-result' data-clipboard-text='" + href + "' title='Copy to Clipboard' href='#'></a>";
-		divClass = " class = 'uri-cell'"
+		divClass = " class = 'uri-cell'";
+	} else if (binding.type === "triple") {
+		var sEl = getEntityHTML(binding.value['s'], context);
+		var pEl = getEntityHTML(binding.value['p'], context);
+		var oEl = getEntityHTML(binding.value['o'], context);
+		var tripleList = "<ul class='triple-list'><li>" + sEl + "</li><li>" + pEl + "</li><li>" + oEl + "</li></ul>";
+		var tripleString = getTripleString(yasr, binding, true);
+		var localHref = "resource?uri=" + encodeURIComponent(tripleString).replace(/'/g, "&#39;");
+		var title = _.escape(tripleString);
+		var openLink = "<a title='" + title + "' class='triple-link' href='" + localHref + "'>" + _.escape("<<") + "</a>";
+		var closeLink = "<a title='" + title + "' class='triple-link triple-link-end' href='" + localHref + "'>" + _.escape(">>") + "</a>";
+		entityHtml = openLink + tripleList + closeLink + "<a class='fa fa-link share-result' data-clipboard-text='" + tripleString + "' title='Copy to Clipboard' href='#'></a>";
+		divClass = " class = 'triple-cell'";
 	} else {
-		value = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, plugin, binding) + "</p>";
+		entityHtml = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, binding) + "</p>";
+		divClass = " class = 'literal-cell'";
 	}
-	return "<div" + divClass +  ">" + value + "</div>";
-};
+	return "<div" + divClass +  ">" + entityHtml + "</div>";
+}
 
-var formatLiteralCustom = function(yasr, plugin, literalBinding) {
+var getTripleString = function(yasr, binding, skipSup) {
+	if (binding.type === "uri") {
+		return "<" + binding.value + ">";
+	}
+	if (binding.type === "triple") {
+		return "<<" + getTripleString(yasr, binding.value['s'], skipSup) + " " + getTripleString(yasr, binding.value['p'], skipSup) + " " + getTripleString(yasr, binding.value['o'], skipSup) + ">>";
+	}
+	return formatLiteralCustom(yasr, binding, skipSup);
+
+}
+
+var formatLiteralCustom = function(yasr, literalBinding, skipSup) {
 	var stringRepresentation = utils.escapeHtmlEntities(literalBinding.value);
 	var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
 	if (literalBinding.type == "bnode") {
 		return "_:" + stringRepresentation;
 	}
 	else if (literalBinding["xml:lang"]) {
-		stringRepresentation = '"' + stringRepresentation + '"<sup>@' + literalBinding["xml:lang"] + '</sup>';
+		stringRepresentation = '"' + stringRepresentation + ((!skipSup) ? '"<sup>': '"') + '@' + literalBinding["xml:lang"] + ((!skipSup) ? '"</sup>': '');
 	} else if (literalBinding["lang"]) {
-		stringRepresentation = '"' + stringRepresentation + '"<sup>@' + literalBinding["lang"] + '</sup>';
+		stringRepresentation = '"' + stringRepresentation + ((!skipSup) ? '"<sup>': '"' + '@') + literalBinding["lang"] + ((!skipSup) ? '"</sup>': '');
 	} else if (literalBinding.datatype && !(literalBinding.datatype === xmlSchemaNs + 'string')) {
 		var dataType = literalBinding.datatype;
 		if (dataType.indexOf(xmlSchemaNs) === 0) {
@@ -56074,7 +57176,7 @@ var formatLiteralCustom = function(yasr, plugin, literalBinding) {
 			dataType = "&lt;" + dataType + "&gt;";
 		}
 
-		stringRepresentation = '"' + stringRepresentation + '"<sup>^^' + dataType + '</sup>';
+		stringRepresentation = '"' + stringRepresentation + ((!skipSup) ? '"<sup>': '"') + '^^' + dataType + ((!skipSup) ? '"</sup>': '');
 	}
 	return stringRepresentation;
 };
@@ -56240,7 +57342,7 @@ root.version = {
 };
 
 
-},{"../lib/DataTables/media/js/jquery.dataTables.js":2,"../lib/colResizable-1.4.js":3,"../package.json":28,"./bindingsToCsv.js":29,"./imgs.js":38,"./utils.js":52,"jquery":18,"lodash":19,"yasgui-utils":25}],52:[function(require,module,exports){
+},{"../lib/DataTables/media/js/jquery.dataTables.js":2,"../lib/colResizable-1.4.js":3,"../package.json":39,"./bindingsToCsv.js":40,"./imgs.js":49,"./utils.js":63,"jquery":18,"lodash":19,"yasgui-utils":36}],63:[function(require,module,exports){
 'use strict';
 var $ = require('jquery'),
 	_ = require('lodash'),
@@ -56391,7 +57493,7 @@ var parseXmlSchemaDate = function(dateString) {
 	if (isNaN(date)) return null;
 	return date;
 };
-},{"./exceptions.js":34,"jquery":18,"lodash":19}]},{},[1])(1)
+},{"./exceptions.js":45,"jquery":18,"lodash":19}]},{},[1])(1)
 });
 
 
