@@ -54377,14 +54377,13 @@ module.exports={
     "url": "https://github.com/YASGUI/YASR.git"
   },
   "dependencies": {
-    "codemirror": "^4.7.0",
-    "cytoscape": "^2.3.11",
     "jquery": "1.11.0",
-    "jquery-ui": "1.10.5",
-    "lodash": "^3.6.0",
-    "node-sass": "^4.13.1",
+    "codemirror": "^4.7.0",
+    "yasgui-utils": "^1.4.1",
     "pivottable": "^1.2.2",
-    "yasgui-utils": "^1.4.1"
+    "jquery-ui": "1.10.5",
+    "cytoscape": "^2.3.11",
+    "lodash": "^3.6.0"
   },
   "browserify-shim": {
     "google": "global:google"
@@ -56016,7 +56015,7 @@ var getAsObject = function(entity) {
 var root = module.exports = function(responseJson) {
 	if (responseJson) {
 		var hasContext = ('RESOURCE' == window.editor.getQueryType());
-		var mapped = _.map(responseJson, function(value, subject) { 
+		var mapped = _.map(responseJson, function(value, subject) {
 			return _.map(value, function (value1, predicate) {
 				return _.map(value1, function(object) {
 					if (object.graphs) {
@@ -56060,7 +56059,7 @@ var root = module.exports = function(responseJson) {
 
 	}
 	return false;
-	
+
 };
 },{"jquery":18,"lodash":19}],56:[function(require,module,exports){
 'use strict';
@@ -56188,8 +56187,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 					try {
 						json = parsers.json(origResponse, window.editor.getQueryType());
 						rawJson = json;
-						var qType = window.editor.getQueryType();
-						if (qType == "DESCRIBE" || qType == "CONSTRUCT" || qType == "RESOURCE") {
+						if (contentType.indexOf("application/rdf+json") > -1) {
 							json = parsers.graphJson(rawJson);
 						}
 					} catch (e) {
