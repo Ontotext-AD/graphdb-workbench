@@ -114,8 +114,8 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                 cursorHeight: 1.0,
                 sparql: {
                     showQueryButton: false,
-                    acceptHeaderGraph: "application/x-sparqlstar-results+json,*/*;q=0.9",
-                    acceptHeaderSelect: "application/x-sparqlstar-results+json,*/*;q=0.9"
+                    acceptHeaderGraph: "application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8",
+                    acceptHeaderSelect: "application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8"
                 },
                 // We provide a wrapper for executeQuery so we have to redefine those here
                 extraKeys: {
