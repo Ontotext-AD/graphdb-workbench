@@ -54867,11 +54867,17 @@ module.exports = {
                                         '<a class="format dropdown-item" data-accepts="text/turtle" href="#">Turtle</a>' +
                                     '</li>' + 
                                     '<li>' + 
+                                        '<a class="format dropdown-item" data-accepts="application/x-turtlestar" href="#">Turtle*</a>' +
+                                    '</li>' + 
+                                    '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/trix" href="#">TriX</a>' +
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/x-trig" href="#">TriG</a>' +
                                     '</li>' +   
+                                    '<li>' + 
+                                        '<a class="format dropdown-item" data-accepts="application/x-trigstar" href="#">TriG*</a>' +
+                                    '</li>' +  
                                     '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/x-binary-rdf" href="#">Binary RDF</a>' +
                                     '</li>' +                                   
@@ -57132,7 +57138,7 @@ var getEntityHTML = function(binding, context) {
 		var oEl = getEntityHTML(binding.value['o'], context);
 		var tripleList = "<ul class='triple-list'><li>" + sEl + "</li><li>" + pEl + "</li><li>" + oEl + "</li></ul>";
 		var tripleString = getTripleString(yasr, binding, true);
-		var localHref = "resource?uri=" + encodeURIComponent(tripleString).replace(/'/g, "&#39;");
+		var localHref = "resource?triple=" + encodeURIComponent(tripleString).replace(/'/g, "&#39;");
 		var title = _.escape(tripleString);
 		var openLink = "<a title='" + title + "' class='triple-link' href='" + localHref + "'>" + _.escape("<<") + "</a>";
 		var closeLink = "<a title='" + title + "' class='triple-link triple-link-end' href='" + localHref + "'>" + _.escape(">>") + "</a>";
