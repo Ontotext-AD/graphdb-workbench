@@ -77,6 +77,28 @@ describe('=> ExploreCtrl tests', function () {
             expect($scope.getLocalName('someTest/string')).toEqual('string');
         })
     })
+
+    describe('$scope.getRdfStarLocalNames()', function () {
+        it('should return triple resources correct local names', function () {
+            $httpBackend.flush();
+            const triple1 = '<<<http://www.wikidata.org/entity/S1> <http://www.wikidata.org/prop/P1> <http://www.wikidata.org/entity/O1>>>'
+            const triple2 = '<<<<<http://www.wikidata.org/entity/S1> <http://www.wikidata.org/prop/P1> <http://www.wikidata.org/entity/O1>>> <http://www.wikidata.org/prop/qualifier/P2> "datetime"^^<http://www.w3.org/2001/XMLSchema#xsd:dateTime>>>'
+            expect($scope.getRdfStarLocalNames(triple1)).toEqual('<<<S1> <P1> <O1>>>');
+            expect($scope.getRdfStarLocalNames(triple2)).toEqual('<<<<<S1> <P1> <O1>>> <P2> "datetime"^^<http://www.w3.org/2001/XMLSchema#xsd:dateTime>>>');
+
+        });
+    });
+
+
+    describe('$scope.isTripleResource()', function () {
+        it('should return true if triple resource', function () {
+            $httpBackend.flush();
+            $scope.tripleParam = '<<<S1> <P1> <O1>>>';
+
+            expect($scope.isTripleResource()).toBeTruthy();
+
+        });
+    });
 });
 
 describe('=> EditResourceCtrl', function () {
