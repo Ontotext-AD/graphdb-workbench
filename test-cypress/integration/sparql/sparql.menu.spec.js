@@ -1,6 +1,7 @@
 import ImportSteps from '../../steps/import-steps';
 
 const FILE_TO_IMPORT = 'wine.rdf';
+const RDF_STAR_FILE_TO_IMPORT = 'turtlestar-data.ttls';
 
 describe('SPARQL screen validation', () => {
     let repositoryId;
@@ -17,6 +18,8 @@ describe('SPARQL screen validation', () => {
         'select * {\n' +
         '    ?x spif:for (1 2000)\n' +
         '} limit 1001';
+
+    const SPARQL_STAR_QUERY = 'select (<<?s ?p ?o>> as ?t) {?s ?p ?o}';
 
     function createRepoAndVisit(repoOptions = {}) {
         createRepository(repoOptions);
@@ -104,6 +107,24 @@ describe('SPARQL screen validation', () => {
             goToPage(2);
 
             verifyResultsPageLength(1);
+        });
+
+        it.only('Test execute sparqlstar query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            typeQuery(SPARQL_STAR_QUERY);
+
+            verifyQueryAreaEquals(SPARQL_STAR_QUERY);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            verifyResultsPageLength(104);
+
+            getTableResultRows().should('contain', '<<');
+
+            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
         });
 
         it('Test filter query results', () => {
