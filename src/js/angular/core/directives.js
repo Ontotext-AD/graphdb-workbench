@@ -307,7 +307,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             const defaultVisualCallback = function (params) {
-                if ('uri' == params.type || !params.type) {
+                if ('uri' === params.type || !params.type) {
                     $location.path('graphs-visualizations').search('uri', params.uri);
                 }
             };
@@ -365,8 +365,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     // TODO: we should rather introduce direct support for this in the autocomplete plugin
                     let label = '';
                     if (resource.description) {
-                        const suffixedEscapedUri = '&lt;' + textResource + '&gt;';
-                        const indexOfSuffixed = resource.description.indexOf(suffixedEscapedUri);
+                        const indexOfSuffixed = resource.description.indexOf('&lt;' + textResource + '&gt;');
                         if (indexOfSuffixed > 0) {
                             label = resource.description.substring(0, indexOfSuffixed).replace(/<\/?b>/g, "");
                         }
