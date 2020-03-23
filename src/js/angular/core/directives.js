@@ -303,11 +303,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             const defaultTextCallback = function (params) {
                 var param = params.type || 'uri';
-                $location.path('resource').search(param, params.resource);
+                $location.path('resource').search(param, params.uri);
             };
 
             const defaultVisualCallback = function (params) {
-                $location.path('graphs-visualizations').search('uri', params.uri);
+                if ('uri' == params.type || !params.type) {
+                    $location.path('graphs-visualizations').search('uri', params.uri);
+                }
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
@@ -370,7 +372,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         }
                     }
 
-                    callback({resource: textResource, description: resource.description, label: label, type: resource.type});
+                    callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
                     $scope.autoCompleteUriResults = [];
                     if ($scope.preserveInput === 'true') {
