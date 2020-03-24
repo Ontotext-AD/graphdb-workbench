@@ -354,8 +354,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     let textResource;
                     if (angular.isUndefined(resource)) {
                         textResource = $scope.searchInput;
-                    }
-                    if (typeof resource === 'object') {
+                    } else if (typeof resource === 'object') {
                         textResource = resource.value;
                     } else {
                         textResource = resource;
