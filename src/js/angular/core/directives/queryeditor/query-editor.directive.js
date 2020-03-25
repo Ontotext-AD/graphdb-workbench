@@ -1,6 +1,6 @@
 import 'angular/rest/connectors.rest.service';
 import 'angular/utils/local-storage-adapter';
-import YASQE from 'lib/yasqe.bundled.min';
+import YASQE from 'lib/yasqe.bundled';
 import YASR from 'lib/yasr.bundled';
 
 angular
