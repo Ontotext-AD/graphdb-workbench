@@ -34,6 +34,11 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         return !!$scope.tripleParam;
     };
 
+    // TODO move this to core
+    $scope.encodeURIComponent = function (param) {
+        return encodeURIComponent(param);
+    };
+
     $scope.getRdfStarLocalNames = function(triple) {
         let localNames = triple.slice();
         const trimmed =  triple.replace(/[<>]+/g, '');
