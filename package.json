@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.3.0-RC1",
+    "version": "1.3.0-RC2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "preinstall": "npx npm-force-resolutions",
@@ -35,7 +35,7 @@
         "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
     },
     "versions": {
-        "graphdb": "9.2.0-RC3"
+        "graphdb": "9.2.0-RC4"
     },
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
     "devDependencies": {
