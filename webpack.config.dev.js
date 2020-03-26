@@ -4,7 +4,7 @@ const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const host = 'localhost';
+const host = 'lom.int.ontotext.com';
 const portHere = 9000;
 const portThere = 7200;
 
