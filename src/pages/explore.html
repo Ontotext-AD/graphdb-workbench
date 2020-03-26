@@ -37,7 +37,7 @@
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
         <p>
-            <span>Target:</span>&nbsp;<a href="sparql?query=describe{{tripleParam}}">{{tripleParam}}</a>
+            <span>Target:</span>&nbsp;<a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}">{{tripleParam}}</a>
         </p>
     </div>
 
