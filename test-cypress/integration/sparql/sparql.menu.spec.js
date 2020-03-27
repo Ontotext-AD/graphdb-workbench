@@ -1,6 +1,7 @@
 import ImportSteps from '../../steps/import-steps';
 
 const FILE_TO_IMPORT = 'wine.rdf';
+const RDF_STAR_FILE_TO_IMPORT = 'turtlestar-data.ttls';
 
 describe('SPARQL screen validation', () => {
     let repositoryId;
@@ -17,6 +18,8 @@ describe('SPARQL screen validation', () => {
         'select * {\n' +
         '    ?x spif:for (1 2000)\n' +
         '} limit 1001';
+
+    const SPARQL_STAR_QUERY = 'select (<<?s ?p ?o>> as ?t) {?s ?p ?o}';
 
     function createRepoAndVisit(repoOptions = {}) {
         createRepository(repoOptions);
@@ -105,6 +108,152 @@ describe('SPARQL screen validation', () => {
 
             verifyResultsPageLength(1);
         });
+
+        it('Test execute sparqlstar query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            typeQuery(SPARQL_STAR_QUERY);
+
+            verifyQueryAreaEquals(SPARQL_STAR_QUERY);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            verifyResultsPageLength(104);
+
+            getTableResultRows().should('contain', '<<');
+
+            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+        });
+
+        it('Test execute sparqlstar select with bind query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let selectQuery = 'select * {bind (<<?s ?p ?o>> as ?t) .}';
+
+            typeQuery(selectQuery);
+
+            verifyQueryAreaEquals(selectQuery);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            verifyResultsPageLength(3);
+
+            getTableResultRows().should('contain', '<<');
+
+            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+        });
+
+        it('Test execute sparqlstar insert query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let insertQuery = 'insert data {<<<urn:a> <urn:p> 1>> <urn:x> 2}';
+
+            typeQuery(insertQuery);
+
+            verifyQueryAreaEquals(insertQuery);
+
+            executeQuery();
+
+            getUpdateMessage()
+                .should('be.visible')
+                .and('contain', 'Added 1 statements');
+
+            getResultPages().should('have.length', 1);
+        });
+
+        it('Test execute sparqlstar select searching for inserted results', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let selectQuery = 'select * where {<<<urn:a> <urn:p> 1>> ?p ?o .}';
+
+            typeQuery(selectQuery);
+
+            verifyQueryAreaEquals(selectQuery);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            verifyResultsPageLength(1);
+
+            getTableResultRows().should('contain', '<urn:x>');
+        });
+
+        it('Test execute sparqlstar delete query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let deleteQuery = 'delete data {<<<urn:a> <urn:p> 1>> <urn:x> 2}';
+
+            typeQuery(deleteQuery);
+
+            verifyQueryAreaEquals(deleteQuery);
+
+            executeQuery();
+
+            getUpdateMessage()
+                .should('be.visible')
+                .and('contain', 'Removed 1 statements');
+
+            getResultPages().should('have.length', 1);
+        });
+
+        it.only('Test execute sparqlstar select searching for deleted results', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let selectQuery = 'select * where {<<<urn:a> <urn:p> 1>> ?p ?o .}';
+
+            typeQuery(selectQuery);
+
+            verifyQueryAreaEquals(selectQuery);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            verifyResultsPageLength(1);
+
+            cy.get('.results-info .results-description')
+                .should('be.visible')
+                .and('contain', 'No results');
+        });
+
+
+        it('Test execute (Describe with bind) sparqlstar query', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            let describeQuery = 'describe ?t {bind (<<?s ?p ?o>> as ?t) .}';
+
+            pasteQuery(describeQuery);
+
+            verifyQueryAreaEquals(describeQuery);
+
+            executeQuery();
+
+            getResultsMessage()
+                .should('be.visible')
+                .and('contain', 'Showing results')
+                .and('contain', 'Query took');
+            getResultsWrapper()
+                .should('be.visible');
+
+            getResultPages().should('have.length', 1);
+            verifyResultsPageLength(9);
+
+            getTableResultRows().should('contain', '<<');
+
+            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+
+            // Confirm that all tabs Raw Response, Pivot Table, Google chart are enabled
+            getTableResponseButton().should('be.visible').and('not.be.disabled');
+            getRawResponseButton().should('be.visible').and('not.be.disabled');
+            getPivotTableButton().should('be.visible').and('not.be.disabled');
+            getGoogleChartButton().should('be.visible').and('not.be.disabled');
+        });
+
 
         it('Test filter query results', () => {
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);

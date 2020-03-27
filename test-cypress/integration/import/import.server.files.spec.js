@@ -8,6 +8,8 @@ describe('Import screen validation - server files', () => {
     const CONTEXT = 'http://example.org/context';
     const SUCCESS_MESSAGE = 'Imported successfully';
     const FILE_FOR_IMPORT = 'italian_public_schools_links.nt.gz';
+    const TTLS_FOR_IMPORT = 'test_turtlestar.ttls';
+    const TRIGS_FOR_IMPORT = 'test-trigstar.trigs';
     const BLANK_NODE_FILE = 'bnodes.ttl';
 
     beforeEach(() => {
@@ -68,4 +70,20 @@ describe('Import screen validation - server files', () => {
             .verifyNoImportStatus(BLANK_NODE_FILE)
             .verifyNoImportStatus(FILE_FOR_IMPORT);
     });
+
+    it('Test import turtlestar from Server files successfully without changing settings', () => {
+        ImportSteps
+            .selectServerFile(TTLS_FOR_IMPORT)
+            .importServerFiles()
+            .verifyImportStatus(TTLS_FOR_IMPORT, SUCCESS_MESSAGE)
+            .verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
+    });
+    it('Test import trigstar from Server files successfully without changing settings', () => {
+        ImportSteps
+            .selectServerFile(TRIGS_FOR_IMPORT)
+            .importServerFiles()
+            .verifyImportStatus(TRIGS_FOR_IMPORT, SUCCESS_MESSAGE)
+            .verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
+    });
+
 });
