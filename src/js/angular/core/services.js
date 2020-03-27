@@ -229,17 +229,17 @@ function ClassInstanceDetailsService($http) {
         } else {
             let trimmedUri;
             const size = uri.length - 1;
-            let idxSlash = uri.lastIndexOf('/');
+            let idxSlash = uri.toString().lastIndexOf('/');
             if (idxSlash === size) {
                 trimmedUri = uri.substr(0, size);
                 idxSlash = trimmedUri.lastIndexOf('/');
             }
-            let idxDiaz = uri.lastIndexOf('#');
+            let idxDiaz = uri.toString().lastIndexOf('#');
             if (idxDiaz === size) {
                 trimmedUri = uri.substr(0, size);
                 idxDiaz = trimmedUri.lastIndexOf('/');
             }
-            return uri.substring(Math.max(idxDiaz, idxSlash) + 1);
+            return uri.toString().substring(Math.max(idxDiaz, idxSlash) + 1);
         }
     }
 }

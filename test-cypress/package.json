@@ -1,8 +1,9 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "1.3.0-TR2",
+    "version": "1.3.0-RC2",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
+        "preinstall": "npx npm-force-resolutions",
         "start": "cypress open",
         "test": "cypress run"
     },
@@ -26,5 +27,11 @@
     },
     "bin": {
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
+    },
+    "devDependencies": {
+        "minimist": "^1.2.5"
+    },
+    "resolutions": {
+        "minimist": "^1.2.5"
     }
 }
