@@ -20,6 +20,24 @@ describe('Import screen validation - user data', () => {
         'ab:richard ab:email "richard49@hotmail.com".\n' +
         'ab:richard ab:email "richard491@hotmail.com".';
 
+    const TURTLESTAR_SNIPPET = '@prefix ex:<http:/base.org/> .\n' +
+        'ex:foo ex:pred ex:obj .\n' +
+        '<<ex:foo rdfs:label "label">> ex:author "guest" .\n' +
+        'ex:obj ex:quote <<ex:meta ex:data ex:foo>> .\n' +
+        '<<<<ex:foo rdfs:label "label">>  ex:data ex:foo>> ex:recursive true .';
+    const TRIGSTAR_SNIPPET = '@prefix ex: <http://example.com/> .\n' +
+        '@prefix dct: <http://purl.org/dc/terms/> .\n' +
+        '@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n' +
+        '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n' +
+        'graph ex:rdfstar {\n' +
+        '    ex:bob foaf:knows << ex:alice foaf:knows<<ex:bob dct:created ex:book>> >> .\n' +
+        '    <<<< ex:bob dct:created ex:book >> foaf:knows ex:alice >> dct:source ex:otherbook .\n' +
+        '    ex:bobshomepage dct:source<< ex:book dct:creator ex:alice  >> .\n' +
+        '    << ex:book dct:creator ex:alice  >> dct:source  ex:bobshomepage .\n' +
+        '    << ex:book dct:creator ex:alice >> dct:requires << ex:alice dct:created ex:book >> .\n' +
+        '    <<<http://example.org/a>ex:b ex:c>>ex:valid "1999-08-16"^^xsd:date .\n' +
+        '}';
+
     const BASE_URI = 'http://purl.org/dc/elements/1.1/';
     const CONTEXT = 'http://example.org/graph';
 
@@ -27,6 +45,8 @@ describe('Import screen validation - user data', () => {
     const TEXT_SNIPPET = 'Text snippet';
     const INVALID_URL_RDF_FORMAT = 'JSON-LD';
     const VALID_URL_RDF_FORMAT = 'RDF/XML';
+    const VALID_SNIPPET_TURTLESTAR_FORMAT = 'Turtle*';
+    const VALID_SNIPPET_TRIGSTAR_FORMAT = 'TriG*';
     const VALID_SNIPPET_RDF_FORMAT = 'Turtle';
     const RDF_ERROR_MESSAGE = 'RDF Parse Error:';
     const SUCCESS_MESSAGE = 'Imported successfully';
@@ -92,6 +112,25 @@ describe('Import screen validation - user data', () => {
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(RDF_TEXT_SNIPPET_1)
             .selectRDFFormat(VALID_SNIPPET_RDF_FORMAT)
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+    });
+
+    it('Test import Turtle* text snippet successfully with valid RDF star format selected', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(TURTLESTAR_SNIPPET)
+            .selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT)
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+    });
+    it('Test import TriG* text snippet successfully with valid RDF star format selected', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(TRIGSTAR_SNIPPET)
+            .selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT)
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
             .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
