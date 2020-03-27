@@ -27757,6 +27757,10 @@ var postprocessResourceTokenForCompletion = function (yasqe, token, suggestedStr
             if (suggestedString.indexOf("<b>" + token.string) === 0) {
                 return suggestedString;
             }
+            // Do not put brackets on nested triples
+            if (suggestedString.startsWith("<<") && suggestedString.endsWith(">>")) {
+                return suggestedString;
+            }
 			suggestedString = "<" + suggestedString + ">";
 		}
 	}
