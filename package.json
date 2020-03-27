@@ -3,7 +3,6 @@
     "version": "1.3.0-RC2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
-        "preinstall": "npx npm-force-resolutions",
         "build": "webpack --config=webpack.config.prod.js",
         "start": "webpack-dev-server --config=webpack.config.dev.js --open",
         "lint": "eslint ./src",
