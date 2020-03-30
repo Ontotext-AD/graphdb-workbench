@@ -139,7 +139,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     });
 
     $scope.goToSimilarityIndex = function (index) {
-        if (!('BUILT' === index.status || 'OUTDATED' === index.status)) {
+        if (!('BUILT' === index.status || 'OUTDATED' === index.status || 'REBUILDING' === index.status)) {
             return;
         }
         $scope.empty = true;
@@ -312,11 +312,11 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
         }
         ModalService.openSimpleModal({
             title: 'Confirm',
-            message: 'Are you sure you want to rebuild the whole index ' + '\'' + index.name + '\'?',
+            message: 'Are you sure you want to rebuild the whole index ' + '\'' + index.name + '\'?' + '<br>You will still be able to use the latest successful build!',
             warning: true
         }).result
             .then(function () {
-                index.status = 'BUILDING';
+                index.status = 'REBUILDING';
                 SimilarityRestService.rebuildIndex(index)
                     .then(function (res) {
                     }, function (err) {
