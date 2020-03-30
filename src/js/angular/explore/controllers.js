@@ -30,6 +30,24 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         return $repositories.getActiveRepository();
     };
 
+    $scope.isTripleResource = function () {
+        return !!$scope.tripleParam;
+    };
+
+    // TODO move this to core
+    $scope.encodeURIComponent = function (param) {
+        return encodeURIComponent(param);
+    };
+
+    $scope.getRdfStarLocalNames = function(triple) {
+        let localNames = triple.slice();
+        const trimmed =  triple.replace(/[<>]+/g, '');
+        trimmed.split(' ').forEach(uri => {
+            localNames = localNames.replace(uri, ClassInstanceDetailsService.getLocalName(uri));
+        });
+        return localNames;
+    };
+
     // Defaults
     $scope.role = $location.search().role ? $location.search().role : 'subject';
     $scope.inference = 'explicit';
@@ -91,25 +109,33 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         } else if ($location.search().uri) {
             // uri parameter -> URI
             $scope.uriParam = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
+        } else if ($location.search().triple) {
+            // uri parameter -> URI
+            $scope.tripleParam = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
         } else {
             // absolute URI -> URI
             $scope.uriParam = $location.absUrl();
         }
         // remove angle brackets which were allowed when filling out the search input field
         // but are forbidden when passing the uri as a query parameter
-        $scope.uriParam = $scope.uriParam.replace(/<|>/g, "");
+        $scope.uriParam = $scope.uriParam && $scope.uriParam.replace(/<|>/g, "");
 
         // Get resource details
         $http({
             url: 'rest/explore/details',
             method: 'GET',
-            params: {uri: $scope.uriParam},
+            params: {
+                uri: $scope.uriParam,
+                triple: $scope.tripleParam
+            },
             headers: {
                 'Accept': 'application/json'
             }
         }).success(function (data) {
             $scope.details = data;
-            $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
+            if ($scope.details.uri !== 'object') {
+                $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
+            }
         }).error(function (data) {
             toastr.error('Cannot get resource details; ' + getError(data));
         });
@@ -140,12 +166,13 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Get resource table
     $scope.exploreResource = function () {
         toggleOntoLoader(true);
-        const headers = {Accept: 'application/rdf+json'};
+        const headers = {Accept: 'application/x-graphdb-table-results+json'};
         $.ajax({
             method: 'GET',
             url: 'rest/explore/graph',
             data: {
                 uri: $scope.uriParam,
+                triple: $scope.tripleParam,
                 inference: $scope.inference,
                 role: $scope.role,
                 bnodes: $scope.blanks,
@@ -163,9 +190,19 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.downloadExport = function (format) {
+        let param;
+        let encodedURI;
+        if ($scope.uriParam) {
+            param = 'uri=';
+            encodedURI = encodeURIComponent($scope.uriParam);
+        } else {
+            param = 'triple=';
+            encodedURI = encodeURIComponent($scope.tripleParam);
+        }
+
         $http({
             method: 'GET',
-            url: 'rest/explore/graph?uri=' + encodeURIComponent($scope.uriParam) + "&role=" + $scope.role + "&inference=" + $scope.inference + "&bnodes=" + $scope.blanks + "&sameAs=" + $scope.sameAs,
+            url: 'rest/explore/graph?' + param + encodedURI + "&role=" + $scope.role + "&inference=" + $scope.inference + "&bnodes=" + $scope.blanks + "&sameAs=" + $scope.sameAs,
             headers: {
                 'Accept': format.type
             }

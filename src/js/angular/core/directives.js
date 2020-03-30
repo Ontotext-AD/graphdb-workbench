@@ -302,11 +302,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             const defaultTextCallback = function (params) {
-                $location.path('resource').search('uri', params.uri);
+                var param = params.type || 'uri';
+                $location.path('resource').search(param, params.uri);
             };
 
             const defaultVisualCallback = function (params) {
-                $location.path('graphs-visualizations').search('uri', params.uri);
+                if ('uri' === params.type || !params.type) {
+                    $location.path('graphs-visualizations').search('uri', params.uri);
+                }
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
@@ -343,37 +346,35 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 return $sce.trustAsHtml(resultItem.description);
             };
 
-            $scope.searchRdfResource = function (uri, callback) {
-                if (uri.type === 'prefix') {
-                    $scope.searchInput = expandPrefix(uri.value + ':');
+            $scope.searchRdfResource = function (resource, callback) {
+                if (resource.type === 'prefix') {
+                    $scope.searchInput = expandPrefix(resource.value + ':');
                     $scope.autoCompleteUriResults = [];
                 } else {
-                    let textUri;
-                    if (angular.isUndefined(uri)) {
-                        textUri = $scope.searchInput;
-                    }
-                    if (typeof uri === 'object') {
-                        textUri = uri.value;
+                    let textResource;
+                    if (angular.isUndefined(resource)) {
+                        textResource = $scope.searchInput;
+                    } else if (typeof resource === 'object') {
+                        textResource = resource.value;
                     } else {
-                        textUri = uri;
+                        textResource = resource;
                     }
 
                     // Parse the description to determine the label
                     // TODO: we should rather introduce direct support for this in the autocomplete plugin
                     let label = '';
-                    if (uri.description) {
-                        const suffixedEscapedUri = '&lt;' + textUri + '&gt;';
-                        const indexOfSuffixed = uri.description.indexOf(suffixedEscapedUri);
+                    if (resource.description) {
+                        const indexOfSuffixed = resource.description.indexOf('&lt;' + textResource + '&gt;');
                         if (indexOfSuffixed > 0) {
-                            label = uri.description.substring(0, indexOfSuffixed).replace(/<\/?b>/g, "");
+                            label = resource.description.substring(0, indexOfSuffixed).replace(/<\/?b>/g, "");
                         }
                     }
 
-                    callback({uri: textUri, description: uri.description, label: label});
+                    callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
                     $scope.autoCompleteUriResults = [];
                     if ($scope.preserveInput === 'true') {
-                        $scope.searchInput = textUri;
+                        $scope.searchInput = textResource;
                     } else {
                         $scope.searchInput = "";
                     }

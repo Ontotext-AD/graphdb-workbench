@@ -1,0 +1,6 @@
+@prefix ex:<http:/base.org/> .
+
+ex:foo ex:pred ex:obj .
+<<ex:foo rdfs:label "label">> ex:author "guest" .
+ex:obj ex:quote <<ex:meta ex:data ex:foo>> .
+<<<<ex:foo rdfs:label "label">>  ex:data ex:foo>> ex:recursive true .

@@ -1,6 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/directives';
-import 'lib/yasqe.bundled.min';
+import 'lib/yasqe.bundled';
 import 'lib/yasr.bundled';
 
 const ontorefine = angular.module('graphdb.framework.ontorefine', ['graphdb.framework.core.directives']);
