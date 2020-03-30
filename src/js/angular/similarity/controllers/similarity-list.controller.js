@@ -18,6 +18,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     const iriForQuery = function (iri) {
+        // Do not put brackets on nested triples
+        if (iri.startsWith("<<") && iri.endsWith(">>")) {
+            return iri;
+        }
         return '<' + iri + '>';
     };
 
@@ -195,7 +199,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
 
         $scope.lastSearch.termOrSubject = termOrSubject;
 
-        const headers = {Accept: 'application/sparql-results+json'};
+        const headers = {Accept: 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8'};
         let sparqlQuery;
         if (searchType === 'searchAnalogical') {
             sparqlQuery = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
