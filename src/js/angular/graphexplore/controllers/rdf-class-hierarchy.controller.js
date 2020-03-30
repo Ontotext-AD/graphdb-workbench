@@ -291,6 +291,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
                 $scope.instancesObj.items = [];
                 _.each(response, function (value, key) {
                     const obj = {};
+                    // TODO extract in core function isTriple(str)
+                    obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple": "uri";
                     obj.absUri = encodeURIComponent(value);
                     obj.absUriNonEncoded = value;
                     obj.resolvedUri = key;

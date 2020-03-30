@@ -185,7 +185,7 @@
 												ng-click="copyToClipboard(item.absUriNonEncoded)">
 												<span class="icon-link"></span>
 											</button>
-											<a class="uri" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
+											<a class="uri" href="resource?{{item.type}}={{item.absUri}}">{{item.resolvedUri}}</a>
 										</td>
 									</tr>
 								</tbody>
