@@ -17,9 +17,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
         return '"' + literal + '"';
     };
 
+    // TODO: Fix cases when this function is called with undefined
     const iriForQuery = function (iri) {
         // Do not put brackets on nested triples
-        if (iri.startsWith("<<") && iri.endsWith(">>")) {
+        if (iri === undefined || iri.startsWith("<<") && iri.endsWith(">>")) {
             return iri;
         }
         return '<' + iri + '>';
