@@ -108,13 +108,7 @@ function RDF4JRepositoriesRestService($http, $repositories) {
                             binding.contextID.uri = binding.contextID.value;
                         }
                     });
-                    graphs.results.bindings.unshift({
-                        contextID: {
-                            type: "all",
-                            value: "All graphs",
-                            uri: ""
-                        }
-                    });
+                    graphs.results.bindings.unshift(allGraphs);
                     return  graphs.results.bindings;
             });
         }

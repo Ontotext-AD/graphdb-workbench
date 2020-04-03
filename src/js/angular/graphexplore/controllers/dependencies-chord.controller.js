@@ -13,6 +13,16 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories'
 ];
+const allGraphs = {
+    contextID: {
+        type: "all",
+        value: "All graphs",
+        uri: ""
+    }
+};
+Object.defineProperty(global, 'allGraphs', {
+    get: () => {return allGraphs;}
+});
 
 angular
     .module('graphdb.framework.graphexplore.controllers.dependencies', modules)
@@ -43,13 +53,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
 
-    let selectedGraph = {
-        contextID: {
-            type: "all",
-            value: "All graphs",
-            uri: ""
-        }
-    };
+    let selectedGraph = allGraphs;
 
     const initView = function () {
         RDF4JRepositoriesRestService.resolveGraphs()
@@ -69,13 +73,13 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const setSelectedGraphFromCache = function () {
-        let selGraphFromCache = LocalStorageAdapter.get("dependencies-selectedGraph-" + $repositories.getActiveRepository());
+        const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
         if (selGraphFromCache !== null) {
             // Check if selected graph isn't deleted
             if ($scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
                 selectedGraph = selGraphFromCache;
             } else {
-                LocalStorageAdapter.set("dependencies-selectedGraph-" + $repositories.getActiveRepository(), selectedGraph);
+                LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
             }
         }
     };
@@ -296,13 +300,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             $scope.status = STATUS.NO_REPO;
             return;
         }
-        selectedGraph = {
-            contextID: {
-                type: "all",
-                value: "All graphs",
-                uri: ""
-            }
-        };
+        selectedGraph = allGraphs;
         initView();
     }
 
@@ -311,7 +309,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.selectGraph = function (graph) {
         selectedGraph = graph;
         getRelationshipsStatus(true);
-        LocalStorageAdapter.set("dependencies-selectedGraph-" + $repositories.getActiveRepository(), selectedGraph);
+        LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
     };
 
     $scope.getSelectedGraphValue = function () {

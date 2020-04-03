@@ -50,13 +50,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
     };
 
-    let selectedGraph = {
-        contextID: {
-            type: "all",
-            value: "All graphs",
-            uri: ""
-        }
-    };
+    let selectedGraph = allGraphs;
 
     const initView = function () {
         RDF4JRepositoriesRestService.resolveGraphs()
@@ -70,13 +64,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     };
 
     const setSelectedGraphFromCache = function () {
-        let selGraphFromCache = LocalStorageAdapter.get("classHierarchy-selectedGraph-" + $repositories.getActiveRepository());
+        const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
         if (selGraphFromCache !== null) {
             // Check if selected graph isn't deleted
             if ($scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
                 selectedGraph = selGraphFromCache;
             } else {
-                LocalStorageAdapter.set("classHierarchy-selectedGraph-" + $repositories.getActiveRepository(), selectedGraph);
+                LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
             }
         }
     };
@@ -446,13 +440,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
-        selectedGraph = {
-            contextID: {
-                type: "all",
-                value: "All graphs",
-                uri: ""
-            }
-        };
+        selectedGraph = allGraphs;
         initView();
         getClassHierarchyData();
     }
@@ -488,7 +476,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.chosenGraph = function (graph) {
         selectedGraph = graph;
         getClassHierarchyData();
-        LocalStorageAdapter.set("classHierarchy-selectedGraph-" + $repositories.getActiveRepository(), selectedGraph);
+        LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
     };
 
     $scope.getSelGraphValue = function () {
