@@ -2,14 +2,14 @@ angular
     .module('graphdb.framework.rest.graphexplore.data.service', [])
     .factory('GraphDataRestService', GraphDataRestService);
 
-GraphDataRestService.$inject = ['$http'];
+GraphDataRestService.$inject = ['$http', 'RDF4JRepositoriesRestService'];
 
 const CLASS_HIERARCHY_ENDPOINT = 'rest/class-hierarchy';
 const DOMAIN_RANGE_ENDPOINT = 'rest/domain-range';
 const DEPENDENCIES_ENDPOINT = 'rest/dependencies/';
 const EXPORE_GRAPH_ENDPOINT = 'rest/explore-graph/';
 
-function GraphDataRestService($http) {
+function GraphDataRestService($http, RDF4JRepositoriesRestService) {
     return {
         // class hierarchy
         getClassHierarchyData,
@@ -32,17 +32,23 @@ function GraphDataRestService($http) {
         getInstanceNodeLinks,
 
         // common
-        getRdfsLabelAndComment
+        getRdfsLabelAndComment,
+        resolveGraphs
     };
 
-    function getClassHierarchyData() {
-        return $http.get(CLASS_HIERARCHY_ENDPOINT);
-    }
-
-    function reloadClassHierarchy() {
+    function getClassHierarchyData(graphURI) {
         return $http.get(CLASS_HIERARCHY_ENDPOINT, {
             params: {
-                doReload: true
+                graphURI: graphURI
+            }
+        });
+    }
+
+    function reloadClassHierarchy(graphURI) {
+        return $http.get(CLASS_HIERARCHY_ENDPOINT, {
+            params: {
+                doReload: true,
+                graphURI: graphURI
             }
         });
     }
@@ -72,39 +78,50 @@ function GraphDataRestService($http) {
         });
     }
 
-    function getRelationshipsData(selectedClasses, direction) {
+    function getRelationshipsData(selectedClasses, direction, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}matrix`, {
             params: {
                 'mode': direction,
                 'classes': _.map(selectedClasses, function (c) {
                     return c.name;
-                })
+                }),
+                'graphURI': graphURI
             }
         });
     }
 
-    function getRelationshipsClasses(direction) {
+    function getRelationshipsClasses(direction, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}classes`, {
             params: {
-                'mode': direction
+                'mode': direction,
+                'graphURI': graphURI
             }
         });
     }
 
-    function getRelationshipsStatus() {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}status`);
+    function getRelationshipsStatus(graphURI) {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}status`, {
+            params: {
+                graphURI: graphURI
+            }
+        });
     }
 
-    function calculateRelationships() {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}update`);
+    function calculateRelationships(graphURI) {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}update`, {
+            params: {
+                graphURI: graphURI
+            }
+        });
     }
 
-    function getPredicates(sourceClass, destinationClass) {
+    function getPredicates(sourceClass, destinationClass, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}predicates`, {
             params: {
                 'from': sourceClass,
                 'to': destinationClass,
-                'mode': 'all'
+                'mode': 'all',
+                graphURI: graphURI
             }
         });
     }
@@ -135,5 +152,33 @@ function GraphDataRestService($http) {
                 'Accept': 'application/json'
             }
         });
+    }
+
+    function resolveGraphs(scope, selectedGraph) {
+        if (scope.getActiveRepository() !== "") {
+            scope.graphsInRepo = [];
+            return RDF4JRepositoriesRestService.getGraphs(scope.getActiveRepository())
+                .success(function (graphs) {
+                    graphs.results.bindings.unshift({
+                        contextID: {
+                            type: "default",
+                            value: "The default graph"
+                        }
+                    });
+
+                    Object.keys(graphs.results.bindings).forEach(function (key) {
+                        const binding = graphs.results.bindings[key];
+                        if (binding.contextID.type === "bnode") {
+                            binding.contextID.value = '_:' + binding.contextID.value;
+                        } else if (binding.contextID.type === "default") {
+                            binding.contextID.uri = "http://www.openrdf.org/schema/sesame#nil";
+                        } else {
+                            binding.contextID.uri = binding.contextID.value;
+                        }
+                    });
+                    graphs.results.bindings.unshift(selectedGraph);
+                    scope.graphsInRepo = graphs.results.bindings;
+                });
+        }
     }
 }

@@ -21,7 +21,27 @@
 </div>
 <div class="content" ng-show="!isSystemRepository()">
     <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
-         <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
+        <div id="graphSelectDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
+            <button id="btnGraphsGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-expanded="false">
+                <a dropdown-toggle>
+                    <span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Select graph">
+                        {{getSelectedGraphValue()}}
+                    </span>
+                </a>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
+                <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">
+                    <a class="dropdown-item" ng-click="selectGraph(graph)">
+                        <span class="multiline-text">
+						    {{graph.contextID.value}} <br/>
+					    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
                  ng-show="allNotFilteredClasses.length > 0"
                ng-click="removeAllClasses()"
                tooltip="Remove All Classes"
@@ -55,9 +75,14 @@
         </div>
     </div>
     <div class="top-offset alert alert-warning"
-         ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO'">
+         ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO' && isAllGraphsSelected()">
         The currently selected repository contains no dependencies data. Please, reload the diagram if you have imported
         data recently.
+    </div>
+    <div class="top-offset alert alert-warning"
+         ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO' && !isAllGraphsSelected()">
+        The currently selected repository's graph contains no dependencies data.
+        Please select another graph from dropdown menu.
     </div>
     <div class="dep-status" ng-show="status == 'N/A'">
         Dependencies plugin is not available. Dependency data cannot be shown without it.

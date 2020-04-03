@@ -146,3 +146,22 @@ svg {
     border-radius: 0;
     border-top: 0;
 }
+
+#graphsBtnGroup[aria-expanded="false"] {
+    background-color: white;
+    border: none;
+}
+
+#graphsBtnGroup[aria-expanded="true"] {
+    none: inherit;
+}
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: #FF0000;
+}
+

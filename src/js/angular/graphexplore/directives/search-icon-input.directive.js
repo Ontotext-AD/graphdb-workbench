@@ -24,6 +24,7 @@ function searchIconInputDirective($rootScope, $timeout) {
             };
 
             scope.showInput = function () {
+                $('#selectGraphDropdown').hide();
                 element.find('#search_input #search_input_value')[0].value = '';
                 element.find('.search-icon')
                     .addClass('animated bounceOut')
@@ -53,6 +54,7 @@ function searchIconInputDirective($rootScope, $timeout) {
                 $timeout(function () {
                     element.find('#search_input .angucomplete-holder')
                         .css('display', 'none');
+                    $('#selectGraphDropdown').show();
                 }, 250);
                 element.find('.close-icon')
                     .addClass('animated bounceOut')

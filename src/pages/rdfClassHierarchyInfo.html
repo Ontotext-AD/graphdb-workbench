@@ -10,8 +10,27 @@
 
 <div class="toolbar-holder pull-right mt-1" id="toolbar"
 	ng-class="{ 'pushed-toolbar': showClassInfoPanel }"
-	ng-show="hasClassHierarchy() && !loader">
-
+	ng-show="hasClassHierarchy() && !loader || !isAllGraphsSelected()">
+    <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
+        <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
+                data-toggle="dropdown"
+                aria-expanded="false">
+            <a dropdown-toggle>
+				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Select graph">
+					{{getSelGraphValue()}}
+				</span>
+            </a>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
+            <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelGraphValue()">
+                <a class="dropdown-item" ng-click="chosenGraph(graph)">
+					<span class="multiline-text">
+						{{graph.contextID.value}} <br/>
+					</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 	<search-icon-input
 			search-data="flattenedClassNames"
 			initial-value="searchedClass"
@@ -104,9 +123,12 @@
 			<p>{{hierarchyError}}</p>
 
 		</div>
-        <div class="top-offset row"
-             ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository()">
+        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
             <p class="alert alert-warning">The currently selected repository does not contain a class hierarchy.</p>
+        </div>
+        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
+            <p class="alert alert-warning">The currently selected repository's graph contains no class hierarchy.
+                Please select another graph from dropdown menu.</p>
         </div>
 
         <rdf-class-hierarchy

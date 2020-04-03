@@ -122,7 +122,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
         if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
-            GraphDataRestService.getClassHierarchyData()
+            let selGraphFromCache = LocalStorageAdapter.get("classHierarchy-selectedGraph-" + $repositories.getActiveRepository());
+            GraphDataRestService.getClassHierarchyData(selGraphFromCache !== null ? selGraphFromCache.contextID.uri : "")
                 .success(function (response, status, headers) {
                     $rootScope.loader = false;
                     if (status === 207) {
