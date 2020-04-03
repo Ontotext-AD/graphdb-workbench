@@ -2,14 +2,14 @@ angular
     .module('graphdb.framework.rest.graphexplore.data.service', [])
     .factory('GraphDataRestService', GraphDataRestService);
 
-GraphDataRestService.$inject = ['$http', 'RDF4JRepositoriesRestService'];
+GraphDataRestService.$inject = ['$http'];
 
 const CLASS_HIERARCHY_ENDPOINT = 'rest/class-hierarchy';
 const DOMAIN_RANGE_ENDPOINT = 'rest/domain-range';
 const DEPENDENCIES_ENDPOINT = 'rest/dependencies/';
 const EXPORE_GRAPH_ENDPOINT = 'rest/explore-graph/';
 
-function GraphDataRestService($http, RDF4JRepositoriesRestService) {
+function GraphDataRestService($http) {
     return {
         // class hierarchy
         getClassHierarchyData,
@@ -32,8 +32,7 @@ function GraphDataRestService($http, RDF4JRepositoriesRestService) {
         getInstanceNodeLinks,
 
         // common
-        getRdfsLabelAndComment,
-        resolveGraphs
+        getRdfsLabelAndComment
     };
 
     function getClassHierarchyData(graphURI) {
@@ -152,33 +151,5 @@ function GraphDataRestService($http, RDF4JRepositoriesRestService) {
                 'Accept': 'application/json'
             }
         });
-    }
-
-    function resolveGraphs(scope, selectedGraph) {
-        if (scope.getActiveRepository() !== "") {
-            scope.graphsInRepo = [];
-            return RDF4JRepositoriesRestService.getGraphs(scope.getActiveRepository())
-                .success(function (graphs) {
-                    graphs.results.bindings.unshift({
-                        contextID: {
-                            type: "default",
-                            value: "The default graph"
-                        }
-                    });
-
-                    Object.keys(graphs.results.bindings).forEach(function (key) {
-                        const binding = graphs.results.bindings[key];
-                        if (binding.contextID.type === "bnode") {
-                            binding.contextID.value = '_:' + binding.contextID.value;
-                        } else if (binding.contextID.type === "default") {
-                            binding.contextID.uri = "http://www.openrdf.org/schema/sesame#nil";
-                        } else {
-                            binding.contextID.uri = binding.contextID.value;
-                        }
-                    });
-                    graphs.results.bindings.unshift(selectedGraph);
-                    scope.graphsInRepo = graphs.results.bindings;
-                });
-        }
     }
 }

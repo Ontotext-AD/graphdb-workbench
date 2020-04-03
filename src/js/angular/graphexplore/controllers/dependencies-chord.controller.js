@@ -35,9 +35,9 @@ function humanize(number) {
     return result + si[exp - 1];
 }
 
-DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter'];
+DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService'];
 
-function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter) {
+function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService) {
 
     let timer = null;
 
@@ -52,8 +52,9 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const initView = function () {
-        GraphDataRestService.resolveGraphs($scope, selectedGraph)
-            .success(function () {
+        RDF4JRepositoriesRestService.resolveGraphs()
+            .success(function (graphsInRepo) {
+                $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
                 if (!$scope.isSystemRepository()) {
                     $scope.status = 'WAIT';
