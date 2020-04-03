@@ -75,13 +75,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         }
     };
 
-    $scope.$watch("direction", function () {
-        if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
-            return;
-        }
-        initView();
-    });
-
     $rootScope.$watch(function () {
         return $rootScope.key;
     }, function () {
@@ -121,6 +114,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.instancesQueryObj.query = "";
     $scope.instancesFilterFunc = instancesFilterFunc;
 
+    initView();
 
     $scope.$watch('instancesObj.items', function () {
         if ($scope.instancesObj.items.length > 0) {

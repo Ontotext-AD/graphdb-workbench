@@ -88,7 +88,8 @@ function RDF4JRepositoriesRestService($http, $repositories) {
 
 
     function resolveGraphs() {
-        let activeRepository = $repositories.getActiveRepository();
+        const activeRepository = $repositories.getActiveRepository();
+        let graphsInRepo = [];
         if (activeRepository !== "") {
             return getGraphs(activeRepository).success(function (graphs) {
                     graphs.results.bindings.unshift({
@@ -101,7 +102,7 @@ function RDF4JRepositoriesRestService($http, $repositories) {
                     Object.keys(graphs.results.bindings).forEach(function (key) {
                         const binding = graphs.results.bindings[key];
                         if (binding.contextID.type === "bnode") {
-                            binding.contextID.value = '_:' + binding.contextID.value;
+                            binding.contextID.value = `_:${binding.contextID.value}`;
                         } else if (binding.contextID.type === "default") {
                             binding.contextID.uri = "http://www.openrdf.org/schema/sesame#nil";
                         } else {
@@ -109,8 +110,9 @@ function RDF4JRepositoriesRestService($http, $repositories) {
                         }
                     });
                     graphs.results.bindings.unshift(allGraphs);
-                    return  graphs.results.bindings;
+                    graphsInRepo = graphs.results.bindings;
             });
         }
+        return graphsInRepo;
     }
 }
