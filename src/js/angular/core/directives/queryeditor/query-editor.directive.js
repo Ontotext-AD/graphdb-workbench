@@ -1,11 +1,13 @@
 import 'angular/rest/connectors.rest.service';
 import 'angular/utils/local-storage-adapter';
+import 'angular/externalsync/controllers';
 import YASQE from 'lib/yasqe.bundled';
 import YASR from 'lib/yasr.bundled';
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
         'ngCookies',
+        'graphdb.framework.externalsync.controllers',
         'graphdb.framework.rest.connectors.service',
         'graphdb.framework.utils.localstorageadapter'
     ])
