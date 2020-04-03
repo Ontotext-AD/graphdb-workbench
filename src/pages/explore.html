@@ -1,5 +1,3 @@
-<link href="css/lib/yasr.css" rel='stylesheet' type='text/css'/>
-<link href="css/yasr.custom.css" rel='stylesheet' type='text/css'/>
 <link href="css/explore.css" rel="stylesheet"/>
 <div core-errors></div>
 <div class="page" ng-show="getActiveRepository()">
@@ -30,7 +28,7 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
-            <a href="sparql?query=describe{{tripleParam}}" tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
+            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
                 {{getRdfStarLocalNames(tripleParam)}}
             </a>
         </h1>

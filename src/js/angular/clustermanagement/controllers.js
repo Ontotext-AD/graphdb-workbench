@@ -210,7 +210,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
     };
 
-    function disconnectWorker(master, worker, onSuccess) {
+    function disconnectWorker(d, master, worker, onSuccess) {
         ClusterRestService.disconnectWorker($scope.getLabel(master.location), $.param({
             workerURL: worker.location,
             masterLocation: getLocation(master)
@@ -233,7 +233,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         });
     }
 
-    function disconnectNodes(master, worker, onSuccess) {
+    function disconnectNodes(d, master, worker, onSuccess) {
         ClusterRestService.disconnectNodes($scope.getLabel(master.location), $.param({
             masterLocation: getLocation(master),
             masterNodeID: master.nodeID,
@@ -284,10 +284,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         $scope.setLoader(true, 'Disconnecting nodes...');
 
         if (worker.repositoryType === 'worker') {
-            disconnectWorker(master, worker, onSuccess);
+            disconnectWorker(d, master, worker, onSuccess);
         } else {
             // Both are masters, despite the var name worker
-            disconnectNodes(master, worker, onSuccess);
+            disconnectNodes(d, master, worker, onSuccess);
         }
     };
 
