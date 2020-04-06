@@ -11,17 +11,18 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter'
 ];
 
+const SAFARI_IE_EDGE_CLASS_LIMIT = 400;
+const FIREFOX_CLASS_LIMIT = 50;
+const CLASS_COUNT_THRESHOLD = 1500;
+const CLASS_COUNT_THRESHOLD_IE = 25;
+
 angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
-    .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr)
-    .constant("SAFARI_IE_EDGE_CLASS_LIMIT", 400)
-    .constant("FIREFOX_CLASS_LIMIT", 50)
-    .constant("CLASS_COUNT_THRESHOLD", 1500)
-    .constant("CLASS_COUNT_THRESHOLD_IE", 25);
+    .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE", "RDF4JRepositoriesRestService"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE, RDF4JRepositoriesRestService) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -65,13 +66,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
-        if (selGraphFromCache !== null) {
-            // Check if selected graph isn't deleted
-            if ($scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
-                selectedGraph = selGraphFromCache;
-            } else {
-                LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
-            }
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+            selectedGraph = selGraphFromCache;
+        } else {
+            LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
         }
     };
 

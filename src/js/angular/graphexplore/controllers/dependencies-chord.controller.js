@@ -74,13 +74,10 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
-        if (selGraphFromCache !== null) {
-            // Check if selected graph isn't deleted
-            if ($scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
-                selectedGraph = selGraphFromCache;
-            } else {
-                LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
-            }
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+            selectedGraph = selGraphFromCache;
+        } else {
+            LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
         }
     };
 

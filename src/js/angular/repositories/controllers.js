@@ -273,8 +273,8 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $repositories.init();
 
     function removeCachedGraphsOnDelete(repoId) {
-        let cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
-        let cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repoId}`;
+        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
+        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repoId}`;
         angular.forEach(LocalStorageAdapter.keys(), function (key) {
             // remove everything but the hide prefixes setting, it should always persist
             if (key.startsWith(cashedClassHierarchyGraphPrefix) || key.startsWith(cashedDependenciesGraphPrefix)) {
