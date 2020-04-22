@@ -20,6 +20,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter',
     'toastr',
     'ngFileUpload'
 ];

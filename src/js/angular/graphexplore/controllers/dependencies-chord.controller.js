@@ -11,7 +11,8 @@ const modules = [
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'graphdb.framework.core.services.repositories'
+    'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter'
 ];
 const allGraphs = {
     contextID: {
