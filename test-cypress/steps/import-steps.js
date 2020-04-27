@@ -194,7 +194,6 @@ class ImportSteps {
 
             cy.get('.popover-content').then(content => {
                 cy.wrap(content).should('be.visible');
-
                 if (details instanceof Array) {
                     details.forEach(text => {
                         cy.wrap(content).should('contain', text);
@@ -202,10 +201,11 @@ class ImportSteps {
                 } else {
                     cy.wrap(content).should('contain', details);
                 }
-            });
+                cy.wrap(infoIconEl).trigger('mousemove', {clientX: 0, clientY: 0});
 
-            cy.wrap(infoIconEl).trigger('mouseout');
-            cy.get('.popover-content').should('not.be.visible').and('not.exist');
+                // set timeout in order to yield the mousemove
+                cy.wait(0);
+            }).should('not.be.visible').and('not.exist');
         });
 
         return ImportSteps;
