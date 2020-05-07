@@ -1,5 +1,6 @@
+// This is a rework of the ng-FitText.js which can be found here https://github.com/patrickmarabeas/ng-FitText.js
 angular
-    .module('graphdb.framework.explore.directives.fittext', [])
+    .module('graphdb.framework.core.directives.fittext', [])
     .directive('fitText', fitTextDirective);
 
 fitTextDirective.$inject = ['$timeout'];
@@ -34,7 +35,6 @@ function fitTextDirective($timeout) {
             const lineHeight = computed['line-height'];
             const display = computed['display'];
             let resizePromise;
-
 
             function calculate() {
                 const ratio = (config.calcSize * newlines) / domElem.offsetWidth / newlines;
