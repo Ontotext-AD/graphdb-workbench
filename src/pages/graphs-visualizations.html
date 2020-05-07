@@ -66,7 +66,7 @@
                 tooltip="Save graph snapshot"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
-                ng-if="isUser() && !embedded"
+                ng-if="canWriteActiveRepo() && !embedded"
                 ng-disabled="!nodeSelected"
                 ng-click="saveOrUpdateGraph()">
             <em class="icon-save icon-2x"></em>
@@ -120,10 +120,10 @@
                         </search-resource-input>
                     </div>
                 </div>
-                <div ng-show="isUser()" class="card mb-2">
+                <div class="card mb-2">
                     <div class="card-block graph-configurations" ng-init="getGraphConfigs()">
                         <div class="clearfix">
-                            <a ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> Create graph config</a>
+                            <a ng-show="canWriteActiveRepo()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> Create graph config</a>
                             <h3>Advanced graph configurations</h3>
                             <p>Define how the visualisation works by writing your own SPARQL queries</p>
                         </div>
@@ -145,7 +145,7 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
-                                <td class="text-xs-right">
+                                <td ng-show="canWriteActiveRepo()" class="text-xs-right">
                                     <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="Edit configuration"><span class="icon-edit"></span></a>
                                     <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="Delete configuration"><span class="icon-trash"></span></button>
                                 </td>
@@ -155,7 +155,7 @@
                     </div>
                 </div>
 
-                <div ng-show="isUser()" class="card mb-2">
+                <div class="card mb-2">
                     <div class="card-block">
                         <h3 class="mb-2">Saved graphs</h3>
                         <div ng-show="savedGraphs.length == 0">No saved visual graph snapshots</div>
@@ -175,12 +175,12 @@
                                             ng-click="copyToClipboardSavedGraph(graph)">
                                         <span class="icon-link"></span>
                                     </button>
-                                    <button class="btn btn-link"
+                                    <button ng-show="canWriteActiveRepo()" class="btn btn-link"
                                             tooltip="Rename graph" tooltip-trigger="mouseenter"
                                             ng-click="renameSavedGraph(graph)">
                                         <span class="icon-edit"></span>
                                     </button>
-                                    <button class="btn btn-link"
+                                    <button ng-show="canWriteActiveRepo()" class="btn btn-link"
                                             tooltip="Delete graph" tooltip-trigger="mouseenter"
                                             ng-click="deleteSavedGraph(graph)">
                                         <span class="icon-trash"></span>
