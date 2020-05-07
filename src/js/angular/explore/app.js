@@ -5,6 +5,7 @@ import 'angular/explore/controllers';
 import 'angular/explore/directives';
 import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/angucomplete-alt/angucomplete-alt-onto.min';
+import 'angular/core/directives/fit-text.directive';
 
 const modules = [
     'ngRoute',
@@ -13,7 +14,8 @@ const modules = [
     'angucomplete-alt-onto',
     'graphdb.framework.explore.services',
     'graphdb.framework.explore.controllers',
-    'graphdb.framework.explore.directives'
+    'graphdb.framework.explore.directives',
+    'graphdb.framework.core.directives.fittext'
 ];
 
 angular.module('graphdb.framework.explore', modules);
