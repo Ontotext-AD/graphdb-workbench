@@ -27,7 +27,7 @@
         <div class="thumb" ng-show="{{details.img}}">
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
-        <h1>
+        <h1 fit-text fit-text-min="30">
             <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
                 {{getRdfStarLocalNames(tripleParam)}}
             </a>
