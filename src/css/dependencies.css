@@ -85,14 +85,8 @@ div.tooltip {
 }
 
 ::-webkit-scrollbar {
-    width: 0;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
+    display: none;
 }
-/* optional: show position indicator in red */
-::-webkit-scrollbar-thumb {
-    background: #FF0000;
-}
-
 
 .rdf-list {
     list-style-type: none;
@@ -219,3 +213,11 @@ svg {
     font-size: 14px;
 }
 
+#btnGraphsGroup[aria-expanded="false"] {
+    background-color: white;
+    border: none;
+}
+
+#btnGraphsGroup[aria-expanded="true"] {
+    color: inherit;
+}

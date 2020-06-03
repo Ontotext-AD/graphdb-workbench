@@ -22,7 +22,8 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         enableSimilarityPlugin,
         checkSimilarityPluginEnabled,
         getRepositorySize,
-        getGraphs
+        getGraphs,
+        resolveGraphs
     };
 
     function getNamespaces(repositoryId) {
@@ -83,5 +84,35 @@ function RDF4JRepositoriesRestService($http, $repositories) {
 
     function getGraphs(repositoryId) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`);
+    }
+
+
+    function resolveGraphs() {
+        const activeRepository = $repositories.getActiveRepository();
+        let graphsInRepo = [];
+        if (activeRepository !== "") {
+            return getGraphs(activeRepository).success(function (graphs) {
+                    graphs.results.bindings.unshift({
+                        contextID: {
+                            type: "default",
+                            value: "The default graph"
+                        }
+                    });
+
+                    Object.keys(graphs.results.bindings).forEach(function (key) {
+                        const binding = graphs.results.bindings[key];
+                        if (binding.contextID.type === "bnode") {
+                            binding.contextID.value = `_:${binding.contextID.value}`;
+                        } else if (binding.contextID.type === "default") {
+                            binding.contextID.uri = "http://www.openrdf.org/schema/sesame#nil";
+                        } else {
+                            binding.contextID.uri = binding.contextID.value;
+                        }
+                    });
+                    graphs.results.bindings.unshift(allGraphs);
+                    graphsInRepo = graphs.results.bindings;
+            });
+        }
+        return graphsInRepo;
     }
 }

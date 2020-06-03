@@ -20,6 +20,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter',
     'toastr',
     'ngFileUpload'
 ];
@@ -32,8 +33,8 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService'];
-function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService) {
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
+function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -197,6 +198,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             .then(function () {
                 $scope.loader = true;
                 $repositories.deleteRepository(repositoryId);
+                removeCachedGraphsOnDelete(repositoryId);
             });
     };
 
@@ -270,6 +272,18 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     };
 
     $repositories.init();
+
+    function removeCachedGraphsOnDelete(repoId) {
+        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
+        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repoId}`;
+        angular.forEach(LocalStorageAdapter.keys(), function (key) {
+            // remove everything but the hide prefixes setting, it should always persist
+            if (key.startsWith(cashedClassHierarchyGraphPrefix) || key.startsWith(cashedDependenciesGraphPrefix)) {
+                LocalStorageAdapter.remove(key);
+            }
+        });
+    }
+
 }
 
 UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toastr'];
