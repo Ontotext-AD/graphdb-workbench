@@ -96,13 +96,13 @@
 		<tab>
 		    <tab-heading class="nav-item jvm-arguments"><span class="nav-link">JVM Arguments</span></tab-heading>
 			<ul class="list-group border-top-0 jvm-arguments-body">
-				<li ng-repeat="argument in info.jvmArguments" class="list-group-item">{{argument}}</li>
+				<li ng-repeat="argument in info.jvmArguments track by $index" class="list-group-item">{{argument}}</li>
 			</ul>
 		</tab>
 		<tab>
 		    <tab-heading class="nav-item configuration-parameters"><span class="nav-link">Configuration Parameters</span></tab-heading>
 			<ul class="list-group border-top-0 configuration-parameters-body">
-				<li ng-repeat="property in info.properties" class="list-group-item">
+				<li ng-repeat="property in info.properties track by $index" class="list-group-item">
 					<div class="row">
 						<span class="col-md-5 property-key">{{property.key}}</span>
 						<span class="col-md-5 expandable property-value">{{property.value}}</span>
