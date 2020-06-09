@@ -360,10 +360,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
     };
 
-    $scope.showSaveConfigureBtns = function(graph) {
-        $scope.isUser() && graph.owner.trim() === $scope.principal().username.trim();
-    }
-
     $scope.showInfoPanel = false;
 
     function Graph() {
