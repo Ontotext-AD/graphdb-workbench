@@ -313,6 +313,13 @@
 </div>
 
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
+    <div>
+        <label for="share-graph-config"
+               tooltip="If checked other users will be able to see the visual graph, but not delete or edit it.">
+            <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared">
+            Share visual graph with other users
+        </label>
+    </div>
     <div class="pull-left">
         <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
             popover="Closes configuration and saves all changes."

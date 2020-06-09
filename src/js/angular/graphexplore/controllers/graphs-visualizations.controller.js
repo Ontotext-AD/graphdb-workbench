@@ -103,6 +103,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.queryResultsMode = false;
         $scope.lastSavedGraphName = null;
         $scope.lastSavedGraphId = null;
+        $scope.shared = false;
         $scope.numberOfPinnedNodes = 0;
 
         // Reset type colours
@@ -358,6 +359,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
     };
+
+    $scope.showSaveConfigureBtns = function(graph) {
+        $scope.isUser() && graph.owner.trim() === $scope.principal().username.trim();
+    }
 
     $scope.showInfoPanel = false;
 
@@ -2213,6 +2218,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .success(function (data, status, headers) {
                 $scope.lastSavedGraphName = graph.name;
                 $scope.lastSavedGraphId = headers()['x-saved-graph-id'];
+                $scope.shared = graph.shared;
                 $scope.refreshSavedGraphs();
                 toastr.success('Saved graph ' + graph.name + ' was saved.');
             })
@@ -2228,7 +2234,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.saveOrUpdateGraph = function () {
         const data = JSON.stringify(graph.copyState());
-        const graphToSave = {id: $scope.lastSavedGraphId, name: $scope.lastSavedGraphName, data: data};
+        const graphToSave = {id: $scope.lastSavedGraphId, name: $scope.lastSavedGraphName, data: data, shared: $scope.shared};
 
         if (graphToSave.id) {
             $scope.saveGraphModal('update', graphToSave);
@@ -2239,13 +2245,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.renameSavedGraph = function (graphToRename) {
         // By not sending the 'data' part of a graph we only change the name
-        $scope.saveGraphModal('rename', {id: graphToRename.id, name: graphToRename.name, config: graphToRename.config});
+        $scope.saveGraphModal('rename', {id: graphToRename.id, name: graphToRename.name, config: graphToRename.config, shared: graphToRename.shared});
     };
 
     const editSavedGraphHttp = function (savedGraph) {
         SavedGraphsRestService.editSavedGraph(savedGraph)
             .success(function () {
                 $scope.lastSavedGraphName = savedGraph.name;
+                $scope.shared = savedGraph.shared;
                 $scope.refreshSavedGraphs();
                 toastr.success('Saved graph ' + savedGraph.name + ' was edited.');
             })
@@ -2264,7 +2271,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     return {
                         mode: mode,
                         graph: graphToSave,
-                        graphExists: graphExists
+                        graphExists: graphExists,
+                        shared: graphToSave.shared
                     };
                 }
             }
@@ -2306,11 +2314,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             // Own saved graph
             $scope.lastSavedGraphName = graphToLoad.name;
             $scope.lastSavedGraphId = graphToLoad.id;
+            $scope.shared = graphToLoad.shared;
             $scope.configLoaded = $scope.findConfigById(graphToLoad.config);
         } else {
             // Someone else's saved graph
             $scope.lastSavedGraphName = null;
             $scope.lastSavedGraphId = null;
+            $scope.shared = graphToLoad.shared;
         }
 
         if (!$scope.configLoaded) {
