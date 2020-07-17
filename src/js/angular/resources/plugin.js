@@ -21,6 +21,8 @@ PluginRegistry.add('main.menu', {
         }, {
             label: 'Resources',
             href: 'monitor/resources',
+            // Added role requirement here to assert that users cannot see Resources menu item
+            role: 'ROLE_REPO_MANAGER',
             order: 2,
             parent: 'Monitor'
         }
