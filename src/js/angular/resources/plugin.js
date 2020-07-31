@@ -16,13 +16,13 @@ PluginRegistry.add('main.menu', {
             label: 'Monitor',
             href: '#',
             order: 3,
-            role: 'ROLE_REPO_MANAGER',
+            role: 'ROLE_MONITORING',
             icon: 'icon-monitoring'
         }, {
             label: 'Resources',
             href: 'monitor/resources',
             // Added role requirement here to assert that users cannot see Resources menu item
-            role: 'ROLE_REPO_MANAGER',
+            role: 'ROLE_MONITORING',
             order: 2,
             parent: 'Monitor'
         }
