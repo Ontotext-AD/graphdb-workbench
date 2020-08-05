@@ -7,6 +7,8 @@ const ontorefine = angular.module('graphdb.framework.ontorefine', ['graphdb.fram
 
 ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$location', '$timeout', function ($scope, $routeParams, $window, $location, $timeout) {
     $scope.refineDisabled = false;
+    window.addEventListener("message", isProjectPristine);
+    var isPristine = true;
     if ($routeParams.project) {
         $scope.page = 'orefine/project?project=' + $routeParams.project;
     } else if ($routeParams.page) {
@@ -48,4 +50,20 @@ ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$
             iframeElement.style.height = 'calc(100vh - 75px)';
         }
     };
+
+    function isProjectPristine(e) {
+        isPristine = e.data === 'pristine';
+    }
+
+    $scope.$on('$locationChangeStart', (event) => {
+        if (!isPristine) {
+            if (!confirm("There are unsaved changes! Are you sure, you want to exit?")) {
+                event.preventDefault();
+            }
+        }
+    });
+
+    $scope.$on("$destroy", function () {
+        window.removeEventListener('message', isProjectPristine);
+    });
 }]);
