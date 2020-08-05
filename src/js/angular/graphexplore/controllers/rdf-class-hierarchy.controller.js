@@ -11,17 +11,18 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter'
 ];
 
+const SAFARI_IE_EDGE_CLASS_LIMIT = 400;
+const FIREFOX_CLASS_LIMIT = 50;
+const CLASS_COUNT_THRESHOLD = 1500;
+const CLASS_COUNT_THRESHOLD_IE = 25;
+
 angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
-    .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr)
-    .constant("SAFARI_IE_EDGE_CLASS_LIMIT", 400)
-    .constant("FIREFOX_CLASS_LIMIT", 50)
-    .constant("CLASS_COUNT_THRESHOLD", 1500)
-    .constant("CLASS_COUNT_THRESHOLD_IE", 25);
+    .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "SAFARI_IE_EDGE_CLASS_LIMIT", "FIREFOX_CLASS_LIMIT", "CLASS_COUNT_THRESHOLD", "CLASS_COUNT_THRESHOLD_IE"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, SAFARI_IE_EDGE_CLASS_LIMIT, FIREFOX_CLASS_LIMIT, CLASS_COUNT_THRESHOLD, CLASS_COUNT_THRESHOLD_IE) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -48,6 +49,28 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $rootScope.key = "";
     datasource.get = function (index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
+    };
+
+    let selectedGraph = allGraphs;
+
+    const initView = function () {
+        RDF4JRepositoriesRestService.resolveGraphs()
+            .success(function (graphsInRepo) {
+                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                setSelectedGraphFromCache();
+            }).error(function (data) {
+            $scope.repositoryError = getError(data);
+            toastr.error(getError(data), 'Error getting graphs');
+        });
+    };
+
+    const setSelectedGraphFromCache = function () {
+        const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+            selectedGraph = selGraphFromCache;
+        } else {
+            LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+        }
     };
 
     $rootScope.$watch(function () {
@@ -89,6 +112,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.instancesQueryObj.query = "";
     $scope.instancesFilterFunc = instancesFilterFunc;
 
+    initView();
 
     $scope.$watch('instancesObj.items', function () {
         if ($scope.instancesObj.items.length > 0) {
@@ -375,7 +399,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         refreshDiagramExternalElements();
         $scope.loader = true;
         $scope.hierarchyError = false;
-        GraphDataRestService.reloadClassHierarchy()
+        GraphDataRestService.reloadClassHierarchy(selectedGraph.contextID.uri)
             .success(function (response) {
                 $scope.loader = false;
                 $scope.classHierarchyData = response;
@@ -408,14 +432,21 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
+        selectedGraph = allGraphs;
+        initView();
+        getClassHierarchyData();
+    }
+
+    function getClassHierarchyData() {
 
         refreshDiagramExternalElements();
 
         if (!$scope.isSystemRepository()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
-            GraphDataRestService.getClassHierarchyData()
+            GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
                 .success(function (response, status) {
+                    $scope.showExternalElements = true;
                     $scope.loader = false;
                     $scope.classHierarchyData = response;
                     if (status === 207) {
@@ -433,4 +464,18 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.hasClassHierarchy = function () {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
+
+    $scope.chosenGraph = function (graph) {
+        selectedGraph = graph;
+        getClassHierarchyData();
+        LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+    };
+
+    $scope.getSelGraphValue = function () {
+        return selectedGraph.contextID.value;
+    };
+
+    $scope.isAllGraphsSelected = function () {
+        return $scope.getSelGraphValue() === 'All graphs'
+    }
 }

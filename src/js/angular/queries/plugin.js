@@ -16,7 +16,8 @@ PluginRegistry.add('main.menu', {
             label: 'Monitor',
             href: '#',
             order: 3,
-            role: 'ROLE_REPO_MANAGER',
+            // Changed to role user as now users can monitor their own queries
+            role: 'ROLE_USER',
             icon: 'icon-monitoring'
         }, {
             label: 'Queries and Updates',

@@ -14,10 +14,7 @@ describe('SPARQL screen validation', () => {
         '\t?s ?p ?o .\n' +
         '} limit 100';
 
-    const DEFAULT_QUERY_MODIFIED = 'prefix spif: <http://spinrdf.org/spif#>\n' +
-        'select * {\n' +
-        '    ?x spif:for (1 2000)\n' +
-        '} limit 1001';
+    const DEFAULT_QUERY_MODIFIED = 'prefix spif: <http://spinrdf.org/spif#> select * {?x spif:for (1 2000)} limit 1001';
 
     const SPARQL_STAR_QUERY = 'select (<<?s ?p ?o>> as ?t) {?s ?p ?o}';
 
@@ -168,7 +165,8 @@ describe('SPARQL screen validation', () => {
         it('Test execute sparqlstar select searching for inserted results', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
-            let selectQuery = 'select * where {<<<urn:a> <urn:p> 1>> ?p ?o .}';
+            let selectQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+                     "select * where {<<bd:bob foaf:mbox <mailto:bob@home>>> ?p ?o .}";
 
             typeQuery(selectQuery);
 
@@ -178,15 +176,17 @@ describe('SPARQL screen validation', () => {
 
             getResultPages().should('have.length', 1);
 
-            verifyResultsPageLength(1);
+            verifyResultsPageLength(4);
 
-            getTableResultRows().should('contain', '<urn:x>');
+            getTableResultRows().should('contain', 'http://hr.example.com/employees/bob');
         });
 
-        it('Test execute sparqlstar delete query', () => {
+        it('Test execute sparqlstar delete query and search for deleted triple', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
-            let deleteQuery = 'delete data {<<<urn:a> <urn:p> 1>> <urn:x> 2}';
+            let deleteQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+                                "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
+                                    "delete data {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
             typeQuery(deleteQuery);
 
@@ -199,12 +199,10 @@ describe('SPARQL screen validation', () => {
                 .and('contain', 'Removed 1 statements');
 
             getResultPages().should('have.length', 1);
-        });
 
-        it.only('Test execute sparqlstar select searching for deleted results', () => {
-            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
-
-            let selectQuery = 'select * where {<<<urn:a> <urn:p> 1>> ?p ?o .}';
+            let selectQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+                                                                          "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
+                                                                              "select * where {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
             typeQuery(selectQuery);
 
@@ -214,13 +212,13 @@ describe('SPARQL screen validation', () => {
 
             getResultPages().should('have.length', 1);
 
-            verifyResultsPageLength(1);
+            //verifyResultsPageLength(1);
 
             cy.get('.results-info .results-description')
                 .should('be.visible')
                 .and('contain', 'No results');
-        });
 
+        });
 
         it('Test execute (Describe with bind) sparqlstar query', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);

@@ -1,7 +1,11 @@
+import ClassViewsSteps from "../../steps/class-views-steps";
+
 const INITIAL_CLASS_COUNT = 50;
+const CLASS_COUNT_OF_NEWS_GRAPH = 35;
 const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
+const CLASS_HIERARCHY = 'class hierarchy';
 
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
@@ -27,10 +31,7 @@ describe('Class hierarchy screen validation', () => {
     });
 
     it('Test initial state of the diagram has a class count 50', () => {
-        getCurrentSliderValue()
-            .then((currentValue) => {
-                expect(currentValue === INITIAL_CLASS_COUNT);
-            });
+        verifyCounterValue(INITIAL_CLASS_COUNT);
     });
 
     it('Test show/hide prefixes', () => {
@@ -74,21 +75,16 @@ describe('Class hierarchy screen validation', () => {
         cy.get('.class-cnt-slider > .ng-isolate-scope').trigger('click', 'center');
 
         // Reload diagram
-        cy.get('.toolbar-holder .reload-diagram-btn').click();
+        ClassViewsSteps.reloadDiagram();
 
         // Verify that warning message appears
-        cy.get('.modal-body > .lead')
-            .should('be.visible')
-            .and('contain', 'Calculating class hierarchy data may take some time. Are you sure?');
+        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
 
         // Confirm diagram reloading
-        confirmReload();
+        ClassViewsSteps.confirmReload();
 
         // Verify that the diagram zooms out and the class count is reset
-        getCurrentSliderValue()
-            .then((currentValue) => {
-                expect(currentValue === INITIAL_CLASS_COUNT);
-            });
+        verifyCounterValue(INITIAL_CLASS_COUNT);
     });
 
     it('Test export diagram', () => {
@@ -160,6 +156,27 @@ describe('Class hierarchy screen validation', () => {
         getReturnButton().should('be.visible').click();
     });
 
+    it('Test class-hierarchy for given graph', () => {
+        cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
+        // Should re-enter page to display Graph dropdown
+        cy.visit('/hierarchy');
+        ClassViewsSteps.verifyDataChangedWarning();
+        verifyCounterValue(INITIAL_CLASS_COUNT);
+        ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
+
+        // Reload diagram
+        ClassViewsSteps.reloadDiagram();
+
+        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
+        ClassViewsSteps.confirmReload();
+        cy.visit('/hierarchy#1');
+        verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
+        ClassViewsSteps.clickGraphBtn();
+        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
+        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
+        verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+    });
+
     function getDomainRangeGraphButton() {
         return cy.get('.domain-range-graph-btn');
     }
@@ -186,7 +203,7 @@ describe('Class hierarchy screen validation', () => {
         // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
         // value.
         return cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => $element.prop('aria-valuenow'));
+            .then(($element) => $element.attr('aria-valuenow'));
     }
 
     function searchForClass(name) {
@@ -224,8 +241,10 @@ describe('Class hierarchy screen validation', () => {
         return cy.wrap($element).should('have.css', 'font-size').and('not.eq', '10px');
     }
 
-    function confirmReload() {
-        cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.be.visible');
+    function verifyCounterValue(classCount) {
+        getCurrentSliderValue()
+            .then((currentValue) => {
+                expect(currentValue === classCount);
+            });
     }
 });

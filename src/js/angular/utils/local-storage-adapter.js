@@ -56,7 +56,7 @@ function LocalStorageAdapter(localStorageService, LSKeys) {
     function clearClassHieararchyState() {
         keys().forEach(function(key) {
             // remove everything but the hide prefixes setting, it should always persist
-            if (key.indexOf("classHierarchy-") === 0 && key !== LSKeys.CLASS_HIERARCHY_HIDE_PREFIXES) {
+            if (key.indexOf("classHierarchy-") === 0 && key !== LSKeys.CLASS_HIERARCHY_HIDE_PREFIXES && !key.startsWith("classHierarchy-selectedGraph-")) {
                 remove(key);
             }
         });

@@ -11,8 +11,19 @@ const modules = [
     'ui.scroll',
     'toastr',
     'ui.bootstrap',
-    'graphdb.framework.core.services.repositories'
+    'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter'
 ];
+const allGraphs = {
+    contextID: {
+        type: "all",
+        value: "All graphs",
+        uri: ""
+    }
+};
+Object.defineProperty(global, 'allGraphs', {
+    get: () => {return allGraphs;}
+});
 
 angular
     .module('graphdb.framework.graphexplore.controllers.dependencies', modules)
@@ -35,20 +46,48 @@ function humanize(number) {
     return result + si[exp - 1];
 }
 
-DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService'];
+DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService'];
 
-function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService) {
+function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService) {
 
-    let timer;
+    let timer = null;
 
     $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
+
+    let selectedGraph = allGraphs;
+
+    const initView = function () {
+        RDF4JRepositoriesRestService.resolveGraphs()
+            .success(function (graphsInRepo) {
+                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                setSelectedGraphFromCache();
+                if (!$scope.isSystemRepository()) {
+                    $scope.status = 'WAIT';
+                    getRelationshipsStatus(true);
+                } else if ($scope.status !== "READY") {
+                    getRelationshipsStatus();
+                }
+            }).error(function (data) {
+            $scope.repositoryError = getError(data);
+            toastr.error(getError(data), 'Error getting graphs');
+        });
+    };
+
+    const setSelectedGraphFromCache = function () {
+        const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+            selectedGraph = selGraphFromCache;
+        } else {
+            LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+        }
+    };
 
     const getRelationshipsData = function (selectedClasses) {
         d3.select('#dependencies-chord').html('');
 
         $scope.status = STATUS.WAIT;
 
-        GraphDataRestService.getRelationshipsData(selectedClasses, $scope.direction)
+        GraphDataRestService.getRelationshipsData(selectedClasses, $scope.direction, selectedGraph.contextID.uri)
             .success(function (matrixData) {
                 // Check classes empty
                 $scope.dependenciesData = {
@@ -67,10 +106,11 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const getRelationshipsClasses = function () {
-        GraphDataRestService.getRelationshipsClasses($scope.direction)
+        GraphDataRestService.getRelationshipsClasses($scope.direction, selectedGraph.contextID.uri)
             .success(function (classesData, status) {
                 $scope.allClasses.items = _.filter(classesData, classFilterFunc);
                 $scope.allNotFilteredClasses = classesData;
+                $scope.selectedClasses = undefined;
                 if (angular.isUndefined($scope.selectedClasses)) {
                     $scope.selectedClasses = classesData.slice(0, 10);
                 }
@@ -86,17 +126,21 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             return;
         }
         $scope.status = STATUS.WAIT;
-        GraphDataRestService.getRelationshipsStatus()
+        GraphDataRestService.getRelationshipsStatus(selectedGraph.contextID.uri)
             .success(function (data) {
                 $scope.status = data;
                 if ($scope.status === STATUS.IN_PROGRESS) {
-                    if (timer) {
+                    if (timer !== null) {
                         return;
                     } else {
                         timer = $timeout(getRelationshipsStatus, 2000);
                     }
                 }
                 if ($scope.status === STATUS.READY) {
+                    if (timer !== null) {
+                        $timeout.cancel(timer);
+                        timer = null;
+                    }
                     getRelationshipsClasses();
                 }
                 if ($scope.status.indexOf('ERROR;') === 0) {
@@ -166,11 +210,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
             return;
         }
-        if ($scope.status === STATUS.READY) {
-            getRelationshipsClasses();
-        } else {
-            getRelationshipsStatus();
-        }
+        initView();
     });
 
     $scope.$on('$destroy', function () {
@@ -195,7 +235,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.calculateDependencies = function () {
         $scope.status = STATUS.WAIT;
         $scope.selectedClasses = undefined;
-        GraphDataRestService.calculateRelationships()
+        GraphDataRestService.calculateRelationships(selectedGraph.contextID.uri)
             .success(function (data) {
                 if (data.indexOf('ERROR;') === 0) {
                     toastr.error('There was an error while calculating dependencies: ' + data.substring('ERROR;'.length));
@@ -254,18 +294,27 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         // clear class search on changing the repository
         $scope.classQuery = {};
         $scope.classQuery.query = '';
-
         if (!$repositories.getActiveRepository()) {
             $scope.status = STATUS.NO_REPO;
             return;
         }
-        if (!$scope.isSystemRepository()) {
-            $scope.status = STATUS.WAIT;
-            $scope.selectedClasses = undefined;
-            getRelationshipsStatus(true);
-        }
+        selectedGraph = allGraphs;
+        initView();
     }
 
     $scope.$on('repositoryIsSet', onRepositoryIsSet);
 
+    $scope.selectGraph = function (graph) {
+        selectedGraph = graph;
+        getRelationshipsStatus(true);
+        LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+    };
+
+    $scope.getSelectedGraphValue = function () {
+        return selectedGraph.contextID.value;
+    };
+
+    $scope.isAllGraphsSelected = function () {
+        return $scope.getSelectedGraphValue() === 'All graphs'
+    }
 }

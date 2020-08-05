@@ -35,14 +35,19 @@ function GraphDataRestService($http) {
         getRdfsLabelAndComment
     };
 
-    function getClassHierarchyData() {
-        return $http.get(CLASS_HIERARCHY_ENDPOINT);
-    }
-
-    function reloadClassHierarchy() {
+    function getClassHierarchyData(graphURI) {
         return $http.get(CLASS_HIERARCHY_ENDPOINT, {
             params: {
-                doReload: true
+                graphURI: graphURI
+            }
+        });
+    }
+
+    function reloadClassHierarchy(graphURI) {
+        return $http.get(CLASS_HIERARCHY_ENDPOINT, {
+            params: {
+                doReload: true,
+                graphURI: graphURI
             }
         });
     }
@@ -72,39 +77,50 @@ function GraphDataRestService($http) {
         });
     }
 
-    function getRelationshipsData(selectedClasses, direction) {
+    function getRelationshipsData(selectedClasses, direction, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}matrix`, {
             params: {
                 'mode': direction,
                 'classes': _.map(selectedClasses, function (c) {
                     return c.name;
-                })
+                }),
+                'graphURI': graphURI
             }
         });
     }
 
-    function getRelationshipsClasses(direction) {
+    function getRelationshipsClasses(direction, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}classes`, {
             params: {
-                'mode': direction
+                'mode': direction,
+                'graphURI': graphURI
             }
         });
     }
 
-    function getRelationshipsStatus() {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}status`);
+    function getRelationshipsStatus(graphURI) {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}status`, {
+            params: {
+                graphURI: graphURI
+            }
+        });
     }
 
-    function calculateRelationships() {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}update`);
+    function calculateRelationships(graphURI) {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}update`, {
+            params: {
+                graphURI: graphURI
+            }
+        });
     }
 
-    function getPredicates(sourceClass, destinationClass) {
+    function getPredicates(sourceClass, destinationClass, graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}predicates`, {
             params: {
                 'from': sourceClass,
                 'to': destinationClass,
-                'mode': 'all'
+                'mode': 'all',
+                graphURI: graphURI
             }
         });
     }

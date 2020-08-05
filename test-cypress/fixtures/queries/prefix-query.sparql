@@ -4,4 +4,3 @@ select * where {
     ?c a owl:Restriction;
        owl:onProperty wordn-sc:word;
        owl:someValuesFrom wordn-sc:Word .
-}

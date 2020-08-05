@@ -146,3 +146,17 @@ svg {
     border-radius: 0;
     border-top: 0;
 }
+
+#graphsBtnGroup[aria-expanded="false"] {
+    background-color: white;
+    border: none;
+}
+
+#graphsBtnGroup[aria-expanded="true"] {
+    color: inherit;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+

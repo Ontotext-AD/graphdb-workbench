@@ -1,3 +1,5 @@
+import ClassViewsSteps from "../../steps/class-views-steps";
+
 const FILE_TO_IMPORT = 'wine.rdf';
 
 describe('Class relations screen validation', () => {
@@ -58,6 +60,23 @@ describe('Class relations screen validation', () => {
         // Clear the filter and expect all rows to be visible again
         getFilterField().clear();
         verifyListLength(10);
+    });
+
+    it.only('Test class relationships for given graph', () => {
+        cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
+        // Should re-enter page to display Graph dropdown
+        cy.visit('/relationships');
+        ClassViewsSteps.verifyDataChangedWarning();
+        ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
+
+        // Reload diagram
+        ClassViewsSteps.reloadDiagram();
+
+        ClassViewsSteps.confirmReloadWarningAppear('relationships');
+        ClassViewsSteps.confirmReload();
+        ClassViewsSteps.clickGraphBtn();
+        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
+        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
     });
 
     function getFilterField() {
