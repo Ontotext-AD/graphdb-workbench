@@ -15,8 +15,8 @@ if: type = pull_request OR branch = master OR tag IS present
 
 addons:
   chrome: stable
-  sonarcloud:
-    organization: "ontotext-ad"
+#  sonarcloud:
+#    organization: "ontotext-ad"
   # Needed for Cypress tests
   apt:
     packages:
