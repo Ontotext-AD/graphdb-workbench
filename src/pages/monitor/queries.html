@@ -51,8 +51,14 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="query in queries">
-								<td>{{query.compositeTrackId[0]}}</td>
-								<td><div>{{query.compositeTrackId[2]}}</div><div>{{query.compositeTrackId[1]}}</div></td>
+								<td>{{query.trackId}}</td>
+								<td>
+                                    <div>{{ getActiveRepository() }}</div>
+                                    <div ng-show="query.parsedNode">
+                                        <div>&rarr; {{ query.parsedNode[2] }} #{{ query.parsedNode[0] }}</div>
+                                        <div>{{ query.parsedNode[1] }}</div>
+                                    </div>
+                                </td>
 								<td>{{query.type}}</td>
 								<td>
 									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">Download</button>

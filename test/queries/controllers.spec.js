@@ -59,6 +59,18 @@ describe('=> QueriesCtrl tests', function () {
             "isRequestedToStop": false,
             "msSinceCreated": 6689,
             "running": true
+        }, {
+            "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
+            "trackId": "1234",
+            "node": "http://example.com:7300/repositories/repo#678",
+            "nsTotalSpentInNext": 1234567,
+            "nsAverageForOneNext": 1234,
+            "state": "IN_HAS_NEXT",
+            "nNext": 12345,
+            "msLifetime": 123,
+            "isRequestedToStop": false,
+            "msSinceCreated": 12345678,
+            "running": true
         }]);
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -99,7 +111,7 @@ describe('=> QueriesCtrl tests', function () {
                 "21107": {
                     "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
                     "trackId": "21107",
-                    "compositeTrackId": ["21107", "", "activeRepository"],
+                    "parsedNode": null,
                     "nsTotalSpentInNext": 6406320151,
                     "nsAverageForOneNext": 5616,
                     "state": "IN_NEXT",
@@ -107,6 +119,20 @@ describe('=> QueriesCtrl tests', function () {
                     "msLifetime": 6689,
                     "isRequestedToStop": false,
                     "msSinceCreated": 6689,
+                    "running": true
+                },
+                "1234": {
+                    "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
+                    "trackId": "1234",
+                    "node": "http://example.com:7300/repositories/repo#678",
+                    "parsedNode": ["678", "example:7300", "repo"],
+                    "nsTotalSpentInNext": 1234567,
+                    "nsAverageForOneNext": 1234,
+                    "state": "IN_HAS_NEXT",
+                    "nNext": 12345,
+                    "msLifetime": 123,
+                    "isRequestedToStop": false,
+                    "msSinceCreated": 12345678,
                     "running": true
                 }
             })
