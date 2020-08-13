@@ -9,6 +9,11 @@
         <input id="wb-graphviz-savegraph-name" required type="text" ng-model="graph.name" class="form-control"
                ng-change="graphExists = false"
                placeholder="Enter name" ng-maxlength="100"/>
+        <label for="share-graph"
+               tooltip="If checked other users will be able to see the graph but not delete or edit it.">
+            <input id="share-graph" type="checkbox" ng-model="graph.shared">
+            Share graph with other users
+        </label>
         <input style="height: 0; border: 0; padding: 0; margin: 0;" autofocus/>
         <br>
         <div ng-show="form.$error.maxlength">

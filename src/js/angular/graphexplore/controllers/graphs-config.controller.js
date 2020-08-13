@@ -75,6 +75,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     $scope.newConfig = {startQueryIncludeInferred: true, startQuerySameAs: true};
     $scope.newConfig.startMode = 'search';
     $scope.isUpdate = false;
+    $scope.shared = false;
 
     $scope.encodeQuery = function (query) {
         return encodeURIComponent(query);
