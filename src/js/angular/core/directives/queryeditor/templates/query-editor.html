@@ -222,7 +222,7 @@
                  popover-placement="left">
                 <div ng-class="abortRequested ? 'disabled' : ''"> <!-- Keep this div -->
                     <button ng-disabled="abortRequested" class="btn btn-xs btn-primary"
-                            ng-click="abortCurrentQuery()">
+                            ng-click="abortCurrentQuery()" ng-hide="!isUserLoggedIn() && isSecurityEnabled()">
                         {{abortRequested ? 'Stop has been requested' : (lastRunQueryMode === 'update' ? 'Abort update' : 'Abort query')}}
                     </button>
                 </div>
