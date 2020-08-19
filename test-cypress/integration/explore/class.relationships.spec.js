@@ -62,7 +62,7 @@ describe('Class relations screen validation', () => {
         verifyListLength(10);
     });
 
-    it.only('Test class relationships for given graph', () => {
+    it('Test class relationships for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
         // Should re-enter page to display Graph dropdown
         cy.visit('/relationships');
