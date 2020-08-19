@@ -213,11 +213,11 @@ svg {
     font-size: 14px;
 }
 
-#btnGraphsGroup[aria-expanded="false"] {
+#graphsBtnGroup[aria-expanded="false"] {
     background-color: white;
     border: none;
 }
 
-#btnGraphsGroup[aria-expanded="true"] {
+#graphsBtnGroup[aria-expanded="true"] {
     color: inherit;
 }
