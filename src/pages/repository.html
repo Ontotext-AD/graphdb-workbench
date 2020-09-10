@@ -156,6 +156,22 @@
                                             {{repositoryInfo.params.performanceLogging.label}}
                                         </label>
                                     </div>
+                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                        <label class="col-xs-3 col-md-3" tooltip="Activates RDF4J's SHACL extensions that provide additional functionality (experimental).">
+                                            <input id="eclipseRdf4jShaclExtensions" name="eclipseRdf4jShaclExtensions" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.eclipseRdf4jShaclExtensions.value"/>
+                                            {{repositoryInfo.params.eclipseRdf4jShaclExtensions.label}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group row">
+                                        <div class="checkbox offset-xs-3 offset-md-4">
+                                            <label class="col-xs-3 col-md-3" tooltip="Activates DASH Data Shapes extensions that provide additional functionality (experimental).">
+                                                <input id="dashDataShapes" name="dashDataShapes" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.dashDataShapes.value"/>
+                                                {{repositoryInfo.params.dashDataShapes.label}}
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 							<div class="form-group row">
