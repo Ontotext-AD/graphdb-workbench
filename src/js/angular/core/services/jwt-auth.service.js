@@ -33,7 +33,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     // remember where we were so we can return there
                     $rootScope.returnToUrl = $location.url();
                 }
+
+                // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
+                // sure that a request is made to access the login page before proceeding with the rejection of the
+                // original request. Otherwise the login page is not accessible in the context of spring security.
                 $location.path('/login');
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(true);
+                    }, 100);
+                });
             };
             $rootScope.hasExternalAuthUser = function () {
                 return jwtAuth.hasExternalAuthUser();
