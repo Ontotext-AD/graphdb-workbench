@@ -786,7 +786,10 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         } else {
             desc = "Showing results from " + $filter('currency')($scope.currentTabConfig.offset, '', 0) + " to " + $filter('currency')($scope.currentTabConfig.resultsCount, '', 0);
             if ($scope.currentTabConfig.allResultsCount > 0) {
-                desc += $scope.countTimeouted ? " of at least " : " of ";
+                // Unsure total results count "of at least" happens if counting timed out or
+                // counting was disabled and we got at least $pageSize results for the first page
+                desc += $scope.countTimeouted || $scope.nocount && $scope.currentTabConfig.allResultsCount >= $scope.currentTabConfig.pageSize
+                    ? " of at least " : " of ";
                 desc += $filter('currency')($scope.currentTabConfig.allResultsCount, '', 0);
                 desc += ".";
             }
