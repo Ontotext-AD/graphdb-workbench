@@ -596,19 +596,15 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
 
                         const contentType = dataOrJqXhr.getResponseHeader('Content-Type');
 
-                        if (contentType.indexOf('application/sparql-results+json') === 0) {
+                        if (contentType.indexOf('application/sparql-results+json') === 0
+                            || contentType.indexOf('application/x-sparqlstar-results+json') === 0
+                            || contentType.indexOf('application/x-graphdb-table-results+json') === 0) {
                             if (dataOrJqXhr.responseJSON.results) {
-                                // SELECT results, easy to count
+                                // SELECT results in one of the standard formats or
+                                // CONSTRUCT or DESCRIBE results in our custom format that looks
+                                // like a SELECT result.
                                 size = dataOrJqXhr.responseJSON.results.bindings.length;
                             }
-                        } else if (contentType.indexOf('application/rdf+json') === 0) {
-                            // CONSTRUCT or DESCRIBE results, a bit tricky to count
-                            size = 0;
-                            _.each(dataOrJqXhr.responseJSON, function (e) {
-                                _.each(e, function (e) {
-                                    size += e.length;
-                                });
-                            });
                         }
 
                         if (size >= 0 && (scope.nocount || scope.currentTabConfig.offset === 1 && size < scope.currentTabConfig.pageSize)) {
