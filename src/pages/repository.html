@@ -39,7 +39,8 @@
 								  <option value="free" ng-if="isFreeEdition">GRAPHDB-FREE</option>
 								  <option value="worker" ng-if="isEnterprise">GRAPHDB-EE Worker</option>
 								  <option value="master" ng-if="isEnterprise">GRAPHDB-EE Master</option>
-								</select>
+                                  <option value="virtual">Virtual</option>
+                                </select>
 								<select ng-if="editRepoPage" disabled="disabled" class="form-control" id="type" ng-model="repositoryInfo.type">
 								  <option value="se">GRAPHDB-SE</option>
 								  <option value="free">GRAPHDB-FREE</option>
