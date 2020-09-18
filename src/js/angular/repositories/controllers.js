@@ -16,6 +16,9 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
+const VIRTUAL_REPO_PARAMS = ['obdaFile', 'owlFile', 'propertiesFile', 'constraintFile'];
+const REQUIRED_VIRTUAL_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
+
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -386,7 +389,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     };
 
     let isInvalidPieFile = false;
-    $scope.upload = function (files) {
+    $scope.uploadRuleset = function (files) {
         if (files && files.length) {
             $scope.uploadFile = files[0];
             $scope.uploadFileLoader = true;
@@ -413,6 +416,38 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
                     $scope.rulesetPie = data.fileLocation;
                     $scope.rulesetPieFile = fileName;
                     $scope.repositoryInfo.params.ruleset.value = $scope.rulesetPie;
+                }
+                $scope.uploadFileLoader = false;
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+                $scope.uploadFile = '';
+                $scope.uploadFileLoader = false;
+            });
+        }
+    };
+
+    $scope.virtualRepoFiles = VIRTUAL_REPO_PARAMS;
+    $scope.isRequiredVirtualRepoFile = function(file) {
+        return REQUIRED_VIRTUAL_REPO_PARAMS.indexOf(file) > -1;
+    };
+    $scope.virtualRepoFileNames = {};
+
+
+    $scope.uploadVirtualRepoFile = function (files, param) {
+        if (files && files.length) {
+            $scope.uploadFile = files[0];
+            $scope.uploadFileLoader = true;
+            Upload.upload({
+                    url: 'rest/repositories/uploadFile',
+                    data: {uploadFile: $scope.uploadFile}
+                })
+            .success(function (data) {
+                if (!data.success) {
+                    toastr.error(data.errorMessage);
+                } else {
+                    $scope.virtualRepoFileNames[param] = $scope.uploadFile.name;
+                    $scope.repositoryInfo.params[param].value = data.fileLocation;
                 }
                 $scope.uploadFileLoader = false;
             }).error(function (data) {
@@ -477,6 +512,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             toastr.error('Repository id cannot be empty');
             return;
         }
+        if ($scope.repositoryInfo.type === 'virtual') {
+            const missingRequired = REQUIRED_VIRTUAL_REPO_PARAMS.filter(function(requiredFile) {
+               return !$scope.repositoryInfo.params[requiredFile].value;
+            });
+            if (missingRequired.length > 0) {
+                toastr.error('Missing required virtual repo file');
+                return;
+            }
+        }
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
         const repoParams = $scope.repositoryInfo.params;
         if (repoParams.entityIndexSize && repoParams.queryLimitResults && repoParams.queryTimeout) {
@@ -486,7 +530,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidEntityIndexSize && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryLimit) {
+        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidEntityIndexSize && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
             $scope.createRepoHttp();
         } else {
             $scope.formError();
@@ -535,6 +579,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         return $repositories.hasActiveLocation();
     };
 
+    $scope.virtualRepoFiles = VIRTUAL_REPO_PARAMS;
+    $scope.isRequiredVirtualRepoFile = function(file) {
+        return REQUIRED_VIRTUAL_REPO_PARAMS.indexOf(file) > -1;
+    };
+    $scope.virtualRepoFileNames = {};
+
+
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             RepositoriesRestService.getRepository($scope.repositoryInfo.id)
@@ -561,6 +612,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.repositoryInfo = data;
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
+                    $scope.virtualRepoFiles.forEach(function(key) {
+                        $scope.virtualRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
+                    });
                 })
                 .error(function (data, status) {
                     if (status === 404 && $routeParams.repositoryId !== 'system') {
@@ -599,9 +653,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
-        $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
-        $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
+        if ($scope.repositoryInfo.type != 'virtual') {
+            $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
+            $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
+            $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
+        }
         if (!$scope.isInvalidRepoName) {
             ModalService.openSimpleModal({
                 title: 'Confirm edit',
