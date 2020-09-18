@@ -52,7 +52,7 @@ PluginRegistry.add('main.menu', {
             href: 'ontorefine',
             order: 2,
             parent: 'Import',
-            role: 'IS_AUTHENTICATED_FULLY'
+            role: 'ROLE_USER'
         }
     ]
 });
