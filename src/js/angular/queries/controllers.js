@@ -32,21 +32,23 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
 
         const parser = document.createElement('a');
 
-        $scope.parseTrackId = function (trackId) {
-            if (trackId.indexOf('#') < 0) {
-                return [trackId, '', $repositories.getActiveRepository()];
+        // Parses a node of the kind http://host.example.com:7200/repositories/repo#NN,
+        // where NN is the track ID into an array [NN, host:7200, repo].
+        $scope.parseNode = function (node) {
+            if (node == null) {
+                return null;
             }
 
             let shortUrl = 'local';
-            if (trackId.indexOf('://localhost:') < 0 && trackId.indexOf('://localhost/') < 0) {
-                parser.href = trackId;
+            if (node.indexOf('://localhost:') < 0 && node.indexOf('://localhost/') < 0) {
+                parser.href = node;
                 let hostname = parser.hostname;
                 if (!containsIPV4(parser.hostname)) {
                     hostname = parser.hostname.split('.')[0];
                 }
                 shortUrl = hostname + ':' + parser.port;
             }
-            const match = trackId.match(/\/repositories\/([^\/]+)#(\d+)/); // eslint-disable-line no-useless-escape
+            const match = node.match(/\/repositories\/([^\/]+)#(\d+)/); // eslint-disable-line no-useless-escape
 
             return [match[2], shortUrl, match[1]];
         };
@@ -67,7 +69,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
                 // it doesn't recreate DOM elements for queries that are already displayed.
                 $scope.queries = {};
                 for (let i = 0; i < newQueries.length; i++) {
-                    newQueries[i].compositeTrackId = $scope.parseTrackId(newQueries[i].trackId);
+                    newQueries[i].parsedNode = $scope.parseNode(newQueries[i].node);
                     $scope.queries[newQueries[i].trackId] = newQueries[i];
                 }
 
@@ -114,12 +116,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         };
 
         $scope.downloadQuery = function (queryId) {
-            const parsed = $scope.parseTrackId(queryId);
-            let filename = 'query_' + parsed[0] + '_' + parsed[2];
-            if (parsed[1]) {
-                filename += '_' + parsed[1];
-            }
-            filename += '.rq';
+            const filename = 'query_' + queryId + '.rq';
             let link = 'rest/monitor/query/download?queryId=' + encodeURIComponent(queryId)
                 + '&repository=' + encodeURIComponent($repositories.getActiveRepository())
                 + '&filename=' + encodeURIComponent(filename);

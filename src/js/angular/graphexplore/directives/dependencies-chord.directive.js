@@ -133,7 +133,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 const px = d3.event.pageX;
                 const py = d3.event.pageY;
 
-                GraphDataRestService.getPredicates(sourceClass, destinationClass, scope.selectedGraph.contextID.uri)
+                GraphDataRestService.getPredicates(sourceClass, destinationClass, scope.selectedGraph && scope.selectedGraph.contextID.uri)
                     .success(function (predicatesData) {
                         const directionIcon = " <i class='fa fa-exchange'></i> ";
                         const header = "<div class='row'>" + sourceClass + directionIcon + destinationClass + "</div>";

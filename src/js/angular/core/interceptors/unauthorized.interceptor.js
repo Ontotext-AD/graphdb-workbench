@@ -11,8 +11,10 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                         // Redirect to login page only if this isn't the endpoint that checks
                         // the externally logged user and when no external authentication is available.
                         // This check is essential for making free access and external auth working.
-                        $rootScope.redirectToLogin();
-                        return $q.reject(response);
+                        return Promise.resolve($rootScope.redirectToLogin())
+                            .then(() => {
+                                return $q.reject(response);
+                            });
                     }
                 } else if (response.status === 403) {
                     if ($rootScope.setPermissionDenied($location.path())) {
@@ -22,8 +24,10 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                     }
                     return $q.reject(response);
                 } else if (response.status === 409) {
-                    $rootScope.redirectToLogin(true);
-                    return $q.reject(response);
+                    return Promise.resolve($rootScope.redirectToLogin(true))
+                        .then(() => {
+                        return $q.reject(response);
+                    });
                 } else {
                     return $q.reject(response);
                 }

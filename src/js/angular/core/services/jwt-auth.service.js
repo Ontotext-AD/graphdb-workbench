@@ -33,7 +33,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     // remember where we were so we can return there
                     $rootScope.returnToUrl = $location.url();
                 }
+
+                // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
+                // sure that a request is made to access the login page before proceeding with the rejection of the
+                // original request. Otherwise the login page is not accessible in the context of spring security.
                 $location.path('/login');
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(true);
+                    }, 100);
+                });
             };
             $rootScope.hasExternalAuthUser = function () {
                 return jwtAuth.hasExternalAuthUser();
@@ -187,8 +196,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.setAuthHeaders = function () {
                 $http.defaults.headers.common['Authorization'] = this.auth;
+                // Angular doesn't send this header by default and we need it to detect XHR requests
+                // so that we don't advertise Basic auth with them.
+                $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
                 $.ajaxSetup()['headers']['Authorization'] = this.auth;
+                // jQuery seems to send the header by default but it doesn't hurt to be explicit
+                $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
             };
             this.setAuthHeaders();
 
