@@ -21,6 +21,9 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         inference: true,
         sameAs: true
     };
+
+    const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
+
     let principal = $jwtAuth.getPrincipal();
     let checkQueryIntervalId;
     if (principal) {
@@ -46,6 +49,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         });
 
         scope.$on('repositoryIsSet', deleteCachedSparqlResults);
+        scope.$on('repositoryIsSet', overrideSameAsAndSkipCountIfNeeded);
     }
 
     $scope.resetCurrentTabConfig = function () {
@@ -279,9 +283,16 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     // start of query operations
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
-        if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-            toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
-            return;
+        if (explain) {
+            if (!(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
+                toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
+                return;
+            }
+
+            if (isOntopRepo()) {
+                toastr.warning('Explain not supported for Virtual repositories.');
+                return;
+            }
         }
 
         $scope.explainRequested = explain;
@@ -293,6 +304,12 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             }
 
             $scope.lastRunQueryMode = window.editor.getQueryMode();
+
+            if ($scope.lastRunQueryMode === 'update' && isOntopRepo()) {
+                toastr.warning('Updates are not supported for Virtual repositories.');
+                return;
+            }
+
             setLoader(true, $scope.lastRunQueryMode === 'update' ? 'Executing update' : 'Evaluating query');
             if ($scope.viewMode !== 'none') {
                 $scope.viewMode = 'none';
@@ -694,6 +711,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if (!checkQueryIntervalId) {
             checkQueryIntervalId = setInterval(showOrHideSaveAsDropDown, 200);
         }
+        overrideSameAsAndSkipCountIfNeeded();
     }
 
     function getQueryID(element) {
@@ -828,6 +846,32 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     $scope.$on('$destroy', function () {
         angular.element($window).unbind('resize', resize);
     });
+
+    function isOntopRepo() {
+        let activeRepo = $repositories.repositories.find(current => current.id === $repositories.getActiveRepository());
+        if (activeRepo) {
+            return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+        }
+
+        return false;
+    }
+
+    /**
+     * In case of Ontop repository, sameAs and skipCountQueries
+     * are overridden to true and #sameAs button is disabled
+     */
+    function overrideSameAsAndSkipCountIfNeeded() {
+        let sameAsBtn = document.getElementById('sameAs')
+        let isOntop = isOntopRepo();
+        if (sameAsBtn) {
+            sameAsBtn.disabled = isOntop;
+        }
+
+        if (isOntop) {
+            $scope.skipCountQuery = true;
+            $scope.currentQuery.sameAs = true;
+        }
+    }
 }
 
 QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
