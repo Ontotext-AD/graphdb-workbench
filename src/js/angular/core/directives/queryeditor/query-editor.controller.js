@@ -49,7 +49,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         });
 
         scope.$on('repositoryIsSet', deleteCachedSparqlResults);
-        scope.$on('repositoryIsSet', overrideSameAsAndSkipCountIfNeeded);
+        scope.$on('repositoryIsSet', overrideSameAsAndNoCountIfNeeded);
     }
 
     $scope.resetCurrentTabConfig = function () {
@@ -711,7 +711,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if (!checkQueryIntervalId) {
             checkQueryIntervalId = setInterval(showOrHideSaveAsDropDown, 200);
         }
-        overrideSameAsAndSkipCountIfNeeded();
+        overrideSameAsAndNoCountIfNeeded();
     }
 
     function getQueryID(element) {
@@ -857,20 +857,18 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 
     /**
-     * In case of Ontop repository, sameAs and skipCountQueries
+     * In case of Ontop repository, sameAs and nocount
      * are overridden to true and #sameAs button is disabled
      */
-    function overrideSameAsAndSkipCountIfNeeded() {
+    function overrideSameAsAndNoCountIfNeeded() {
         let sameAsBtn = document.getElementById('sameAs')
         let isOntop = isOntopRepo();
         if (sameAsBtn) {
             sameAsBtn.disabled = isOntop;
         }
 
-        if (isOntop) {
-            $scope.skipCountQuery = true;
-            $scope.currentQuery.sameAs = true;
-        }
+        $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
+        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
     }
 }
 
