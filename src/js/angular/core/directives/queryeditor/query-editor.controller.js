@@ -848,7 +848,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     });
 
     function isOntopRepo() {
-        let activeRepo = $repositories.repositories.find(current => current.id === $repositories.getActiveRepository());
+        const activeRepo = $repositories.repositories.find(current => current.id === $repositories.getActiveRepository());
         if (activeRepo) {
             return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
         }
@@ -861,8 +861,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
      * are overridden to true and #sameAs button is disabled
      */
     function overrideSameAsAndNoCountIfNeeded() {
-        let sameAsBtn = document.getElementById('sameAs')
-        let isOntop = isOntopRepo();
+        const sameAsBtn = document.getElementById('sameAs')
+        const isOntop = isOntopRepo();
         if (sameAsBtn) {
             sameAsBtn.disabled = isOntop;
         }
