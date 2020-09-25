@@ -22,8 +22,6 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         sameAs: true
     };
 
-    const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
-
     let principal = $jwtAuth.getPrincipal();
     let checkQueryIntervalId;
     if (principal) {
@@ -49,7 +47,6 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         });
 
         scope.$on('repositoryIsSet', deleteCachedSparqlResults);
-        scope.$on('repositoryIsSet', overrideSameAsAndNoCountIfNeeded);
     }
 
     $scope.resetCurrentTabConfig = function () {
@@ -289,7 +286,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                 return;
             }
 
-            if (isOntopRepo()) {
+            if ($repositories.isActiveRepoOntopType()) {
                 toastr.warning('Explain not supported for Virtual repositories.');
                 return;
             }
@@ -305,7 +302,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
             $scope.lastRunQueryMode = window.editor.getQueryMode();
 
-            if ($scope.lastRunQueryMode === 'update' && isOntopRepo()) {
+            if ($scope.lastRunQueryMode === 'update' && $repositories.isActiveRepoOntopType()) {
                 toastr.warning('Updates are not supported for Virtual repositories.');
                 return;
             }
@@ -847,28 +844,19 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         angular.element($window).unbind('resize', resize);
     });
 
-    function isOntopRepo() {
-        const activeRepo = $repositories.repositories.find(current => current.id === $repositories.getActiveRepository());
-        if (activeRepo) {
-            return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
-        }
-
-        return false;
-    }
-
     /**
      * In case of Ontop repository, sameAs and nocount
      * are overridden to true and #sameAs button is disabled
      */
     function overrideSameAsAndNoCountIfNeeded() {
         const sameAsBtn = document.getElementById('sameAs')
-        const isOntop = isOntopRepo();
+        const isOntop = $repositories.isActiveRepoOntopType();
         if (sameAsBtn) {
             sameAsBtn.disabled = isOntop;
         }
 
         $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
-        $scope.currentTabConfig.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
     }
 }
 

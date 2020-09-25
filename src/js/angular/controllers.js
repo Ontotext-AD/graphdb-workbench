@@ -294,7 +294,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         const activeRepository = $repositories.getActiveRepository();
         // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
         return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem);
+            && (activeRepository !== 'SYSTEM' || !noSystem) && !$scope.isActiveRepoOntopType();
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -302,6 +302,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             return repo.id === $scope.getActiveRepository();
         });
     };
+
+    $scope.isActiveRepoOntopType = function () {
+        return $repositories.isActiveRepoOntopType();
+    }
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
