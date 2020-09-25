@@ -868,7 +868,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         }
 
         $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
-        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+        $scope.currentTabConfig.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
     }
 }
 
