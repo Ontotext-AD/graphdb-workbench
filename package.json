@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.4.1-RC2",
+    "version": "1.4.1",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -34,7 +34,7 @@
         "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
     },
     "versions": {
-        "graphdb": "9.4.0-TR24"
+        "graphdb": "9.4.0"
     },
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
     "devDependencies": {
