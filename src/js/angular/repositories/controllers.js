@@ -16,8 +16,8 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-const VIRTUAL_REPO_PARAMS = ['obdaFile', 'owlFile', 'propertiesFile', 'constraintFile'];
-const REQUIRED_VIRTUAL_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
+const ONTOP_REPO_PARAMS = ['obdaFile', 'owlFile', 'propertiesFile', 'constraintFile'];
+const REQUIRED_ONTOP_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
 
 const modules = [
     'ngCookies',
@@ -427,14 +427,14 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
     };
 
-    $scope.virtualRepoFiles = VIRTUAL_REPO_PARAMS;
-    $scope.isRequiredVirtualRepoFile = function(file) {
-        return REQUIRED_VIRTUAL_REPO_PARAMS.indexOf(file) > -1;
+    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
+    $scope.isRequiredOntopRepoFile = function(file) {
+        return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
     };
-    $scope.virtualRepoFileNames = {};
+    $scope.ontopRepoFileNames = {};
 
 
-    $scope.uploadVirtualRepoFile = function (files, param) {
+    $scope.uploadOntopRepoFile = function (files, param) {
         if (files && files.length) {
             $scope.uploadFile = files[0];
             $scope.uploadFileLoader = true;
@@ -446,7 +446,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
                 if (!data.success) {
                     toastr.error(data.errorMessage);
                 } else {
-                    $scope.virtualRepoFileNames[param] = $scope.uploadFile.name;
+                    $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
                     $scope.repositoryInfo.params[param].value = data.fileLocation;
                 }
                 $scope.uploadFileLoader = false;
@@ -512,12 +512,12 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             toastr.error('Repository id cannot be empty');
             return;
         }
-        if ($scope.repositoryInfo.type === 'virtual') {
-            const missingRequired = REQUIRED_VIRTUAL_REPO_PARAMS.filter(function(requiredFile) {
+        if ($scope.repositoryInfo.type === 'ontop') {
+            const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function(requiredFile) {
                return !$scope.repositoryInfo.params[requiredFile].value;
             });
             if (missingRequired.length > 0) {
-                toastr.error('Missing required virtual repo file');
+                toastr.error('Missing required ontop repo file');
                 return;
             }
         }
@@ -579,11 +579,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         return $repositories.hasActiveLocation();
     };
 
-    $scope.virtualRepoFiles = VIRTUAL_REPO_PARAMS;
-    $scope.isRequiredVirtualRepoFile = function(file) {
-        return REQUIRED_VIRTUAL_REPO_PARAMS.indexOf(file) > -1;
+    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
+    $scope.isRequiredOntopRepoFile = function(file) {
+        return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
     };
-    $scope.virtualRepoFileNames = {};
+    $scope.ontopRepoFileNames = {};
 
 
     $scope.$watch($scope.hasActiveLocation, function () {
@@ -612,8 +612,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.repositoryInfo = data;
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
-                    $scope.virtualRepoFiles.forEach(function(key) {
-                        $scope.virtualRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
+                    $scope.ontopRepoFiles.forEach(function(key) {
+                        $scope.ontopRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
                     });
                 })
                 .error(function (data, status) {
@@ -653,7 +653,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        if ($scope.repositoryInfo.type != 'virtual') {
+        if ($scope.repositoryInfo.type != 'ontop') {
             $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
             $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
             $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
