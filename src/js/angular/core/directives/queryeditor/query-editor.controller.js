@@ -21,6 +21,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         inference: true,
         sameAs: true
     };
+
     let principal = $jwtAuth.getPrincipal();
     let checkQueryIntervalId;
     if (principal) {
@@ -279,9 +280,16 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     // start of query operations
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
-        if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-            toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
-            return;
+        if (explain) {
+            if (!(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
+                toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
+                return;
+            }
+
+            if ($repositories.isActiveRepoOntopType()) {
+                toastr.warning('Explain not supported for Virtual repositories.');
+                return;
+            }
         }
 
         $scope.explainRequested = explain;
@@ -293,6 +301,12 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             }
 
             $scope.lastRunQueryMode = window.editor.getQueryMode();
+
+            if ($scope.lastRunQueryMode === 'update' && $repositories.isActiveRepoOntopType()) {
+                toastr.warning('Updates are not supported for Virtual repositories.');
+                return;
+            }
+
             setLoader(true, $scope.lastRunQueryMode === 'update' ? 'Executing update' : 'Evaluating query');
             if ($scope.viewMode !== 'none') {
                 $scope.viewMode = 'none';
@@ -694,6 +708,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if (!checkQueryIntervalId) {
             checkQueryIntervalId = setInterval(showOrHideSaveAsDropDown, 200);
         }
+        overrideSameAsAndNoCountIfNeeded();
     }
 
     function getQueryID(element) {
@@ -828,6 +843,21 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     $scope.$on('$destroy', function () {
         angular.element($window).unbind('resize', resize);
     });
+
+    /**
+     * In case of Ontop repository, sameAs and nocount
+     * are overridden to true and #sameAs button is disabled
+     */
+    function overrideSameAsAndNoCountIfNeeded() {
+        const sameAsBtn = document.getElementById('sameAs')
+        const isOntop = $repositories.isActiveRepoOntopType();
+        if (sameAsBtn) {
+            sameAsBtn.disabled = isOntop;
+        }
+
+        $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
+        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+    }
 }
 
 QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];

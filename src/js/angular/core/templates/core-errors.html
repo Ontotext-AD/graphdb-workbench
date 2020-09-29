@@ -4,7 +4,8 @@
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
                     <div ng-hide="getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
-                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionalities are not available because you have no write permission to repository <strong>{{getActiveRepository()}}</strong>.</div>
+                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionalities are not available because <span ng-show="!isActiveRepoOntopType()">you have no write permission to </span>repository
+                        <strong>{{getActiveRepository()}}</strong><span ng-show="isActiveRepoOntopType()"> is read-only virtual repository</span>.</div>
                     <small>
                         <span ng-show="getAccessibleRepositories().length">
                             Click one of the repositories below to connect to it<span ng-show="canManageRepositories()"> or create a new repository</span>.

@@ -28,6 +28,7 @@ repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toa
         this.degradedReason = '';
 
         const that = this;
+        const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
 
         const loadingDone = function (err) {
             that.loading = false;
@@ -191,7 +192,7 @@ repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toa
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(that.location, repo.id)
+                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isOntopRepo(repo.id)
             });
         };
 
@@ -202,6 +203,24 @@ repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toa
         this.isSystemRepository = function () {
             return this.repository === 'SYSTEM';
         };
+
+        this.isActiveRepoOntopType = function () {
+            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+            if (activeRepo) {
+                return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+            }
+
+            return false;
+        }
+
+        this.isOntopRepo = function (repoId) {
+            let activeRepo = this.repositories.find(current => current.id === repoId);
+            if (activeRepo) {
+                return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+            }
+
+            return false;
+        }
 
         this.setRepositoryHeaders = function () {
             $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository;
