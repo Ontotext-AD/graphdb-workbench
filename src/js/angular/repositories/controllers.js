@@ -243,7 +243,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = 'rest/repositories/' + repository.id + '/download';
+        let url = 'rest/repositories/' + repository.id + (repository.type === 'ontop' ? '/downloadZip': '/download');
         const token = $jwtAuth.getAuthToken();
         if (token) {
             url = url + '?authToken=' + encodeURIComponent(token);
