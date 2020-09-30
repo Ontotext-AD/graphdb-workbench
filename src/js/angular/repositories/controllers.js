@@ -613,7 +613,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
                     $scope.ontopRepoFiles.forEach(function(key) {
-                        $scope.ontopRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
+                        if ($scope.repositoryInfo.params[key]) {
+                            $scope.ontopRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
+                        }
                     });
                 })
                 .error(function (data, status) {
