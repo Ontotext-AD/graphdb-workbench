@@ -16,8 +16,8 @@ PluginRegistry.add('route', [
         'chunk': 'jdbc',
         'controller': 'JdbcCreateCtrl',
         'templateUrl': 'pages/jdbc-create.html',
-        'title': 'JDBC configuration',
-        'helpInfo': 'JDBC driver configuration to allow SQL access to repository data'
+        'title': 'SQL table configuration',
+        'helpInfo': 'RDF to SQL table mapping configuration tool'
     }
     ]);
 
