@@ -178,7 +178,6 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $modal, $timeo
             $scope.viewMode = 'yasr';
 
             if (window.editor) {
-                console.log($scope.currentQuery)
                 $scope.setQuery($scope.currentQuery.query);
                 loadTab();
             }
