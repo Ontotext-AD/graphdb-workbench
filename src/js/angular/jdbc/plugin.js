@@ -1,13 +1,25 @@
-PluginRegistry.add('route', {
+PluginRegistry.add('route', [
+    {
     'url': '/jdbc',
     'module': 'graphdb.framework.jdbc',
     'path': 'jdbc/app',
     'chunk': 'jdbc',
     'controller': 'JdbcListCtrl',
     'templateUrl': 'pages/jdbc.html',
-    'title': 'JDBC',
+    'title': 'JDBC configuration',
     'helpInfo': 'JDBC driver configuration to allow SQL access to repository data'
-});
+    },
+    {
+        'url': '/jdbc/configuration/create',
+        'module': 'graphdb.framework.jdbc',
+        'path': 'jdbc/app',
+        'chunk': 'jdbc',
+        'controller': 'JdbcCreateCtrl',
+        'templateUrl': 'pages/jdbc-create.html',
+        'title': 'SQL table configuration',
+        'helpInfo': 'RDF to SQL table mapping configuration tool'
+    }
+    ]);
 
 PluginRegistry.add('main.menu', {
     'items': [

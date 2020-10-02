@@ -1,0 +1,121 @@
+<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
+
+<link href="css/lib/yasqe.min.css" rel="stylesheet"/>
+
+<link href="css/new-sparql.css" rel="stylesheet"/>
+
+<link href="css/graphs-config.css" rel="stylesheet"/>
+
+<link href="css/jdbc.css" rel="stylesheet"/>
+
+<div class="container-fluid">
+    <h1>
+        {{title}}
+        <span ng-hide="editSearchQuery" class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors></div>
+    <div system-repo-warning></div>
+    <div class="alert alert-danger" ng-show="repositoryError">
+        <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+        <p>{{repositoryError}}</p>
+    </div>
+
+    <div class="card mb-2">
+        <div class="card-block pt-1">
+            <p class="lead">Table name</p>
+            <div class="table-group table-group-lg">
+                <input required class="form-control sql-table-name" type="text" placeholder="SQL table name (required)"
+                       ng-model="currentQuery.name">
+            </div>
+
+            <ul class="nav nav-tabs pt-1">
+                <li class="nav-item">
+                    <a ng-class="page === 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
+                        Data query
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a ng-class="page === 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
+                        Column types
+                    </a>
+                </li>
+            </ul>
+            <div ng-show="page === 1">
+                <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
+                              notoolbar-inference
+                              notoolbar-same-as callback-on-change="updateDirty">
+                </query-editor>
+            </div>
+
+
+            <div ng-show="page === 2">
+                <div class="form-group row pt-1">
+                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>Column</strong></label>
+                    <div class="col-xs-2 col-sm-2 col-md-2">
+                        <label class="col-form-label"><strong>SQL type</strong></label>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1" ng-if="containsColumnsWithPrecision(currentQuery.columns)">
+                        <label class="col-form-label"><strong>Precision</strong></label>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1" ng-if="containsColumnsWithScale(currentQuery.columns)">
+                        <label class="col-form-label"><strong>Scale</strong></label>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <label class="col-form-label"><strong>Sparql type</strong></label>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1">
+                        <label class="col-form-label"><strong>Is nullable</strong></label>
+                    </div>
+                </div>
+                <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
+                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">{{column.column_name}}</label>
+                    <div class="col-xs-2 col-sm-2 col-md-2">
+                        <select class="form-control" id="sql-type" ng-model="column.column_type" ng-options="type as type for type in sqlTypes track by type"></select>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
+                        <input class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision">
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
+                        <input class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale">
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <input class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type">
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1">
+                        <input class="form-control" type="checkbox" id="nullable" ng-model="column.nullable">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="clearfix">
+                <div class="pull-right">
+                    <a ng-href="/jdbc" class="btn btn-lg btn-secondary"
+                       popover="Cancel SQL cofiguration"
+                       popover-placement="top"
+                       popover-trigger="mouseenter">
+                        Cancel
+                    </a>
+                    <button class="btn btn-lg preview-btn" ng-click=""
+                            popover="Preview SQL configuration table"
+                            popover-placement="top"
+                            popover-trigger="mouseenter">
+                        Preview
+                    </button>
+                    <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
+                            popover="Save SQL configuration"
+                            popover-placement="top"
+                            popover-trigger="mouseenter">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
