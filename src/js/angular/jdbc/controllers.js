@@ -17,9 +17,9 @@ angular.module('graphdb.framework.jdbc.controllers', modules, [
     .controller('JdbcListCtrl', JdbcListCtrl)
     .controller('JdbcCreateCtrl', JdbcCreateCtrl);
 
-JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr'];
+JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService'];
 
-function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr) {
+function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService) {
 
     $scope.getSqlConfigurations = function () {
         JdbcRestService.getJdbcConfigurations().success(function (data) {
@@ -35,6 +35,20 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr) {
     }, function () {
         $scope.getSqlConfigurations();
     });
+
+    $scope.deleteConfiguration = function (name) {
+        ModalService.openSimpleModal({
+            title: 'Warning',
+            message:  'Are you sure you want to delete the SQL table configuration ' + '\'' + name + '\'?',
+            warning: true
+        }).result
+            .then(function () {
+                JdbcRestService.deleteJdbcConfiguration(name).success(function () {
+                    $scope.getSqlConfigurations();
+                });
+
+            });
+    }
 }
 
 JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService'];
@@ -63,20 +77,25 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         confirmExit(event);
     });
 
-    window.addEventListener('beforeunload', function (event) {
-        event.returnValue =  true;
-    });
+    window.addEventListener('beforeunload', showBeforeunloadMessage);
+
+    function showBeforeunloadMessage(event) {
+        event.returnValue = true;
+    }
 
     function confirmExit(event) {
         if (!$scope.currentQuery.isPristine) {
             if (!confirm('You have unsaved changes. Are you sure, you want to exit?')) {
                 event.preventDefault();
+            } else {
+                window.removeEventListener('beforeunload', showBeforeunloadMessage);
+                locationChangeListener();
             }
         }
     }
 
     $scope.$on('$destroy', function (event) {
-        window.removeEventListener('beforeunload');
+        window.removeEventListener('beforeunload', showBeforeunloadMessage);
         locationChangeListener();
     });
 

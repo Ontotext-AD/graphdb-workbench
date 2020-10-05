@@ -12,7 +12,8 @@ function JdbcRestService($http) {
         getJdbcConfigurations,
         getJdbcConfiguration,
         createNewJdbcConfiguration,
-        updateJdbcConfiguration
+        updateJdbcConfiguration,
+        deleteJdbcConfiguration
     };
 
     function getJdbcConfigurations() {
@@ -43,6 +44,10 @@ function JdbcRestService($http) {
 
     function updateJdbcConfiguration(configuration) {
         return createConfiguration('PUT', configuration.name, configuration);
+    }
+
+    function deleteJdbcConfiguration(name) {
+        return $http.delete(`${JDBC_ENDPOINT}/${name}`);
     }
 
 }
