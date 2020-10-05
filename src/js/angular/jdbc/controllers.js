@@ -37,9 +37,9 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr) {
     });
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $modal, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -59,13 +59,35 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $modal, $timeo
         }
     });
 
+    const locationChangeListener = $scope.$on('$locationChangeStart', function (event) {
+        confirmExit(event);
+    });
+
+    window.addEventListener('beforeunload', function (event) {
+        event.returnValue =  true;
+    });
+
+    function confirmExit(event) {
+        if (!$scope.currentQuery.isPristine) {
+            if (!confirm('You have unsaved changes. Are you sure, you want to exit?')) {
+                event.preventDefault();
+            }
+        }
+    }
+
+    $scope.$on('$destroy', function (event) {
+        window.removeEventListener('beforeunload');
+        locationChangeListener();
+    });
+
     const defaultTabConfig = {
         id: '1',
         name: '',
         query: '',
         inference: true,
         sameAs: true,
-        isNewConfiguration: true
+        isNewConfiguration: true,
+        isPristine: true
     };
 
     $scope.resetCurrentTabConfig = function () {
@@ -181,6 +203,15 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $modal, $timeo
                 $scope.setQuery($scope.currentQuery.query);
                 loadTab();
             }
+
+            $scope.$watch(function () {
+                return $scope.currentQuery.query;
+            }, function (newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    $scope.currentQuery.isPristine = false;
+                }
+            });
+
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Could not get SQL table configuration');
