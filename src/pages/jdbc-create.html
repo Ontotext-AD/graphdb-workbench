@@ -101,7 +101,7 @@
                        popover-trigger="mouseenter">
                         Cancel
                     </a>
-                    <button ng-show="page === 1" class="btn btn-lg preview-btn" ng-click="getPreview()"
+                    <button ng-if="page === 1" class="btn btn-lg preview-btn" ng-click="getPreview()"
                             popover="Preview SQL configuration table"
                             popover-placement="top"
                             popover-trigger="mouseenter">

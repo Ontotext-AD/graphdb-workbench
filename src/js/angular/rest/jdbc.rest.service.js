@@ -58,7 +58,7 @@ function JdbcRestService($http) {
             method: 'GET',
             url: `/rest/sql-views/preview/${name}`,
             params: {
-                limit: limit
+                limit
             }
         })
     }

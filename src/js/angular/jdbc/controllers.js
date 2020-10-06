@@ -325,7 +325,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 const sqlView = JSON.stringify({
                     name: $scope.currentQuery.name,
                     query: $scope.currentQuery.query,
-                    columns: $scope.currentQuery.columns ? $scope.currentQuery.columns : []
+                    columns: $scope.currentQuery.columns || []
                 })
                 JdbcRestService.getNewSqlTablePreview(sqlView)
                     .done(function (data, textStatus, jqXhr) {
