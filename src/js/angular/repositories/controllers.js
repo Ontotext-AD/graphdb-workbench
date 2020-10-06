@@ -16,7 +16,8 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-const ONTOP_REPO_PARAMS = ['obdaFile', 'owlFile', 'propertiesFile', 'constraintFile'];
+const ONTOP_REPO_PARAM_LABELS = {obdaFile: 'obda or r2rml file', owlFile: 'ontology file', propertiesFile: 'properties file', constraintFile: 'constraint file'};
+const ONTOP_REPO_PARAMS = _.keys(ONTOP_REPO_PARAM_LABELS);
 const REQUIRED_ONTOP_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
 
 const modules = [
@@ -34,7 +35,31 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditLocationCtrl', EditLocationCtrl)
     .controller('AddRepositoryCtrl', AddRepositoryCtrl)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
+    .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
+
+const editFile = function(file, $modal, $scope, RepositoriesRestService, toastr) {
+
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/templates/modal/editRepoFile.html',
+            controller: 'EditRepositoryFileCtrl',
+            resolve: {
+                file: function () {
+                    return $scope.repositoryInfo.params[file] ? $scope.repositoryInfo.params[file].value : '';
+                }
+            }
+        });
+
+        modalInstance.result.then(function (data) {
+            // send data to backend
+            RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(data) {
+                toastr.success('File updated successfully');
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+            })
+        });
+    }
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
 function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
@@ -105,13 +130,6 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             .then(function (dataAddLocation) {
                 $scope.addLocationHttp(dataAddLocation);
             });
-    };
-
-    $scope.addRepositoryFile = function () {
-        $modal.open({
-            templateUrl: 'js/angular/templates/modal/add-repository-file.html',
-            controller: 'AddRepositoryFileCtrl'
-        });
     };
 
     //Edit location
@@ -365,9 +383,9 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService', '$modal'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService, $modal) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -428,6 +446,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     };
 
     $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
+    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
+
     $scope.isRequiredOntopRepoFile = function(file) {
         return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
     };
@@ -554,13 +574,41 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
     };
 
+    $scope.editFile = function(file) {
+        editFile(file, $modal, $scope, RepositoriesRestService, toastr);
+    };
+
     //TODO - check if repositoryID exist
 
 }
+EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr'];
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
+function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService, file, toastr) {
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
+    if (file) {
+        RepositoriesRestService.getRepositoryFileContent(file).success(function (data) {
+            $scope.fileContent = data;
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Error');
+        });
+    }
+
+    $scope.ok = function () {
+        $modalInstance.close({
+            content: $scope.fileContent,
+            fileLocation: file
+        });
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}
+
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService', '$modal'];
+
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService, $modal) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -580,6 +628,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
+    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
     $scope.isRequiredOntopRepoFile = function(file) {
         return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
     };
@@ -614,7 +663,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.loader = false;
                     $scope.ontopRepoFiles.forEach(function(key) {
                         if ($scope.repositoryInfo.params[key]) {
-                            $scope.ontopRepoFileNames[key] = '...' + $scope.repositoryInfo.params[key].value.substring($scope.repositoryInfo.params[key].value.lastIndexOf('/') + 1);
+                            $scope.ontopRepoFileNames[key] = $scope.repositoryInfo.params[key].value;
                         }
                     });
                 })
@@ -696,5 +745,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         } else {
             $location.path('/repository');
         }
+    };
+
+    $scope.editFile = function(file) {
+        editFile(file, $modal, $scope, RepositoriesRestService, toastr);
     };
 }
