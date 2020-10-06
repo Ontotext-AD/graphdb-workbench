@@ -319,9 +319,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             $scope.currentQuery.outputType = 'table';
             $scope.resetCurrentTabConfig();
 
-            setLoader(true, 'Preview of first 100 rows of table ' + $scope.name, 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+            setLoader(true, 'Preview of first 100 rows of table ' + $scope.name,
+                'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
             if ($scope.currentQuery.isNewConfiguration) {
-                let sqlView = JSON.stringify({
+                const sqlView = JSON.stringify({
                     name: $scope.currentQuery.name,
                     query: $scope.currentQuery.query,
                     columns: $scope.currentQuery.columns ? $scope.currentQuery.columns : []
