@@ -63,6 +63,8 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.noPadding = {paddingRight: 0, paddingLeft: 0};
     $scope.sqlTypes = ['string', 'iri', 'boolean', 'byte', 'short', 'int', 'long', 'float', 'double', 'decimal', 'date', 'time', 'timestamp', 'Get suggestion...'];
     $scope.currentTabConfig = {};
+    // This property is obligatory in order to show YASQUE and YASR properly
+    $scope.orientationViewMode = true;
 
 
     $scope.$watch(function () {
@@ -116,7 +118,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             pageSize: 100, // page limit 100 as this is only used for preview
             page: 1,
             allResultsCount: 0,
-            resultsCount: 0
+            resultsCount: 0,
+            // QueryType of currentTabConfig is needed for visualization of YASR.
+            // If not set, YASR is hidden
+            queryType: window.editor.getQueryType()
         };
     };
 
@@ -222,7 +227,9 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
             $scope.tabsData = $scope.tabs = [defaultTabConfig];
             $scope.currentQuery = angular.copy(defaultTabConfig);
-            $scope.viewMode = 'yasr';
+            // ViewMode should be set to "none" to be
+            // displayed YASQUE and YASR at the same time
+            $scope.viewMode = 'none';
 
             if (window.editor) {
                 $scope.setQuery($scope.currentQuery.query);
@@ -361,4 +368,43 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 $scope.currentQuery.isPristine = false;
             });
     };
+
+    $scope.getPreview = function () {
+        $scope.executedQueryTab = $scope.currentQuery;
+        if (window.editor.getQueryType() !== 'SELECT') {
+            toastr.error('JDBC works only with SELECT queries.');
+            return;
+        }
+        if (!$scope.queryIsRunning) {
+            $scope.currentQuery.outputType = 'table';
+            $scope.resetCurrentTabConfig();
+
+            setLoader(true, 'Preview of first 100 rows of table ' + $scope.name,
+                'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+            if ($scope.currentQuery.isNewConfiguration) {
+                const sqlView = JSON.stringify({
+                    name: $scope.currentQuery.name,
+                    query: $scope.currentQuery.query,
+                    columns: $scope.currentQuery.columns || []
+                })
+                JdbcRestService.getNewSqlTablePreview(sqlView)
+                    .done(function (data, textStatus, jqXhr) {
+                        setLoader(false);
+                        window.yasr.setResponse(jqXhr, textStatus, null);
+                    }).fail(function (data) {
+                    setLoader(false);
+                    toastr.error('Could not show preview ' + getError(data));
+                });
+            } else {
+                JdbcRestService.getExistingSqlTablePreview($scope.currentQuery.name)
+                    .done(function (data, textStatus, jqXhr) {
+                        setLoader(false);
+                        window.yasr.setResponse(jqXhr, textStatus, null);
+                    }).fail(function (data) {
+                    setLoader(false);
+                    toastr.error('Could not show preview ' + getError(data));
+                });
+            }
+        }
+    }
 }

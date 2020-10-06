@@ -15,7 +15,9 @@ function JdbcRestService($http) {
         updateJdbcConfiguration,
         deleteJdbcConfiguration,
         getColumnNames,
-        getColumnsTypeSuggestion
+        getColumnsTypeSuggestion,
+        getExistingSqlTablePreview,
+        getNewSqlTablePreview
     };
 
     function getJdbcConfigurations() {
@@ -77,5 +79,30 @@ function JdbcRestService($http) {
                 }
             }
         );
+    }
+    function getExistingSqlTablePreview(name, limit) {
+        // Limit in preview is optional. On backend default value is set to 100
+        return $.ajax({
+            method: 'GET',
+            url: `/rest/sql-views/preview/${name}`,
+            params: {
+                limit
+            }
+        })
+    }
+
+    function getNewSqlTablePreview(sqlView, limit) {
+        // Limit in preview is optional. On backend default value is set to 100
+        return $.ajax({
+            method: 'POST',
+            url: "/rest/sql-views/preview",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: sqlView,
+            params: {
+                limit
+            },
+            headers: {Accept: 'application/sparql-results+json'}
+        })
     }
 }
