@@ -39,7 +39,7 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     $scope.deleteConfiguration = function (name) {
         ModalService.openSimpleModal({
             title: 'Warning',
-            message:  'Are you sure you want to delete the SQL table configuration ' + '\'' + name + '\'?',
+            message: 'Are you sure you want to delete the SQL table configuration ' + '\'' + name + '\'?',
             warning: true
         }).result
             .then(function () {
@@ -51,9 +51,9 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     }
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -61,7 +61,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.addKnownPrefixes = addKnownPrefixes;
     $scope.page = 1;
     $scope.noPadding = {paddingRight: 0, paddingLeft: 0};
-    $scope.sqlTypes = ['string', 'iri', 'boolean', 'byte', 'short', 'int', 'long', 'float', 'double', 'decimal', 'date', 'time', 'timestamp'];
+    $scope.sqlTypes = ['string', 'iri', 'boolean', 'byte', 'short', 'int', 'long', 'float', 'double', 'decimal', 'date', 'time', 'timestamp', 'Get suggestion...'];
     $scope.currentTabConfig = {};
 
 
@@ -80,7 +80,9 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     window.addEventListener('beforeunload', showBeforeunloadMessage);
 
     function showBeforeunloadMessage(event) {
-        event.returnValue = true;
+        if (!$scope.currentQuery.isPristine) {
+            event.returnValue = true;
+        }
     }
 
     function confirmExit(event) {
@@ -204,6 +206,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     $scope.goToPage = function (page) {
         $scope.page = page;
+        const columns = $scope.currentQuery.columns;
+        if (page === 2 && (!columns || columns.length === 0)) {
+            $scope.getColumnsSuggestions();
+        }
     };
 
     function getJdbcConfiguration(name) {
@@ -250,6 +256,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
         if ($scope.currentQuery.isNewConfiguration) {
             JdbcRestService.createNewJdbcConfiguration($scope.currentQuery).success(function () {
+                $scope.currentQuery.isPristine = true;
                 toastr.success('SQL table configuration saved');
             }).error(function (data) {
                 const msg = getError(data);
@@ -257,6 +264,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             });
         } else {
             JdbcRestService.updateJdbcConfiguration($scope.currentQuery).success(function () {
+                $scope.currentQuery.isPristine = true;
                 toastr.success('SQL table configuration updated');
             }).error(function (data) {
                 const msg = getError(data);
@@ -301,4 +309,56 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             addKnownPrefixes();
         }, 0);
     });
+
+    $scope.selectColumnType = function (columnName) {
+        const column = _.find($scope.currentQuery.columns, function (column) {
+            return column.column_name === columnName;
+        });
+
+        if (column.column_type === 'Get suggestion...') {
+            JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, [columnName]).success(function (columnSuggestion) {
+                column.column_type = columnSuggestion[columnName].column_type;
+                column.nullable = false;
+                column.sparql_type = '';
+                $scope.currentQuery.isPristine = false;
+            });
+        }
+    }
+
+    $scope.getColumnsSuggestions = function () {
+        ModalService.openSimpleModal({
+            title: 'Warning',
+            message: 'Are you sure you want to get suggestions for all columns? This action will overwrite all column type mappings!',
+            warning: true
+        }).result
+            .then(function () {
+                JdbcRestService.getColumnNames($scope.currentQuery.query).success(function (columns) {
+                    JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, columns).success(function (columnTypes) {
+                        let suggestedColumns = [];
+                        _.forEach(columnTypes, function (value, key) {
+                            suggestedColumns.push({
+                                column_name: key,
+                                column_type: value.column_type,
+                                nullable: false,
+                                sparql_type: ''
+                            });
+                        });
+                        $scope.currentQuery.columns = suggestedColumns;
+                        $scope.currentQuery.isPristine = false;
+                    });
+                });
+            });
+    };
+
+    $scope.deleteColumn = function (columnName, index) {
+        ModalService.openSimpleModal({
+            title: 'Warning',
+            message: 'Are you sure you want to delete the column ' + '\'' + columnName + '\'?',
+            warning: true
+        }).result
+            .then(function () {
+                $scope.currentQuery.columns.splice(index, 1);
+                $scope.currentQuery.isPristine = false;
+            });
+    };
 }
