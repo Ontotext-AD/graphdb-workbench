@@ -333,29 +333,37 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     }
 
     $scope.getColumnsSuggestions = function () {
-        ModalService.openSimpleModal({
-            title: 'Warning',
-            message: 'Are you sure you want to get suggestions for all columns? This action will overwrite all column type mappings!',
-            warning: true
-        }).result
-            .then(function () {
-                JdbcRestService.getColumnNames($scope.currentQuery.query).success(function (columns) {
-                    JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, columns).success(function (columnTypes) {
-                        let suggestedColumns = [];
-                        _.forEach(columnTypes, function (value, key) {
-                            suggestedColumns.push({
-                                column_name: key,
-                                column_type: value.column_type,
-                                nullable: false,
-                                sparql_type: ''
-                            });
-                        });
-                        $scope.currentQuery.columns = suggestedColumns;
-                        $scope.currentQuery.isPristine = false;
+        if ($scope.currentQuery.columns && $scope.currentQuery.columns.length > 0) {
+            ModalService.openSimpleModal({
+                title: 'Warning',
+                message: 'Are you sure you want to get suggestions for all columns? This action will overwrite all column type mappings!',
+                warning: true
+            }).result
+                .then(function () {
+                    getSuggestions();
+                });
+        } else {
+            getSuggestions();
+        }
+    };
+
+    function getSuggestions() {
+        JdbcRestService.getColumnNames($scope.currentQuery.query).success(function (columns) {
+            JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, columns).success(function (columnTypes) {
+                let suggestedColumns = [];
+                _.forEach(columnTypes, function (value, key) {
+                    suggestedColumns.push({
+                        column_name: key,
+                        column_type: value.column_type,
+                        nullable: false,
+                        sparql_type: ''
                     });
                 });
+                $scope.currentQuery.columns = suggestedColumns;
+                $scope.currentQuery.isPristine = false;
             });
-    };
+        });
+    }
 
     $scope.deleteColumn = function (columnName, index) {
         ModalService.openSimpleModal({
