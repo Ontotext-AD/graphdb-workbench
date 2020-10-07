@@ -4,7 +4,7 @@ angular
 
 JdbcRestService.$inject = ['$http', '$repositories'];
 
-const JDBC_ENDPOINT = 'rest/sql-views/tables';
+const JDBC_ENDPOINT = 'rest/sql-views';
 
 function JdbcRestService($http) {
 
@@ -13,21 +13,25 @@ function JdbcRestService($http) {
         getJdbcConfiguration,
         createNewJdbcConfiguration,
         updateJdbcConfiguration,
-        deleteJdbcConfiguration
+        deleteJdbcConfiguration,
+        getColumnNames,
+        getColumnsTypeSuggestion,
+        getExistingSqlTablePreview,
+        getNewSqlTablePreview
     };
 
     function getJdbcConfigurations() {
-        return $http.get(`${JDBC_ENDPOINT}`);
+        return $http.get(`${JDBC_ENDPOINT}/tables`);
     }
 
     function getJdbcConfiguration(configuration) {
-        return $http.get(`${JDBC_ENDPOINT}/${configuration}`);
+        return $http.get(`${JDBC_ENDPOINT}/tables/${configuration}`);
     }
 
     function createConfiguration(method, table, configuration) {
         return $http({
                 method,
-                url: `/${JDBC_ENDPOINT}/${table}`,
+                url: `/${JDBC_ENDPOINT}/tables/${table}`,
                 noCancelOnRouteChange: true,
                 data: {
                     name: configuration.name,
@@ -47,7 +51,58 @@ function JdbcRestService($http) {
     }
 
     function deleteJdbcConfiguration(name) {
-        return $http.delete(`${JDBC_ENDPOINT}/${name}`);
+        return $http.delete(`${JDBC_ENDPOINT}/tables/${name}`);
     }
 
+    function getColumnNames(query) {
+        const headers = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'text/plain'
+            }
+        };
+
+        return $http.post(`${JDBC_ENDPOINT}/columns`, query, headers);
+    }
+
+    function getColumnsTypeSuggestion(query, columns) {
+        if (!Array.isArray(columns)) {
+            throw 'Column names must be placed in array.'
+        }
+
+        return $http({
+                method: 'POST',
+                url: `/${JDBC_ENDPOINT}/types`,
+                data: {
+                    query: query,
+                    column_names: columns
+                }
+            }
+        );
+    }
+    function getExistingSqlTablePreview(name, limit) {
+        // Limit in preview is optional. On backend default value is set to 100
+        return $.ajax({
+            method: 'GET',
+            url: `/rest/sql-views/preview/${name}`,
+            params: {
+                limit
+            }
+        })
+    }
+
+    function getNewSqlTablePreview(sqlView, limit) {
+        // Limit in preview is optional. On backend default value is set to 100
+        return $.ajax({
+            method: 'POST',
+            url: "/rest/sql-views/preview",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: sqlView,
+            params: {
+                limit
+            },
+            headers: {Accept: 'application/sparql-results+json'}
+        })
+    }
 }
