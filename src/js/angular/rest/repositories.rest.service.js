@@ -16,7 +16,9 @@ function RepositoriesRestService($http) {
         getRepositoryConfiguration,
         getSize,
         getPrefix,
-        getCluster
+        getCluster,
+        getRepositoryFileContent,
+        updateRepositoryFileContent
     };
 
     function getRepository(repositoryid) {
@@ -53,5 +55,13 @@ function RepositoriesRestService($http) {
 
     function getCluster() {
         return $http.get(`${REPOSITORIES_ENDPOINT}/cluster`);
+    }
+
+    function getRepositoryFileContent(file) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/getUploadedFileContent`, {params: {fileLocation: file}});
+    }
+
+    function updateRepositoryFileContent(fileLocation, content) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/updateUploadedFile`, JSON.stringify(content), {params: {fileLocation: fileLocation}});
     }
 }

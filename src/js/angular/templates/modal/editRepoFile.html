@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h4 class="modal-title">Update file contents</h4>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <textarea id="wb-repository-file-textarea" class="form-control" rows="10" ng-model="fileContent"
+                  placeholder="# Update ontop repository file content"
+                  popover="Update the contents of the file."
+                  popover-placement="bottom"
+                  popover-trigger="focus"></textarea>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div>
+        <button type="button" ng-click="cancel()" class="btn btn-secondary">Cancel</button>
+        <button id="wb-repository-saveFile" class="btn btn-primary" type="button"
+                ng-click="ok()">Save</button>
+    </div>
+</div>
