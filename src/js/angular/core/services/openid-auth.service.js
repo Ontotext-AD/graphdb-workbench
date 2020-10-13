@@ -31,6 +31,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     that.openIdAuthorizeUrl = configuration['authorization_endpoint'];
                     that.openIdTokenUrl = configuration['token_endpoint'];
                     that.openIdUserInfoUrl = configuration['userinfo_endpoint'];
+                    that.openIdEndSessionUrl = configuration['end_session_endpoint'];
+
                     console.log('done openid discovery');
 
                     $http.get(that.openIdKeysUri).success(function(jwks) {
@@ -301,6 +303,18 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 this.setToken('id', null);
                 this.setToken('access', null);
                 this.setToken('refresh', null);
+            }
+
+            this.hardLogout = function() {
+                if (!this.openIdEndSessionUrl) {
+                    alert('The OpenId provider doesn\'t support hard logout');
+                } else {
+                    this.logoutOpenID();
+                    window.location.href = this.openIdEndSessionUrl +
+                        '?' +
+                        'client_id=' + clientId + '&' +
+                        'post_logout_redirect_uri=' + redirectUrl;
+                }
             }
 
 
