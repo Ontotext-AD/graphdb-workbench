@@ -1,5 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
+import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 
@@ -13,6 +14,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
+    'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];
@@ -94,10 +96,15 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$timeout', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $timeout, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$timeout', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $timeout, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
+
+
+        $scope.loginWithOpenID = function() {
+            $openIDAuth.login();
+        }
 
         $scope.login = function () {
             $http({
