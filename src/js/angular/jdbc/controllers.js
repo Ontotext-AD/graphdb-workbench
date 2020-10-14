@@ -261,6 +261,11 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             return;
         }
 
+        if ($scope.currentQuery.isPristine) {
+            toastr.success('SQL table configuration saved');
+            return;
+        }
+
         if ($scope.currentQuery.isNewConfiguration) {
             JdbcRestService.createNewJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
