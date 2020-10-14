@@ -708,7 +708,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if (!checkQueryIntervalId) {
             checkQueryIntervalId = setInterval(showOrHideSaveAsDropDown, 200);
         }
-        overrideSameAsAndNoCountIfNeeded();
+        overrideSameAsInferenceAndNoCountIfNeeded();
     }
 
     function getQueryID(element) {
@@ -845,18 +845,29 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     });
 
     /**
-     * In case of Ontop repository, sameAs and nocount
-     * are overridden to true and #sameAs button is disabled
+     * In case of Ontop repository, sameAs, inference and nocount are
+     * overridden to true and #sameAs and #inference buttons is disabled
      */
-    function overrideSameAsAndNoCountIfNeeded() {
-        const sameAsBtn = document.getElementById('sameAs')
+    function overrideSameAsInferenceAndNoCountIfNeeded() {
         const isOntop = $repositories.isActiveRepoOntopType();
+        handleSameAsAndInferenceBtns(isOntop);
+
+        $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
+        $scope.currentQuery.inference = isOntop ? true : principal.appSettings.DEFAULT_INFERENCE;
+        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+    }
+
+    function handleSameAsAndInferenceBtns(isOntop) {
+        const sameAsBtn = document.getElementById('sameAs');
+        const inferenceBtn = document.getElementById('inference');
+
         if (sameAsBtn) {
             sameAsBtn.disabled = isOntop;
         }
 
-        $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
-        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+        if (inferenceBtn) {
+            inferenceBtn.disabled = isOntop;
+        }
     }
 }
 
