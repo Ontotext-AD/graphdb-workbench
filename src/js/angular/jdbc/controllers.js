@@ -269,6 +269,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         if ($scope.currentQuery.isNewConfiguration) {
             JdbcRestService.createNewJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
+                $scope.currentQuery.isNewConfiguration = false;
                 toastr.success('SQL table configuration saved');
             }).error(function (data) {
                 const msg = getError(data);
@@ -277,6 +278,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         } else {
             JdbcRestService.updateJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
+                $scope.currentQuery.isNewConfiguration = false;
                 toastr.success('SQL table configuration updated');
             }).error(function (data) {
                 const msg = getError(data);

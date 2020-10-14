@@ -30,7 +30,7 @@
             <p class="lead">Table name</p>
             <div class="table-group table-group-lg">
                 <input required class="form-control sql-table-name" type="text" placeholder="SQL table name (required)"
-                       ng-model="currentQuery.name">
+                       ng-model="currentQuery.name" ng-disabled="!currentQuery.isNewConfiguration" >
             </div>
 
             <ul class="nav nav-tabs pt-1">
