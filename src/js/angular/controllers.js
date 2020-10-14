@@ -307,6 +307,25 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         return $repositories.isActiveRepoOntopType();
     }
 
+    /**
+     *  Sets attrs property in the directive
+     * @param attrs
+     */
+    $scope.setAttrs = function(attrs) {
+        $scope.attrs = attrs;
+    };
+
+    /**
+     *  If the attribute "write" is provided and repository other than Ontop one,
+     * directive will require a repository with write access.
+     *  If on the other hand attribute "ontop" is found and such repo, proper message about the
+     * restrictions related with repository of type Ontop will be shown to the user
+     */
+    $scope.setShowWarning = function () {
+        $scope.showWarning = $scope.attrs.hasOwnProperty('write') ||
+            $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+    };
+
     $scope.toHumanReadableType = function (type) {
         switch (type) {
             case 'worker':

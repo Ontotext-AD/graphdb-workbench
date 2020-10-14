@@ -22,6 +22,11 @@ JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 
 function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService) {
 
     $scope.getSqlConfigurations = function () {
+        // Don't try  to get Sql configurations if repository is of
+        // type Ontop, because latter doesn't have data directory
+        if ($repositories.isActiveRepoOntopType()) {
+            return;
+        }
         JdbcRestService.getJdbcConfigurations().success(function (data) {
             $scope.jdbcConfigurations = data;
         }).error(function (data) {
@@ -49,6 +54,11 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
 
             });
     }
+
+    // Check if warning message should be shown or removed on repository change
+    $scope.$on('repositoryIsSet', function () {
+        $scope.setShowWarning();
+    });
 }
 
 JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];

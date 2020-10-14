@@ -1,18 +1,18 @@
-<div class="mb-2 row" ng-hide="getActiveRepository() && (!isWriteRequired || canWriteActiveRepo())">
+<div class="mb-2 row" ng-hide="getActiveRepository() && (!showWarning || canWriteActiveRepo())">
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
-                    <div ng-hide="getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
-                    <div ng-show="getActiveRepository() && isWriteRequired && !canWriteActiveRepo()">Some functionalities are not available because <span ng-show="!isActiveRepoOntopType()">you have no write permission to </span>repository
-                        <strong>{{getActiveRepository()}}</strong><span ng-show="isActiveRepoOntopType()"> is read-only virtual repository</span>.</div>
+                    <div ng-if="!getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
+                    <div ng-if="getActiveRepository() && showWarning && !canWriteActiveRepo()">Some functionalities are not available because <span ng-if="!isActiveRepoOntopType()">you have no write permission to repository </span>
+                        <strong>{{getActiveRepository()}}</strong><span ng-if="isActiveRepoOntopType()"> is read-only Virtual Repository</span>.</div>
                     <small>
-                        <span ng-show="getAccessibleRepositories().length">
-                            Click one of the repositories below to connect to it<span ng-show="canManageRepositories()"> or create a new repository</span>.
+                        <span ng-if="getAccessibleRepositories().length">
+                            Click one of the repositories below to connect to it<span ng-if="canManageRepositories()"> or create a new repository</span>.
                         </span>
 
                         <span ng-hide="getAccessibleRepositories().length">
-                            There are no accessible <span ng-show="isWriteRequired">writable </span>repositories<span ng-show="canManageRepositories()">. You can create a new repository</span>.
+                            There are no accessible <span ng-if="showWarning">writable </span>repositories<span ng-if="canManageRepositories()">. You can create a new repository</span>.
                         </span>
                     </small>
                 </div>
