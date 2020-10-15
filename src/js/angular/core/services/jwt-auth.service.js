@@ -1,14 +1,16 @@
 import 'angular/core/services';
+import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'ngCookies',
     'toastr',
-    'graphdb.framework.rest.security.service'
+    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService',
-        function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService) {
+    .service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth',
+        function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService, $openIDAuth) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -24,6 +26,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return !$rootScope.deniedPermissions[path];
             };
             $rootScope.redirectToLogin = function (expired) {
+                if ($openIDAuth.isOpenIDRedirect()) {
+                    return;
+                }
                 if (expired && jwtAuth.getAuthToken()) {
                     toastr.error('Your authentication token has expired. Please login again.');
                     jwtAuth.clearAuthentication();
@@ -71,6 +76,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
+                    that.openIDAuth = res.data.openIdEnabled;
 
                     if (that.securityEnabled) {
                         const freeAccessData = res.data.freeAccess;
@@ -80,6 +86,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 authorities: freeAccessData.authorities,
                                 appSettings: freeAccessData.appSettings
                             };
+                        }
+                        if (that.openIDAuth) {
+                            return;
                         }
 
                         SecurityRestService.getAuthenticatedUser().
@@ -221,6 +230,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $rootScope.deniedPermissions = {};
                 $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
             };
+
+            this.authenticateOpenID = function(authHeader) {
+                this.clearCookies();
+                if (authHeader) {
+                    this.auth = authHeader;
+                    $cookies[this.authCookieName] = this.auth;
+                    this.externalAuthUser = false;
+                }
+            }
 
             this.hasExternalAuthUser = function () {
                 return this.externalAuthUser;
