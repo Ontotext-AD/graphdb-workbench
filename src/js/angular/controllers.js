@@ -321,8 +321,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
      *  If on the other hand attribute "ontop" is found and such repo, proper message about the
      * restrictions related with repository of type Ontop will be shown to the user
      */
-    $scope.setShowWarning = function () {
-        $scope.showWarning = $scope.attrs.hasOwnProperty('write') ||
+    $scope.setRestricted = function () {
+        $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
             $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
     };
 

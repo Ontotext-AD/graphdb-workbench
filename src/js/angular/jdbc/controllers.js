@@ -56,9 +56,16 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     }
 
     // Check if warning message should be shown or removed on repository change
-    $scope.$on('repositoryIsSet', function () {
-        $scope.setShowWarning();
+    const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+        $scope.setRestricted();
     });
+
+    window.addEventListener('beforeunload', removeEventListener);
+
+    function removeEventListener() {
+        repoIsSetListener();
+        window.removeEventListener('beforeunload', removeEventListener);
+    }
 }
 
 JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];

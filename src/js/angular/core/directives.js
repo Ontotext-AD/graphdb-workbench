@@ -126,12 +126,12 @@ function coreErrors($timeout) {
         link: function (scope, element, attrs) {
             scope.setAttrs(attrs);
 
-            scope.setShowWarning();
+            scope.setRestricted();
 
             let previousElement;
 
             scope.getAccessibleRepositories = function () {
-                if (scope.showWarning) {
+                if (scope.isRestricted) {
                     return scope.getWritableRepositories();
                 } else {
                     return scope.getReadableRepositories();
