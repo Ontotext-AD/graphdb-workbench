@@ -60,11 +60,11 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
         $scope.setRestricted();
     });
 
-    window.addEventListener('beforeunload', removeEventListener);
+    window.addEventListener('beforeunload', removeRepoIsSetListener);
 
-    function removeEventListener() {
+    function removeRepoIsSetListener() {
         repoIsSetListener();
-        window.removeEventListener('beforeunload', removeEventListener);
+        window.removeEventListener('beforeunload', removeRepoIsSetListener);
     }
 }
 
