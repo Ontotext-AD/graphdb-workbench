@@ -68,6 +68,34 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $cookieStore.remove(that.principalCookieName);
             };
 
+            this.getAuthenticatedUserFromBackend = function() {
+                SecurityRestService.getAuthenticatedUser().
+                success(function(data, status, headers) {
+                    if (that.auth) {
+                        // There is a previous authentication via JWT, it's still valid
+                        // so refresh the principal
+                        that.externalAuthUser = false;
+                        that.principal = data;
+                        $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
+                        // console.log('previous JWT authentication ok');
+                    } else {
+                        // There is no previous authentication but we got a principal via
+                        // an external authentication mechanism (e.g. Kerberos)
+                        that.externalAuthUser = true;
+                        that.authenticate(data, headers); // this will emit securityInit
+                        // console.log('external authentication ok');
+                    }
+                }).finally(function() {
+                    // Strictly speaking we should try this in the error() callback but
+                    // for some reason it doesn't get called.
+                    if (!that.hasExplicitAuthentication()) {
+                        that.principal = that.freeAccessPrincipal;
+                        $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
+                        // console.log('free access fallback');
+                    }
+                });
+            }
+
             this.initSecurity = function () {
                 this.auth = $cookies[this.authCookieName];
                 this.principal = $cookieStore.get(this.principalCookieName);
@@ -88,34 +116,24 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             };
                         }
                         if (that.openIDAuth) {
-                            return;
-                        }
+                            $openIDAuth.initOpenIdExternal(res.data.methodSettings.openid.clientId,
+                                res.data.methodSettings.openid.clientSecret,
+                                res.data.methodSettings.openid.issuer,
+                                res.data.methodSettings.openid.tokenType,
+                                function() {
+                                    if ($openIDAuth.checkCredentials()) {
+                                        that.auth = $openIDAuth.authHeaderOpenId();
+                                        jwtAuth.setAuthHeaders();
+                                        that.getAuthenticatedUserFromBackend();
+                                    }
+                                });
 
-                        SecurityRestService.getAuthenticatedUser().
-                        success(function(data, status, headers) {
-                            if (that.auth) {
-                                // There is a previous authentication via JWT, it's still valid
-                                // so refresh the principal
-                                that.externalAuthUser = false;
-                                that.principal = data;
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
-                                // console.log('previous JWT authentication ok');
                             } else {
-                                // There is no previous authentication but we got a principal via
-                                // an external authentication mechanism (e.g. Kerberos)
-                                that.externalAuthUser = true;
-                                that.authenticate(data, headers); // this will emit securityInit
-                                // console.log('external authentication ok');
+                                that.getAuthenticatedUserFromBackend();
                             }
-                        }).finally(function() {
-                            // Strictly speaking we should try this in the error() callback but
-                            // for some reason it doesn't get called.
-                            if (!that.hasExplicitAuthentication()) {
-                                that.principal = that.freeAccessPrincipal;
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
-                                // console.log('free access fallback');
-                            }
-                        });
+
+
+
                     } else {
                         that.clearCookies();
                         const overrideAuthData = res.data.overrideAuth;

@@ -8,7 +8,6 @@ const issuerUrl = 'https://accounts.google.com';
 const clientId = '961901053006-q6t7i3nm3csarr40tnp0jtib349n2fqd.apps.googleusercontent.com';
 const clientSecret = 'jy-vPqbjAB7P-n3TkgHngb9R';
 const redirectUrl = 'http://testopenid.ontotext.com:9000/';
-const graphdbUrl = 'http://localhost:7200';
 
 angular.module('graphdb.framework.core.services.openIDService', modules)
     .config(['$httpProvider', function($httpProvider) {
@@ -24,10 +23,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
             // Debug with code
             that.authFlow = 'implicit';
-            that.tokenType = 'id';
+            that.redirectUrl = redirectUrl;
 
-            this.initOpenId = function(clientId, clientSecret, url, redirectUrl, graphdbUrl, callback) {
-                return $http.get(url + '/.well-known/openid-configuration').success(function (configuration) {
+            this.initOpenId = function(clientId, clientSecret, url, redirectUrl, callback) {
+                return $http.get(url + '/.well-known/openid-configuration', {headers: {
+                        'X-GraphDB-Repository': undefined,
+                        'X-Requested-With': undefined
+                    }}).success(function (configuration) {
                     that.openIdIssuerUrl = configuration['issuer'];
                     that.openIdKeysUri = configuration['jwks_uri'];
                     that.openIdAuthorizeUrl = configuration['authorization_endpoint'];
@@ -197,7 +199,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 );
             }
 
-            this.refreshToken = function() {
+            this.refreshToken = function(tokenType) {
+                // TODO pass the token type
                 if (this.hasValidRefreshToken()) {
                     const params = new URLSearchParams();
                     params.append('grant_type', 'refresh_token');
@@ -211,7 +214,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     $http.post(this.openIdTokenUrl, params.toString(), {headers: headers})
                         .success(function(data) {
                                 console.log('token refreshed');
-                                that.saveToken(data, that.tokenType, true);
+                                that.saveToken(data, tokenType, true);
                                 that.updateUserInfo();
                                 that.isLoggedIn = true;
                             }
@@ -261,32 +264,37 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return queryString;
             }
 
-            this.initOpenId(clientId, clientSecret, issuerUrl, redirectUrl, graphdbUrl, function() {
-                that.isLoggedIn = that.checkCredentials();
-                if (that.isLoggedIn) {
-                    that.updateUserInfo();
-                    that.setupTokenRefreshTimer();
-                } else if (that.hasValidRefreshToken()) {
-                    that.refreshToken();
-                } else {
-                    // possibly auth code flow
-                    const s = that.parseQueryString(window.location.search.substring(1));
-                    if (s.code) {
-                        // Verify state matches what we set at the beginning
-                        if (localStorage.getItem('pkce_state') !== s.state) {
-                            alert('Invalid state');
-                        } else {
-                            that.retrieveToken(s.code, that.tokenType);
-                        }
+            this.initOpenIdExternal = function(clientId, clientSecret, issuerUrl, tokenType, successCallback) {
+                this.initOpenId(clientId, clientSecret, issuerUrl, redirectUrl, function() {
+                    that.isLoggedIn = that.checkCredentials();
+                    if (that.isLoggedIn) {
+                        that.updateUserInfo();
+                        that.setupTokenRefreshTimer();
+                        successCallback();
+                    } else if (that.hasValidRefreshToken()) {
+                        that.refreshToken();
                     } else {
-                        // possibly implicit flow
-                        const q = that.parseQueryString(window.location.pathname.substring(1));
-                        if (q.id_token) {
-                            that.saveToken(q, that.tokenType, false);
+                        // possibly auth code flow
+                        const s = that.parseQueryString(window.location.search.substring(1));
+                        if (s.code) {
+                            // Verify state matches what we set at the beginning
+                            if (localStorage.getItem('pkce_state') !== s.state) {
+                                alert('Invalid state');
+                            } else {
+                                that.retrieveToken(s.code, tokenType);
+                            }
+                        } else {
+                            // possibly implicit flow
+                            const q = that.parseQueryString(window.location.pathname.substring(1));
+                            if (q.id_token) {
+                                that.saveToken(q, tokenType, false);
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
+
+
 
             // Generate a secure random string using the browser crypto functions
             this.generateRandomString = function() {
