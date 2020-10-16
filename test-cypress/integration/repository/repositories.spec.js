@@ -283,6 +283,21 @@ describe('Repositories', () => {
         });
     });
 
+    //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
+    it('should check if Ontop repository type is available', () => {
+        getCreateRepositoryButton().click();
+        getRepositoryTypeDropdown().should('contain',"Ontop").and('not.be.disabled');
+        getRepositoryTypeDropdown().select('Ontop');
+        getOBDAFileField().should('be',"visible");
+        getOntologyFileField().should('be',"visible");;
+        getPropertiesFileField().should('be',"visible");;
+        getConstraintFileField().should('be',"visible");
+        getOBDAUploadButton().should('be',"visible.").and('not.be.disabled');;
+        getOntologyUploadButton().should('be',"visible").and('not.be.disabled');;
+        getPropertiesUploadButton().should('be',"visible").and('not.be.disabled');;
+        getConstraintUploadButton().should('be',"visible").and('not.be.disabled');;
+    });
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
@@ -404,5 +419,41 @@ describe('Repositories', () => {
 
     function getToast() {
         return cy.get('#toast-container');
+    }
+
+    function getRepositoryTypeDropdown() {
+        return cy.get('#type');
+    }
+
+    function getOBDAFileField() {
+        return cy.get('div').contains("Ontop repository OBDA or R2RML file*");
+    }
+
+    function getOntologyFileField() {
+        return cy.get('div').contains("Ontop repository ontology file");
+    }
+
+    function getPropertiesFileField() {
+        return cy.get('div').contains("Ontop repository properties file*");
+    }
+
+    function getConstraintFileField() {
+        return cy.get('div').contains("Ontop repository constraint file");
+    }
+
+    function getOBDAUploadButton() {
+        return cy.get('div').contains("Upload obda or r2rml file");
+    }
+
+    function getOntologyUploadButton() {
+        return cy.get('div').contains("Upload ontology file");
+    }
+
+    function getPropertiesUploadButton() {
+        return cy.get('div').contains("Upload properties file");
+    }
+
+    function getConstraintUploadButton() {
+        return cy.get('div').contains("Upload constraint file");
     }
 });
