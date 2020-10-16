@@ -438,9 +438,9 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 });
             }
         }
-    }
+    };
 
     $scope.setDirty = function () {
         $scope.currentQuery.isPristine = false;
-    }
+    };
 }
