@@ -11,14 +11,14 @@
     <div class="jdbc-list-configurations card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType()">
         <div class="card-block" ng-init="getSqlConfigurations();">
             <div class="clearfix">
-                <a ng-href="jdbc/configuration/create" ng-show="canWriteActiveRepo()" class="btn btn-link pull-right">
+                <a ng-href="jdbc/configuration/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
                     <span class="icon-plus create-sql-table-configuration"></span> Create new SQL table configuration
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
                                        data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> SQL table configurations</span>
                 </h3>
             </div>
-            <div class="no-indexes" ng-show="jdbcConfigurations.length == 0"><em>No Indexes</em></div>
+            <div class="no-indexes" ng-if="jdbcConfigurations.length == 0"><em>No Indexes</em></div>
 
             <div class="collapse in mt-1" id="configurations-table">
                 <table class="table table-hover mb-0" aria-describedby="JDBC configurations table">
@@ -32,12 +32,12 @@
                         <td class="text-xs-right">
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
-                                       ng-show="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
+                                       ng-if="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
                                        tooltip="Edit JDBC configuration">
                                         <em class="icon-edit"></em>
                                     </a>
                                 </span>
-                            <button type="button" ng-show="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
+                            <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
                                     class="btn btn-link delete-configuration-btn" tooltip="Delete JDBC configuration"><span
                                 class="icon-trash"></span>
                             </button>
