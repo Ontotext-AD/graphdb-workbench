@@ -103,7 +103,8 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
 
 
         $scope.loginWithOpenID = function() {
-            $openIDAuth.login();
+            // TODO add returnToUrl
+            $openIDAuth.login($rootScope.returnToUrl);
         }
 
         $scope.login = function () {
@@ -114,7 +115,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     'X-GraphDB-Password': $scope.password
                 }
             }).success(function (data, status, headers) {
-                $jwtAuth.authenticate(data, headers);
+                $jwtAuth.authenticate(data, headers('Authorization'));
                 const timer = $timeout(function () {
                     if ($rootScope.returnToUrl) {
                         // go back to remembered url

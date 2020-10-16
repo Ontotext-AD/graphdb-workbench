@@ -7,29 +7,29 @@ const modules = [
 const issuerUrl = 'https://accounts.google.com';
 const clientId = '961901053006-q6t7i3nm3csarr40tnp0jtib349n2fqd.apps.googleusercontent.com';
 const clientSecret = 'jy-vPqbjAB7P-n3TkgHngb9R';
-const redirectUrl = 'http://testopenid.ontotext.com:9000/';
+const openIDReqHeaders = {headers: {
+        'X-GraphDB-Repository': undefined,
+        'X-Requested-With': undefined,
+        'Authorization': undefined
+    }}
 
 angular.module('graphdb.framework.core.services.openIDService', modules)
-    .config(['$httpProvider', function($httpProvider) {
-        delete $httpProvider.defaults.headers.common['X-Requested-With'];
-        delete $httpProvider.defaults.headers.common['X-GraphDB-Repository'];
-    }])
-    .service('$openIDAuth', ['$http',
-        function ($http) {
-            this.login = function() {
-                this.loginOpenID();
+    // .config(['$httpProvider', function($httpProvider) {
+    //     delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    //     delete $httpProvider.defaults.headers.common['X-GraphDB-Repository'];
+    // }])
+    .service('$openIDAuth', ['$http', '$location',
+        function ($http, $location) {
+            this.login = function(returnToUrl) {
+                this.loginOpenID($location.absUrl().replace('/login', '/'));
             }
             const that = this;
 
             // Debug with code
             that.authFlow = 'implicit';
-            that.redirectUrl = redirectUrl;
 
             this.initOpenId = function(clientId, clientSecret, url, redirectUrl, callback) {
-                return $http.get(url + '/.well-known/openid-configuration', {headers: {
-                        'X-GraphDB-Repository': undefined,
-                        'X-Requested-With': undefined
-                    }}).success(function (configuration) {
+                return $http.get(url + '/.well-known/openid-configuration', openIDReqHeaders).success(function (configuration) {
                     that.openIdIssuerUrl = configuration['issuer'];
                     that.openIdKeysUri = configuration['jwks_uri'];
                     that.openIdAuthorizeUrl = configuration['authorization_endpoint'];
@@ -40,10 +40,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     console.log('done openid discovery');
 
                     // Not sure why these are again put here arggg
-                    $http.get(that.openIdKeysUri, {headers: {
-                            'X-GraphDB-Repository': undefined,
-                            'X-Requested-With': undefined
-                        }}).success(function(jwks) {
+                    $http.get(that.openIdKeysUri, openIDReqHeaders).success(function(jwks) {
                         that.openIdKeys = {};
                         jwks['keys'].forEach(function(k) {
                             that.openIdKeys[k.kid] = k
@@ -152,7 +149,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.saveToken = function(token, tokenType, isRefresh) {
+            this.saveToken = function(token, tokenType, isRefresh, redirectUrl) {
                 const expireDate = new Date().getTime() + (1000 * token.expires_in);
 
                 if (!isRefresh || token.refresh_token) {
@@ -174,7 +171,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.retrieveToken = function(code, tokenType) {
+            this.retrieveToken = function(code, tokenType, redirectUrl) {
                 const params = {
                     grant_type: 'authorization_code',
                     client_id: clientId,
@@ -264,7 +261,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return queryString;
             }
 
-            this.initOpenIdExternal = function(clientId, clientSecret, issuerUrl, tokenType, successCallback) {
+            this.initOpenIdExternal = function(clientId, clientSecret, issuerUrl, tokenType, redirectUrl, successCallback) {
                 this.initOpenId(clientId, clientSecret, issuerUrl, redirectUrl, function() {
                     that.isLoggedIn = that.checkCredentials();
                     if (that.isLoggedIn) {
@@ -281,13 +278,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                             if (localStorage.getItem('pkce_state') !== s.state) {
                                 alert('Invalid state');
                             } else {
-                                that.retrieveToken(s.code, tokenType);
+                                that.retrieveToken(s.code, tokenType, redirectUrl);
                             }
                         } else {
                             // possibly implicit flow
                             const q = that.parseQueryString(window.location.pathname.substring(1));
                             if (q.id_token) {
-                                that.saveToken(q, tokenType, false);
+                                that.saveToken(q, tokenType, false, redirectUrl);
                             }
                         }
                     }
@@ -313,7 +310,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return 'openid profile email' + (this.supportsOfflineAccess ? ' offline_access' : '');
             }
 
-            this.getLoginUrl = function(state, code_challenge, flow) {
+            this.getLoginUrl = function(state, code_challenge, flow, redirectUrl) {
                 return this.openIdAuthorizeUrl +
                     '?' +
                     // flow is 'code' or 'token id_token'
@@ -335,7 +332,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     ));
             }
 
-            this.loginOpenID = function() {
+            this.loginOpenID = function(redirectUrl) {
                 // Create and store a random "state" value
                 const state = this.generateRandomString();
 
@@ -349,10 +346,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     // Hash and base64-urlencode the secret to use as the challenge
                     const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
 
-                    window.location.href = that.getLoginUrl(state, code_challenge, 'code');
+                    window.location.href = that.getLoginUrl(state, code_challenge, 'code', redirectUrl);
                 } else if (this.authFlow === 'implicit') {
                     localStorage.setItem('nonce', state);
-                    window.location.href = that.getLoginUrl(state, '', 'token id_token');
+                    window.location.href = that.getLoginUrl(state, '', 'token id_token', redirectUrl);
                 } else {
                     alert('Uknown auth flow: ' + this.authFlow)
                 }
@@ -374,7 +371,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 this.setToken('refresh', null);
             }
 
-            this.hardLogout = function() {
+            this.hardLogout = function(redirectUrl) {
                 if (!this.openIdEndSessionUrl) {
                     alert('The OpenId provider doesn\'t support hard logout');
                 } else {

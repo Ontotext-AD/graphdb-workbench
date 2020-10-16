@@ -71,18 +71,21 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.getAuthenticatedUserFromBackend = function() {
                 SecurityRestService.getAuthenticatedUser().
                 success(function(data, status, headers) {
-                    if (that.auth) {
+                    if (that.auth && that.auth.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
                         // so refresh the principal
                         that.externalAuthUser = false;
                         that.principal = data;
                         $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
                         // console.log('previous JWT authentication ok');
+                    } else if (that.auth && that.auth.startsWith('Bearer')) {
+                        that.authenticate(data, that.auth);
+                        $location.path('/');
                     } else {
                         // There is no previous authentication but we got a principal via
                         // an external authentication mechanism (e.g. Kerberos)
                         that.externalAuthUser = true;
-                        that.authenticate(data, headers); // this will emit securityInit
+                        that.authenticate(data, headers('Authorization')); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
                 }).finally(function() {
@@ -120,9 +123,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 res.data.methodSettings.openid.clientSecret,
                                 res.data.methodSettings.openid.issuer,
                                 res.data.methodSettings.openid.tokenType,
+                                $location.absUrl(),
                                 function() {
                                     if ($openIDAuth.checkCredentials()) {
-                                        that.auth = $openIDAuth.authHeaderOpenId();
+                                        that.auth = $openIDAuth.authHeaderGraphDB();
                                         jwtAuth.setAuthHeaders();
                                         that.getAuthenticatedUserFromBackend();
                                     }
@@ -233,10 +237,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
             this.setAuthHeaders();
 
-            this.authenticate = function (data, headers) {
+            this.authenticate = function (data, authHeaderValue) {
                 this.clearCookies();
-                if (headers('Authorization')) {
-                    this.auth = headers('Authorization');
+                if (authHeaderValue) {
+                    this.auth = authHeaderValue;
                     $cookies[this.authCookieName] = this.auth;
                     this.externalAuthUser = false;
                 }
