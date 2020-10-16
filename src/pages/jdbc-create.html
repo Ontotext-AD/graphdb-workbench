@@ -75,23 +75,23 @@
                 <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">{{column.column_name}}</label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <select class="form-control" id="sql-type" ng-model="column.column_type" ng-options="type as type for type in sqlTypes track by type" ng-change="selectColumnType(column.column_name)"></select>
+                        <select class="form-control" id="sql-type" ng-model="column.column_type" ng-options="type as type for type in sqlTypes track by type" ng-change="selectColumnType(column.column_name)" ng-disabled="!canWriteActiveRepo()"></select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <input class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision">
+                        <input class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <input class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale">
+                        <input class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
-                        <input class="form-control" type="checkbox" id="nullable" ng-model="column.nullable">
+                        <input class="form-control" type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4">
-                        <input class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type">
+                        <input class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"
-                                class="btn btn-link delete-column-btn" tooltip="Delete column"><span
+                                class="btn btn-link delete-column-btn" tooltip="Delete column" ng-if="canWriteActiveRepo()"><span
                             class="icon-trash"></span>
                         </button>
                     </div>
@@ -113,7 +113,7 @@
                             popover-trigger="mouseenter">
                         Preview
                     </button>
-                    <button ng-if="page === 2" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
+                    <button ng-if="page === 2 && canWriteActiveRepo()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
                             popover="Get columns suggestions"
                             popover-placement="top"
                             popover-trigger="mouseenter">
@@ -122,7 +122,8 @@
                     <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
                             popover="Save SQL configuration"
                             popover-placement="top"
-                            popover-trigger="mouseenter">
+                            popover-trigger="mouseenter"
+                            ng-if="canWriteActiveRepo()">
                         Save
                     </button>
                 </div>
