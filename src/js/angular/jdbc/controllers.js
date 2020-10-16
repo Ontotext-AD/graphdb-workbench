@@ -257,7 +257,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 return $scope.currentQuery.query;
             }, function (newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    $scope.currentQuery.isPristine = false;
+                    $scope.setDirty();
                 }
             });
 
@@ -351,10 +351,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 column.column_type = columnSuggestion[columnName].column_type;
                 column.nullable = false;
                 column.sparql_type = '';
-                $scope.currentQuery.isPristine = false;
             });
         }
-    }
+        $scope.setDirty();
+    };
 
     $scope.getColumnsSuggestions = function () {
         if ($scope.currentQuery.columns && $scope.currentQuery.columns.length > 0) {
@@ -384,7 +384,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                     });
                 });
                 $scope.currentQuery.columns = suggestedColumns;
-                $scope.currentQuery.isPristine = false;
+                $scope.setDirty();
             });
         });
     }
@@ -397,7 +397,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         }).result
             .then(function () {
                 $scope.currentQuery.columns.splice(index, 1);
-                $scope.currentQuery.isPristine = false;
+                $scope.setDirty();
             });
     };
 
@@ -438,5 +438,9 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 });
             }
         }
+    }
+
+    $scope.setDirty = function () {
+        $scope.currentQuery.isPristine = false;
     }
 }
