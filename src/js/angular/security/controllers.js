@@ -103,7 +103,6 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
 
 
         $scope.loginWithOpenID = function() {
-            // TODO add returnToUrl
             $openIDAuth.login($rootScope.returnToUrl);
         }
 

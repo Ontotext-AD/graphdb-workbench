@@ -29,6 +29,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if ($openIDAuth.isOpenIDRedirect()) {
                     return;
                 }
+                if (jwtAuth.auth && jwtAuth.auth.startsWith('Bearer')) {
+                    toastr.error('Missing or stale OAuth Token.');
+                    jwtAuth.clearAuthentication();
+                }
                 if (expired && jwtAuth.getAuthToken()) {
                     toastr.error('Your authentication token has expired. Please login again.');
                     jwtAuth.clearAuthentication();

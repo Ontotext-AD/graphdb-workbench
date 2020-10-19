@@ -40,7 +40,10 @@ module.exports = merge(commonConfig, {
         compress: true,
         port: portHere,
         host: host,
-        historyApiFallback: true,
+        // needed to handle urls sent by open id providers that contain dots
+        historyApiFallback: {
+            disableDotRule: true
+        },
         proxy: [{
             context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,
