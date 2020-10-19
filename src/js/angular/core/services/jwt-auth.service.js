@@ -124,7 +124,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         }
                         if (that.openIDAuth) {
                             that.openIDClientID = res.data.methodSettings.openid.clientId;
-                            $openIDAuth.initOpenIdExternal(res.data.methodSettings.openid.clientId,
+                            that.openIDAuthFlow = res.data.methodSettings.openid.authFlow;
+                            $openIDAuth.initOpenIdExternal(that.openIDClientID,
                                 res.data.methodSettings.openid.clientSecret,
                                 res.data.methodSettings.openid.issuer,
                                 res.data.methodSettings.openid.tokenType,

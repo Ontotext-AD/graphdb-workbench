@@ -17,13 +17,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
     // }])
     .service('$openIDAuth', ['$http', '$location',
         function ($http, $location) {
-            this.login = function(clientId, returnToUrl) {
-                this.loginOpenID(clientId, $location.absUrl().replace('/login', '/'));
+            this.login = function(clientId, authFlow, returnToUrl) {
+                this.loginOpenID(clientId, authFlow, $location.absUrl().replace('/login', '/'));
             }
             const that = this;
-
-            // Debug with code
-            that.authFlow = 'implicit';
 
             this.initOpenId = function(clientId, clientSecret, url, redirectUrl, callback) {
                 return $http.get(url + '/.well-known/openid-configuration', openIDReqHeaders).success(function (configuration) {
@@ -329,11 +326,11 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     ));
             }
 
-            this.loginOpenID = function(clientId, redirectUrl) {
+            this.loginOpenID = function(clientId, authFlow, redirectUrl) {
                 // Create and store a random "state" value
                 const state = this.generateRandomString();
 
-                if (this.authFlow === 'code') {
+                if (authFlow === 'code') {
                     localStorage.setItem('pkce_state', state);
 
                     // Create and store a new PKCE code_verifier (the plaintext random secret)
@@ -348,7 +345,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     localStorage.setItem('nonce', state);
                     window.location.href = that.getLoginUrl(state, '', 'token id_token', redirectUrl, clientId);
                 } else {
-                    alert('Uknown auth flow: ' + this.authFlow)
+                    alert('Uknown auth flow: ' + authFlow)
                 }
             }
 
