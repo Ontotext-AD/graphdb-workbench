@@ -103,7 +103,11 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
 
 
         $scope.loginWithOpenID = function() {
-            $openIDAuth.login($rootScope.returnToUrl);
+            if ($jwtAuth.openIDAuth && $jwtAuth.openIDClientID) {
+                $openIDAuth.login($jwtAuth.openIDClientID, $rootScope.returnToUrl);
+            } else {
+                toastr.error('Cannot find OpenID clientID ');
+            }
         }
 
         $scope.login = function () {
