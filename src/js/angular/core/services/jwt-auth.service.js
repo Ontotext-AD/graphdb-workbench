@@ -129,7 +129,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 res.data.methodSettings.openid.clientSecret,
                                 res.data.methodSettings.openid.issuer,
                                 res.data.methodSettings.openid.tokenType,
-                                $location.absUrl(),
+                                $location.absUrl().replace($location.url(), ''),
                                 function() {
                                     if ($openIDAuth.checkCredentials(that.openIDClientID)) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
