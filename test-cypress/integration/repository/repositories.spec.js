@@ -309,6 +309,23 @@ describe('Repositories', () => {
         cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
     });
 
+    //Check workbench restricted sections when connected to an Ontop repository
+    it('should check access restrictions when connected to an Ontop repository', () => {
+        selectRepoFromDropdown("obda");
+        cy.visit("/import");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/monitor/queries");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/connectors");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/autocomplete");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/rdfrank");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/jdbc");
+        getOntopFunctionalityDisabledMessage();
+    });
+
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
@@ -467,5 +484,12 @@ describe('Repositories', () => {
 
     function getConstraintUploadButton() {
         return cy.get('div').contains("Upload constraint file");
+    }
+
+    function getOntopFunctionalityDisabledMessage() {
+        return cy.get('.repository-errors div.alert')
+            .should('be', 'visible')
+            .and('contain','Some functionalities are not available because')
+            .and('contain', ' is read-only Virtual Repository');
     }
 });
