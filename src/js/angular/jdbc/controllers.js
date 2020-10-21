@@ -106,7 +106,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function confirmExit(event) {
         if (!$scope.currentQuery.isPristine) {
-            if (!confirm('You have unsaved changes. Are you sure, you want to exit?')) {
+            if (!confirm('You have unsaved changes. Are you sure that you want to exit?')) {
                 event.preventDefault();
             } else {
                 window.removeEventListener('beforeunload', showBeforeunloadMessage);
