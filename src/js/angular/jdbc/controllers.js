@@ -320,6 +320,15 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         return columns && columns.some(el => $scope.hasScale(el.column_type));
     };
 
+    $scope.isIri = function (columnType) {
+        return columnType === 'iri';
+    };
+
+    $scope.containsIriColumnsOnly = function (columns) {
+        return columns && columns.every(el => $scope.isIri(el.column_type));
+    };
+
+
     // Add known prefixes
     function addKnownPrefixes() {
         SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
@@ -350,7 +359,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, [columnName]).success(function (columnSuggestion) {
                 column.column_type = columnSuggestion[columnName].column_type;
                 column.nullable = false;
-                column.sparql_type = '';
+                column.sparql_type = columnSuggestion[columnName].sparql_type;;
             });
         }
         $scope.setDirty();
@@ -380,7 +389,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                         column_name: key,
                         column_type: value.column_type,
                         nullable: false,
-                        sparql_type: ''
+                        sparql_type: value.sparql_type
                     });
                 });
                 $scope.currentQuery.columns = suggestedColumns;
