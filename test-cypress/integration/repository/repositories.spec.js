@@ -298,6 +298,18 @@ describe('Repositories', () => {
         getConstraintUploadButton().should('be',"visible").and('not.be.disabled');;
     });
 
+    //Check that Inference and SameAs are disabled also that explain plan is not supported.
+    it('should check SPARQL editor restrictions when connected to an Ontop repository', () => {
+        selectRepoFromDropdown("obda");
+        cy.visit("/sparql");
+        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+
+        //check that Inference and SameAs buttons are disabled.
+        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+    });
+
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
