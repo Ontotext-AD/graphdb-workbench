@@ -1,0 +1,13 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rep: <http://www.openrdf.org/config/repository#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<#testo> a rep:Repository;
+  rep:repositoryID "testo";
+  rep:repositoryImpl [
+      <http://inf.unibz.it/krdb/obda/quest#obdaFile> "university-complete.obda";
+      <http://inf.unibz.it/krdb/obda/quest#owlFile> "university-complete.ttl";
+      <http://inf.unibz.it/krdb/obda/quest#propertiesFile> "university-complete.properties";
+      rep:repositoryType "graphdb:OntopRepository"
+    ];
+  rdfs:label "Ontop virtual store with OBDA" .

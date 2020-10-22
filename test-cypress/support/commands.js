@@ -27,3 +27,17 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, ($iframe) => {
         }
     });
 });
+
+// Performs an XMLHttpRequest instead of a cy.request (able to send data as
+// FormData - multipart/form-data)
+Cypress.Commands.add('form_request', (method, url, formData, done) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = function () {
+        done(xhr);
+    };
+    xhr.onerror = function () {
+        done(xhr);
+    };
+    xhr.send(formData);
+})

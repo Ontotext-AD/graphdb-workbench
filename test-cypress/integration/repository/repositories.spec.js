@@ -326,6 +326,81 @@ describe('Repositories', () => {
         getOntopFunctionalityDisabledMessage();
     });
 
+    //Create Ontop repository
+    it.only('should create an Ontop repository', () => {
+
+        // cy.server();
+        // cy.fixture('ontop/config.ttl').as('ontopRepoConfig');
+        // cy.route('GET', 'ontop/*', '@ontopRepoConfig');
+
+        // cy.fixture('ontop/config.ttl')
+        //     .then(data => cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories', body: {
+        //             config: data}
+        //     }));
+
+        let configFile = cy.fixture('ontop/config.ttl');
+        let obdaFile = cy.fixture('ontop/university-complete.obda');
+        let ontologyFile = cy.fixture('ontop/university-complete.ttl');
+        let propertiesFile = cy.fixture('ontop/university-complete.properties');
+
+        const method = 'POST';
+        const url = 'http://localhost:9000/rest/repositories/uploadFile';
+        const fileType ='';
+
+
+
+            Promise.all([obdaFile,ontologyFile,propertiesFile]).then(values=>{
+            let obdaFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[0], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
+            let ontologyFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[1], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
+            let propertiesFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[2], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
+            Promise.all([obdaFileUpload, ontologyFileUpload, propertiesFileUpload]).then(files=>{
+
+                Cypress.Blob.binaryStringToBlob(excelBin, fileType).then((blob) => {
+
+                    // Build up the form
+                    const formData = new FormData();
+                    formData.set('file', blob, fileName); //adding a file to the form
+                    formData.set('input2', inputContent2); //adding a plain input to the form
+                .
+                .
+                .
+                    // Perform the request
+                    cy.form_request(method, url, formData, function (response) {
+                        expect(response.status).to.eq(200);
+                        expect(expectedAnswer).to.eq(response.response);
+                    });
+
+                cy.request({
+                    method: 'POST',
+                    url: 'http://localhost:9000/rest/repositories',
+                    body: {
+                             config: `@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n' +
+                                 '@prefix rep: <http://www.openrdf.org/config/repository#> .\n' +
+                                 '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n' +
+                                 '<#testo> a rep:Repository;\n' +
+                                 '  rep:repositoryID "testo";\n' +
+                                 '  rep:repositoryImpl [\n' +
+                                 '      <http://inf.unibz.it/krdb/obda/quest#obdaFile> "${files[0].fileLocation}";\n' +
+                                 '      <http://inf.unibz.it/krdb/obda/quest#owlFile> "${files[1].fileLocation}";\n' +
+                                 '      <http://inf.unibz.it/krdb/obda/quest#propertiesFile> "${files[2].fileLocation}";\n' +
+                                 '      rep:repositoryType "graphdb:OntopRepository"\n' +
+                                 '    ];\n' +
+                                 '  rdfs:label "Ontop virtual store with OBDA" .\n`},
+                    headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}
+
+                })
+            })
+        });
+
+        // cy.request('POST', 'http://localhost:9000/rest/repositories', { config: '/fixtures/ontop/config.ttl' });
+        //
+        // cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories', body: {
+        //     config: '@ontopRepoConfig'}
+        //     });
+    });
+
+
+
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
