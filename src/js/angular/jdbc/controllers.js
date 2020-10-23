@@ -92,6 +92,13 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         }
     });
 
+    let timer = null;
+    $scope.goBack = function () {
+        timer = $timeout(function () {
+            $window.history.back();
+        }, 1000);
+    };
+
     const locationChangeListener = $scope.$on('$locationChangeStart', function (event) {
         confirmExit(event);
     });
@@ -111,6 +118,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             } else {
                 window.removeEventListener('beforeunload', showBeforeunloadMessage);
                 locationChangeListener();
+                $timeout.cancel(timer);
             }
         }
     }
@@ -118,6 +126,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.$on('$destroy', function (event) {
         window.removeEventListener('beforeunload', showBeforeunloadMessage);
         locationChangeListener();
+        $timeout.cancel(timer);
     });
 
     const defaultTabConfig = {
@@ -224,6 +233,9 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             $scope.$apply();
         }, 0);
 
+        if (!$scope.canWriteActiveRepo()) {
+            window.editor.options.readOnly = true;
+        }
     };
 
     $scope.goToPage = function (page) {
@@ -278,11 +290,6 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             return;
         }
 
-        if ($scope.currentQuery.isPristine) {
-            toastr.success('SQL table configuration saved');
-            return;
-        }
-
         if ($scope.currentQuery.isNewConfiguration) {
             JdbcRestService.createNewJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
@@ -302,6 +309,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 toastr.error(msg, 'Could not save SQL table configuration');
             });
         }
+        $scope.goBack();
     };
 
     $scope.hasPrecision = function (columnType) {
@@ -412,17 +420,18 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     $scope.getPreview = function () {
         $scope.executedQueryTab = $scope.currentQuery;
-        if (window.editor.getQueryType() !== 'SELECT') {
+        if (window.editor.getQueryType() !== 'SELECT' && $scope.canWriteActiveRepo()) {
             toastr.error('JDBC works only with SELECT queries.');
             return;
         }
+
         if (!$scope.queryIsRunning) {
             $scope.currentQuery.outputType = 'table';
             $scope.resetCurrentTabConfig();
 
             setLoader(true, 'Preview of first 100 rows of table ' + $scope.name,
                 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
-            if ($scope.currentQuery.isNewConfiguration) {
+            if ($scope.canWriteActiveRepo()) {
                 const sqlView = JSON.stringify({
                     name: $scope.currentQuery.name,
                     query: $scope.currentQuery.query,

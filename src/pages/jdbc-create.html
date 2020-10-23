@@ -45,7 +45,8 @@
                     </a>
                 </li>
             </ul>
-            <div ng-show="page === 1">
+            <div ng-if="page === 1" class="container-fluid">
+                <br/>
                 <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
                               notoolbar-inference
                               notoolbar-same-as callback-on-change="updateDirty">
@@ -101,12 +102,6 @@
 
             <div class="clearfix">
                 <div class="pull-right">
-                    <a ng-href="/jdbc" class="btn btn-lg btn-secondary"
-                       popover="Cancel SQL configuration"
-                       popover-placement="top"
-                       popover-trigger="mouseenter">
-                        Cancel
-                    </a>
                     <button ng-if="page === 1" class="btn btn-lg preview-btn" ng-click="getPreview()"
                             popover="Preview SQL configuration table"
                             popover-placement="top"
@@ -119,16 +114,29 @@
                             popover-trigger="mouseenter">
                         Suggest
                     </button>
-                    <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
-                            popover="Save SQL configuration"
-                            popover-placement="top"
-                            popover-trigger="mouseenter"
-                            ng-if="canWriteActiveRepo()">
-                        Save
-                    </button>
                 </div>
             </div>
-
         </div>
     </div>
+    <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
+            popover="Save SQL configuration"
+            popover-placement="top"
+            popover-trigger="mouseenter"
+            ng-if="canWriteActiveRepo()">
+        Save
+    </button>
+    <a ng-href="/jdbc" class="btn btn-lg btn-secondary"
+       popover="Cancel SQL configuration"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="canWriteActiveRepo()">
+        Cancel
+    </a>
+    <a ng-href="/jdbc" class="btn btn-lg btn-secondary"
+       popover="Cancel SQL configuration"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="!canWriteActiveRepo()">
+        Close
+    </a>
 </div>
