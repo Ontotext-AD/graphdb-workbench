@@ -250,6 +250,10 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         $scope.updateEditor = function () {
             $timeout(function () {
                 $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
+                // // Check for ontop repository and override nocount property (it's default value is false)
+                if ($repositories.isActiveRepoOntopType()) {
+                    $scope.nocount = true;
+                }
                 $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
                 $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
                 loadTab($scope.currentQuery.id);
