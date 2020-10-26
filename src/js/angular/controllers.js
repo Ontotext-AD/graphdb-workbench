@@ -65,16 +65,18 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
         });
     };
 
-    $scope.$watch($scope.getActiveRepository, function () {
-        if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
-                });
-        }
+    $scope.$on('securityInit', function() {
+        $scope.$watch($scope.getActiveRepository, function () {
+            if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                    .success(function () {
+                        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+                            .success(function () {
+                                $scope.getActiveRepositorySize();
+                            });
+                    });
+            }
+        });
     });
 }
 
@@ -740,6 +742,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             if ($location.path() !== '/login') {
                 $rootScope.redirectToLogin();
             }
+        } else {
+            $scope.getSavedQueries();
         }
     });
 

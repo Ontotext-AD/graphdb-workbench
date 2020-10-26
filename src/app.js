@@ -24,9 +24,22 @@ const moduleDefinition = function (productInfo) {
                 positionClass: 'toast-bottom-right'
             });
 
+
             localStorageServiceProvider
                 .setStorageType('localStorage')
                 .setNotify(true, true);
+
+
+            var $route = $routeProvider.$get[$routeProvider.$get.length-1]({$on:function(){}});
+
+            // Handle OAuth returned url
+            $routeProvider.when('/access_token=',{
+                controller : function() {
+                },
+                template : "<div></div>"
+            });
+
+            $route.routes['/access_token='].regexp = /^\/access_token=(.*)/;
 
             let routes = PluginRegistry.get('route');
 

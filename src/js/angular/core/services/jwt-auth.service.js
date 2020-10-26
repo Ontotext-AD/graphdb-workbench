@@ -1,14 +1,16 @@
 import 'angular/core/services';
+import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'ngCookies',
     'toastr',
-    'graphdb.framework.rest.security.service'
+    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService',
-        function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService) {
+    .service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth',
+        function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService, $openIDAuth) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -23,7 +25,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const path = $location.path();
                 return !$rootScope.deniedPermissions[path];
             };
+
             $rootScope.redirectToLogin = function (expired) {
+                if (jwtAuth.auth && jwtAuth.auth.startsWith('Bearer')) {
+                    toastr.error('Missing or stale OAuth Token.');
+                    jwtAuth.clearAuthentication();
+                }
                 if (expired && jwtAuth.getAuthToken()) {
                     toastr.error('Your authentication token has expired. Please login again.');
                     jwtAuth.clearAuthentication();
@@ -63,6 +70,38 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $cookieStore.remove(that.principalCookieName);
             };
 
+            this.getAuthenticatedUserFromBackend = function() {
+                SecurityRestService.getAuthenticatedUser().
+                success(function(data, status, headers) {
+                    if (that.auth && that.auth.startsWith('GDB')) {
+                        // There is a previous authentication via JWT, it's still valid
+                        // so refresh the principal
+                        that.externalAuthUser = false;
+                        that.principal = data;
+                        $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
+                        // console.log('previous JWT authentication ok');
+                    } else if (that.openIDEnabled && that.auth && that.auth.startsWith('Bearer')) {
+                        // The auth was obtained from OpenID, we need to authenticate with the returned user
+                        that.authenticate(data, that.auth);
+                        $location.url('/');
+                    } else {
+                        // There is no previous authentication but we got a principal via
+                        // an external authentication mechanism (e.g. Kerberos)
+                        that.externalAuthUser = true;
+                        that.authenticate(data, headers('Authorization')); // this will emit securityInit
+                        // console.log('external authentication ok');
+                    }
+                }).finally(function() {
+                    // Strictly speaking we should try this in the error() callback but
+                    // for some reason it doesn't get called.
+                    if (!that.hasExplicitAuthentication()) {
+                        that.principal = that.freeAccessPrincipal;
+                        $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
+                        // console.log('free access fallback');
+                    }
+                });
+            }
+
             this.initSecurity = function () {
                 this.auth = $cookies[this.authCookieName];
                 this.principal = $cookieStore.get(this.principalCookieName);
@@ -71,6 +110,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
+                    that.openIDEnabled = res.data.openIdEnabled;
 
                     if (that.securityEnabled) {
                         const freeAccessData = res.data.freeAccess;
@@ -81,32 +121,29 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 appSettings: freeAccessData.appSettings
                             };
                         }
+                        if (that.openIDEnabled) {
+                            that.openIDClientID = res.data.methodSettings.openid.clientId;
+                            that.openIDAuthFlow = res.data.methodSettings.openid.authFlow;
+                            that.openIDreturnToUrl = $location.absUrl().replace($location.url().substr(1), '');
+                            $openIDAuth.initOpenId(that.openIDClientID,
+                                res.data.methodSettings.openid.clientSecret,
+                                res.data.methodSettings.openid.issuer,
+                                res.data.methodSettings.openid.tokenType,
+                                that.openIDreturnToUrl,
+                                function() {
+                                    if ($openIDAuth.checkCredentials(that.openIDClientID)) {
+                                        that.auth = $openIDAuth.authHeaderGraphDB();
+                                        jwtAuth.setAuthHeaders();
+                                        that.getAuthenticatedUserFromBackend();
+                                    }
+                                });
 
-                        SecurityRestService.getAuthenticatedUser().
-                        success(function(data, status, headers) {
-                            if (that.auth) {
-                                // There is a previous authentication via JWT, it's still valid
-                                // so refresh the principal
-                                that.externalAuthUser = false;
-                                that.principal = data;
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
-                                // console.log('previous JWT authentication ok');
                             } else {
-                                // There is no previous authentication but we got a principal via
-                                // an external authentication mechanism (e.g. Kerberos)
-                                that.externalAuthUser = true;
-                                that.authenticate(data, headers); // this will emit securityInit
-                                // console.log('external authentication ok');
+                                that.getAuthenticatedUserFromBackend();
                             }
-                        }).finally(function() {
-                            // Strictly speaking we should try this in the error() callback but
-                            // for some reason it doesn't get called.
-                            if (!that.hasExplicitAuthentication()) {
-                                that.principal = that.freeAccessPrincipal;
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
-                                // console.log('free access fallback');
-                            }
-                        });
+
+
+
                     } else {
                         that.clearCookies();
                         const overrideAuthData = res.data.overrideAuth;
@@ -154,6 +191,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.getAuthToken = function () {
                 return this.auth;
+            };
+
+            this.loginOpenID = function () {
+                $openIDAuth.login(this.openIDClientID, this.openIDAuthFlow, that.openIDreturnToUrl)
             };
 
             this.toggleSecurity = function (enabled) {
@@ -206,10 +247,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
             this.setAuthHeaders();
 
-            this.authenticate = function (data, headers) {
+            this.authenticate = function (data, authHeaderValue) {
                 this.clearCookies();
-                if (headers('Authorization')) {
-                    this.auth = headers('Authorization');
+                if (authHeaderValue) {
+                    this.auth = authHeaderValue;
                     $cookies[this.authCookieName] = this.auth;
                     this.externalAuthUser = false;
                 }
@@ -235,6 +276,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.clearAuthentication = function () {
+                $openIDAuth.logoutOpenID();
                 this.auth = undefined;
                 this.principal = this.freeAccessPrincipal;
                 this.clearCookies();
