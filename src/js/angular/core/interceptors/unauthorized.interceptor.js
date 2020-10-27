@@ -7,8 +7,7 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
         return {
             'responseError': function (response) {
                 if (response.status === 401) {
-                    if (response.config.url.indexOf('rest/security/authenticatedUser') < 0 && !$rootScope.hasExternalAuthUser()
-                        && !($location.search()['code'] || $location.search()['auth_token'])) {
+                    if (response.config.url.indexOf('rest/security/authenticatedUser') < 0 && !$rootScope.hasExternalAuthUser()) {
                         // Redirect to login page only if this isn't the endpoint that checks
                         // the externally logged user and when no external authentication is available.
                         // This check is essential for making free access and external auth working.
