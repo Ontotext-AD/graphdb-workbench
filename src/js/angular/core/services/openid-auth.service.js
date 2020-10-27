@@ -97,7 +97,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         that.setupTokenRefreshTimer(tokenType, clientId, redirectUrl, clientSecret);
                         successCallback();
                     } else if (that.hasValidRefreshToken()) {
-                        that.refreshToken();
+                        that.refreshToken(tokenType, clientId, redirectUrl, clientSecret);
                     } else {
                         // possibly auth code flow
                         const s = that.parseQueryString(window.location.search.substring(1));
@@ -114,8 +114,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                             if (q.id_token) {
                                 that.saveToken(q, tokenType, false, redirectUrl, clientId, clientSecret);
                             } else {
-                                // Not a valid openID redirect
-                                $location.url('/login');
+                                successCallback();
                             }
                         }
                     }

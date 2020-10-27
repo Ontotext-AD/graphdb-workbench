@@ -62,6 +62,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.freeAccess = false;
             this.hasOverrideAuth = false;
             this.externalAuthUser = false;
+            this.securityInitialized = false;
 
             const that = this;
 
@@ -94,6 +95,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }).finally(function() {
                     // Strictly speaking we should try this in the error() callback but
                     // for some reason it doesn't get called.
+                    that.securityInitialized = true;
                     if (!that.hasExplicitAuthentication()) {
                         that.principal = that.freeAccessPrincipal;
                         $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
@@ -134,8 +136,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     if ($openIDAuth.checkCredentials(that.openIDClientID)) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
                                         jwtAuth.setAuthHeaders();
-                                        that.getAuthenticatedUserFromBackend();
                                     }
+                                    that.getAuthenticatedUserFromBackend();
                                 });
 
                             } else {
@@ -260,6 +262,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $cookieStore.put(this.principalCookieName, this.principal);
                 this.setAuthHeaders();
                 $rootScope.deniedPermissions = {};
+                this.securityInitialized = true;
                 $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
             };
 

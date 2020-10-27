@@ -34,9 +34,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -65,7 +65,7 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
         });
     };
 
-    $scope.$on('securityInit', function() {
+    function getNamespaces() {
         $scope.$watch($scope.getActiveRepository, function () {
             if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
                 $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
@@ -77,7 +77,12 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
                     });
             }
         });
-    });
+    }
+    if ($jwtAuth.securityInitialized) {
+        getNamespaces();
+    } else {
+        $scope.$on('securityInit', getNamespaces);
+    }
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
@@ -732,6 +737,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.$on("$destroy", function () {
         $interval.cancel(timer);
     });
+
+    if ($jwtAuth.securityInitialized) {
+        $scope.getSavedQueries();
+    }
 
     $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
         $scope.securityEnabled = securityEnabled;
