@@ -129,7 +129,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.logoutOpenID = function() {
+            this.softLogout = function() {
                 this.isLoggedIn = false;
                 this.setToken('id', null);
                 this.setToken('access', null);
@@ -138,7 +138,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
             this.hardLogout = function(redirectUrl, clientId) {
                 const isLoggedIn = this.getToken('access');
-                this.logoutOpenID();
+                this.softLogout();
                 if (this.openIdEndSessionUrl && isLoggedIn != null) {
                     window.location.href = this.openIdEndSessionUrl +
                         '?' +
