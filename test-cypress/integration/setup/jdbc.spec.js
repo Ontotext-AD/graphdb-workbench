@@ -13,49 +13,96 @@ const QUERY = "PREFIX ex:<http://example.com/#>\n" +
     "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
     "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
     "    # !filter\n" +
-    "}  "
+    "}  ";
+const EDIT_QUERY = "PREFIX ex:<http://example.com/#>\n" +
+    "PREFIX base:<http://example/base/>\n" +
+    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
+    "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+    "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+    "\n" +
+    "select ?id ?fraud_score ?customer_loyalty where { \n" +
+    "\t?id rdf:type ex:Customer;\n" +
+    "      \tex:fraudScore ?fraud_score;\n" +
+    "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
+    "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
+    "    # !filter\n" +
+    "}  ";
 
 describe('JDBC configuration', () => {
 
     let repositoryId;
 
-    context('No repository selected', () => {
-        it('Initial error state', () => {
-            cy.visit('/jdbc');
-            // Repository not selected warning should be visible
-            cy.get('.repository-errors').should('be.visible');
-        });
+    beforeEach(() => {
+        initRepositoryAndVisitJdbcView();
     });
 
-    context('Creating JDBC configuration', () => {
-        beforeEach(() => {
-            initRepositoryAndVisitJdbcView();
-        });
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
+    });
 
-        afterEach(() => {
-            cy.deleteRepository(repositoryId);
-        });
+    it('Configuration table preview', () => {
+        //cy.visit('/jdbc');
+        // SQL configuration table should be visible
+        getConfigurationList().should('be.visible');
+    });
 
-        it('Configuration table preview', () => {
-            //cy.visit('/jdbc');
-            // SQL configuration table should be visible
-            getConfigurationList().should('be.visible');
-        });
+    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+        getCreateNewJDBCConfigurationButon().click();
 
-        it.only('Should create a new JDBC configuration, then delete', () => {
-            getCreateNewJDBCConfigurationButon().click();
-            cy.get('.ot-splash').should('not.be.visible');
-            cy.get('.CodeMirror-linenumber').should('be.visible').and('be','active');
-            cy.wait(500);
-            pasteQuery(QUERY);
-            getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
-            getColumnTypesTab().click();
-            getSaveButton().click();
-            getConfigurationList().should('contain', JDBC_CONFIG_NAME);
-            getDeleteButton().click();
-            getConfirmDeleteButton().click();
-            getConfigurationList().should('contain', 'No Indexes');
-        });
+        //wait for page initialization
+        cy.get('.ot-splash').should('not.be.visible');
+        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.CodeMirror-linenumber').should('be.visible').and('be','active');
+        cy.wait(500);
+
+        pasteQuery(QUERY);
+        getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
+        getColumnTypesTab().click(); //switch to SQL columns config tab
+        //verify columns length
+        getSQLTableRows().should('have.length', 4);
+        getSQLTableConfig()
+            .should('be.visible')
+            .and('contain', 'sentiment_score');
+
+        getSaveButton().click();
+        getConfigurationList().should('contain', JDBC_CONFIG_NAME); //verify config is created
+        getEditButton().click();
+        cy.wait(2500);
+        getSuggestButton().click(); //click preview button
+        getLoader().should('not.be.visible');
+        cy.wait(500);
+        getPreviewTable()
+            .should('be.visible')
+            .and('contain', 'SENTIMENT_SCORE')
+            .and('contain', 'CUSTOMER_LOYALTY')
+            .and('contain', 'ID')
+            .and('contain', 'FRAUD_SCORE');
+        clearQuery();
+        pasteQuery(EDIT_QUERY);
+        getColumnTypesTab().click();
+        getSuggestButton().click(); //click suggest button to update the changes from the second query
+        getConfirmSuggestButton().click();
+        getSQLTableRows().should('have.length', 3);
+        getSQLTableConfig()
+            .should('be.visible')
+            .and('not.contain', 'sentiment_score');
+        getSaveButton().click();
+        getEditButton().click();
+        cy.wait(2500);
+        getSuggestButton().click(); //click preview button
+        getLoader().should('not.be.visible');
+        cy.wait(500);
+        getPreviewTable()
+            .should('be.visible')
+            .and('not.contain', 'SENTIMENT_SCORE')
+            .and('contain', 'CUSTOMER_LOYALTY')
+            .and('contain', 'ID')
+            .and('contain', 'FRAUD_SCORE');
+        getSaveButton().click();
+        cy.wait(1000);
+        getDeleteButton().click({force:true});
+        getConfirmDialogButton().click();
+        getConfigurationList().should('contain', 'No Indexes');
     });
 
     function initRepositoryAndVisitJdbcView() {
@@ -87,6 +134,11 @@ describe('JDBC configuration', () => {
         waitUntilQueryIsVisible();
     }
 
+    function clearQuery() {
+        // Using force because the textarea is not visible
+        getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
+    }
+
     function waitUntilQueryIsVisible() {
         getQueryArea().should(codeMirrorEl => {
             const cm = codeMirrorEl[0].CodeMirror;
@@ -98,6 +150,10 @@ describe('JDBC configuration', () => {
         return cy.get('.nav-tabs').contains("Column types");
     }
 
+    function getDataQueryTab() {
+        return cy.get('.nav-tabs').contains("Data query");
+    }
+
     function getSaveButton() {
         return cy.get('.save-query-btn');
     }
@@ -106,11 +162,39 @@ describe('JDBC configuration', () => {
         return cy.get('.icon-trash');
     }
 
-    function getConfirmDeleteButton() {
+    function getConfirmDialogButton() {
         return cy.get('.btn-primary');
     }
 
     function getConfigurationList() {
         return cy.get('.jdbc-list-configurations');
+    }
+
+    function getEditButton() {
+        return cy.get('.icon-edit');
+    }
+
+    function getSQLTableRows() {
+        return cy.get('div.form-group.row.pt-1.ng-scope');
+    }
+
+    function getSuggestButton() {
+        return cy.get('.preview-btn');
+    }
+
+    function getConfirmSuggestButton() {
+        return cy.get('.confirm-btn');
+    }
+
+    function getLoader() {
+        return cy.get('.ot-loader-new-content');
+    }
+
+    function getPreviewTable() {
+        return cy.get('.resultsTable');
+    }
+
+    function getSQLTableConfig() {
+        return cy.get('.sql-table-config');
     }
 });
