@@ -137,8 +137,9 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
             this.hardLogout = function(redirectUrl, clientId) {
+                const isLoggedIn = this.getToken('access');
                 this.logoutOpenID();
-                if (this.openIdEndSessionUrl) {
+                if (this.openIdEndSessionUrl && isLoggedIn != null) {
                     window.location.href = this.openIdEndSessionUrl +
                         '?' +
                         'client_id=' + clientId + '&' +
