@@ -105,24 +105,9 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
             $jwtAuth.loginOpenID();
         };
 
-        function skipGDBLoginIfDisabled() {
-            if ($jwtAuth.openIDEnabled && !$jwtAuth.passwordLoginEnabled) {
-                $scope.loginWithOpenID();
-            }
-        }
-        if ($jwtAuth.securityInitialized) {
-            skipGDBLoginIfDisabled();
-        } else {
-            $scope.$on('securityInit', function (scope) {
-                skipGDBLoginIfDisabled();
-            });
-        }
+        $scope.isGDBLoginEnabled = $jwtAuth.passwordLoginEnabled;
+        $scope.isOpenIDEnabled =  $jwtAuth.openIDEnabled;
 
-
-
-        $scope.isOpenIDEnabled = function() {
-            return $jwtAuth.openIDEnabled;
-        }
 
         $scope.login = function () {
             $http({
