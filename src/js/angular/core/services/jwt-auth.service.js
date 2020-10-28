@@ -113,6 +113,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
                     that.openIDEnabled = res.data.openIdEnabled;
+                    that.passwordLoginEnabled = res.data.passwordLoginEnabled;
 
                     if (that.securityEnabled) {
                         const freeAccessData = res.data.freeAccess;
@@ -279,7 +280,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.clearAuthentication = function () {
-                $openIDAuth.logoutOpenID();
+                $openIDAuth.hardLogout(that.openIDreturnToUrl, that.openIDClientID);
                 this.auth = undefined;
                 this.principal = this.freeAccessPrincipal;
                 this.clearCookies();

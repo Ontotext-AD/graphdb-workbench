@@ -137,10 +137,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
             this.hardLogout = function(redirectUrl, clientId) {
-                if (!this.openIdEndSessionUrl) {
-                    toastr.error('The OpenId provider doesn\'t support hard logout');
-                } else {
-                    this.logoutOpenID();
+                this.logoutOpenID();
+                if (this.openIdEndSessionUrl) {
                     window.location.href = this.openIdEndSessionUrl +
                         '?' +
                         'client_id=' + clientId + '&' +
