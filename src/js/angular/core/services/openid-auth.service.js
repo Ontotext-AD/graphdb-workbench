@@ -20,11 +20,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
         function ($http, $location, toastr) {
             const that = this;
 
-            this.login = function(clientId, authFlow, returnToUrl) {
-                this.loginOpenID(clientId, authFlow, returnToUrl);
-            };
-
-            this.loginOpenID = function(clientId, authFlow, redirectUrl) {
+            this.login = function(clientId, authFlow, authorizeParameters, returnToUrl) {
                 // Create and store a random "state" value
                 const state = this.generateRandomString();
 
@@ -38,35 +34,49 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     // Hash and base64-urlencode the secret to use as the challenge
                     const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
 
-                    window.location.href = that.getLoginUrl(state, code_challenge, 'code', redirectUrl, clientId);
+                    window.location.href = that.getLoginUrl(state, code_challenge, authFlow, returnToUrl, clientId, authorizeParameters);
+                } else if (authFlow === 'code_no_pkce') {
+                    window.location.href = that.getLoginUrl(state, '', authFlow, returnToUrl, clientId, authorizeParameters);
                 } else if (authFlow === 'implicit') {
                     localStorage.setItem('nonce', state);
-                    window.location.href = that.getLoginUrl(state, '', 'token id_token', redirectUrl, clientId);
+                    window.location.href = that.getLoginUrl(state, '', authFlow, returnToUrl, clientId, authorizeParameters);
                 } else {
                     toastr.error('Uknown auth flow: ' + authFlow)
                 }
-            }
+            };
 
-            this.getLoginUrl = function(state, code_challenge, flow, redirectUrl, clientId) {
+            this.getLoginUrl = function(state, code_challenge, flow, redirectUrl, clientId, authorize_parameters) {
+                let response_type = '';
+                let flow_params = '';
+                switch (flow) {
+                    case 'code':
+                        response_type = 'code';
+                        flow_params = 'state=' + encodeURIComponent(state) + '&' +
+                            'code_challenge=' + encodeURIComponent(code_challenge) + '&' +
+                            'code_challenge_method=S256';
+                        break;
+                    case 'code_no_pkce':
+                        response_type = 'code';
+                        break;
+                    case 'implicit':
+                        response_type = 'token id_token';
+                        flow_params = 'nonce=' + encodeURIComponent(state);
+                        break;
+                    default:
+                        throw new Error('Unknown authentication flow: ' + flow);
+                }
                 return this.openIdAuthorizeUrl +
                     '?' +
                     // flow is 'code' or 'token id_token'
-                    'response_type=' + encodeURIComponent(flow) + '&' +
+                    'response_type=' + encodeURIComponent(response_type) + '&' +
                     'scope=' + encodeURIComponent(this.getScope()) + '&' +
                     // TODO: this may be required in order to get a refresh token but it forces re-asking the user for permission
                     // TODO: we should probably have it configurable
                     'prompt=consent' + '&' +
                     'client_id=' + clientId + '&' +
                     'redirect_uri=' + redirectUrl + '&' +
-                    (flow === 'code' ? (
-                        // non-OpenID but a Google thing
-                        'access_type=offline' + '&' +
-                        'state=' + encodeURIComponent(state) + '&' +
-                        'code_challenge=' + encodeURIComponent(code_challenge) + '&' +
-                        'code_challenge_method=S256'
-                    ) : (
-                        'nonce=' + encodeURIComponent(state)
-                    ));
+                    flow_params +
+                    (authorize_parameters ? ('&' + authorize_parameters) : '');
             }
 
 
@@ -90,7 +100,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 });
             }
 
-            this.initOpenId = function(clientId, clientSecret, issuerUrl, tokenType, redirectUrl, successCallback) {
+            this.initOpenId = function(clientId, clientSecret, issuerUrl, tokenType, redirectUrl, authFlow, successCallback) {
                 this.withOpenIdConfiguration(clientId, clientSecret, issuerUrl, redirectUrl, function() {
                     that.isLoggedIn = that.checkCredentials(clientId);
                     if (that.isLoggedIn) {
@@ -102,10 +112,14 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         // possibly auth code flow
                         const s = that.parseQueryString(window.location.search.substring(1));
                         if (s.code) {
-                            // Verify state matches what we set at the beginning
-                            if (localStorage.getItem('pkce_state') !== s.state) {
-                                toastr.error('Invalid pkce_state');
-                            } else {
+                            if (authFlow === 'code') {
+                                // Verify state matches what we set at the beginning
+                                if (localStorage.getItem('pkce_state') !== s.state) {
+                                    toastr.error('Invalid pkce_state');
+                                } else {
+                                    that.retrieveToken(s.code, tokenType, redirectUrl, clientId, clientSecret);
+                                }
+                            } else if (authFlow === 'code_no_pkce') {
                                 that.retrieveToken(s.code, tokenType, redirectUrl, clientId, clientSecret);
                             }
                         } else {
@@ -264,8 +278,12 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     grant_type: 'authorization_code',
                     client_id: clientId,
                     redirect_uri: encodeURIComponent(redirectUrl),
-                    code: code,
-                    code_verifier: localStorage.getItem('pkce_code_verifier'),
+                    code: code
+                };
+
+                const codeVerifier = localStorage.getItem('pkce_code_verifier');
+                if (codeVerifier) {
+                    params['code_verifier'] = codeVerifier;
                 }
 
                 if (clientSecret) {
