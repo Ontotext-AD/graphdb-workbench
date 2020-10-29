@@ -9,6 +9,5 @@ dist/
 coverage/
 
 # Dev specific
-.env
 report/
 cypress/
