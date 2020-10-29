@@ -20,9 +20,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
         function ($http, $location, toastr) {
             const that = this;
 
-            this.login = function(clientId, authFlow, authorizeParameters, returnToUrl) {
+            this.login = function(openIDConfig, returnToUrl) {
                 // Create and store a random "state" value
                 const state = this.generateRandomString();
+                const authFlow = openIDConfig.authFlow;
 
                 if (authFlow === 'code') {
                     localStorage.setItem('pkce_state', state);
@@ -34,21 +35,21 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     // Hash and base64-urlencode the secret to use as the challenge
                     const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
 
-                    window.location.href = that.getLoginUrl(state, code_challenge, authFlow, returnToUrl, clientId, authorizeParameters);
+                    window.location.href = that.getLoginUrl(state, code_challenge, returnToUrl, openIDConfig);
                 } else if (authFlow === 'code_no_pkce') {
-                    window.location.href = that.getLoginUrl(state, '', authFlow, returnToUrl, clientId, authorizeParameters);
+                    window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else if (authFlow === 'implicit') {
                     localStorage.setItem('nonce', state);
-                    window.location.href = that.getLoginUrl(state, '', authFlow, returnToUrl, clientId, authorizeParameters);
+                    window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else {
                     toastr.error('Uknown auth flow: ' + authFlow)
                 }
             };
 
-            this.getLoginUrl = function(state, code_challenge, flow, redirectUrl, clientId, authorize_parameters) {
+            this.getLoginUrl = function(state, code_challenge, redirectUrl, openIDConfig) {
                 let response_type = '';
                 let flow_params = '';
-                switch (flow) {
+                switch (openIDConfig.authFlow) {
                     case 'code':
                         response_type = 'code';
                         flow_params = 'state=' + encodeURIComponent(state) + '&' +
@@ -63,7 +64,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         flow_params = 'nonce=' + encodeURIComponent(state);
                         break;
                     default:
-                        throw new Error('Unknown authentication flow: ' + flow);
+                        throw new Error('Unknown authentication flow: ' + openIDConfig.authFlow);
                 }
                 return this.openIdAuthorizeUrl +
                     '?' +
@@ -73,15 +74,15 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     // TODO: this may be required in order to get a refresh token but it forces re-asking the user for permission
                     // TODO: we should probably have it configurable
                     'prompt=consent' + '&' +
-                    'client_id=' + clientId + '&' +
+                    'client_id=' + openIDConfig.clientId + '&' +
                     'redirect_uri=' + redirectUrl + '&' +
-                    flow_params +
-                    (authorize_parameters ? ('&' + authorize_parameters) : '');
+                    (flow_params ? ('&' + flow_params) : '') +
+                    (openIDConfig.authorizeParameters ? ('&' + openIDConfig.authorizeParameters) : '');
             }
 
 
-            this.withOpenIdConfiguration = function(clientId, clientSecret, url, redirectUrl, callback) {
-                return $http.get(url + '/.well-known/openid-configuration', openIDReqHeaders).success(function (configuration) {
+            this.withOpenIdConfiguration = function(clientId, issuer, redirectUrl, callback) {
+                return $http.get(issuer + '/.well-known/openid-configuration', openIDReqHeaders).success(function (configuration) {
                     that.openIdIssuerUrl = configuration['issuer'];
                     that.openIdKeysUri = configuration['jwks_uri'];
                     that.openIdAuthorizeUrl = configuration['authorization_endpoint'];
@@ -100,33 +101,35 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 });
             }
 
-            this.initOpenId = function(clientId, clientSecret, issuerUrl, tokenType, redirectUrl, authFlow, successCallback) {
-                this.withOpenIdConfiguration(clientId, clientSecret, issuerUrl, redirectUrl, function() {
-                    that.isLoggedIn = that.checkCredentials(clientId);
+            this.initOpenId = function(openIDConfig, redirectUrl, successCallback) {
+                const clientId = openIDConfig.clientId;
+                const tokenType = openIDConfig.tokenType;
+                this.withOpenIdConfiguration(clientId, openIDConfig.issuer, redirectUrl, function() {
+                    that.isLoggedIn = that.checkCredentials(openIDConfig);
                     if (that.isLoggedIn) {
-                        that.setupTokenRefreshTimer(tokenType, clientId, redirectUrl, clientSecret);
+                        that.setupTokenRefreshTimer(tokenType, clientId, redirectUrl);
                         successCallback();
                     } else if (that.hasValidRefreshToken()) {
-                        that.refreshToken(tokenType, clientId, redirectUrl, clientSecret);
+                        that.refreshToken(tokenType, clientId, redirectUrl);
                     } else {
                         // possibly auth code flow
                         const s = that.parseQueryString(window.location.search.substring(1));
                         if (s.code) {
-                            if (authFlow === 'code') {
+                            if (openIDConfig.authFlow === 'code') {
                                 // Verify state matches what we set at the beginning
                                 if (localStorage.getItem('pkce_state') !== s.state) {
                                     toastr.error('Invalid pkce_state');
                                 } else {
-                                    that.retrieveToken(s.code, tokenType, redirectUrl, clientId, clientSecret);
+                                    that.retrieveToken(s.code, tokenType, redirectUrl, clientId);
                                 }
-                            } else if (authFlow === 'code_no_pkce') {
-                                that.retrieveToken(s.code, tokenType, redirectUrl, clientId, clientSecret);
+                            } else if (openIDConfig.authFlow === 'code_no_pkce') {
+                                that.retrieveToken(s.code, tokenType, redirectUrl, clientId);
                             }
                         } else {
                             // possibly implicit flow
                             const q = that.parseQueryString(window.location.pathname.substring(1));
                             if (q.id_token) {
-                                that.saveToken(q, tokenType, false, redirectUrl, clientId, clientSecret);
+                                that.saveToken(q, tokenType, false, redirectUrl, clientId);
                             } else {
                                 successCallback();
                             }
@@ -191,7 +194,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.verifyToken = function(tokenName, clientId) {
+            this.verifyToken = function(tokenName, openIDConfig) {
                 const token = this.getToken(tokenName);
                 const headerObj = this.tokenHeader(tokenName);
                 if (!headerObj.kid) {
@@ -207,21 +210,21 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const key = KEYUTIL.getKey(jwk);
                 const verifyFields = {
                     alg: [headerObj.alg],
-                    iss: [this.openIdIssuerUrl],
+                    iss: [openIDConfig.tokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [clientId];
+                    verifyFields['aud'] = [openIDConfig.tokenAudience];
                     verifyFields['nonce'] = [localStorage.getItem('nonce')];
                 }
                 return KJUR.jws.JWS.verifyJWT(token, key, verifyFields);
             }
 
-            this.checkCredentials = function(clientId) {
+            this.checkCredentials = function(openIDConfig) {
                 if (!this.getToken('id')) {
                     console.log('No id_token');
                     return false;
                 }
-                if (!this.verifyToken('id', clientId)) {
+                if (!this.verifyToken('id', openIDConfig)) {
                     console.log('Stale id token');
                     return false;
                 }
@@ -245,7 +248,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.saveToken = function(token, tokenType, isRefresh, redirectUrl, clientId, clientSecret) {
+            this.saveToken = function(token, tokenType, isRefresh, redirectUrl, clientId) {
                 if (!isRefresh || token.refresh_token) {
                     // Some OpenId providers give you a new token on refresh, some don't
                     this.setToken('refresh', token.refresh_token);
@@ -254,7 +257,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 this.setToken('id', token.id_token);
                 localStorage.setItem('token_type', tokenType);
 
-                this.setupTokenRefreshTimer(tokenType, clientId, redirectUrl, clientSecret);
+                this.setupTokenRefreshTimer(tokenType, clientId, redirectUrl);
 
                 // Clean these up since we don't need them anymore
                 localStorage.removeItem('pkce_state');
@@ -273,7 +276,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return str.join("&");
             };
 
-            this.retrieveToken = function(code, tokenType, redirectUrl, clientId, clientSecret) {
+            this.retrieveToken = function(code, tokenType, redirectUrl, clientId) {
                 const params = {
                     grant_type: 'authorization_code',
                     client_id: clientId,
@@ -286,10 +289,6 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     params['code_verifier'] = codeVerifier;
                 }
 
-                if (clientSecret) {
-                    params['client_secret'] = clientSecret;
-                }
-
                 const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
 
                 $http({
@@ -299,22 +298,19 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     transformRequest: transformURLEncodedRequest,
                     data: params
                 }).success(function(data) {
-                    that.saveToken(data, tokenType, false, redirectUrl, clientId, clientSecret)
+                    that.saveToken(data, tokenType, false, redirectUrl, clientId)
                 }).error(function(e) {
                     toastr.error('Cannot retrieve token after login; ' + getError(e));
                 })
             };
 
-            this.refreshToken = function(tokenType, clientId, redirectUrl, clientSecret) {
+            this.refreshToken = function(tokenType, clientId, redirectUrl) {
                 if (this.hasValidRefreshToken()) {
                     const params = {
                         grant_type: 'refresh_token',
                         client_id: clientId,
                         refresh_token: this.getToken('refresh'),
                     };
-                    if (clientSecret) {
-                        params['client_secret'] = clientSecret;
-                    }
                     const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
                     $http({
                         method: 'POST',
@@ -324,7 +320,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         data: params
                     }).success(function(data) {
                         console.log('refreshed token');
-                        that.saveToken(data, tokenType, true, redirectUrl, clientId, clientSecret);
+                        that.saveToken(data, tokenType, true, redirectUrl, clientId);
                         that.isLoggedIn = true;
                     }).error(function(e) {
                         toastr.error('Could not refresh OpenID token; ' + getError(e));
@@ -344,7 +340,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.setupTokenRefreshTimer = function(tokenType, clientId, redirectUrl, clientSecret) {
+            this.setupTokenRefreshTimer = function(tokenType, clientId, redirectUrl) {
                 if (this.hasValidRefreshToken()) {
                     clearTimeout(this.previousTimer);
                     const accessToken = this.tokenPayload('id');
@@ -352,13 +348,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         const expiresIn = accessToken['exp'] * 1000 - Date.now() - 60000;
                         if (expiresIn > 60000) {
                             this.previousTimer = setTimeout(function() {
-                                that.refreshToken(tokenType, clientId, redirectUrl, clientSecret);
+                                that.refreshToken(tokenType, clientId, redirectUrl);
                             }, expiresIn);
                             console.log('token will refresh in ' + expiresIn + ' milliseconds');
                         } else {
                             this.previousTimer = null;
                             console.log('token will refresh now');
-                            that.refreshToken(tokenType, clientId, redirectUrl, clientSecret);
+                            that.refreshToken(tokenType, clientId, redirectUrl);
                         }
                     }
                 }
