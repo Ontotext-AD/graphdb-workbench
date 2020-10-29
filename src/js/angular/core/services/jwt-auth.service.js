@@ -126,9 +126,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         }
                         if (that.openIDEnabled) {
                             that.openIDConfig = res.data.methodSettings.openid;
-                            that.openIDreturnToUrl = $location.absUrl().replace($location.url().substr(1), '');
+                            // Remove the parameters from the url
+                            that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
                             $openIDAuth.initOpenId(that.openIDConfig,
-                                that.openIDreturnToUrl,
+                                that.gdbUrl,
                                 function() {
                                     if ($openIDAuth.checkCredentials(that.openIDConfig)) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
@@ -193,7 +194,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.loginOpenID = function () {
-                $openIDAuth.login(this.openIDConfig, this.openIDreturnToUrl);
+                $openIDAuth.login(this.openIDConfig, this.gdbUrl);
             };
 
             this.toggleSecurity = function (enabled) {
