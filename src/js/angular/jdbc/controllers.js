@@ -244,6 +244,11 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         if (page === 2 && (!columns || columns.length === 0)) {
             $scope.getColumnsSuggestions();
         }
+        if (page === 2) {
+            $scope.viewMode = 'editor';
+        } else {
+            $scope.viewMode = 'none';
+        }
     };
 
     function getJdbcConfiguration(name) {
