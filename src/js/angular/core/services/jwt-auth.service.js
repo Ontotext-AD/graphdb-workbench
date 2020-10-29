@@ -131,7 +131,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $openIDAuth.initOpenId(that.openIDConfig,
                                 that.gdbUrl,
                                 function() {
-                                    if ($openIDAuth.checkCredentials(that.openIDConfig)) {
+                                    if ($openIDAuth.checkCredentials()) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
                                         jwtAuth.setAuthHeaders();
                                     }

@@ -95,6 +95,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 // Set the clientId and tokenType needed to retrieve the token
                 that.clientId = openIDConfig.clientId;
                 that.tokenType = openIDConfig.tokenType;
+
+                // Set the audience and issuer needed to verify the token
+                that.idTokenAudience = openIDConfig.clientId;
+                that.idTokenIssuer = openIDConfig.issuer;
+                that.accessTokenAudience = openIDConfig.tokenAudience;
+                that.accessTokenIssuer = openIDConfig.tokenIssuer;
+
                 // Set the token and keys url properly depending on a proxy
                 that.openIdTokenUrl = openIDConfig.oidcTokenEndpoint;
                 let openIdKeysUri = openIDConfig.oidcJwksUri;
@@ -106,7 +113,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
 
                 this.withOpenIdKeys(openIdKeysUri, function() {
-                    that.isLoggedIn = that.checkCredentials(openIDConfig);
+                    that.isLoggedIn = that.checkCredentials();
                     if (that.isLoggedIn) {
                         that.setupTokenRefreshTimer(gdbUrl);
                         successCallback();
@@ -195,7 +202,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.verifyToken = function(tokenName, openIDConfig) {
+            this.verifyToken = function(tokenName) {
                 const token = this.getToken(tokenName);
                 const headerObj = this.tokenHeader(tokenName);
                 if (!headerObj.kid) {
@@ -211,21 +218,24 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const key = KEYUTIL.getKey(jwk);
                 const verifyFields = {
                     alg: [headerObj.alg],
-                    iss: [openIDConfig.tokenIssuer],
+                    iss: [this.idTokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [openIDConfig.tokenAudience];
+                    verifyFields['aud'] = [this.idTokenAudience];
                     verifyFields['nonce'] = [localStorage.getItem('nonce')];
+                } else if (tokenName === 'access') {
+                    verifyFields['aud'] = [this.accessTokenAudience];
+                    verifyFields['iss'] = [this.accessTokenIssuer];
                 }
                 return KJUR.jws.JWS.verifyJWT(token, key, verifyFields);
             }
 
-            this.checkCredentials = function(openIDConfig) {
+            this.checkCredentials = function() {
                 if (!this.getToken('id')) {
                     console.log('No id_token');
                     return false;
                 }
-                if (!this.verifyToken('id', openIDConfig)) {
+                if (!this.verifyToken('id')) {
                     console.log('Stale id token');
                     return false;
                 }
