@@ -106,8 +106,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 that.openIdTokenUrl = openIDConfig.oidcTokenEndpoint;
                 let openIdKeysUri = openIDConfig.oidcJwksUri;
                 if (openIDConfig.proxyOidc) {
-                    openIdKeysUri = graphdbUrl + '/rest/openid/jwks';
-                    that.openIdTokenUrl = graphdbUrl + '/rest/openid/token';
+                    openIdKeysUri = 'rest/openid/jwks';
+                    that.openIdTokenUrl = 'rest/openid/token';
                 }
                 that.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
                 that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
