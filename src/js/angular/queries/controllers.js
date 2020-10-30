@@ -84,6 +84,10 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         };
 
         const timer = $interval(function () {
+            // Don't call getQueries for Ontop type repository
+            if ($repositories.isActiveRepoOntopType()) {
+                return;
+            }
             $scope.getQueries();
         }, 1000);
 
@@ -130,6 +134,18 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         $scope.toggleQueryExpanded = function (queryId) {
             $scope.expanded[queryId] = !$scope.expanded[queryId];
         };
+
+        // Check if warning message should be shown or removed on repository change
+        const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+            $scope.setRestricted();
+        });
+
+        window.addEventListener('beforeunload', removeRepoIsSetListener);
+
+        function removeRepoIsSetListener() {
+            repoIsSetListener();
+            window.removeEventListener('beforeunload', removeRepoIsSetListener);
+        }
     }]);
 
 

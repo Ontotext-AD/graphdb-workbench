@@ -379,6 +379,12 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                 scope.queryStartTime = new Date().getTime();
                 return originalExecuteQuery(cm, {
                     setQueryLimit: function (query) {
+                        // Until weird conversion of CONSTRUCT queries is fixed
+                        // in Ontop project, comments should be removed from them
+                        // TODO: Remove this check when ${link https://github.com/ontop/ontop/issues/362} is fixed
+                        if (scope.currentTabConfig.queryType === 'CONSTRUCT' && $repositories.isActiveRepoOntopType()) {
+                            return window.editor.getValueWithoutComments();
+                        }
                         // For all types of queries we handle limit/offset in our RepositoriesController.
                         // TODO: Get rid of this method
                         return query;

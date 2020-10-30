@@ -25,10 +25,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const path = $location.path();
                 return !$rootScope.deniedPermissions[path];
             };
+
             $rootScope.redirectToLogin = function (expired) {
-                if ($openIDAuth.isOpenIDRedirect()) {
-                    return;
-                }
                 if (jwtAuth.auth && jwtAuth.auth.startsWith('Bearer')) {
                     toastr.error('Missing or stale OAuth Token.');
                     jwtAuth.clearAuthentication();
@@ -64,6 +62,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.freeAccess = false;
             this.hasOverrideAuth = false;
             this.externalAuthUser = false;
+            this.securityInitialized = false;
 
             const that = this;
 
@@ -82,9 +81,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.principal = data;
                         $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
                         // console.log('previous JWT authentication ok');
-                    } else if (that.auth && that.auth.startsWith('Bearer')) {
+                    } else if (that.openIDEnabled && that.auth && that.auth.startsWith('Bearer')) {
+                        // The auth was obtained from OpenID, we need to authenticate with the returned user
                         that.authenticate(data, that.auth);
-                        $location.path('/');
+                        $location.url('/');
                     } else {
                         // There is no previous authentication but we got a principal via
                         // an external authentication mechanism (e.g. Kerberos)
@@ -95,6 +95,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }).finally(function() {
                     // Strictly speaking we should try this in the error() callback but
                     // for some reason it doesn't get called.
+                    that.securityInitialized = true;
                     if (!that.hasExplicitAuthentication()) {
                         that.principal = that.freeAccessPrincipal;
                         $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
@@ -111,7 +112,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
-                    that.openIDAuth = res.data.openIdEnabled;
+                    that.openIDEnabled = res.data.openIdEnabled;
+                    that.passwordLoginEnabled = res.data.passwordLoginEnabled;
 
                     if (that.securityEnabled) {
                         const freeAccessData = res.data.freeAccess;
@@ -122,20 +124,18 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 appSettings: freeAccessData.appSettings
                             };
                         }
-                        if (that.openIDAuth) {
-                            that.openIDClientID = res.data.methodSettings.openid.clientId;
-                            that.openIDAuthFlow = res.data.methodSettings.openid.authFlow;
-                            $openIDAuth.initOpenIdExternal(that.openIDClientID,
-                                res.data.methodSettings.openid.clientSecret,
-                                res.data.methodSettings.openid.issuer,
-                                res.data.methodSettings.openid.tokenType,
-                                $location.absUrl().replace($location.url(), ''),
+                        if (that.openIDEnabled) {
+                            that.openIDConfig = res.data.methodSettings.openid;
+                            // Remove the parameters from the url
+                            that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
+                            $openIDAuth.initOpenId(that.openIDConfig,
+                                that.gdbUrl,
                                 function() {
-                                    if ($openIDAuth.checkCredentials(that.openIDClientID)) {
+                                    if ($openIDAuth.checkCredentials()) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
                                         jwtAuth.setAuthHeaders();
-                                        that.getAuthenticatedUserFromBackend();
                                     }
+                                    that.getAuthenticatedUserFromBackend();
                                 });
 
                             } else {
@@ -191,6 +191,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.getAuthToken = function () {
                 return this.auth;
+            };
+
+            this.loginOpenID = function () {
+                $openIDAuth.login(this.openIDConfig, this.gdbUrl);
             };
 
             this.toggleSecurity = function (enabled) {
@@ -256,6 +260,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $cookieStore.put(this.principalCookieName, this.principal);
                 this.setAuthHeaders();
                 $rootScope.deniedPermissions = {};
+                this.securityInitialized = true;
                 $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
             };
 
@@ -281,6 +286,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.clearAuthentication = function () {
+                $openIDAuth.softLogout();
                 this.auth = undefined;
                 this.principal = this.freeAccessPrincipal;
                 this.clearCookies();

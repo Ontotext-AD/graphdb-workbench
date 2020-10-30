@@ -101,14 +101,13 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         $scope.username = '';
         $scope.password = '';
 
-
         $scope.loginWithOpenID = function() {
-            if ($jwtAuth.openIDAuth && $jwtAuth.openIDClientID) {
-                $openIDAuth.login($jwtAuth.openIDClientID, $jwtAuth.openIDAuthFlow, $rootScope.returnToUrl);
-            } else {
-                toastr.error('Cannot find OpenID clientID ');
-            }
-        }
+            $jwtAuth.loginOpenID();
+        };
+
+        $scope.isGDBLoginEnabled = $jwtAuth.passwordLoginEnabled;
+        $scope.isOpenIDEnabled =  $jwtAuth.openIDEnabled;
+
 
         $scope.login = function () {
             $http({

@@ -61,6 +61,31 @@ const editFile = function(file, $modal, $scope, RepositoriesRestService, toastr)
         });
     }
 
+const uploadRepoFile = function (files, param, Upload, $scope) {
+    if (files && files.length) {
+        $scope.uploadFile = files[0];
+        $scope.uploadFileLoader = true;
+        Upload.upload({
+            url: 'rest/repositories/uploadFile',
+            data: {uploadFile: $scope.uploadFile}
+        })
+            .success(function (data) {
+                if (!data.success) {
+                    toastr.error(data.errorMessage);
+                } else {
+                    $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
+                    $scope.repositoryInfo.params[param].value = data.fileLocation;
+                }
+                $scope.uploadFileLoader = false;
+            }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Error');
+            $scope.uploadFile = '';
+            $scope.uploadFileLoader = false;
+        });
+    }
+};
+
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
 function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
     $scope.loader = true;
@@ -454,30 +479,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     $scope.ontopRepoFileNames = {};
 
 
-    $scope.uploadOntopRepoFile = function (files, param) {
-        if (files && files.length) {
-            $scope.uploadFile = files[0];
-            $scope.uploadFileLoader = true;
-            Upload.upload({
-                    url: 'rest/repositories/uploadFile',
-                    data: {uploadFile: $scope.uploadFile}
-                })
-            .success(function (data) {
-                if (!data.success) {
-                    toastr.error(data.errorMessage);
-                } else {
-                    $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
-                    $scope.repositoryInfo.params[param].value = data.fileLocation;
-                }
-                $scope.uploadFileLoader = false;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.uploadFile = '';
-                $scope.uploadFileLoader = false;
-            });
-        }
-    };
+    $scope.uploadOntopRepoFile = function(files, param) {
+        uploadRepoFile(files, param, Upload, $scope);
+    }
 
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
@@ -606,9 +610,9 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService', '$modal'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService', '$modal', 'Upload'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService, $modal) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService, $modal, Upload) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -749,5 +753,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editFile = function(file) {
         editFile(file, $modal, $scope, RepositoriesRestService, toastr);
+    };
+
+    $scope.uploadOntopRepoFile = function(files, param) {
+        uploadRepoFile(files, param, Upload, $scope);
     };
 }

@@ -41,8 +41,6 @@ const moduleDefinition = function (productInfo) {
 
             $route.routes['/access_token='].regexp = /^\/access_token=(.*)/;
 
-
-
             let routes = PluginRegistry.get('route');
 
             routes.forEach(function (route) {

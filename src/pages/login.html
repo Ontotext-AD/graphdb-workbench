@@ -3,7 +3,7 @@
 		<div class="card">
 			<div class="card-block">
 				<h1>Login</h1>
-				<form class="form-horizontal loginForm"  ng-submit="login()">
+				<form class="form-horizontal loginForm"  ng-submit="login()" ng-show="isGDBLoginEnabled">
 					<div ng-if="error" class="alert alert-danger">
 						Password or username did not match!
 					</div>
@@ -25,7 +25,7 @@
 						<button id="wb-login-submitLogin" type="submit" class="btn btn-primary btn-lg">Sign in</button>
 					</div>
 				</form>
-                <button ng-click="loginWithOpenID()" class="btn btn-primary btn-lg">Sign in with OpenID</button>
+                <button ng-show="isOpenIDEnabled" ng-click="loginWithOpenID()" class="btn btn-primary btn-lg">Sign in with OpenID</button>
 			</div>
 		</div>
 	</div>

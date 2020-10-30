@@ -34,9 +34,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -65,17 +65,24 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
         });
     };
 
-    $scope.$watch($scope.getActiveRepository, function () {
-        if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
-                });
-        }
-    });
+    function getNamespaces() {
+        $scope.$watch($scope.getActiveRepository, function () {
+            if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                    .success(function () {
+                        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+                            .success(function () {
+                                $scope.getActiveRepositorySize();
+                            });
+                    });
+            }
+        });
+    }
+    if ($jwtAuth.securityInitialized) {
+        getNamespaces();
+    } else {
+        $scope.$on('securityInit', getNamespaces);
+    }
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
@@ -306,6 +313,25 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
     $scope.isActiveRepoOntopType = function () {
         return $repositories.isActiveRepoOntopType();
     }
+
+    /**
+     *  Sets attrs property in the directive
+     * @param attrs
+     */
+    $scope.setAttrs = function(attrs) {
+        $scope.attrs = attrs;
+    };
+
+    /**
+     *  If the attribute "write" is provided and repository other than Ontop one,
+     * directive will require a repository with write access.
+     *  If on the other hand attribute "ontop" is found and such repo, proper message about the
+     * restrictions related with repository of type Ontop will be shown to the user
+     */
+    $scope.setRestricted = function () {
+        $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
+            $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+    };
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
@@ -712,6 +738,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $interval.cancel(timer);
     });
 
+    if ($jwtAuth.securityInitialized) {
+        $scope.getSavedQueries();
+    }
+
     $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
         $scope.securityEnabled = securityEnabled;
         $scope.userLoggedIn = userLoggedIn;
@@ -721,6 +751,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             if ($location.path() !== '/login') {
                 $rootScope.redirectToLogin();
             }
+        } else {
+            $scope.getSavedQueries();
         }
     });
 

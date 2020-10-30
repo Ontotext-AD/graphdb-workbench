@@ -53,18 +53,13 @@
                         <div ng-repeat="file in ontopRepoFiles" class="form-group row" ng-if="repositoryInfo.type === 'ontop'">
                             <label for="file" class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params[file].label + (isRequiredOntopRepoFile(file) ? '*' : '')}}</label>
                             <div class="col-xs-4 col-sm-4 col-md-4">
-                                <div class="input-group">
-                                    <input class="form-control" id="file" placeholder="{{isRequiredOntopRepoFile(file) ? 'This file is required' : ''}}" ng-model="ontopRepoFileNames[file]">
-                                    <span class="input-group-btn btn-group-sm" ng-if="ontopRepoFileNames[file]">
-                                        <button class="btn btn-link btn-sm"
-                                        ng-click="editFile(file)"
-                                        tooltip="Edit file"
-                                        tooltip-placement="top"
-                                        tooltip-trigger="mouseenter">
-                                            <span class="icon-edit"></span>
-                                        </button>
-                                    </span>
-                                </div>
+                                    <a class="btn btn-link ot-edit-input" ng-if="ontopRepoFileNames[file]" ng-click="editFile(file)"
+                                       tooltip="Edit file"
+                                       tooltip-placement="top"
+                                       tooltip-trigger="mouseenter">
+                                        <span class="icon-edit"></span>
+                                    </a>
+                                    <input class="form-control" id="file" ng-readonly="true" tooltip="{{ontopRepoFileNames[file]}}" placeholder="{{isRequiredOntopRepoFile(file) ? 'This file is required' : ''}}" ng-model="ontopRepoFileNames[file]">
                             </div>
                             <div class="form-group col-xs-5">
                                 <div class="btn btn-outline-primary btn-sm">

@@ -1,7 +1,7 @@
 import {KJUR, KEYUTIL, b64utoutf8, hextob64u} from 'jsrsasign';
 
 const modules = [
-
+    'toastr',
 ];
 
 const openIDReqHeaders = {headers: {
@@ -10,38 +10,166 @@ const openIDReqHeaders = {headers: {
         'Authorization': undefined
     }}
 
+
 angular.module('graphdb.framework.core.services.openIDService', modules)
     // .config(['$httpProvider', function($httpProvider) {
     //     delete $httpProvider.defaults.headers.common['X-Requested-With'];
     //     delete $httpProvider.defaults.headers.common['X-GraphDB-Repository'];
     // }])
-    .service('$openIDAuth', ['$http', '$location',
-        function ($http, $location) {
-            this.login = function(clientId, authFlow, returnToUrl) {
-                this.loginOpenID(clientId, authFlow, $location.absUrl().replace('/login', '/'));
-            }
+    .service('$openIDAuth', ['$http', '$location', 'toastr',
+        function ($http, $location, toastr) {
             const that = this;
 
-            this.initOpenId = function(clientId, clientSecret, url, redirectUrl, callback) {
-                return $http.get(url + '/.well-known/openid-configuration', openIDReqHeaders).success(function (configuration) {
-                    that.openIdIssuerUrl = configuration['issuer'];
-                    that.openIdKeysUri = configuration['jwks_uri'];
-                    that.openIdAuthorizeUrl = configuration['authorization_endpoint'];
-                    that.openIdTokenUrl = configuration['token_endpoint'];
-                    that.openIdUserInfoUrl = configuration['userinfo_endpoint'];
-                    that.openIdEndSessionUrl = configuration['end_session_endpoint'];
+            this.login = function(openIDConfig, returnToUrl) {
+                // Create and store a random "state" value
+                const state = this.generateRandomString();
+                const authFlow = openIDConfig.authFlow;
 
-                    console.log('done openid discovery');
+                if (authFlow === 'code') {
+                    localStorage.setItem('pkce_state', state);
 
-                    // Not sure why these are again put here arggg
-                    $http.get(that.openIdKeysUri, openIDReqHeaders).success(function(jwks) {
-                        that.openIdKeys = {};
-                        jwks['keys'].forEach(function(k) {
-                            that.openIdKeys[k.kid] = k
-                        });
-                        callback();
-                    })
+                    // Create and store a new PKCE code_verifier (the plaintext random secret)
+                    const code_verifier = that.generateRandomString();
+                    localStorage.setItem('pkce_code_verifier', code_verifier);
+
+                    // Hash and base64-urlencode the secret to use as the challenge
+                    const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
+
+                    window.location.href = that.getLoginUrl(state, code_challenge, returnToUrl, openIDConfig);
+                } else if (authFlow === 'code_no_pkce') {
+                    window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
+                } else if (authFlow === 'implicit') {
+                    localStorage.setItem('nonce', state);
+                    window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
+                } else {
+                    toastr.error('Uknown auth flow: ' + authFlow)
+                }
+            };
+
+            this.getLoginUrl = function(state, code_challenge, redirectUrl, openIDConfig) {
+                let response_type = '';
+                let flow_params = '';
+                switch (openIDConfig.authFlow) {
+                    case 'code':
+                        response_type = 'code';
+                        flow_params = 'state=' + encodeURIComponent(state) + '&' +
+                            'code_challenge=' + encodeURIComponent(code_challenge) + '&' +
+                            'code_challenge_method=S256';
+                        break;
+                    case 'code_no_pkce':
+                        response_type = 'code';
+                        break;
+                    case 'implicit':
+                        response_type = 'token id_token';
+                        flow_params = 'nonce=' + encodeURIComponent(state);
+                        break;
+                    default:
+                        throw new Error('Unknown authentication flow: ' + openIDConfig.authFlow);
+                }
+                return openIDConfig.oidcAuthorizationEndpoint +
+                    '?' +
+                    // flow is 'code' or 'token id_token'
+                    'response_type=' + encodeURIComponent(response_type) + '&' +
+                    'scope=' + encodeURIComponent(this.getScope()) + '&' +
+                    // TODO: this may be required in order to get a refresh token but it forces re-asking the user for permission
+                    // TODO: we should probably have it configurable
+                    'prompt=consent' + '&' +
+                    'client_id=' + openIDConfig.clientId + '&' +
+                    'redirect_uri=' + redirectUrl + '&' +
+                    (flow_params ? ('&' + flow_params) : '') +
+                    (openIDConfig.authorizeParameters ? ('&' + openIDConfig.authorizeParameters) : '');
+            }
+
+
+            this.withOpenIdKeys = function(openIdKeysUri, callback) {
+                $http.get(openIdKeysUri, openIDReqHeaders).success(function(jwks) {
+                    that.openIdKeys = {};
+                    jwks['keys'].forEach(function(k) {
+                        that.openIdKeys[k.kid] = k
+                    });
+                    callback();
                 });
+            };
+
+            this.initOpenId = function(openIDConfig, gdbUrl, successCallback) {
+                // Set the clientId and tokenType needed to retrieve the token
+                that.clientId = openIDConfig.clientId;
+                that.tokenType = openIDConfig.tokenType;
+
+                // Set the audience and issuer needed to verify the token
+                that.idTokenAudience = openIDConfig.clientId;
+                that.idTokenIssuer = openIDConfig.issuer;
+                that.accessTokenAudience = openIDConfig.tokenAudience;
+                that.accessTokenIssuer = openIDConfig.tokenIssuer;
+
+                // Set the token and keys url properly depending on a proxy
+                that.openIdTokenUrl = openIDConfig.oidcTokenEndpoint;
+                let openIdKeysUri = openIDConfig.oidcJwksUri;
+                if (openIDConfig.proxyOidc) {
+                    openIdKeysUri = graphdbUrl + '/rest/openid/jwks';
+                    that.openIdTokenUrl = graphdbUrl + '/rest/openid/token';
+                }
+                that.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
+                that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
+
+                this.withOpenIdKeys(openIdKeysUri, function() {
+                    that.isLoggedIn = that.checkCredentials();
+                    if (that.isLoggedIn) {
+                        that.setupTokenRefreshTimer(gdbUrl);
+                        successCallback();
+                    } else if (that.hasValidRefreshToken()) {
+                        that.refreshToken(gdbUrl);
+                    } else {
+                        // possibly auth code flow
+                        const s = that.parseQueryString(window.location.search.substring(1));
+                        if (s.code) {
+                            if (openIDConfig.authFlow === 'code') {
+                                // Verify state matches what we set at the beginning
+                                if (localStorage.getItem('pkce_state') !== s.state) {
+                                    toastr.error('Invalid pkce_state');
+                                } else {
+                                    that.retrieveToken(s.code, gdbUrl);
+                                }
+                            } else if (openIDConfig.authFlow === 'code_no_pkce') {
+                                that.retrieveToken(s.code, gdbUrl);
+                            }
+                        } else {
+                            // possibly implicit flow
+                            const q = that.parseQueryString(window.location.pathname.substring(1));
+                            if (q.id_token) {
+                                that.saveToken(q,false, gdbUrl);
+                            } else {
+                                successCallback();
+                            }
+                        }
+                    }
+                })
+            }
+
+            this.authHeaderGraphDB = function() {
+                if (localStorage.getItem('token_type') === 'id') {
+                    return 'Bearer ' + this.getToken('id');
+                } else {
+                    return this.authHeaderOpenId();
+                }
+            }
+
+            this.softLogout = function() {
+                this.isLoggedIn = false;
+                this.setToken('id', null);
+                this.setToken('access', null);
+                this.setToken('refresh', null);
+            }
+
+            this.hardLogout = function(redirectUrl) {
+                const isLoggedIn = this.getToken('access');
+                this.softLogout();
+                if (this.openIdEndSessionUrl && isLoggedIn != null) {
+                    window.location.href = this.openIdEndSessionUrl +
+                        '?' +
+                        'client_id=' + this.clientId + '&' +
+                        'post_logout_redirect_uri=' + redirectUrl;
+                }
             }
 
             this.isOpenIDRedirect = function() {
@@ -74,7 +202,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.verifyToken = function(tokenName, clientId) {
+            this.verifyToken = function(tokenName) {
                 const token = this.getToken(tokenName);
                 const headerObj = this.tokenHeader(tokenName);
                 if (!headerObj.kid) {
@@ -90,44 +218,32 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const key = KEYUTIL.getKey(jwk);
                 const verifyFields = {
                     alg: [headerObj.alg],
-                    iss: [this.openIdIssuerUrl],
+                    iss: [this.idTokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [clientId];
+                    verifyFields['aud'] = [this.idTokenAudience];
                     verifyFields['nonce'] = [localStorage.getItem('nonce')];
+                } else if (tokenName === 'access') {
+                    verifyFields['aud'] = [this.accessTokenAudience];
+                    verifyFields['iss'] = [this.accessTokenIssuer];
                 }
                 return KJUR.jws.JWS.verifyJWT(token, key, verifyFields);
             }
 
-            this.checkCredentials = function(clientId) {
+            this.checkCredentials = function() {
                 if (!this.getToken('id')) {
-                    console.log('no id_token');
+                    console.log('No id_token');
                     return false;
                 }
-                if (!this.verifyToken('id', clientId)) {
-                    console.log('stale id token');
+                if (!this.verifyToken('id')) {
+                    console.log('Stale id token');
                     return false;
                 }
-                console.log('found valid id token');
                 return true;
             }
 
             this.authHeaderOpenId = function() {
                 return 'Bearer ' + this.getToken('access');
-            }
-
-            this.updateUserInfo = function() {
-                const headers = {
-                    'Authorization': this.authHeaderOpenId(),
-                    'X-GraphDB-Repository': undefined,
-                    'X-Requested-With': undefined
-                };
-                console.log('requested openid userinfo');
-                return $http.get(that.openIdUserInfoUrl, {headers: headers})
-                    .success(function(userInfo) {that.userInfo = userInfo})
-                    .error(function() {
-                        // TODO toastr error error.json().error || 'Server error'
-                });
             }
 
             this.tokenPayload = function(tokenName) {
@@ -143,18 +259,16 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.saveToken = function(token, tokenType, isRefresh, redirectUrl, clientId, clientSecret) {
-                const expireDate = new Date().getTime() + (1000 * token.expires_in);
-
+            this.saveToken = function(token, isRefresh, redirectUrl) {
                 if (!isRefresh || token.refresh_token) {
                     // Some OpenId providers give you a new token on refresh, some don't
                     this.setToken('refresh', token.refresh_token);
                 }
                 this.setToken('access', token.access_token);
                 this.setToken('id', token.id_token);
-                localStorage.setItem('token_type', tokenType);
+                localStorage.setItem('token_type', that.tokenType);
 
-                this.setupTokenRefreshTimer(clientId, clientSecret);
+                this.setupTokenRefreshTimer(that.tokenType, that.clientId, redirectUrl);
 
                 // Clean these up since we don't need them anymore
                 localStorage.removeItem('pkce_state');
@@ -165,17 +279,25 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.retrieveToken = function(code, tokenType, redirectUrl, clientId, clientSecret) {
+
+            function transformURLEncodedRequest(obj) {
+                var str = [];
+                for(var p in obj)
+                    str.push(p + "=" + obj[p]);
+                return str.join("&");
+            };
+
+            this.retrieveToken = function(code, redirectUrl) {
                 const params = {
                     grant_type: 'authorization_code',
-                    client_id: clientId,
+                    client_id: that.clientId,
                     redirect_uri: encodeURIComponent(redirectUrl),
-                    code: code,
-                    code_verifier: localStorage.getItem('pkce_code_verifier'),
-                }
+                    code: code
+                };
 
-                if (clientSecret) {
-                    params['client_secret'] = clientSecret;
+                const codeVerifier = localStorage.getItem('pkce_code_verifier');
+                if (codeVerifier) {
+                    params['code_verifier'] = codeVerifier;
                 }
 
                 const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
@@ -184,56 +306,36 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     method: 'POST',
                     url: this.openIdTokenUrl,
                     headers: headers,
-                    transformRequest: function(obj) {
-                        var str = [];
-                        for(var p in obj)
-                            str.push(p + "=" + obj[p]);
-                        return str.join("&");
-                    },
+                    transformRequest: transformURLEncodedRequest,
                     data: params
                 }).success(function(data) {
-                    that.saveToken(data, tokenType, false, clientId, clientSecret)
-                }).error(function() {
-                    // TODO Toastr
-                    alert('Cannot retrieve token after login')
+                    that.saveToken(data, false, redirectUrl);
+                }).error(function(e) {
+                    toastr.error('Cannot retrieve token after login; ' + getError(e));
                 })
+            };
 
-                console.log(this.openIdTokenUrl);
-
-            }
-
-            this.refreshToken = function(tokenType, clientId, clientSecret) {
-                // TODO pass the token type
+            this.refreshToken = function(redirectUrl) {
                 if (this.hasValidRefreshToken()) {
                     const params = {
                         grant_type: 'refresh_token',
-                        client_id: clientId,
+                        client_id: that.clientId,
                         refresh_token: this.getToken('refresh'),
-                    }
-                    if (clientSecret) {
-                        params['client_secret'] = clientSecret;
-                    }
-                    const headers = {'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'};
+                    };
+                    const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
                     $http({
                         method: 'POST',
                         url: this.openIdTokenUrl,
                         headers: headers,
-                        transformRequest: function(obj) {
-                            var str = [];
-                            for(var p in obj)
-                                str.push(p + "=" + obj[p]);
-                            return str.join("&");
-                        },
+                        transformRequest: transformURLEncodedRequest,
                         data: params
                     }).success(function(data) {
-                                console.log('token refreshed');
-                                that.saveToken(data, tokenType, true, clientId, clientSecret);
-                                that.updateUserInfo();
-                                that.isLoggedIn = true;
-                            }
-                        ).error(function() {
-                            // TODO toastr 'Refresh unsuccessful'
-                        })
+                        console.log('refreshed token');
+                        that.saveToken(data, true, redirectUrl);
+                        that.isLoggedIn = true;
+                    }).error(function(e) {
+                        toastr.error('Could not refresh OpenID token; ' + getError(e));
+                    })
                 }
             }
 
@@ -249,19 +351,21 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.setupTokenRefreshTimer = function(clientId, clientSecret) {
+            this.setupTokenRefreshTimer = function(redirectUrl) {
                 if (this.hasValidRefreshToken()) {
                     clearTimeout(this.previousTimer);
                     const accessToken = this.tokenPayload('id');
                     if (accessToken['exp'] > 0) {
                         const expiresIn = accessToken['exp'] * 1000 - Date.now() - 60000;
                         if (expiresIn > 60000) {
-                            this.previousTimer = setTimeout(function(){that.refreshToken(clientId, clientSecret), expiresIn});
+                            this.previousTimer = setTimeout(function() {
+                                that.refreshToken(redirectUrl);
+                            }, expiresIn);
                             console.log('token will refresh in ' + expiresIn + ' milliseconds');
                         } else {
                             this.previousTimer = null;
                             console.log('token will refresh now');
-                            that.refreshToken(clientId, clientSecret);
+                            that.refreshToken(redirectUrl);
                         }
                     }
                 }
@@ -276,37 +380,6 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 segments.forEach(function(s) {queryString[s[0]] = decodeURIComponent(s[1])});
                 return queryString;
             }
-
-            this.initOpenIdExternal = function(clientId, clientSecret, issuerUrl, tokenType, redirectUrl, successCallback) {
-                this.initOpenId(clientId, clientSecret, issuerUrl, redirectUrl, function() {
-                    that.isLoggedIn = that.checkCredentials(clientId);
-                    if (that.isLoggedIn) {
-                        that.updateUserInfo();
-                        that.setupTokenRefreshTimer(clientId, clientSecret);
-                        successCallback();
-                    } else if (that.hasValidRefreshToken()) {
-                        that.refreshToken();
-                    } else {
-                        // possibly auth code flow
-                        const s = that.parseQueryString(window.location.search.substring(1));
-                        if (s.code) {
-                            // Verify state matches what we set at the beginning
-                            if (localStorage.getItem('pkce_state') !== s.state) {
-                                alert('Invalid state');
-                            } else {
-                                that.retrieveToken(s.code, tokenType, redirectUrl, clientId, clientSecret);
-                            }
-                        } else {
-                            // possibly implicit flow
-                            const q = that.parseQueryString(window.location.pathname.substring(1));
-                            if (q.id_token) {
-                                that.saveToken(q, tokenType, false, redirectUrl, clientId, clientSecret);
-                            }
-                        }
-                    }
-                })
-            }
-
 
 
             // Generate a secure random string using the browser crypto functions
@@ -324,79 +397,6 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
             this.getScope = function() {
                 return 'openid profile email' + (this.supportsOfflineAccess ? ' offline_access' : '');
-            }
-
-            this.getLoginUrl = function(state, code_challenge, flow, redirectUrl, clientId) {
-                return this.openIdAuthorizeUrl +
-                    '?' +
-                    // flow is 'code' or 'token id_token'
-                    'response_type=' + encodeURIComponent(flow) + '&' +
-                    'scope=' + encodeURIComponent(this.getScope()) + '&' +
-                    // TODO: this may be required in order to get a refresh token but it forces re-asking the user for permission
-                    // TODO: we should probably have it configurable
-                    'prompt=consent' + '&' +
-                    'client_id=' + clientId + '&' +
-                    'redirect_uri=' + redirectUrl + '&' +
-                    (flow === 'code' ? (
-                        // non-OpenID but a Google thing
-                        'access_type=offline' + '&' +
-                        'state=' + encodeURIComponent(state) + '&' +
-                        'code_challenge=' + encodeURIComponent(code_challenge) + '&' +
-                        'code_challenge_method=S256'
-                    ) : (
-                        'nonce=' + encodeURIComponent(state)
-                    ));
-            }
-
-            this.loginOpenID = function(clientId, authFlow, redirectUrl) {
-                // Create and store a random "state" value
-                const state = this.generateRandomString();
-
-                if (authFlow === 'code') {
-                    localStorage.setItem('pkce_state', state);
-
-                    // Create and store a new PKCE code_verifier (the plaintext random secret)
-                    const code_verifier = that.generateRandomString();
-                    localStorage.setItem('pkce_code_verifier', code_verifier);
-
-                    // Hash and base64-urlencode the secret to use as the challenge
-                    const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
-
-                    window.location.href = that.getLoginUrl(state, code_challenge, 'code', redirectUrl, clientId);
-                } else if (authFlow === 'implicit') {
-                    localStorage.setItem('nonce', state);
-                    window.location.href = that.getLoginUrl(state, '', 'token id_token', redirectUrl, clientId);
-                } else {
-                    alert('Uknown auth flow: ' + authFlow)
-                }
-            }
-
-            this.authHeaderGraphDB = function() {
-                if (localStorage.getItem('token_type') === 'id') {
-                    return 'Bearer ' + this.getToken('id');
-                } else {
-                    return this.authHeaderOpenId();
-                }
-            }
-
-            this.logoutOpenID = function() {
-                this.isLoggedIn = false;
-                this.userInfo = {};
-                this.setToken('id', null);
-                this.setToken('access', null);
-                this.setToken('refresh', null);
-            }
-
-            this.hardLogout = function(redirectUrl, clientId) {
-                if (!this.openIdEndSessionUrl) {
-                    alert('The OpenId provider doesn\'t support hard logout');
-                } else {
-                    this.logoutOpenID();
-                    window.location.href = this.openIdEndSessionUrl +
-                        '?' +
-                        'client_id=' + clientId + '&' +
-                        'post_logout_redirect_uri=' + redirectUrl;
-                }
             }
 
 

@@ -98,7 +98,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
         });
     };
 
-    $scope.$on('repositoryIsSet', function () {
+    // Check if warning message should be shown or removed on repository change
+    const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+        $scope.setRestricted();
         $scope.checkPluginEnabled();
         $scope.pullList();
     });
@@ -337,4 +339,11 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     $scope.trimIRI = function (iri) {
         return _.trim(iri, "<>");
     };
+
+    window.addEventListener('beforeunload', removeRepoIsSetListener);
+
+    function removeRepoIsSetListener() {
+        repoIsSetListener();
+        window.removeEventListener('beforeunload', removeRepoIsSetListener);
+    }
 }
