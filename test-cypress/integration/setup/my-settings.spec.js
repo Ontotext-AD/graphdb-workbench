@@ -8,7 +8,7 @@ describe('My Settings', () => {
     });
 
     beforeEach(() => {
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.visit('/settings');
         // Wait for loader to disappear

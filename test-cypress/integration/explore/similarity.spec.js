@@ -217,7 +217,7 @@ describe('Similarity screen validation', () => {
     function initRepository() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     }
 

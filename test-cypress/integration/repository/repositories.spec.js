@@ -211,8 +211,8 @@ describe('Repositories', () => {
             .should('not.have.class', 'active')
             .click()
             .should('have.class', 'active');
-        // The currently selected repository is kept as a cookie
-        cy.clearCookies();
+        // The currently selected repository is kept in local storage
+        cy.localStorage.clear();
         cy.visit('/repository');
 
         // Should automatically select the default repository

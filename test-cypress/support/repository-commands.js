@@ -22,8 +22,8 @@ Cypress.Commands.add('deleteRepository', (id) => {
     cy.request('DELETE', url).should((response) => expect(response.status).to.equal(200));
 });
 
-Cypress.Commands.add('presetRepositoryCookie', (id) => {
-    cy.setCookie('com.ontotext.graphdb.repository' + window.location.port, id);
+Cypress.Commands.add('presetRepository', (id) => {
+    cy.localStorage.setItem('com.ontotext.graphdb.repository', id);
 });
 
 /**

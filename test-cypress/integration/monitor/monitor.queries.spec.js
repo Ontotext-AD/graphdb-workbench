@@ -8,7 +8,7 @@ describe('Monitor Queries', () => {
     });
 
     beforeEach(() => {
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.visit('/monitor/queries');
 

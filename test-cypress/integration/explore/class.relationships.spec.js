@@ -9,7 +9,7 @@ describe('Class relations screen validation', () => {
     beforeEach(() => {
         repositoryId = 'class-relations-repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 

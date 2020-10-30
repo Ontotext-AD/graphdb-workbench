@@ -95,7 +95,7 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$cookies', '$rootScope', '$route', 'toastr', '$sce', function ($cookies, $rootScope, $route, toastr, $sce) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', function ($rootScope, $route, toastr, $sce) {
         $rootScope.$on('$routeChangeSuccess', function () {
             if ($route.current.title) {
                 document.title = $route.current.title + ' | GraphDB Workbench';

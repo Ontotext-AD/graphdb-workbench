@@ -11,7 +11,7 @@ describe('Setup / Connectors - Lucene', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.visit('/connectors');
     });
 

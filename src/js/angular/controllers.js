@@ -85,9 +85,9 @@ function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestServic
     }
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';

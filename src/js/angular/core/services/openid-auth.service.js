@@ -18,6 +18,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
     // }])
     .service('$openIDAuth', ['$http', '$location', 'toastr',
         function ($http, $location, toastr) {
+            const storagePrefix = 'com.ontotext.graphdb.openid.';
             const that = this;
 
             this.login = function(openIDConfig, returnToUrl) {
@@ -26,11 +27,11 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const authFlow = openIDConfig.authFlow;
 
                 if (authFlow === 'code') {
-                    localStorage.setItem('pkce_state', state);
+                    this.setStorageItem('pkce_state', state);
 
                     // Create and store a new PKCE code_verifier (the plaintext random secret)
                     const code_verifier = that.generateRandomString();
-                    localStorage.setItem('pkce_code_verifier', code_verifier);
+                    this.setStorageItem('pkce_code_verifier', code_verifier);
 
                     // Hash and base64-urlencode the secret to use as the challenge
                     const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
@@ -39,7 +40,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 } else if (authFlow === 'code_no_pkce') {
                     window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else if (authFlow === 'implicit') {
-                    localStorage.setItem('nonce', state);
+                    this.setStorageItem('nonce', state);
                     window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else {
                     toastr.error('Uknown auth flow: ' + authFlow)
@@ -68,12 +69,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
                 return openIDConfig.oidcAuthorizationEndpoint +
                     '?' +
-                    // flow is 'code' or 'token id_token'
                     'response_type=' + encodeURIComponent(response_type) + '&' +
                     'scope=' + encodeURIComponent(this.getScope()) + '&' +
-                    // TODO: this may be required in order to get a refresh token but it forces re-asking the user for permission
-                    // TODO: we should probably have it configurable
-                    'prompt=consent' + '&' +
                     'client_id=' + openIDConfig.clientId + '&' +
                     'redirect_uri=' + redirectUrl + '&' +
                     (flow_params ? ('&' + flow_params) : '') +
@@ -125,8 +122,9 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         if (s.code) {
                             if (openIDConfig.authFlow === 'code') {
                                 // Verify state matches what we set at the beginning
-                                if (localStorage.getItem('pkce_state') !== s.state) {
+                                if (that.getStorageItem('pkce_state') !== s.state) {
                                     toastr.error('Invalid pkce_state');
+                                    console.log('PKCE state ' + that.getStorageItem('pkce_state') + ' != ' + s.state);
                                 } else {
                                     that.retrieveToken(s.code, gdbUrl);
                                 }
@@ -147,7 +145,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
             this.authHeaderGraphDB = function() {
-                if (localStorage.getItem('token_type') === 'id') {
+                if (this.getStorageItem('token_type') === 'id') {
                     return 'Bearer ' + this.getToken('id');
                 } else {
                     return this.authHeaderOpenId();
@@ -178,14 +176,14 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
             this.getToken = function(tokenName) {
-                return localStorage.getItem(tokenName + '_token');
+                return this.getStorageItem(tokenName + '_token');
             }
 
             this.setToken = function(tokenName, tokenData) {
                 if (tokenData) {
-                    localStorage.setItem(tokenName + '_token', tokenData);
+                    this.setStorageItem(tokenName + '_token', tokenData);
                 } else {
-                    localStorage.removeItem(tokenName + '_token');
+                    this.removeStorageItem(tokenName + '_token');
                 }
             }
 
@@ -222,7 +220,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 };
                 if (tokenName === 'id') {
                     verifyFields['aud'] = [this.idTokenAudience];
-                    verifyFields['nonce'] = [localStorage.getItem('nonce')];
+                    verifyFields['nonce'] = [this.getStorageItem('nonce')];
                 } else if (tokenName === 'access') {
                     verifyFields['aud'] = [this.accessTokenAudience];
                     verifyFields['iss'] = [this.accessTokenIssuer];
@@ -266,13 +264,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
                 this.setToken('access', token.access_token);
                 this.setToken('id', token.id_token);
-                localStorage.setItem('token_type', that.tokenType);
+                this.setStorageItem('token_type', that.tokenType);
 
                 this.setupTokenRefreshTimer(that.tokenType, that.clientId, redirectUrl);
 
                 // Clean these up since we don't need them anymore
-                localStorage.removeItem('pkce_state');
-                localStorage.removeItem('pkce_code_verifier');
+                this.removeStorageItem('pkce_state');
+                this.removeStorageItem('pkce_code_verifier');
 
                 if (!isRefresh) {
                     window.location.href = redirectUrl;
@@ -295,7 +293,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     code: code
                 };
 
-                const codeVerifier = localStorage.getItem('pkce_code_verifier');
+                const codeVerifier = this.getStorageItem('pkce_code_verifier');
                 if (codeVerifier) {
                     params['code_verifier'] = codeVerifier;
                 }
@@ -396,8 +394,18 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
             this.getScope = function() {
-                return 'openid profile email' + (this.supportsOfflineAccess ? ' offline_access' : '');
+                return 'openid ' + (this.supportsOfflineAccess ? ' offline_access' : '');
             }
 
+            this.setStorageItem = function (name, value) {
+                localStorage.setItem(storagePrefix + name, value);
+            }
 
+            this.getStorageItem = function (name) {
+                return localStorage.getItem(storagePrefix + name);
+            }
+
+            this.removeStorageItem = function (name) {
+                localStorage.removeItem(storagePrefix + name);
+            }
         }]);

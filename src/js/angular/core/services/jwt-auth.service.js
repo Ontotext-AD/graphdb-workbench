@@ -4,13 +4,12 @@ import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
-    'ngCookies',
     'toastr',
     'graphdb.framework.rest.security.service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', '$cookies', '$cookieStore', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth',
-        function ($http, $cookies, $cookieStore, toastr, $location, $rootScope, SecurityRestService, $openIDAuth) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -55,8 +54,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return jwtAuth.hasExternalAuthUser();
             };
 
-            this.principalCookieName = 'com.ontotext.graphdb.principal' + $location.port();
-            this.authCookieName = 'com.ontotext.graphdb.auth' + $location.port();
+            this.authStorageName = 'com.ontotext.graphdb.auth';
 
             this.securityEnabled = true;
             this.freeAccess = false;
@@ -66,9 +64,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             const that = this;
 
-            this.clearCookies = function () {
-                delete $cookies[that.authCookieName];
-                $cookieStore.remove(that.principalCookieName);
+            this.clearStorage = function () {
+                localStorage.removeItem(that.authStorageName);
             };
 
             this.getAuthenticatedUserFromBackend = function() {
@@ -105,8 +102,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             }
 
             this.initSecurity = function () {
-                this.auth = $cookies[this.authCookieName];
-                this.principal = $cookieStore.get(this.principalCookieName);
+                this.auth = localStorage.getItem(this.authStorageName);
 
                 SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
@@ -145,7 +141,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
 
                     } else {
-                        that.clearCookies();
+                        that.clearStorage();
                         const overrideAuthData = res.data.overrideAuth;
                         that.hasOverrideAuth = overrideAuthData.enabled;
                         if (that.hasOverrideAuth) {
@@ -202,7 +198,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     this.securityEnabled = enabled;
                     SecurityRestService.toggleSecurity(enabled).then(function () {
                         toastr.success('Security has been ' + (enabled ? 'enabled.' : 'disabled.'));
-                        that.clearCookies();
+                        that.clearStorage();
                         that.initSecurity();
                     }, function (err) {
                         toastr.error(err.data.error.message, 'Error');
@@ -248,16 +244,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.setAuthHeaders();
 
             this.authenticate = function (data, authHeaderValue) {
-                this.clearCookies();
+                this.clearStorage();
                 if (authHeaderValue) {
                     this.auth = authHeaderValue;
-                    $cookies[this.authCookieName] = this.auth;
+                    localStorage.setItem(this.authStorageName, this.auth);
                     this.externalAuthUser = false;
                 }
 
                 this.principal = data;
 
-                $cookieStore.put(this.principalCookieName, this.principal);
                 this.setAuthHeaders();
                 $rootScope.deniedPermissions = {};
                 this.securityInitialized = true;
@@ -265,10 +260,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.authenticateOpenID = function(authHeader) {
-                this.clearCookies();
+                this.clearStorage();
                 if (authHeader) {
                     this.auth = authHeader;
-                    $cookies[this.authCookieName] = this.auth;
+                    localStorage.setItem(this.authStorageName, this.auth);
                     this.externalAuthUser = false;
                 }
             }
@@ -278,7 +273,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasExplicitAuthentication = function () {
-                return this.auth !== undefined || this.externalAuthUser;
+                return this.auth != null || this.externalAuthUser;
             };
 
             this.getPrincipal = function () {
@@ -287,15 +282,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.clearAuthentication = function () {
                 $openIDAuth.softLogout();
-                this.auth = undefined;
+                this.auth = null;
                 this.principal = this.freeAccessPrincipal;
-                this.clearCookies();
+                this.clearStorage();
                 this.setAuthHeaders();
                 $rootScope.$broadcast('securityInit', this.securityEnabled, false, this.freeAccess);
             };
 
             this.isAuthenticated = function () {
-                return !this.securityEnabled || this.auth !== undefined;
+                return !this.securityEnabled || this.auth != null;
             };
 
             this.hasPermission = function () {

@@ -13,9 +13,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function queryEditorDirective($timeout, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
 
     let callbackOnChange;
 
@@ -511,9 +511,9 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                 }
                 $('#wb-download-infer').val(scope.currentQuery.inference);
                 $('#wb-download-sameAs').val(scope.currentQuery.sameAs);
-                const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
-                if (cookie) {
-                    $('#wb-auth-token').val(cookie);
+                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                if (auth) {
+                    $('#wb-auth-token').val(auth);
                 }
                 $('#wb-download-accept').val(downloadFormat);
                 $wbDownload.submit();
