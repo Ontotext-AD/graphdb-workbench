@@ -374,6 +374,37 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             [READ_REPO]: {},
             [WRITE_REPO]: {}
         };
+
+        $scope.validatePassword = function() {
+            if ($scope.emptyPassword) {
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+                return true;
+            }
+            if ($scope.user.password !== $scope.user.confirmpassword) {
+                if (!$scope.user.password) {
+                    $scope.passwordError = 'Enter password!';
+                    $scope.confirmPasswordError = '';
+                } else {
+                    $scope.passwordError = '';
+                    $scope.confirmPasswordError = 'Confirm password!';
+                }
+                return false;
+            } else {
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+            }
+            return true;
+        }
+
+        $scope.setEmptyPassword = function() {
+            if ($scope.emptyPassword) {
+                $scope.user.password = '';
+                $scope.user.confirmpassword = '';
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+            }
+        }
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
@@ -452,18 +483,24 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
             } else {
                 $scope.usernameError = '';
             }
-            if (!$scope.user.password) {
-                $scope.passwordError = 'Enter password!';
-                result = false;
-            } else {
+            if ($scope.emptyPassword) {
                 $scope.passwordError = '';
-            }
-            if (!$scope.user.confirmpassword || $scope.user.password !== $scope.user.confirmpassword) {
-                $scope.confirmPasswordError = 'Confirm password!';
-                result = false;
-            } else {
                 $scope.confirmPasswordError = '';
+            } else {
+                if (!$scope.user.password) {
+                    $scope.passwordError = 'Enter password!';
+                    result = false;
+                } else {
+                    $scope.passwordError = '';
+                }
+                if (!$scope.user.confirmpassword || $scope.user.password !== $scope.user.confirmpassword) {
+                    $scope.confirmPasswordError = 'Confirm password!';
+                    result = false;
+                } else {
+                    $scope.confirmPasswordError = '';
+                }
             }
+
             return result;
         };
     }]);
@@ -525,7 +562,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $scope.loader = true;
             SecurityRestService.updateUser({
                 username: $scope.user.username,
-                pass: $scope.user.password,
+                pass: ($scope.emptyPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
@@ -561,21 +598,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
 
         $scope.validateForm = function () {
-            const result = true;
-            if ($scope.user.password !== $scope.user.confirmpassword) {
-                if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
-                    $scope.confirmPasswordError = '';
-                } else {
-                    $scope.passwordError = '';
-                    $scope.confirmPasswordError = 'Confirm password!';
-                }
-                return false;
-            } else {
-                $scope.passwordError = '';
-                $scope.confirmPasswordError = '';
-            }
-            return result;
+            return $scope.validatePassword();
         };
     }]);
 
@@ -691,7 +714,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.loader = true;
             SecurityRestService.updateUserData({
                 username: $scope.user.username,
-                pass: $scope.user.password,
+                pass: ($scope.emptyPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings
             }).success(function () {
                 $scope.updateCurrentUserData();
@@ -723,21 +746,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         };
 
         $scope.validateForm = function () {
-            const result = true;
-            if ($scope.user.password !== $scope.user.confirmpassword) {
-                if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
-                    $scope.confirmPasswordError = '';
-                } else {
-                    $scope.passwordError = '';
-                    $scope.confirmPasswordError = 'Confirm password!';
-                }
-                return false;
-            } else {
-                $scope.passwordError = '';
-                $scope.confirmPasswordError = '';
-            }
-            return result;
+            return $scope.validatePassword();
         };
     }]);
 
