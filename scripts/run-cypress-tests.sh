@@ -5,8 +5,9 @@ set -eu
 
 echo "Working directory: $(pwd)"
 
-GRAPHDB_VERSION=$1
-GRAPHDB_DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb-free/${GRAPHDB_VERSION}/graphdb-free-${GRAPHDB_VERSION}-dist.zip"
+echo "Running tests with GDB: $GDB_VERSION"
+
+GRAPHDB_DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb-free/${GDB_VERSION}/graphdb-free-${GDB_VERSION}-dist.zip"
 
 echo "Downloading GraphDB from $GRAPHDB_DOWNLOAD_URL"
 # Clean previous runs
@@ -27,5 +28,5 @@ cd test-cypress
 echo "Installing Cypress tests module"
 npm install
 
-echo "Starting Cypress tests against GraphDB version ${GRAPHDB_VERSION}"
+echo "Starting Cypress tests against GraphDB version ${GDB_VERSION}"
 npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false

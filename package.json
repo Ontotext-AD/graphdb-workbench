@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.5.0-TR9",
+    "version": "1.5.0-TR10",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -9,7 +9,7 @@
         "test": "karma start",
         "test:coverage": "rimraf coverage/ && karma start --single-run --browsers ChromeHeadless",
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-        "test:acceptance": "scripts/run-cypress-tests.sh $npm_package_versions_graphdb",
+        "test:acceptance": "export $(cat .env | xargs) && scripts/run-cypress-tests.sh",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
         "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
         "sonar": "sonar-scanner -Dsonar.projectVersion=$npm_package_version"
@@ -32,9 +32,6 @@
     "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
-    },
-    "versions": {
-        "graphdb": "9.4.0-TR24"
     },
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
     "devDependencies": {
