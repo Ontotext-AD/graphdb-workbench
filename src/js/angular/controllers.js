@@ -34,9 +34,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -65,22 +65,33 @@ function homeCtrl($scope, $http, $repositories, AutocompleteRestService, License
         });
     };
 
-    $scope.$watch($scope.getActiveRepository, function () {
-        if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
-                });
-        }
-    });
+    function getNamespaces() {
+        $scope.$watch($scope.getActiveRepository, function () {
+            if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                    .success(function () {
+                        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+                            .success(function () {
+                                $scope.getActiveRepositorySize();
+                            });
+                    });
+            }
+        });
+    }
+    if ($jwtAuth.securityInitialized) {
+        getNamespaces();
+    } else {
+        $scope.$on('securityInit', function () {
+            if ($jwtAuth.isAuthenticated()) {
+                getNamespaces();
+            }
+        });
+    }
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$cookies', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -731,6 +742,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
         $interval.cancel(timer);
     });
 
+    if ($jwtAuth.securityInitialized) {
+        $scope.getSavedQueries();
+    }
+
     $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
         $scope.securityEnabled = securityEnabled;
         $scope.userLoggedIn = userLoggedIn;
@@ -740,6 +755,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $cookies, toastr, $locati
             if ($location.path() !== '/login') {
                 $rootScope.redirectToLogin();
             }
+        } else {
+            $scope.getSavedQueries();
         }
     });
 

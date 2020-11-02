@@ -35,12 +35,15 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
-    //    disableHostCheck: true,
+       disableHostCheck: true,
         contentBase: path.join(__dirname, 'dist/'),
         compress: true,
         port: portHere,
         host: host,
-        historyApiFallback: true,
+        // needed to handle urls sent by open id providers that contain dots
+        historyApiFallback: {
+            disableDotRule: true
+        },
         proxy: [{
             context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,

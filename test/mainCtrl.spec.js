@@ -20,7 +20,6 @@ describe('mainCtrl', function () {
     let menuItems;
     let $http;
     let $jwtAuth;
-    let $cookies;
     let toastr;
     let $location;
     let $repositories;
@@ -38,13 +37,12 @@ describe('mainCtrl', function () {
     let createController;
     let $modal;
 
-    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _$cookies_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_, $q) {
+    beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_, $q) {
         $scope = _$rootScope_.$new();
         $rootScope = _$rootScope_;
         menuItems = $menuItems;
         $http = _$http_;
         $jwtAuth = _$jwtAuth_;
-        $cookies = _$cookies_;
         toastr = _toastr_;
         $location = _$location_;
         $repositories = _$repositories_;
@@ -61,7 +59,7 @@ describe('mainCtrl', function () {
         $modal = new FakeModal($q, _$rootScope_);
 
         createController = () => $controller('mainCtrl', {
-            $scope, menuItems, $jwtAuth, $http, $cookies, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService
+            $scope, menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService
         });
 
         createController();

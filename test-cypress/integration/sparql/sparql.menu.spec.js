@@ -30,7 +30,7 @@ describe('SPARQL screen validation', () => {
         cy.initializeRepository(repositoryId);
 
         // Avoids having to select the repository through the UI
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
     }
 
     function visitSparql(resetLocalStorage) {

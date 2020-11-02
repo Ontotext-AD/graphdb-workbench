@@ -13,7 +13,7 @@ class ImportSteps {
 
     static visitImport(type, repository) {
         if (repository) {
-            cy.presetRepositoryCookie(repository);
+            cy.presetRepository(repository);
         }
 
         cy.visit('/import#' + type);

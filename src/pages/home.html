@@ -129,7 +129,7 @@
             <div class="card"
                  ng-cloak>
                 <div>
-                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-init="getSavedQueries()">
+                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries() && query.owner != null" class="list-group-item list-group-item-action">
                             <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">Execute <span class="icon-caret-right"></span></span>
                             <samp class="h5">{{query.name}}</samp>

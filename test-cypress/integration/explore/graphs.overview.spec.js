@@ -9,7 +9,7 @@ describe('Graphs overview screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.visit("/");
 
         cy.fixture('graph/rdf.txt').then((rdf) => {

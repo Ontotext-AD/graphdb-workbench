@@ -1,5 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
+import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 
@@ -13,6 +14,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
+    'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];
@@ -94,10 +96,21 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$timeout', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $timeout, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$timeout', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $timeout, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
+
+        $scope.loginWithOpenID = function() {
+            $jwtAuth.loginOpenID();
+        };
+
+        $scope.isGDBLoginEnabled = $jwtAuth.passwordLoginEnabled;
+        $scope.isOpenIDEnabled =  $jwtAuth.openIDEnabled;
+
+        if ($location.search().expired) {
+            toastr.error('Your authentication token has expired. Please login again.');
+        }
 
         $scope.login = function () {
             $http({
@@ -107,7 +120,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     'X-GraphDB-Password': $scope.password
                 }
             }).success(function (data, status, headers) {
-                $jwtAuth.authenticate(data, headers);
+                $jwtAuth.authenticate(data, headers('Authorization'));
                 const timer = $timeout(function () {
                     if ($rootScope.returnToUrl) {
                         // go back to remembered url

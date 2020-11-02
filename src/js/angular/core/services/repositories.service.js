@@ -15,13 +15,13 @@ const modules = [
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
-repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
-    function ($http, $cookies, $cookieStore, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
-        this.repositoryCookieName = 'com.ontotext.graphdb.repository' + $location.port();
+repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
+    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
+        this.repositoryStorageName = 'com.ontotext.graphdb.repository';
 
         this.location = '';
         this.loading = true;
-        this.repository = $cookies[this.repositoryCookieName];
+        this.repository = localStorage.getItem(this.repositoryStorageName);
         this.locations = [];
         this.repositories = [];
         this.locationsShouldReload = false;
@@ -231,7 +231,7 @@ repositories.service('$repositories', ['$http', '$cookies', '$cookieStore', 'toa
 
         this.setRepository = function (id) {
             this.repository = id;
-            $cookies[this.repositoryCookieName] = this.repository;
+            localStorage.setItem(this.repositoryStorageName, this.repository);
             this.setRepositoryHeaders(id);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 

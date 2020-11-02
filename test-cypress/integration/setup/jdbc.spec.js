@@ -30,6 +30,6 @@ describe('JDBC configuration', () => {
     function initRepositoryAndVisitJdbcView() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
     }
 });

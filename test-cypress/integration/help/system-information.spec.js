@@ -11,7 +11,7 @@ describe('System information', () => {
     });
 
     beforeEach(() => {
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.visit('/sysinfo');
         // Wait for tabs to be rendered
