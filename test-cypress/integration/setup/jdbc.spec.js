@@ -48,17 +48,11 @@ describe('JDBC configuration', () => {
 
     it('Should create a new JDBC configuration, edit, preview, then delete', () => {
         getCreateNewJDBCConfigurationButon().click();
-
-        //wait for page initialization
-        cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader').should('not.be.visible');
-        cy.get('.CodeMirror-linenumber').should('be.visible').and('be','active');
-        cy.wait(500);
-
-        pasteQuery(QUERY);
+        cy.pasteQuery(QUERY);
         getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
         getColumnTypesTab().click(); //switch to SQL columns config tab
-        //verify columns length
+
+        //verify columns length and content
         getSQLTableRows().should('have.length', 4);
         getSQLTableConfig()
             .should('be.visible')
@@ -67,31 +61,40 @@ describe('JDBC configuration', () => {
         getSaveButton().click();
         getConfigurationList().should('contain', JDBC_CONFIG_NAME); //verify config is created
         getEditButton().click();
-        cy.wait(2500);
-        getSuggestButton().click(); //click preview button
+
+        typeQuery("{downarrow}"); //used to verify that the input field is active
+        getSuggestButton().click({forece:true}); //click preview button
         getLoader().should('not.be.visible');
-        cy.wait(500);
+
+        //verify results content
         getPreviewTable()
             .should('be.visible')
             .and('contain', 'SENTIMENT_SCORE')
             .and('contain', 'CUSTOMER_LOYALTY')
             .and('contain', 'ID')
             .and('contain', 'FRAUD_SCORE');
+
+        //clear current query and paste the edited one, to test the suggest functionality
         clearQuery();
-        pasteQuery(EDIT_QUERY);
+        cy.pasteQuery(EDIT_QUERY);
         getColumnTypesTab().click();
         getSuggestButton().click(); //click suggest button to update the changes from the second query
         getConfirmSuggestButton().click();
+
+        //verify columns length and content
         getSQLTableRows().should('have.length', 3);
         getSQLTableConfig()
             .should('be.visible')
             .and('not.contain', 'sentiment_score');
         getSaveButton().click();
         getEditButton().click();
-        cy.wait(2500);
+
+        //Verify that changes have been applied upon saving
+        typeQuery("{downarrow}"); //used to verify that the input field is active
         getSuggestButton().click(); //click preview button
         getLoader().should('not.be.visible');
-        cy.wait(500);
+
+        //verify results content
         getPreviewTable()
             .should('be.visible')
             .and('not.contain', 'SENTIMENT_SCORE')
@@ -99,8 +102,10 @@ describe('JDBC configuration', () => {
             .and('contain', 'ID')
             .and('contain', 'FRAUD_SCORE');
         getSaveButton().click();
-        cy.wait(1000);
-        getDeleteButton().click({force:true});
+
+        //Delete jdbc configuration
+        cy.get('.jdbc-list-configurations').should('be.visible');
+        getDeleteButton().click();
         getConfirmDialogButton().click();
         getConfigurationList().should('contain', 'No Indexes');
     });
@@ -129,8 +134,9 @@ describe('JDBC configuration', () => {
         return getQueryArea().find('textarea');
     }
 
-    function pasteQuery(query) {
-        getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+    function typeQuery(query) {
+        // getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+        getQueryTextArea().type(query, {force: true});
         waitUntilQueryIsVisible();
     }
 
