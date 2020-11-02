@@ -376,7 +376,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
 
         $scope.validatePassword = function() {
-            if ($scope.emptyPassword) {
+            if ($scope.noPassword) {
                 $scope.passwordError = '';
                 $scope.confirmPasswordError = '';
                 return true;
@@ -397,8 +397,8 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             return true;
         }
 
-        $scope.setEmptyPassword = function() {
-            if ($scope.emptyPassword) {
+        $scope.setNoPassword = function() {
+            if ($scope.noPassword) {
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
                 $scope.passwordError = '';
@@ -483,7 +483,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
             } else {
                 $scope.usernameError = '';
             }
-            if ($scope.emptyPassword) {
+            if ($scope.noPassword) {
                 $scope.passwordError = '';
                 $scope.confirmPasswordError = '';
             } else {
@@ -562,7 +562,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $scope.loader = true;
             SecurityRestService.updateUser({
                 username: $scope.user.username,
-                pass: ($scope.emptyPassword) ? '' : $scope.user.password || undefined,
+                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
@@ -714,7 +714,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.loader = true;
             SecurityRestService.updateUserData({
                 username: $scope.user.username,
-                pass: ($scope.emptyPassword) ? '' : $scope.user.password || undefined,
+                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings
             }).success(function () {
                 $scope.updateCurrentUserData();
