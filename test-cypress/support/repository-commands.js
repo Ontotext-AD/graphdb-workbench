@@ -23,7 +23,7 @@ Cypress.Commands.add('deleteRepository', (id) => {
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
-    cy.localStorage.setItem('com.ontotext.graphdb.repository', id);
+    cy.setLocalStorage('com.ontotext.graphdb.repository', id);
 });
 
 /**
