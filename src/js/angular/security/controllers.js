@@ -108,6 +108,9 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         $scope.isGDBLoginEnabled = $jwtAuth.passwordLoginEnabled;
         $scope.isOpenIDEnabled =  $jwtAuth.openIDEnabled;
 
+        if ($location.search().expired) {
+            toastr.error('Your authentication token has expired. Please login again.');
+        }
 
         $scope.login = function () {
             $http({
