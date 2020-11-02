@@ -81,12 +81,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (that.openIDEnabled && that.auth && that.auth.startsWith('Bearer')) {
                         // The auth was obtained from OpenID, we need to authenticate with the returned user
                         that.authenticate(data, that.auth);
-                        $location.url('/');
                     } else {
                         // There is no previous authentication but we got a principal via
                         // an external authentication mechanism (e.g. Kerberos)
                         that.externalAuthUser = true;
-                        that.authenticate(data, headers('Authorization')); // this will emit securityInit
+                        that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
                 }).finally(function() {
@@ -102,6 +101,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             }
 
             this.initSecurity = function () {
+                this.securityInitialized = false;
                 this.auth = localStorage.getItem(this.authStorageName);
 
                 SecurityRestService.getSecurityConfig().then(function (res) {
@@ -126,20 +126,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
                             $openIDAuth.initOpenId(that.openIDConfig,
                                 that.gdbUrl,
-                                function() {
+                                function () {
                                     if ($openIDAuth.checkCredentials()) {
                                         that.auth = $openIDAuth.authHeaderGraphDB();
                                         jwtAuth.setAuthHeaders();
                                     }
                                     that.getAuthenticatedUserFromBackend();
                                 });
-
-                            } else {
-                                that.getAuthenticatedUserFromBackend();
-                            }
-
-
-
+                        } else {
+                            that.getAuthenticatedUserFromBackend();
+                        }
                     } else {
                         that.clearStorage();
                         const overrideAuthData = res.data.overrideAuth;

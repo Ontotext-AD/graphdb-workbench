@@ -81,7 +81,11 @@ function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestServic
     if ($jwtAuth.securityInitialized) {
         getNamespaces();
     } else {
-        $scope.$on('securityInit', getNamespaces);
+        $scope.$on('securityInit', function () {
+            if ($jwtAuth.isAuthenticated()) {
+                getNamespaces();
+            }
+        });
     }
 }
 
