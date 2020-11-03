@@ -286,16 +286,22 @@ describe('Repositories', () => {
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
     it('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
-        getRepositoryTypeDropdown().should('contain',"Ontop").and('not.be.disabled');
+        getRepositoryTypeDropdown().should('contain', "Ontop").and('not.be.disabled');
         getRepositoryTypeDropdown().select('Ontop');
-        getOBDAFileField().should('be',"visible");
-        getOntologyFileField().should('be',"visible");;
-        getPropertiesFileField().should('be',"visible");;
-        getConstraintFileField().should('be',"visible");
-        getOBDAUploadButton().should('be',"visible.").and('not.be.disabled');;
-        getOntologyUploadButton().should('be',"visible").and('not.be.disabled');;
-        getPropertiesUploadButton().should('be',"visible").and('not.be.disabled');;
-        getConstraintUploadButton().should('be',"visible").and('not.be.disabled');;
+        getOBDAFileField().should('be', "visible");
+        getOntologyFileField().should('be', "visible");
+        ;
+        getPropertiesFileField().should('be', "visible");
+        ;
+        getConstraintFileField().should('be', "visible");
+        getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
+        ;
+        getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
+        getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
+        getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
     });
 
     //Check that Inference and SameAs are disabled also that explain plan is not supported.
@@ -326,81 +332,109 @@ describe('Repositories', () => {
         getOntopFunctionalityDisabledMessage();
     });
 
+
     //Create Ontop repository
     it.only('should create an Ontop repository', () => {
+        let obdaFileUpload = '';
+        let ontologyFileUpload = '';
+        let propertiesFileUpload = ''
 
-        // cy.server();
-        // cy.fixture('ontop/config.ttl').as('ontopRepoConfig');
-        // cy.route('GET', 'ontop/*', '@ontopRepoConfig');
 
-        // cy.fixture('ontop/config.ttl')
-        //     .then(data => cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories', body: {
-        //             config: data}
-        //     }));
-
-        let configFile = cy.fixture('ontop/config.ttl');
-        let obdaFile = cy.fixture('ontop/university-complete.obda');
-        let ontologyFile = cy.fixture('ontop/university-complete.ttl');
-        let propertiesFile = cy.fixture('ontop/university-complete.properties');
-
-        const method = 'POST';
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
-        const fileType ='';
+        const fileType = '';
 
+        // upload obda file
+        cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
+            Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
+                const formData = new FormData();
+                formData.set('uploadFile', blob, 'fileName');
 
+                cy.form_request(url, formData).then(response => {
+                    return obdaFileUpload = response.response.body.fileLocation;
+                });
 
-            Promise.all([obdaFile,ontologyFile,propertiesFile]).then(values=>{
-            let obdaFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[0], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
-            let ontologyFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[1], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
-            let propertiesFileUpload = cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories/uploadFile', uploadFile: values[2], headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}});
-            Promise.all([obdaFileUpload, ontologyFileUpload, propertiesFileUpload]).then(files=>{
-
-                Cypress.Blob.binaryStringToBlob(excelBin, fileType).then((blob) => {
-
-                    // Build up the form
+            });
+        }).then(() => {
+            // upload ontology file
+            cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
+                Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                     const formData = new FormData();
-                    formData.set('file', blob, fileName); //adding a file to the form
-                    formData.set('input2', inputContent2); //adding a plain input to the form
-                .
-                .
-                .
-                    // Perform the request
-                    cy.form_request(method, url, formData, function (response) {
-                        expect(response.status).to.eq(200);
-                        expect(expectedAnswer).to.eq(response.response);
+                    formData.set('uploadFile', blob, 'fileName');
+
+                    cy.form_request(url, formData).then(response => {
+                        return ontologyFileUpload = response.response.body.fileLocation;
+
                     });
+                });
+            }).then(() => {
+                // upload property file
+                cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
+                    Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
+                        const formData = new FormData();
+                        formData.set('uploadFile', blob, 'fileName');
+
+                        cy.form_request(url, formData).then(response => {
+                            return propertiesFileUpload = response.response.body.fileLocation;
+
+                        });
+                    });
+                });
+            }).then(() => {
+                const body = {
+                    id: repositoryId,
+                    title: '',
+                    type: 'ontop',
+                    params: {
+                        propertiesFile: {
+                            label: 'Ontop repository properties file',
+                            name: 'propertiesFile',
+                            value: propertiesFileUpload
+                        },
+                        isShacl: {
+                            label: 'Supports SHACL validation',
+                            name: 'isShacle',
+                            value: false
+                        },
+                        owlFile: {
+                            label: 'Ontop repository ontology file',
+                            name: 'owlFile',
+                            value: ontologyFileUpload
+                        },
+                        constraintFile: {
+                            label: 'Ontop repository constraint file',
+                            name: 'constraintFile',
+                            value: ''
+                        },
+                        id: {
+                            label: 'Repository ID',
+                            name: 'id',
+                            value: 'ontop-repo'
+                        },
+                        title: {
+                            label: "Repository title",
+                            name: "title",
+                            value: "Ontop virtual store"
+                        },
+                        obdaFile: {
+                            label: "Ontop repository OBDA or R2RML file",
+                            name: "obdaFile",
+                            value: obdaFileUpload
+                        }
+                    }
+                };
 
                 cy.request({
                     method: 'POST',
                     url: 'http://localhost:9000/rest/repositories',
-                    body: {
-                             config: `@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n' +
-                                 '@prefix rep: <http://www.openrdf.org/config/repository#> .\n' +
-                                 '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n' +
-                                 '<#testo> a rep:Repository;\n' +
-                                 '  rep:repositoryID "testo";\n' +
-                                 '  rep:repositoryImpl [\n' +
-                                 '      <http://inf.unibz.it/krdb/obda/quest#obdaFile> "${files[0].fileLocation}";\n' +
-                                 '      <http://inf.unibz.it/krdb/obda/quest#owlFile> "${files[1].fileLocation}";\n' +
-                                 '      <http://inf.unibz.it/krdb/obda/quest#propertiesFile> "${files[2].fileLocation}";\n' +
-                                 '      rep:repositoryType "graphdb:OntopRepository"\n' +
-                                 '    ];\n' +
-                                 '  rdfs:label "Ontop virtual store with OBDA" .\n`},
-                    headers: {'Content-Type':'multipart/form-data; Boundary=xxx'}
+                    body,
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(response => {
+                    console.log(response)
+                });
 
-                })
-            })
+            });
         });
-
-        // cy.request('POST', 'http://localhost:9000/rest/repositories', { config: '/fixtures/ontop/config.ttl' });
-        //
-        // cy.request({method: 'POST', url: 'http://localhost:9000/rest/repositories', body: {
-        //     config: '@ontopRepoConfig'}
-        //     });
     });
-
-
-
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
@@ -564,7 +598,7 @@ describe('Repositories', () => {
     function getOntopFunctionalityDisabledMessage() {
         return cy.get('.repository-errors div.alert')
             .should('be', 'visible')
-            .and('contain','Some functionalities are not available because')
+            .and('contain', 'Some functionalities are not available because')
             .and('contain', ' is read-only Virtual Repository');
     }
 });
