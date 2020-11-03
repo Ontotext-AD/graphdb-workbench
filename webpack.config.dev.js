@@ -35,7 +35,7 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
-       disableHostCheck: true,
+        disableHostCheck: true,
         contentBase: path.join(__dirname, 'dist/'),
         compress: true,
         port: portHere,
