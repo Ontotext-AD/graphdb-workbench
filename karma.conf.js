@@ -13,6 +13,13 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
+    client: {
+        jasmine: {
+            // Don't randomize test order for jasmine, otherwise weird things happen
+            random: false
+        }
+    },
+
 
     // list of files / patterns to load in the browser
     files: [
@@ -100,6 +107,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: 1
   });
 };

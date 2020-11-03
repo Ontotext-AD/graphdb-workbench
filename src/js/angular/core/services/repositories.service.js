@@ -231,7 +231,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.setRepository = function (id) {
             this.repository = id;
-            localStorage.setItem(this.repositoryStorageName, this.repository);
+            if (id) {
+                localStorage.setItem(this.repositoryStorageName, this.repository);
+            } else {
+                localStorage.removeItem(this.repositoryStorageName);
+            }
             this.setRepositoryHeaders(id);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
