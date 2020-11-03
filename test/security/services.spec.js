@@ -106,9 +106,7 @@ describe('$jwtAuth tests', function () {
             nonLocked: true,
             enabled: true,
             authorities: ["ROLE_ADMIN"]
-        }, function () {
-            return "1234"
-        });
+        }, "1234");
 
         expect($jwtAuth.securityEnabled).toEqual(true);
         expect($jwtAuth.auth).toBeDefined();

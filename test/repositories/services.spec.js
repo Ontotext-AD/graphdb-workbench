@@ -79,12 +79,12 @@ describe('==> Repository module services tests', function () {
                 $repositories.init();
                 $httpBackend.flush();
                 expect($repositories.repositories).toEqual([]);
-                expect($repositories.repository).toEqual('');
+                expect($repositories.repository).toBeNull();
                 expect($repositories.location).toEqual('');
                 expect($repositories.locations).toEqual([]);
                 expect($repositories.getActiveLocation()).toEqual('');
                 expect($repositories.hasActiveLocation()).toEqual(false);
-                expect($repositories.getActiveRepository()).toEqual('');
+                expect($repositories.getActiveRepository()).toBeNull();
                 expect($repositories.getRepositories()).toEqual([]);
 
 
