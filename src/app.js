@@ -32,14 +32,17 @@ const moduleDefinition = function (productInfo) {
 
             var $route = $routeProvider.$get[$routeProvider.$get.length-1]({$on:function(){}});
 
-            // Handle OAuth returned url
-            $routeProvider.when('/access_token=',{
+            // Handle OAuth returned url, _openid_implicit_ is just a placeholder, the actual URL
+            // is defined by the regular expression below.
+            $routeProvider.when('_openid_implicit_',{
                 controller : function() {
                 },
                 template : "<div></div>"
             });
 
-            $route.routes['/access_token='].regexp = /^\/access_token=(.*)/;
+            // The URL will contain access_token=xxx and id_token=xxx and possibly other parameters,
+            // separated by &. Parameters may come in any order.
+            $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
             let routes = PluginRegistry.get('route');
 

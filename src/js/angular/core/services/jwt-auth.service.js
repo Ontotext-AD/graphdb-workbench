@@ -26,14 +26,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             $rootScope.redirectToLogin = function (expired) {
-                if (jwtAuth.auth && jwtAuth.auth.startsWith('Bearer')) {
-                    toastr.error('Missing or stale OAuth Token.');
-                    jwtAuth.clearAuthentication();
+                if (jwtAuth.authTokenIsType('Bearer')) {
+                    // OpenID login may be detected as expired either on initial validation
+                    // when we get expired = true or indirectly via 401, setting expired = true
+                    // handles the second case.
+                    expired = true;
                 }
-                if (expired && jwtAuth.getAuthToken()) {
-                    toastr.error('Your authentication token has expired. Please login again.');
-                    jwtAuth.clearAuthentication();
-                }
+                jwtAuth.clearAuthenticationInternal();
 
                 if ($location.url().indexOf('/login') !== 0) {
                     // remember where we were so we can return there
@@ -44,6 +43,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
                 $location.path('/login');
+                if (expired) {
+                    $location.search('expired');
+                }
                 return new Promise(resolve => {
                     setTimeout(() => {
                         resolve(true);
@@ -127,11 +129,26 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $openIDAuth.initOpenId(that.openIDConfig,
                                 that.gdbUrl,
                                 function () {
-                                    if ($openIDAuth.checkCredentials()) {
-                                        that.auth = $openIDAuth.authHeaderGraphDB();
-                                        jwtAuth.setAuthHeaders();
-                                    }
+                                    // A valid OpenID was obtained just now or previously,
+                                    // so we set it as the authentication.
+                                    // This function will be called every time the token is refreshed too,
+                                    // so keep it clean of other logic.
+                                    that.auth = $openIDAuth.authHeaderGraphDB();
+                                    jwtAuth.setAuthHeaders();
+                                    console.log('oidc: set id/access token as GraphDB auth');
                                     that.getAuthenticatedUserFromBackend();
+                                }, function () {
+                                    console.log('oidc: not logged or login error');
+                                    if (that.authTokenIsType('Bearer')) {
+                                        // Possibly previous login with OpenID but token is no longer valid,
+                                        // redirect to login and warn user about expired token.
+                                        setTimeout(() => {
+                                            $rootScope.redirectToLogin(true);
+                                        }, 0);
+                                    } else {
+                                        // Logged in via non-OpenID or not logged in at all
+                                        that.getAuthenticatedUserFromBackend();
+                                    }
                                 });
                         } else {
                             that.getAuthenticatedUserFromBackend();
@@ -183,6 +200,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.getAuthToken = function () {
                 return this.auth;
+            };
+
+            this.authTokenIsType = function (type) {
+                return this.auth && this.auth.startsWith(type);
             };
 
             this.loginOpenID = function () {
@@ -276,12 +297,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.principal;
             };
 
-            this.clearAuthentication = function () {
+            this.clearAuthenticationInternal = function () {
                 $openIDAuth.softLogout();
                 this.auth = null;
                 this.principal = this.freeAccessPrincipal;
                 this.clearStorage();
                 this.setAuthHeaders();
+            };
+
+            this.clearAuthentication = function () {
+                this.clearAuthenticationInternal();
                 $rootScope.$broadcast('securityInit', this.securityEnabled, false, this.freeAccess);
             };
 
