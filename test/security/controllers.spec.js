@@ -483,7 +483,7 @@ describe('==> Controllers tests', function () {
                 "grantedAuthorities": ['ROLE_ADMIN'],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
             }, function (headers) {
-                return headers['X-GraphDB-Password'] === '';
+                return headers['X-GraphDB-Password'] === undefined;
             }).respond(200, '');
 
             windowMock = {history: {back: jasmine.createSpy('windowMock.history.back')}};
