@@ -54,7 +54,7 @@ exportCtrl.controller('ExportCtrl',
 
             /// <summary>Get Graphs that are part of the Active Repository.</summary>
             $scope.getGraphs = function () {
-                if ($scope.getActiveRepository() !== '') {
+                if ($scope.getActiveRepository()) {
                     $scope.loader = true;
                     RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository()).success(function (data) {
                         data.results.bindings.unshift({
@@ -217,7 +217,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.$watch('exportFilter', function () {
                 $scope.filteredGraphs = filterFilter($scope.graphs, $scope.exportFilter);
-                if ($scope.getActiveRepository() !== '' && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
+                if ($scope.getActiveRepository() && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
                     const valueOfFilteredGraphsButton = angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span')[0].innerHTML.trim();
                     let valueOfFilteredGraphs;
                     if (valueOfFilteredGraphsButton === 'All') {

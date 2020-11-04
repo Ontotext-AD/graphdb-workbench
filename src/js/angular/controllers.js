@@ -65,28 +65,30 @@ function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestServic
         });
     };
 
-    function getNamespaces() {
-        $scope.$watch($scope.getActiveRepository, function () {
-            if (angular.isDefined($scope.getActiveRepository()) && $scope.getActiveRepository() !== '') {
-                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                    .success(function () {
-                        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                            .success(function () {
-                                $scope.getActiveRepositorySize();
-                            });
-                    });
-            }
-        });
+    function refreshRepositoryInfo() {
+        if ($scope.getActiveRepository()) {
+            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                .success(function () {
+                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+                        .success(function () {
+                            $scope.getActiveRepositorySize();
+                        });
+                });
+        }
     }
-    if ($jwtAuth.securityInitialized) {
-        getNamespaces();
-    } else {
-        $scope.$on('securityInit', function () {
-            if ($jwtAuth.isAuthenticated()) {
-                getNamespaces();
-            }
-        });
-    }
+
+    // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
+    // after security was initialized. This way we avoid a race condition when the newly logged in
+    // user doesn't have read access to the active repository.
+    $scope.$on('repositoryIsSet', refreshRepositoryInfo);
+
+    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+        if (previous) {
+            // If previous is defined we got here through navigation, hence security is already
+            // initialized and its safe to refresh the repository info.
+            refreshRepositoryInfo();
+        }
+    });
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
