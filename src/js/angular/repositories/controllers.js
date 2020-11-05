@@ -495,7 +495,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.validateOntopPropertiesConnection = function() {
         RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('neshto stana');
+            toastr.success('Connection is successful');
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Failed to connect');
@@ -789,7 +789,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.validateOntopPropertiesConnection = function() {
         RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('neshto stana');
+            toastr.success('Connection is successful');
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Failed to connect');
