@@ -37,7 +37,7 @@
 	<form name="form" class="form newUserForm userForm editUserContainer" ng-submit="submit()" novalidate>
 		<div class="row">
 			<div class="col-md-6">
-				<div class="card login-credentials" ng-hide="isOverrideAuth()">
+				<div class="card login-credentials" ng-hide="isOverrideAuth() || !isLocalAuthentication()">
 					<div class="card-block">
 						<h3>Login</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
@@ -123,7 +123,7 @@
 
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-6" ng-hide="!isLocalAuthentication()">
 				<div class="card user-role" id="user-roles">
 					<div class="card-block">
 						<h3>User role</h3>
