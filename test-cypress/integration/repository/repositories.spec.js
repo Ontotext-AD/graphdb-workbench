@@ -304,42 +304,11 @@ describe('Repositories', () => {
         ;
     });
 
-    //Check that Inference and SameAs are disabled also that explain plan is not supported.
-    it('should check SPARQL editor restrictions when connected to an Ontop repository', () => {
-        selectRepoFromDropdown("obda");
-        cy.visit("/sparql");
-        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
-
-        //check that Inference and SameAs buttons are disabled.
-        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
-        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
-    });
-
-    //Check workbench restricted sections when connected to an Ontop repository
-    it('should check access restrictions when connected to an Ontop repository', () => {
-        selectRepoFromDropdown("obda");
-        cy.visit("/import");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/monitor/queries");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/connectors");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/autocomplete");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/rdfrank");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/jdbc");
-        getOntopFunctionalityDisabledMessage();
-    });
-
-
-    //Create Ontop repository
-    it.only('should create an Ontop repository', () => {
+    //Create Ontop repository and test ontop functionality
+    it('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = ''
-
-
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
         const fileType = '';
 
@@ -352,7 +321,6 @@ describe('Repositories', () => {
                 cy.form_request(url, formData).then(response => {
                     return obdaFileUpload = response.response.body.fileLocation;
                 });
-
             });
         }).then(() => {
             // upload ontology file
@@ -363,7 +331,6 @@ describe('Repositories', () => {
 
                     cy.form_request(url, formData).then(response => {
                         return ontologyFileUpload = response.response.body.fileLocation;
-
                     });
                 });
             }).then(() => {
@@ -375,13 +342,12 @@ describe('Repositories', () => {
 
                         cy.form_request(url, formData).then(response => {
                             return propertiesFileUpload = response.response.body.fileLocation;
-
                         });
                     });
                 });
             }).then(() => {
                 const body = {
-                    id: repositoryId,
+                    id: 'virtual-repo',
                     title: '',
                     type: 'ontop',
                     params: {
@@ -431,9 +397,33 @@ describe('Repositories', () => {
                 }).then(response => {
                     console.log(response)
                 });
-
             });
         });
+
+        cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
+
+        //Check workbench restricted sections when connected to an Ontop repository
+        selectRepoFromDropdown('virtual-repo');
+        cy.visit("/import");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/monitor/queries");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/connectors");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/autocomplete");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/rdfrank");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/jdbc");
+        getOntopFunctionalityDisabledMessage();
+
+        //Check that Inference and SameAs are disabled also that explain plan is not supported.
+        cy.visit("/sparql");
+        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+
+        //check that Inference and SameAs buttons are disabled.
+        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
     });
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
