@@ -334,6 +334,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
         };
+
         $scope.hasEditRestrictions = function () {
             return $scope.user && $scope.user.username === UserType.ADMIN;
         };
@@ -398,7 +399,25 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.confirmPasswordError = '';
             }
             return true;
-        }
+        };
+
+        $scope.isLocalAuthentication = function() {
+            return $jwtAuth.getAuthImplementation() === 'Local';
+        };
+
+        $scope.updateUser = function () {
+            if (!$scope.validateForm()) {
+                return false;
+            }
+
+            if ($scope.isLocalAuthentication()) {
+                $scope.setGrantedAuthorities();
+            }
+
+            if (!$scope.repositoryCheckError) {
+                $scope.updateUserHttp();
+            }
+        };
 
         $scope.setNoPassword = function() {
             if ($scope.noPassword) {
@@ -586,18 +605,6 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.loader = false;
                 toastr.error(msg, 'Error');
             });
-        };
-
-        $scope.updateUser = function () {
-            if (!$scope.validateForm()) {
-                return false;
-            }
-
-            $scope.setGrantedAuthorities();
-
-            if (!$scope.repositoryCheckError) {
-                $scope.updateUserHttp();
-            }
         };
 
         $scope.validateForm = function () {
