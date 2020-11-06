@@ -1,7 +1,8 @@
+
 import './repository-commands';
 import './sparql-commands';
 import './import-commands';
-import 'cypress-file-upload';
+
 
 /**
  * Cypress cannot directly work with iframes due to https://github.com/cypress-io/cypress/issues/136
