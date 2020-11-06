@@ -18,7 +18,8 @@ function RepositoriesRestService($http) {
         getPrefix,
         getCluster,
         getRepositoryFileContent,
-        updateRepositoryFileContent
+        updateRepositoryFileContent,
+        validateOntopPropertiesConnection
     };
 
     function getRepository(repositoryid) {
@@ -63,5 +64,9 @@ function RepositoriesRestService($http) {
 
     function updateRepositoryFileContent(fileLocation, content) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/updateUploadedFile`, JSON.stringify(content), {params: {fileLocation: fileLocation}});
+    }
+
+    function validateOntopPropertiesConnection(ontopProperties) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/test-connection`, ontopProperties);
     }
 }
