@@ -70,7 +70,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 localStorage.removeItem(that.authStorageName);
             };
 
-            this.getAuthenticatedUserFromBackend = function() {
+            this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback) {
                 SecurityRestService.getAuthenticatedUser().
                 success(function(data, status, headers) {
                     if (that.auth && that.auth.startsWith('GDB')) {
@@ -90,14 +90,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
-                }).finally(function() {
-                    // Strictly speaking we should try this in the error() callback but
-                    // for some reason it doesn't get called.
-                    that.securityInitialized = true;
-                    if (!that.hasExplicitAuthentication()) {
-                        that.principal = that.freeAccessPrincipal;
-                        $rootScope.$broadcast('securityInit', that.securityEnabled, false, that.freeAccess);
-                        // console.log('free access fallback');
+                }).error(function () {
+                    if (noFreeAccessFallback || !that.freeAccess) {
+                        $rootScope.redirectToLogin();
+                    } else {
+                        that.securityInitialized = true;
+                        if (!that.hasExplicitAuthentication()) {
+                            that.clearAuthentication();
+                            // console.log('free access fallback');
+                        }
                     }
                 });
             }
@@ -136,7 +137,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     that.auth = $openIDAuth.authHeaderGraphDB();
                                     jwtAuth.setAuthHeaders();
                                     console.log('oidc: set id/access token as GraphDB auth');
-                                    that.getAuthenticatedUserFromBackend();
+                                    // When logging via OpenID we may get a token that doesn't have
+                                    // rights in GraphDB, this should be considered invalid.
+                                    that.getAuthenticatedUserFromBackend(true);
                                 }, function () {
                                     console.log('oidc: not logged or login error');
                                     if (that.authTokenIsType('Bearer')) {
