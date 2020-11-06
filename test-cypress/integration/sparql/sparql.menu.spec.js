@@ -44,6 +44,7 @@ describe('SPARQL screen validation', () => {
                 }
             }
         });
+        selectRepoFromDropdown(repositoryId);
 
         waitUntilSparqlPageIsLoaded();
     }
@@ -1325,4 +1326,17 @@ describe('SPARQL screen validation', () => {
         return cy.get('#toast-container');
     }
 
+    function selectRepoFromDropdown(repositoryId) {
+        getRepositoriesDropdown()
+            .click()
+            .find('.dropdown-menu .dropdown-item')
+            .contains(repositoryId)
+            .closest('a')
+            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
+            .click({force: true});
+    }
+
+    function getRepositoriesDropdown() {
+        return cy.get('#repositorySelectDropdown');
+    }
 });

@@ -206,15 +206,15 @@ describe('Repositories', () => {
 
         // Make the first one default, clear the cookies and reload the page
         // Note: the first one should be cleared in afterEach() preventing other tests to select it by default
+        selectRepoFromDropdown(repositoryId);
+
         getRepositoryFromList(repositoryId)
             .find('.pin-repository-btn')
             .should('not.have.class', 'active')
-            .click()
+            .click({force:true})
             .should('have.class', 'active');
         // The currently selected repository is kept in local storage
-        cy.localStorage.clear();
         cy.visit('/repository');
-
         // Should automatically select the default repository
         getRepositoriesDropdown()
             .find('.active-repository')
