@@ -63,7 +63,7 @@ describe('JDBC configuration', () => {
         getEditButton().click();
 
         typeQuery("{downarrow}"); //used to verify that the input field is active
-        getSuggestButton().click({forece:true}); //click preview button
+        getSuggestButton().click({force:true}); //click preview button
         getLoader().should('not.be.visible');
 
         //verify results content
