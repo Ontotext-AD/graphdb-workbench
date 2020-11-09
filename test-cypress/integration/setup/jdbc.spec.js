@@ -63,7 +63,7 @@ describe('JDBC configuration', () => {
         getEditButton().click();
 
         typeQuery("{downarrow}"); //used to verify that the input field is active
-        getSuggestButton().click({force:true}); //click preview button
+        getPreviewButton().click({force:true}); //click preview button
         getLoader().should('not.be.visible');
 
         //verify results content
@@ -78,7 +78,7 @@ describe('JDBC configuration', () => {
         clearQuery();
         cy.pasteQuery(EDIT_QUERY);
         getColumnTypesTab().click();
-        getSuggestButton().click(); //click suggest button to update the changes from the second query
+        getSuggestButton().click({force:true}); //click suggest button to update the changes from the second query
         getConfirmSuggestButton().click();
 
         //verify columns length and content
@@ -91,7 +91,7 @@ describe('JDBC configuration', () => {
 
         //Verify that changes have been applied upon saving
         typeQuery("{downarrow}"); //used to verify that the input field is active
-        getSuggestButton().click(); //click preview button
+        getPreviewButton().click({force:true}); //click preview button
         getLoader().should('not.be.visible');
 
         //verify results content
@@ -113,7 +113,7 @@ describe('JDBC configuration', () => {
     function initRepositoryAndVisitJdbcView() {
         repositoryId = 'jdbc-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         cy.visit('/jdbc');
     }
@@ -184,8 +184,12 @@ describe('JDBC configuration', () => {
         return cy.get('div.form-group.row.pt-1.ng-scope');
     }
 
-    function getSuggestButton() {
+    function getPreviewButton() {
         return cy.get('.preview-btn');
+    }
+
+    function getSuggestButton(){
+        return cy.get('.sql-table-config .preview-btn');
     }
 
     function getConfirmSuggestButton() {
