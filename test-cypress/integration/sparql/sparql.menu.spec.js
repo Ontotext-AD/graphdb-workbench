@@ -515,7 +515,7 @@ describe('SPARQL screen validation', () => {
             // Go to a different workbench section and then back
             ImportSteps.visitUserImport();
 
-            visitSparql();
+            cy.visit("/sparql");
 
             // Still two after navigation
             getTabs().should('have.length', 2);
