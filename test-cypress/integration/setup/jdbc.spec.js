@@ -40,12 +40,6 @@ describe('JDBC configuration', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Configuration table preview', () => {
-        //cy.visit('/jdbc');
-        // SQL configuration table should be visible
-        getConfigurationList().should('be.visible');
-    });
-
     it('Should create a new JDBC configuration, edit, preview, then delete', () => {
         getCreateNewJDBCConfigurationButon().click();
         cy.pasteQuery(QUERY);
@@ -108,6 +102,12 @@ describe('JDBC configuration', () => {
         getDeleteButton().click();
         getConfirmDialogButton().click();
         getConfigurationList().should('contain', 'No Indexes');
+    });
+
+    it('Configuration table preview', () => {
+        //cy.visit('/jdbc');
+        // SQL configuration table should be visible
+        getConfigurationList().should('be.visible');
     });
 
     function initRepositoryAndVisitJdbcView() {
