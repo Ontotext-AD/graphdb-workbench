@@ -106,21 +106,19 @@ describe('$jwtAuth tests', function () {
             nonLocked: true,
             enabled: true,
             authorities: ["ROLE_ADMIN"]
-        }, function () {
-            return "1234"
-        });
+        }, "1234");
 
         expect($jwtAuth.securityEnabled).toEqual(true);
         expect($jwtAuth.auth).toBeDefined();
     });
 
-    it('$jwtAuth.clearAuthentication should set auth to undefined', function () {
+    it('$jwtAuth.clearAuthentication should set auth to null', function () {
 
         $httpBackend.flush();
         $jwtAuth.clearAuthentication();
 
         expect($jwtAuth.securityEnabled).toEqual(true);
-        expect($jwtAuth.auth).toBeUndefined();
+        expect($jwtAuth.auth).toBeNull();
         // freeAccessPrincipal is either undefined or the principal for free access if that's enabled
         expect($jwtAuth.principal).toEqual($jwtAuth.freeAccessPrincipal)
     });

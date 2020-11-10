@@ -5,7 +5,7 @@ describe('Autocomplete ', () => {
     function createRepository() {
         repositoryId = 'autocomplete-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
     }
 

@@ -5,7 +5,7 @@ describe('Setup / RDF Rank', () => {
     function createRepository() {
         repositoryId = 'rdfrank-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
     }
 
     function waitUntilRdfRankPageIsLoaded() {

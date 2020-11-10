@@ -1,5 +1,6 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
+import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 
@@ -13,6 +14,7 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
+    'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr'
 ];
@@ -94,10 +96,21 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$timeout', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $timeout, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$timeout', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $timeout, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
+
+        $scope.loginWithOpenID = function() {
+            $jwtAuth.loginOpenID();
+        };
+
+        $scope.isGDBLoginEnabled = $jwtAuth.passwordLoginEnabled;
+        $scope.isOpenIDEnabled =  $jwtAuth.openIDEnabled;
+
+        if ($location.search().expired) {
+            toastr.error('Your authentication token has expired. Please login again.');
+        }
 
         $scope.login = function () {
             $http({
@@ -107,7 +120,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     'X-GraphDB-Password': $scope.password
                 }
             }).success(function (data, status, headers) {
-                $jwtAuth.authenticate(data, headers);
+                $jwtAuth.authenticate(data, headers('Authorization'));
                 const timer = $timeout(function () {
                     if ($rootScope.returnToUrl) {
                         // go back to remembered url
@@ -321,6 +334,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
         };
+
         $scope.hasEditRestrictions = function () {
             return $scope.user && $scope.user.username === UserType.ADMIN;
         };
@@ -364,6 +378,55 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             [READ_REPO]: {},
             [WRITE_REPO]: {}
         };
+
+        $scope.validatePassword = function() {
+            if ($scope.noPassword) {
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+                return true;
+            }
+            if ($scope.user.password !== $scope.user.confirmpassword) {
+                if (!$scope.user.password) {
+                    $scope.passwordError = 'Enter password!';
+                    $scope.confirmPasswordError = '';
+                } else {
+                    $scope.passwordError = '';
+                    $scope.confirmPasswordError = 'Confirm password!';
+                }
+                return false;
+            } else {
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+            }
+            return true;
+        };
+
+        $scope.isLocalAuthentication = function() {
+            return $jwtAuth.getAuthImplementation() === 'Local';
+        };
+
+        $scope.updateUser = function () {
+            if (!$scope.validateForm()) {
+                return false;
+            }
+
+            if ($scope.isLocalAuthentication()) {
+                $scope.setGrantedAuthorities();
+            }
+
+            if (!$scope.repositoryCheckError) {
+                $scope.updateUserHttp();
+            }
+        };
+
+        $scope.setNoPassword = function() {
+            if ($scope.noPassword) {
+                $scope.user.password = '';
+                $scope.user.confirmpassword = '';
+                $scope.passwordError = '';
+                $scope.confirmPasswordError = '';
+            }
+        }
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
@@ -442,18 +505,24 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
             } else {
                 $scope.usernameError = '';
             }
-            if (!$scope.user.password) {
-                $scope.passwordError = 'Enter password!';
-                result = false;
-            } else {
+            if ($scope.noPassword) {
                 $scope.passwordError = '';
-            }
-            if (!$scope.user.confirmpassword || $scope.user.password !== $scope.user.confirmpassword) {
-                $scope.confirmPasswordError = 'Confirm password!';
-                result = false;
-            } else {
                 $scope.confirmPasswordError = '';
+            } else {
+                if (!$scope.user.password) {
+                    $scope.passwordError = 'Enter password!';
+                    result = false;
+                } else {
+                    $scope.passwordError = '';
+                }
+                if (!$scope.user.confirmpassword || $scope.user.password !== $scope.user.confirmpassword) {
+                    $scope.confirmPasswordError = 'Confirm password!';
+                    result = false;
+                } else {
+                    $scope.confirmPasswordError = '';
+                }
             }
+
             return result;
         };
     }]);
@@ -515,7 +584,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             $scope.loader = true;
             SecurityRestService.updateUser({
                 username: $scope.user.username,
-                pass: $scope.user.password,
+                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
@@ -538,34 +607,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             });
         };
 
-        $scope.updateUser = function () {
-            if (!$scope.validateForm()) {
-                return false;
-            }
-
-            $scope.setGrantedAuthorities();
-
-            if (!$scope.repositoryCheckError) {
-                $scope.updateUserHttp();
-            }
-        };
-
         $scope.validateForm = function () {
-            const result = true;
-            if ($scope.user.password !== $scope.user.confirmpassword) {
-                if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
-                    $scope.confirmPasswordError = '';
-                } else {
-                    $scope.passwordError = '';
-                    $scope.confirmPasswordError = 'Confirm password!';
-                }
-                return false;
-            } else {
-                $scope.passwordError = '';
-                $scope.confirmPasswordError = '';
-            }
-            return result;
+            return $scope.validatePassword();
         };
     }]);
 
@@ -681,7 +724,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.loader = true;
             SecurityRestService.updateUserData({
                 username: $scope.user.username,
-                pass: $scope.user.password,
+                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings
             }).success(function () {
                 $scope.updateCurrentUserData();
@@ -713,21 +756,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         };
 
         $scope.validateForm = function () {
-            const result = true;
-            if ($scope.user.password !== $scope.user.confirmpassword) {
-                if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
-                    $scope.confirmPasswordError = '';
-                } else {
-                    $scope.passwordError = '';
-                    $scope.confirmPasswordError = 'Confirm password!';
-                }
-                return false;
-            } else {
-                $scope.passwordError = '';
-                $scope.confirmPasswordError = '';
-            }
-            return result;
+            return $scope.validatePassword();
         };
     }]);
 

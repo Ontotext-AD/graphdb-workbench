@@ -5,7 +5,7 @@ describe('Namespaces', () => {
     beforeEach(() => {
         repositoryId = 'namespaces-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
 
         cy.visit('/namespaces');

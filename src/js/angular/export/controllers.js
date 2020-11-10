@@ -15,8 +15,8 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ['$scope', '$http', '$cookies', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes',
-        function ($scope, $http, $cookies, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes) {
+    ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes',
+        function ($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -54,7 +54,7 @@ exportCtrl.controller('ExportCtrl',
 
             /// <summary>Get Graphs that are part of the Active Repository.</summary>
             $scope.getGraphs = function () {
-                if ($scope.getActiveRepository() !== '') {
+                if ($scope.getActiveRepository()) {
                     $scope.loader = true;
                     RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository()).success(function (data) {
                         data.results.bindings.unshift({
@@ -116,9 +116,9 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.downloadExport = function (downloadUrl, format) {
                 let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type);
-                const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
-                if (cookie) {
-                    url = url + '&authToken=' + encodeURIComponent(cookie);
+                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                if (auth) {
+                    url = url + '&authToken=' + encodeURIComponent(auth);
                 }
                 window.open(url);
             };
@@ -217,7 +217,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.$watch('exportFilter', function () {
                 $scope.filteredGraphs = filterFilter($scope.graphs, $scope.exportFilter);
-                if ($scope.getActiveRepository() !== '' && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
+                if ($scope.getActiveRepository() && angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span').length) {
                     const valueOfFilteredGraphsButton = angular.element(document).find('.btn.btn-secondary.btn-sm.dropdown-toggle span')[0].innerHTML.trim();
                     let valueOfFilteredGraphs;
                     if (valueOfFilteredGraphsButton === 'All') {

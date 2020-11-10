@@ -8,7 +8,7 @@ describe('User and Access', () => {
     });
 
     beforeEach(() => {
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.visit('/users');
         // Users table should be visible

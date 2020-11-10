@@ -37,7 +37,7 @@
 	<form name="form" class="form newUserForm userForm editUserContainer" ng-submit="submit()" novalidate>
 		<div class="row">
 			<div class="col-md-6">
-				<div class="card login-credentials" ng-hide="isOverrideAuth()">
+				<div class="card login-credentials" ng-hide="isOverrideAuth() || !isLocalAuthentication()">
 					<div class="card-block">
 						<h3>Login</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
@@ -49,8 +49,8 @@
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Pasword" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()">
+								<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
 							</div>
 							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
@@ -58,10 +58,17 @@
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword">
+								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
 						</div>
+                        <div>
+                            <label class="d-block">
+                                <input type="checkbox" id="noPassword" ng-model="noPassword" ng-change="setNoPassword()">
+                                <span ng-show="mode === 'add'">Don't set a password </span>
+                                <span ng-show="mode !== 'add'">Unset password </span>
+                            </label>
+                        </div>
 					</div>
 				</div>
 
@@ -116,7 +123,7 @@
 
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-6" ng-hide="!isLocalAuthentication()">
 				<div class="card user-role" id="user-roles">
 					<div class="card-block">
 						<h3>User role</h3>

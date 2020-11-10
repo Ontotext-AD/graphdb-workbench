@@ -30,7 +30,7 @@ describe('SPARQL screen validation', () => {
         cy.initializeRepository(repositoryId);
 
         // Avoids having to select the repository through the UI
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
     }
 
     function visitSparql(resetLocalStorage) {
@@ -44,6 +44,7 @@ describe('SPARQL screen validation', () => {
                 }
             }
         });
+        selectRepoFromDropdown(repositoryId);
 
         waitUntilSparqlPageIsLoaded();
     }
@@ -514,7 +515,7 @@ describe('SPARQL screen validation', () => {
             // Go to a different workbench section and then back
             ImportSteps.visitUserImport();
 
-            visitSparql();
+            cy.visit("/sparql");
 
             // Still two after navigation
             getTabs().should('have.length', 2);
@@ -1325,4 +1326,17 @@ describe('SPARQL screen validation', () => {
         return cy.get('#toast-container');
     }
 
+    function selectRepoFromDropdown(repositoryId) {
+        getRepositoriesDropdown()
+            .click()
+            .find('.dropdown-menu .dropdown-item')
+            .contains(repositoryId)
+            .closest('a')
+            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
+            .click({force: true});
+    }
+
+    function getRepositoriesDropdown() {
+        return cy.get('#repositorySelectDropdown');
+    }
 });

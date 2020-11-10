@@ -124,13 +124,14 @@ function coreErrors($timeout) {
         transclude: true,
         templateUrl: 'js/angular/core/templates/core-errors.html',
         link: function (scope, element, attrs) {
-            // If the attribute "write" is provided then this directive will require a repository with write access.
-            scope.isWriteRequired = attrs.hasOwnProperty('write');
+            scope.setAttrs(attrs);
+
+            scope.setRestricted();
 
             let previousElement;
 
             scope.getAccessibleRepositories = function () {
-                if (scope.isWriteRequired) {
+                if (scope.isRestricted) {
                     return scope.getWritableRepositories();
                 } else {
                     return scope.getReadableRepositories();

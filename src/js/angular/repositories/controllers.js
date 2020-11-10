@@ -481,6 +481,19 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.uploadOntopRepoFile = function(files, param) {
         uploadRepoFile(files, param, Upload, $scope);
+    };
+
+    $scope.isOntopRepoFileUploaded = function() {
+        return $scope.repositoryInfo.params.propertiesFile.value.length > 0
+    };
+
+    $scope.validateOntopPropertiesConnection = function() {
+        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
+            toastr.success('Connection is successful');
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Failed to connect');
+        });
     }
 
     $scope.isEnterprise = isEnterprise;
@@ -758,4 +771,18 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.uploadOntopRepoFile = function(files, param) {
         uploadRepoFile(files, param, Upload, $scope);
     };
+
+    $scope.isOntopRepoFileUploaded = function() {
+        return $scope.repositoryInfo.params.propertiesFile.value.length > 0
+    };
+
+    $scope.validateOntopPropertiesConnection = function() {
+        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
+            toastr.success('Connection is successful');
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Failed to connect');
+        });
+    }
+
 }

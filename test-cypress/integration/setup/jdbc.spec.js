@@ -1,35 +1,206 @@
+const FILE_TO_IMPORT = '200-row-allianz.ttl';
+const JDBC_CONFIG_NAME = 'jdbc_config';
+const QUERY = "PREFIX ex:<http://example.com/#>\n" +
+    "PREFIX base:<http://example/base/>\n" +
+    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
+    "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+    "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+    "\n" +
+    "select ?id ?sentiment_score ?fraud_score ?customer_loyalty where { \n" +
+    "\t?id rdf:type ex:Customer;\n" +
+    "    \tex:sentiment ?sentiment_score;\n" +
+    "      \tex:fraudScore ?fraud_score;\n" +
+    "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
+    "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
+    "    # !filter\n" +
+    "}  ";
+const EDIT_QUERY = "PREFIX ex:<http://example.com/#>\n" +
+    "PREFIX base:<http://example/base/>\n" +
+    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
+    "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+    "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
+    "\n" +
+    "select ?id ?fraud_score ?customer_loyalty where { \n" +
+    "\t?id rdf:type ex:Customer;\n" +
+    "      \tex:fraudScore ?fraud_score;\n" +
+    "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
+    "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
+    "    # !filter\n" +
+    "}  ";
+
 describe('JDBC configuration', () => {
 
     let repositoryId;
 
-    context('No repository selected', () => {
-        it('Initial error state', () => {
-            cy.visit('/jdbc');
-            // Repository not selected warning should be visible
-            cy.get('.repository-errors').should('be.visible');
-        });
+    beforeEach(() => {
+        initRepositoryAndVisitJdbcView();
     });
 
-    context('Creating JDBC configuration', () => {
-        beforeEach(() => {
-            initRepositoryAndVisitJdbcView();
-        });
-
-        afterEach(() => {
-            cy.deleteRepository(repositoryId);
-        });
-
-        it('Configuration table preview', () => {
-            cy.visit('/jdbc');
-            // SQL configuration table should be visible
-            cy.get('.jdbc-list-configurations').should('be.visible');
-        });
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
+    it('Configuration table preview', () => {
+        //cy.visit('/jdbc');
+        // SQL configuration table should be visible
+        getConfigurationList().should('be.visible');
+    });
+
+    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+        getCreateNewJDBCConfigurationButon().click();
+        cy.pasteQuery(QUERY);
+        getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
+        getColumnTypesTab().click(); //switch to SQL columns config tab
+
+        //verify columns length and content
+        getSQLTableRows().should('have.length', 4);
+        getSQLTableConfig()
+            .should('be.visible')
+            .and('contain', 'sentiment_score');
+
+        getSaveButton().click();
+        getConfigurationList().should('contain', JDBC_CONFIG_NAME); //verify config is created
+        getEditButton().click();
+
+        typeQuery("{downarrow}"); //used to verify that the input field is active
+        getSuggestButton().click({force:true}); //click preview button
+        getLoader().should('not.be.visible');
+
+        //verify results content
+        getPreviewTable()
+            .should('be.visible')
+            .and('contain', 'SENTIMENT_SCORE')
+            .and('contain', 'CUSTOMER_LOYALTY')
+            .and('contain', 'ID')
+            .and('contain', 'FRAUD_SCORE');
+
+        //clear current query and paste the edited one, to test the suggest functionality
+        clearQuery();
+        cy.pasteQuery(EDIT_QUERY);
+        getColumnTypesTab().click();
+        getSuggestButton().click(); //click suggest button to update the changes from the second query
+        getConfirmSuggestButton().click();
+
+        //verify columns length and content
+        getSQLTableRows().should('have.length', 3);
+        getSQLTableConfig()
+            .should('be.visible')
+            .and('not.contain', 'sentiment_score');
+        getSaveButton().click();
+        getEditButton().click();
+
+        //Verify that changes have been applied upon saving
+        typeQuery("{downarrow}"); //used to verify that the input field is active
+        getSuggestButton().click(); //click preview button
+        getLoader().should('not.be.visible');
+
+        //verify results content
+        getPreviewTable()
+            .should('be.visible')
+            .and('not.contain', 'SENTIMENT_SCORE')
+            .and('contain', 'CUSTOMER_LOYALTY')
+            .and('contain', 'ID')
+            .and('contain', 'FRAUD_SCORE');
+        getSaveButton().click();
+
+        //Delete jdbc configuration
+        cy.get('.jdbc-list-configurations').should('be.visible');
+        getDeleteButton().click();
+        getConfirmDialogButton().click();
+        getConfigurationList().should('contain', 'No Indexes');
+    });
 
     function initRepositoryAndVisitJdbcView() {
-        repositoryId = 'similarity-repo-' + Date.now();
+        repositoryId = 'jdbc-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepositoryCookie(repositoryId);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        cy.visit('/jdbc');
+    }
+
+    function getCreateNewJDBCConfigurationButon() {
+        return cy.get('.create-sql-table-configuration');
+    }
+
+    function getJDBCConfigNameField() {
+        return cy.get('.sql-table-name');
+    }
+
+    function getQueryArea() {
+        return cy.get('.CodeMirror');
+    }
+
+    function getQueryTextArea() {
+        return getQueryArea().find('textarea');
+    }
+
+    function typeQuery(query) {
+        // getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+        getQueryTextArea().type(query, {force: true});
+        waitUntilQueryIsVisible();
+    }
+
+    function clearQuery() {
+        // Using force because the textarea is not visible
+        getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
+    }
+
+    function waitUntilQueryIsVisible() {
+        getQueryArea().should(codeMirrorEl => {
+            const cm = codeMirrorEl[0].CodeMirror;
+            expect(cm.getValue().trim().length > 0).to.be.true;
+        });
+    }
+
+    function getColumnTypesTab() {
+        return cy.get('.nav-tabs').contains("Column types");
+    }
+
+    function getDataQueryTab() {
+        return cy.get('.nav-tabs').contains("Data query");
+    }
+
+    function getSaveButton() {
+        return cy.get('.save-query-btn');
+    }
+
+    function getDeleteButton() {
+        return cy.get('.icon-trash');
+    }
+
+    function getConfirmDialogButton() {
+        return cy.get('.btn-primary');
+    }
+
+    function getConfigurationList() {
+        return cy.get('.jdbc-list-configurations');
+    }
+
+    function getEditButton() {
+        return cy.get('.icon-edit');
+    }
+
+    function getSQLTableRows() {
+        return cy.get('div.form-group.row.pt-1.ng-scope');
+    }
+
+    function getSuggestButton() {
+        return cy.get('.preview-btn');
+    }
+
+    function getConfirmSuggestButton() {
+        return cy.get('.confirm-btn');
+    }
+
+    function getLoader() {
+        return cy.get('.ot-loader-new-content');
+    }
+
+    function getPreviewTable() {
+        return cy.get('.resultsTable');
+    }
+
+    function getSQLTableConfig() {
+        return cy.get('.sql-table-config');
     }
 });

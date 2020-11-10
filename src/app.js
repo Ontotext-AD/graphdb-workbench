@@ -24,9 +24,25 @@ const moduleDefinition = function (productInfo) {
                 positionClass: 'toast-bottom-right'
             });
 
+
             localStorageServiceProvider
                 .setStorageType('localStorage')
                 .setNotify(true, true);
+
+
+            var $route = $routeProvider.$get[$routeProvider.$get.length-1]({$on:function(){}});
+
+            // Handle OAuth returned url, _openid_implicit_ is just a placeholder, the actual URL
+            // is defined by the regular expression below.
+            $routeProvider.when('_openid_implicit_',{
+                controller : function() {
+                },
+                template : "<div></div>"
+            });
+
+            // The URL will contain access_token=xxx and id_token=xxx and possibly other parameters,
+            // separated by &. Parameters may come in any order.
+            $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
             let routes = PluginRegistry.get('route');
 
@@ -82,7 +98,7 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$cookies', '$rootScope', '$route', 'toastr', '$sce', function ($cookies, $rootScope, $route, toastr, $sce) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', function ($rootScope, $route, toastr, $sce) {
         $rootScope.$on('$routeChangeSuccess', function () {
             if ($route.current.title) {
                 document.title = $route.current.title + ' | GraphDB Workbench';

@@ -13,9 +13,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$cookies', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function queryEditorDirective($timeout, $location, toastr, $cookies, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
 
     let callbackOnChange;
 
@@ -379,6 +379,12 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                 scope.queryStartTime = new Date().getTime();
                 return originalExecuteQuery(cm, {
                     setQueryLimit: function (query) {
+                        // Until weird conversion of CONSTRUCT queries is fixed
+                        // in Ontop project, comments should be removed from them
+                        // TODO: Remove this check when ${link https://github.com/ontop/ontop/issues/362} is fixed
+                        if (scope.currentTabConfig.queryType === 'CONSTRUCT' && $repositories.isActiveRepoOntopType()) {
+                            return window.editor.getValueWithoutComments();
+                        }
                         // For all types of queries we handle limit/offset in our RepositoriesController.
                         // TODO: Get rid of this method
                         return query;
@@ -505,9 +511,9 @@ function queryEditorDirective($timeout, $location, toastr, $cookies, $repositori
                 }
                 $('#wb-download-infer').val(scope.currentQuery.inference);
                 $('#wb-download-sameAs').val(scope.currentQuery.sameAs);
-                const cookie = $cookies['com.ontotext.graphdb.auth' + $location.port()];
-                if (cookie) {
-                    $('#wb-auth-token').val(cookie);
+                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                if (auth) {
+                    $('#wb-auth-token').val(auth);
                 }
                 $('#wb-download-accept').val(downloadFormat);
                 $wbDownload.submit();

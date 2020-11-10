@@ -90,7 +90,7 @@ function RDF4JRepositoriesRestService($http, $repositories) {
     function resolveGraphs() {
         const activeRepository = $repositories.getActiveRepository();
         let graphsInRepo = [];
-        if (activeRepository !== "") {
+        if (activeRepository) {
             return getGraphs(activeRepository).success(function (graphs) {
                     graphs.results.bindings.unshift({
                         contextID: {

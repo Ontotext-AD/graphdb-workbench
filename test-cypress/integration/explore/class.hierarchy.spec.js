@@ -13,7 +13,7 @@ describe('Class hierarchy screen validation', () => {
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepositoryCookie(repositoryId);
+        cy.presetRepository(repositoryId);
 
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
