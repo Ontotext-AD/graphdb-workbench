@@ -89,7 +89,6 @@ describe('JDBC configuration', () => {
         getSaveButton().click();
         getEditButton().click();
 
-        cy.wait(1000)
         //Verify that changes have been applied upon saving
         typeQuery("{downarrow}"); //used to verify that the input field is active
         getPreviewButton().click({force:true}); //click preview button
@@ -138,7 +137,7 @@ describe('JDBC configuration', () => {
     function typeQuery(query) {
         // getQueryTextArea().invoke('val', query).trigger('change', {force: true});
         getQueryTextArea().type(query, {force: true});
-        waitUntilQueryIsVisible();
+        cy.waitUntilQueryIsVisible();
     }
 
     function clearQuery() {
