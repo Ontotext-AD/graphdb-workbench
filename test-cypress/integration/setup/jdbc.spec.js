@@ -36,14 +36,11 @@ describe('JDBC configuration', () => {
         initRepositoryAndVisitJdbcView();
     });
 
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
-    });
-
     it('Configuration table preview', () => {
         //cy.visit('/jdbc');
         // SQL configuration table should be visible
         getConfigurationList().should('be.visible');
+        cy.deleteRepository(repositoryId);
     });
 
     it('Should create a new JDBC configuration, edit, preview, then delete', () => {
@@ -143,13 +140,6 @@ describe('JDBC configuration', () => {
     function clearQuery() {
         // Using force because the textarea is not visible
         getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
-    }
-
-    function waitUntilQueryIsVisible() {
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
     }
 
     function getColumnTypesTab() {
