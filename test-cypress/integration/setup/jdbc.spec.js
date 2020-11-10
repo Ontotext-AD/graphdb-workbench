@@ -36,11 +36,14 @@ describe('JDBC configuration', () => {
         initRepositoryAndVisitJdbcView();
     });
 
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
+    });
+
     it('Configuration table preview', () => {
         //cy.visit('/jdbc');
         // SQL configuration table should be visible
         getConfigurationList().should('be.visible');
-        cy.deleteRepository(repositoryId);
     });
 
     it('Should create a new JDBC configuration, edit, preview, then delete', () => {
@@ -98,7 +101,7 @@ describe('JDBC configuration', () => {
             .and('contain', 'CUSTOMER_LOYALTY')
             .and('contain', 'ID')
             .and('contain', 'FRAUD_SCORE');
-        getSaveButton().click();
+        getCancelButton().click();
 
         //Delete jdbc configuration
         cy.get('.jdbc-list-configurations').should('be.visible');
@@ -156,6 +159,10 @@ describe('JDBC configuration', () => {
 
     function getDeleteButton() {
         return cy.get('.icon-trash');
+    }
+
+    function getCancelButton() {
+        return cy.get('.cancel-query-btn');
     }
 
     function getConfirmDialogButton() {
