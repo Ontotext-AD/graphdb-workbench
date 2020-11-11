@@ -37,6 +37,8 @@ jobs:
 
     - stage: npm release
       if: tag IS present
+      script:
+        - npm run build
       deploy:
         - provider: npm
           skip_cleanup: true
