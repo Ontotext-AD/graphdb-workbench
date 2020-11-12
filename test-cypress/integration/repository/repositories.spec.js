@@ -305,7 +305,7 @@ describe('Repositories', () => {
     });
 
     //Create Ontop repository and test ontop functionality
-    it('should create an Ontop repository', () => {
+    it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = ''
