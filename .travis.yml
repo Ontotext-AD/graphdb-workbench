@@ -22,26 +22,34 @@ addons:
     packages:
       - libgconf-2-4
 
-script:
-  - npm run test:coverage
-  - npm run build
-  - npm run sonar
+jobs:
+  include:
+    - stage: build and test
+      if: type = pull_request OR branch = master
+      script:
+        - npm run test:coverage
+        - npm run build
+        - npm run sonar
+        - npm run test:acceptance
 
-after_script:
-  - npm run test:coveralls
-  - npm run test:acceptance
+      after_script:
+        - npm run test:coveralls
 
-deploy:
-  - provider: npm
-    skip_cleanup: true
-    email: $NPM_MAIL
-    api_key: $NPM_TOKEN
-    on:
-      tags: true
+    - stage: npm release
+      if: tag IS present
+      script:
+        - npm run build
+      deploy:
+        - provider: npm
+          skip_cleanup: true
+          email: $NPM_MAIL
+          api_key: $NPM_TOKEN
+          on:
+            tags: true
 
-  - provider: script
-    # Workaround. cannot login in NPM and cannot configure NPM provider to go in the directory
-    script: cd test-cypress/ && echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc && npm publish
-    skip_cleanup: true
-    on:
-      tags: true
+        - provider: script
+          # Workaround. cannot login in NPM and cannot configure NPM provider to go in the directory
+          script: cd test-cypress/ && echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc && npm publish
+          skip_cleanup: true
+          on:
+            tags: true

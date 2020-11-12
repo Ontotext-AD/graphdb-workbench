@@ -400,6 +400,10 @@
     content: "\e92f";
 }
 
+.icon-repo-virtual:before {
+    content: "\e957";
+}
+
 /*
 [class^="icon-"]:before, [class*=" icon-"]:before {
 	display: inline-block;
