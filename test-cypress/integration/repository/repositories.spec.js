@@ -283,6 +283,149 @@ describe('Repositories', () => {
         });
     });
 
+    //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
+    it('should check if Ontop repository type is available', () => {
+        getCreateRepositoryButton().click();
+        getRepositoryTypeDropdown().should('contain', "Ontop").and('not.be.disabled');
+        getRepositoryTypeDropdown().select('Ontop');
+        getOBDAFileField().should('be', "visible");
+        getOntologyFileField().should('be', "visible");
+        ;
+        getPropertiesFileField().should('be', "visible");
+        ;
+        getConstraintFileField().should('be', "visible");
+        getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
+        ;
+        getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
+        getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
+        getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
+        ;
+    });
+
+    //Create Ontop repository and test ontop functionality
+    it.skip('should create an Ontop repository', () => {
+        let obdaFileUpload = '';
+        let ontologyFileUpload = '';
+        let propertiesFileUpload = ''
+        const url = 'http://localhost:9000/rest/repositories/uploadFile';
+        const fileType = '';
+
+        // upload obda file
+        cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
+            Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
+                const formData = new FormData();
+                formData.set('uploadFile', blob, 'fileName');
+
+                cy.form_request(url, formData).then(response => {
+                    return obdaFileUpload = response.response.body.fileLocation;
+                });
+            });
+        }).then(() => {
+            // upload ontology file
+            cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
+                Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
+                    const formData = new FormData();
+                    formData.set('uploadFile', blob, 'fileName');
+
+                    cy.form_request(url, formData).then(response => {
+                        return ontologyFileUpload = response.response.body.fileLocation;
+                    });
+                });
+            }).then(() => {
+                // upload property file
+                cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
+                    Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
+                        const formData = new FormData();
+                        formData.set('uploadFile', blob, 'fileName');
+
+                        cy.form_request(url, formData).then(response => {
+                            return propertiesFileUpload = response.response.body.fileLocation;
+                        });
+                    });
+                });
+            }).then(() => {
+                const body = {
+                    id: 'virtual-repo',
+                    title: '',
+                    type: 'ontop',
+                    params: {
+                        propertiesFile: {
+                            label: 'Ontop repository properties file',
+                            name: 'propertiesFile',
+                            value: propertiesFileUpload
+                        },
+                        isShacl: {
+                            label: 'Supports SHACL validation',
+                            name: 'isShacle',
+                            value: false
+                        },
+                        owlFile: {
+                            label: 'Ontop repository ontology file',
+                            name: 'owlFile',
+                            value: ontologyFileUpload
+                        },
+                        constraintFile: {
+                            label: 'Ontop repository constraint file',
+                            name: 'constraintFile',
+                            value: ''
+                        },
+                        id: {
+                            label: 'Repository ID',
+                            name: 'id',
+                            value: 'ontop-repo'
+                        },
+                        title: {
+                            label: "Repository title",
+                            name: "title",
+                            value: "Ontop virtual store"
+                        },
+                        obdaFile: {
+                            label: "Ontop repository OBDA or R2RML file",
+                            name: "obdaFile",
+                            value: obdaFileUpload
+                        }
+                    }
+                };
+
+                cy.request({
+                    method: 'POST',
+                    url: 'http://localhost:9000/rest/repositories',
+                    body,
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(response => {
+                    console.log(response)
+                });
+            });
+        });
+
+        cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
+
+        //Check workbench restricted sections when connected to an Ontop repository
+        selectRepoFromDropdown('virtual-repo');
+        cy.visit("/import");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/monitor/queries");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/connectors");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/autocomplete");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/rdfrank");
+        getOntopFunctionalityDisabledMessage();
+        cy.visit("/jdbc");
+        getOntopFunctionalityDisabledMessage();
+
+        //Check that Inference and SameAs are disabled also that explain plan is not supported.
+        cy.visit("/sparql");
+        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+
+        //check that Inference and SameAs buttons are disabled.
+        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+    });
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
@@ -404,5 +547,48 @@ describe('Repositories', () => {
 
     function getToast() {
         return cy.get('#toast-container');
+    }
+
+    function getRepositoryTypeDropdown() {
+        return cy.get('#type');
+    }
+
+    function getOBDAFileField() {
+        return cy.get('div').contains("Ontop repository OBDA or R2RML file*");
+    }
+
+    function getOntologyFileField() {
+        return cy.get('div').contains("Ontop repository ontology file");
+    }
+
+    function getPropertiesFileField() {
+        return cy.get('div').contains("Ontop repository properties file*");
+    }
+
+    function getConstraintFileField() {
+        return cy.get('div').contains("Ontop repository constraint file");
+    }
+
+    function getOBDAUploadButton() {
+        return cy.get('div').contains("Upload obda or r2rml file");
+    }
+
+    function getOntologyUploadButton() {
+        return cy.get('div').contains("Upload ontology file");
+    }
+
+    function getPropertiesUploadButton() {
+        return cy.get('div').contains("Upload properties file");
+    }
+
+    function getConstraintUploadButton() {
+        return cy.get('div').contains("Upload constraint file");
+    }
+
+    function getOntopFunctionalityDisabledMessage() {
+        return cy.get('.repository-errors div.alert')
+            .should('be', 'visible')
+            .and('contain', 'Some functionalities are not available because')
+            .and('contain', ' is read-only Virtual Repository');
     }
 });
