@@ -6,7 +6,6 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
     .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
         return {
             'responseError': function (response) {
-                let reject = false;
                 let redirect = false;
                 let expired = false;
 
@@ -17,33 +16,26 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                         // This check is essential for making free access and external auth working.
                         redirect = true;
                     }
-                    reject = true;
                 } else if (response.status === 403) {
                     if ($rootScope.setPermissionDenied($location.path())) {
                         console.log('Permission to page denied. Some errors in the console are normal.'); // eslint-disable-line no-console
                     } else {
                         redirect = true;
                     }
-                    reject = true;
                 } else if (response.status === 409) {
                     // We get 409 only if a GDB token expired, OpenID needs to be handled differently
                     // as it returns 401.
                     redirect = true;
                     expired = true;
-                    reject = true;
                 }
 
-                if (reject) {
-                    if (redirect) {
-                        return Promise.resolve($rootScope.redirectToLogin(expired))
-                            .then(() => {
-                                return $q.reject(response);
-                            });
-                    } else {
-                        return $q.reject(response);
-                    }
+                if (redirect) {
+                    return Promise.resolve($rootScope.redirectToLogin(expired))
+                        .then(() => {
+                            return $q.reject(response);
+                        });
                 } else {
-                    return response;
+                    return $q.reject(response);
                 }
             }
         };
