@@ -3,6 +3,7 @@ import './repository-commands';
 import './sparql-commands';
 import './import-commands';
 
+
 /**
  * Cypress cannot directly work with iframes due to https://github.com/cypress-io/cypress/issues/136
  *
@@ -27,4 +28,20 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, ($iframe) => {
             });
         }
     });
+});
+
+// Performs an XMLHttpRequest instead of a cy.request (able to send data as
+// FormData - multipart/form-data)
+Cypress.Commands.add("form_request", (url, formData) => {
+    return cy
+        .server()
+        .route("POST", url)
+        .as("formRequest")
+        .window()
+        .then(win => {
+            var xhr = new win.XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.send(formData);
+        })
+        .wait("@formRequest");
 });
