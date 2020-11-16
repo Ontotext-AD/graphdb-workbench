@@ -53,7 +53,8 @@ const editFile = function(file, $modal, $scope, RepositoriesRestService, toastr)
         modalInstance.result.then(function (data) {
             // send data to backend
             RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(data) {
-                toastr.success('File updated successfully');
+                $scope.ontopRepoFileNames[file] = getFileName(data.fileLocation);
+                $scope.repositoryInfo.params[file].value = data.fileLocation;
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Error');
@@ -84,6 +85,18 @@ const uploadRepoFile = function (files, param, Upload, $scope) {
             $scope.uploadFileLoader = false;
         });
     }
+};
+
+const getFileName = function(path) {
+    let lastIdx = path.lastIndexOf('/');
+    if (lastIdx === -1) {
+        lastIdx = path.lastIndexOf('\\');
+    }
+    let name = path;
+    if (lastIdx !== -1) {
+        name = name.substring(lastIdx + 1);
+    }
+    return name;
 };
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
@@ -651,7 +664,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
     $scope.ontopRepoFileNames = {};
 
-
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             RepositoriesRestService.getRepository($scope.repositoryInfo.id)
@@ -664,14 +676,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                             }
                         });
                         if (data.params.ruleset && ifRulesetExists) {
-                            let lastIdx = data.params.ruleset.value.lastIndexOf('/');
-                            if (lastIdx === -1) {
-                                lastIdx = data.params.ruleset.value.lastIndexOf('\\');
-                            }
-                            let name = data.params.ruleset.value;
-                            if (lastIdx !== -1) {
-                                name = name.substring(lastIdx + 1);
-                            }
+                            let name = getFileName(data.params.ruleset.value);
                             $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
                         }
                     }
