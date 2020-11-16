@@ -3,7 +3,7 @@ class HomeSteps {
     static visitAndWaitLoader() {
         cy.visit('/');
         cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader-new-content').should('not.be.visible');
+        return cy.get('.ot-loader-new-content').should('not.be.visible');
     }
 
     static verifyTutorialVisible(shouldBeVisible) {
@@ -100,12 +100,12 @@ class HomeSteps {
     }
 
     static shouldHaveAutocompleteResult(uri) {
-        HomeSteps.getAutocompleteResultElement(uri).should("be.visible");
+        return HomeSteps.getAutocompleteResultElement(uri).should("be.visible");
     }
 
     static autocompleteText(text, uri) {
         HomeSteps.getAutocompleteInput().type(text);
-        HomeSteps.shouldHaveAutocompleteResult(uri);
+        return HomeSteps.shouldHaveAutocompleteResult(uri);
     }
 
     static getAutocompleteResultElement(uri) {
