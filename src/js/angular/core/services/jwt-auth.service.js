@@ -252,12 +252,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.setAuthHeaders = function () {
-                $http.defaults.headers.common['Authorization'] = this.auth;
+                const auth = this.auth ? this.auth : undefined;
+                $http.defaults.headers.common['Authorization'] = auth;
                 // Angular doesn't send this header by default and we need it to detect XHR requests
                 // so that we don't advertise Basic auth with them.
                 $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
                 $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-                $.ajaxSetup()['headers']['Authorization'] = this.auth;
+                $.ajaxSetup()['headers']['Authorization'] = auth;
                 // jQuery seems to send the header by default but it doesn't hurt to be explicit
                 $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
             };
@@ -314,7 +315,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.isAuthenticated = function () {
-                return !this.securityEnabled || this.auth != null;
+                return !this.securityEnabled || this.hasExplicitAuthentication();
             };
 
             this.hasPermission = function () {
