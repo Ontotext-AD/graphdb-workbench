@@ -753,11 +753,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 return false;
             }
 
-            $scope.setGrantedAuthorities();
-
-            if (!$scope.repositoryCheckError) {
-                $scope.updateUserHttp();
-            }
+            $scope.updateUserHttp();
         };
 
         $scope.validateForm = function () {
