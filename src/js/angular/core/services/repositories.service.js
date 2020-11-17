@@ -223,9 +223,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         }
 
         this.setRepositoryHeaders = function () {
-            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository;
+            const repo = this.repository ? this.repository : undefined;
+            $http.defaults.headers.common['X-GraphDB-Repository'] = repo;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repo;
         };
         this.setRepositoryHeaders();
 
