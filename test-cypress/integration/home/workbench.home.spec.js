@@ -76,9 +76,10 @@ describe('Home screen validation', () => {
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
             cy.enableAutocomplete(repositoryId);
 
-            HomeSteps.visitAndWaitLoader();
-            HomeSteps.autocompleteText('Green', GOBLIN_URI);
-            HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click();
+            HomeSteps.visitAndWaitLoader().then((el) => el)
+                .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
+                .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click());
+
             HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
 
             HomeSteps.goBackAndWaitAutocomplete(function () {

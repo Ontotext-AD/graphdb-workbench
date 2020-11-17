@@ -755,8 +755,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test save invalid Sample Queries', () => {
             // Try to save Sample Queries without specifying query name
-            saveQuery();
-            waitUntilSavedQueryModalIsVisible();
+            saveQuery().then(() => waitUntilSavedQueryModalIsVisible());
 
             submitSavedQuery();
             getSavedQueryErrors()
@@ -789,7 +788,7 @@ describe('SPARQL screen validation', () => {
             // The form is valid, the modal should disappear and then reappear with an error
             getSubmitSavedQueryBtn()
                 .click()
-                .should('not.exist');
+                .should('not.exist')
             waitUntilSavedQueryModalIsVisible();
 
             getSavedQueryErrors()
@@ -1194,7 +1193,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function saveQuery() {
-        getSaveQueryBtn().click();
+        return getSaveQueryBtn().click();
     }
 
     function getSavedQueryForm() {

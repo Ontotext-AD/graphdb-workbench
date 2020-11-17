@@ -59,11 +59,11 @@ function RepositoriesRestService($http) {
     }
 
     function getRepositoryFileContent(file) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/getUploadedFileContent`, {params: {fileLocation: file}});
+        return $http.get(`${REPOSITORIES_ENDPOINT}/getFileContent`, {params: {fileLocation: file}});
     }
 
     function updateRepositoryFileContent(fileLocation, content) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/updateUploadedFile`, JSON.stringify(content), {params: {fileLocation: fileLocation}});
+        return $http.post(`${REPOSITORIES_ENDPOINT}/updateFile`, JSON.stringify(content), {params: {fileLocation: fileLocation}});
     }
 
     function validateOntopPropertiesConnection(ontopProperties) {
