@@ -166,11 +166,15 @@ describe('==> Repository module services tests', function () {
 
             $repositories.setRepository('');
             expect($repositories.repository).toEqual('');
-            expect($http.defaults.headers.common['X-GraphDB-Repository']).toEqual('');
+            expect($http.defaults.headers.common['X-GraphDB-Repository']).toBeUndefined();
 
             $repositories.setRepository(undefined);
             expect($repositories.repository).toEqual(undefined);
-            expect($http.defaults.headers.common['X-GraphDB-Repository']).toEqual(undefined);
+            expect($http.defaults.headers.common['X-GraphDB-Repository']).toBeUndefined();
+
+            $repositories.setRepository(null);
+            expect($repositories.repository).toEqual(null);
+            expect($http.defaults.headers.common['X-GraphDB-Repository']).toBeUndefined();
 
             $repositories.setRepository('test');
             expect($repositories.repository).toEqual('test');

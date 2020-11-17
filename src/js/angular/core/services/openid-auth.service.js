@@ -264,7 +264,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
                 if (!isRefresh) {
                     // TODO: Maybe move this outside the service?
-                    window.location.href = redirectUrl;
+                    $location.url('/');
                 }
             }
 

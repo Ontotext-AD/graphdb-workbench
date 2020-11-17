@@ -34,9 +34,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     LicenseRestService.getHardcodedLicense()
         .success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -86,7 +86,13 @@ function homeCtrl($scope, $http, $repositories, $jwtAuth, AutocompleteRestServic
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
-            refreshRepositoryInfo();
+            if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
+                // Security is OFF or security is ON but we are authenticated
+                refreshRepositoryInfo();
+            } else {
+                // Security is ON and we aren't authenticated, redirect to login page
+                $rootScope.redirectToLogin();
+            }
         }
     });
 }
@@ -503,10 +509,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         ];
         $scope.activePage = 0;
         $(".pages-wrapper .page-slide").css("opacity", 100);
-        const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
+        const widthOfParentElm = $(".main-container")[0].offsetWidth + 200;
         $timeout(function () {
             const $pageSlider = $(".pages-wrapper .page-slide");
-            $pageSlider.css("left", withOfParentElm + "px");
+            $pageSlider.css("left", widthOfParentElm + "px");
             $($pageSlider[$scope.activePage]).css("left", 0 + "px");
             $($(".btn-toolbar.pull-right .btn-group .btn")[0]).focus();
         }, 50);
@@ -583,9 +589,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     }
 
     $scope.slideToPage = function (index) {
-        const withOfParentElm = $(".pages-wrapper")[0].offsetWidth;
+        const widthOfParentElm = $(".main-container")[0].offsetWidth;
         const $pageSlider = $(".pages-wrapper .page-slide");
-        $pageSlider.css("opacity", "0").delay(200).css("left", withOfParentElm + "px");
+        $pageSlider.css("opacity", "0").delay(200).css("left", widthOfParentElm + "px");
         $scope.activePage = index;
         $($pageSlider[$scope.activePage]).css("opacity", "100").css("left", 0 + "px");
     };
