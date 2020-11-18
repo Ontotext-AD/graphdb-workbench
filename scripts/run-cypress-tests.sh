@@ -29,4 +29,4 @@ echo "Installing Cypress tests module"
 npm install
 
 echo "Starting Cypress tests against GraphDB version ${GDB_VERSION}"
-npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
+npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false --spec "integration/setup/jdbc.spec.js"

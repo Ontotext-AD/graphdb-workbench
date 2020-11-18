@@ -329,8 +329,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      * restrictions related with repository of type Ontop will be shown to the user
      */
     $scope.setRestricted = function () {
-        $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
-            $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+        if ($scope.attrs) {
+            $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
+                $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+        }
     };
 
     $scope.toHumanReadableType = function (type) {
