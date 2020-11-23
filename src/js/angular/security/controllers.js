@@ -105,8 +105,10 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
             $jwtAuth.loginOpenID();
         };
 
-        if ($location.search().expired) {
-            toastr.error('Your authentication token has expired. Please login again.');
+        if ($location.search().noaccess) {
+            toastr.error('User has no access rights or configuration error.', 'Login error');
+        } else if ($location.search().expired) {
+            toastr.error('Your authentication token has expired. Please login again.', 'Login error');
         }
 
         $scope.isGDBLoginEnabled = function() {
