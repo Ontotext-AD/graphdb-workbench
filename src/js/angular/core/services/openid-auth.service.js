@@ -17,17 +17,43 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             const storagePrefix = 'com.ontotext.graphdb.openid.';
             const that = this;
 
+            /**
+             * The OpenID config returned by GraphDB.
+             *
+             * @typedef {{
+             *      authFlow : string,
+             *      authorizeParameters : string,
+             *      clientId : string,
+             *      issuer : string,
+             *      oidcAuthorizationEndpoint : string,
+             *      oidcEndSessionEndpoint : string,
+             *      oidcJwksUri : string,
+             *      oidcScopesSupported : Array
+             *      oidcTokenEndpoint : string,
+             *      proxyOidc : boolean,
+             *      tokenAudience : string,
+             *      tokenIssuer : string,
+             *      tokenType : string
+             * }} OpenIdConfig
+             */
+
+            /**
+             * Performs OpenID login.
+             *
+             * @param {OpenIdConfig} openIDConfig The OpenID configuration provided by GraphDB.
+             * @param {string} returnToUrl The redirect URL registered with the OpenID provider.
+             */
             this.login = function(openIDConfig, returnToUrl) {
                 // Create and store a random "state" value
-                const state = this.generateRandomString();
+                const state = that.generateRandomString();
                 const authFlow = openIDConfig.authFlow;
 
                 if (authFlow === 'code') {
-                    this.setStorageItem('pkce_state', state);
+                    that.setStorageItem('pkce_state', state);
 
                     // Create and store a new PKCE code_verifier (the plaintext random secret)
                     const code_verifier = that.generateRandomString();
-                    this.setStorageItem('pkce_code_verifier', code_verifier);
+                    that.setStorageItem('pkce_code_verifier', code_verifier);
 
                     // Hash and base64-urlencode the secret to use as the challenge
                     const code_challenge = that.pkceChallengeFromVerifier(code_verifier);
@@ -36,13 +62,23 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 } else if (authFlow === 'code_no_pkce') {
                     window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else if (authFlow === 'implicit') {
-                    this.setStorageItem('nonce', state);
+                    that.setStorageItem('nonce', state);
                     window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else {
-                    toastr.error('Uknown auth flow: ' + authFlow)
+                    console.log('oidc: unknown auth flow: ' + authFlow);
+                    toastr.error('Unknown auth flow: ' + authFlow)
                 }
             };
 
+            /**
+             * Builds the OpenID login URL that we'll redirect to initiate OpenID login.
+             *
+             * @param {string} state A random string.
+             * @param {string} code_challenge PKCE code challenge.
+             * @param {string} redirectUrl The redirect URL registered with the OpenID provider.
+             * @param {OpenIdConfig} openIDConfig The OpenID configuration provided by GraphDB.
+             * @returns {string} The built login URL.
+             */
             this.getLoginUrl = function(state, code_challenge, redirectUrl, openIDConfig) {
                 let response_type = '';
                 let flow_params = '';
@@ -66,7 +102,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return openIDConfig.oidcAuthorizationEndpoint +
                     '?' +
                     'response_type=' + encodeURIComponent(response_type) + '&' +
-                    'scope=' + encodeURIComponent(this.getScope()) + '&' +
+                    'scope=' + encodeURIComponent(that.getScope()) + '&' +
                     'client_id=' + openIDConfig.clientId + '&' +
                     'redirect_uri=' + redirectUrl + '&' +
                     (flow_params ? ('&' + flow_params) : '') +
@@ -74,6 +110,12 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
 
+            /**
+             * Fetches the OpenID public keys, stores them and then calls the provided callback.
+             *
+             * @param {string} openIdKeysUri The OpenID public keys URL.
+             * @param {Function} callback
+             */
             this.withOpenIdKeys = function(openIdKeysUri, callback) {
                 $http.get(openIdKeysUri, openIDReqHeaders).success(function(jwks) {
                     that.openIdKeys = {};
@@ -84,6 +126,16 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 });
             };
 
+
+            /**
+             * Initializes the OpenID service, verifies if there are existing valid tokens or completes
+             * the OpenID login by parsing OpenID tokens/code from the browser URL.
+             *
+             * @param {OpenIdConfig} openIDConfig The OpenID configuration provided by GraphDB.
+             * @param {string} gdbUrl The redirect URL registered with the OpenID provider.
+             * @param {Function} successCallback The callback to call on success.
+             * @param {Function} errorCallback The callback to call on failure.
+             */
             this.initOpenId = function(openIDConfig, gdbUrl, successCallback, errorCallback) {
                 // Set the clientId and tokenType needed to retrieve the token
                 that.clientId = openIDConfig.clientId;
@@ -105,12 +157,12 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 that.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
                 that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
 
-                this.withOpenIdKeys(openIdKeysUri, function() {
-                    that.isLoggedIn = that.checkCredentials();
+                that.withOpenIdKeys(openIdKeysUri, function() {
+                    that.isLoggedIn = that.hasValidIdToken();
                     if (that.isLoggedIn) {
-                        that.setupTokenRefreshTimer(gdbUrl, successCallback, errorCallback);
+                        that.setupTokensRefresh(false, successCallback, errorCallback);
                     } else if (that.hasValidRefreshToken()) {
-                        that.refreshToken(gdbUrl, successCallback, errorCallback);
+                        that.refreshTokens(successCallback, errorCallback);
                     } else {
                         // possibly auth code flow
                         const s = that.parseQueryString(window.location.search.substring(1));
@@ -122,16 +174,16 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                                     console.log('oidc: PKCE state mismatch ' + that.getStorageItem('pkce_state') + ' != ' + s.state);
                                     errorCallback();
                                 } else {
-                                    that.retrieveToken(s.code, gdbUrl, successCallback, errorCallback);
+                                    that.retrieveTokensByCode(s.code, gdbUrl, successCallback, errorCallback);
                                 }
                             } else if (openIDConfig.authFlow === 'code_no_pkce') {
-                                that.retrieveToken(s.code, gdbUrl, successCallback, errorCallback);
+                                that.retrieveTokensByCode(s.code, gdbUrl, successCallback, errorCallback);
                             }
                         } else {
                             // possibly implicit flow
                             const q = that.parseQueryString(window.location.pathname.substring(1));
                             if (q.id_token) {
-                                that.saveToken(q,false, gdbUrl, successCallback);
+                                that.saveTokens(q,true, false, successCallback);
                             } else {
                                 errorCallback();
                             }
@@ -140,46 +192,85 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 })
             }
 
+            /**
+             * Returns the Authorization header to use when we logged in via OpenID.
+             * The header is composed of the keyword Bearer followed by a space and either the access
+             * or the id token (according to the GraphDB configuration)
+             *
+             * @returns {string} The Authorization header value.
+             */
             this.authHeaderGraphDB = function() {
-                if (this.getStorageItem('token_type') === 'id') {
-                    return 'Bearer ' + this.getToken('id');
+                if (that.getStorageItem('token_type') === 'id') {
+                    return 'Bearer ' + that.getToken('id');
                 } else {
-                    return 'Bearer ' + this.getToken('access');
+                    return 'Bearer ' + that.getToken('access');
                 }
             }
 
+            /**
+             * Performs a soft logout -- all tokens will be removed from local storage.
+             */
             this.softLogout = function() {
-                this.isLoggedIn = false;
-                this.setToken('id', null);
-                this.setToken('access', null);
-                this.setToken('refresh', null);
+                that.isLoggedIn = false;
+                that.setToken('id', null);
+                that.setToken('access', null);
+                that.setToken('refresh', null);
             }
 
+            /**
+             * Performs a hard logout -- all tokens will be removed from storage and the browser
+             * will be redirected to the OpenID logout endpoint. Upon logout, OpenID will redirect
+             * back to the supplied URL.
+             *
+             * @param {string} redirectUrl The URL to redirect back to after OpenID logout.
+             */
             this.hardLogout = function(redirectUrl) {
-                const isLoggedIn = this.getToken('access');
-                this.softLogout();
-                if (this.openIdEndSessionUrl && isLoggedIn != null) {
-                    window.location.href = this.openIdEndSessionUrl +
+                const isLoggedIn = that.getToken('access');
+                that.softLogout();
+                if (that.openIdEndSessionUrl && isLoggedIn != null) {
+                    window.location.href = that.openIdEndSessionUrl +
                         '?' +
-                        'client_id=' + this.clientId + '&' +
+                        'client_id=' + that.clientId + '&' +
                         'post_logout_redirect_uri=' + redirectUrl;
                 }
             }
 
+            /**
+             * Gets a token from local storage.
+             *
+             * @param {string} tokenName The token name: access, id or refresh.
+             * @returns {string} The requested token as an encoded string.
+             */
             this.getToken = function(tokenName) {
-                return this.getStorageItem(tokenName + '_token');
+                return that.getStorageItem(tokenName + '_token');
             }
 
+            /**
+             * Sets a token into local storage.
+             *
+             * @param {string} tokenName The token name: access, id or refresh.
+             * @param {?string} tokenData The token data as an encoded string or null.
+             */
             this.setToken = function(tokenName, tokenData) {
                 if (tokenData) {
-                    this.setStorageItem(tokenName + '_token', tokenData);
+                    that.setStorageItem(tokenName + '_token', tokenData);
                 } else {
-                    this.removeStorageItem(tokenName + '_token');
+                    that.removeStorageItem(tokenName + '_token');
                 }
             }
 
+            /**
+             * Decodes a JWT token and returns its header as an object. If there is no such token the empty
+             * object will be returned. If the token isn't a JWT token an object with a single
+             * property 'error' will be returned.
+             *
+             * The token header contains information on the cryptographic signature.
+             *
+             * @param {string} tokenName The token name: access, id or refresh.
+             * @returns {Object|{error: string}|{}}
+             */
             this.tokenHeader = function(tokenName) {
-                const token = this.getToken(tokenName);
+                const token = that.getToken(tokenName);
                 if (token) {
                     try {
                         return KJUR.jws.JWS.readSafeJSONString(b64utoutf8(token.split('.')[0]));
@@ -191,15 +282,28 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
+            /**
+             * Verifies that a token exists and it's valid. Tokens are valid if they are JWT tokens
+             * issued by the expected issuer to the expected audience and signed by a known public key.
+             *
+             * ID token only: if a nonce was used on login it must match as well.
+             *
+             * Refresh token only: only the issuer will be verified but not the audience.
+             *
+             * Non-JWT (opaque) tokens are always valid.
+             *
+             * @param {string} tokenName The token name: access, id or refresh.
+             * @returns {boolean} True if the token is valid.
+             */
             this.verifyToken = function(tokenName) {
-                const token = this.getToken(tokenName);
-                const headerObj = this.tokenHeader(tokenName);
+                const token = that.getToken(tokenName);
+                const headerObj = that.tokenHeader(tokenName);
                 if (!headerObj.kid) {
                     console.log('oidc: token ' + tokenName + ' is not a JWT token (token considered valid)');
                     // Only the id token must be JWT, access and refresh tokens are always valid if not JWT
                     return tokenName !== 'id';
                 }
-                const jwk = this.openIdKeys[headerObj.kid];
+                const jwk = that.openIdKeys[headerObj.kid];
                 if (!jwk) {
                     console.log('oidc: no key to verify JWT token (token considered invalid)');
                     return false;
@@ -207,24 +311,29 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const key = KEYUTIL.getKey(jwk);
                 const verifyFields = {
                     alg: [headerObj.alg],
-                    iss: [this.idTokenIssuer],
+                    iss: [that.idTokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [this.idTokenAudience];
-                    verifyFields['nonce'] = [this.getStorageItem('nonce')];
+                    verifyFields['aud'] = [that.idTokenAudience];
+                    verifyFields['nonce'] = [that.getStorageItem('nonce')];
                 } else if (tokenName === 'access') {
-                    verifyFields['aud'] = [this.accessTokenAudience];
-                    verifyFields['iss'] = [this.accessTokenIssuer];
+                    verifyFields['aud'] = [that.accessTokenAudience];
+                    verifyFields['iss'] = [that.accessTokenIssuer];
                 }
                 return KJUR.jws.JWS.verifyJWT(token, key, verifyFields);
             }
 
-            this.checkCredentials = function() {
-                if (!this.getToken('id')) {
+            /**
+             * Determines if there is a valid ID token. A valid ID token means we are logged in.
+             *
+             * @returns {boolean}
+             */
+            this.hasValidIdToken = function() {
+                if (!that.getToken('id')) {
                     console.log('oidc: no id token');
                     return false;
                 }
-                if (!this.verifyToken('id')) {
+                if (!that.verifyToken('id')) {
                     console.log('oidc: stale id token');
                     return false;
                 }
@@ -232,8 +341,18 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 return true;
             }
 
+            /**
+             * Decodes a JWT token and returns its data as an object. If there is no such token the empty
+             * object will be returned. If the token isn't a JWT token an object with a single
+             * property 'error' will be returned.
+             *
+             * The token payload contains the actual information in the token.
+             *
+             * @param {string} tokenName The token name: access, id or refresh.
+             * @returns {Object|{error: string}|{}}
+             */
             this.tokenPayload = function(tokenName) {
-                const token = this.getToken(tokenName);
+                const token = that.getToken(tokenName);
                 if (token) {
                     try {
                         return KJUR.jws.JWS.readSafeJSONString(b64utoutf8(token.split('.')[1]));
@@ -245,38 +364,63 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.saveToken = function(token, isRefresh, redirectUrl, successCallback) {
-                if (!isRefresh || token.refresh_token) {
+            /**
+             * Saves the retrieved tokens to local storage, removes the OpenID data from the URL
+             * (on login) and calls the success callback.
+             *
+             * @param {Object} token The token data to save.
+             * @param {boolean} justLoggedIn True if the tokens are the result of login.
+             * @param {boolean} justRefreshed True if the tokens are the result of token refresh.
+             * @param {Function} successCallback The callback function to call at the end.
+             */
+            this.saveTokens = function(token, justLoggedIn, justRefreshed, successCallback) {
+                if (justLoggedIn || token.refresh_token) {
                     // Some OpenId providers give you a new token on refresh, some don't
-                    this.setToken('refresh', token.refresh_token);
+                    that.setToken('refresh', token.refresh_token);
                 }
-                this.setToken('access', token.access_token);
-                this.setToken('id', token.id_token);
-                this.setStorageItem('token_type', that.tokenType);
+                that.setToken('access', token.access_token);
+                that.setToken('id', token.id_token);
+                that.setStorageItem('token_type', that.tokenType);
 
                 console.log('oidc: saved tokens');
 
-                this.setupTokenRefreshTimer(redirectUrl, successCallback);
+                that.setupTokensRefresh(justLoggedIn || justRefreshed, successCallback);
 
                 // Clean these up since we don't need them anymore
-                this.removeStorageItem('pkce_state');
-                this.removeStorageItem('pkce_code_verifier');
+                that.removeStorageItem('pkce_state');
+                that.removeStorageItem('pkce_code_verifier');
 
-                if (!isRefresh) {
+                if (justLoggedIn) {
                     // TODO: Maybe move this outside the service?
                     $location.url('/');
                 }
             }
 
-
+            /**
+             * Transforms an object to an application/x-www-form-urlencoded string.
+             *
+             * @param obj The object to transform.
+             * @returns {string} The urlencoded string.
+             */
             function transformURLEncodedRequest(obj) {
-                var str = [];
-                for(var p in obj)
-                    str.push(p + "=" + obj[p]);
+                const str = [];
+                for(let p in obj) {
+                    if (obj.hasOwnProperty(p)) {
+                        str.push(p + "=" + obj[p]);
+                    }
+                }
                 return str.join("&");
-            };
+            }
 
-            this.retrieveToken = function(code, redirectUrl, successCallback, errorCallback) {
+            /**
+             * Retrieves the tokens via an authorization code.
+             *
+             * @param {string} code The authorization code received via login.
+             * @param {string} redirectUrl The redirect URL registered with the OpenID provider.
+             * @param {Function} successCallback The callback to call on success.
+             * @param {Function} errorCallback The callback to call on failure.
+             */
+            this.retrieveTokensByCode = function(code, redirectUrl, successCallback, errorCallback) {
                 const params = {
                     grant_type: 'authorization_code',
                     client_id: that.clientId,
@@ -284,7 +428,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     code: code
                 };
 
-                const codeVerifier = this.getStorageItem('pkce_code_verifier');
+                const codeVerifier = that.getStorageItem('pkce_code_verifier');
                 if (codeVerifier) {
                     params['code_verifier'] = codeVerifier;
                 }
@@ -293,48 +437,66 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
                 $http({
                     method: 'POST',
-                    url: this.openIdTokenUrl,
+                    url: that.openIdTokenUrl,
                     headers: headers,
                     transformRequest: transformURLEncodedRequest,
                     data: params
                 }).success(function(data) {
-                    that.saveToken(data, false, redirectUrl, successCallback);
+                    that.saveTokens(data, true, false, successCallback);
                 }).error(function(e) {
                     toastr.error('Cannot retrieve token after login; ' + getError(e));
                     errorCallback();
                 })
             };
 
-            this.refreshToken = function(redirectUrl, successCallback, errorCallback) {
-                if (this.hasValidRefreshToken()) {
+            /**
+             * Refreshes the tokens by using the refresh token and calling the OpenID token endpoint.
+             *
+             * Calling this function without having a valid refresh token is an error.
+             *
+             * @param {Function} successCallback The callback to call on success.
+             * @param {Function} [errorCallback] The callback to call on failure.
+             */
+            this.refreshTokens = function(successCallback, errorCallback) {
+                if (that.hasValidRefreshToken()) {
                     const params = {
                         grant_type: 'refresh_token',
                         client_id: that.clientId,
-                        refresh_token: this.getToken('refresh'),
+                        refresh_token: that.getToken('refresh'),
                     };
                     const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
                     $http({
                         method: 'POST',
-                        url: this.openIdTokenUrl,
+                        url: that.openIdTokenUrl,
                         headers: headers,
                         transformRequest: transformURLEncodedRequest,
                         data: params
                     }).success(function(data) {
                         console.log('oidc: refreshed tokens');
-                        that.saveToken(data, true, redirectUrl, successCallback);
+                        that.saveTokens(data, false, true, successCallback);
                         that.isLoggedIn = true;
                     }).error(function(e) {
+                        console.log('oidc: could not refresh tokens');
                         toastr.error('Could not refresh OpenID token; ' + getError(e));
                         if (errorCallback) {
                             errorCallback();
                         }
                     })
+                } else {
+                    console.log('oidc: refresh requested without a valid refresh token');
                 }
             }
 
+            /**
+             * Determines if there is a valid refresh token.
+             * If the refresh token is JWT it will be valid only if it hasn't expired yet.
+             * It is always valid if it's JWT without expiration or non-JWT (opaque token).
+             *
+             * @returns {boolean} True if there is a valid refresh token, false otherwise.
+             */
             this.hasValidRefreshToken = function() {
                 const tolerance = 5000; // 5 seconds
-                const refreshData = this.tokenPayload('refresh');
+                const refreshData = that.tokenPayload('refresh');
                 if (refreshData['nbf'] && refreshData['nbf'] * 1000 - Date.now() > tolerance) {
                     return false;
                 } else if (refreshData['exp'] && Date.now() - refreshData['exp'] * 1000 > tolerance) {
@@ -344,24 +506,35 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
             }
 
-            this.setupTokenRefreshTimer = function(redirectUrl, successCallback, errorCallback) {
-                if (this.hasValidRefreshToken()) {
-                    clearTimeout(this.previousTimer);
-                    const accessToken = this.tokenPayload('id');
+            /**
+             * Sets a new refresh token timeout to refresh the tokens before they expire.
+             * This is called immediately after login or another refresh, as well as after security
+             * initialization if there is a valid OpenID login.
+             *
+             * Does nothing if the OpenID provider didn't supply a refresh token.
+             *
+             * @param {boolean} justGotTokens True if we just got new tokens (login or another refresh).
+             * @param {Function} successCallback The callback to call on success.
+             * @param {Function} [errorCallback] The callback to call on failure.
+             */
+            this.setupTokensRefresh = function(justGotTokens, successCallback, errorCallback) {
+                if (that.hasValidRefreshToken()) {
+                    clearTimeout(that.previousTimer);
+                    const accessToken = that.tokenPayload('id');
                     if (accessToken['exp'] > 0) {
                         const expiresIn = accessToken['exp'] * 1000 - Date.now() - 60000;
-                        if (expiresIn > 60000) {
-                            this.previousTimer = setTimeout(function() {
+                        if (justGotTokens || expiresIn > 1000) {
+                            that.previousTimer = setTimeout(function() {
                                 // When calling from the timer function we don't want the errorCallback
-                                that.refreshToken(redirectUrl, successCallback);
+                                that.refreshTokens(successCallback);
                             }, expiresIn);
                             console.log('oidc: tokens will refresh in ' + (expiresIn / 1000) + ' seconds at ' + new Date(Date.now() + expiresIn));
                         } else {
-                            this.previousTimer = null;
-                            console.log('oidc: tokens will refresh now');
-                            that.refreshToken(redirectUrl, successCallback, errorCallback);
+                            that.previousTimer = null;
+                            console.log('oidc: tokens will refresh now, ' + expiresIn + '; ' + justGotTokens);
+                            that.refreshTokens(successCallback, errorCallback);
                             // Return immediately, successCallback/errorCallback will be called
-                            // by refreshToken().
+                            // by refreshTokens().
                             return;
                         }
                     }
@@ -371,6 +544,13 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 successCallback();
             }
 
+            /**
+             * Parses the OpenID values represented as an application/x-www-form-urlencoded string
+             * and returns them as object.
+             *
+             * @param {string} string The string to parse.
+             * @returns {{access_token: ?string, code: ?string, id_token: ?string, state: ?string}}
+             */
             this.parseQueryString = function(string) {
                 const queryString = {access_token: null, code: null, id_token: null, state: null};
                 if (string === '') {
@@ -382,21 +562,36 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             }
 
 
-            // Generate a secure random string using the browser crypto functions
+            /**
+             * Generates a secure random string using the browser crypto functions.
+             *
+             * @returns {string} A random string.
+             */
             this.generateRandomString = function() {
                 const array = new Uint32Array(28);
                 window.crypto.getRandomValues(array);
                 return Array.from(array, function(dec) { return ('0' + dec.toString(16)).substr(-2)}).join('');
             }
 
-            // Return the base64-urlencoded sha256 hash for the PKCE challenge
+            /**
+             * Returns the base64-urlencoded SHA-256 hash for the PKCE challenge.
+             *
+             * @param {string} v The code verifier string.
+             * @returns {string} The encoded hash.
+             */
             this.pkceChallengeFromVerifier = function(v) {
                 const md = new KJUR.crypto.MessageDigest({alg: 'sha256', prov: 'cryptojs'});
                 return hextob64u(md.digestString(v));
             }
 
+            /**
+             * Returns the OpenID scope we need to request. The scope may include offline_access,
+             * which is determined by OpenID configuration.
+             *
+             * @returns {string} The OpenID scope to request.
+             */
             this.getScope = function() {
-                return 'openid ' + (this.supportsOfflineAccess ? ' offline_access' : '');
+                return 'openid ' + (that.supportsOfflineAccess ? ' offline_access' : '');
             }
 
             this.setStorageItem = function (name, value) {
