@@ -26,7 +26,6 @@ addons:
 script:
   - npm run test:coverage
   - npm run build
-  - npm run sonar
 
 after_script:
   - npm run test:coveralls
