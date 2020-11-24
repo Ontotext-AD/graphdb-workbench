@@ -22,17 +22,18 @@ JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 
 function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService) {
 
     $scope.getSqlConfigurations = function () {
-        // Don't try  to get Sql configurations if repository is of
-        // type Ontop, because latter doesn't have data directory
-        if ($repositories.isActiveRepoOntopType()) {
-            return;
+        // Only do this if there is an active repo that isn't an Ontop repo.
+        // Ontop repos don't support JDBC.
+        if ($repositories.getActiveRepository() && !$repositories.isActiveRepoOntopType()) {
+            JdbcRestService.getJdbcConfigurations().success(function (data) {
+                $scope.jdbcConfigurations = data;
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Could not get SQL table configurations');
+            });
+        } else {
+            $scope.jdbcConfigurations = [];
         }
-        JdbcRestService.getJdbcConfigurations().success(function (data) {
-            $scope.jdbcConfigurations = data;
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Could not get SQL table configurations');
-        });
     };
 
     $scope.$watch(function () {
