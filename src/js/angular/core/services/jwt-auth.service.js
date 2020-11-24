@@ -25,7 +25,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return !$rootScope.deniedPermissions[path];
             };
 
-            $rootScope.redirectToLogin = function (expired) {
+            /**
+             * Redirects to the login page.
+             *
+             * @param {boolean} expired If true a toast message about expired login will be shown.
+             *                          In some cases this will be autodetected.
+             * @param {boolean} noaccess If true a toast message about no access/config error will be shown.
+             *                           This overrides 'expired'.
+             * @return {Promise<unknown>}
+             */
+            $rootScope.redirectToLogin = function (expired, noaccess) {
                 if (jwtAuth.authTokenIsType('Bearer')) {
                     // OpenID login may be detected as expired either on initial validation
                     // when we get expired = true or indirectly via 401, setting expired = true
@@ -39,13 +48,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.returnToUrl = $location.url();
                 }
 
+                $location.path('/login');
+                if (noaccess) {
+                    $location.search('noaccess');
+                } else if (expired) {
+                    $location.search('expired');
+                }
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
-                $location.path('/login');
-                if (expired) {
-                    $location.search('expired');
-                }
                 return new Promise(resolve => {
                     setTimeout(() => {
                         resolve(true);
@@ -70,7 +81,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 localStorage.removeItem(that.authStorageName);
             };
 
-            this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback) {
+            /**
+             * Determines the currently authenticated user from the backend's point-of-view
+             * by sending a request to the dedicated API endpoint using the current authentication
+             * header. If GraphDB cannot recognize the authentication, this method will fallback
+             * to free access (if enabled) or redirect to the login page. It will emit 'securityInit'.
+             *
+             * @param {boolean} noFreeAccessFallback If true does not fallback to free access.
+             * @param {boolean} justLoggedIn Indicates that the user just logged in.
+             */
+            this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
                 SecurityRestService.getAuthenticatedUser().
                 success(function(data, status, headers) {
                     if (that.auth && that.auth.startsWith('GDB')) {
@@ -92,7 +112,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }
                 }).error(function () {
                     if (noFreeAccessFallback || !that.freeAccess) {
-                        $rootScope.redirectToLogin();
+                        $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
                         that.securityInitialized = true;
                         if (!that.hasExplicitAuthentication()) {
@@ -129,17 +149,19 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
                             $openIDAuth.initOpenId(that.openIDConfig,
                                 that.gdbUrl,
-                                function () {
+                                function (justLoggedIn) {
                                     // A valid OpenID was obtained just now or previously,
                                     // so we set it as the authentication.
                                     // This function will be called every time the token is refreshed too,
                                     // so keep it clean of other logic.
+                                    // The variable justLoggedIn will be set to true if this is
+                                    // a new login that just happened.
                                     that.auth = $openIDAuth.authHeaderGraphDB();
                                     jwtAuth.setAuthHeaders();
                                     console.log('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.
-                                    that.getAuthenticatedUserFromBackend(true);
+                                    that.getAuthenticatedUserFromBackend(true, justLoggedIn);
                                 }, function () {
                                     console.log('oidc: not logged or login error');
                                     if (that.authTokenIsType('Bearer')) {
