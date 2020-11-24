@@ -37,21 +37,6 @@ angular
 homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
-    LicenseRestService.getHardcodedLicense()
-        .success(function (res) {
-            $scope.isLicenseHardcoded = (res === 'true');
-        })
-        .error(function () {
-            $scope.isLicenseHardcoded = true;
-        })
-        .then(function () {
-            LicenseRestService.getLicenseInfo().then(function (res) {
-                $scope.license = res.data;
-            }, function () {
-                $scope.license = {message: 'No license was set.', valid: false};
-            });
-        });
-
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
         if (!repo) {
@@ -119,14 +104,17 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     setYears();
 
-    $scope.$on("$routeChangeSuccess", function () {
+    $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
         $('.menu-element-root').removeClass('active');
         $timeout(function () {
             $('.menu-element.open a.menu-element-root').addClass('active');
             $('.main-menu.collapsed .menu-element.open .menu-element-root').addClass('active');
         }, 400);
-        $scope.checkLicenseStatus();
+        if (previous) {
+            // Recheck license status on navigation within the workbench (security is already inited)
+            $scope.checkLicenseStatus();
+        }
     });
 
     $scope.checkMenu = function () {
@@ -764,6 +752,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $rootScope.redirectToLogin();
             }
         } else {
+            $scope.checkLicenseStatus();
             $scope.getSavedQueries();
         }
     });
