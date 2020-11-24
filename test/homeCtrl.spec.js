@@ -44,58 +44,6 @@ describe('homeCtrl', function () {
         createController();
     }));
 
-    describe('checkLicenseStatus', function () {
-        it('should init with hardcoded license', function () {
-            $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
-            $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
-            $scope.isLicenseHardcoded = false;
-            $scope.license = undefined;
-            $httpBackend.expectGET('rest/graphdb-settings/license');
-
-            $httpBackend.flush();
-
-            expect($scope.isLicenseHardcoded).toBeTruthy();
-            expect($scope.license).toEqual('licenseinfo');
-        });
-
-        it('should fail when license is not found', function () {
-            $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(500);
-            $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
-            $scope.isLicenseHardcoded = false;
-            $scope.license = undefined;
-            $httpBackend.expectGET('rest/graphdb-settings/license');
-
-            $httpBackend.flush();
-
-            expect($scope.isLicenseHardcoded).toBeTruthy();
-            expect($scope.license).toEqual({message: 'No license was set.', valid: false});
-        });
-
-        it('should init when license is not hardcoded', function () {
-            $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
-            $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'false');
-            $scope.isLicenseHardcoded = false;
-            $scope.license = undefined;
-            $httpBackend.expectGET('rest/graphdb-settings/license');
-
-            $httpBackend.flush();
-
-            expect($scope.isLicenseHardcoded).toBeFalsy();
-            expect($scope.license).toEqual('licenseinfo');
-        });
-
-        it('should init when checking license fails', function () {
-            $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(500);
-            $scope.isLicenseHardcoded = false;
-            $scope.license = undefined;
-
-            $httpBackend.flush();
-
-            expect($scope.isLicenseHardcoded).toBeTruthy();
-            expect($scope.license).toBeUndefined();
-        });
-    });
-
     describe('getActiveRepositorySize', () => {
         beforeEach(() => {
             $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
@@ -107,7 +55,6 @@ describe('homeCtrl', function () {
             $scope.activeRepositorySizeError = undefined;
 
             $scope.getActiveRepositorySize();
-            $httpBackend.flush();
 
             expect($scope.activeRepositorySize).toBeUndefined();
             expect($scope.activeRepositorySizeError).toBeUndefined();
