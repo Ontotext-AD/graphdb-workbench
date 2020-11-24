@@ -115,6 +115,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         // possibly auth code flow
                         const s = that.parseQueryString(window.location.search.substring(1));
                         if (s.code) {
+                            const realSuccessCallback = successCallback;
+                            successCallback = function() {
+                                realSuccessCallback(true);
+                            };
                             if (openIDConfig.authFlow === 'code') {
                                 // Verify state matches what we set at the beginning
                                 if (that.getStorageItem('pkce_state') !== s.state) {
