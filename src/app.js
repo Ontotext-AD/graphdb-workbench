@@ -93,14 +93,14 @@ const moduleDefinition = function (productInfo) {
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
-            // are fetched via HTTP to avoid cache issues. Those that start with template/ are
-            // already in the cache and won't work if the parameter is added.
+            // are fetched via HTTP to avoid cache issues. Those that are in the templateCache
+            // already aren't actually fetched via HTTP so we don't want to add the parameter there.
             const originalTemplateProviderFn = $templateRequestProvider.$get[3];
             if (typeof originalTemplateProviderFn === 'function') {
                 $templateRequestProvider.$get[3] = function (templateCache, http, q) {
                     const originalHandleRequestFn = originalTemplateProviderFn(templateCache, http, q);
                     return function handleRequestFn(tpl, ignoreRequestError) {
-                        if (!tpl.startsWith('template/')) {
+                        if (!templateCache.get(tpl)) {
                             // The AIV tag will be replaced by the actual version by the
                             // webpack-auto-inject-version plugin, e.g. it will become v=1.5.0
                             tpl = tpl + '?v=[AIV]{version}[/AIV]';
