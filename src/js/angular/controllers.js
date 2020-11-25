@@ -345,6 +345,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 return 'Free';
             case 'system':
                 return 'System';
+            case 'ontop':
+                return 'Ontop';
             default:
                 return 'Unknown';
         }
