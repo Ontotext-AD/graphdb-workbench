@@ -1,7 +1,17 @@
+const PACKAGE = require('./package.json');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const WebpackAutoInject = require('webpack-auto-inject-version');
+
+// Pass this function as a transform argument to CopyPlugin elements to replace [AIV]{version}[/AIV]
+// with the current workbench version number. This is not related to the WebpackAutoInject plugin
+// (it will replace only in bundled files, not in CopyPlugin) but we use the same tag for consistency.
+function replaceVersion(content) {
+    return content
+        .toString()
+        .replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
+}
 
 module.exports = {
     devtool: 'source-map',
@@ -18,12 +28,18 @@ module.exports = {
     resolve: {
         modules: [
             'src/js/',
-            'src/pages',
             'node_modules'
         ],
-        extensions: ['.js', '.html']
+        extensions: ['.js']
     },
     plugins: [
+        new WebpackAutoInject({
+            SILENT: true,
+            components: {
+                AutoIncreaseVersion: false,
+                InjectAsComment: false
+            }
+        }),
         new MergeIntoSingleFilePlugin({
             files: {
                 "plugins.js": [
@@ -86,11 +102,13 @@ module.exports = {
             },
             {
                 from: 'src/res',
-                to: 'res'
+                to: 'res',
+                transform: replaceVersion
             },
             {
                 from: 'src/pages',
-                to: 'pages'
+                to: 'pages',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/autocomplete/templates',
@@ -140,14 +158,7 @@ module.exports = {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }
-        ]),
-        new WebpackAutoInject({
-            SILENT: true,
-            components: {
-                AutoIncreaseVersion: false,
-                InjectAsComment: false
-            }
-        })
+        ])
     ],
     module: {
         rules: [

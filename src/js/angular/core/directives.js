@@ -16,7 +16,7 @@ ontoLoader.$inject = [];
 function ontoLoader() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg">Loading...</object>';
+            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">Loading...</object>';
         }
     };
 }
@@ -26,7 +26,7 @@ ontoLoaderFancy.$inject = [];
 function ontoLoaderFancy() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg"></object>'
+            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>'
                 + '<div>Loading...<div>';
         }
     };
@@ -108,7 +108,7 @@ function ontoLoaderNew($timeout) {
             });
         },
         template: '<div class="ot-loader-new-content">'
-        + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg"/>'
+        + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
         + '<div style="font-size: {{size/4}}px">{{currentMessage}}<div>'
         + '</div>'
     };
