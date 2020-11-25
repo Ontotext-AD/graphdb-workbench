@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
+const WebpackAutoInject = require('webpack-auto-inject-version');
 
 module.exports = {
     devtool: 'source-map',
@@ -17,9 +18,10 @@ module.exports = {
     resolve: {
         modules: [
             'src/js/',
+            'src/pages',
             'node_modules'
         ],
-        extensions: ['.js']
+        extensions: ['.js', '.html']
     },
     plugins: [
         new MergeIntoSingleFilePlugin({
@@ -138,7 +140,14 @@ module.exports = {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }
-        ])
+        ]),
+        new WebpackAutoInject({
+            SILENT: true,
+            components: {
+                AutoIncreaseVersion: false,
+                InjectAsComment: false
+            }
+        })
     ],
     module: {
         rules: [
