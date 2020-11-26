@@ -205,22 +205,28 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.isActiveRepoOntopType = function () {
-            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+            let activeRepo = this.findRepositoryById(this.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
 
             return false;
-        }
+        };
 
         this.isOntopRepo = function (repoId) {
-            let activeRepo = this.repositories.find(current => current.id === repoId);
+            let activeRepo = this.findRepositoryById(repoId);
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
 
             return false;
-        }
+        };
+
+        this.findRepositoryById = function(repoId) {
+            return this.repositories.find(current => {
+                return current && current.id === repoId;
+            });
+        };
 
         this.setRepositoryHeaders = function () {
             const repo = this.repository ? this.repository : undefined;
