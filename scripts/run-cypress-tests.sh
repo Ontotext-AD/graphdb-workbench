@@ -61,7 +61,7 @@ else
     echo "Using already downloaded GraphDB"
 fi
 
-TMPDIR=$(mktemp -d -t graphdb-cypress)
+TMPDIR=$(mktemp -d -t graphdb-cypress.XXXXXX)
 echo "Created temporary directory: $TMPDIR"
 
 if ! unzip -q "$GDB_ZIP" -d "$TMPDIR"; then
