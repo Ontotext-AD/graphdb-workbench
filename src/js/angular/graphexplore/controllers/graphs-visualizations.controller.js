@@ -2024,7 +2024,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 .style("opacity", "0.7");
 
             d3.select(parentNode).append("image")
-                .attr("xlink:href", "js/angular/templates/loader/ot-loader.svg")
+                .attr("xlink:href", "js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]")
                 .attr("x", function () {
                     return node.x - node.size + 5;
                 })

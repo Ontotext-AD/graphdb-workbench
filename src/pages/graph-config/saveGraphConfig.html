@@ -1,10 +1,10 @@
-<link href="css/lib/angular-xeditable/xeditable.min.css" rel="stylesheet">
+<link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
-<link href="css/lib/yasqe.min.css" rel="stylesheet"/>
+<link href="css/lib/yasqe.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<link href="css/new-sparql.css" rel="stylesheet"/>
+<link href="css/new-sparql.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<link href="css/graphs-config.css" rel="stylesheet"/>
+<link href="css/graphs-config.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <h1>
     {{title}}
@@ -67,7 +67,7 @@
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
-                        <img class="image-label-image" src="css/images/search.png" alt="search image" width="100%">
+                        <img class="image-label-image" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="search image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with a search box</h5>
                             <div>Choose the starting point of your visual graph every time</div>
@@ -76,7 +76,7 @@
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'node'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="node">
-                        <img class="image-label-image" src="css/images/node.png" alt="node image" width="100%">
+                        <img class="image-label-image" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="node image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with a fixed node</h5>
                             <div>The visual graph will always start from the chosen node.</div>
@@ -85,7 +85,7 @@
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'query'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="query">
-                        <img class="image-label-image" src="css/images/query.png" alt="query image" width="100%">
+                        <img class="image-label-image" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="query image" width="100%">
                         <div class="image-label-content">
                             <h5>Start with graph query results</h5>
                             <div>The results from your query will be the starting point of the visual graph.</div>
@@ -126,7 +126,7 @@
                             <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'expandQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/expand.png" class="info-box-img" height="220" alt="expand image">
+                            <img src="css/images/expand.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="expand image">
                         </div>
                     </div>
 
@@ -153,7 +153,7 @@
                             <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/labels-size.png" class="info-box-img" height="220" alt="labels size image">
+                            <img src="css/images/labels-size.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="labels size image">
                         </div>
                     </div>
 
@@ -172,7 +172,7 @@
                             <p>This query is optional. If empty, the edge IRI's local name is used.</p>
                         </div>
                         <div>
-                            <img src="css/images/predicates.png" class="info-box-img" height="220" alt="predicates image">
+                            <img src="css/images/predicates.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="predicates image">
                         </div>
                     </div>
 
@@ -197,7 +197,7 @@
                             <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em> sample query will be used.</p>
                         </div>
                         <div>
-                            <img src="css/images/side-panel.png" class="info-box-img" height="220" alt="side panel image">
+                            <img src="css/images/side-panel.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="side panel image">
                         </div>
                     </div>
 
