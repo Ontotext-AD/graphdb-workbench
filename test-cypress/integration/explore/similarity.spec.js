@@ -293,7 +293,7 @@ describe('Similarity screen validation', () => {
     }
 
     function addLuceneAnalyzer() {
-        cy.get('.analyzer-class').type('{ctrl}a{backspace}', {force: true})
+        cy.get('.analyzer-class').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true})
             .invoke('val', LUCENE_ANALYZER).trigger('change', {force: true});
     }
 

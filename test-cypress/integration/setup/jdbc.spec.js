@@ -143,7 +143,7 @@ describe('JDBC configuration', () => {
 
     function clearQuery() {
         // Using force because the textarea is not visible
-        getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
+        getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
     }
 
     function getColumnTypesTab() {

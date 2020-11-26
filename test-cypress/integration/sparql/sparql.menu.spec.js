@@ -920,7 +920,8 @@ describe('SPARQL screen validation', () => {
             clearQuery();
 
             typeQuery(queryBegin, false);
-            typeQuery('Dry{ctrl} ', false, true);
+            // TODO: Need to test Alt-Enter too
+            typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
 
             getAutoSuggestHints()
                 .should('be.visible')
@@ -946,7 +947,8 @@ describe('SPARQL screen validation', () => {
             clearQuery();
 
             typeQuery(queryBegin, false);
-            typeQuery('Dry{ctrl} ', false, true);
+            // TODO: Need to test Alt-Enter too
+            typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
 
             getAutoSuggestHints().should('not.exist');
             getToast()
@@ -1101,7 +1103,7 @@ describe('SPARQL screen validation', () => {
 
     function clearQuery() {
         // Using force because the textarea is not visible
-        getQueryTextArea().type('{ctrl}a{backspace}', {force: true});
+        getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
     }
 
     function typeQuery(query, clear = true, parseSpecialCharSequences = false) {
