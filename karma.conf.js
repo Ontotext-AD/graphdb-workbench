@@ -2,6 +2,11 @@ const DEV_CONFIG = require('./webpack.config.dev');
 const merge = require('webpack-merge');
 const path = require('path');
 
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+const os = require('os');
+const chromeHeadlessSupported = os.platform() !== 'win32' || Number((os.release().match(/^(\d+)/) || ['0', '0'])[1]) >= 10;
+
+
 module.exports = function(config) {
   config.set({
 
@@ -95,10 +100,21 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
+    browserNoActivityTimeout: 30000,
 
-    // start these browsers
+
+    // if ChromeHeadless is not supported configure Chrome in headless mode
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: [
+        chromeHeadlessSupported ? 'ChromeHeadless' : 'Chrome'
+    ],
+
+    customLaunchers: {
+        ChromeHeadless: {
+            base: 'Chrome',
+            flags: ['--no-sandbox', '--headless', '--disable-gpu', '--remote-debugging-port=9222']
+        }
+    },
 
 
     // Continuous Integration mode

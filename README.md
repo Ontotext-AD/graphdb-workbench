@@ -1,8 +1,7 @@
 # graphdb-workbench
 The web application for GraphDB APIs
 
-[![Build Status](https://travis-ci.com/Ontotext-AD/graphdb-workbench.svg?branch=master)](https://travis-ci.com/Ontotext-AD/graphdb-workbench)
-
+[![Build Status](https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline)]
 ### Setup Environment
 
 * Checkout or clone the project.
