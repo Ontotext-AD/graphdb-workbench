@@ -2,6 +2,8 @@ const DEV_CONFIG = require('./webpack.config.dev');
 const merge = require('webpack-merge');
 const path = require('path');
 
+process.env.CHROME_BIN = require('puppeteer').executablePath()
+
 module.exports = function(config) {
   config.set({
 
@@ -109,4 +111,5 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: 1
   });
+
 };
