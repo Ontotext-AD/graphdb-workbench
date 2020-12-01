@@ -404,6 +404,10 @@
     content: "\e957";
 }
 
+.icon-repo-ontop:before {
+    content: "\e958";
+}
+
 /*
 [class^="icon-"]:before, [class*=" icon-"]:before {
 	display: inline-block;
