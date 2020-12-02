@@ -497,7 +497,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     };
 
     $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile.value.length > 0
+        return $scope.repositoryInfo.params.propertiesFile &&
+                $scope.repositoryInfo.params.propertiesFile.value.length > 0
     };
 
     $scope.validateOntopPropertiesConnection = function() {
@@ -778,7 +779,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile.value.length > 0
+        return $scope.repositoryInfo.params.propertiesFile &&
+                $scope.repositoryInfo.params.propertiesFile.value.length > 0
     };
 
     $scope.validateOntopPropertiesConnection = function() {
