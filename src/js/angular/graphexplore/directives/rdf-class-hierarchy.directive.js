@@ -95,7 +95,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
          */
         function prepareForSVGImageExport() {
             // get css rules for the diagram
-            var cssRules = SVG.Export.getCSSRules("css/rdf-class-hierarchy-labels.css");
+            var cssRules = SVG.Export.getCSSRules("css/rdf-class-hierarchy-labels.css?v=[AIV]{version}[/AIV]");
             // inline css rules in a defs tag
             d3.selectAll("#main-group")
                 .append("defs");
