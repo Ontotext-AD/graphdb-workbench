@@ -707,7 +707,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
 
         if (!$repositories.getActiveRepository() || $repositories.getActiveRepository() === 'SYSTEM'
-            || !$scope.hasRole(UserRole.ROLE_USER)) {
+            // Don't call getQueries for Ontop type repository
+            || $repositories.isActiveRepoOntopType() || !$scope.hasRole(UserRole.ROLE_USER)) {
             // No monitoring if no active repo, the active repo is the system repo or the current user
             // isn't a repo admin.
             $scope.queryCount = 0;
