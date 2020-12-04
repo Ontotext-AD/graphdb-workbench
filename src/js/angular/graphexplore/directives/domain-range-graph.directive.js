@@ -139,7 +139,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
          */
         function prepareForSVGImageExport() {
             // get css rules for the diagram
-            var cssRules = SVG.Export.getCSSRules("css/domain-range-graph.css");
+            var cssRules = SVG.Export.getCSSRules("css/domain-range-graph.css?v=[AIV]{version}[/AIV]");
 
             // inline css rules in a defs tag
             $("defs").append('<style type="text/css"><![CDATA[' + cssRules + ']]></style>');
