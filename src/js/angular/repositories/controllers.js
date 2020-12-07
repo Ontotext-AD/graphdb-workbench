@@ -737,13 +737,23 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
             $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
         }
+        let modalMsg = '';
+        if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
+            modalMsg = ' You are changing the repository id. Are you sure?';
+        } else {
+            if ($scope.restartRequested) {
+                modalMsg = 'Save changes to this repository?<br><br>' +
+                    '       <span class="icon-warning" style="color: #d54a33"> Repository ' +
+                    '<strong>' + $scope.repositoryInfo.id + '</strong> will be restarted!</span>';
+            } else {
+                modalMsg = 'Save changes to this repository?<br><br>' +
+                    '       <span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>';
+            }
+        }
         if (!$scope.isInvalidRepoName) {
             ModalService.openSimpleModal({
                 title: 'Confirm edit',
-                message: (($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) ? ' You are changing the repository id. Are you sure?' :
-                    ($scope.restartRequested ?
-                        'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> Repository <strong>' + $scope.repositoryInfo.id + '</strong> will be restarted!</span>' :
-                        'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>')),
+                message: modalMsg,
                 warning: true
             }).result
                 .then(function () {
