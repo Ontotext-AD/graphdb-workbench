@@ -261,10 +261,6 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             });
     };
 
-    $scope.restartRepository = function (repositoryId) {
-        $repositories.restartRepository(repositoryId);
-    }
-
     $scope.toggleDefaultRepository = function (repositoryId) {
         if ($scope.getDefaultRepository() === repositoryId) {
             // unset
@@ -649,7 +645,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     //TODO
     $scope.editRepoPage = true;
-    $scope.restartRequested = false;
     $scope.canEditRepoId = false;
     $scope.params = $routeParams;
     $scope.loader = true;
@@ -719,7 +714,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepoHttp = function () {
         $scope.loader = true;
-        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo, $scope.restartRequested)
+        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
             .success(function () {
                 toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
                 $repositories.init($scope.goBackToPreviousLocation);
@@ -741,9 +736,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             ModalService.openSimpleModal({
                 title: 'Confirm edit',
                 message: (($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) ? ' You are changing the repository id. Are you sure?' :
-                    ($scope.restartRequested ?
-                        'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> Repository <strong>' + $scope.repositoryInfo.id + '</strong> will be restarted!</span>' :
-                        'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>')),
+                    'Save changes to this repository?<br><br><span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>'),
                 warning: true
             }).result
                 .then(function () {
@@ -799,7 +792,4 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         });
     }
 
-    $scope.clickRestartRepoCheck = function () {
-        $scope.restartRequested = !$scope.restartRequested;
-    }
 }
