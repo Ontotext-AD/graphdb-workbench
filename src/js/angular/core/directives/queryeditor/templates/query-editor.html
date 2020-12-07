@@ -158,10 +158,14 @@
                 items-per-page="currentTabConfig.pageSize"
                 ng-model="currentTabConfig.page"
                 ng-change="changePagination()"
-                direction-links="false"
+                direction-links="true"
                 boundary-l
                 max-size="5"
-                rotate="true">
+                rotate="true"
+                previous-text="&lsaquo;"
+                next-text="&rsaquo;"
+                first-text="&laquo;"
+                last-text="&raquo;">
         </pagination>
 
         <div class="yasr" id="yasr-inner">

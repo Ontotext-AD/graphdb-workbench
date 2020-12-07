@@ -225,7 +225,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             const data = originalGetUrlArguments(yasqe, config);
             const qType = window.editor.getQueryType();
             if ('SELECT' === qType || 'CONSTRUCT' === qType || 'DESCRIBE' === qType) {
-                data.push({name: 'limit', value: scope.currentTabConfig.pageSize});
+                // We request pageSize + 1 to know if there are more pages when total count isn't known
+                data.push({name: 'limit', value: scope.currentTabConfig.pageSize + 1});
                 scope.currentTabConfig.offset = (scope.currentTabConfig.page - 1) * scope.currentTabConfig.pageSize + 1;
                 data.push({name: 'offset', value: scope.currentTabConfig.offset - 1});
             }
@@ -369,6 +370,28 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     });
 
             } else {
+                const thisTabConfig = scope.currentTabConfig;
+                const thisTabId = scope.executedQueryTab.id;
+
+                // Assign a fresh callback function so that we can associate the count result
+                // with the right tab (or lack of tab).
+                window.editor.options.sparql.handlers.countCallback = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
+                    if (dataOrJqXhr.status === 200) {
+                        const tab = scope.tabs[findTabIndexByID(thisTabId)];
+                        if (tab) {
+                            yasr.setResultsCount(dataOrJqXhr, textStatus, jqXhrOrErrorString);
+                            thisTabConfig.allResultsCount = yasr.allCount;
+                            tab.allResultsCount = yasr.allCount;
+                            thisTabConfig.allResultsCountExact = true;
+                            tab.allResultsCountExact = true;
+                            scope.saveTab(tab.id);
+                        } // Else tab was closed while we wait for the count, ignore result
+                    } else {
+                        // count query timed out or something else went wrong
+                        thisTabConfig.countTimeouted = true;
+                    }
+                };
+
                 // Tell YASR what format we want, or else it will mess it up when switching between tabs.
                 if (scope.currentQuery.outputType != null) {
                     yasr.options.output = scope.currentQuery.outputType;
@@ -456,6 +479,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 dataOrJqXhr.contentType = dataOrJqXhr.getResponseHeader("content-type");
             }
 
+            // We use this when we set YASR results to avoid double JSON parsing and to enforce
+            // using the modified responseJSON. We'll save responseJSON instead (no need to save both).
+            delete dataOrJqXhr.response;
+
             const executedQueryTabIdx = findTabIndexByID(scope.executedQueryTab.id);
             const executedQueryTab = scope.tabs[executedQueryTabIdx];
             const queryResultState = {
@@ -466,6 +493,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     page: scope.currentTabConfig.page,
                     pageSize: scope.currentTabConfig.pageSize,
                     allResultsCount: scope.currentTabConfig.allResultsCount,
+                    allResultsCountExact: scope.currentTabConfig.allResultsCountExact,
                     resultsCount: scope.currentTabConfig.resultsCount,
                     offset: scope.currentTabConfig.offset,
                     timeTook: scope.currentTabConfig.timeTook,
@@ -549,7 +577,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
                     scope.currentTabConfig.queryType = 'ERROR';
                     setNewTabStateForThis();
-                    yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
+                    scope.setYasrResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
 
                     scope.setLoader(false);
 
@@ -598,8 +626,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     };
                 } else {
                     if (dataOrJqXhr.status === 200) {
-                        let size = -1;
-
                         const contentType = dataOrJqXhr.getResponseHeader('Content-Type');
 
                         if (contentType.indexOf('application/sparql-results+json') === 0
@@ -609,19 +635,33 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                 // SELECT results in one of the standard formats or
                                 // CONSTRUCT or DESCRIBE results in our custom format that looks
                                 // like a SELECT result.
-                                size = dataOrJqXhr.responseJSON.results.bindings.length;
-                            }
-                        }
+                                scope.currentTabConfig.resultsCount = dataOrJqXhr.responseJSON.results.bindings.length;
+                                if (dataOrJqXhr.responseJSON.results.bindings.length > scope.currentTabConfig.pageSize) {
+                                    // The results are more than the page size (because we request +1), truncate to page size
+                                    // and raise flag to know we have at least one page more.
+                                    dataOrJqXhr.responseJSON.results.bindings.length = scope.currentTabConfig.pageSize;
+                                }
+                                if (!scope.currentTabConfig.allResultsCountExact) {
+                                    if (scope.nocount || scope.countTimeouted
+                                        || scope.currentTabConfig.resultsCount <= scope.currentTabConfig.pageSize) {
+                                        // No count requested or count timed out or the results are less than the pageSize + 1 buffer
+                                        // In all of these cases it doesn't make sense to run
+                                        // the counting query so we tweak the status to signal that to YASQE.
+                                        dataOrJqXhr.status = 204; // 204 is no content, YASQE counts only if status is 200
+                                    }
 
-                        if (size >= 0 && (scope.nocount || scope.currentTabConfig.offset === 1 && size < scope.currentTabConfig.pageSize)) {
-                            // No count requested
-                            //                                   OR
-                            // First page (offset = 1) and the results are less than the page size
-                            //
-                            // In all of these cases it doesn't make sense to run
-                            // the counting query so we tweak the status to signal that to YASQE.
-                            dataOrJqXhr.status = 204; // 204 is no content, YASQE counts only if status is 200
-                            scope.currentTabConfig.allResultsCount = size;
+                                    // Calculate an "at least" all results count, i.e. at least what we have until now + 1.
+                                    // The number will increase when we go to the next page eventually reaching the exact count.
+                                    // A count query may also provide the exact count asynchronously.
+                                    scope.currentTabConfig.allResultsCount = Math.max(scope.currentTabConfig.allResultsCount,
+                                        scope.currentTabConfig.pageSize * (scope.currentTabConfig.page - 1) + scope.currentTabConfig.resultsCount);
+
+                                    // We know we reached the end and the count is exact now.
+                                    if (scope.currentTabConfig.resultsCount <= scope.currentTabConfig.pageSize) {
+                                        scope.currentTabConfig.allResultsCountExact = true;
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -629,11 +669,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     scope.setLoader(true, 'Rendering results', null, true);
 
                     updateResultsCallback = function () {
-                        yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
-
-                        scope.$apply(function () {
-                            scope.currentTabConfig.resultsCount = scope.currentTabConfig.offset + yasr.resultsCount - 1;
-                        });
+                        scope.setYasrResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
 
                         setNewTabStateForThis();
                         scope.setLoader(false);
@@ -673,29 +709,20 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 }, 100);
             };
 
-            window.editor.options.sparql.handlers.countCallback = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
-                // We used to check if query is running but that doesn't make sense as this won't be called before
-                // query is completed. Besides, the check stopped working since we made things a bit more async, see GDB-1979
-                if (dataOrJqXhr.status === 200) {
-                    yasr.setResultsCount(dataOrJqXhr, textStatus, jqXhrOrErrorString);
-                } else {
-                    // count query timeouted or something else went wrong
-                    yasr.allCount = scope.currentTabConfig.resultsCount;
-                    scope.countTimeouted = true;
-                }
-                scope.$apply(function () {
-                    scope.currentTabConfig.allResultsCount = yasr.allCount;
-                });
-                const tab = scope.tabs[findTabIndexByID(scope.currentQuery.id)];
-                tab.allResultsCount = yasr.allCount;
-                scope.saveTab(tab.id);
-                // count query completed successfully
-            };
-
             window.editor.options.sparql.handlers.resetResults = function () {
             };
 
             scope.yasr = yasr;
+
+            scope.setYasrResponse = function(dataOrJqXhr, textStatus, jqXhrOrErrorString) {
+                // If YASR doesn't see a "response" property it will parse the textual JSON in "responseText".
+                // This is both slow and interferes with the +1 result per page policy when we truncate responseJSON.
+                if (dataOrJqXhr.responseJSON) {
+                    dataOrJqXhr.response = dataOrJqXhr.responseJSON;
+                    dataOrJqXhr.responseText = undefined;
+                }
+                yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
+            };
 
             // Track changes in the output type (tab in yasr) so that we can save this together with
             // the rest of the tab's data.
