@@ -742,9 +742,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg = ' You are changing the repository id. Are you sure?';
         } else {
             if ($scope.restartRequested) {
-                modalMsg = 'Save changes to this repository?<br><br>' +
-                    '       <span class="icon-warning" style="color: #d54a33"> Repository ' +
-                    '<strong>' + $scope.repositoryInfo.id + '</strong> will be restarted!</span>';
+                modalMsg = `Save changes to this repository?<br><br>
+                            <span class="icon-warning" style="color: #d54a33"> Repository
+                            <strong>${$scope.repositoryInfo.id}</strong> will be restarted!</span>`;
             } else {
                 modalMsg = 'Save changes to this repository?<br><br>' +
                     '       <span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>';
