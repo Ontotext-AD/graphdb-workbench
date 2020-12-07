@@ -298,6 +298,19 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
+        this.restartRepository = function (repositoryId) {
+            RepositoriesRestService.restartRepository(repositoryId)
+                .success(function () {
+                    that.init();
+                }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+            });
+            if (that.getActiveRepository() === repositoryId) {
+                that.setRepository('');
+            }
+        };
+
         this.getRepositoryTurtleConfig = function (repository) {
             return $http.get('rest/repositories/' + repository.id, {
                 headers: {
