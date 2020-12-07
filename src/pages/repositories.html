@@ -97,6 +97,13 @@
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
+                                        <button class="btn btn-link p-0 restart-repository-btn" type="button"
+                                           tooltip="Restart repository {{repository.id}}"
+                                           tooltip-placement="top"
+                                           tooltip-trigger="mouseenter"
+                                           ng-click="restartRepository(repository.id)">
+												<span class="icon-reload"></span>
+										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
 											tooltip="Delete repository"
 											tooltip-placement="top"
