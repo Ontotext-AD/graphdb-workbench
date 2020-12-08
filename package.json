@@ -6,7 +6,7 @@
         "build": "webpack --config=webpack.config.prod.js",
         "start": "webpack-dev-server --config=webpack.config.dev.js --open",
         "lint": "eslint ./src",
-        "test": "karma start",
+        "test": "karma start --browsers ChromeHeadless",
         "test:coverage": "rimraf coverage/ && karma start --single-run --no-sandbox --browsers ChromeHeadless",
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
         "test:acceptance": "export $(cat .env | xargs) && scripts/run-cypress-tests.sh",
