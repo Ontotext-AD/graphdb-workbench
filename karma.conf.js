@@ -2,7 +2,7 @@ const DEV_CONFIG = require('./webpack.config.dev');
 const merge = require('webpack-merge');
 const path = require('path');
 
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 const os = require('os');
 const chromeHeadlessSupported = os.platform() !== 'win32' || Number((os.release().match(/^(\d+)/) || ['0', '0'])[1]) >= 10;
 
@@ -103,7 +103,7 @@ module.exports = function(config) {
     browserNoActivityTimeout: 30000,
 
 
-      // start these browsers
+    // if ChromeHeadless is not supported configure Chrome in headless mode
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
         chromeHeadlessSupported ? 'ChromeHeadless' : 'Chrome'
@@ -119,11 +119,10 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    singleRun: false,
 
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: 1
   });
-
 };
