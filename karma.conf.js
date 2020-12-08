@@ -2,6 +2,7 @@ const DEV_CONFIG = require('./webpack.config.dev');
 const merge = require('webpack-merge');
 const path = require('path');
 
+process.env.CHROME_BIN = require('puppeteer').executablePath()
 const os = require('os');
 const chromeHeadlessSupported = os.platform() !== 'win32' || Number((os.release().match(/^(\d+)/) || ['0', '0'])[1]) >= 10;
 
