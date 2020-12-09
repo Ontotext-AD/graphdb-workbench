@@ -15,8 +15,10 @@ const modules = [
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
-repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
-    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
+repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
+                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$interval',
+    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
+              RepositoriesRestService, LocationsRestService, LicenseRestService, $interval) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
 
         this.location = '';
@@ -299,8 +301,15 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.restartRepository = function (repositoryId) {
+            if (that.restartTimer) {
+                toastr.warning('Already called repository restart');
+                return;
+            }
+            let openedToastr = toastr.success(`Running repository ${repositoryId} restart`);
+            that.loading = true;
             RepositoriesRestService.restartRepository(repositoryId)
                 .success(function () {
+                    that.isRepositoryRestarted(repositoryId, openedToastr);
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
@@ -310,6 +319,25 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 that.setRepository('');
             }
         };
+
+        this.isRepositoryRestarted = function (repositoryId, openedToastr) {
+            that.restartTimer = $interval(function () {
+                RepositoriesRestService.isRepositoryRestarted(repositoryId)
+                    .success(function (isRestarted) {
+                        if (isRestarted) {
+                            toastr.clear(openedToastr);
+                            toastr.success(`The repository ${repositoryId} restarted`);
+                            $interval.cancel(that.restartTimer);
+                            that.restartTimer = undefined;
+                        }
+                    }).error(function (data) {
+                    $interval.cancel(that.restartTimer);
+                    that.restartTimer = undefined;
+                    const msg = getError(data);
+                    toastr.error(msg, 'Error');
+                });
+            }, 2000);
+        }
 
         this.getRepositoryTurtleConfig = function (repository) {
             return $http.get('rest/repositories/' + repository.id, {
