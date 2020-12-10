@@ -329,7 +329,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 second.peers[first.location] = 1;
                 $scope.addOrUpdateLink(second, first, 'ON', timestamp);
             }
-
+//test jenkins trigger
             onSuccess();
 
             toastr.success(data, "");
