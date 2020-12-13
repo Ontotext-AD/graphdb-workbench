@@ -2,8 +2,11 @@ import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
 import 'oclazyload';
+import 'angular-translate';
+import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
+import 'angular/core/directives/languageselector/language-selector.directive';
 
 const modules = [
     'ngRoute',
@@ -11,16 +14,48 @@ const modules = [
     'graphdb.framework.core',
     'angularCancelOnNavigateModule',
     'oc.lazyLoad',
+    'pascalprecht.translate',
     'graphdb.framework.core.interceptors.unauthorized',
-    'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch'
+    'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
+    'graphdb.framework.core.directives.languageselector.languageselector'
+];
+
+const providers = [
+    '$routeProvider',
+    '$locationProvider',
+    '$menuItemsProvider',
+    'toastrConfig',
+    'localStorageServiceProvider',
+    '$tooltipProvider',
+    '$httpProvider',
+    '$templateRequestProvider',
+    '$translateProvider'
 ];
 
 const moduleDefinition = function (productInfo) {
     const workbench = angular.module('graphdb.workbench', modules);
 
-    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$tooltipProvider', '$httpProvider', '$templateRequestProvider',
-        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $tooltipProvider, $httpProvider, $templateRequestProvider) {
+    workbench.config([...providers,
+        function ($routeProvider,
+                  $locationProvider,
+                  $menuItemsProvider,
+                  toastrConfig,
+                  localStorageServiceProvider,
+                  $tooltipProvider,
+                  $httpProvider,
+                  $templateRequestProvider,
+                  $translateProvider) {
 
+            // configure angular translate module
+            // configures staticFilesLoader
+            $translateProvider.useStaticFilesLoader({
+                prefix: 'i18n/locale-',
+                suffix: '.json'
+            });
+            // load 'en' table on startup
+            $translateProvider.preferredLanguage('en');
+
+            // configure toastr
             angular.extend(toastrConfig, {
                 timeOut: 5000,
                 positionClass: 'toast-bottom-right'
