@@ -121,8 +121,12 @@
                                         class="form-check-input"/>
 								</label>
 							</td>
-							<td ng-if="graph.contextID.uri">
-								<a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value}}</a>
+                            <td ng-if="graph.contextID.uri && isShacl(graph.contextID.uri)">
+                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context"
+                                   title="{{graph.contextID.value}}">SHACL Shape Graph ({{graph.contextID.value}})</a>
+                            </td>
+                            <td ng-if="graph.contextID.uri && !isShacl(graph.contextID.uri)" >
+                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value}}</a>
 							</td>
 							<td ng-if="!graph.contextID.uri">
 								{{graph.contextID.value}}
