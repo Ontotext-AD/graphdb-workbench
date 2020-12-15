@@ -724,13 +724,16 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
                 $repositories.init($scope.goBackToPreviousLocation);
                 if ($scope.restartRequested) {
-                    $repositories.isRepositoryRestarted($scope.repositoryInfo.id)
+                    RepositoriesRestService.restartRepository($scope.repositoryInfo.id)
+                        .success(function () {
+                            $repositories.isRepositoryRestarting($scope.repositoryInfo.id)
+                        });
                 }
             }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.loader = false;
-            });
+            const msg = getError(data);
+            toastr.error(msg, 'Error');
+            $scope.loader = false;
+        });
     };
 
     $scope.editRepository = function () {

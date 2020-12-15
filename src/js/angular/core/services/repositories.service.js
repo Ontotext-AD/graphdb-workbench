@@ -309,7 +309,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             that.loading = true;
             RepositoriesRestService.restartRepository(repositoryId)
                 .success(function () {
-                    that.isRepositoryRestarted(repositoryId, openedToastr);
+                    that.isRepositoryRestarting(repositoryId, openedToastr);
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
@@ -320,11 +320,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
-        this.isRepositoryRestarted = function (repositoryId, openedToastr) {
+        this.isRepositoryRestarting = function (repositoryId, openedToastr) {
             that.restartTimer = $interval(function () {
-                RepositoriesRestService.isRepositoryRestarted(repositoryId)
-                    .success(function (isRestarted) {
-                        if (isRestarted) {
+                RepositoriesRestService.isRepositoryRestarting(repositoryId)
+                    .success(function (isRestarting) {
+                        if (!isRestarting) {
                             toastr.clear(openedToastr);
                             toastr.success(`The repository ${repositoryId} restarted`);
                             $interval.cancel(that.restartTimer);

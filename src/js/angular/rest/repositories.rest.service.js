@@ -21,7 +21,7 @@ function RepositoriesRestService($http) {
         updateRepositoryFileContent,
         validateOntopPropertiesConnection,
         restartRepository,
-        isRepositoryRestarted
+        isRepositoryRestarting
     };
 
     function getRepository(repositoryid) {
@@ -40,20 +40,16 @@ function RepositoriesRestService($http) {
         return $http.post(REPOSITORIES_ENDPOINT, config);
     }
 
-    function editRepository(repositoryId, config, restartRequested) {
-        return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, config, {
-            params: {
-                "restartRepo": restartRequested
-            }
-        });
+    function editRepository(repositoryId, config) {
+        return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, config);
     }
 
     function restartRepository(repositoryId) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/restartRepo/${repositoryId}`);
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/restart`);
     }
 
-    function isRepositoryRestarted(repositoryId) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/isInitialized`);
+    function isRepositoryRestarting(repositoryId) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/restart`);
     }
 
     function getRepositoryConfiguration(repositoryType) {
