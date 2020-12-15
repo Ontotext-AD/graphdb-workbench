@@ -7,23 +7,23 @@ set -u
 trap cleanup INT
 
 function cleanup() {
-    if [ -e "$TMPDIR" ]; then
+    if [ -e "${GDB_TMPDIR:-}" ]; then
         # The PID file might not be there yet if GraphDB is still starting so wait and retry a couple of times if needed
         for i in {1..3}; do
-            if [ ! -f "$TMPDIR/graphdb.pid" ]; then
+            if [ ! -f "$GDB_TMPDIR/graphdb.pid" ]; then
                 echo "GraphDB PID file not found, sleep for 5 seconds and retry (attempt $i)"
                 sleep 5
             fi
-            if [ -f "$TMPDIR/graphdb.pid" ]; then
+            if [ -f "$GDB_TMPDIR/graphdb.pid" ]; then
                 echo "Killing GraphDB"
-                kill -9 $(cat "$TMPDIR/graphdb.pid")
+                kill -9 $(cat "$GDB_TMPDIR/graphdb.pid")
                 break
             fi
         done
         echo "Removing temporary directory"
-        rm -rf "$TMPDIR"
+        rm -rf "$GDB_TMPDIR"
     fi
-    exit $1
+    exit ${1:-}
 }
 
 if [ -z "${GDB_VERSION:-}" ]; then
@@ -61,17 +61,17 @@ else
     echo "Using already downloaded GraphDB"
 fi
 
-TMPDIR=$(mktemp -d -t graphdb-cypress.XXXXXX)
-echo "Created temporary directory: $TMPDIR"
+GDB_TMPDIR=$(mktemp -d -t graphdb-cypress.XXXXXX)
+echo "Created temporary directory: $GDB_TMPDIR"
 
-if ! unzip -q "$GDB_ZIP" -d "$TMPDIR"; then
+if ! unzip -q "$GDB_ZIP" -d "$GDB_TMPDIR"; then
     echo "Could not extract GraphDB"
     cleanup 1
 fi
 
 echo "Starting GraphDB daemon"
-if ! "$TMPDIR/graphdb-free-${GDB_VERSION}/bin/graphdb" -d \
-    -p "$TMPDIR/graphdb.pid" \
+if ! "$GDB_TMPDIR/graphdb-free-${GDB_VERSION}/bin/graphdb" -d \
+    -p "$GDB_TMPDIR/graphdb.pid" \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
     -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" ]; then
     echo "Unable to start GraphDB"
