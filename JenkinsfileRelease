@@ -54,7 +54,10 @@ pipeline {
       steps {
         // Publish on npm
         sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
-        sh "cd test-cypress/ && npm publish"
+        // Publish cypress tests on npm
+        dir("test-cypress/") {
+          sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
+        }
       }
     }
   }
@@ -69,6 +72,9 @@ pipeline {
 
     always {
       sh "rm .npmrc"
+      dir("test-cypress/") {
+        sh "rm .npmrc"
+      }
     }
   }
 }
