@@ -68,7 +68,9 @@
 										popover-trigger="mouseenter" popover-placement="bottom-right"
 										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
 											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-											<strong class="repository-id">{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+											<strong class="repository-id">{{repository.id}}</strong></span>
+                                            <span class="small" ng-if="repository.state"><small> &middot; {{repository.state}}</small></span>
+                                            <span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>
 								<td width="150" class="text-nowrap repository-actions">

@@ -99,8 +99,10 @@ const getFileName = function(path) {
     return name;
 };
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
-function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService',
+                                        '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter', '$interval'];
+function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService,
+                                      $jwtAuth, LocationsRestService, LocalStorageAdapter, $interval) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -262,7 +264,17 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     };
 
     $scope.restartRepository = function (repositoryId) {
-        $repositories.restartRepository(repositoryId);
+        ModalService.openSimpleModal({
+            title: 'Confirm restart',
+            message: 'Are you sure you want to restart the repository \'' + repositoryId + '\'?' +
+                '<p style="margin-top: 10px;">The repository will be shut down immediately and ' +
+                '<br>all running queries and updates will be cancelled.</p>',
+            warning: true
+        }).result
+            .then(function () {
+                $scope.loader = true;
+                $repositories.restartRepository(repositoryId);
+            });
     }
 
     $scope.toggleDefaultRepository = function (repositoryId) {
@@ -334,7 +346,14 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     };
 
-    $repositories.init();
+    const timer = $interval(function () {
+        // Update repositories state
+        $repositories.init();
+    }, 5000);
+
+    $scope.$on('$destroy', function () {
+        $interval.cancel(timer);
+    });
 
     function removeCachedGraphsOnDelete(repoId) {
         const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
@@ -724,10 +743,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
                 $repositories.init($scope.goBackToPreviousLocation);
                 if ($scope.restartRequested) {
-                    RepositoriesRestService.restartRepository($scope.repositoryInfo.id)
-                        .success(function () {
-                            $repositories.isRepositoryRestarting($scope.repositoryInfo.id)
-                        });
+                    $repositories.restartRepository($scope.repositoryInfo.id);
                 }
             }).error(function (data) {
             const msg = getError(data);
