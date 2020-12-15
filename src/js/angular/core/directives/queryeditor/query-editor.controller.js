@@ -663,7 +663,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                     } else {
                         // Real YASR result
                         $timeout(function () {
-                            $scope.yasr.setResponse(tab.yasrData, tab.textStatus, tab.jqXhrOrErrorString);
+                            $scope.setYasrResponse(tab.yasrData, tab.textStatus, tab.jqXhrOrErrorString);
                             setLoader(false);
                             if ($('.yasr_btnGroup li:nth-child(2)').hasClass("active")) {
                                 $timeout(function () {
@@ -689,6 +689,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
             $scope.currentTabConfig.offset = tab.offset;
             $scope.currentTabConfig.allResultsCount = tab.allResultsCount;
+            $scope.currentTabConfig.allResultsCountExact = tab.allResultsCountExact;
             $scope.currentTabConfig.page = tab.page;
             $scope.currentTabConfig.pageSize = tab.pageSize;
 
@@ -799,15 +800,19 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if ($scope.currentTabConfig.resultsCount === 0) {
             desc = "No results.";
         } else {
-            desc = "Showing results from " + $filter('currency')($scope.currentTabConfig.offset, '', 0) + " to " + $filter('currency')($scope.currentTabConfig.resultsCount, '', 0);
+            const currentPageEnd = ($scope.currentTabConfig.page - 1) * $scope.currentTabConfig.pageSize
+                + Math.min($scope.currentTabConfig.resultsCount, $scope.currentTabConfig.pageSize);
+            desc = "Showing results from " + $filter('currency')($scope.currentTabConfig.offset, '', 0)
+                + " to " + $filter('currency')(currentPageEnd, '', 0);
             if ($scope.currentTabConfig.allResultsCount > 0) {
                 // Unsure total results count "of at least" happens if counting timed out or
-                // counting was disabled and we got at least $pageSize results for the first page
-                desc += $scope.countTimeouted || $scope.nocount && $scope.currentTabConfig.allResultsCount >= $scope.currentTabConfig.pageSize
-                    ? " of at least " : " of ";
+                // counting was disabled and we got at least $pageSize + 1 results for the current page.
+                // It may reset become exact when we navigate and reach the end of results.
+                desc += $scope.currentTabConfig.allResultsCountExact
+                    ? " of " : " of at least ";
                 desc += $filter('currency')($scope.currentTabConfig.allResultsCount, '', 0);
-                desc += ".";
             }
+            desc += ".";
         }
 
         return desc;

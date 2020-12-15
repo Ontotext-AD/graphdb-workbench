@@ -28,7 +28,9 @@ class ImportSteps {
     }
 
     static openImportURLDialog(importURL) {
-        cy.get('#import-user .import-from-url-btn').click();
+        cy.get('#import-user .import-from-url-btn').click()
+            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
+            .trigger('mouseout', {force: true});
         ImportSteps.getModal()
             .find('.url-import-form input[name="dataUrl"]')
             .type(importURL)
@@ -38,7 +40,9 @@ class ImportSteps {
     }
 
     static openImportTextSnippetDialog() {
-        cy.get('#import-user .import-rdf-snippet-btn').click();
+        cy.get('#import-user .import-rdf-snippet-btn').click()
+            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
+            .trigger('mouseout', {force: true});
         ImportSteps.getModal().find('#wb-import-textarea').should('be.visible');
 
         return ImportSteps;

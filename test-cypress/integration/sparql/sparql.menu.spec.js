@@ -997,7 +997,8 @@ describe('SPARQL screen validation', () => {
     }
 
     function getResultPages() {
-        return getResultPagination().find('li')
+        // We added prev/next links so only get the li created for actual pages
+        return getResultPagination().find('li[ng-repeat]');
     }
 
     function getModal() {
