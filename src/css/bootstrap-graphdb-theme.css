@@ -480,7 +480,7 @@ a:focus, a:hover {
 
 .main-container {
     margin-left: 15rem;
-    padding: 3rem 2rem 0 2rem;
+    padding: 1rem 2rem 0 2rem;
     /*max-width: 1600px; Removed because of the collapse of the menu*/
     /*-moz-transition: margin-left 0.2s ease-in;  !* FF4+ *!*/
     /*-o-transition: margin-left 0.2s ease-in;  !* Opera 10.5+ *!*/
@@ -547,6 +547,11 @@ h1:only-child, h2:only-child, h3:only-child, h4:only-child, h5:only-child, h6:on
 
 h1 .btn {
     margin-top: -0.2em
+}
+
+.view-resource {
+    margin-left: 15rem;
+    padding-top: 10px;
 }
 
 /*-------------------------------------------------------------
@@ -1655,7 +1660,7 @@ code {
 }
 
 .card-block {
-    padding: 1.6rem;
+    padding: 1rem;
 }
 
 .card-footer:last-child {
