@@ -52,6 +52,10 @@ exportCtrl.controller('ExportCtrl',
                 }, 100);
             });
 
+            $scope.isShacl = function (iri) {
+                return iri === "http%3A%2F%2Frdf4j.org%2Fschema%2Frdf4j%23SHACLShapeGraph";
+            };
+
             /// <summary>Get Graphs that are part of the Active Repository.</summary>
             $scope.getGraphs = function () {
                 if ($scope.getActiveRepository()) {

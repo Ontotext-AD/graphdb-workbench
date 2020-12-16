@@ -58,6 +58,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         {id: 'explicit', title: 'Explicit only'},
         {id: 'implicit', title: 'Implicit only'}
     ];
+    $scope.context = '';
 
     $scope.getLocalName = function (uri) {
         return ClassInstanceDetailsService.getLocalName(uri);
@@ -116,6 +117,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             // absolute URI -> URI
             $scope.uriParam = $location.absUrl();
         }
+        if ($routeParams.context != null) {
+            $scope.context = $routeParams.context;
+        }
         // remove angle brackets which were allowed when filling out the search input field
         // but are forbidden when passing the uri as a query parameter
         $scope.uriParam = $scope.uriParam && $scope.uriParam.replace(/<|>/g, "");
@@ -126,13 +130,15 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             method: 'GET',
             params: {
                 uri: $scope.uriParam,
-                triple: $scope.tripleParam
+                triple: $scope.tripleParam,
+                context: $scope.context
             },
             headers: {
                 'Accept': 'application/json'
             }
         }).success(function (data) {
             $scope.details = data;
+            $scope.context = $scope.details.context;
             if ($scope.details.uri !== 'object') {
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }
@@ -141,6 +147,10 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         });
 
         $scope.exploreResource();
+    };
+
+    $scope.isContextAvailable = function () {
+        return $scope.context !== null && $scope.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
     };
 
     $scope.goToGraphsViz = function () {
@@ -166,6 +176,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Get resource table
     $scope.exploreResource = function () {
         toggleOntoLoader(true);
+        if ($routeParams.context != null) {
+            $scope.context = $routeParams.context;
+        }
         const headers = {Accept: 'application/x-graphdb-table-results+json'};
         $.ajax({
             method: 'GET',
@@ -176,7 +189,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 inference: $scope.inference,
                 role: $scope.role,
                 bnodes: $scope.blanks,
-                sameAs: $scope.sameAs
+                sameAs: $scope.sameAs,
+                context: $scope.context
             },
             headers: headers
         }).done(function (data, textStatus, jqXhr) {
@@ -202,7 +216,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
         $http({
             method: 'GET',
-            url: 'rest/explore/graph?' + param + encodedURI + "&role=" + $scope.role + "&inference=" + $scope.inference + "&bnodes=" + $scope.blanks + "&sameAs=" + $scope.sameAs,
+            url: 'rest/explore/graph?' + param + encodedURI + "&role=" + $scope.role + "&inference=" + $scope.inference + "&bnodes=" + $scope.blanks + "&sameAs=" + $scope.sameAs + "&context=" + encodeURIComponent($scope.context),
             headers: {
                 'Accept': format.type
             }
