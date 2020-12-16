@@ -33,13 +33,15 @@ pipeline {
   stages {
     stage ('Prepare') {
       steps {
+        error("Test send email on failing build")
+
         // Switch to branch
         sh "git checkout ${branch}"
 
         // Change versions
-        sh "npm version --allow-same-version --git-tag-version=false ${ReleaseVersion}"
+        sh "npm version --git-tag-version=false ${ReleaseVersion}"
         dir("test-cypress/") {
-          sh "npm version --allow-same-version --git-tag-version=false ${ReleaseVersion}"
+          sh "npm version --git-tag-version=false ${ReleaseVersion}"
         }
 
         // Install
@@ -68,6 +70,18 @@ pipeline {
       sh "git commit -a -m 'Release ${ReleaseVersion}'"
       sh "git tag -a v${ReleaseVersion} -m 'Release v${ReleaseVersion}'"
       sh "git push --set-upstream origin ${branch} && git push --tags"
+    }
+
+    failure {
+      wrap([$class: 'BuildUser']) {
+        emailext(
+          to: env.BUILD_USER_EMAIL,
+          from: "Jenkins <hudson@ontotext.com>",
+          subject: '''[Jenkins] $PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS!''',
+          mimeType: 'text/html',
+          body: '''${SCRIPT, template="groovy-html.template"}'''
+        )
+      }
     }
 
     always {
