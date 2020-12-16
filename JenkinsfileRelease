@@ -33,8 +33,6 @@ pipeline {
   stages {
     stage ('Prepare') {
       steps {
-        error("Test send email on failing build")
-
         // Switch to branch
         sh "git checkout ${branch}"
 
