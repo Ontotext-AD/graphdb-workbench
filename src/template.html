@@ -134,8 +134,22 @@
         </ul>
     </li>
 </ul>
-<div ng-cloak >
-    <div class="container-fluid main-container" ng-if="!hasPermission()">
+<div class="container-fluid main-container" ng-cloak ng-class="checkMenu() ? 'expanded':''">
+    <div  ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak >
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-block">
+                    <h3 class="col-lg-2"><span  tooltip="View RDF data as a text table or as a visual graph" tooltip-placement="right">View resource</span></h3>
+                    <search-resource-input class="col-lg-9"
+                        namespacespromise="getNamespacesPromise"
+                        autocompletepromisestatus="getAutocompletePromise"
+                        empty="empty">
+                    </search-resource-input>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cont3ainer-fluid main-con3tainer col-lg-12" ng-if="!hasPermission()">
         <p class="alert alert-danger">
             You have no permission to access this functionality with your current credentials.
             <br>
@@ -143,22 +157,25 @@
         </p>
     </div>
 
-        <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
-             ng-class="checkMenu() ? 'expanded':''">
+    <div class="contai4ner-fluid main-cont4ainer col-lg-12" ng-show="hasPermission()" ng-view role="main"
+         ng-class="checkMenu() ? 'expanded':''">
 
-        </div>
-
-    <footer ng-show="showFooter" class="footer">
-        <div class="container-fluid main-container">
-            <p>
-                <a href="http://graphdb.ontotext.com" target="_blank" rel="noopener noreferrer">GraphDB</a> {{graphdbVersion}} &bull; <a
-                    href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J</a>
-                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>. All
-                rights reserved.
-            </p>
-        </div>
-    </footer>
+    </div>
 </div>
+
+<footer ng-show="showFooter" class="footer">
+    <div class="container-fluid main-container">
+        <p>
+            <a href="http://graphdb.ontotext.com" target="_blank"
+               rel="noopener noreferrer">GraphDB</a> {{graphdbVersion}} &bull; <a
+            href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J</a>
+            {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}}
+            <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>.
+            All
+            rights reserved.
+        </p>
+    </div>
+</footer>
 <div class="show-ng-cloak ot-splash" style="display: none;">
     <object data="img/graphdb-splash.svg"></object>
     <div>GraphDB Workbench is loading...</div>
