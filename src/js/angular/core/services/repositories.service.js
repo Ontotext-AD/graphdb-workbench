@@ -301,27 +301,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.restartRepository = function (repositoryId) {
-            if (that.isRepositoryRestarting(repositoryId)) {
-                toastr.warning('Already called repository restart');
-                return;
-            }
-
             RepositoriesRestService.restartRepository(repositoryId)
                 .success(function () {
-                    toastr.success(`Running repository ${repositoryId} restart`);
-                    that.init();
+                    toastr.success(`Restarting repository ${repositoryId}`);
                 }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Error');
             });
-            if (that.getActiveRepository() === repositoryId) {
-                that.setRepository('');
-            }
         };
-
-        this.isRepositoryRestarting = function (repositoryId) {
-            return that.getRepositories().find(repo => repo.id === repositoryId && repo.state === 'RESTARTING');
-        }
 
         this.getRepositoryTurtleConfig = function (repository) {
             return $http.get('rest/repositories/' + repository.id, {

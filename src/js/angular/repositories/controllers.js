@@ -583,7 +583,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.createRepo = function () {
         if (!$scope.repositoryInfo.id) {
-            toastr.error('Repository id cannot be empty');
+            toastr.error('Repository ID cannot be empty');
             return;
         }
         if ($scope.repositoryInfo.type === 'ontop') {
@@ -668,7 +668,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     //TODO
     $scope.editRepoPage = true;
-    $scope.restartRequested = false;
     $scope.canEditRepoId = false;
     $scope.params = $routeParams;
     $scope.loader = true;
@@ -676,6 +675,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.isFreeEdition = isFreeEdition;
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
+    $scope.repositoryInfo.restartRequested = false;
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
     $scope.hasActiveLocation = function () {
@@ -738,11 +738,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepoHttp = function () {
         $scope.loader = true;
-        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo, $scope.restartRequested)
+        RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
             .success(function () {
                 toastr.success('The repository ' + $scope.repositoryInfo.saveId + ' has been edited.');
                 $repositories.init($scope.goBackToPreviousLocation);
-                if ($scope.restartRequested) {
+                if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
                     $repositories.restartRepository($scope.repositoryInfo.id);
                 }
             }).error(function (data) {
@@ -754,27 +754,25 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        if ($scope.repositoryInfo.type != 'ontop') {
+        if ($scope.repositoryInfo.type !== 'ontop') {
             $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
             $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
             $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
         }
-        let modalMsg = '';
+        let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
-            modalMsg = ' You are changing the repository id. Are you sure?';
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        The repository will be stopped and renamed.`;
+        } else if ($scope.repositoryInfo.restartRequested) {
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        The repository will be restarted.`;
         } else {
-            if ($scope.restartRequested) {
-                modalMsg = `Save changes to this repository?<br><br>
-                            <span class="icon-warning" style="color: #d54a33"> Repository
-                            <strong>${$scope.repositoryInfo.id}</strong> will be restarted!</span>`;
-            } else {
-                modalMsg = 'Save changes to this repository?<br><br>' +
-                    '       <span class="icon-warning" style="color: #d54a33"> Restart of GraphDB needed!</span>';
-            }
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        Repository restart required for changes to take effect.`;
         }
         if (!$scope.isInvalidRepoName) {
             ModalService.openSimpleModal({
-                title: 'Confirm edit',
+                title: 'Confirm save',
                 message: modalMsg,
                 warning: true
             }).result
@@ -787,13 +785,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.editRepositoryId = function () {
-        let msg = 'Changing the repository id is a dangerous operation since it moves the repository folder. Also, it may be slow due to reinitialisation of the repository.';
+        let msg = '<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>';
         if ($scope.isEnterprise) {
-            msg += 'If your repository is in a cluster, it is your responsibility to update the cluster after renaming.';
+            msg += '<p>If your repository is in a cluster, it is your responsibility to update the cluster after renaming.</p>';
         }
         ModalService.openSimpleModal({
             title: 'Confirm enable edit',
-            message: msg + ' Are you sure you want to enable repository id editing?',
+            message: msg,
             warning: true
         }).result.then(function () {
             $scope.canEditRepoId = true;
@@ -829,9 +827,5 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             const msg = getError(data);
             toastr.error(msg, 'Failed to connect');
         });
-    }
-
-    $scope.clickRestartRepoCheck = function () {
-        $scope.restartRequested = !$scope.restartRequested;
     }
 }
