@@ -252,8 +252,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $scope.deleteRepository = function (repositoryId) {
         ModalService.openSimpleModal({
             title: 'Confirm delete',
-            message: 'Are you sure you want to delete the repository \'' + repositoryId + '\'?' +
-            '<p>All data in the repository will be lost.</p>',
+            message: `<p>Are you sure you want to delete the repository <strong>${repositoryId}</strong>?</p>
+                      <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
+                            All data in the repository will be lost.</p>`,
             warning: true
         }).result
             .then(function () {
@@ -266,9 +267,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $scope.restartRepository = function (repositoryId) {
         ModalService.openSimpleModal({
             title: 'Confirm restart',
-            message: 'Are you sure you want to restart the repository \'' + repositoryId + '\'?' +
-                '<p style="margin-top: 10px;">The repository will be shut down immediately and ' +
-                '<br>all running queries and updates will be cancelled.</p>',
+            message: `<p>Are you sure you want to restart the repository <strong>${repositoryId}</strong>?</p>
+                        <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
+                            The repository will be shut down immediately and all running queries
+                            and updates will be cancelled.</p>`,
             warning: true
         }).result
             .then(function () {
@@ -348,7 +350,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     const timer = $interval(function () {
         // Update repositories state
-        $repositories.init();
+        $repositories.initQuick();
     }, 5000);
 
     $scope.$on('$destroy', function () {

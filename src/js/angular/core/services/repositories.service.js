@@ -100,8 +100,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.degradedReason;
         };
 
-        this.init = function (successCallback, errorCallback) {
-            this.locationsShouldReload = true;
+        this.initQuick = function () {
+            this.init(null, null, true);
+        };
+
+        this.init = function (successCallback, errorCallback, quick) {
+            if (!quick) {
+                this.locationsShouldReload = true;
+            }
             this.loading = true;
             // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
             LocationsRestService.getActiveLocation().then(
@@ -132,6 +138,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     } else {
                         loadingDone();
                         // no active location
+                        if (quick) {
+                            that.locationsShouldReload = true;
+                        }
                         that.location = '';
                         that.repositories = [];
                         that.setRepository('');
@@ -304,6 +313,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             RepositoriesRestService.restartRepository(repositoryId)
                 .success(function () {
                     toastr.success(`Restarting repository ${repositoryId}`);
+                    // This provides immediate visual feedback by updating the status
+                    that.initQuick();
                 }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Error');
