@@ -20,6 +20,7 @@ function RepositoriesRestService($http) {
         getRepositoryFileContent,
         updateRepositoryFileContent,
         validateOntopPropertiesConnection,
+        restartRepository,
         getSupportedDriversData,
         isDriverOnClasspath,
         updatePropertiesFile,
@@ -44,6 +45,10 @@ function RepositoriesRestService($http) {
 
     function editRepository(repositoryId, config) {
         return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, config);
+    }
+
+    function restartRepository(repositoryId) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/restart`);
     }
 
     function getRepositoryConfiguration(repositoryType) {
