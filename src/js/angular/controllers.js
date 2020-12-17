@@ -82,18 +82,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr',
-    '$location', '$repositories', '$rootScope', 'productInfo', '$timeout',
-    'ModalService', '$interval', '$filter', 'LicenseRestService',
-    'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService',
-    '$sce', 'LocalStorageAdapter', 'LSKeys', 'AutocompleteRestService', 'RDF4JRepositoriesRestService'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location,
-    $repositories,
-    $rootScope, productInfo, $timeout, ModalService, $interval, $filter,
-    LicenseRestService, RepositoriesRestService, MonitoringRestService,
-    SparqlRestService, $sce, LocalStorageAdapter, LSKeys, AutocompleteRestService, RDF4JRepositoriesRestService
-    ) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -112,39 +103,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location,
     };
 
     setYears();
-
-    $scope.getActiveRepositorySize = function () {
-        const repo = $repositories.getActiveRepository();
-        if (!repo) {
-            return;
-        }
-        $scope.activeRepositorySizeError = undefined;
-        RepositoriesRestService.getSize(repo).then(function (res) {
-            $scope.activeRepositorySize = res.data;
-        }).catch(function (e) {
-            $scope.activeRepositorySizeError = e.data.message;
-        });
-    };
-
-    function refreshRepositoryInfo() {
-        if ($scope.getActiveRepository()) {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
-                });
-        }
-    }
-
-    // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
-    // after security was initialized. This way we avoid a race condition when the newly logged in
-    // user doesn't have read access to the active repository.
-    $scope.$on('repositoryIsSet', refreshRepositoryInfo);
-
-    // $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-    // $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
 
     $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
