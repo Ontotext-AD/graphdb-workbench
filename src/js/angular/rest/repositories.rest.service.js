@@ -21,7 +21,9 @@ function RepositoriesRestService($http) {
         updateRepositoryFileContent,
         validateOntopPropertiesConnection,
         getSupportedDriversData,
-        isDriverOnClasspath
+        isDriverOnClasspath,
+        updatePropertiesFile,
+        getPropertiesFileContent
     };
 
     function getRepository(repositoryid) {
@@ -78,5 +80,14 @@ function RepositoriesRestService($http) {
 
     function isDriverOnClasspath(driverClass) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/isDriverOnClasspath`, {params: {driverClass: driverClass}});
+    }
+
+    function updatePropertiesFile(fileLocation, content) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/updatePropertiesFile`,
+            JSON.stringify(content), {params: {fileLocation: fileLocation}});
+    }
+
+    function getPropertiesFileContent(file) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/getPropertiesFile`, {params: {fileLocation: file}});
     }
 }

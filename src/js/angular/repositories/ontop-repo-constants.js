@@ -11,13 +11,13 @@ export const REQUIRED_PROPERTIES_FIELD_PARAMS = ['hostName', 'userName'];
 export const getDriverType = function (driverType, $scope) {
     let found = $scope.supportedDriversData.find(driver => driver.driverType === driverType);
     $scope.selectedDriver.driverType = found.driverType;
-    $scope.selectedDriver.hostName = "";
-    $scope.selectedDriver.databaseName = "";
-    $scope.selectedDriver.userName = "";
-    $scope.selectedDriver.password = "";
-    $scope.selectedDriver.driverClass = found.driverClass;
+    $scope.selectedDriver.jdbc.hostName = "";
+    $scope.selectedDriver.jdbc.databaseName = "";
+    $scope.selectedDriver.jdbc.userName = "";
+    $scope.selectedDriver.jdbc.password = "";
+    $scope.selectedDriver.jdbc.driverClass = found.driverClass;
+    $scope.selectedDriver.jdbc.url = found.urlStart;
     $scope.selectedDriver.urlStart = found.urlStart;
-    $scope.selectedDriver.url = found.urlStart;
     $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
 }
 
@@ -88,10 +88,10 @@ export const getFileName = function(path) {
 
 export const concatURL = function(labelName, $scope) {
     if (labelName === 'hostName' || labelName === 'port' || labelName === 'databaseName') {
-        let port = $scope.selectedDriver.port ? (':' + $scope.selectedDriver.port) : '';
+        let port = $scope.selectedDriver.jdbc.port ? (':' + $scope.selectedDriver.jdbc.port) : '';
         let separator = $scope.selectedDriver.driverType === 'oracle' ? ':' : '/';
-        let database = $scope.selectedDriver.databaseName ? (separator + $scope.selectedDriver.databaseName) : '';
-        $scope.selectedDriver.url = $scope.selectedDriver.urlStart + $scope.selectedDriver.hostName + port + database;
+        let database = $scope.selectedDriver.jdbc.databaseName ? (separator + $scope.selectedDriver.jdbc.databaseName) : '';
+        $scope.selectedDriver.url = $scope.selectedDriver.urlStart + $scope.selectedDriver.jdbc.hostName + port + database;
     }
 }
 

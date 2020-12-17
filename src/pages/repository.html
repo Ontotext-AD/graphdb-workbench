@@ -74,7 +74,7 @@
                             </div>
                             <div class="form-group col-xs-2 col-sm-2 col-md-2">
                                 <button id="testConnection1" ng-click="validateOntopPropertiesConnection()"
-                                        ng-disabled="!selectedDriver.hostName"
+                                        ng-disabled="!selectedDriver.jdbc.hostName && !selectedDriver.jdbc.userName"
                                         ng-if="labelName === 'url'"
                                         type="submit"
                                         class="btn btn-primary">Test Connection</button>

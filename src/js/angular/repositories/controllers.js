@@ -560,14 +560,16 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.selectedDriver = {
         driverType: "generic",
-        hostName: "",
-        port: "",
-        databaseName: "",
-        userName: "",
-        password: "",
-        driverClass: "",
+        jdbc: {
+            hostName: "",
+            port: "",
+            databaseName: "",
+            userName: "",
+            password: "",
+            driverClass: "",
+            url: ""
+        },
         urlStart: "",
-        url: "",
         downloadDriverUrl: ""
     }
 
