@@ -104,7 +104,7 @@ describe('Repositories', () => {
         getToast()
             .find('.toast-error')
             .should('be.visible')
-            .and('contain', 'Repository id cannot be empty');
+            .and('contain', 'Repository ID cannot be empty');
     });
 
     it('should allow creation of repositories with custom settings', () => {

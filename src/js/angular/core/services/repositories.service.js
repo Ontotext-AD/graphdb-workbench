@@ -15,8 +15,10 @@ const modules = [
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
-repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth', 'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
-    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth, RepositoriesRestService, LocationsRestService, LicenseRestService) {
+repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
+                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
+    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
+              RepositoriesRestService, LocationsRestService, LicenseRestService) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
 
         this.location = '';
@@ -98,8 +100,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.degradedReason;
         };
 
-        this.init = function (successCallback, errorCallback) {
-            this.locationsShouldReload = true;
+        this.initQuick = function () {
+            this.init(null, null, true);
+        };
+
+        this.init = function (successCallback, errorCallback, quick) {
+            if (!quick) {
+                this.locationsShouldReload = true;
+            }
             this.loading = true;
             // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
             LocationsRestService.getActiveLocation().then(
@@ -130,6 +138,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     } else {
                         loadingDone();
                         // no active location
+                        if (quick) {
+                            that.locationsShouldReload = true;
+                        }
                         that.location = '';
                         that.repositories = [];
                         that.setRepository('');
@@ -296,6 +307,18 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (that.getActiveRepository() === repositoryId) {
                 that.setRepository('');
             }
+        };
+
+        this.restartRepository = function (repositoryId) {
+            RepositoriesRestService.restartRepository(repositoryId)
+                .success(function () {
+                    toastr.success(`Restarting repository ${repositoryId}`);
+                    // This provides immediate visual feedback by updating the status
+                    that.initQuick();
+                }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, 'Error');
+            });
         };
 
         this.getRepositoryTurtleConfig = function (repository) {

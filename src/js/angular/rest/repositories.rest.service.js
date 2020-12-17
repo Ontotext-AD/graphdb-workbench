@@ -19,7 +19,8 @@ function RepositoriesRestService($http) {
         getCluster,
         getRepositoryFileContent,
         updateRepositoryFileContent,
-        validateOntopPropertiesConnection
+        validateOntopPropertiesConnection,
+        restartRepository
     };
 
     function getRepository(repositoryid) {
@@ -40,6 +41,10 @@ function RepositoriesRestService($http) {
 
     function editRepository(repositoryId, config) {
         return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, config);
+    }
+
+    function restartRepository(repositoryId) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/restart`);
     }
 
     function getRepositoryConfiguration(repositoryType) {
