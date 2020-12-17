@@ -13,6 +13,8 @@ function replaceVersion(content) {
         .replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
 }
 
+const contextPath = __dirname;
+
 module.exports = {
     devtool: 'source-map',
     entry: {
@@ -49,112 +51,139 @@ module.exports = {
         }),
         new CopyPlugin([
             {
+                context: contextPath,
                 from: 'src/js/angular/plugin-registry.js',
                 to: 'plugin-registry.js'
             },
             {
+                context: contextPath,
                 from: 'node_modules/angularjs-slider/dist/rzslider.min.css',
                 to: 'js/lib/rzslider/rzslider.min.css'
             },
             {
+                context: contextPath,
                 from: 'src/js/lib/angucomplete-alt/angucomplete-alt.css',
                 to: 'js/lib/angucomplete-alt/angucomplete-alt.css'
             },
             {
+                context: contextPath,
                 from: 'src/js/lib/d3-tip/d3-tip.css',
                 to: 'js/lib/d3-tip/d3-tip.css'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/templates/loader/ot-loader.svg',
                 to: 'js/angular/templates/loader/ot-loader.svg'
             },
             {
+                context: contextPath,
                 from: 'node_modules/ng-tags-input/build/ng-tags-input.min.css',
                 to: 'css/lib/ng-tags-input/ng-tags-input.min.css'
             },
             {
+                context: contextPath,
                 from: 'node_modules/angular-xeditable/dist/css/xeditable.min.css',
                 to: 'css/lib/angular-xeditable/xeditable.min.css'
             },
             {
+                context: contextPath,
                 from: 'node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css',
                 to: 'css/lib/bootstrap-switch/bootstrap-switch.min.css'
             },
             {
+                context: contextPath,
                 from: 'src/js/lib/bootstrap/bootstrap.min.css',
                 to: 'js/lib/bootstrap/bootstrap.min.css'
             },
             {
+                context: contextPath,
                 from: 'node_modules/font-awesome/css',
                 to: 'font/font-awesome/4.3.0/css'
             },
             {
+                context: contextPath,
                 from: 'node_modules/font-awesome/fonts',
                 to: 'font/font-awesome/4.3.0/fonts'
             },
             {
+                context: contextPath,
                 from: 'src/js/lib/nvd3/nv.d3.css',
                 to: 'js/lib/nvd3/nv.d3.css'
             },
             {
+                context: contextPath,
                 from: 'src/css',
                 to: 'css'
             },
             {
+                context: contextPath,
                 from: 'src/res',
                 to: 'res',
                 transform: replaceVersion
             },
             {
+                context: contextPath,
                 from: 'src/pages',
                 to: 'pages',
                 transform: replaceVersion
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/autocomplete/templates',
                 to: 'js/angular/autocomplete/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/clustermanagement/templates',
                 to: 'js/angular/clustermanagement/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/core/templates',
                 to: 'js/angular/core/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/explore/templates',
                 to: 'js/angular/explore/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/externalsync/templates',
                 to: 'js/angular/externalsync/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/graphexplore/templates',
                 to: 'js/angular/graphexplore/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/import/templates',
                 to: 'js/angular/import/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/rdfrank/templates',
                 to: 'js/angular/rdfrank/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/security/templates',
                 to: 'js/angular/security/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/settings/modal',
                 to: 'js/angular/settings/modal'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/core/directives/queryeditor/templates',
                 to: 'js/angular/core/directives/queryeditor/templates'
             },
             {
+                context: contextPath,
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }

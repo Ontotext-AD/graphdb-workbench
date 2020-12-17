@@ -18,6 +18,18 @@ module.exports = merge(commonConfig, {
     module: {
         rules: [
             {
+                // when bundling application's own source code
+                // transpile using Babel which uses .babelrc file
+                // and instruments code using babel-plugin-istanbul
+                test: /\.js/,
+                exclude: /(node_modules)/,
+                use: [
+                    {
+                        loader: 'babel-loader'
+                    }
+                ]
+            },
+            {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
             },
@@ -29,8 +41,8 @@ module.exports = merge(commonConfig, {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/template.html',
-            favicon: 'src/img/icon.png'
+            template: __dirname + '/src/template.html',
+            favicon: __dirname + '/src/img/icon.png'
         }),
         new CleanWebpackPlugin()
     ],
