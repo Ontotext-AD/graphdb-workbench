@@ -3,6 +3,7 @@ import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
 import 'oclazyload';
 import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/directives/rdf-resource-search.directive';
 
 const modules = [
     'ngRoute',
@@ -11,6 +12,7 @@ const modules = [
     'angularCancelOnNavigateModule',
     'oc.lazyLoad',
     'graphdb.framework.core.interceptors.unauthorized',
+    'graphdb.framework.core.directives.rdfresourcesearch'
 ];
 
 const moduleDefinition = function (productInfo) {
