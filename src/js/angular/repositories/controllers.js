@@ -1,3 +1,8 @@
+const {ONTOP_REPO_PARAM_LABELS, ONTOP_REPO_PARAMS, REQUIRED_ONTOP_REPO_PARAMS,
+        SUPPORTED_DRIVER_LABELS, GENERIC_DRIVER_TYPE, PROPERTIES_FILE,
+        PROPERTIES_FILE_PARAMS, REQUIRED_PROPERTIES_FIELD_PARAMS,
+        isReadOnly, getDriverType, editFile, getFileName, uploadRepoFile,
+        concatURL, isDriverClassOnClasspath} = require("./ontop-repo-constants");
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
 
@@ -16,10 +21,6 @@ const staticRulesets = [
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
 
-const ONTOP_REPO_PARAM_LABELS = {obdaFile: 'obda or r2rml file', owlFile: 'ontology file', propertiesFile: 'properties file', constraintFile: 'constraint file'};
-const ONTOP_REPO_PARAMS = _.keys(ONTOP_REPO_PARAM_LABELS);
-const REQUIRED_ONTOP_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
-
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -37,67 +38,6 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
-
-const editFile = function(file, $modal, $scope, RepositoriesRestService, toastr) {
-
-        const modalInstance = $modal.open({
-            templateUrl: 'js/angular/templates/modal/editRepoFile.html',
-            controller: 'EditRepositoryFileCtrl',
-            resolve: {
-                file: function () {
-                    return $scope.repositoryInfo.params[file] ? $scope.repositoryInfo.params[file].value : '';
-                }
-            }
-        });
-
-        modalInstance.result.then(function (data) {
-            // send data to backend
-            RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(data) {
-                $scope.ontopRepoFileNames[file] = getFileName(data.fileLocation);
-                $scope.repositoryInfo.params[file].value = data.fileLocation;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-            })
-        });
-    }
-
-const uploadRepoFile = function (files, param, Upload, $scope) {
-    if (files && files.length) {
-        $scope.uploadFile = files[0];
-        $scope.uploadFileLoader = true;
-        Upload.upload({
-            url: 'rest/repositories/uploadFile',
-            data: {uploadFile: $scope.uploadFile}
-        })
-            .success(function (data) {
-                if (!data.success) {
-                    toastr.error(data.errorMessage);
-                } else {
-                    $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
-                    $scope.repositoryInfo.params[param].value = data.fileLocation;
-                }
-                $scope.uploadFileLoader = false;
-            }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.uploadFile = '';
-            $scope.uploadFileLoader = false;
-        });
-    }
-};
-
-const getFileName = function(path) {
-    let lastIdx = path.lastIndexOf('/');
-    if (lastIdx === -1) {
-        lastIdx = path.lastIndexOf('\\');
-    }
-    let name = path;
-    if (lastIdx !== -1) {
-        name = name.substring(lastIdx + 1);
-    }
-    return name;
-};
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
 function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
@@ -493,7 +433,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
 
     $scope.uploadOntopRepoFile = function(files, param) {
-        uploadRepoFile(files, param, Upload, $scope);
+        uploadRepoFile(files, param, Upload, $scope, toastr);
     };
 
     $scope.isOntopRepoFileUploaded = function() {
@@ -517,6 +457,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
+            if (repoType === 'ontop') {
+                RepositoriesRestService.getSupportedDriversData()
+                    .success(function (response) {
+                        $scope.supportedDriversData = response;
+                    }).error(function (response) {
+                    const msg = getError(response);
+                    toastr.error(msg, 'Error');
+                });
+            }
             $scope.loader = false;
         }).error(function (data) {
             const msg = getError(data);
@@ -609,6 +558,44 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         editFile(file, $modal, $scope, RepositoriesRestService, toastr);
     };
 
+    $scope.selectedDriver = {
+        driverType: "generic",
+        hostName: "",
+        port: "",
+        databaseName: "",
+        userName: "",
+        password: "",
+        driverClass: "",
+        urlStart: "",
+        url: "",
+        downloadDriverUrl: ""
+    }
+
+    $scope.getDriverType = function (driverType) {
+        getDriverType(driverType, $scope);
+        if (driverType !== GENERIC_DRIVER_TYPE) {
+            isDriverClassOnClasspath($scope, RepositoriesRestService, toastr);
+        }
+    }
+
+    $scope.isReadOnly = function (labelName) {
+        return isReadOnly(labelName);
+    }
+
+    $scope.supportedDriversData = [];
+    $scope.propertiesFileParams = PROPERTIES_FILE_PARAMS;
+    $scope.supportedDriverLabels = SUPPORTED_DRIVER_LABELS;
+    $scope.genericDriverType = GENERIC_DRIVER_TYPE;
+    $scope.propertiesFile = PROPERTIES_FILE;
+    $scope.isOnClasspath = false;
+
+    $scope.isRequiredField = function (field) {
+        return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
+    }
+
+    $scope.concatURL = function (labelName) {
+        concatURL(labelName, $scope);
+    }
     //TODO - check if repositoryID exist
 
 }
@@ -775,7 +762,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.uploadOntopRepoFile = function(files, param) {
-        uploadRepoFile(files, param, Upload, $scope);
+        uploadRepoFile(files, param, Upload, $scope, toastr);
     };
 
     $scope.isOntopRepoFileUploaded = function() {

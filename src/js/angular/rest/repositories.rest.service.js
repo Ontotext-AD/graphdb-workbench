@@ -19,7 +19,9 @@ function RepositoriesRestService($http) {
         getCluster,
         getRepositoryFileContent,
         updateRepositoryFileContent,
-        validateOntopPropertiesConnection
+        validateOntopPropertiesConnection,
+        getSupportedDriversData,
+        isDriverOnClasspath
     };
 
     function getRepository(repositoryid) {
@@ -68,5 +70,13 @@ function RepositoriesRestService($http) {
 
     function validateOntopPropertiesConnection(ontopProperties) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/test-connection`, ontopProperties);
+    }
+
+    function getSupportedDriversData() {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/defaultDriversData`);
+    }
+
+    function isDriverOnClasspath(driverClass) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/isDriverOnClasspath`, {params: {driverClass: driverClass}});
     }
 }

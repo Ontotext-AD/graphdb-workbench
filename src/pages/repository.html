@@ -39,18 +39,58 @@
 								  <option value="free" ng-if="isFreeEdition">GRAPHDB-FREE</option>
 								  <option value="worker" ng-if="isEnterprise">GRAPHDB-EE Worker</option>
 								  <option value="master" ng-if="isEnterprise">GRAPHDB-EE Master</option>
-                                  <option value="ontop">Ontop</option>
+                                  <option value="ontop">Ontop: Virtual SPARQL Endpoint</option>
                                 </select>
 								<select ng-if="editRepoPage" disabled="disabled" class="form-control" id="type" ng-model="repositoryInfo.type">
 								  <option value="se">GRAPHDB-SE</option>
 								  <option value="free">GRAPHDB-FREE</option>
 								  <option value="worker">GRAPHDB-EE Worker</option>
 								  <option value="master">GRAPHDB-EE Master</option>
-                                  <option value="ontop">Ontop</option>
+                                  <option value="ontop">Ontop: Virtual SPARQL Endpoint</option>
                                 </select>
 							</div>
 						</div>
-                        <div ng-repeat="file in ontopRepoFiles" class="form-group row" ng-if="repositoryInfo.type === 'ontop'">
+                        <div ng-if="repositoryInfo.type === 'ontop'" class="form-group row">
+                            <label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Database driver</label>
+                            <div class="col-xs-4 col-sm-4 col-md-4">
+                                <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"  ng-change="getDriverType(selectedDriver.driverType)">
+                                    <option value="generic">Generic JDBC Driver</option>
+                                    <option value="mySQL">MySQL</option>
+                                    <option value="postgreSQL">PostgreSQL</option>
+                                    <option value="oracle">Oracle</option>
+                                    <option value="msSQL">MS SQL Server</option>
+                                    <option value="DB2">DB2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div ng-repeat="labelName in propertiesFileParams" class="form-group row"
+                             ng-if="repositoryInfo.type === 'ontop' && selectedDriver.driverType !== genericDriverType">
+                            <label for="labelName" class="col-xs-3 col-sm-3 col-md-3 col-form-label">
+                                {{supportedDriverLabels[labelName] + (isRequiredField(labelName) ? '*' : '')}}</label>
+                            <div class="col-xs-4 col-sm-4 col-md-4">
+                                <input id="labelName" class="form-control" ng-readonly="isReadOnly(labelName)"
+                                       placeholder="{{isRequiredField(labelName) ? 'This field is required' : ''}}"
+                                        ng-model="selectedDriver[labelName]" ng-blur="concatURL(labelName)">
+                            </div>
+                            <div class="form-group col-xs-2 col-sm-2 col-md-2">
+                                <button id="testConnection1" ng-click="validateOntopPropertiesConnection()"
+                                        ng-disabled="!selectedDriver.hostName"
+                                        ng-if="labelName === 'url'"
+                                        type="submit"
+                                        class="btn btn-primary">Test Connection</button>
+                                <em class="icon-warning icon-2x"
+                                    ng-if="labelName === 'driverClass' && !isOnClasspath"
+                                    tooltip="{{'JDBC driver not found in the classpath, please save it in the lib directory and restart GraphDB'}}"
+                                    tooltip-placement="top"></em>
+                                <a class="uri" ng-if="labelName === 'driverClass' && selectedDriver.downloadDriverUrl"
+                                   href="{{selectedDriver.downloadDriverUrl}}"
+                                   style="text-decoration: underline;">
+                                    Download JDBC driver
+                                </a>
+                            </div>
+                        </div>
+                        <div ng-repeat="file in ontopRepoFiles" class="form-group row"
+                             ng-if="repositoryInfo.type === 'ontop' && (selectedDriver.driverType === genericDriverType || propertiesFile !== file)">
                             <label for="file" class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params[file].label + (isRequiredOntopRepoFile(file) ? '*' : '')}}</label>
                             <div class="col-xs-4 col-sm-4 col-md-4">
                                     <a class="btn btn-link ot-edit-input" ng-if="ontopRepoFileNames[file]" ng-click="editFile(file)"
@@ -76,7 +116,7 @@
                             <div class="form-group col-xs-2 col-sm-2 col-md-2">
                                 <button id="testConnection" ng-click="validateOntopPropertiesConnection()"
                                         ng-disabled="!isOntopRepoFileUploaded() && !editRepoPage"
-                                        ng-if="'propertiesFile' === file"
+                                        ng-if="propertiesFile === file"
                                         type="submit"
                                     class="btn btn-primary">Test Connection</button>
                             </div>
