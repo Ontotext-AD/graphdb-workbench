@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.6.0-J2",
+    "version": "1.6.0-TR2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -12,8 +12,7 @@
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
         "test:acceptance": "export $(cat .env | xargs) && scripts/run-cypress-tests.sh",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
-        "sonar": "sonar-scanner -Dsonar.projectVersion=$npm_package_version"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
     },
     "files": [
         "dist/"

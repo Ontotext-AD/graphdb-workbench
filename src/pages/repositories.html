@@ -68,7 +68,9 @@
 										popover-trigger="mouseenter" popover-placement="bottom-right"
 										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
 											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-											<strong class="repository-id">{{repository.id}}</strong></span><span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+											<strong class="repository-id">{{repository.id}}</strong></span>
+                                            <span class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
+                                            <span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>
 								<td width="150" class="text-nowrap repository-actions">
@@ -97,6 +99,13 @@
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
+                                        <button class="btn btn-link p-0 restart-repository-btn" type="button"
+                                           tooltip="Restart repository {{repository.id}}"
+                                           tooltip-placement="top"
+                                           tooltip-trigger="mouseenter"
+                                           ng-click="restartRepository(repository.id)">
+												<span class="icon-reload"></span>
+										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
 											tooltip="Delete repository"
 											tooltip-placement="top"

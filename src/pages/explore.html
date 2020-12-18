@@ -21,6 +21,9 @@
         <p>
             <span>Source:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
         </p>
+        <p ng-show="isContextAvailable()">
+            <span>Context:</span>&nbsp;<a href="{{details.context}}">{{details.context}}</a>
+        </p>
     </div>
 
     <div class="resource-info" ng-if="isTripleResource()">

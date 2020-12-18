@@ -7,11 +7,15 @@ const pullRequestId = argv['pull-request-id'];
 
 const sonarOptions = {
   "sonar.organization": "ontotext-ad",
+  "sonar.projectKey": "Ontotext-AD_graphdb-workbench",
+  "sonar.projectName": "graphdb-workbench",
   "sonar.sources": "./src",
   "sonar.exclusions": "src/res/**/*,src/font/**/*,src/js/lib/**/*,src/css/fonts/**/*,src/css/lib/**/*",
   "sonar.tests": "test",
+  "sonar.language": "js",
   "sonar.javascript.lcov.reportPaths": "coverage/lcov.info",
   "sonar.scm.provider": "git",
+  "sonar.sourceEncoding": "UTF-8",
 };
 
 if (pullRequestId) {
@@ -22,7 +26,6 @@ if (pullRequestId) {
   sonarOptions["sonar.branch.name"] = branch;
 }
 
-// See https://nickkorbel.com/2020/02/05/configuring-sonar-with-a-create-react-app-in-typescript/
 sonarqubeScanner(
   {
     options: sonarOptions

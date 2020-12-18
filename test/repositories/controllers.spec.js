@@ -236,7 +236,9 @@ describe('==> Repository module controllers tests', function () {
                 const argument = modalInstance.openSimpleModal.calls.first().args[0];
                 expect(argument).toEqual({
                     title: 'Confirm delete',
-                    message: `Are you sure you want to delete the repository '${repoId}'?<p>All data in the repository will be lost.</p>`,
+                    message: `<p>Are you sure you want to delete the repository <strong>${repoId}</strong>?</p>
+                      <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
+                            All data in the repository will be lost.</p>`,
                     warning: true
                 });
 
