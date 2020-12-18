@@ -1,8 +1,7 @@
 # graphdb-workbench
 The web application for GraphDB APIs
 
-[![Build Status](https://travis-ci.com/Ontotext-AD/graphdb-workbench.svg?branch=master)](https://travis-ci.com/Ontotext-AD/graphdb-workbench)
-
+[![Build Status](https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline)]
 ### Setup Environment
 
 * Checkout or clone the project.
@@ -53,17 +52,7 @@ dashboard application through which the tests can be run one by one or altogethe
 outcome in the dashboard.
 
 ## Release and publish
-
-The workbench is regularly published as a package in the NPM registry. 
-
-**When a newer version needs to be published:**
-* Increase the version in the `package.json` by following the semantic versioning approach.
-* Create a new PR and a tag through Github. Beware the version to follow the pattern 
-`/v[0-9]+\.[0-9]+\.[0-9]+(-.*)?$/` as defined in `.travis.yml`. Any discrepancies will result in
-version being rejected as appropriate for publish in the NPM.
-* If the build is successful which can be seen in 
-https://travis-ci.com/Ontotext-AD/graphdb-workbench the workbench package is published in NPM which 
-can be also verified on the site https://www.npmjs.com/package/graphdb-workbench. 
+The workbench is regularly published as a package in the NPM registry.
 
 ### Build
 
