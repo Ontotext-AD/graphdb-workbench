@@ -3,8 +3,7 @@
 <div ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak>
     <div class="card search-rdf-input">
         <div class="card-block">
-            <search-resource-input class="search-b"
-                                   namespacespromise="getNamespacesPromise"
+            <search-resource-input namespacespromise="getNamespacesPromise"
                                    placeholder="Search RDF resources"
                                    autocompletepromisestatus="getAutocompletePromise"
                                    empty="empty"

@@ -322,9 +322,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             const openInNewWindowTab = function (visual, params) {
-                const asd = visual ? 'graphs-visualizations' : 'resource';
-                const baseUrl = $location.absUrl().substr(0, $location.$$absUrl.indexOf($location.url()));
-                const url = baseUrl + '/' + asd + '?uri' + '=' + params.uri;
+                const view = visual ? 'graphs-visualizations' : 'resource';
+                const baseUrl = $location.absUrl().substr(0, $location.absUrl().indexOf($location.url()));
+                const url = baseUrl + '/' + view + '?uri' + '=' + params.uri;
                 window.open(url);
             };
 
