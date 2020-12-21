@@ -36,7 +36,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       $scope.showInput = function () {
         element.find('.search-rdf-btn')
             .addClass('hidden-xs-up');
-        element.find('.search-inputRDF').css('top', '0px');
+        element.find('.search-rdf-input').css('top', '0px');
         $timeout(function () {
           element.find('.close-rdf-search-btn')
               .removeClass('hidden-xs-up');
@@ -46,7 +46,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       };
 
       $scope.hideInput = function () {
-        element.find('.search-inputRDF').css('top', '-150px');
+        element.find('.search-rdf-input').css('top', '-150px');
         element.find('search-resource-input .view-res-input')[0].value = '';
         element.find('search-resource-input .view-res-input').change();
         element.find('.close-rdf-search-btn')
