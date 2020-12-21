@@ -256,7 +256,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             placeholder: '@',
             uriValidation: '@',
             preserveInput: '@',
-            empty: '='
+            empty: '=',
+            openInNewTab: '@'
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function ($scope, element, attrs) {
@@ -303,14 +304,28 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             const defaultTextCallback = function (params) {
-                var param = params.type || 'uri';
-                $location.path('resource').search(param, params.uri);
+                const param = params.type || 'uri';
+                if ($scope.openInNewTab === 'true') {
+                    openInNewWindowTab(false, params);
+                } else {
+                    $location.path('resource').search(param, params.uri);
+                }
             };
 
             const defaultVisualCallback = function (params) {
-                if ('uri' === params.type || !params.type) {
-                    $location.path('graphs-visualizations').search('uri', params.uri);
+                const param = params.type || 'uri';
+                if ($scope.openInNewTab === 'true') {
+                    openInNewWindowTab(true, params);
+                } else {
+                    $location.path('graphs-visualizations').search(param, params.uri);
                 }
+            };
+
+            const openInNewWindowTab = function (visual, params) {
+                const asd = visual ? 'graphs-visualizations' : 'resource';
+                const baseUrl = $location.absUrl().substr(0, $location.$$absUrl.indexOf($location.url()));
+                const url = baseUrl + '/' + asd + '?uri' + '=' + params.uri;
+                window.open(url);
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {

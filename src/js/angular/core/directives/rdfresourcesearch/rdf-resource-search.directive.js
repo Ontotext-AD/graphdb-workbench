@@ -1,5 +1,5 @@
 angular
-    .module('graphdb.framework.core.directives.rdfresourcesearch', [])
+    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', [])
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
@@ -10,7 +10,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
     AutocompleteRestService, RDF4JRepositoriesRestService,
     RepositoriesRestService, $repositories) {
   return {
-    templateUrl: 'js/angular/core/templates/rdfResourceSearchTemplate.html',
+    templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
     restrict: 'AE',
     link: function ($scope, element) {
 
@@ -34,30 +34,26 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       };
 
       $scope.showInput = function () {
-        element.find('.search-rdf-icon')
-            .removeClass('show-search-btn')
-            .addClass('hide-search-btn');
-        element.find('.search_inputRDF').css('top', '0px');
+        element.find('.search-rdf-btn')
+            .addClass('hidden-xs-up');
+        element.find('.search-inputRDF').css('top', '0px');
         $timeout(function () {
-          element.find('.close-rdf-icon')
-              .removeClass('hide-search-btn')
-              .addClass('show-search-btn');
+          element.find('.close-rdf-search-btn')
+              .removeClass('hidden-xs-up');
           element.find('search-resource-input .view-res-input')
               .focus();
         }, 200);
       };
 
       $scope.hideInput = function () {
-        element.find('.search_inputRDF').css('top', '-150px');
+        element.find('.search-inputRDF').css('top', '-150px');
         element.find('search-resource-input .view-res-input')[0].value = '';
         element.find('search-resource-input .view-res-input').change();
-        element.find('.close-rdf-icon')
-            .removeClass('show-search-btn')
-            .addClass('hide-search-btn');
+        element.find('.close-rdf-search-btn')
+            .addClass('hidden-xs-up');
         $timeout(function () {
-          element.find('.search-rdf-icon')
-              .removeClass('hide-search-btn')
-              .addClass('show-search-btn')
+          element.find('.search-rdf-btn')
+              .removeClass('hidden-xs-up')
               .css('z-index', '3');
         }, 200);
       };

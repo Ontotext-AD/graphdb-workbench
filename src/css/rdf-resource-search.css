@@ -1,27 +1,19 @@
-.search-rdf-icon {
-  display: inline-block;
-  z-index: 3;
+.search-rdf-btn {
+  display: block;
 }
 
-.close-rdf-icon{
-  z-index: -1;
+.close-rdf-search-btn{
   display: block;
   position: absolute;
   top: 0;
   right: -8px;
 }
 
-.show-search-btn {
-  display: block;
-  z-index: 3;
-}
+.search-inputRDF {
+  text-align: start;
+  font-size: 14px;
+  font-weight: 300;
 
-.hide-search-btn {
-  display: none;
-  z-index: -1;
-}
-
-.search_inputRDF {
   max-width: 60vw;
   position: absolute;
   top: -150px;
