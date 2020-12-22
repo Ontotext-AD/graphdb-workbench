@@ -1,8 +1,28 @@
-const {ONTOP_REPO_PARAM_LABELS, ONTOP_REPO_PARAMS, REQUIRED_ONTOP_REPO_PARAMS,
-        SUPPORTED_DRIVER_LABELS, GENERIC_DRIVER_TYPE, PROPERTIES_FILE,
-        PROPERTIES_FILE_PARAMS, REQUIRED_PROPERTIES_FIELD_PARAMS,
-        isReadOnly, getDriverType, editFile, getFileName, uploadRepoFile,
-        concatURL, isDriverClassOnClasspath} = require("./ontop-repo-constants");
+import {
+    ONTOP_TYPE,
+    ONTOP_REPO_PARAM_LABELS,
+    ONTOP_REPO_PARAMS,
+    REQUIRED_ONTOP_REPO_PARAMS,
+    SUPPORTED_DRIVER_LABELS,
+    GENERIC_DRIVER_TYPE,
+    PROPERTIES_FILE,
+    PROPERTIES_FILE_PARAMS,
+    REQUIRED_PROPERTIES_FIELD_PARAMS,
+    DEFAULT_SELECTED_DRIVER,
+    isReadOnly,
+    getDriverType,
+    editFile,
+    getFileName,
+    uploadRepoFile,
+    updateProperties,
+    validateOntopPropertiesConnection,
+    concatURL,
+    isDriverClassOnClasspath,
+    getInputType,
+    isOntopRepoFileUploaded,
+    loadPropertiesFile,
+    getSupportedDriversData
+} from "./ontop-repo-constants";
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
 
@@ -39,8 +59,8 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter'];
-function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter) {
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter', '$interval'];
+function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter, $interval) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -255,7 +275,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = 'rest/repositories/' + repository.id + (repository.type === 'ontop' ? '/downloadZip': '/download');
+        let url = 'rest/repositories/' + repository.id + (repository.type === ONTOP_TYPE ? '/downloadZip': '/download');
         const token = $jwtAuth.getAuthToken();
         if (token) {
             url = url + '?authToken=' + encodeURIComponent(token);
@@ -399,6 +419,18 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         type: ''
     };
 
+    $scope.ontopRepoFileNames = {};
+    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
+    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
+    $scope.supportedDriversData = [];
+    $scope.propertiesFileParams = PROPERTIES_FILE_PARAMS;
+    $scope.supportedDriverLabels = SUPPORTED_DRIVER_LABELS;
+    // Make copy of the default GENERIC driver
+    $scope.selectedDriver = Object.assign({},DEFAULT_SELECTED_DRIVER);
+    $scope.genericDriverType = GENERIC_DRIVER_TYPE;
+    $scope.propertiesFile = PROPERTIES_FILE;
+    $scope.isOnClasspath = false;
+
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
@@ -446,31 +478,20 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
     };
 
-    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
-    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
-
     $scope.isRequiredOntopRepoFile = function(file) {
         return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
     };
-    $scope.ontopRepoFileNames = {};
-
 
     $scope.uploadOntopRepoFile = function(files, param) {
         uploadRepoFile(files, param, Upload, $scope, toastr);
     };
 
     $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile &&
-                $scope.repositoryInfo.params.propertiesFile.value.length > 0
+        return isOntopRepoFileUploaded($scope);
     };
 
-    $scope.validateOntopPropertiesConnection = function() {
-        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('Connection is successful');
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Failed to connect');
-        });
+    $scope.validateOntopPropertiesConnection = function () {
+        return validateOntopPropertiesConnection($scope, RepositoriesRestService, toastr);
     }
 
     $scope.isEnterprise = isEnterprise;
@@ -480,14 +501,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
-            if (repoType === 'ontop') {
-                RepositoriesRestService.getSupportedDriversData()
-                    .success(function (response) {
-                        $scope.supportedDriversData = response;
-                    }).error(function (response) {
-                    const msg = getError(response);
-                    toastr.error(msg, 'Error');
-                });
+            if (repoType === ONTOP_TYPE) {
+                getSupportedDriversData($scope, RepositoriesRestService, toastr);
             }
             $scope.loader = false;
         }).error(function (data) {
@@ -535,29 +550,26 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             toastr.error('Repository ID cannot be empty');
             return;
         }
-        if ($scope.repositoryInfo.type === 'ontop') {
-            const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function(requiredFile) {
-               return !$scope.repositoryInfo.params[requiredFile].value;
-            });
-            if (missingRequired.length > 0) {
-                toastr.error('Missing required ontop repo file');
-                return;
-            }
-        }
-        $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        const repoParams = $scope.repositoryInfo.params;
-        if (repoParams.entityIndexSize && repoParams.queryLimitResults && repoParams.queryTimeout) {
-            $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
-            $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
-            $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
-        }
-        if (isInvalidPieFile) {
-            toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidEntityIndexSize && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
-            $scope.createRepoHttp();
-        } else {
-            $scope.formError();
-        }
+
+        Promise.resolve(checkForRequiredOntopFiles())
+            .then(function () {
+                $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
+                const repoParams = $scope.repositoryInfo.params;
+                if (repoParams.entityIndexSize && repoParams.queryLimitResults && repoParams.queryTimeout) {
+                    $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
+                    $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
+                    $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
+                }
+                if (isInvalidPieFile) {
+                    toastr.error('Invalid rule-set file. Please upload a valid one.');
+                } else if (!$scope.isInvalidRepoName && !$scope.isInvalidEntityIndexSize && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
+                    $scope.createRepoHttp();
+                } else {
+                    $scope.formError();
+                }
+            }).catch(function (err) {
+                // The catch block is empty, because error is handled in promise
+        });
     };
 
     $scope.rulesetWarning = function () {
@@ -581,21 +593,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         editFile(file, $modal, $scope, RepositoriesRestService, toastr);
     };
 
-    $scope.selectedDriver = {
-        driverType: "generic",
-        jdbc: {
-            hostName: "",
-            port: "",
-            databaseName: "",
-            userName: "",
-            password: "",
-            driverClass: "",
-            url: ""
-        },
-        urlStart: "",
-        downloadDriverUrl: ""
-    }
-
     $scope.getDriverType = function (driverType) {
         getDriverType(driverType, $scope);
         if (driverType !== GENERIC_DRIVER_TYPE) {
@@ -607,13 +604,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         return isReadOnly(labelName);
     }
 
-    $scope.supportedDriversData = [];
-    $scope.propertiesFileParams = PROPERTIES_FILE_PARAMS;
-    $scope.supportedDriverLabels = SUPPORTED_DRIVER_LABELS;
-    $scope.genericDriverType = GENERIC_DRIVER_TYPE;
-    $scope.propertiesFile = PROPERTIES_FILE;
-    $scope.isOnClasspath = false;
-
     $scope.isRequiredField = function (field) {
         return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
     }
@@ -621,9 +611,33 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     $scope.concatURL = function (labelName) {
         concatURL(labelName, $scope);
     }
-    //TODO - check if repositoryID exist
 
+    $scope.getInputType = function (labelName) {
+        return getInputType(labelName);
+    }
+
+    function checkForRequiredOntopFiles() {
+        if ($scope.repositoryInfo.type === ONTOP_TYPE) {
+            // Should guarantee that code will be executed in sequential manner,
+            // because properties file is not created yet
+            return Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
+                .then(function () {
+                    const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function (requiredFile) {
+                        return !$scope.repositoryInfo.params[requiredFile].value;
+                    });
+                    if (missingRequired.length > 0) {
+                        toastr.error('Missing required ontop repo file');
+                        throw new Error('Missing required ontop repo file');
+                    }
+                }).catch(function (err) {
+                    // Rethrow the error in order to stop execution of the code in createRepo method afterwards
+                    throw new Error(err);
+            });
+        }
+    }
+    //TODO - check if repositoryID exist
 }
+
 EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr'];
 
 function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService, file, toastr) {
@@ -667,6 +681,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.repositoryInfo.restartRequested = false;
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
+    $scope.isOnClasspath = false;
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
@@ -702,6 +717,14 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                             $scope.ontopRepoFileNames[key] = $scope.repositoryInfo.params[key].value;
                         }
                     });
+
+                    if ($scope.repositoryInfo.type === ONTOP_TYPE) {
+                        $scope.selectedDriver = Object.assign({},DEFAULT_SELECTED_DRIVER);
+                        Promise.resolve(getSupportedDriversData($scope, RepositoriesRestService, toastr))
+                            .then(function () {
+                                loadPropertiesFile($scope, RepositoriesRestService, toastr);
+                            })
+                    }
                 })
                 .error(function (data, status) {
                     if (status === 404 && $routeParams.repositoryId !== 'system') {
@@ -742,36 +765,45 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.editRepository = function () {
-        $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        if ($scope.repositoryInfo.type !== 'ontop') {
-            $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
-            $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
-            $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
-        }
-        let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
-        if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
-                        The repository will be stopped and renamed.`;
-        } else if ($scope.repositoryInfo.restartRequested) {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
-                        The repository will be restarted.`;
-        } else {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
-                        Repository restart required for changes to take effect.`;
-        }
-        if (!$scope.isInvalidRepoName) {
-            ModalService.openSimpleModal({
-                title: 'Confirm save',
-                message: modalMsg,
-                warning: true
-            }).result
+        if ($scope.repositoryInfo.type === ONTOP_TYPE) {
+            // Should guarantee that code will be executed in sequential manner,
+            // because properties file is not created yet
+            Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
                 .then(function () {
-                    $scope.editRepoHttp();
+                    $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
+                    if ($scope.repositoryInfo.type !== ONTOP_TYPE) {
+                        $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
+                        $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
+                        $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
+                    }
+                    let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
+                    if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
+                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        The repository will be stopped and renamed.`;
+                    } else if ($scope.repositoryInfo.restartRequested) {
+                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        The repository will be restarted.`;
+                    } else {
+                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        Repository restart required for changes to take effect.`;
+                    }
+                    if (!$scope.isInvalidRepoName) {
+                        ModalService.openSimpleModal({
+                            title: 'Confirm save',
+                            message: modalMsg,
+                            warning: true
+                        }).result
+                            .then(function () {
+                                $scope.editRepoHttp();
+                            });
+                    } else {
+                        $scope.formError();
+                    }
+                }).catch(function (err) {
+                    // The catch block is empty, because error is handled in promise
                 });
-        } else {
-            $scope.formError();
         }
-    };
+    }
 
     $scope.editRepositoryId = function () {
         let msg = '<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>';
@@ -805,16 +837,40 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile &&
-                $scope.repositoryInfo.params.propertiesFile.value.length > 0
+        return isOntopRepoFileUploaded($scope);
     };
 
     $scope.validateOntopPropertiesConnection = function() {
-        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('Connection is successful');
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Failed to connect');
-        });
+       return validateOntopPropertiesConnection($scope, RepositoriesRestService, toastr);
+    }
+
+    $scope.getDriverType = function (driverType) {
+        getDriverType(driverType, $scope);
+        if (driverType !== GENERIC_DRIVER_TYPE) {
+            isDriverClassOnClasspath($scope, RepositoriesRestService, toastr);
+        }
+    }
+
+    $scope.isReadOnly = function (labelName) {
+        return isReadOnly(labelName);
+    }
+
+    $scope.supportedDriversData = [];
+    $scope.propertiesFileParams = PROPERTIES_FILE_PARAMS;
+    $scope.supportedDriverLabels = SUPPORTED_DRIVER_LABELS;
+    $scope.genericDriverType = GENERIC_DRIVER_TYPE;
+    $scope.propertiesFile = PROPERTIES_FILE;
+    $scope.isOnClasspath = false;
+
+    $scope.isRequiredField = function (field) {
+        return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
+    }
+
+    $scope.concatURL = function (labelName) {
+        concatURL(labelName, $scope);
+    }
+
+    $scope.getInputType = function (labelName) {
+        return getInputType(labelName);
     }
 }

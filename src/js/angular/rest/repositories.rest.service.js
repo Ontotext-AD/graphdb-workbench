@@ -24,7 +24,7 @@ function RepositoriesRestService($http) {
         getSupportedDriversData,
         isDriverOnClasspath,
         updatePropertiesFile,
-        getPropertiesFileContent
+        loadPropertiesFile
     };
 
     function getRepository(repositoryid) {
@@ -92,7 +92,7 @@ function RepositoriesRestService($http) {
             JSON.stringify(content), {params: {fileLocation: fileLocation}});
     }
 
-    function getPropertiesFileContent(file) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/getPropertiesFile`, {params: {fileLocation: file}});
+    function loadPropertiesFile(file) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/loadProperties`, {params: {fileLocation: file}});
     }
 }
