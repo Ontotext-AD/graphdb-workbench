@@ -11,6 +11,51 @@ describe('Home screen validation', () => {
 
     beforeEach(() => cy.viewport(1280, 1000));
 
+    context('RDF resource search', () => {
+        it('Search button should not be present when no repo is selected', () => {
+            HomeSteps.visitAndWaitLoader();
+            cy.get('.search-rdf-btn').should('not.be.visible');
+            cy.get('.search-rdf-input').should('not.be.visible');
+        });
+
+        it('Search should be present when repo is set', () => {
+            const repositoryId = '23repo' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
+            cy.enableAutocomplete(repositoryId);
+            cy.presetRepository(repositoryId);
+
+            // When I visit home page with selected repository
+            HomeSteps.visitAndWaitLoader();
+            // Search rdf button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+            // When I click the button
+            cy.get('.search-rdf-btn').click();
+            // The rdf resource search bar should become visible
+            cy.get('.search-rdf-input').should('be.visible');
+            // The search bar should contain the search-resource-input component
+            // and the input should be focused
+            cy.get('.search-rdf-input search-resource-input .view-res-input').should('be.visible')
+                .and('be.focused');
+            // I should be able to type some text in the input
+            cy.get('.search-rdf-input search-resource-input .view-res-input').type('hasPos');
+            // And the autocomplete dropdown should become visible
+            cy.get('#auto-complete-results-wrapper').should('be.visible');
+            // When I click the close button
+            cy.get('.close-rdf-search-btn').click();
+            // The input should be cleared
+            cy.get('.search-rdf-input search-resource-input .view-res-input').should('be.empty');
+            // And the autocomplete dropdown should not be visible
+            cy.get('#auto-complete-results-wrapper').should('not.be.visible');
+            // And the search bar should hide and not be visible
+            cy.get('.search-rdf-input').should('not.be.visible');
+            // And the search button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+
+            cy.deleteRepository(repositoryId);
+        });
+    });
+
     context('First visit', () => {
         beforeEach(() => HomeSteps.visitAndWaitLoader());
 

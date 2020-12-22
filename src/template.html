@@ -21,6 +21,7 @@
 
 <div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
+        <rdf-resource-search class="btn p-0"></rdf-resource-search>
         <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
              tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
             <span class="icon-warning"></span> No valid license
