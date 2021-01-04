@@ -19,3 +19,12 @@
 #wb-import-fileInFiles .import-status .import-status-message .text-danger small {
     white-space: pre-wrap;
 }
+
+.impex-popover {
+    max-width: 470px;
+}
+
+.impex-popover pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
