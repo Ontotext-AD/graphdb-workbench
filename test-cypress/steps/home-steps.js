@@ -94,7 +94,7 @@ class HomeSteps {
     }
 
     static getAutocompleteInput() {
-        let input = cy.get('search-resource-input .view-res-input');
+        let input = cy.get('.home-rdf-resource-search search-resource-input .view-res-input');
         input.should('be.visible');
         return input;
     }
@@ -120,7 +120,7 @@ class HomeSteps {
     }
 
     static getAutocompleteButton(type) {
-        return cy.get('search-resource-input .autocomplete-' + type + '-btn');
+        return cy.get('.home-rdf-resource-search search-resource-input .autocomplete-' + type + '-btn');
     }
 
     static goBackAndWaitAutocomplete(callback) {

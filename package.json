@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.6.0-TR1",
+    "version": "1.6.0-TR2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -12,8 +12,7 @@
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
         "test:acceptance": "export $(cat .env | xargs) && scripts/run-cypress-tests.sh",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
-        "sonar": "sonar-scanner -Dsonar.projectVersion=$npm_package_version"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
     },
     "files": [
         "dist/"
@@ -52,10 +51,12 @@
         "html-webpack-plugin": "^3.2.0",
         "is-obj": "^2.0.0",
         "istanbul-instrumenter-loader": "^3.0.1",
+        "jasmine-expect": "^5.0.0",
         "karma": "^4.4.1",
         "karma-chrome-launcher": "^3.1.0",
         "karma-coverage": "^1.1.2",
         "karma-jasmine": "^2.0.1",
+        "karma-jasmine-matchers": "^4.0.2",
         "karma-sourcemap-loader": "^0.3.7",
         "karma-webpack": "^4.0.2",
         "less": "^3.10.3",
@@ -63,6 +64,8 @@
         "mini-css-extract-plugin": "^0.8.0",
         "minimist": "^1.2.5",
         "optimize-css-assets-webpack-plugin": "^5.0.3",
+        "puppeteer": "^5.3.1",
+        "sonarqube-scanner": "^2.7.0",
         "style-loader": "^0.23.1",
         "url-loader": "^2.3.0",
         "webpack": "^4.41.2",

@@ -1,0 +1,28 @@
+.search-rdf-btn {
+  display: block;
+}
+
+.close-rdf-search-btn{
+  display: block;
+  position: absolute;
+  top: 0;
+  right: -8px;
+}
+
+.search-rdf-input {
+  text-align: start;
+  font-size: 14px;
+  font-weight: 300;
+
+  max-width: 60vw;
+  position: absolute;
+  top: -150px;
+  right: 0;
+  width: 60vw;
+  z-index: 1;
+  display: block;
+  padding-right: 20px;
+
+  -webkit-transition: all 0.3s ease-in; /* Safari */
+  transition: all 0.3s ease-in;
+}

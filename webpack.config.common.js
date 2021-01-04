@@ -155,6 +155,10 @@ module.exports = {
                 to: 'js/angular/core/directives/queryeditor/templates'
             },
             {
+                from: 'src/js/angular/core/directives/rdfresourcesearch/templates',
+                to: 'js/angular/core/directives/rdfresourcesearch/templates'
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }
