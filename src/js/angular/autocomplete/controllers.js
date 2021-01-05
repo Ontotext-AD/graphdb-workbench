@@ -82,10 +82,6 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     const checkForPlugin = function () {
         $scope.pluginFound = false;
 
-        if (!$repositories.getActiveRepository()) {
-            return;
-        }
-
         $scope.setLoader(true);
 
         AutocompleteRestService.checkForPlugin()
@@ -120,10 +116,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     const init = function() {
-        if ($repositories.getActiveRepository()) {
-            checkForPlugin();
+        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+            return;
         }
-
+        checkForPlugin();
         pullStatus();
     };
 
@@ -230,7 +226,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.$on('repositoryIsSet', function () {
-        if (!$repositories.getActiveRepository()) {
+        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
             return;
         }
         checkForPlugin();

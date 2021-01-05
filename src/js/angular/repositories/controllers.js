@@ -14,14 +14,14 @@ import {
     editFile,
     getFileName,
     uploadRepoFile,
-    updateProperties,
     validateOntopPropertiesConnection,
     concatURL,
     isDriverClassOnClasspath,
     getInputType,
     isOntopRepoFileUploaded,
     loadPropertiesFile,
-    getSupportedDriversData
+    getSupportedDriversData,
+    checkForRequiredOntopFiles
 } from "./ontop-repo-constants";
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
@@ -551,7 +551,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             return;
         }
 
-        Promise.resolve(checkForRequiredOntopFiles())
+        Promise.resolve(checkForRequiredOntopFiles($scope, RepositoriesRestService, toastr))
             .then(function () {
                 $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
                 const repoParams = $scope.repositoryInfo.params;
@@ -614,26 +614,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.getInputType = function (labelName) {
         return getInputType(labelName);
-    }
-
-    function checkForRequiredOntopFiles() {
-        if ($scope.repositoryInfo.type === ONTOP_TYPE) {
-            // Should guarantee that code will be executed in sequential manner,
-            // because properties file is not created yet
-            return Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
-                .then(function () {
-                    const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function (requiredFile) {
-                        return !$scope.repositoryInfo.params[requiredFile].value;
-                    });
-                    if (missingRequired.length > 0) {
-                        toastr.error('Missing required ontop repo file');
-                        throw new Error('Missing required ontop repo file');
-                    }
-                }).catch(function (err) {
-                    // Rethrow the error in order to stop execution of the code in createRepo method afterwards
-                    throw new Error(err);
-            });
-        }
     }
     //TODO - check if repositoryID exist
 }
@@ -765,44 +745,40 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.editRepository = function () {
-        if ($scope.repositoryInfo.type === ONTOP_TYPE) {
-            // Should guarantee that code will be executed in sequential manner,
-            // because properties file is not created yet
-            Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
-                .then(function () {
-                    $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-                    if ($scope.repositoryInfo.type !== ONTOP_TYPE) {
-                        $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
-                        $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
-                        $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
-                    }
-                    let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
-                    if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
-                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+        Promise.resolve(checkForRequiredOntopFiles($scope, RepositoriesRestService, toastr))
+            .then(function () {
+                $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
+                if ($scope.repositoryInfo.type !== ONTOP_TYPE) {
+                    $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
+                    $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
+                    $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
+                }
+                let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
+                if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
+                    modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         The repository will be stopped and renamed.`;
-                    } else if ($scope.repositoryInfo.restartRequested) {
-                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                } else if ($scope.repositoryInfo.restartRequested) {
+                    modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         The repository will be restarted.`;
-                    } else {
-                        modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+                } else {
+                    modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
-                    }
-                    if (!$scope.isInvalidRepoName) {
-                        ModalService.openSimpleModal({
-                            title: 'Confirm save',
-                            message: modalMsg,
-                            warning: true
-                        }).result
-                            .then(function () {
-                                $scope.editRepoHttp();
-                            });
-                    } else {
-                        $scope.formError();
-                    }
-                }).catch(function (err) {
-                    // The catch block is empty, because error is handled in promise
-                });
-        }
+                }
+                if (!$scope.isInvalidRepoName) {
+                    ModalService.openSimpleModal({
+                        title: 'Confirm save',
+                        message: modalMsg,
+                        warning: true
+                    }).result
+                        .then(function () {
+                            $scope.editRepoHttp();
+                        });
+                } else {
+                    $scope.formError();
+                }
+            }).catch(function (err) {
+            // The catch block is empty, because error is handled in promise
+        });
     }
 
     $scope.editRepositoryId = function () {

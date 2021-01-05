@@ -142,18 +142,24 @@ export const getInputType = function (labelName) {
     }
 }
 
-export const updatePropertiesFile = function ($scope, RepositoriesRestService) {
-    $scope.uploadFileLoader = true;
-    return RepositoriesRestService.updatePropertiesFile($scope.repositoryInfo.params[PROPERTIES_FILE].value, $scope.selectedDriver.jdbc)
-        .success(function (data) {
-            $scope.ontopRepoFileNames[PROPERTIES_FILE] = getFileName(data.fileLocation);
-            $scope.repositoryInfo.params[PROPERTIES_FILE].value = data.fileLocation;
-            $scope.uploadFileLoader = false;
-        }).error(function (data) {
-        const msg = getError(data);
-        toastr.error(msg, 'Error');
-        $scope.uploadFileLoader = false;
-    });
+export const checkForRequiredOntopFiles = function ($scope, RepositoriesRestService, toastr) {
+    if ($scope.repositoryInfo.type === ONTOP_TYPE) {
+        // Should guarantee that code will be executed in sequential manner,
+        // because properties file is not created yet
+        return Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
+            .then(function () {
+                const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function (requiredFile) {
+                    return !$scope.repositoryInfo.params[requiredFile].value;
+                });
+                if (missingRequired.length > 0) {
+                    toastr.error('Missing required ontop repo file');
+                    throw new Error('Missing required ontop repo file');
+                }
+            }).catch(function (err) {
+                // Rethrow the error in order to stop execution of the code in createRepo method afterwards
+                throw new Error(err);
+            });
+    }
 }
 
 export const loadPropertiesFile = function ($scope, RepositoriesRestService, toastr) {
@@ -181,27 +187,6 @@ export const loadPropertiesFile = function ($scope, RepositoriesRestService, toa
     });
 }
 
-export const missingRequiredField = function ($scope, toastr) {
-    let missing = REQUIRED_PROPERTIES_FIELD_PARAMS
-        .filter(function (requiredField) {
-            return !$scope.selectedDriver.jdbc[requiredField]
-        });
-    if (missing.length > 0) {
-        toastr.error('Missing required field');
-        return false;
-    }
-    return true;
-}
-
-export const updateProperties = function($scope, RepositoriesRestService, toastr) {
-    if ($scope.selectedDriver.driverType !== GENERIC_DRIVER_TYPE) {
-        if (!missingRequiredField($scope, toastr)) {
-            throw new Error('Missing required field');
-        }
-        return updatePropertiesFile($scope, RepositoriesRestService);
-    }
-}
-
 export const validateOntopPropertiesConnection = function ($scope, RepositoriesRestService, toastr) {
     return updateProperties($scope, RepositoriesRestService, toastr)
         .then(function () {
@@ -218,3 +203,38 @@ export const isOntopRepoFileUploaded = function($scope) {
     return $scope.repositoryInfo.params.propertiesFile &&
         $scope.repositoryInfo.params.propertiesFile.value.length > 0
 };
+
+const missingRequiredField = function ($scope, toastr) {
+    let missing = REQUIRED_PROPERTIES_FIELD_PARAMS
+        .filter(function (requiredField) {
+            return !$scope.selectedDriver.jdbc[requiredField]
+        });
+    if (missing.length > 0) {
+        toastr.error('Missing required field');
+        return false;
+    }
+    return true;
+}
+
+const updateProperties = function($scope, RepositoriesRestService, toastr) {
+    if ($scope.selectedDriver.driverType !== GENERIC_DRIVER_TYPE) {
+        if (!missingRequiredField($scope, toastr)) {
+            throw new Error('Missing required field');
+        }
+        return updatePropertiesFile($scope, RepositoriesRestService);
+    }
+}
+
+const updatePropertiesFile = function ($scope, RepositoriesRestService, toastr) {
+    $scope.uploadFileLoader = true;
+    return RepositoriesRestService.updatePropertiesFile($scope.repositoryInfo.params[PROPERTIES_FILE].value, $scope.selectedDriver.jdbc)
+        .success(function (data) {
+            $scope.ontopRepoFileNames[PROPERTIES_FILE] = getFileName(data.fileLocation);
+            $scope.repositoryInfo.params[PROPERTIES_FILE].value = data.fileLocation;
+            $scope.uploadFileLoader = false;
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Error');
+            $scope.uploadFileLoader = false;
+        });
+}

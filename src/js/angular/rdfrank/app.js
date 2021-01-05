@@ -46,10 +46,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         const checkForPlugin = function () {
             $scope.pluginFound = false;
 
-            if (!$repositories.getActiveRepository()) {
-                return;
-            }
-
             $scope.setLoader(true);
             RdfRankRestService.checkRdfRankPluginEnabled()
                 .success(function (data) {
@@ -178,7 +174,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.$on('repositoryIsSet', function () {
-            if (!$repositories.getActiveRepository()) {
+            if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
                 return;
             }
             checkForPlugin();
@@ -294,17 +290,13 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             return folded === '' ? iri : folded + ':' + localPart;
         }
 
-        if ($repositories.getActiveRepository()) {
-            checkForPlugin();
-        }
-
-        $scope.$on('repositoryIsSet', function () {
-            if (!$repositories.getActiveRepository()) {
+        const init = function() {
+            if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
                 return;
             }
             checkForPlugin();
-        });
+            pullStatus();
+        };
 
-        pullStatus();
-
+        init();
     }]);
