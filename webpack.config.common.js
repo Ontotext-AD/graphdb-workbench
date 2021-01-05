@@ -156,7 +156,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/core/directives/rdfresourcesearch/templates',
-                to: 'js/angular/core/directives/rdfresourcesearch/templates'
+                to: 'js/angular/core/directives/rdfresourcesearch/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/templates',
