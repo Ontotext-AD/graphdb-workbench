@@ -54111,50 +54111,32 @@ function clearAll() {
 module.exports={
   "_args": [
     [
-      {
-        "raw": "yasgui-utils@^1.4.1",
-        "scope": null,
-        "escapedName": "yasgui-utils",
-        "name": "yasgui-utils",
-        "rawSpec": "^1.4.1",
-        "spec": ">=1.4.1 <2.0.0",
-        "type": "range"
-      },
-      "/Users/avataar/tmp/tmp/YASR-Ontotext"
+      "yasgui-utils@1.6.7",
+      "/home/workspace/YASR-Ontotext"
     ]
   ],
-  "_from": "yasgui-utils@>=1.4.1 <2.0.0",
+  "_from": "yasgui-utils@1.6.7",
   "_id": "yasgui-utils@1.6.7",
-  "_inCache": true,
+  "_inBundle": false,
+  "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
   "_location": "/yasgui-utils",
-  "_nodeVersion": "7.10.0",
-  "_npmOperationalInternal": {
-    "host": "s3://npm-registry-packages",
-    "tmp": "tmp/yasgui-utils-1.6.7.tgz_1495459781202_0.06725964159704745"
-  },
-  "_npmUser": {
-    "name": "laurens.rietveld",
-    "email": "laurens.rietveld@gmail.com"
-  },
-  "_npmVersion": "4.2.0",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "yasgui-utils@^1.4.1",
-    "scope": null,
-    "escapedName": "yasgui-utils",
+    "type": "version",
+    "registry": true,
+    "raw": "yasgui-utils@1.6.7",
     "name": "yasgui-utils",
-    "rawSpec": "^1.4.1",
-    "spec": ">=1.4.1 <2.0.0",
-    "type": "range"
+    "escapedName": "yasgui-utils",
+    "rawSpec": "1.6.7",
+    "saveSpec": null,
+    "fetchSpec": "1.6.7"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
-  "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-  "_shrinkwrap": null,
-  "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/Users/avataar/tmp/tmp/YASR-Ontotext",
+  "_spec": "1.6.7",
+  "_where": "/home/workspace/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -54165,13 +54147,6 @@ module.exports={
     "store": "^2.0.4"
   },
   "description": "Utils for YASGUI libs",
-  "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz"
-  },
-  "gitHead": "6031b1cb732d390b29cd5376dceb9a9d665bbd11",
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
     {
@@ -54182,18 +54157,16 @@ module.exports={
   "main": "src/main.js",
   "maintainers": [
     {
-      "name": "laurens.rietveld",
-      "email": "laurens.rietveld@gmail.com"
+      "name": "Laurens Rietveld",
+      "email": "laurens.rietveld@gmail.com",
+      "url": "http://laurensrietveld.nl"
     }
   ],
   "name": "yasgui-utils",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git://github.com/YASGUI/Utils.git"
   },
-  "scripts": {},
   "version": "1.6.7"
 }
 
@@ -54852,8 +54825,11 @@ module.exports = {
                                     '</li>' + 
                                     '<li>' + 
                                         '<a class="format dropdown-item" data-accepts="application/sparql-results+xml" href="#">XML</a>' +
-                                    '</li>' + 
-                                    '<li>' + 
+                                    '</li>' +
+                                    '<li>' +
+                                        '<a class="format dropdown-item" data-accepts="application/x-sparqlstar-results+xml" href="#">XML*</a>' +
+                                    '</li>' +
+                                    '<li>' +
                                         '<a class="format dropdown-item" data-accepts="text/csv" href="#">CSV</a>' +
                                     '</li>' + 
                                     '<li>' + 
