@@ -868,7 +868,10 @@ describe('SPARQL screen validation', () => {
             // Wait until editor is initialized with the query and then assert the whole query
             getQueryArea().should('contain', 'INSERT DATA');
             cy.fixture('queries/add-statement.txt').then((query) => {
-                verifyQueryAreaEquals(query);
+                // Convert new line symbols to \n regardless of OS. Query in SPARQL editor uses \n for new line.
+                const EOLregex = /(\r\n|\r|\n)/g;
+                const reformattedQuery = query.replace(EOLregex, '\n');
+                verifyQueryAreaEquals(reformattedQuery);
             });
         });
 
