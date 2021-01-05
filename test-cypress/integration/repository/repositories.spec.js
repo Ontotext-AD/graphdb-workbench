@@ -303,8 +303,9 @@ describe('Repositories', () => {
         getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
     });
 
+    // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
     //Create Ontop repository and test ontop functionality
-    it('should create an Ontop repository', () => {
+    it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = ''
