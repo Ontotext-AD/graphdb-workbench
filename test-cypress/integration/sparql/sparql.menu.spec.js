@@ -577,7 +577,7 @@ describe('SPARQL screen validation', () => {
             openDownloadAsMenu();
 
             getDownloadAsFormatButtons()
-                .should('have.length', 7);
+                .should('have.length', 8);
 
             verifyDownloadMenuFormat('JSON', 'application/sparql-results+json');
             verifyDownloadMenuFormat('XML', 'application/sparql-results+xml');
