@@ -11,6 +11,7 @@ export const REQUIRED_PROPERTIES_FIELD_PARAMS = ['hostName', 'databaseName', 'us
 
 export const DEFAULT_SELECTED_DRIVER = {
         driverType: "generic",
+        driverName: "Generic JDBC Driver",
         jdbc: {
             hostName: "",
             port: "",
@@ -20,7 +21,7 @@ export const DEFAULT_SELECTED_DRIVER = {
             driverClass: "",
             url: ""
         },
-        urlStart: "",
+        urlTemplate: "",
         downloadDriverUrl: ""
 }
 
@@ -37,15 +38,13 @@ export const getSupportedDriversData = function ($scope, RepositoriesRestService
 export const getDriverType = function (driverType, $scope) {
     let found = $scope.supportedDriversData.find(driver => driver.driverType === driverType);
     $scope.selectedDriver.driverType = found.driverType;
-    $scope.selectedDriver.jdbc.hostName = "";
-    $scope.selectedDriver.jdbc.port = "";
-    $scope.selectedDriver.jdbc.databaseName = "";
-    $scope.selectedDriver.jdbc.userName = "";
-    $scope.selectedDriver.jdbc.password = "";
     $scope.selectedDriver.jdbc.driverClass = found.driverClass;
-    $scope.selectedDriver.jdbc.url = found.urlStart;
-    $scope.selectedDriver.urlStart = found.urlStart;
+    $scope.selectedDriver.jdbc.url = found.urlTemplate;
+    $scope.selectedDriver.urlTemplate = found.urlTemplate;
     $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
+    $scope.isClassAvailable = found.isClassAvailable;
+    // Call concatURL with proper labelName to apply changes to url field
+    concatURL('hostName', $scope);
 }
 
 export const isReadOnly = function (labelName) {
@@ -65,11 +64,11 @@ export const editFile = function(file, $modal, $scope, RepositoriesRestService, 
 
     modalInstance.result.then(function (data) {
         // send data to backend
-        RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(data) {
-            $scope.ontopRepoFileNames[file] = getFileName(data.fileLocation);
-            $scope.repositoryInfo.params[file].value = data.fileLocation;
-        }).error(function (data) {
-            const msg = getError(data);
+        RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(result) {
+            $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
+            $scope.repositoryInfo.params[file].value = result.fileLocation;
+        }).error(function (error) {
+            const msg = getError(error);
             toastr.error(msg, 'Error');
         })
     });
@@ -114,21 +113,22 @@ export const getFileName = function(path) {
 
 export const concatURL = function(labelName, $scope) {
     if (labelName === 'hostName' || labelName === 'port' || labelName === 'databaseName') {
-        let port = $scope.selectedDriver.jdbc.port ? (':' + $scope.selectedDriver.jdbc.port) : '';
-        let separator = $scope.selectedDriver.driverType === 'oracle' ? ':' : '/';
-        let database = $scope.selectedDriver.jdbc.databaseName ? (separator + $scope.selectedDriver.jdbc.databaseName) : '';
-        $scope.selectedDriver.jdbc.url = $scope.selectedDriver.urlStart + $scope.selectedDriver.jdbc.hostName + port + database;
-    }
-}
+        let result = $scope.selectedDriver.urlTemplate;
+        if ($scope.selectedDriver.jdbc.hostName) {
+            if ($scope.selectedDriver.jdbc.port) {
+                result = result.replace('{hostport}',
+                    $scope.selectedDriver.jdbc.hostName + ':' + $scope.selectedDriver.jdbc.port);
+            } else {
+                result = result.replace('{hostport}', $scope.selectedDriver.jdbc.hostName);
+            }
+        }
 
-export const isDriverClassOnClasspath = function ($scope, RepositoriesRestService, toastr) {
-    RepositoriesRestService.isDriverOnClasspath($scope.selectedDriver.jdbc.driverClass)
-        .success(function (found) {
-            $scope.isOnClasspath = found;
-        }).error(function (data) {
-        const msg = getError(data);
-        toastr.error(msg, 'Error');
-    });
+        if ($scope.selectedDriver.jdbc.databaseName) {
+            result = result.replace('{database}', $scope.selectedDriver.jdbc.databaseName);
+        }
+
+        $scope.selectedDriver.jdbc.url = result;
+    }
 }
 
 export const getInputType = function (labelName) {
@@ -171,14 +171,14 @@ export const loadPropertiesFile = function ($scope, RepositoriesRestService, toa
                 $scope.selectedDriver.driverType = found.driverType;
                 $scope.selectedDriver.jdbc.hostName = driverData.hostName;
                 $scope.selectedDriver.jdbc.port = parseInt(driverData.port);
-                $scope.selectedDriver.jdbc.databaseName = driverData.hostName;
+                $scope.selectedDriver.jdbc.databaseName = driverData.databaseName;
                 $scope.selectedDriver.jdbc.userName = driverData.userName;
                 $scope.selectedDriver.jdbc.password = driverData.password;
                 $scope.selectedDriver.jdbc.driverClass = driverData.driverClass;
                 $scope.selectedDriver.jdbc.url = driverData.url;
-                $scope.selectedDriver.urlStart = found.urlStart;
+                $scope.selectedDriver.urlTemplate = found.urlTemplate;
                 $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
-                isDriverClassOnClasspath($scope, RepositoriesRestService, toastr);
+                $scope.isClassAvailable = found.isClassAvailable;
             }
         }).error(function (data) {
         const msg = getError(data);
@@ -188,7 +188,7 @@ export const loadPropertiesFile = function ($scope, RepositoriesRestService, toa
 }
 
 export const validateOntopPropertiesConnection = function ($scope, RepositoriesRestService, toastr) {
-    return updateProperties($scope, RepositoriesRestService, toastr)
+    return Promise.resolve(updateProperties($scope, RepositoriesRestService, toastr))
         .then(function () {
             RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
                 toastr.success('Connection is successful');

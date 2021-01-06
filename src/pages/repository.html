@@ -53,14 +53,17 @@
                         <div ng-if="repositoryInfo.type === 'ontop'" class="form-group row">
                             <label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Database driver</label>
                             <div class="col-xs-4 col-sm-4 col-md-4">
-                                <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"  ng-change="getDriverType(selectedDriver.driverType)">
-                                    <option value="generic">Generic JDBC Driver</option>
-                                    <option value="mySQL">MySQL</option>
-                                    <option value="postgreSQL">PostgreSQL</option>
-                                    <option value="oracle">Oracle</option>
-                                    <option value="msSQL">MS SQL Server</option>
-                                    <option value="DB2">DB2</option>
+                                <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"
+                                        ng-change="getDriverType(selectedDriver.driverType)"
+                                        ng-options="driver.driverType as driver.driverName for driver in supportedDriversData">
                                 </select>
+                            </div>
+                            <div class="form-group col-xs-2 col-sm-2 col-md-2"
+                                 ng-if="selectedDriver.driverType === genericDriverType">
+                                <button id="testConnection" ng-click="validateOntopPropertiesConnection()"
+                                        ng-disabled="!isOntopRepoFileUploaded() && !editRepoPage"
+                                        type="submit"
+                                        class="btn btn-primary">Test connection</button>
                             </div>
                         </div>
                         <div ng-repeat="labelName in propertiesFileParams" class="form-group row"
@@ -79,13 +82,12 @@
                                         ng-disabled="!selectedDriver.jdbc.hostName || !selectedDriver.jdbc.userName || !selectedDriver.jdbc.databaseName"
                                         ng-if="labelName === 'url'"
                                         type="submit"
-                                        style="width: 95%;"
-                                        class="btn btn-primary">Test Connection</button>
+                                        class="btn btn-primary">Test connection</button>
                                 <em class="icon-warning icon-2x"
-                                    ng-if="labelName === 'driverClass' && !isOnClasspath"
+                                    ng-if="labelName === 'driverClass' && !isClassAvailable"
                                     tooltip="{{'JDBC driver not found in the classpath, please save it in the lib directory and restart GraphDB'}}"
                                     tooltip-placement="top"></em>
-                                <a class="uri" ng-if="labelName === 'driverClass' && selectedDriver.downloadDriverUrl && !isOnClasspath"
+                                <a class="uri" ng-if="labelName === 'driverClass' && selectedDriver.downloadDriverUrl && !isClassAvailable"
                                    href="{{selectedDriver.downloadDriverUrl}}"
                                    style="text-decoration: underline;">
                                     Download JDBC driver
@@ -107,22 +109,15 @@
                                     <input class="form-control" id="{{file}}" ng-readonly="true" tooltip="{{ontopRepoFileNames[file]}}" placeholder="{{isRequiredOntopRepoFile(file) ? 'This file is required' : ''}}" ng-model="ontopRepoFileNames[file]">
                             </div>
                             <div class="form-group col-xs-5 col-sm-4 col-md-2 col-md-offset-3">
-                                <div class="btn btn-outline-primary btn-sm" style="width: 95%;">
+                                <div class="btn btn-outline-primary btn-sm">
                                     <div ngf-select ngf-change="uploadOntopRepoFile($files, file)" ngf-multiple="false "
                                          class="selectFiles pointer clearfix"
                                          tooltip-trigger="mouseenter">
-                                        <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x pull-left"></em>&nbsp;
+                                        <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></em>&nbsp;
                                         <div ng-show="uploadFileLoader" onto-loader size="24" class="spinner-container ot-loader"></div>
-                                        <span class="pageInfo pull-left" style="padding-top: 6px; color: #8a8a8a;">Upload {{ontopRepoFileLabels[file]}}</span>
+                                        <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Upload file</span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group col-xs-2 col-sm-2 col-md-2">
-                                <button id="testConnection" ng-click="validateOntopPropertiesConnection()"
-                                        ng-disabled="!isOntopRepoFileUploaded() && !editRepoPage"
-                                        ng-if="propertiesFile === file"
-                                        type="submit"
-                                    class="btn btn-primary">Test Connection</button>
                             </div>
                         </div>
 

@@ -16,7 +16,6 @@ import {
     uploadRepoFile,
     validateOntopPropertiesConnection,
     concatURL,
-    isDriverClassOnClasspath,
     getInputType,
     isOntopRepoFileUploaded,
     loadPropertiesFile,
@@ -429,7 +428,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
     $scope.selectedDriver = Object.assign({},DEFAULT_SELECTED_DRIVER);
     $scope.genericDriverType = GENERIC_DRIVER_TYPE;
     $scope.propertiesFile = PROPERTIES_FILE;
-    $scope.isOnClasspath = false;
+    $scope.isClassAvailable = false;
 
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -595,9 +594,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.getDriverType = function (driverType) {
         getDriverType(driverType, $scope);
-        if (driverType !== GENERIC_DRIVER_TYPE) {
-            isDriverClassOnClasspath($scope, RepositoriesRestService, toastr);
-        }
     }
 
     $scope.isReadOnly = function (labelName) {
@@ -661,7 +657,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.repositoryInfo.restartRequested = false;
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
-    $scope.isOnClasspath = false;
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
@@ -822,9 +817,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.getDriverType = function (driverType) {
         getDriverType(driverType, $scope);
-        if (driverType !== GENERIC_DRIVER_TYPE) {
-            isDriverClassOnClasspath($scope, RepositoriesRestService, toastr);
-        }
     }
 
     $scope.isReadOnly = function (labelName) {
@@ -836,7 +828,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.supportedDriverLabels = SUPPORTED_DRIVER_LABELS;
     $scope.genericDriverType = GENERIC_DRIVER_TYPE;
     $scope.propertiesFile = PROPERTIES_FILE;
-    $scope.isOnClasspath = false;
+    $scope.isClassAvailable = false;
 
     $scope.isRequiredField = function (field) {
         return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
