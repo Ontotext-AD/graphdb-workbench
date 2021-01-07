@@ -1,0 +1,96 @@
+<div id="ontop-content">
+    <div class="form-group row">
+        <label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Database driver</label>
+        <div class="col-xs-4 col-sm-4 col-md-4">
+            <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"
+                    ng-change="getDriverType(selectedDriver.driverType)"
+                    ng-options="driver.driverType as driver.driverName for driver in supportedDriversData">
+            </select>
+        </div>
+        <div class="form-group col-xs-2 col-sm-2 col-md-2"
+             ng-if="selectedDriver.driverType === genericDriverType">
+            <button id="testConnection" ng-click="validateOntopPropertiesConnection()"
+                    ng-disabled="!isOntopRepoFileUploaded() && !editRepoPage"
+                    type="submit"
+                    class="btn btn-primary">Test connection
+            </button>
+        </div>
+    </div>
+    <div ng-repeat="labelName in propertiesFileParams" class="form-group row"
+         ng-if="selectedDriver.driverType !== genericDriverType">
+        <label for="{{labelName}}" class="col-xs-3 col-sm-3 col-md-3 col-form-label">
+            {{supportedDriverLabels[labelName] + (isRequiredField(labelName) ? '*' : '')}}</label>
+        <div class="col-xs-4 col-sm-4 col-md-4">
+            <input id="{{labelName}}" class="form-control" ng-readonly="isReadOnly(labelName)"
+                   type="{{getInputType(labelName)}}"
+                   ng-required="{{isRequiredField(labelName)}}"
+                   placeholder="{{isRequiredField(labelName) ? 'This field is required' : ''}}"
+                   ng-model="selectedDriver.jdbc[labelName]" ng-blur="concatURL(labelName)">
+        </div>
+        <div class="form-group col-xs-2 col-sm-2 col-md-2">
+            <button id="testConnection1" ng-click="validateOntopPropertiesConnection()"
+                    ng-disabled="!selectedDriver.jdbc.hostName || !selectedDriver.jdbc.userName || !selectedDriver.jdbc.databaseName"
+                    ng-if="labelName === 'url'"
+                    type="submit"
+                    class="btn btn-primary">Test connection
+            </button>
+            <em class="icon-warning icon-2x"
+                ng-if="labelName === 'driverClass' && !classAvailable"
+                tooltip="{{'JDBC driver not found in the classpath, please save it in the lib directory and restart GraphDB'}}"
+                tooltip-placement="top"></em>
+            <a class="uri" ng-if="labelName === 'driverClass' && selectedDriver.downloadDriverUrl && !classAvailable"
+               href="{{selectedDriver.downloadDriverUrl}}"
+               style="text-decoration: underline;">
+                Download JDBC driver
+            </a>
+        </div>
+    </div>
+    <div ng-repeat="file in ontopRepoFiles" class="form-group row"
+         ng-if="selectedDriver.driverType === genericDriverType || propertiesFile !== file">
+        <label for="{{file}}" class="col-xs-3 col-sm-3 col-md-3 col-form-label">
+            {{repositoryInfo.params[file].label + (isRequiredOntopRepoFile(file) ? '*' : '')}}</label>
+        <div class="col-xs-4 col-sm-4 col-md-4">
+            <a class="btn btn-link ot-edit-input" ng-if="ontopRepoFileNames[file]" ng-click="editFile(file)"
+               tooltip="Edit file"
+               tooltip-placement="top"
+               tooltip-trigger="mouseenter">
+                <span class="icon-edit"></span>
+            </a>
+            <input class="form-control" id="{{file}}" ng-readonly="true" tooltip="{{ontopRepoFileNames[file]}}"
+                   placeholder="{{isRequiredOntopRepoFile(file) ? 'This file is required' : ''}}"
+                   ng-model="ontopRepoFileNames[file]">
+        </div>
+        <div class="form-group col-xs-5 col-sm-4 col-md-2 col-md-offset-3">
+            <div class="btn btn-outline-primary btn-sm">
+                <div ngf-select ngf-change="uploadOntopRepoFile($files, file)" ngf-multiple="false "
+                     class="selectFiles pointer clearfix"
+                     tooltip-trigger="mouseenter">
+                    <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></em>&nbsp;
+                    <div ng-show="uploadFileLoader" onto-loader size="24" class="spinner-container ot-loader"></div>
+                    <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Upload file</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group row" ng-if="editRepoPage">
+            <div class="checkbox offset-xs-3 offset-md-3">
+                <label class="col-xs-4 col-sm-4 col-md-4 col-md-offset-3">
+                    <input id="restartRepo" name="restartRepo"
+                           type="checkbox"
+                           ng-model="repositoryInfo.restartRequested"
+                           ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
+                           ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
+                    Restart repository
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-md-offset-3">
+            <button id="addSaveOntopRepository" ng-click="createOntopRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary">Create</button>
+            <button id="addEditOntopRepository" ng-click="editOntopRepo()" ng-if="editRepoPage" type="submit" class="btn btn-primary">Save</button>
+            <a ng-click="goBackToPrevious()" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</div>

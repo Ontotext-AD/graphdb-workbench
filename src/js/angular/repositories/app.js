@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/core/controllers';
 import 'angular/repositories/controllers';
+import 'angular/repositories/ontop-repo.directive';
 import 'angular/core/services/repositories.service';
 import 'angular/settings/app';
 import 'ng-file-upload/dist/ng-file-upload.min';
@@ -13,6 +14,7 @@ const modules = [
     'ngCookies',
     'ngRoute',
     'graphdb.framework.repositories.controllers',
+    'graphdb.framework.repositories.ontop-repo.directive',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
     'graphdb.framework.core.controllers',
