@@ -2269,7 +2269,11 @@ input.switch:checked ~ label:after {
 }
 
 #auto-complete-results-wrapper div p b {
-    color: red;
+    color: #ED4F2F;
+}
+
+#auto-complete-results-wrapper div.active p b {
+    color: #FFAD33;
 }
 
 #auto-complete-results-wrapper div p {
