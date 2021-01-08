@@ -26537,41 +26537,69 @@ function clearAll() {
 
 },{"../src/util":21}],29:[function(require,module,exports){
 module.exports={
-  "_from": "yasgui-utils@^1.6.0",
+  "_args": [
+    [
+      {
+        "raw": "yasgui-utils@^1.6.0",
+        "scope": null,
+        "escapedName": "yasgui-utils",
+        "name": "yasgui-utils",
+        "rawSpec": "^1.6.0",
+        "spec": ">=1.6.0 <2.0.0",
+        "type": "range"
+      },
+      "/Users/avataar/tmp/tmp/yasqe-ontotext"
+    ]
+  ],
+  "_from": "yasgui-utils@>=1.6.0 <2.0.0",
   "_id": "yasgui-utils@1.6.7",
-  "_inBundle": false,
-  "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
+  "_inCache": true,
   "_location": "/yasgui-utils",
+  "_nodeVersion": "7.10.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/yasgui-utils-1.6.7.tgz_1495459781202_0.06725964159704745"
+  },
+  "_npmUser": {
+    "name": "laurens.rietveld",
+    "email": "laurens.rietveld@gmail.com"
+  },
+  "_npmVersion": "4.2.0",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
-    "registry": true,
     "raw": "yasgui-utils@^1.6.0",
-    "name": "yasgui-utils",
+    "scope": null,
     "escapedName": "yasgui-utils",
+    "name": "yasgui-utils",
     "rawSpec": "^1.6.0",
-    "saveSpec": null,
-    "fetchSpec": "^1.6.0"
+    "spec": ">=1.6.0 <2.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
+  "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.6.0",
-  "_where": "/ssd/IntelliJProjects/YASQE-Ontotext",
+  "_where": "/Users/avataar/tmp/tmp/yasqe-ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
   "bugs": {
     "url": "https://github.com/YASGUI/Utils/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "store": "^2.0.4"
   },
-  "deprecated": false,
   "description": "Utils for YASGUI libs",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
+    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz"
+  },
+  "gitHead": "6031b1cb732d390b29cd5376dceb9a9d665bbd11",
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
     {
@@ -26582,16 +26610,18 @@ module.exports={
   "main": "src/main.js",
   "maintainers": [
     {
-      "name": "Laurens Rietveld",
-      "email": "laurens.rietveld@gmail.com",
-      "url": "http://laurensrietveld.nl"
+      "name": "laurens.rietveld",
+      "email": "laurens.rietveld@gmail.com"
     }
   ],
   "name": "yasgui-utils",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git://github.com/YASGUI/Utils.git"
   },
+  "scripts": {},
   "version": "1.6.7"
 }
 
@@ -27055,14 +27085,16 @@ module.exports = function (YASQE, yasqe) {
 	var getSuggestionsAsHintObject = function (suggestions, completer, token) {
 		var hintList = [];
 		for (var i = 0; i < suggestions.length; i++) {
-			var suggestedString = suggestions[i];
-			if (completer.postProcessToken) {
+			var suggestion = suggestions[i];
+
+			var suggestedString = suggestion.value;
+			var displayTextVar = suggestion.description;
+
+			if (suggestion.type === 'prefix') {
+				suggestedString = suggestedString + ":";
+			} else if (completer.postProcessToken) {
 				suggestedString = completer.postProcessToken(token, suggestedString);
 			}
-
-			var displayTextVar = replaceAll(replaceAll(suggestedString, "<", "&lt;"), ">", "&gt;");
-			displayTextVar = replaceAll(replaceAll(displayTextVar, "&lt;b&gt;", "<span class='CodeMirror-highlight'>"), "&lt;/b&gt;", "</span>");
-			suggestedString = replaceAll(replaceAll(suggestedString, "<b>", ""), "</b>", "");
 
 			if (!(suggestedString.startsWith("<") && suggestedString.endsWith(">")) && suggestedString.indexOf(":") > 0) {
 				var prefixSplit = suggestedString.indexOf(":");
@@ -27173,6 +27205,7 @@ var selectHint = function (yasqe, data, completion) {
 ////	storeBulkCompletions: storeBulkCompletions,
 //	loadBulkCompletions: loadBulkCompletions,
 //};
+
 },{"../../lib/trie.js":4,"../main.js":46,"../utils.js":52,"jquery":16,"yasgui-utils":30}],35:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
@@ -27282,9 +27315,7 @@ module.exports.fetchAutocomplete = function (yasqe, token, callback) {
             if (204 === jqXHR.status && !yasqe.fromAutoShow) {
                 yasqe.toastBuildIndex();
             } else {
-                callback(data.suggestions.map(function (d) {
-                    return d.value
-                }));
+                callback(data.suggestions);
             }
         },
         dataType: 'json',
@@ -27317,6 +27348,7 @@ module.exports.preProcessToken = function (yasqe, token) {
 module.exports.postProcessToken = function (yasqe, token, suggestedString) {
     return require('./utils.js').postprocessResourceTokenForCompletion(yasqe, token, suggestedString);
 };
+
 },{"./utils.js":40,"jquery":16}],37:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
