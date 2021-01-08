@@ -36,7 +36,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         $scope.supportedDriversData = [];
         $scope.ontopRepoFileLabels =
             {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file', constraintFile: 'constraint file'};
-        $scope.ontopRepoFiles = _.keys($scope.ontopRepoFileLabels);
+        $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
         $scope.ontopRepoFiles.forEach(function(key) {
             if ($scope.repositoryInfo.params[key]) {
                 $scope.ontopRepoFileNames[key] = $scope.repositoryInfo.params[key].value;
@@ -44,7 +44,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         });
         $scope.supportedDriverLabels = {hostName: 'Hostname', port: "Port", databaseName: 'Database name',
                                         userName: 'Username', password: 'Password', driverClass: 'Driver class', url: 'URL'};
-        $scope.propertiesFileParams = _.keys($scope.supportedDriverLabels);
+        $scope.propertiesFileParams = Object.keys($scope.supportedDriverLabels);
         $scope.classAvailable = false;
         $scope.genericDriverType = 'generic';
         $scope.propertiesFile = 'propertiesFile';
@@ -169,9 +169,6 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         toastr.error('Missing required ontop repo file');
                         return Promise.reject('Missing required ontop repo file');
                     }
-                }).catch(function (err) {
-                    // Rethrow the error in order to stop execution of the code in createRepo method afterwards
-                    return Promise.reject(err);
                 });
         }
 

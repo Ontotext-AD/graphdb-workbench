@@ -366,6 +366,12 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                     });
                 }
 
+                function getLastError() {
+                    path.select('.link').attr('class', function (link) {
+                        return link.lastError;
+                    });
+                }
+
                 // update graph (called when needed)
                 function restart() {
                     // path (link) group
