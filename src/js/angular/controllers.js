@@ -82,9 +82,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', '$translate', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, $translate, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -158,10 +158,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.productTypeHuman = "Enterprise";
         $scope.documentation = "enterprise/";
     } else if ($scope.productType === "free") {
-        $scope.productTypeHuman = "Free";
+        // $scope.productTypeHuman = "Free";
+        $scope.productTypeHuman = "product.type.free";
         $scope.documentation = "free/";
     }
-    $scope.mainTitle = $scope.productTypeHuman;
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $translate($scope.productTypeHuman).then((tr) => {
+            $scope.mainTitle = tr;
+        });
+    });
 
     $scope.select = function (index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
