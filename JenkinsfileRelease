@@ -35,6 +35,7 @@ pipeline {
       steps {
         // Switch to branch
         sh "git checkout ${branch}"
+        sh "npm install"
 
         // Change versions
         sh "npm version --git-tag-version=false ${ReleaseVersion}"
