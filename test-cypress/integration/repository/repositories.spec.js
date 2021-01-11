@@ -286,24 +286,24 @@ describe('Repositories', () => {
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
     it('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
-        getRepositoryTypeDropdown().should('contain', "Ontop").and('not.be.disabled');
-        getRepositoryTypeDropdown().select('Ontop');
+        getRepositoryTypeDropdown().should('contain', "Ontop: Virtual SPARQL Endpoint").and('not.be.disabled');
+        getRepositoryTypeDropdown().select('Ontop: Virtual SPARQL Endpoint');
         getOBDAFileField().should('be', "visible");
         getOntologyFileField().should('be', "visible");
-        ;
+
         getPropertiesFileField().should('be', "visible");
-        ;
+
         getConstraintFileField().should('be', "visible");
         getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
-        ;
+
         getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
+
         getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
+
         getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
     });
 
+    // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
     //Create Ontop repository and test ontop functionality
     it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
@@ -311,12 +311,13 @@ describe('Repositories', () => {
         let propertiesFileUpload = ''
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
         const fileType = '';
+        const virtualRepoName = 'virtual-repo-' + Date.now();
 
         // upload obda file
         cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
             Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                 const formData = new FormData();
-                formData.set('uploadFile', blob, 'fileName');
+                formData.set('uploadFile', blob, 'university-complete.obda');
 
                 cy.form_request(url, formData).then(response => {
                     return obdaFileUpload = response.response.body.fileLocation;
@@ -327,7 +328,7 @@ describe('Repositories', () => {
             cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
                 Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                     const formData = new FormData();
-                    formData.set('uploadFile', blob, 'fileName');
+                    formData.set('uploadFile', blob, 'university-complete.ttl');
 
                     cy.form_request(url, formData).then(response => {
                         return ontologyFileUpload = response.response.body.fileLocation;
@@ -338,7 +339,7 @@ describe('Repositories', () => {
                 cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
                     Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                         const formData = new FormData();
-                        formData.set('uploadFile', blob, 'fileName');
+                        formData.set('uploadFile', blob, 'university-complete.properties');
 
                         cy.form_request(url, formData).then(response => {
                             return propertiesFileUpload = response.response.body.fileLocation;
@@ -347,12 +348,12 @@ describe('Repositories', () => {
                 });
             }).then(() => {
                 const body = {
-                    id: 'virtual-repo',
+                    id: virtualRepoName,
                     title: '',
                     type: 'ontop',
                     params: {
                         propertiesFile: {
-                            label: 'Ontop repository properties file',
+                            label: 'JDBC properties file',
                             name: 'propertiesFile',
                             value: propertiesFileUpload
                         },
@@ -362,12 +363,12 @@ describe('Repositories', () => {
                             value: false
                         },
                         owlFile: {
-                            label: 'Ontop repository ontology file',
+                            label: 'Ontology file',
                             name: 'owlFile',
                             value: ontologyFileUpload
                         },
                         constraintFile: {
-                            label: 'Ontop repository constraint file',
+                            label: 'Constraint file',
                             name: 'constraintFile',
                             value: ''
                         },
@@ -382,7 +383,7 @@ describe('Repositories', () => {
                             value: "Ontop virtual store"
                         },
                         obdaFile: {
-                            label: "Ontop repository OBDA or R2RML file",
+                            label: "OBDA or R2RML file",
                             name: "obdaFile",
                             value: obdaFileUpload
                         }
@@ -403,7 +404,7 @@ describe('Repositories', () => {
         cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
 
         //Check workbench restricted sections when connected to an Ontop repository
-        selectRepoFromDropdown('virtual-repo');
+        selectRepoFromDropdown(virtualRepoName);
         cy.visit("/import");
         getOntopFunctionalityDisabledMessage();
         cy.visit("/monitor/queries");
@@ -417,13 +418,16 @@ describe('Repositories', () => {
         cy.visit("/jdbc");
         getOntopFunctionalityDisabledMessage();
 
-        //Check that Inference and SameAs are disabled also that explain plan is not supported.
-        cy.visit("/sparql");
-        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
-
-        //check that Inference and SameAs buttons are disabled.
-        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
-        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+        //TODO - uncomment following when org.h2.Driver is added to the class path of the instance
+        //
+        // //Check that Inference and SameAs are disabled also that explain plan is not supported.
+        // cy.visit("/sparql");
+        // cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+        //
+        // //check that Inference and SameAs buttons are disabled.
+        // cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+        // cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+        cy.deleteRepository(virtualRepoName);
     });
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';

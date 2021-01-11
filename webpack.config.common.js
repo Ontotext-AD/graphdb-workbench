@@ -111,6 +111,10 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/repositories/templates',
+                to: 'js/angular/repositories/templates',
+            },
+            {
                 from: 'src/js/angular/autocomplete/templates',
                 to: 'js/angular/autocomplete/templates'
             },

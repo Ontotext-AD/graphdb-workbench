@@ -20,7 +20,10 @@ function RepositoriesRestService($http) {
         getRepositoryFileContent,
         updateRepositoryFileContent,
         validateOntopPropertiesConnection,
-        restartRepository
+        restartRepository,
+        getSupportedDriversData,
+        updatePropertiesFile,
+        loadPropertiesFile
     };
 
     function getRepository(repositoryid) {
@@ -72,6 +75,19 @@ function RepositoriesRestService($http) {
     }
 
     function validateOntopPropertiesConnection(ontopProperties) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/test-connection`, ontopProperties);
+        return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/test-connection`, ontopProperties);
+    }
+
+    function getSupportedDriversData() {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/drivers`);
+    }
+
+    function updatePropertiesFile(fileLocation, content) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`,
+            JSON.stringify(content), {params: {fileLocation: fileLocation}});
+    }
+
+    function loadPropertiesFile(file) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`, {params: {fileLocation: file}});
     }
 }

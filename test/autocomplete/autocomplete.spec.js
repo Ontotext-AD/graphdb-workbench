@@ -8,6 +8,9 @@ mocks.service('$repositories', function () {
     this.getActiveRepository = function () {
         return '';
     };
+    this.isActiveRepoOntopType = function () {
+        return false;
+    };
     this.getDegradedReason = function () {
     };
 });

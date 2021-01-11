@@ -1,5 +1,18 @@
+export const getFileName = function(path) {
+    let lastIdx = path.lastIndexOf('/');
+    if (lastIdx === -1) {
+        lastIdx = path.lastIndexOf('\\');
+    }
+    let name = path;
+    if (lastIdx !== -1) {
+        name = name.substring(lastIdx + 1);
+    }
+    return name;
+};
+
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
+const ONTOP_TYPE = 'ontop';
 
 const staticRulesets = [
     {id: 'empty', name: 'No inference'},
@@ -15,10 +28,6 @@ const staticRulesets = [
     {id: 'owl2-ql-optimized', name: 'OWL2-QL (Optimized)'},
     {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
 ];
-
-const ONTOP_REPO_PARAM_LABELS = {obdaFile: 'obda or r2rml file', owlFile: 'ontology file', propertiesFile: 'properties file', constraintFile: 'constraint file'};
-const ONTOP_REPO_PARAMS = _.keys(ONTOP_REPO_PARAM_LABELS);
-const REQUIRED_ONTOP_REPO_PARAMS = ['obdaFile', 'propertiesFile'];
 
 const modules = [
     'ngCookies',
@@ -38,71 +47,8 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-const editFile = function(file, $modal, $scope, RepositoriesRestService, toastr) {
-
-        const modalInstance = $modal.open({
-            templateUrl: 'js/angular/templates/modal/editRepoFile.html',
-            controller: 'EditRepositoryFileCtrl',
-            resolve: {
-                file: function () {
-                    return $scope.repositoryInfo.params[file] ? $scope.repositoryInfo.params[file].value : '';
-                }
-            }
-        });
-
-        modalInstance.result.then(function (data) {
-            // send data to backend
-            RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(data) {
-                $scope.ontopRepoFileNames[file] = getFileName(data.fileLocation);
-                $scope.repositoryInfo.params[file].value = data.fileLocation;
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-            })
-        });
-    }
-
-const uploadRepoFile = function (files, param, Upload, $scope) {
-    if (files && files.length) {
-        $scope.uploadFile = files[0];
-        $scope.uploadFileLoader = true;
-        Upload.upload({
-            url: 'rest/repositories/uploadFile',
-            data: {uploadFile: $scope.uploadFile}
-        })
-            .success(function (data) {
-                if (!data.success) {
-                    toastr.error(data.errorMessage);
-                } else {
-                    $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
-                    $scope.repositoryInfo.params[param].value = data.fileLocation;
-                }
-                $scope.uploadFileLoader = false;
-            }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Error');
-            $scope.uploadFile = '';
-            $scope.uploadFileLoader = false;
-        });
-    }
-};
-
-const getFileName = function(path) {
-    let lastIdx = path.lastIndexOf('/');
-    if (lastIdx === -1) {
-        lastIdx = path.lastIndexOf('\\');
-    }
-    let name = path;
-    if (lastIdx !== -1) {
-        name = name.substring(lastIdx + 1);
-    }
-    return name;
-};
-
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService',
-                                        '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter', '$interval'];
-function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService,
-                                      $jwtAuth, LocationsRestService, LocalStorageAdapter, $interval) {
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService', 'LocalStorageAdapter', '$interval'];
+function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService, LocalStorageAdapter, $interval) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -317,7 +263,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = 'rest/repositories/' + repository.id + (repository.type === 'ontop' ? '/downloadZip': '/download');
+        let url = 'rest/repositories/' + repository.id + (repository.type === ONTOP_TYPE ? '/downloadZip': '/download');
         const token = $jwtAuth.getAuthToken();
         if (token) {
             url = url + '?authToken=' + encodeURIComponent(token);
@@ -446,9 +392,9 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService', '$modal'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService, $modal) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -508,33 +454,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
     };
 
-    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
-    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
-
-    $scope.isRequiredOntopRepoFile = function(file) {
-        return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
-    };
-    $scope.ontopRepoFileNames = {};
-
-
-    $scope.uploadOntopRepoFile = function(files, param) {
-        uploadRepoFile(files, param, Upload, $scope);
-    };
-
-    $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile &&
-                $scope.repositoryInfo.params.propertiesFile.value.length > 0
-    };
-
-    $scope.validateOntopPropertiesConnection = function() {
-        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('Connection is successful');
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Failed to connect');
-        });
-    }
-
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
 
@@ -588,15 +507,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             toastr.error('Repository ID cannot be empty');
             return;
         }
-        if ($scope.repositoryInfo.type === 'ontop') {
-            const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function(requiredFile) {
-               return !$scope.repositoryInfo.params[requiredFile].value;
-            });
-            if (missingRequired.length > 0) {
-                toastr.error('Missing required ontop repo file');
-                return;
-            }
-        }
+
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
         const repoParams = $scope.repositoryInfo.params;
         if (repoParams.entityIndexSize && repoParams.queryLimitResults && repoParams.queryTimeout) {
@@ -629,14 +540,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             return '';
         }
     };
-
-    $scope.editFile = function(file) {
-        editFile(file, $modal, $scope, RepositoriesRestService, toastr);
-    };
-
     //TODO - check if repositoryID exist
-
 }
+
 EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr'];
 
 function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService, file, toastr) {
@@ -662,9 +568,9 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService', '$modal', 'Upload'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService, $modal, Upload) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
 
@@ -683,13 +589,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
-
-    $scope.ontopRepoFiles = ONTOP_REPO_PARAMS;
-    $scope.ontopRepoFileLabels = ONTOP_REPO_PARAM_LABELS;
-    $scope.isRequiredOntopRepoFile = function(file) {
-        return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
-    };
-    $scope.ontopRepoFileNames = {};
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
@@ -710,11 +609,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.repositoryInfo = data;
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
-                    $scope.ontopRepoFiles.forEach(function(key) {
-                        if ($scope.repositoryInfo.params[key]) {
-                            $scope.ontopRepoFileNames[key] = $scope.repositoryInfo.params[key].value;
-                        }
-                    });
                 })
                 .error(function (data, status) {
                     if (status === 404 && $routeParams.repositoryId !== 'system') {
@@ -756,7 +650,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        if ($scope.repositoryInfo.type !== 'ontop') {
+        if ($scope.repositoryInfo.type !== ONTOP_TYPE) {
             $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
             $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
             $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
@@ -784,7 +678,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         } else {
             $scope.formError();
         }
-    };
+    }
 
     $scope.editRepositoryId = function () {
         let msg = '<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>';
@@ -808,26 +702,4 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             $location.path('/repository');
         }
     };
-
-    $scope.editFile = function(file) {
-        editFile(file, $modal, $scope, RepositoriesRestService, toastr);
-    };
-
-    $scope.uploadOntopRepoFile = function(files, param) {
-        uploadRepoFile(files, param, Upload, $scope);
-    };
-
-    $scope.isOntopRepoFileUploaded = function() {
-        return $scope.repositoryInfo.params.propertiesFile &&
-                $scope.repositoryInfo.params.propertiesFile.value.length > 0
-    };
-
-    $scope.validateOntopPropertiesConnection = function() {
-        RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile).success(function () {
-            toastr.success('Connection is successful');
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, 'Failed to connect');
-        });
-    }
 }
