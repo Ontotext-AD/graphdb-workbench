@@ -1,0 +1,20 @@
+.create-buttons {
+  align-items: stretch;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.create-buttons .create-repo-btn {
+  height: 100%;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #04355E;
+  width: 100%;
+  border-radius: 20px;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.create-buttons .create-repo-btn .repo-description, .repo-type {
+  display: block;
+}

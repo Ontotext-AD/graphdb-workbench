@@ -1,0 +1,53 @@
+<link href="css/repository.create.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
+<div>
+    <h1 class="mb-3">{{pageTitle}}</h1>
+    <h4>Select the type of repository to create:</h4>
+    <div class="row create-buttons">
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-1" ng-if="!isEnterprise && !isFreeEdition">
+            <button id="repository-type-se-btn" class="btn btn-outline-primary d-block create-repo-btn"
+                    ng-click="chooseRepositoryType(repositoryTypes.se)">
+                <em class="icon-repo-se icon-2-5x pull-left"></em>
+                <span class="h3 repo-type">GraphDB SE</span>
+                <span class="text-muted col-md-12 repo-description">Workers store data, answer queries and execute updates</span>
+            </button>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-1" ng-if="isFreeEdition">
+            <button id="repository-type-free-btn" class="btn btn-outline-primary d-block create-repo-btn"
+                    ng-click="chooseRepositoryType(repositoryTypes.free)">
+                <em class="icon-repo-free icon-2-5x pull-left"></em>
+                <span class="h3 repo-type">GraphDB Free</span>
+                <small class="text-muted col-md-12 repo-description">Workers store data, answer queries and execute updates</small>
+            </button>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-1" ng-if="isEnterprise">
+            <button id="repository-type-worker-btn" class="btn btn-outline-primary btn-lg d-block create-repo-btn"
+                    ng-click="chooseRepositoryType(repositoryTypes.eeWorker)">
+                <i class="icon-repo-worker icon-2-5x pull-left" aria-hidden="true"></i>
+                <span class="h3 repo-type">GraphDB EE Worker</span>
+                <small class="text-muted col-md-12 repo-description">Workers store data, answer queries and execute updates.</small>
+            </button>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-1" ng-if="isEnterprise">
+            <button id="repository-type-master-btn" class="btn btn-outline-primary btn-lg d-block create-repo-btn"
+                    ng-click="chooseRepositoryType(repositoryTypes.eeMaster)">
+                <i class="icon-repo-master icon-2-5x pull-left" aria-hidden="true"></i>
+                <span class="h3 repo-type">GraphDB EE Master</span>
+                <small class="text-muted col-md-12 repo-description">Masters accept queries and updates from clients and forward them to
+                    workers.</small>
+            </button>
+        </div>
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
+            <button id="repository-type-ontop-btn" class="btn btn-outline-primary btn-lg d-block create-repo-btn"
+                    ng-click="chooseRepositoryType(repositoryTypes.ontop)">
+                <i class="icon-repo-ontop icon-2-5x pull-left" aria-hidden="true"></i>
+                <span class="h3 repo-type">Ontop Virtual SPARQL endpoint</span>
+                <small class="text-muted col-md-12 repo-description">Translates data stored in an SQL database to a virtual SPARQL endpoint.</small>
+            </button>
+        </div>
+    </div>
+</div>

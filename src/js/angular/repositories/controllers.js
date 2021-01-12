@@ -30,6 +30,7 @@ const staticRulesets = [
 
 ];
 
+const REPOSITOTY_TYPES = {free: 'free', eeWorker: 'worker', eeMaster: 'master', ontop: 'ontop', se: 'se'};
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -43,6 +44,7 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('LocationsAndRepositoriesCtrl', LocationsAndRepositoriesCtrl)
     .controller('AddLocationCtrl', AddLocationCtrl)
     .controller('EditLocationCtrl', EditLocationCtrl)
+    .controller('ChooseRepositoryCtrl', ChooseRepositoryCtrl)
     .controller('AddRepositoryCtrl', AddRepositoryCtrl)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
@@ -393,11 +395,25 @@ function EditLocationCtrl($scope, $modalInstance, location) {
     };
 }
 
+ChooseRepositoryCtrl.$inject = ['$scope', '$location', 'isEnterprise', 'isFreeEdition'];
+function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
+    $scope.pageTitle = 'Choose repository';
+    $scope.repositoryTypes = REPOSITOTY_TYPES;
+    $scope.isEnterprise = isEnterprise;
+    $scope.isFreeEdition = isFreeEdition;
+
+    $scope.chooseRepositoryType = function (repoType) {
+        $location.path($location.path() + '/' + repoType);
+    };
+}
+
 AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
 function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
-
     $scope.rulesets = staticRulesets.slice();
+    $scope.repositoryTypes = REPOSITOTY_TYPES;
+    $scope.params = $routeParams;
+    $scope.repositoryType = $routeParams.repositoryType;
 
     $scope.loader = true;
     $scope.pageTitle = 'Create Repository';
@@ -470,12 +486,24 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         });
     };
 
-    if ($scope.isEnterprise) {
-        $scope.getConfig('worker');
-    } else if ($scope.isFreeEdition) {
-        $scope.getConfig('free');
+    $scope.isRepositoryTypeValid = function () {
+        if ($scope.isEnterprise && ($scope.repositoryType === REPOSITOTY_TYPES.eeMaster
+            || $scope.repositoryType === REPOSITOTY_TYPES.eeWorker)) {
+            return true;
+        } else if (!$scope.isFreeEdition && !$scope.isEnterprise
+            && $scope.repositoryType === REPOSITOTY_TYPES.se) {
+            return true;
+        } else {
+            return ($scope.isFreeEdition && $scope.repositoryType === REPOSITOTY_TYPES.free)
+                || $scope.repositoryType === REPOSITOTY_TYPES.ontop;
+        }
+    };
+
+    if ($scope.repositoryType && $scope.isRepositoryTypeValid()) {
+        $scope.repositoryInfo.type = $scope.repositoryType;
+        $scope.getConfig($scope.repositoryType);
     } else {
-        $scope.getConfig('se');
+        $location.path('/repository/create');
     }
 
     $scope.formError = function () {
@@ -574,6 +602,7 @@ EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories
 function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = staticRulesets.slice();
+    $scope.repositoryTypes = REPOSITOTY_TYPES;
 
     //TODO
     $scope.editRepoPage = true;
@@ -585,6 +614,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
     $scope.repositoryInfo.restartRequested = false;
+    $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
     $scope.hasActiveLocation = function () {
@@ -608,6 +638,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                         }
                     }
                     $scope.repositoryInfo = data;
+                    $scope.setRepositoryType(data.type);
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
                 })
@@ -628,6 +659,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 });
         }
     });
+
+    $scope.setRepositoryType = function (type) {
+        $scope.repositoryType = type;
+    };
 
     $scope.formError = function () {
         toastr.error('There is an error in the form!');

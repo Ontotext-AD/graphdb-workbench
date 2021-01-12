@@ -29,8 +29,10 @@ describe('Repositories', () => {
             .and('contain', 'Local');
 
         createRepository();
-
         cy.url().should('include', '/repository/create');
+
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
 
         // Create a repository by supplying only an identifier
         getRepositoryCreateForm().should('be.visible');
@@ -96,6 +98,9 @@ describe('Repositories', () => {
 
     it('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+
         saveRepository();
 
         getRepositoryCreateForm().should('be.visible');
@@ -112,6 +117,8 @@ describe('Repositories', () => {
         const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
 
         getRepositoryIdField().type(repositoryId);
         getRepositoryTitleField()
@@ -164,10 +171,16 @@ describe('Repositories', () => {
     it('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+
         typeRepositoryId(repositoryId);
         saveRepository();
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+
         typeRepositoryId(secondRepoId);
         saveRepository();
 
@@ -229,6 +242,9 @@ describe('Repositories', () => {
         const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
@@ -260,6 +276,9 @@ describe('Repositories', () => {
 
     it('should allow to delete existing repository', () => {
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+
         typeRepositoryId(repositoryId);
         saveRepository();
 
@@ -286,20 +305,19 @@ describe('Repositories', () => {
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
     it('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
-        getRepositoryTypeDropdown().should('contain', "Ontop: Virtual SPARQL Endpoint").and('not.be.disabled');
-        getRepositoryTypeDropdown().select('Ontop: Virtual SPARQL Endpoint');
+        getRepositoryTypeButton('ontop').should('be', 'visible');
+        chooseRepositoryType('ontop');
+        cy.url().should('include', '/repository/create/ontop');
+
+        // getRepositoryTypeDropdown().should('contain', "Ontop: Virtual SPARQL Endpoint").and('not.be.disabled');
+        // getRepositoryTypeDropdown().select('Ontop: Virtual SPARQL Endpoint');
         getOBDAFileField().should('be', "visible");
         getOntologyFileField().should('be', "visible");
-
         getPropertiesFileField().should('be', "visible");
-
         getConstraintFileField().should('be', "visible");
         getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
-
         getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
-
         getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
-
         getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
     });
 
@@ -472,6 +490,19 @@ describe('Repositories', () => {
 
     function createRepository() {
         getCreateRepositoryButton().click();
+    }
+
+    function getRepositoryTypeButton(type) {
+        if (type) {
+            return cy.get('#repository-type-' + type + '-btn');
+        } else {
+            return cy.get('.create-repo-btn').first();
+        }
+    }
+
+
+    function chooseRepositoryType(type) {
+        getRepositoryTypeButton(type).click();
     }
 
     function getRepositoriesDropdown() {
