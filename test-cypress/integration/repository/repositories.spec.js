@@ -309,8 +309,6 @@ describe('Repositories', () => {
         chooseRepositoryType('ontop');
         cy.url().should('include', '/repository/create/ontop');
 
-        // getRepositoryTypeDropdown().should('contain', "Ontop: Virtual SPARQL Endpoint").and('not.be.disabled');
-        // getRepositoryTypeDropdown().select('Ontop: Virtual SPARQL Endpoint');
         getOBDAFileField().should('be', "visible");
         getOntologyFileField().should('be', "visible");
         getPropertiesFileField().should('be', "visible");

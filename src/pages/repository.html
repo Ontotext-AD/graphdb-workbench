@@ -3,11 +3,7 @@
 <link href="css/lib/bootstrap-switch/bootstrap-switch.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
 <div id="wb-repository">
-    <h1 ng-if="repositoryType === repositoryTypes.free">Create GraphDB Free Repository</h1>
-    <h1 ng-if="repositoryType === repositoryTypes.eeWorker">Create GraphDB EE Worker Repository</h1>
-    <h1 ng-if="repositoryType === repositoryTypes.eeMaster">Create GraphDB EE Master Repository</h1>
-    <h1 ng-if="repositoryType === repositoryTypes.se">Create GraphDB SE Repository</h1>
-    <h1 ng-if="repositoryType === repositoryTypes.ontop">Create Ontop Virtual SPARQL endpoint Repository</h1>
+    <h1>{{pageTitle}}</h1>
     <p class="alert alert-danger" ng-hide="hasActiveLocation()">
         No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
     </p>
