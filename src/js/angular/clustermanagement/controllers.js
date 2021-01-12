@@ -492,6 +492,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
                     var status = worker.status;
 
+                    // Update disabled reason message if last error is provided
+                    if (status === 'OFF' && worker.lastError  && workerNode.disabledReason
+                        && workerNode.disabledReason.indexOf(worker.lastError) === -1) {
+                        workerNode.disabledReason = worker.lastError;
+                    }
+
                     // debug stuff
                     if (isRandomLink) {
                         status = ['UNINITIALIZED', 'ON', 'OFF', 'REPLICATION_SERVER', 'REPLICATION_CLIENT',
