@@ -125,9 +125,9 @@ describe('Repositories', () => {
 
         // RDFS-Plus (Optimized) -> OWL-Horst (Optimized)
         getRepositoryRulesetMenu()
-            .should('have.value', '7')
-            .select('8')
-            .should('have.value', '8');
+            .should('have.value', '3')
+            .select('4')
+            .should('have.value', '4');
 
         // Should be automatically enabled when the rule set is changed to one of the OWL rule set
         getRepositoryDisableSameAsCheckbox()
@@ -154,8 +154,8 @@ describe('Repositories', () => {
         getRepositoryCreateForm().should('be.visible');
         getRepositoryIdField().should('have.value', repositoryId);
         getRepositoryTitleField().should('have.value', repoTitle);
-        // OWL-Horst (Optimized) has become 9
-        getRepositoryRulesetMenu().should('have.value', '9');
+        // OWL-Horst (Optimized) has become 5
+        getRepositoryRulesetMenu().should('have.value', '5');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
         getRepositoryBaseURLField().should('have.value', newBaseUrl);
         getRepositoryContextIndexCheckbox().should('be.checked');
