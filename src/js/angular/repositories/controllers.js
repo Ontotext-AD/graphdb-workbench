@@ -16,17 +16,18 @@ const ONTOP_TYPE = 'ontop';
 
 const staticRulesets = [
     {id: 'empty', name: 'No inference'},
-    {id: 'rdfs', name: 'RDFS'},
-    {id: 'owl-horst', name: 'OWL-Horst'},
-    {id: 'owl-max', name: 'OWL-Max'},
-    {id: 'owl2-ql', name: 'OWL2-QL'},
-    {id: 'owl2-rl', name: 'OWL2-RL'},
     {id: 'rdfs-optimized', name: 'RDFS (Optimized)'},
+    {id: 'rdfs', name: 'RDFS'},
     {id: 'rdfsplus-optimized', name: 'RDFS-Plus (Optimized)'},
     {id: 'owl-horst-optimized', name: 'OWL-Horst (Optimized)'},
-    {id: 'owl-max-optimized', name: 'OWL-Max (Optimized)'},
+    {id: 'owl-horst', name: 'OWL-Horst'},
     {id: 'owl2-ql-optimized', name: 'OWL2-QL (Optimized)'},
-    {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'}
+    {id: 'owl2-ql', name: 'OWL2-QL'},
+    {id: 'owl-max-optimized', name: 'OWL-Max (Optimized)'},
+    {id: 'owl-max', name: 'OWL-Max'},
+    {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'},
+    {id: 'owl2-rl', name: 'OWL2-RL'},
+
 ];
 
 const modules = [
