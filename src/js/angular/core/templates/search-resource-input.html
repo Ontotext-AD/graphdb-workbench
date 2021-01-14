@@ -1,12 +1,24 @@
-<div class="input-group input-group-lg">
+<div id="search-resource-box" class="input-group" ng-class="{'input-group-lg': !radioButtons}" style="white-space: nowrap">
     <input type="text" class="form-control view-res-input" placeholder="{{placeholder}}" ng-model="searchInput"
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
-    <span class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
+    <button ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon"
+          tooltip="Clear" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+        <i class="icon-close" aria-hidden="true" ng-click="clearInput()"></i>
+    </button>
+    <span ng-if="!radioButtons" class="input-group-btn">
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Table'}}</button>
     </span>
-    <span class="input-group-btn show-btn">
+    <span ng-if="!radioButtons" class="input-group-btn show-btn">
         <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
+    </span>
+    <span ng-if="radioButtons" class="input-group-btn">
+        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="'table'" ng-click="changeSearchType('table')">
+            Table
+        </button>
+        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="'visual'" ng-click="changeSearchType('visual')">
+            Visual
+        </button>
     </span>
 </div>
 <div id="auto-complete-results-wrapper">

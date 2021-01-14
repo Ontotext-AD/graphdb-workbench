@@ -257,20 +257,43 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             uriValidation: '@',
             preserveInput: '@',
             empty: '=',
-            openInNewTab: '@'
+            openInNewTab: '@',
+            preserveSearch: '@',
+            radioButtons: '@',
+            clearInputIcon: '@'
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function ($scope, element, attrs) {
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
-            $scope.searchInput = "";
             const MIN_CHAR_LEN = 0;
-
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
-
             let canceler;
+            $scope.showClearInputIcon = false;
+            $scope.searchType = localStorage.getItem('searchType') || "table";
+
+            if ($scope.preserveSearch === 'true') {
+                $scope.preserveInput = 'true';
+                $scope.searchInput = localStorage.getItem('searchInput') || "";
+                expandedUri = localStorage.getItem('searchExpandedUri');
+            } else {
+                $scope.searchInput = "";
+            }
+
+            $scope.changeSearchType = function(type) {
+                $scope.searchType = type;
+                localStorage.setItem('searchType', $scope.searchType);
+            };
+
+            $scope.clearInput = function() {
+                $scope.searchInput = '';
+                $scope.autoCompleteUriResults = [];
+                $scope.showClearInputIcon = false;
+                localStorage.removeItem('searchInput');
+                localStorage.removeItem('searchExpandedUri');
+            };
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
@@ -292,6 +315,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 if (angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
                         element.autoCompleteStatus = !!response;
+                        if ($scope.searchInput !== '') {
+                            $scope.onChange();
+                        }
                     }).error(function () {
                         toastr.error('Error attempting to check autocomplete capability!');
                     });
@@ -299,8 +325,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('empty', function () {
-                $scope.searchInput = '';
-                $scope.empty = false;
+                if ($scope.preserveSearch !== 'true') {
+                    $scope.searchInput = '';
+                    $scope.empty = false;
+                }
             });
 
             const defaultTextCallback = function (params) {
@@ -364,7 +392,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchRdfResource = function (resource, callback) {
                 if (resource.type === 'prefix') {
                     $scope.searchInput = expandPrefix(resource.value + ':');
-                    $scope.autoCompleteUriResults = [];
+                    element.find('.view-res-input').focus();
+                    $scope.onChange();
                 } else {
                     let textResource;
                     if (angular.isUndefined(resource)) {
@@ -387,17 +416,21 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
-                    $scope.autoCompleteUriResults = [];
-                    if ($scope.preserveInput === 'true') {
+                    if ($scope.preserveSearch === 'true') {
+                        localStorage.setItem('searchExpandedUri', expandedUri);
+                        localStorage.setItem('searchInput', $scope.searchInput);
+                    } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
+                        $scope.autoCompleteUriResults = [];
                     } else {
                         $scope.searchInput = "";
+                        $scope.autoCompleteUriResults = [];
                     }
                 }
             };
 
             $scope.searchRdfResourceByEvent = function (uri, event) {
-                if (event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === 'visual' || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
@@ -447,6 +480,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.onChange = function () {
+                $scope.showClearInputIcon = $scope.clearInputIcon;
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
                     if (element.autoCompleteStatus) {
@@ -492,6 +526,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     scrollContentToTop();
                 }
                 if (event.keyCode === 27) {
+                    if ($scope.preserveSearch) {
+                        return;
+                    }
                     $scope.searchInput = '';
                     $scope.autoCompleteUriResults = [];
                 }
@@ -552,7 +589,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(element.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
-                            $(".view-res-input").val(expandedUri);
+                            element.find('.view-res-input').val(expandedUri);
                             return expandedUri + localName;
                         }
                     }

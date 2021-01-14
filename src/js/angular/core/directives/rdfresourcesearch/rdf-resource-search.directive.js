@@ -36,26 +36,38 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       $scope.showInput = function () {
         element.find('.search-rdf-btn')
             .addClass('hidden-xs-up');
-        element.find('.search-rdf-input').css('top', '0px');
+        element.find('.search-rdf-input').css('top', '20px');
         $timeout(function () {
           element.find('.close-rdf-search-btn')
               .removeClass('hidden-xs-up');
           element.find('search-resource-input .view-res-input')
               .focus();
+          document.body.addEventListener('mousedown', onDocumentClick);
         }, 200);
       };
 
       $scope.hideInput = function () {
-        element.find('.search-rdf-input').css('top', '-150px');
-        element.find('search-resource-input .view-res-input')[0].value = '';
-        element.find('search-resource-input .view-res-input').change();
+        element.find('.search-rdf-input').css('top', '-550px');
         element.find('.close-rdf-search-btn')
             .addClass('hidden-xs-up');
         $timeout(function () {
           element.find('.search-rdf-btn')
               .removeClass('hidden-xs-up')
               .css('z-index', '3');
+          document.body.removeEventListener('mousedown', onDocumentClick);
         }, 200);
+      };
+
+      function onDocumentClick(event) {
+        if (!(event.target.id === "search-box" || $(event.target).parents("#search-box").length)) {
+          $scope.hideInput();
+        }
+      }
+
+      $scope.onKeyDown = function(event) {
+        if (event.keyCode === 27) {
+          $scope.hideInput();
+        }
       };
     }
   };
