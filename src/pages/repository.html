@@ -16,9 +16,8 @@
 
 				<form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
 					<fieldset>
-						<legend>Repository properties</legend>
 						<div class="form-group row">
-							<label for="id" class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository ID*</label>
+							<label for="id" class="col-xs-3 col-sm-3 col-md-2 col-form-label">Repository ID*</label>
 							<div class="col-xs-4 col-sm-4 col-md-4">
 								<a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()" ng-show="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter" tooltip="Edit repository  id"><span class="icon-edit"></span></a>
 								<input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage" placeholder="This field is required" type="text" ng-model="repositoryInfo.id" required title="Repository name cannot be empty and must contain only letters (a-z, A-Z), numbers (0-9), '-' and '_'">
@@ -26,45 +25,29 @@
 							</div>
 						</div>
 						<div class="form-group row">
-							<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository title</label>
+							<label class="col-xs-3 col-sm-3 col-md-2 col-form-label">Repository description</label>
 							<div class="col-xs-4 col-sm-4 col-md-4">
 								<input class="form-control" type="text" name="title" id="title" ng-model="repositoryInfo.title">
 							</div>
 						</div>
-						<div class="form-group row">
-							<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Type</label>
-							<div class="col-xs-4 col-sm-4 col-md-4">
-								<select ng-if="!editRepoPage" class="form-control" id="type" ng-model="repositoryInfo.type"  ng-change="getConfig(repositoryInfo.type)">
-								  <option value="se" ng-if="!isEnterprise && !isFreeEdition">GRAPHDB-SE</option>
-								  <option value="free" ng-if="isFreeEdition">GRAPHDB-FREE</option>
-								  <option value="worker" ng-if="isEnterprise">GRAPHDB-EE Worker</option>
-								  <option value="master" ng-if="isEnterprise">GRAPHDB-EE Master</option>
-                                  <option value="ontop">Ontop: Virtual SPARQL Endpoint</option>
-                                </select>
-								<select ng-if="editRepoPage" disabled="disabled" class="form-control" id="type" ng-model="repositoryInfo.type">
-								  <option value="se">GRAPHDB-SE</option>
-								  <option value="free">GRAPHDB-FREE</option>
-								  <option value="worker">GRAPHDB-EE Worker</option>
-								  <option value="master">GRAPHDB-EE Master</option>
-                                  <option value="ontop">Ontop: Virtual SPARQL Endpoint</option>
-                                </select>
-							</div>
-						</div>
+                        <div class="form-group row" ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
+                            <div class="checkbox offset-xs-3 offset-md-2">
+                                <label class="col-xs-3 col-md-3">
+                                    <input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.readOnly.value"/>
+                                    {{repositoryInfo.params.readOnly.label}}
+                                </label>
+                            </div>
+                        </div>
 
                         <!-- Ontop repository related directive -->
                         <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
 
 						<div id="additionalParams" ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.storageFolder.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input class="form-control" id="storageFolder" type="text" ng-model="repositoryInfo.params.storageFolder.value">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="ruleset" class="col-xs-2 col-sm-2 col-md-2 col-form-label">{{repositoryInfo.params.ruleset.label}}</label>
-								<div class="col-xs-1 col-md-1">
-									<em class="icon-warning icon-2x"
+                            <h5>Inference and Validation</h5>
+							<div class="form-group row indented-div">
+								<label for="ruleset" class="col-xs-2 col-sm-2 col-md-1 col-form-label">{{repositoryInfo.params.ruleset.label}}</label>
+								<div class="col-xs-2 col-md-1">
+									<em class="icon-warning icon-2x pull-right"
 										ng-show="rulesetWarning()"
 										tooltip="{{rulesetWarning()}}"
 										tooltip-placement="top"></em>
@@ -91,78 +74,97 @@
 									<input class="form-control" id="customRuleSet" type="file" name="ruleset" style="display: none;"/>
 								</div>
 							</div>
-							<div class="form-group row">
-								<div class="checkbox offset-xs-3 offset-md-3">
-									<label class="col-xs-6 col-md-6"
+							<div class="form-group row indented-div">
+								<div class="checkbox offset-xs-3 offset-md-2">
+									<label class="col-xs-6 col-md-3"
 										   tooltip="GraphDB uses a non-rule implementation of owl:sameAs, which can be enabled or disabled independently of the ruleset."
 											tooltip-placement="bottom">
 										<input id="disableSameAs" ng-disabled="editRepoPage || repositoryInfo.params.ruleset.value === 'empty'" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.disableSameAs.value"/>
 										{{repositoryInfo.params.disableSameAs.label}}
 									</label>
-								</div>
-							</div>
-                            <div class="form-group row">
-                                <div class="checkbox offset-xs-3 offset-md-3">
-                                    <label class="col-xs-6 col-md-6"
-                                           tooltip="Enables support for SHACL validation"
-                                           tooltip-placement="bottom">
-                                        <input id="isShacl" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.isShacl.value"/>
-                                        {{repositoryInfo.params.isShacl.label}}
+                                </div>
+                            </div>
+                            <div class="form-group row indented-div">
+                                <div class="checkbox offset-xs-3 offset-md-2">
+                                    <label class="col-xs-6 col-md-3">
+                                        <input id="checkForInconsistencies" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.checkForInconsistencies.value"/>
+                                        {{repositoryInfo.params.checkForInconsistencies.label}}
                                     </label>
                                 </div>
                             </div>
-                            <div ng-show="repositoryInfo.params.isShacl.value === 'true'">
+                            <div class="form-group row indented-div">
+                                <div class="checkbox offset-xs-3 offset-md-2">
+                                    <label class="col-xs-6 col-md-3 col-form-label"
+                                           tooltip="Enables support for SHACL validation"
+                                           tooltip-placement="bottom">
+                                        <input id="isShacl" ng-disabled="editRepoPage" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
+                                               ng-model="repositoryInfo.params.isShacl.value"/>
+                                        {{repositoryInfo.params.isShacl.label}}
+                                    </label>
+                                    <label class="col-xs-2 col-md-2 col-form-label">
+                                        <i class="{{getFaFaAngleClass()}}"
+                                           aria-hidden="true"></i>
+                                        <button class="text-btn"
+                                                data-toggle="collapse" style="text-align: left"
+                                                ng-disabled="repositoryInfo.params.isShacl.value !== 'true'"
+                                                data-target="#shaclOptions">
+                                            SHACL options
+                                        </button>
+                                    </label>
+								</div>
+							</div>
+                            <div ng-if="repositoryInfo.params.isShacl.value === 'true'" id="shaclOptions" class="collapse">
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
                                         <label class="col-xs-3 col-md-3" tooltip="The SHACL implementation retrieves a lot of its relevant data through running SPARQL Select queries against the repository and against the changes in the transaction. This is usually good for performance, but while validating large amounts of data disabling this cache will use less memory.">
                                             <input id="cacheSelectNodes" name="cacheSelectNodes" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
                                             {{repositoryInfo.params.cacheSelectNodes.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-4">
-                                        <label class="col-xs-3 col-md-3" tooltip="If no target is defined for a NodeShape, that NodeShape will be ignored. Enabling this will make such NodeShapes wildcard shapes and validate all subjects. Equivalent to setting sh:targetClass to owl:Thing or rdfs:Resource in an environment with a reasoner.">
+                                    <div class="checkbox offset-xs-2 offset-md-3">
+                                        <label class="col-xs-3 col-md-5" tooltip="If no target is defined for a NodeShape, that NodeShape will be ignored. Enabling this will make such NodeShapes wildcard shapes and validate all subjects. Equivalent to setting sh:targetClass to owl:Thing or rdfs:Resource in an environment with a reasoner.">
                                             <input id="undefinedTargetValidatesAllSubjects" name="undefinedTargetValidatesAllSubjects" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.undefinedTargetValidatesAllSubjects.value"/>
                                             {{repositoryInfo.params.undefinedTargetValidatesAllSubjects.label}}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
                                         <label class="col-xs-3 col-md-3" tooltip="Log (INFO) the executed validation plans as GraphViz DOT. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="logValidationPlans" name="logValidationPlans" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationPlans.value"/>
                                             {{repositoryInfo.params.logValidationPlans.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-4">
-                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) a list of violations and the triples that caused the violations. It is recommended to disable parallel validation when this is enabled.">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-5" tooltip="Log (INFO) a list of violations and the triples that caused the violations. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="logValidationViolations" name="logValidationViolations" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.logValidationViolations.value"/>
                                             {{repositoryInfo.params.logValidationViolations.label}}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
                                         <label class="col-xs-3 col-md-3" tooltip="Run SHACL validation in parallel.">
                                             <input id="parallelValidation" name="parallelValidation" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.parallelValidation.value"/>
                                             {{repositoryInfo.params.parallelValidation.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-4">
-                                        <label class="col-xs-3 col-md-3" tooltip="Log (INFO) every execution step of the SHACL validation. This is fairly costly and should not be used in production. It is recommended to disable parallel validation when this is enabled.">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-5" tooltip="Log (INFO) every execution step of the SHACL validation. This is fairly costly and should not be used in production. It is recommended to disable parallel validation when this is enabled.">
                                             <input id="globalLogValidationExecution" name="globalLogValidationExecution" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
                                             {{repositoryInfo.params.globalLogValidationExecution.label}}
                                         </label>
                                     </div>
                                 </div>
                                     <div class="form-group row">
-                                    <div class="checkbox offset-xs-3 offset-md-4">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
                                         <label class="col-xs-3 col-md-3" tooltip="Log (INFO) the execution time per shape. It is recommended to disable parallel validation and caching of select nodes when this is enabled.">
                                             <input id="performanceLogging" name="performanceLogging" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.performanceLogging.value"/>
                                             {{repositoryInfo.params.performanceLogging.label}}
                                         </label>
                                     </div>
-                                    <div class="checkbox offset-xs-3 offset-md-4">
-                                        <label class="col-xs-3 col-md-3" tooltip="Activates RDF4J's SHACL extensions that provide additional functionality (experimental).">
+                                    <div class="checkbox offset-xs-3 offset-md-3">
+                                        <label class="col-xs-3 col-md-5" tooltip="Activates RDF4J's SHACL extensions that provide additional functionality (experimental).">
                                             <input id="eclipseRdf4jShaclExtensions" name="eclipseRdf4jShaclExtensions" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.eclipseRdf4jShaclExtensions.value"/>
                                             {{repositoryInfo.params.eclipseRdf4jShaclExtensions.label}}
                                         </label>
@@ -170,7 +172,7 @@
                                 </div>
                                 <div>
                                     <div class="form-group row">
-                                        <div class="checkbox offset-xs-3 offset-md-4">
+                                        <div class="checkbox offset-xs-3 offset-md-3">
                                             <label class="col-xs-3 col-md-3" tooltip="Activates DASH Data Shapes extensions that provide additional functionality (experimental).">
                                                 <input id="dashDataShapes" name="dashDataShapes" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.dashDataShapes.value"/>
                                                 {{repositoryInfo.params.dashDataShapes.label}}
@@ -179,97 +181,74 @@
                                     </div>
                                 </div>
                             </div>
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.baseURL.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input class="form-control" name="baseURL" id="baseURL" type="url" ng-model="repositoryInfo.params.baseURL.value">
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.entityIndexSize.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input ng-readonly="editRepoPage" class="form-control" id="entityIndexSize" name="entityIndexSize" type="text"  ng-model="repositoryInfo.params.entityIndexSize.value" pattern="[0-9]+" title="This input has to be a number.">
-									<div style="margin-top: 5px" ng-show="isInvalidEntityIndexSize" class="idError alert alert-danger">This input has to be a number.</div>
-								</div>
-							</div>
-							<div class="form-group row">
-								<div class="checkbox offset-xs-3 offset-md-3">
+                            <h5>Indexing</h5>
+                            <div class="form-group row indented-div">
+                                <label class="col-xs-2 col-sm-2 col-md-1 col-form-label">{{repositoryInfo.params.entityIdSize.label}}</label>
+                                <div class="offset-xs-3 offset-md-2 radio">
+                                    <label class="col-xs-2 col-md-1 col-form-label">
+                                        <input id="entityIdSize32" type="radio" value="32" ng-disabled="editRepoPage"
+                                               ng-model="repositoryInfo.params.entityIdSize.value"/>
+                                        32-bit
+                                    </label>
+                                    <label class="col-xs-2 col-md-1 col-form-label">
+                                        <input id="entityIdSize40" type="radio" value="40" ng-disabled="editRepoPage"
+                                               ng-model="repositoryInfo.params.entityIdSize.value"/>
+                                        40-bit
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row indented-div">
+                                <div class="checkbox offset-xs-3 offset-md-2">
+                                    <label class="col-xs-3 col-md-3">
+                                        <input id="enableContextIndex" name="enableContextIndex" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.enableContextIndex.value"/>
+                                        {{repositoryInfo.params.enableContextIndex.label}}
+                                    </label>
+                                </div>
+                            </div>
+							<div class="form-group row indented-div">
+								<div class="checkbox offset-xs-3 offset-md-2">
 									<label class="col-xs-3 col-md-3">
 										<input id="enablePredicateList" name="enablePredicateList" ng-true-value="'true'" ng-false-value="'false'" type="checkbox" ng-model="repositoryInfo.params.enablePredicateList.value" ng-change="resetIndexMemory()"/>
-										Use predicate indices
-									</label>
-									<label class="col-xs-6 col-md-6">
-										<input id="inMemoryLiteralProperties" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.inMemoryLiteralProperties.value"/>
-										{{repositoryInfo.params.inMemoryLiteralProperties.label}}
+										{{repositoryInfo.params.enablePredicateList.label}}
 									</label>
 								</div>
 							</div>
-							<div class="form-group row">
-								<div class="checkbox offset-xs-3 offset-md-3">
-									<label class="col-xs-3 col-md-3">
-										<input id="enableContextIndex" name="enableContextIndex" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.enableContextIndex.value"/>
-										{{repositoryInfo.params.enableContextIndex.label}}
-									</label>
-									<label class="col-xs-6 col-md-6">
-										<input id="enableLiteralIndex" name="enableLiteralIndex" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.enableLiteralIndex.value"/>
-										{{repositoryInfo.params.enableLiteralIndex.label}}
-									</label>
+                            <h5>Queries and Updates</h5>
+							<div class="form-group row indented-div">
+								<label class="col-xs-3 col-sm-3 col-md-2 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
+								<div class="col-xs-1 col-sm-1 col-md-2">
+									<input class="form-control" id="queryTimeout" type="number" min="0" step="1"
+                                           ng-model="repositoryInfo.params.queryTimeout.value" ng-blur="validateNumberInput()"/>
+                                    <div style="margin-top: 5px" ng-show="isInvalidQueryTimeout" class="idError alert alert-danger">This input has to be a number.</div>
+								</div>
+                                <div class="checkbox offset-xs-3 offset-md-3">
+                                    <label class="col-xs-6 col-md-6 col-form-label">
+                                        <input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
+                                               ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>
+                                        {{repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.label}}
+                                    </label>
+                                </div>
+							</div>
+							<div class="form-group row indented-div">
+								<label class="col-xs-3 col-sm-3 col-md-2 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
+								<div class="col-xs-1 col-sm-1 col-md-2">
+									<input class="form-control" id="queryLimitResults" type="number" min="0" step="1"
+                                           ng-model="repositoryInfo.params.queryLimitResults.value" ng-blur="validateNumberInput()"/>
+                                    <div style="margin-top: 5px" ng-show="isInvalidQueryLimit" class="idError alert alert-danger">This input has to be a number.</div>
 								</div>
 							</div>
-							<div class="form-group row">
-								<div class="checkbox offset-xs-3 offset-md-3">
-									<label class="col-xs-3 col-md-3">
-										<input id="checkForInconsistencies" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.checkForInconsistencies.value"/>
-										{{repositoryInfo.params.checkForInconsistencies.label}}
-									</label>
-									<label class="col-xs-6 col-md-6">
-										<input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>
-										{{repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.label}}
-									</label>
-								</div>
-							</div>
-							<div class="form-group row">
-								<div class="checkbox offset-xs-3 offset-md-3">
-									<label class="col-xs-3 col-md-3">
-										<input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="repositoryInfo.params.readOnly.value"/>
-										{{repositoryInfo.params.readOnly.label}}
-									</label>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.entityIdSize.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<select ng-disabled="editRepoPage" class="form-control" id="entityIdSize" ng-model="repositoryInfo.params.entityIdSize.value">
-										 <option value="32">32</option>
-										 <option value="40">40</option>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input class="form-control" id="queryTimeout" type="text" ng-model="repositoryInfo.params.queryTimeout.value" pattern="[0-9]+" title="This input has to be a number."/>
-									<div style="margin-top: 5px" ng-show="isInvalidQueryTimeout" class="idError alert alert-danger">This input has to be a number.</div>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input class="form-control" id="queryLimitResults" type="text" ng-model="repositoryInfo.params.queryLimitResults.value" pattern="[0-9]+" title="This input has to be a number."/>
-									<div style="margin-top: 5px" ng-show="isInvalidQueryLimit" class="idError alert alert-danger">This input has to be a number.</div>
-								</div>
-							</div>
-							<div class="form-group row" ng-if="repositoryInfo.type == 'worker'">
-								<label class="col-xs-3 col-sm-3 col-md-3 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
-								<div class="col-xs-4 col-sm-4 col-md-4">
-									<input class="form-control" id="nonInterpretablePredicates" name="nonInterpretablePredicates" type="url" ng-model="repositoryInfo.params.nonInterpretablePredicates.value"/>
+							<div class="form-group row indented-div" ng-if="repositoryInfo.type == 'worker'">
+								<label class="col-xs-3 col-sm-3 col-md-2 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
+								<div class="col-xs-3 col-sm-3 col-md-4">
+									<textarea class="form-control" id="nonInterpretablePredicates" name="nonInterpretablePredicates"
+                                              ng-model="repositoryInfo.params.nonInterpretablePredicates.value" rows="4"></textarea>
 								</div>
 							</div>
 						</div>
                         <!-- Restart checkbox and buttons, when creating repo of type
                              'ontop' are provided in ontop-repo.html template -->
                         <div ng-if="repositoryInfo.type !== 'ontop'">
-                            <div class="form-group row" ng-if="editRepoPage">
+                            <div class="form-group row indented-div" ng-if="editRepoPage">
                                 <div class="checkbox offset-xs-3 offset-md-3">
                                     <label class="col-xs-4 col-sm-4 col-md-4 col-md-offset-3">
                                         <input id="restartRepo" name="restartRepo"
