@@ -42,7 +42,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
               .removeClass('hidden-xs-up');
           element.find('search-resource-input .view-res-input')
               .focus();
-          document.body.addEventListener('mousedown', onDocumentClick);
+          window.addEventListener('mousedown', onWindowClick);
         }, 200);
       };
 
@@ -54,11 +54,12 @@ function rdfResourceSearchDirective($rootScope, $timeout,
           element.find('.search-rdf-btn')
               .removeClass('hidden-xs-up')
               .css('z-index', '3');
-          document.body.removeEventListener('mousedown', onDocumentClick);
+          element.blur();
+          window.removeEventListener('mousedown', onWindowClick);
         }, 200);
       };
 
-      function onDocumentClick(event) {
+      function onWindowClick(event) {
         if (!(event.target.id === "search-box" || $(event.target).parents("#search-box").length)) {
           $scope.hideInput();
         }
