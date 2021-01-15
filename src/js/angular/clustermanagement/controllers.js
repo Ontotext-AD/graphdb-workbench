@@ -21,9 +21,12 @@ function getLocation(node) {
     return node.location.split('/repositories/')[0];
 }
 
-ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService'];
+ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService'];
 
-function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $window, $interval, ModalService, $timeout, ClusterRestService, RepositoriesRestService) {
+function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
+                               $window, $interval, ModalService, $timeout, ClusterRestService,
+                               RepositoriesRestService) {
     // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
     $scope.setLoader = function (loader, message) {
         $timeout.cancel($scope.loaderTimeout);
@@ -399,7 +402,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             }
         })
             .error(function (data) {
-                var newDisabledReason = "The Jolokia secret for this master's location is not properly configured or the location is unreachable.";
+                var newDisabledReason = "The location is unreachable.";
 
                 if (node.disabledReason !== newDisabledReason) {
                     // show toast only once per disabled reason
@@ -463,28 +466,44 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     var workerNode = {};
                     if (worker.location in $scope.urlToNode) {
                         workerNode = $scope.urlToNode[worker.location];
-                        workerNode.fingerprint = worker.fingerprint;
-                        workerNode.averageTaskTime = worker.averageTaskTime;
-                        workerNode.failedTasks = worker.failedTasks;
-                        workerNode.completedTasks = worker.completedTasks;
-                        workerNode.runningTasks = worker.runningTasks;
-                        workerNode.timestamp = timestamp;
                     } else {
                         // either someone added a repository behind our back or it's a repository we don't have in our locations
                         if (isUpdate) {
                             console.log('worker disappeared, refreshing');
                             $scope.needsToRefresh = true;
+                            return;
                         } else {
-                            // TODO: Test this properly. Nodes shouldn't get events, should look disabled properly
                             workerNode = $scope.urlToNode[worker.location] = {
                                 name: $scope.getLabel(worker.location),
                                 location: worker.location,
-                                disabledReason: "You are not connected to this worker's location or the worker repository was deleted",
                                 repositoryType: 'worker',
                                 artificiallyAdded: true
                             };
                         }
                     }
+
+                    workerNode.fingerprint = worker.fingerprint;
+                    workerNode.averageTaskTime = worker.averageTaskTime;
+                    workerNode.failedTasks = worker.failedTasks;
+                    workerNode.completedTasks = worker.completedTasks;
+                    workerNode.runningTasks = worker.runningTasks;
+                    workerNode.timestamp = timestamp;
+
+                    if (workerNode.artificiallyAdded) {
+                        workerNode.disabledReason = "You are not connected to this worker's location.";
+                        if (worker.lastError) {
+                            workerNode.disabledReason += '<br>' + worker.lastError;
+                        }
+                    } else if (worker.lastError) {
+                        workerNode.disabledReason = worker.lastError;
+                    } else {
+                        delete workerNode.disabledReason;
+                    }
+
+                    if (workerNode.disabledReason) {
+                        workerNode.disabledReason = $sce.trustAsHtml(workerNode.disabledReason);
+                    }
+
                     workerNode.cluster = workerNode.cluster || [];
                     if (workerNode.cluster.indexOf(node.cluster) === -1) {
                         workerNode.cluster.push(node.cluster);
