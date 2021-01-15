@@ -274,7 +274,7 @@ describe('==> Repository module controllers tests', function () {
                 isEnterprise = true;
                 isFreeEdition = false;
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
-                routeParamsMock = {repositoryId: 'repo'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'worker'};
 
                 $scope = $rootScope.$new();
 
@@ -379,7 +379,7 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
-                routeParamsMock = {repositoryId: 'repo'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'se'};
                 isEnterprise = false;
                 isFreeEdition = false;
 

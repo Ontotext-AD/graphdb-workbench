@@ -1,15 +1,33 @@
+<link href="css/repositories.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
+<link href="css/lib/bootstrap-switch/bootstrap-switch.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
-	<link href="css/repositories.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<div id="wb-repository">
+    <h1>{{pageTitle}}</h1>
+    <p class="alert alert-danger" ng-hide="hasActiveLocation()">
+        No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
+    </p>
 
-	<link href="css/lib/bootstrap-switch/bootstrap-switch.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
-
-	<div id="wb-repository">
-		<h1>{{pageTitle}}</h1>
-		<p class="alert alert-danger" ng-hide="hasActiveLocation()">
-			No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
-		</p>
-
+    <div ng-show="hasActiveLocation()">
+        <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+        <div ng-hide="loader">
+            <form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
+                <fieldset>
+                    <legend>Repository properties</legend>
+                    <div class="form-group row">
+                        <label for="id" class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository ID*</label>
+                        <div class="col-xs-4 col-sm-4 col-md-4">
+                            <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()" ng-show="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter" tooltip="Edit repository  id"><span class="icon-edit"></span></a>
+                            <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage" placeholder="This field is required" type="text" ng-model="repositoryInfo.id" required title="Repository name cannot be empty and must contain only letters (a-z, A-Z), numbers (0-9), '-' and '_'">
+                            <div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">Repository name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-form-label">Repository title</label>
+                        <div class="col-xs-4 col-sm-4 col-md-4">
+                            <input class="form-control" type="text" name="title" id="title" ng-model="repositoryInfo.title">
+                        </div>
+                    </div>
 		<div ng-show="hasActiveLocation()">
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 			<div ng-hide="loader">
@@ -39,8 +57,8 @@
                             </div>
                         </div>
 
-                        <!-- Ontop repository related directive -->
-                        <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
+                    <!-- Ontop repository related directive -->
+                    <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
 
 						<div id="additionalParams" ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
                             <h5>Inference and Validation</h5>
@@ -273,4 +291,3 @@
 			</div>
 		</div>
 	</div>
-

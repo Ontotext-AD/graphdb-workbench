@@ -1,0 +1,48 @@
+.create-buttons {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.create-buttons .create-repo-btn {
+  height: 100%;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #04355E;
+  border-radius: 20px;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.repository-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.repo-description {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.create-buttons .create-repo-btn .repo-description, .repo-type {
+  width: 100%;
+}
+
+@media (max-width: 1490px) {
+  .create-buttons {
+    align-items: center;
+    flex-direction: column;
+  }
+  .create-buttons .create-repo-btn {
+    max-width: 405px;
+  }
+}
