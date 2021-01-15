@@ -85,7 +85,7 @@ describe('Home screen validation', () => {
         it('Test create and select new repository via home page', () => {
             HomeSteps.verifyCreateRepositoryLink();
 
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             // Initializing the repository to speed up retrieving repository info
             cy.initializeRepository(repositoryId);
 
@@ -97,7 +97,7 @@ describe('Home screen validation', () => {
         });
 
         it('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
             HomeSteps.verifyQueryLink('Add statements', true, '/sparql?savedQueryName=Add%20statements&owner=admin&execute');
@@ -111,7 +111,7 @@ describe('Home screen validation', () => {
 
     context('"View resource" autocomplete', () => {
         it('Test homepage autocomplete when it is enabled', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
             // Type an invalid resource
@@ -122,6 +122,7 @@ describe('Home screen validation', () => {
             cy.enableAutocomplete(repositoryId);
 
             HomeSteps.visitAndWaitLoader().then((el) => el)
+                .then(() => HomeSteps.getAutocompleteDisplayTypeButton('table').click())
                 .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
                 .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click());
 
@@ -129,13 +130,8 @@ describe('Home screen validation', () => {
 
             HomeSteps.goBackAndWaitAutocomplete(function () {
                 HomeSteps.autocompleteText('Green', GOBLIN_URI);
-                HomeSteps.getAutocompleteButton('text').click();
-                HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
-            });
-
-            HomeSteps.goBackAndWaitAutocomplete(function () {
-                HomeSteps.autocompleteText('Green', GOBLIN_URI);
-                HomeSteps.getAutocompleteButton('visual').click();
+                HomeSteps.getAutocompleteDisplayTypeButton('visual').click();
+                HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click();
                 cy.url()
                     .should('contain', '/graphs-visualizations?uri=http:%2F%2Fexample.org%2F%23green-goblin');
             });
@@ -144,7 +140,7 @@ describe('Home screen validation', () => {
         });
 
         it('should not suggest resources in "View resources" when autocomplete is not enabled', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
 
             HomeSteps.visitAndWaitLoader();
@@ -152,6 +148,8 @@ describe('Home screen validation', () => {
 
             HomeSteps.getAutocompleteInput().type('Green');
             HomeSteps.noAutocompleteToast();
+
+            cy.deleteRepository(repositoryId);
         });
     });
 

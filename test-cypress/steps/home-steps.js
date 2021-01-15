@@ -123,6 +123,10 @@ class HomeSteps {
         return cy.get('.home-rdf-resource-search search-resource-input .autocomplete-' + type + '-btn');
     }
 
+    static getAutocompleteDisplayTypeButton(type) {
+        return cy.get('.home-rdf-resource-search search-resource-input .display-type-' + type + '-btn');
+    }
+
     static goBackAndWaitAutocomplete(callback) {
         cy.server();
         cy.route('/rest/autocomplete/enabled').as('getAutocompleteStatus');

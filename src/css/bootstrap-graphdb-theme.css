@@ -1068,7 +1068,7 @@ h3 [class^=icon-] {
     top: 0;
     right: 2rem;
     font-size: 0.9em;
-    z-index: 1010;
+    z-index: 1015;
     -moz-transition: all 0.1s ease-out; /* FF4+ */
     -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
     -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
@@ -2248,7 +2248,7 @@ input.switch:checked ~ label:after {
 }
 
 /*-------------------------------------------------------------
-	Home page view resource
+	Search RDF resource box
 -------------------------------------------------------------*/
 
 #auto-complete-results-wrapper {
@@ -2279,6 +2279,12 @@ input.switch:checked ~ label:after {
 #auto-complete-results-wrapper div p {
     margin-bottom: 0;
     padding: 5px 25px;
+}
+
+#search-resource-box .clear-icon {
+    position: relative;
+    right: 45px;
+    z-index: 10;
 }
 
 /*-------------------------------------------------------------

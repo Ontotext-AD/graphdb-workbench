@@ -36,26 +36,34 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       $scope.showInput = function () {
         element.find('.search-rdf-btn')
             .addClass('hidden-xs-up');
-        element.find('.search-rdf-input').css('top', '0px');
+        element.find('.search-rdf-input').addClass('show-rdf-search-box');
         $timeout(function () {
-          element.find('.close-rdf-search-btn')
-              .removeClass('hidden-xs-up');
-          element.find('search-resource-input .view-res-input')
-              .focus();
+          element.find('.close-rdf-search-btn').removeClass('hidden-xs-up');
+          element.find('search-resource-input .view-res-input').focus();
+          window.addEventListener('mousedown', onWindowClick);
         }, 200);
       };
 
       $scope.hideInput = function () {
-        element.find('.search-rdf-input').css('top', '-150px');
-        element.find('search-resource-input .view-res-input')[0].value = '';
-        element.find('search-resource-input .view-res-input').change();
-        element.find('.close-rdf-search-btn')
-            .addClass('hidden-xs-up');
+        element.find('.search-rdf-input').removeClass('show-rdf-search-box');
+        element.find('.close-rdf-search-btn').addClass('hidden-xs-up');
         $timeout(function () {
-          element.find('.search-rdf-btn')
-              .removeClass('hidden-xs-up')
-              .css('z-index', '3');
+          element.find('.search-rdf-btn').removeClass('hidden-xs-up');
+          element.blur();
+          window.removeEventListener('mousedown', onWindowClick);
         }, 200);
+      };
+
+      function onWindowClick(event) {
+        if (!(event.target.id === "search-box" || $(event.target).closest("#search-box").length)) {
+          $scope.hideInput();
+        }
+      }
+
+      $scope.onKeyDown = function(event) {
+        if (event.keyCode === 27) {
+          $scope.hideInput();
+        }
       };
     }
   };
