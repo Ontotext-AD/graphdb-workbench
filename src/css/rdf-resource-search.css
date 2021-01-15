@@ -28,6 +28,10 @@
   transition: all 0.3s ease-in;
 }
 
+.show-rdf-search-box {
+  top: 40px;
+}
+
 @media (max-width: 768px) {
   .search-rdf-input {
     width: 85vw;

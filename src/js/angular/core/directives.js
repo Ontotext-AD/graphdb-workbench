@@ -1,6 +1,9 @@
+import 'angular/utils/local-storage-adapter';
+
 angular
     .module('graphdb.framework.core.directives', [
-        'graphdb.framework.core.services.repositories'
+        'graphdb.framework.core.services.repositories',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -241,9 +244,11 @@ function multiRequired() {
     };
 }
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce'];
+const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce) {
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter'];
+
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter) {
     return {
         restrict: 'EA',
         scope: {
@@ -267,32 +272,39 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
+            $scope.searchDisplayType = SEARCH_DISPLAY_TYPE;
             const MIN_CHAR_LEN = 0;
+            const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
+            const SEARCH_INPUT_FIELD = element.find('.view-res-input');
+            $scope.textButtonLabel = $scope.textButton || 'Table';
+            $scope.visualButtonLabel = $scope.visualButton || 'Visual';
+
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
             let canceler;
-            $scope.showClearInputIcon = false;
-            $scope.searchType = localStorage.getItem('searchType') || "table";
 
-            if ($scope.preserveSearch === 'true') {
+            $scope.showClearInputIcon = false;
+            $scope.searchType = LocalStorageAdapter.get('rdf-search.search-type') || SEARCH_DISPLAY_TYPE.table;
+
+            if (IS_SEARCH_PRESERVED) {
                 $scope.preserveInput = 'true';
-                $scope.searchInput = localStorage.getItem('searchInput') || "";
-                expandedUri = localStorage.getItem('searchExpandedUri');
+                $scope.searchInput = LocalStorageAdapter.get('rdf-search.search-input') || "";
+                expandedUri = LocalStorageAdapter.get('rdf-search.search-expanded-uri');
             } else {
                 $scope.searchInput = "";
             }
 
             $scope.changeSearchType = function(type) {
                 $scope.searchType = type;
-                localStorage.setItem('searchType', $scope.searchType);
+                LocalStorageAdapter.set('rdf-search.search-type', $scope.searchType);
             };
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
                 $scope.autoCompleteUriResults = [];
                 $scope.showClearInputIcon = false;
-                localStorage.removeItem('searchInput');
-                localStorage.removeItem('searchExpandedUri');
+                LocalStorageAdapter.remove('rdf-search.search-input');
+                LocalStorageAdapter.remove('rdf-search.search-expanded-uri');
             };
 
             $scope.$watch('namespacespromise', function () {
@@ -325,7 +337,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('empty', function () {
-                if ($scope.preserveSearch !== 'true') {
+                if (IS_SEARCH_PRESERVED) {
                     $scope.searchInput = '';
                     $scope.empty = false;
                 }
@@ -392,7 +404,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchRdfResource = function (resource, callback) {
                 if (resource.type === 'prefix') {
                     $scope.searchInput = expandPrefix(resource.value + ':');
-                    element.find('.view-res-input').focus();
+                    SEARCH_INPUT_FIELD.focus();
                     $scope.onChange();
                 } else {
                     let textResource;
@@ -416,9 +428,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
-                    if ($scope.preserveSearch === 'true') {
-                        localStorage.setItem('searchExpandedUri', expandedUri);
-                        localStorage.setItem('searchInput', $scope.searchInput);
+                    if (IS_SEARCH_PRESERVED) {
+                        LocalStorageAdapter.set('rdf-search.search-expanded-uri', expandedUri);
+                        LocalStorageAdapter.set('rdf-search.search-input', $scope.searchInput);
                     } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
                         $scope.autoCompleteUriResults = [];
@@ -430,7 +442,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.searchRdfResourceByEvent = function (uri, event) {
-                if ($scope.searchType === 'visual' || event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
@@ -526,7 +538,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     scrollContentToTop();
                 }
                 if (event.keyCode === 27) {
-                    if ($scope.preserveSearch) {
+                    if (IS_SEARCH_PRESERVED) {
                         return;
                     }
                     $scope.searchInput = '';
@@ -589,7 +601,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(element.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
-                            element.find('.view-res-input').val(expandedUri);
+                            SEARCH_INPUT_FIELD.val(expandedUri);
                             return expandedUri + localName;
                         }
                     }

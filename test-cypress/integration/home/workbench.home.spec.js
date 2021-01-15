@@ -110,7 +110,7 @@ describe('Home screen validation', () => {
     });
 
     context('"View resource" autocomplete', () => {
-        it.only('Test homepage autocomplete when it is enabled', () => {
+        it('Test homepage autocomplete when it is enabled', () => {
             const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 

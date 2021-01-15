@@ -7,17 +7,21 @@
         <i class="icon-close" aria-hidden="true" ng-click="clearInput()"></i>
     </button>
     <span ng-if="!radioButtons" class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Table'}}</button>
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">
+            {{textButtonLabel}}
+        </button>
     </span>
     <span ng-if="!radioButtons" class="input-group-btn show-btn">
-        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
+        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">
+            {{visualButtonLabel}}
+        </button>
     </span>
     <span ng-if="radioButtons" class="input-group-btn">
-        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="'table'" ng-click="changeSearchType('table')">
-            Table
+        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
+            {{textButtonLabel}}
         </button>
-        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="'visual'" ng-click="changeSearchType('visual')">
-            Visual
+        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
+            {{visualButtonLabel}}
         </button>
     </span>
 </div>
