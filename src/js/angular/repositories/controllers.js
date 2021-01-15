@@ -97,6 +97,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         return $repositories.getActiveLocation();
     };
 
+    $scope.getLocationError = function () {
+        return $repositories.getLocationError();
+    };
+
     $scope.getDegradedReason = function () {
         return $repositories.getDegradedReason();
     };
@@ -377,20 +381,19 @@ function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr) {
     };
 }
 
-AddLocationCtrl.$inject = ['$scope', '$modalInstance'];
+AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo'];
 
-function AddLocationCtrl($scope, $modalInstance) {
+function AddLocationCtrl($scope, $modalInstance, toastr, productInfo) {
 
-    $scope.advanced = false;
     $scope.newLocation = {
         'uri': '',
+        'authType': 'none',
         'username': '',
         'password': '',
         'active': false
     };
-    $scope.switchAdvanced = function () {
-        $scope.advanced = !$scope.advanced;
-    };
+    $scope.docBase = 'https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion
+        + '/' + productInfo.productType;
 
     $scope.isValidLocation = function () {
         return ($scope.newLocation.uri.length < 6 ||
@@ -399,6 +402,10 @@ function AddLocationCtrl($scope, $modalInstance) {
     };
 
     $scope.ok = function () {
+        if (!$scope.newLocation) {
+            toastr.error('Location cannot be empty');
+            return;
+        }
         $modalInstance.close($scope.newLocation);
     };
 
@@ -407,11 +414,14 @@ function AddLocationCtrl($scope, $modalInstance) {
     };
 }
 
-EditLocationCtrl.$inject = ['$scope', '$modalInstance', 'location'];
+EditLocationCtrl.$inject = ['$scope', '$modalInstance', 'location', 'productInfo'];
 
-function EditLocationCtrl($scope, $modalInstance, location) {
+function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
 
     $scope.editedLocation = angular.copy(location);
+    $scope.docBase = 'https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion
+        + '/' + productInfo.productType;
+
     $scope.ok = function () {
         $modalInstance.close($scope.editedLocation);
     };

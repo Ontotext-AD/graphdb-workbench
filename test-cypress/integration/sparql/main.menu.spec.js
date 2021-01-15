@@ -129,7 +129,7 @@ describe('Main menu tests', function () {
                     {
                         name: 'Documentation',
                         visible: false,
-                        externalRedirect: 'http://graphdb.ontotext.com/documentation/'
+                        externalRedirect: 'https://graphdb.ontotext.com/documentation/'
                     },
                     {
                         name: 'Developer Hub',
@@ -139,7 +139,7 @@ describe('Main menu tests', function () {
                     {
                         name: 'Support',
                         visible: false,
-                        externalRedirect: 'http://graphdb.ontotext.com/'
+                        externalRedirect: 'https://graphdb.ontotext.com/'
                     },
                     {
                         name: 'System information',

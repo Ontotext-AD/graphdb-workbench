@@ -22,6 +22,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
 
         this.location = '';
+        this.locationError = '';
         this.loading = true;
         this.repository = localStorage.getItem(this.repositoryStorageName);
         this.locations = [];
@@ -32,11 +33,12 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         const that = this;
         const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
 
-        const loadingDone = function (err) {
+        const loadingDone = function (err, locationError) {
             that.loading = false;
             if (err) {
                 // reset location data
                 that.location = '';
+                that.locationError = locationError;
                 that.repositories = [];
                 that.setRepository('');
 
@@ -101,7 +103,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.initQuick = function () {
-            this.init(null, null, true);
+            // Quick mode - used to refresh the repo list and states, skip loading if no active location
+            if (this.hasActiveLocation()) {
+                this.init(null, null, true);
+            }
         };
 
         this.init = function (successCallback, errorCallback, quick) {
@@ -129,7 +134,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                                     }
                                 },
                                 function (err) {
-                                    loadingDone(err);
+                                    loadingDone(err, location.errorMsg);
                                     if (errorCallback) {
                                         errorCallback();
                                     }
@@ -142,6 +147,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                             that.locationsShouldReload = true;
                         }
                         that.location = '';
+                        that.locationError = '';
                         that.repositories = [];
                         that.setRepository('');
                     }
@@ -183,6 +189,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.hasActiveLocation = function () {
             return !_.isEmpty(this.location);
+        };
+
+        this.getLocationError = function () {
+            if (!this.locationError) {
+                return 'There is no active location';
+            } else {
+                return this.locationError;
+            }
         };
 
         this.isLoadingLocation = function () {
@@ -287,6 +301,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     //Reload locations and repositories
                     if (that.getActiveLocation().uri === uri) {
                         that.location = '';
+                        that.locationError = '';
                         that.setRepository('');
                     }
                     that.init();
