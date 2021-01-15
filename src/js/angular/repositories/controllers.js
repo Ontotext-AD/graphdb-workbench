@@ -11,7 +11,7 @@ export const getFileName = function(path) {
 };
 
 const parseNumberParamsIfNeeded = function (params) {
-    if (params.queryTimeout && params.queryLimitResults) {
+    if (params && params.queryTimeout && params.queryLimitResults) {
         // Parse both parameters properly to number
         params.queryTimeout.value = parseInt(params.queryTimeout.value);
         params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
