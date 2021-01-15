@@ -253,6 +253,24 @@ describe('SPARQL screen validation', () => {
             getGoogleChartButton().should('be.visible').and('not.be.disabled');
         });
 
+        it('Should check for XML star download format', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            typeQuery(SPARQL_STAR_QUERY);
+
+            verifyQueryAreaEquals(SPARQL_STAR_QUERY);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            cy.get('.saveAsDropDown').click().within(() => {
+                cy.get('.dropdown-menu')
+                    .should('be.visible')
+                    .and('contain', 'XML*');
+            });
+        });
+
 
         it('Test filter query results', () => {
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
