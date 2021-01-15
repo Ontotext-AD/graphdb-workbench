@@ -10,9 +10,35 @@ export const getFileName = function(path) {
     return name;
 };
 
+const parseNumberParamsIfNeeded = function (params) {
+    if (params && params.queryTimeout && params.queryLimitResults) {
+        // Parse both parameters properly to number
+        params.queryTimeout.value = parseInt(params.queryTimeout.value);
+        params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+    }
+}
+
+const getShaclOptionsClass = function () {
+    let optionsModule = document.getElementById('shaclOptions');
+
+    if (optionsModule) {
+        let isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+        if (isAriaExpanded && isAriaExpanded === 'true') {
+            return 'fa fa-angle-down';
+        }
+    }
+    return 'fa fa-angle-right';
+}
+
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 const numberPattern = new RegExp('[0-9]');
-const ONTOP_TYPE = 'ontop';
+
+const validateNumberFields = function (params, invalidValues) {
+    if (params.queryTimeout && params.queryLimitResults) {
+        invalidValues.isInvalidQueryTimeout = !numberPattern.test(params.queryTimeout.value);
+        invalidValues.isInvalidQueryLimit = !numberPattern.test(params.queryLimitResults.value);
+    }
+}
 
 const staticRulesets = [
     {id: 'empty', name: 'No inference'},
@@ -266,7 +292,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = 'rest/repositories/' + repository.id + (repository.type === ONTOP_TYPE ? '/downloadZip': '/download');
+        let url = 'rest/repositories/' + repository.id + (repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download');
         const token = $jwtAuth.getAuthToken();
         if (token) {
             url = url + '?authToken=' + encodeURIComponent(token);
@@ -426,6 +452,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
 
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
+    $scope.invalidValues = {
+        isInvalidQueryTimeout: false,
+        isInvalidQueryLimit: false
+    };
 
     function isValidEERepository(repositoryType) {
         return $scope.isEnterprise && (repositoryType === REPOSITORY_TYPES.eeMaster
@@ -472,6 +502,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
+            parseNumberParamsIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
         }).error(function (data) {
             const msg = getError(data);
@@ -567,19 +598,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
 
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        const repoParams = $scope.repositoryInfo.params;
-        if (repoParams.entityIndexSize && repoParams.queryLimitResults && repoParams.queryTimeout) {
-            $scope.isInvalidEntityIndexSize = !numberPattern.test(
-                $scope.repositoryInfo.params.entityIndexSize.value);
-            $scope.isInvalidQueryTimeout = !numberPattern.test(
-                $scope.repositoryInfo.params.queryTimeout.value);
-            $scope.isInvalidQueryLimit = !numberPattern.test(
-                $scope.repositoryInfo.params.queryLimitResults.value);
-        }
+        validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidEntityIndexSize
-            && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
+        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
             $scope.createRepoHttp();
         } else {
             $scope.formError();
@@ -602,6 +625,14 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             return '';
         }
     };
+
+    $scope.validateNumberInput = function () {
+        validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+    }
+
+    $scope.getShaclOptionsClass = function () {
+        return getShaclOptionsClass();
+    }
     //TODO - check if repositoryID exist
 }
 
@@ -650,6 +681,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
+    $scope.invalidValues = {
+        isInvalidQueryTimeout: false,
+        isInvalidQueryLimit: false
+    };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
@@ -672,6 +707,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     }
                     $scope.repositoryInfo = data;
                     $scope.setRepositoryType(data.type);
+                    parseNumberParamsIfNeeded($scope.repositoryInfo.params);
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
                 })
@@ -719,11 +755,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
-        if ($scope.repositoryInfo.type !== ONTOP_TYPE) {
-            $scope.isInvalidEntityIndexSize = !numberPattern.test($scope.repositoryInfo.params.entityIndexSize.value);
-            $scope.isInvalidQueryTimeout = !numberPattern.test($scope.repositoryInfo.params.queryTimeout.value);
-            $scope.isInvalidQueryLimit = !numberPattern.test($scope.repositoryInfo.params.queryLimitResults.value);
-        }
+        validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
         let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
@@ -735,7 +767,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if (!$scope.isInvalidRepoName) {
+        if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryTimeout && !$scope.isInvalidQueryLimit) {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
@@ -771,4 +803,12 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             $location.path('/repository');
         }
     };
+
+    $scope.validateNumberInput = function () {
+        validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+    }
+
+    $scope.getShaclOptionsClass = function () {
+        return getShaclOptionsClass();
+    }
 }
