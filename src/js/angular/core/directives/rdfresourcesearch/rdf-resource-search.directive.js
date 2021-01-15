@@ -13,13 +13,23 @@ function rdfResourceSearchDirective($rootScope, $timeout,
     templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
     restrict: 'AE',
     link: function ($scope, element) {
+      let autocompleteStatus = false;
 
       function refreshRepositoryInfo() {
         if ($scope.getActiveRepository()) {
           $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
               $scope.getActiveRepository())
               .success(function () {
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                checkAutocompleteStatus();
+              });
+        }
+      }
+
+      function checkAutocompleteStatus() {
+        if (!autocompleteStatus) {
+          $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+              .success(function (autocompleteStatusResponse) {
+                autocompleteStatus = autocompleteStatusResponse;
               });
         }
       }
