@@ -18,7 +18,7 @@ const parseNumberParamsIfNeeded = function (params) {
     }
 }
 
-const getFaFaAngleClass = function () {
+const getShaclOptionsClass = function () {
     let optionsModule = document.getElementById('shaclOptions');
 
     if (optionsModule) {
@@ -630,8 +630,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
     }
 
-    $scope.getFaFaAngleClass = function () {
-        return getFaFaAngleClass();
+    $scope.getShaclOptionsClass = function () {
+        return getShaclOptionsClass();
     }
     //TODO - check if repositoryID exist
 }
@@ -808,7 +808,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
     }
 
-    $scope.getFaFaAngleClass = function () {
-        return getFaFaAngleClass();
+    $scope.getShaclOptionsClass = function () {
+        return getShaclOptionsClass();
     }
 }
