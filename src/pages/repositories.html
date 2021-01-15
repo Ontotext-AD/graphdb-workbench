@@ -40,7 +40,7 @@
 			</div>
 
 			<div class="alert alert-warning" ng-hide="!getLocations().length || hasActiveLocation()">
-				There is no active location
+                {{ getLocationError() }}
 			</div>
 
 			<div ng-show="hasActiveLocation()" class="mb-3">
@@ -164,7 +164,7 @@
 								<div class="text-overflow">
 									<strong>{{location.label}}</strong>
 								</div>
-								<div ng-show="location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
+								<div ng-show="!location.active && location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
 							</td>
 							<td width="150" class="text-nowrap">
 								<button class="btn btn-link p-0"

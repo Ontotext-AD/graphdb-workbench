@@ -472,7 +472,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
                 "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
                 "RDF statements. If you plan to load more check for more information: " +
-                "<a href=\"http://graphdb.ontotext.com/documentation/" + $scope.productType + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.productType + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
             },
             {
                 "title": "Load a sample dataset",
