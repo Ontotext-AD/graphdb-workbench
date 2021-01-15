@@ -114,7 +114,6 @@ describe('Repositories', () => {
 
     it('should allow creation of repositories with custom settings', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
-        const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
         chooseRepositoryType();
@@ -140,12 +139,6 @@ describe('Repositories', () => {
         getRepositoryDisableSameAsCheckbox()
             .should('not.be.checked');
 
-        getRepositoryBaseURLField()
-            .should('have.value', 'http://example.org/owlim#')
-            .clear()
-            .type(newBaseUrl)
-            .should('have.value', newBaseUrl);
-
         getRepositoryContextIndexCheckbox()
             .should('not.be.checked')
             .check()
@@ -164,7 +157,6 @@ describe('Repositories', () => {
         // OWL-Horst (Optimized) has become 5
         getRepositoryRulesetMenu().should('have.value', '5');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
-        getRepositoryBaseURLField().should('have.value', newBaseUrl);
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
@@ -239,7 +231,6 @@ describe('Repositories', () => {
 
     it('should allow to edit existing repository', () => {
         const newTitle = 'Title edit';
-        const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
         chooseRepositoryType();
@@ -256,7 +247,6 @@ describe('Repositories', () => {
         getRepositoryDisableSameAsCheckbox().should('be.disabled');
 
         typeRepositoryTitle(newTitle);
-        typeRepositoryBaseURL(newBaseUrl);
         getRepositoryContextIndexCheckbox().check();
 
         getSaveRepositoryButton().click();
@@ -270,7 +260,6 @@ describe('Repositories', () => {
         editRepository(repositoryId);
 
         getRepositoryTitleField().should('have.value', newTitle);
-        getRepositoryBaseURLField().should('have.value', newBaseUrl);
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
