@@ -337,7 +337,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('empty', function () {
-                if (IS_SEARCH_PRESERVED) {
+                if (!IS_SEARCH_PRESERVED) {
                     $scope.searchInput = '';
                     $scope.empty = false;
                 }
