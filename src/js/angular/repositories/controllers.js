@@ -27,10 +27,10 @@ const parseNumberParamsIfNeeded = function (params) {
 }
 
 const getShaclOptionsClass = function () {
-    let optionsModule = document.getElementById('shaclOptions');
+    const optionsModule = document.getElementById('shaclOptions');
 
     if (optionsModule) {
-        let isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+        const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
         if (isAriaExpanded && isAriaExpanded === 'true') {
             return 'fa fa-angle-down';
         }

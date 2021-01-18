@@ -175,7 +175,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         function loadPropertiesFile() {
             RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value)
                 .success(function (driverData) {
-                    let found = $scope.supportedDriversData.find(driver => driver.driverClass === driverData.driverClass);
+                    const found = $scope.supportedDriversData.find(driver => driver.driverClass === driverData.driverClass);
                     // If driver class is not found means that the selected driver is a GENERIC ONE
                     if (found) {
                         $scope.selectedDriver.driverType = found.driverType;
@@ -216,7 +216,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         };
 
         function missingRequiredField() {
-            let missing = REQUIRED_PROPERTIES_FIELD_PARAMS
+            const missing = REQUIRED_PROPERTIES_FIELD_PARAMS
                 .filter(function (requiredField) {
                     return !$scope.selectedDriver.jdbc[requiredField]
                 });
