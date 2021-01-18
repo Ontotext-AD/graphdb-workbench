@@ -27,7 +27,7 @@ class HomeSteps {
             .trigger('hover')
             .find('.execute-saved-query')
             .click({force: true});
-    };
+    }
 
     static verifyQueryLink(queryName, modifiesRepoModal, queryURL) {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
@@ -133,5 +133,13 @@ class HomeSteps {
         cy.go('back');
         cy.wait('@getAutocompleteStatus').then(callback);
     }
+
+    static openRdfSearchBox() {
+        cy.get('.search-rdf-btn').click();
+        cy.get('.search-rdf-input').should('be.visible');
+        cy.get('.search-rdf-input search-resource-input .view-res-input').should('be.visible')
+            .and('be.focused');
+    }
+
 }
 export default HomeSteps;
