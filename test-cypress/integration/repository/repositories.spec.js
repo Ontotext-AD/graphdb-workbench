@@ -154,8 +154,8 @@ describe('Repositories', () => {
         getRepositoryCreateForm().should('be.visible');
         getRepositoryIdField().should('have.value', repositoryId);
         getRepositoryTitleField().should('have.value', repoTitle);
-        // OWL-Horst (Optimized) has become 5
-        getRepositoryRulesetMenu().should('have.value', '5');
+        // OWL-Horst (Optimized) has become 4
+        getRepositoryRulesetMenu().should('have.value', '4');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
         getRepositoryContextIndexCheckbox().should('be.checked');
     });

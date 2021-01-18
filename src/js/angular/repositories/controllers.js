@@ -1,3 +1,11 @@
+import {
+    FILENAME_PATTERN,
+    NUMBER_PATTERN,
+    REPO_TOOLTIPS,
+    REPOSITORY_TYPES,
+    STATIC_RULESETS
+} from "./repository.constants";
+
 export const getFileName = function(path) {
     let lastIdx = path.lastIndexOf('/');
     if (lastIdx === -1) {
@@ -30,33 +38,13 @@ const getShaclOptionsClass = function () {
     return 'fa fa-angle-right';
 }
 
-const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
-const numberPattern = new RegExp('[0-9]');
-
 const validateNumberFields = function (params, invalidValues) {
     if (params.queryTimeout && params.queryLimitResults) {
-        invalidValues.isInvalidQueryTimeout = !numberPattern.test(params.queryTimeout.value);
-        invalidValues.isInvalidQueryLimit = !numberPattern.test(params.queryLimitResults.value);
+        invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
+        invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
     }
 }
 
-const staticRulesets = [
-    {id: 'empty', name: 'No inference'},
-    {id: 'rdfs-optimized', name: 'RDFS (Optimized)'},
-    {id: 'rdfs', name: 'RDFS'},
-    {id: 'rdfsplus-optimized', name: 'RDFS-Plus (Optimized)'},
-    {id: 'owl-horst-optimized', name: 'OWL-Horst (Optimized)'},
-    {id: 'owl-horst', name: 'OWL-Horst'},
-    {id: 'owl2-ql-optimized', name: 'OWL2-QL (Optimized)'},
-    {id: 'owl2-ql', name: 'OWL2-QL'},
-    {id: 'owl-max-optimized', name: 'OWL-Max (Optimized)'},
-    {id: 'owl-max', name: 'OWL-Max'},
-    {id: 'owl2-rl-optimized', name: 'OWL2-RL (Optimized)'},
-    {id: 'owl2-rl', name: 'OWL2-RL'},
-
-];
-
-const REPOSITORY_TYPES = {free: 'free', eeWorker: 'worker', eeMaster: 'master', ontop: 'ontop', se: 'se'};
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -446,10 +434,12 @@ function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
 AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
 function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
-    $scope.rulesets = staticRulesets.slice();
+    $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
+    $scope.repoTooltips = REPO_TOOLTIPS;
     $scope.params = $routeParams;
     $scope.repositoryType = $routeParams.repositoryType;
+    $scope.enable = true;
 
     $scope.loader = true;
     $scope.pageTitle = 'Create Repository';
@@ -607,7 +597,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             return;
         }
 
-        $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
+        $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
 
         if (isInvalidPieFile) {
@@ -626,11 +616,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         }
 
         if (pp.ruleset.value.indexOf('owl') === 0 && pp.disableSameAs.value === 'true') {
-            return 'Disabling owl:sameAs for this ruleset may cause incomplete inference with owl:sameAs statements.';
+            return REPO_TOOLTIPS.rulesetWarnings.needsSameAs;
         } else if (pp.ruleset.value.indexOf('rdfs') === 0 && pp.disableSameAs.value === 'false') {
-            return 'This ruleset does not need owl:sameAs, consider disabling it.';
+            return REPO_TOOLTIPS.rulesetWarnings.doesntNeedSameAs;
         } else if (pp.ruleset.value === $scope.rulesetPie) {
-            return 'This custom ruleset may or may not depend on owl:sameAs.';
+            return REPO_TOOLTIPS.rulesetWarnings.customRuleset;
         } else {
             return '';
         }
@@ -675,8 +665,9 @@ EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories
 
 function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
-    $scope.rulesets = staticRulesets.slice();
+    $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
+    $scope.repoTooltips = REPO_TOOLTIPS;
 
     //TODO
     $scope.editRepoPage = true;
@@ -710,7 +701,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                                 ifRulesetExists = true;
                             }
                         });
-                        if (data.params.ruleset && ifRulesetExists) {
+                        if (data.params.ruleset && !ifRulesetExists) {
                             let name = getFileName(data.params.ruleset.value);
                             $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
                         }
@@ -764,7 +755,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     };
 
     $scope.editRepository = function () {
-        $scope.isInvalidRepoName = !filenamePattern.test($scope.repositoryInfo.id);
+        $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
         let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
