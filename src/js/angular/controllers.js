@@ -11,6 +11,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/autocomplete-status.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -28,7 +29,8 @@ angular
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.core.services.autocompleteStatus'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -54,13 +56,21 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
+                    checkAutocompleteStatus();
                 });
         }
     }
+
+    function checkAutocompleteStatus() {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+            .success(function () {
+                $scope.getActiveRepositorySize();
+            });
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+    });
 
     // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
     // after security was initialized. This way we avoid a race condition when the newly logged in
@@ -82,9 +92,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$autocompleteStatus'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $autocompleteStatus) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';

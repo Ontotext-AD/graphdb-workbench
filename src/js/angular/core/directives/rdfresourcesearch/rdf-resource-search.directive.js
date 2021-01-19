@@ -13,7 +13,6 @@ function rdfResourceSearchDirective($rootScope, $timeout,
     templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
     restrict: 'AE',
     link: function ($scope, element) {
-      let autocompleteStatus = false;
 
       function refreshRepositoryInfo() {
         if ($scope.getActiveRepository()) {
@@ -26,13 +25,12 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       }
 
       function checkAutocompleteStatus() {
-        if (!autocompleteStatus) {
-          $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-              .success(function (autocompleteStatusResponse) {
-                autocompleteStatus = autocompleteStatusResponse;
-              });
-        }
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
       }
+
+      $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+      });
 
       // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
       // after security was initialized. This way we avoid a race condition when the newly logged in
