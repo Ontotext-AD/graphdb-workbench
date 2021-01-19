@@ -435,6 +435,34 @@ describe('Repositories', () => {
         cy.deleteRepository(virtualRepoName);
     });
 
+    it.only('should verify different virtual repository RDBMS provider elements', () => {
+
+        // There should be a default repository location
+        getLocationsList()
+            .should('have.length', 1)
+            .and('contain', 'Local');
+
+        createRepository();
+        cy.url().should('include', '/repository/create');
+
+        chooseRepositoryType("ontop");
+        cy.url().should('include', '/repository/create/ontop');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+
+
+        testOntopConfigurationElementsVisibility('Database driver','#driverType');
+        testOntopConfigurationElementsVisibility('JDBC properties file*','#propertiesFile');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*','#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file','#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file','#owlFile');
+    });
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
@@ -612,5 +640,24 @@ describe('Repositories', () => {
             .should('be', 'visible')
             .and('contain', 'Some functionalities are not available because')
             .and('contain', ' is read-only Virtual Repository');
+    }
+
+    function getOntopContentConfiguration() {
+        return cy.get('#ontop-content');
+    }
+
+    function getOntopContentConfigurationRows() {
+        getOntopContentConfiguration().find('.indented-div');
+    }
+
+    function testOntopConfigurationElementsVisibility(param, value) {
+        getOntopContentConfiguration()
+            .find('.row.indented-div label')
+            .contains(param)
+            .next()
+            .within(() => {
+                cy.get(value)
+                    .should('be.visible');
+            });
     }
 });
