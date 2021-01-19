@@ -16,7 +16,11 @@ angular
         'TUTORIAL_STATE': 'tutorial-state',
         'MENU_STATE': 'menu-state',
         'HIDE_GRAPH_CONFIG_HELP': 'hide-graph-config-help',
-        'GRAPHS_VIZ': 'graphs-viz'
+        'GRAPHS_VIZ': 'graphs-viz',
+        'AUTOCOMPLETE_ENABLED': 'autocomplete.enabled',
+        'RDF_SEARCH_TYPE': 'rdf-search.search-type',
+        'RDF_SEARCH_INPUT': 'rdf-search.search-input',
+        'RDF_SEARCH_EXPANDED_URI': 'rdf-search.search-expanded-uri'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];

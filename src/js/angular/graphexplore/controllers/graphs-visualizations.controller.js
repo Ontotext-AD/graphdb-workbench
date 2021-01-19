@@ -793,11 +793,19 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 });
 
                 $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                checkAutocompleteStatus();
             }).error(function (data) {
                 toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
             });
     }
+
+    function checkAutocompleteStatus() {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+    });
 
     $scope.$on('repositoryIsSet', function (event, args) {
         initForRepository();

@@ -19,10 +19,18 @@ function rdfResourceSearchDirective($rootScope, $timeout,
           $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
               $scope.getActiveRepository())
               .success(function () {
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                checkAutocompleteStatus();
               });
         }
       }
+
+      function checkAutocompleteStatus() {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+      }
+
+      $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+      });
 
       // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
       // after security was initialized. This way we avoid a race condition when the newly logged in

@@ -246,9 +246,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys) {
     return {
         restrict: 'EA',
         scope: {
@@ -284,27 +284,27 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             let canceler;
 
             $scope.showClearInputIcon = false;
-            $scope.searchType = LocalStorageAdapter.get('rdf-search.search-type') || SEARCH_DISPLAY_TYPE.table;
+            $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
 
             if (IS_SEARCH_PRESERVED) {
                 $scope.preserveInput = 'true';
-                $scope.searchInput = LocalStorageAdapter.get('rdf-search.search-input') || "";
-                expandedUri = LocalStorageAdapter.get('rdf-search.search-expanded-uri');
+                $scope.searchInput = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_INPUT) || "";
+                expandedUri = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_EXPANDED_URI);
             } else {
                 $scope.searchInput = "";
             }
 
             $scope.changeSearchType = function(type) {
                 $scope.searchType = type;
-                LocalStorageAdapter.set('rdf-search.search-type', $scope.searchType);
+                LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
                 $scope.autoCompleteUriResults = [];
                 $scope.showClearInputIcon = false;
-                LocalStorageAdapter.remove('rdf-search.search-input');
-                LocalStorageAdapter.remove('rdf-search.search-expanded-uri');
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_EXPANDED_URI);
             };
 
             $scope.$watch('namespacespromise', function () {
@@ -429,8 +429,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
                     if (IS_SEARCH_PRESERVED) {
-                        LocalStorageAdapter.set('rdf-search.search-expanded-uri', expandedUri);
-                        LocalStorageAdapter.set('rdf-search.search-input', $scope.searchInput);
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
                     } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
                         $scope.autoCompleteUriResults = [];

@@ -140,7 +140,15 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
             });
         };
 
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        function checkAutocompleteStatus() {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
+
+        $scope.$on('autocompleteStatus', function() {
+            checkAutocompleteStatus();
+        });
+
+        checkAutocompleteStatus();
         $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
 
         const validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {

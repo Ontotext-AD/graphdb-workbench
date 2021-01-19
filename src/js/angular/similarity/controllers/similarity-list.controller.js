@@ -118,7 +118,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
             RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
                     $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                    checkAutocompleteStatus();
                     $scope.usedPrefixes = {};
                     data.results.bindings.forEach(function (e) {
                         $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
@@ -133,6 +133,14 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
                     toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
                 });
         }
+    });
+
+    function checkAutocompleteStatus() {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
     });
 
     $scope.loading = false;
