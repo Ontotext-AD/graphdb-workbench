@@ -216,7 +216,7 @@ describe('Repositories', () => {
         getRepositoryFromList(repositoryId)
             .find('.pin-repository-btn')
             .should('not.have.class', 'active')
-            .click({force:true})
+            .click({force: true})
             .should('have.class', 'active');
         // The currently selected repository is kept in local storage
         cy.visit('/repository');
@@ -313,7 +313,7 @@ describe('Repositories', () => {
     it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
-        let propertiesFileUpload = ''
+        let propertiesFileUpload = '';
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
         const fileType = '';
         const virtualRepoName = 'virtual-repo-' + Date.now();
@@ -401,7 +401,7 @@ describe('Repositories', () => {
                     body,
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(response => {
-                    console.log(response)
+                    console.log(response);
                 });
             });
         });
@@ -456,11 +456,15 @@ describe('Repositories', () => {
             .should('have.value', repositoryId);
 
 
-        testOntopConfigurationElementsVisibility('Database driver','#driverType');
-        testOntopConfigurationElementsVisibility('JDBC properties file*','#propertiesFile');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*','#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file','#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file','#owlFile');
+        testOntopConfigurationElementsVisibility('Database driver', '#driverType');
+        testOntopConfigurationElementsVisibility('JDBC properties file*', '#propertiesFile');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+
+        selectDatabaseDriver('MySQL');
+
+        cy.wait(2000);
     });
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
@@ -646,17 +650,18 @@ describe('Repositories', () => {
         return cy.get('#ontop-content');
     }
 
-    function getOntopContentConfigurationRows() {
-        getOntopContentConfiguration().find('.indented-div');
+    function selectDatabaseDriver(driverType) {
+        cy.get('#driverType')
+            .select(driverType);
     }
 
-    function testOntopConfigurationElementsVisibility(param, value) {
+    function testOntopConfigurationElementsVisibility(param, idValue) {
         getOntopContentConfiguration()
             .find('.row.indented-div label')
             .contains(param)
             .next()
             .within(() => {
-                cy.get(value)
+                cy.get(idValue)
                     .should('be.visible');
             });
     }
