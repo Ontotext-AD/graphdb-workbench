@@ -2,7 +2,6 @@
 
 <div>
     <h1 class="mb-3">{{pageTitle}}</h1>
-    <h4>Select the type of repository to create:</h4>
     <div class="create-buttons">
         <div class="mr-1 mb-1" ng-if="!isEnterprise && !isFreeEdition">
             <button id="repository-type-se-btn" class="btn btn-outline-primary d-block create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.se)">

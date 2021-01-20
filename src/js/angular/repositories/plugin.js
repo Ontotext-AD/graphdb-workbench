@@ -17,7 +17,7 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'ChooseRepositoryCtrl',
         'templateUrl': 'pages/choose-repository-type.html',
-        'title': 'Choose Repository Type To Create'
+        'title': 'Select Repository Type'
     }, {
         'url': '/repository/create/:repositoryType',
         'module': 'graphdb.framework.repositories',
