@@ -20,7 +20,7 @@
                                tooltip="Edit repository id" tooltip-placement="right"><span class="icon-edit"></span></a>
                             <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
                                    placeholder="This field is required" type="text" ng-model="repositoryInfo.id"
-                                   required>
+                                   required ng-attr-autofocus="{{ autofocusId }}">
                             <div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">
                                 Repository name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"
                             </div>

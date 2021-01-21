@@ -186,12 +186,22 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                use: {
+                // Stacking html-loader to replace the image URLs, then extract-loader to extract
+                // the HTML and finally ejs-loader so that variables can be replaced via
+                // HtmlWebpackPlugin's templateParameters.
+                use: [{
+                    loader: 'ejs-loader',
+                    options: {
+                        esModule: false
+                    }
+                }, {
+                    loader: 'extract-loader'
+                }, {
                     loader: 'html-loader',
                     options: {
                         attrs: ['img:src', 'object:data']
                     }
-                }
+                }]
             },
             {
                 test: /\.(svg|png|jpg|gif)$/,
