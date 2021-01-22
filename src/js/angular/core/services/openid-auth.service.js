@@ -102,10 +102,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
 
                 // We want these first even though the order doesn't matter.
-                params.unshift('response_type=' + encodeURIComponent(response_type),
-                    'scope=' + encodeURIComponent(that.getScope()),
-                    'client_id=' + encodeURIComponent(openIDConfig.clientId),
-                    'redirect_uri=' + encodeURIComponent(redirectUrl));
+                params.unshift(`response_type=${encodeURIComponent(response_type)}`,
+                    `scope=${encodeURIComponent(that.getScope())}`,
+                    `client_id=${encodeURIComponent(openIDConfig.clientId)}`,
+                    `redirect_uri=${encodeURIComponent(redirectUrl)}`);
 
                 if (openIDConfig.authorizeParameters) {
                     params.push(openIDConfig.authorizeParameters);
@@ -239,9 +239,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             this.hardLogout = function(redirectUrl) {
                 that.softLogout();
                 if (that.openIdEndSessionUrl) {
-                    $window.location.href = `${that.openIdEndSessionUrl}?client_id=
-                                                ${encodeURIComponent(that.clientId)}&post_logout_redirect_uri=
-                                                ${encodeURIComponent(redirectUrl)}`;
+                    $window.location.href =
+                        `${that.openIdEndSessionUrl}?client_id=${encodeURIComponent(that.clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
                 }
             }
 
