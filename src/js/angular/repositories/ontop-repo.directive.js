@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
 
-ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload', 'ModalService'];
+ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload'];
 
-function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, ModalService) {
+function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
     return {
         restrict: 'E',
         scope: false,
