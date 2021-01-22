@@ -30,7 +30,7 @@
                 ng-if="queryCount > 0 || numberOfActiveImports > 0">
             <span class="icon-reload text-primary loader"></span>
             <span class="dot-separator" ng-if="queryCount > 0">
-                <a class="btn btn-link" href="./monitor/queries" target="_blank">
+                <a class="btn btn-link" href="./monitor/queries" rel="noopener" target="_blank">
                     <strong>{{queryCount}}</strong>
                     <ng-pluralize count="queryCount"
                                   when="{'one': 'query/update',
@@ -39,7 +39,7 @@
                 </a>
             </span>
             <span class="dot-separator" ng-if="numberOfActiveImports > 0">
-                <a class="btn btn-link" href="./import" target="_blank">
+                <a class="btn btn-link" href="./import" rel="noopener" target="_blank">
                     <strong>{{numberOfActiveImports}}</strong>
                     <ng-pluralize count="numberOfActiveImports"
                                   when="{'one': 'import',

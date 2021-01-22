@@ -63,7 +63,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         }
 
         $scope.getDriverType = function (driverType) {
-            let found = $scope.supportedDriversData.find(driver => driver.driverType === driverType);
+            const found = $scope.supportedDriversData.find(driver => driver.driverType === driverType);
             $scope.selectedDriver.driverType = found.driverType;
             $scope.selectedDriver.jdbc.driverClass = found.driverClass;
             $scope.selectedDriver.jdbc.url = found.urlTemplate;
@@ -118,8 +118,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         }
                         $scope.uploadFileLoader = false;
                     }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', data);
                     $scope.uploadFile = '';
                     $scope.uploadFileLoader = false;
                 });
@@ -132,7 +131,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                 if ($scope.selectedDriver.jdbc.hostName) {
                     if ($scope.selectedDriver.jdbc.port) {
                         result = result.replace('{hostport}',
-                            $scope.selectedDriver.jdbc.hostName + ':' + $scope.selectedDriver.jdbc.port);
+                            `${$scope.selectedDriver.jdbc.hostName}:${$scope.selectedDriver.jdbc.port}`);
                     } else {
                         result = result.replace('{hostport}', $scope.selectedDriver.jdbc.hostName);
                     }
@@ -191,9 +190,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         $scope.classAvailable = found.classAvailable;
                     }
                 }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                $scope.uploadFileLoader = false;
+
             });
         }
 
@@ -204,8 +201,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         .success(function () {
                             toastr.success('Connection is successful');
                         }).error(function (data) {
-                        const msg = getError(data);
-                        toastr.error(msg, 'Failed to connect');
+                        showErrorMsg('Failed to connect', data);
                     });
                 });
         }
@@ -246,8 +242,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                     $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;
                     $scope.uploadFileLoader = false;
                 }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', data);
                     $scope.uploadFileLoader = false;
                 });
         }
@@ -285,6 +280,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
 
         $scope.goBackToPrevious = function () {
             $scope.goBackToPreviousLocation();
+        }
+
+        function showErrorMsg (title, data) {
+            const msg = getError(data);
+            toastr.error(msg, title);
         }
 
         getSupportedDriversData()
