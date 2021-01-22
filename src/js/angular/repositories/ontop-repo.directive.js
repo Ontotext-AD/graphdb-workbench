@@ -168,6 +168,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         toastr.error('Missing required ontop repo file');
                         return Promise.reject('Missing required ontop repo file');
                     }
+                    return Promise.resolve();
                 });
         }
 
@@ -190,7 +191,8 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         $scope.classAvailable = found.classAvailable;
                     }
                 }).error(function (data) {
-
+                showErrorMsg('Error', data);
+                $scope.uploadFileLoader = false;
             });
         }
 

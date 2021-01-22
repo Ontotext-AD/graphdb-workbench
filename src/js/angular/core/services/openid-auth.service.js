@@ -80,7 +80,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              * @returns {string} The built login URL.
              */
             this.getLoginUrl = function(state, code_challenge, redirectUrl, openIDConfig) {
-                let params = [];
+                const params = [];
                 let response_type = '';
 
                 switch (openIDConfig.authFlow) {
