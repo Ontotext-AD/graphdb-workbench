@@ -271,7 +271,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         };
 
         $scope.showEditor = function () {
-            if (window.editor.xhr) {
+            if (window.editor && window.editor.xhr) {
                 window.editor.xhr.abort();
             }
             $scope.viewMode = 'yasr';

@@ -421,7 +421,7 @@ function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
 
 ChooseRepositoryCtrl.$inject = ['$scope', '$location', 'isEnterprise', 'isFreeEdition'];
 function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
-    $scope.pageTitle = 'Choose repository';
+    $scope.pageTitle = 'Select repository type';
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
@@ -634,6 +634,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
         return getShaclOptionsClass();
     }
     //TODO - check if repositoryID exist
+
+    // Request auto-focus of the ID input when creating a repo (but not when editing)
+    $scope.autofocusId = 'autofocus';
 }
 
 EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr'];

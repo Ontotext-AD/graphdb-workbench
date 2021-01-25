@@ -25,6 +25,11 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
 
         const drawChord = function (matrix, nodes) {
 
+            // Don't try to draw chord for zero matrix
+            if (isZeroMatrix()) {
+                return;
+            }
+
             const fill = d3.scale.category20();
 
             const tooltip = d3.select("body").append("div")
@@ -162,6 +167,24 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                     return p.source.index !== i
                         && p.target.index !== i;
                 });
+            }
+
+            /**
+             *  Checks if all values of the returned matrix are zero
+             * @returns false if non zero value is found, true otherwise
+             */
+            function isZeroMatrix() {
+                let zeroMatrix = true;
+                // Using the old fashioned for loop because of break
+                for (let index = 0; index < matrix.length; index++) {
+                    let nonZeroFound = matrix[index].some(item => item !== 0);
+                    if (nonZeroFound) {
+                        zeroMatrix = false;
+                        break;
+                    }
+                }
+
+                return zeroMatrix;
             }
 
             d3.select("#circle").on("mouseleave", function () {

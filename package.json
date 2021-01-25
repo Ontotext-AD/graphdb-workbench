@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.6.0-TR6",
+    "version": "1.6.0-TR7",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -43,9 +43,11 @@
         "copy-webpack-plugin": "^5.1.1",
         "coveralls": "^3.0.11",
         "css-loader": "^3.3.2",
+        "ejs-loader": "^0.5.0",
         "eslint": "^5.16.0",
         "eslint-config-google": "^0.13.0",
         "expose-loader": "^0.7.5",
+        "extract-loader": "^5.1.0",
         "file-loader": "^4.3.0",
         "html-loader": "^0.5.5",
         "html-webpack-plugin": "^3.2.0",

@@ -1,3 +1,4 @@
+const PACKAGE = require('./package.json');
 const path = require('path');
 const merge = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
@@ -30,7 +31,10 @@ module.exports = merge(commonConfig, {
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/template.html',
-            favicon: 'src/img/icon.png'
+            favicon: 'src/img/icon.png',
+            templateParameters: {
+                version: PACKAGE.version
+            }
         }),
         new CleanWebpackPlugin()
     ],
