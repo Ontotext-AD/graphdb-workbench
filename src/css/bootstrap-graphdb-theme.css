@@ -2285,6 +2285,7 @@ input.switch:checked ~ label:after {
     position: relative;
     right: 45px;
     z-index: 10;
+    float: none;
 }
 
 /*-------------------------------------------------------------

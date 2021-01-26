@@ -69,7 +69,7 @@
 										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
 											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
 											<strong class="repository-id">{{repository.id}}</strong></span>
-                                            <span class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
+                                            <span class="repository-status" class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
                                             <span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>

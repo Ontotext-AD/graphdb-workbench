@@ -1,3 +1,5 @@
+import HomeSteps from "../../steps/home-steps";
+
 describe('Repositories', () => {
 
     let repositoryId;
@@ -550,6 +552,75 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
+    it('should restart an existing repository', () => {
+
+        createRepository();
+        chooseRepositoryType();
+
+        cy.url().should('include', '/repository/create');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+        saveRepository();
+
+        // Verify we are back at the setup page after saving
+        cy.url().should((url) => {
+            expect(url.endsWith('/repository')).to.equal(true);
+        });
+
+        //Make sure that repository is in status INACTIVE
+        assertRepositoryStatus(repositoryId, "INACTIVE");
+
+        getRepositoriesDropdown().click().within(() => {
+
+            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
+            // Alternative is to have the click forced, which might lead to false positive result.
+            cy.get('.dropdown-menu').should('be.visible').wait(500);
+            cy.get('.dropdown-menu .dropdown-item')
+                .contains(repositoryId)
+                .closest('a')
+                .click();
+            // Should visualize the selected repo
+            cy.get('.no-selected-repository').should('not.be.visible');
+            cy.get('.active-repository')
+                .should('be.visible')
+                .and('contain', repositoryId);
+        });
+
+        HomeSteps.visitAndWaitLoader();
+        cy.visit('/repository');
+        waitUntilRepositoriesPageIsLoaded();
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+
+        //Restart the repository
+        restartRepository(repositoryId);
+        confirmModal();
+        //Check toast for RESTARTING status and repo row for RUNNING status
+        getToast()
+            .find('.toast-success')
+            .should('be.visible')
+            .and('contain', "Restarting repository " + repositoryId);
+
+        assertRepositoryStatus(repositoryId, "RESTARTING");
+
+        getToast().should('not.be.visible');
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+    });
+
+    function assertRepositoryStatus(repositoryId, status) {
+        getRepositoryFromList(repositoryId)
+            .should('be.visible')
+            .find('.repository-status')
+            .should('be.visible')
+            .and('contain', status, { timeout: 2000 });
+    }
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
@@ -577,9 +648,17 @@ describe('Repositories', () => {
     }
 
     function editRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .edit-repository-btn');
+    }
+
+    function restartRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .restart-repository-btn');
+    }
+
+    function clickRepositoryIcon(repositoryId, selector) {
         getRepositoryFromList(repositoryId)
             .should('be.visible')
-            .find('.repository-actions .edit-repository-btn')
+            .find(selector)
             // Forcefully clicking it due to https://github.com/cypress-io/cypress/issues/695
             .should('be.visible')
             .and('not.be.disabled')
