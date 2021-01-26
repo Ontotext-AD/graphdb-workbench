@@ -1,8 +1,8 @@
-<div id="ontop-content">
+<div id="ontop-content" class="pt-1">
     <h4>Ontop configuration</h4>
     <div class="form-group row indented-div">
         <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">Database driver</label>
-        <div class="col-xs-8 col-md-6 col-lg-5" tooltip="{{repoTooltips.ontop.driverType}}">
+        <div class="col-xs-8 col-md-5 col-lg-4" tooltip="{{repoTooltips.ontop.driverType}}">
             <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"
                     ng-change="getDriverType(selectedDriver.driverType)"
                     ng-options="driver.driverType as driver.driverName for driver in supportedDriversData">
@@ -22,7 +22,7 @@
          ng-if="selectedDriver.driverType !== genericDriverType">
         <label for="{{labelName}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{supportedDriverLabels[labelName] + (isRequiredField(labelName) ? '*' : '')}}</label>
-        <div ng-class="{'col-xs-8 col-md-6 col-lg-5': labelName === 'url', 'col-xs-12 col-md-6 col-lg-5': labelName !== 'url'}"
+        <div ng-class="{'col-xs-8 col-md-5 col-lg-4': labelName === 'url', 'col-xs-12 col-md-5 col-lg-4': labelName !== 'url'}"
              tooltip="{{repoTooltips.ontop[labelName]}}">
             <input id="{{labelName}}" class="form-control" ng-readonly="isReadOnly(labelName)"
                    type="{{getInputType(labelName)}}" min="1" max="65535"
@@ -30,10 +30,10 @@
                    placeholder="{{isRequiredField(labelName) ? 'This field is required' : ''}}"
                    ng-model="selectedDriver.jdbc[labelName]" ng-change="concatURL(labelName)">
         </div>
-        <div class="col-xs-12 col-md-3" ng-if="labelName === 'driverClass'">
+        <div class="col-xs-12 col-md-4" ng-if="labelName === 'driverClass'">
             <em class="icon-warning icon-2x"
                 ng-if="!classAvailable"
-                tooltip="{{repoTooltips.ontop.url}}"
+                tooltip="{{repoTooltips.ontop.driverClassWarning}}"
                 tooltip-placement="top"></em>
             <a class="uri" ng-if="selectedDriver.downloadDriverUrl && !classAvailable"
                href="{{selectedDriver.downloadDriverUrl}}"
@@ -55,7 +55,7 @@
          ng-if="selectedDriver.driverType === genericDriverType || propertiesFile !== file">
         <label for="{{file}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{repositoryInfo.params[file].label + (isRequiredOntopRepoFile(file) ? '*' : '')}}</label>
-        <div class="col-xs-8 col-md-6 col-lg-5" tooltip="{{repoTooltips.ontop[file]}}">
+        <div class="col-xs-8 col-md-5 col-lg-4" tooltip="{{repoTooltips.ontop[file]}}">
             <a class="btn btn-link ot-edit-input" ng-if="ontopRepoFileNames[file]" ng-click="editFile(file)"
                tooltip="Edit file content"
                tooltip-placement="right"
@@ -77,18 +77,17 @@
             </div>
         </div>
     </div>
-    <div>
-        <div class="form-group row" ng-if="editRepoPage">
-            <div class="checkbox col-xs-12">
-                <label tooltip="Restarts the repository to apply the changes.">
-                    <input id="restartRepo" name="restartRepo"
-                           type="checkbox"
-                           ng-model="repositoryInfo.restartRequested"
-                           ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
-                           ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
-                    Restart repository
-                </label>
-            </div>
+    <div class="pt-1"></div>
+    <div class="form-group row" ng-if="editRepoPage">
+        <div class="checkbox col-xs-12">
+            <label tooltip="Check to restart the repository and apply the changes.">
+                <input id="restartRepo" name="restartRepo"
+                       type="checkbox"
+                       ng-model="repositoryInfo.restartRequested"
+                       ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
+                       ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
+                Restart repository
+            </label>
         </div>
     </div>
     <div class="form-group row pb-3">

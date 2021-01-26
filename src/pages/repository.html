@@ -14,7 +14,7 @@
                 <fieldset>
                     <div class="form-group row">
                         <label for="id" class="col-md-3 col-lg-2 col-form-label">Repository ID*</label>
-                        <div class="col-md-8 col-lg-7" tooltip="{{repoTooltips.id}}">
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.id}}">
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
                                ng-if="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter"
                                tooltip="Edit repository id" tooltip-placement="right"><span class="icon-edit"></span></a>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-md-3 col-lg-2 col-form-label">Repository description</label>
-                        <div class="col-md-8 col-lg-7" tooltip="{{repoTooltips.title}}">
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.title}}">
                             <input class="form-control" type="text" name="title" id="title"
                                    ng-model="repositoryInfo.title">
                         </div>
@@ -47,7 +47,7 @@
                     <!-- Ontop repository related directive -->
                     <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
 
-                    <div id="additionalParams"
+                    <div id="additionalParams" class="pt-1"
                          ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
                         <h5>Inference and Validation</h5>
                         <div class="form-group row indented-div">
@@ -288,7 +288,7 @@
                         <div class="form-group row indented-div" ng-if="repositoryInfo.type == 'worker'">
                             <label
                                 class="col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
-                            <div class="col-md-8 col-lg-7" tooltip="{{repoTooltips.nonInterpretablePredicates}}">
+                            <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.nonInterpretablePredicates}}">
 									<textarea class="form-control" id="nonInterpretablePredicates"
                                               name="nonInterpretablePredicates"
                                               ng-model="repositoryInfo.params.nonInterpretablePredicates.value"
@@ -298,18 +298,17 @@
                     </div>
                     <!-- Restart checkbox and buttons, when creating repo of type
                          'ontop' are provided in ontop-repo.html template -->
-                    <div ng-if="repositoryInfo.type !== 'ontop'">
-                        <div class="form-group row" ng-if="editRepoPage">
-                            <div class="checkbox col-xs-12">
-                                <label tooltip="Restarts the repository to apply the changes.">
-                                    <input id="restartRepo" name="restartRepo"
-                                           type="checkbox"
-                                           ng-model="repositoryInfo.restartRequested"
-                                           ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
-                                           ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
-                                    Restart repository
-                                </label>
-                            </div>
+                    <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
+                    <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && !editRepoPage">
+                        <div class="checkbox col-xs-12">
+                            <label tooltip="Check to restart the repository and apply the changes.">
+                                <input id="restartRepo" name="restartRepo"
+                                       type="checkbox"
+                                       ng-model="repositoryInfo.restartRequested"
+                                       ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
+                                       ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
+                                Restart repository
+                            </label>
                         </div>
                     </div>
                     <div class="form-group row pb-3" ng-if="repositoryInfo.type !== 'ontop'">
