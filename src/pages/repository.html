@@ -299,7 +299,7 @@
                     <!-- Restart checkbox and buttons, when creating repo of type
                          'ontop' are provided in ontop-repo.html template -->
                     <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
-                    <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && !editRepoPage">
+                    <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && editRepoPage">
                         <div class="checkbox col-xs-12">
                             <label tooltip="Check to restart the repository and apply the changes.">
                                 <input id="restartRepo" name="restartRepo"
