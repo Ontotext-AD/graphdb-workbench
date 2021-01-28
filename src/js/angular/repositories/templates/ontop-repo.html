@@ -23,10 +23,10 @@
         <label for="{{labelName}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{supportedDriverLabels[labelName] + (isRequiredField(labelName) ? '*' : '')}}</label>
         <div ng-class="{'col-xs-8 col-md-5 col-lg-4': labelName === 'url', 'col-xs-12 col-md-5 col-lg-4': labelName !== 'url'}"
-             tooltip="{{repoTooltips.ontop[labelName]}}">
+             tooltip="{{getFieldTooltip(labelName)}}">
             <input id="{{labelName}}" class="form-control" ng-readonly="isReadOnly(labelName)"
                    type="{{getInputType(labelName)}}" min="1" max="65535"
-                   ng-required="{{isRequiredField(labelName)}}"
+                   ng-required="isRequiredField(labelName)"
                    placeholder="{{isRequiredField(labelName) ? 'This field is required' : ''}}"
                    ng-model="selectedDriver.jdbc[labelName]" ng-change="concatURL(labelName)">
         </div>
@@ -44,7 +44,7 @@
         <div class="col-xs-4 col-md-2" ng-if="labelName === 'url'">
             <div class="wrapper-div" tooltip="{{repoTooltips.ontop.testConn}}">
                 <button id="testConnection1" ng-click="validateOntopPropertiesConnection()"
-                        ng-disabled="!selectedDriver.jdbc.hostName || !selectedDriver.jdbc.userName || !selectedDriver.jdbc.databaseName"
+                        ng-disabled="!selectedDriver.jdbc.hostName || !selectedDriver.jdbc.userName || !selectedDriver.jdbc.databaseName || isRequiredField('port') && !selectedDriver.jdbc.port"
                         type="submit"
                         class="btn btn-primary">Test connection
                 </button>

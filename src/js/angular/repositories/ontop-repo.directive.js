@@ -69,10 +69,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
             $scope.selectedDriver.jdbc.url = found.urlTemplate;
             $scope.selectedDriver.urlTemplate = found.urlTemplate;
             $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
+            $scope.selectedDriver.portRequired = found.portRequired;
             $scope.classAvailable = found.classAvailable;
             // Call concatURL with proper labelName to apply changes to url field
             $scope.concatURL('hostName', $scope);
-        }
+        };
 
         $scope.isReadOnly = function (labelName) {
             return labelName === 'driverClass' || labelName === 'url';
@@ -257,8 +258,16 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
         };
 
         $scope.isRequiredField = function (field) {
-            return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
-        }
+            return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1
+                || field === 'port' && $scope.selectedDriver.portRequired;
+        };
+
+        $scope.getFieldTooltip = function (field) {
+            if (field === 'port' && $scope.selectedDriver.portRequired) {
+                field = 'portIfRequired';
+            }
+            return $scope.repoTooltips.ontop[field];
+        };
 
         $scope.editOntopRepo = function () {
             $scope.checkForRequiredOntopFiles()
