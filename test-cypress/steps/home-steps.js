@@ -1,7 +1,16 @@
 class HomeSteps {
 
-    static visitAndWaitLoader() {
-        cy.visit('/');
+    static visitAndWaitLoader(stubNewWindow) {
+        if (stubNewWindow) {
+            cy.visit('/', {
+                onBeforeLoad (win) {
+                    cy.stub(win, 'open').as('window.open');
+                }
+            });
+        } else {
+            cy.visit('/');
+        }
+
         cy.get('.ot-splash').should('not.be.visible');
         return cy.get('.ot-loader-new-content').should('not.be.visible');
     }
@@ -138,6 +147,14 @@ class HomeSteps {
         cy.get('.search-rdf-btn').click();
         cy.get('.search-rdf-input').should('be.visible');
         cy.get('.search-rdf-input search-resource-input .view-res-input').should('be.visible')
+            .and('be.focused');
+    }
+
+    static doNotOpenRdfSearchBoxButFocusResourceSearch() {
+        cy.get('.search-rdf-btn').click();
+        cy.get('.search-rdf-input').should('not.be.visible');
+        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.be.visible')
+        cy.get('#search-resource-input-home > #search-resource-box > input').should('be.visible')
             .and('be.focused');
     }
 
