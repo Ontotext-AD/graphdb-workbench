@@ -517,6 +517,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     } else {
                         $scope.searchRdfResourceByEvent(event.target.value, event);
                     }
+                } else if (event.keyCode === 27 && $location.url() === '/') {
+                    $scope.clearInput();
                 } else if ($scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
                     element.autoCompleteWarning = true;
                     toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',

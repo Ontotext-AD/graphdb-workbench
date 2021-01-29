@@ -4,11 +4,11 @@ angular
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
   'AutocompleteRestService', 'RDF4JRepositoriesRestService',
-  'RepositoriesRestService', '$repositories'];
+  'RepositoriesRestService', '$repositories', '$location'];
 
 function rdfResourceSearchDirective($rootScope, $timeout,
     AutocompleteRestService, RDF4JRepositoriesRestService,
-    RepositoriesRestService, $repositories) {
+    RepositoriesRestService, $repositories, $location) {
   return {
     templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
     restrict: 'AE',
@@ -42,14 +42,18 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       };
 
       $scope.showInput = function () {
-        element.find('.search-rdf-btn')
-            .addClass('hidden-xs-up');
-        element.find('.search-rdf-input').addClass('show-rdf-search-box');
-        $timeout(function () {
-          element.find('.close-rdf-search-btn').removeClass('hidden-xs-up');
-          element.find('search-resource-input .view-res-input').focus();
-          window.addEventListener('mousedown', onWindowClick);
-        }, 200);
+        if ($location.url() !== '/') {
+            element.find('.search-rdf-btn')
+                .addClass('hidden-xs-up');
+            element.find('.search-rdf-input').addClass('show-rdf-search-box');
+            $timeout(function () {
+                element.find('.close-rdf-search-btn').removeClass('hidden-xs-up');
+                element.find('search-resource-input .view-res-input').focus();
+                window.addEventListener('mousedown', onWindowClick);
+            }, 200);
+        } else {
+           $('#search-resource-input-home input').focus()
+        }
       };
 
       $scope.hideInput = function () {
@@ -69,7 +73,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       }
 
       $scope.onKeyDown = function(event) {
-        if (event.keyCode === 27) {
+        if ($location.url() !== '/' && event.keyCode === 27) {
           $scope.hideInput();
         }
       };
