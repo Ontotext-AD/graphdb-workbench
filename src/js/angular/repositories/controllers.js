@@ -433,9 +433,9 @@ function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.repoTooltips = REPO_TOOLTIPS;
@@ -506,6 +506,13 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, Upload, isE
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
+            // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
+            // work in all browsers because of the way dynamic content is handled so give it another
+            // try here.
+            $timeout(function() {
+                // Focus the ID field
+                angular.element(document).find('#id').focus();
+            }, 50);
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Error');

@@ -257,7 +257,7 @@
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
                     <label>Preferred languages</label>
                     <div class="input-group preferred-languages">
-                        <tags-input ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
+                        <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="Add a language tag"></tags-input>
                     </div>
                 </div>
@@ -301,7 +301,7 @@
                         <div class="form-group mb-2 mt-1">
                             <label>Preferred types</label>
                             <div>
-                                <tags-input class="preferred-types" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
                                             on-tag-added="addingTag($tag)"></tags-input>
                             </div>
@@ -318,7 +318,7 @@
                         <div class="form-group">
                             <label>Ignored types</label>
                             <div>
-                                <tags-input class="ignored-types" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
                                             on-tag-added="addingTag($tag)"></tags-input>
                             </div>
@@ -331,7 +331,7 @@
                         <div class="form-group mb-2 mt-1">
                             <label>Preferred predicates</label>
                             <div>
-                                <tags-input class="preferred-predicates" ng-model="settings['preferredPredicatesMap']" min-length="3"
+                                <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred predicate"
                                             on-tag-added="addingTag($tag)"></tags-input>
@@ -349,7 +349,7 @@
                         <div class="form-group ">
                             <label>Ignored predicates</label>
                             <div>
-                                <tags-input class="ignored-predicates" ng-model="settings['rejectedPredicatesMap']" min-length="3"
+                                <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored predicate"
                                             on-tag-added="addingTag($tag)"></tags-input>

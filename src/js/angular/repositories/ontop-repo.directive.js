@@ -62,17 +62,31 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                 });
         }
 
-        $scope.getDriverType = function (driverType) {
-            const found = $scope.supportedDriversData.find(driver => driver.driverType === driverType);
-            $scope.selectedDriver.driverType = found.driverType;
-            $scope.selectedDriver.jdbc.driverClass = found.driverClass;
-            $scope.selectedDriver.jdbc.url = found.urlTemplate;
-            $scope.selectedDriver.urlTemplate = found.urlTemplate;
-            $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
-            $scope.classAvailable = found.classAvailable;
+        $scope.loadDriverByClass = function (driverClass) {
+            const driver = $scope.supportedDriversData
+                .find((driver) => driver.driverClass === driverClass);
+            if (driver) {
+                $scope.copyDriverProperties(driver);
+            }
+            return driver;
+        };
+
+        $scope.selectDriverByType = function (driverType) {
+            $scope.copyDriverProperties($scope.supportedDriversData
+                .find((driver) => driver.driverType === driverType));
             // Call concatURL with proper labelName to apply changes to url field
             $scope.concatURL('hostName', $scope);
-        }
+        };
+
+        $scope.copyDriverProperties = function (driver) {
+            $scope.selectedDriver.driverType = driver.driverType;
+            $scope.selectedDriver.jdbc.driverClass = driver.driverClass;
+            $scope.selectedDriver.jdbc.url = driver.urlTemplate;
+            $scope.selectedDriver.urlTemplate = driver.urlTemplate;
+            $scope.selectedDriver.downloadDriverUrl = driver.downloadDriverUrl;
+            $scope.selectedDriver.portRequired = driver.portRequired;
+            $scope.classAvailable = driver.classAvailable;
+        };
 
         $scope.isReadOnly = function (labelName) {
             return labelName === 'driverClass' || labelName === 'url';
@@ -175,20 +189,15 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         function loadPropertiesFile() {
             RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value)
                 .success(function (driverData) {
-                    const found = $scope.supportedDriversData.find(driver => driver.driverClass === driverData.driverClass);
+                    const driver = $scope.loadDriverByClass(driverData.driverClass);
                     // If driver class is not found means that the selected driver is a GENERIC ONE
-                    if (found) {
-                        $scope.selectedDriver.driverType = found.driverType;
+                    if (driver) {
                         $scope.selectedDriver.jdbc.hostName = driverData.hostName;
                         $scope.selectedDriver.jdbc.port = parseInt(driverData.port);
                         $scope.selectedDriver.jdbc.databaseName = driverData.databaseName;
                         $scope.selectedDriver.jdbc.userName = driverData.userName;
                         $scope.selectedDriver.jdbc.password = driverData.password;
-                        $scope.selectedDriver.jdbc.driverClass = driverData.driverClass;
                         $scope.selectedDriver.jdbc.url = driverData.url;
-                        $scope.selectedDriver.urlTemplate = found.urlTemplate;
-                        $scope.selectedDriver.downloadDriverUrl = found.downloadDriverUrl;
-                        $scope.classAvailable = found.classAvailable;
                     }
                 }).error(function (data) {
                 showErrorMsg('Error', data);
@@ -254,8 +263,16 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         };
 
         $scope.isRequiredField = function (field) {
-            return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1;
-        }
+            return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1
+                || field === 'port' && $scope.selectedDriver.portRequired;
+        };
+
+        $scope.getFieldTooltip = function (field) {
+            if (field === 'port' && $scope.selectedDriver.portRequired) {
+                field = 'portIfRequired';
+            }
+            return $scope.repoTooltips.ontop[field];
+        };
 
         $scope.editOntopRepo = function () {
             $scope.checkForRequiredOntopFiles()

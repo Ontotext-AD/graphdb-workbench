@@ -1,3 +1,5 @@
+import HomeSteps from "../../steps/home-steps";
+
 describe('Repositories', () => {
 
     let repositoryId;
@@ -313,7 +315,7 @@ describe('Repositories', () => {
     it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
-        let propertiesFileUpload = ''
+        let propertiesFileUpload = '';
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
         const fileType = '';
         const virtualRepoName = 'virtual-repo-' + Date.now();
@@ -401,7 +403,7 @@ describe('Repositories', () => {
                     body,
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(response => {
-                    console.log(response)
+                    console.log(response);
                 });
             });
         });
@@ -435,6 +437,190 @@ describe('Repositories', () => {
         cy.deleteRepository(virtualRepoName);
     });
 
+    it('should verify different virtual repository RDBMS provider elements', () => {
+        // There should be a default repository location
+        getLocationsList()
+            .should('have.length', 1)
+            .and('contain', 'Local');
+
+        createRepository();
+        cy.url().should('include', '/repository/create');
+
+        chooseRepositoryType("ontop");
+        cy.url().should('include', '/repository/create/ontop');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+
+        //Select Generic JDBC Driver driver type and verify elements and download url (if available)
+        selectDatabaseDriver('Generic JDBC Driver');
+        getDatabaseDriver().should('contain', 'Generic JDBC Driver');
+
+        testOntopConfigurationElementsVisibility('Database driver', '#driverType');
+        testOntopConfigurationElementsVisibility('JDBC properties file*', '#propertiesFile');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+
+        //Select MySQL driver type and verify elements and download url (if available)
+        selectDatabaseDriver('MySQL');
+        getDatabaseDriver().should('contain', 'MySQL');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://dev.mysql.com/downloads/connector/j/');
+
+        //Select postgreSQL driver type and verify elements and download url (if available)
+        selectDatabaseDriver('PostgreSQL');
+        getDatabaseDriver().should('contain', 'PostgreSQL');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://jdbc.postgresql.org/download.html');
+
+        //Select Oracle driver type and verify elements and download url (if available)
+        selectDatabaseDriver('Oracle');
+        getDatabaseDriver().should('contain', 'Oracle');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://www.cdata.com/drivers/oracledb/jdbc/');
+
+        //Select MS SQL Server driver type and verify elements and download url (if available)
+        selectDatabaseDriver('MS SQL Server');
+        getDatabaseDriver().should('contain', 'MS SQL Server');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server');
+
+        //Select DB2 driver type and verify elements and download url (if available)
+        selectDatabaseDriver('DB2');
+        getDatabaseDriver().should('contain', 'DB2');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
+    });
+
+    it('should restart an existing repository', () => {
+
+        createRepository();
+        chooseRepositoryType();
+
+        cy.url().should('include', '/repository/create');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+        saveRepository();
+
+        // Verify we are back at the setup page after saving
+        cy.url().should((url) => {
+            expect(url.endsWith('/repository')).to.equal(true);
+        });
+
+        //Make sure that repository is in status INACTIVE
+        assertRepositoryStatus(repositoryId, "INACTIVE");
+
+        getRepositoriesDropdown().click().within(() => {
+
+            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
+            // Alternative is to have the click forced, which might lead to false positive result.
+            cy.get('.dropdown-menu').should('be.visible').wait(500);
+            cy.get('.dropdown-menu .dropdown-item')
+                .contains(repositoryId)
+                .closest('a')
+                .click();
+            // Should visualize the selected repo
+            cy.get('.no-selected-repository').should('not.be.visible');
+            cy.get('.active-repository')
+                .should('be.visible')
+                .and('contain', repositoryId);
+        });
+
+        HomeSteps.visitAndWaitLoader();
+        cy.visit('/repository');
+        waitUntilRepositoriesPageIsLoaded();
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+
+        //Restart the repository
+        restartRepository(repositoryId);
+        confirmModal();
+        //Check toast for RESTARTING status and repo row for RUNNING status
+        getToast()
+            .find('.toast-success')
+            .should('be.visible')
+            .and('contain', "Restarting repository " + repositoryId);
+
+        assertRepositoryStatus(repositoryId, "RESTARTING");
+
+        getToast().should('not.be.visible');
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+    });
+
+    function assertRepositoryStatus(repositoryId, status) {
+        getRepositoryFromList(repositoryId)
+            .should('be.visible')
+            .find('.repository-status')
+            .should('be.visible')
+            .and('contain', status, { timeout: 2000 });
+    }
+
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
@@ -462,9 +648,17 @@ describe('Repositories', () => {
     }
 
     function editRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .edit-repository-btn');
+    }
+
+    function restartRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .restart-repository-btn');
+    }
+
+    function clickRepositoryIcon(repositoryId, selector) {
         getRepositoryFromList(repositoryId)
             .should('be.visible')
-            .find('.repository-actions .edit-repository-btn')
+            .find(selector)
             // Forcefully clicking it due to https://github.com/cypress-io/cypress/issues/695
             .should('be.visible')
             .and('not.be.disabled')
@@ -486,7 +680,6 @@ describe('Repositories', () => {
             return cy.get('.create-repo-btn').first();
         }
     }
-
 
     function chooseRepositoryType(type) {
         getRepositoryTypeButton(type).click();
@@ -612,5 +805,36 @@ describe('Repositories', () => {
             .should('be', 'visible')
             .and('contain', 'Some functionalities are not available because')
             .and('contain', ' is read-only Virtual Repository');
+    }
+
+    function getOntopContentConfiguration() {
+        return cy.get('#ontop-content');
+    }
+
+    function getDatabaseDriver(){
+        return cy.get('#driverType');
+    }
+
+    function selectDatabaseDriver(driverType) {
+        getDatabaseDriver()
+            .select(driverType);
+    }
+
+    function testOntopConfigurationElementsVisibility(param, idValue) {
+        getOntopContentConfiguration()
+            .find('.row.indented-div label')
+            .contains(param)
+            .next()
+            .within(() => {
+                cy.get(idValue)
+                    .should('be.visible');
+            });
+    }
+
+    function compareDriverDownloadUrl(expectedUrl){
+        cy.get('.uri')
+            .should('be.visible')
+            .and('have.attr', 'href')
+            .and('contain', expectedUrl);
     }
 });
