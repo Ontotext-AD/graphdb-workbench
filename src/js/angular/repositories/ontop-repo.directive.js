@@ -57,18 +57,17 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                 .success(function (response) {
                     $scope.supportedDriversData = response;
                 }).error(function (response) {
-                    const msg = getError(response);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', response);
                 });
         }
 
         $scope.loadDriverByClass = function (driverClass) {
-            const driver = $scope.supportedDriversData
+            const foundDriver = $scope.supportedDriversData
                 .find((driver) => driver.driverClass === driverClass);
-            if (driver) {
-                $scope.copyDriverProperties(driver);
+            if (foundDriver) {
+                $scope.copyDriverProperties(foundDriver);
             }
-            return driver;
+            return foundDriver;
         };
 
         $scope.selectDriverByType = function (driverType) {
@@ -109,8 +108,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                     $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
                     $scope.repositoryInfo.params[file].value = result.fileLocation;
                 }).error(function (error) {
-                    const msg = getError(error);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', error);
                 })
             });
         }
