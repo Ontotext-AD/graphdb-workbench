@@ -73,6 +73,7 @@ export const REPO_TOOLTIPS = {
         propertiesFile: "Describes the JDBC configuration such as hostname and database name to connect to.",
         hostName: 'The JDBC hostname to connect to.',
         port: "The JDBC port to connect to if different from the default for the chosen JDBC driver.",
+        portIfRequired: "The JDBC port to connect to.",
         databaseName: 'The database name to connect to.',
         userName: 'The username to use for the JDBC connection.',
         password: 'The password to use for the JDBC connection.',
