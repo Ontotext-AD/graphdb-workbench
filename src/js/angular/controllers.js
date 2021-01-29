@@ -39,6 +39,7 @@ angular
 homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+    $scope.doClear = false;
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
         if (!repo) {
@@ -90,6 +91,13 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
             }
         }
     });
+
+    $scope.onKeyDown = function (event) {
+        if (event.keyCode === 27) {
+            $scope.doClear = true;
+        }
+    };
+
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$autocompleteStatus'];

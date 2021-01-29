@@ -4,11 +4,11 @@ angular
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
   'AutocompleteRestService', 'RDF4JRepositoriesRestService',
-  'RepositoriesRestService', '$repositories', '$location'];
+  'RepositoriesRestService', '$repositories', '$location', 'toastr'];
 
 function rdfResourceSearchDirective($rootScope, $timeout,
     AutocompleteRestService, RDF4JRepositoriesRestService,
-    RepositoriesRestService, $repositories, $location) {
+    RepositoriesRestService, $repositories, $location, toastr) {
   return {
     templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
     restrict: 'AE',
@@ -42,7 +42,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       };
 
       $scope.showInput = function () {
-        if ($location.url() !== '/') {
+        if (!$scope.isHomePage()) {
             element.find('.search-rdf-btn')
                 .addClass('hidden-xs-up');
             element.find('.search-rdf-input').addClass('show-rdf-search-box');
@@ -52,7 +52,10 @@ function rdfResourceSearchDirective($rootScope, $timeout,
                 window.addEventListener('mousedown', onWindowClick);
             }, 200);
         } else {
-           $('#search-resource-input-home input').focus()
+           $('#search-resource-input-home input').focus();
+            toastr.info('Use <b>View resource</b> on this page', 'Search RDF resources', {
+                allowHtml: true
+            });
         }
       };
 
@@ -73,10 +76,14 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       }
 
       $scope.onKeyDown = function(event) {
-        if ($location.url() !== '/' && event.keyCode === 27) {
+        if (event.keyCode === 27) {
           $scope.hideInput();
         }
       };
+
+      $scope.isHomePage = function() {
+        return $location.url() === '/';
+      }
     }
   };
 }

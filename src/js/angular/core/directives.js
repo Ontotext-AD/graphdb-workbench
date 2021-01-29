@@ -262,6 +262,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             uriValidation: '@',
             preserveInput: '@',
             empty: '=',
+            clear: '=?clear',
             openInNewTab: '@',
             preserveSearch: '@',
             radioButtons: '@',
@@ -272,6 +273,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
+            $scope.clear = false;
             $scope.searchDisplayType = SEARCH_DISPLAY_TYPE;
             const MIN_CHAR_LEN = 0;
             const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
@@ -340,6 +342,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 if (!IS_SEARCH_PRESERVED) {
                     $scope.searchInput = '';
                     $scope.empty = false;
+                }
+            });
+
+            $scope.$watch('clear', function () {
+                if ($scope.clear) {
+                    $scope.clearInput();
+                    $scope.clear = false;
                 }
             });
 
@@ -517,8 +526,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     } else {
                         $scope.searchRdfResourceByEvent(event.target.value, event);
                     }
-                } else if (event.keyCode === 27 && $location.url() === '/') {
-                    $scope.clearInput();
                 } else if ($scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
                     element.autoCompleteWarning = true;
                     toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
