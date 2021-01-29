@@ -287,7 +287,7 @@
 		<div class="card-block">
 				<em ng-show="lastSearch.type != 'searchAnalogical'">Showing results for
 					<a ng-show="lastSearch.type == 'searchDocumentID' || lastSearch.type == 'searchEntity' || lastSearch.type == 'searchEntityPredicate'"
-					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
+					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" rel="noopener" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
 
 					<span ng-show="lastSearch.type == 'searchEntityPredicate'"> + <a title="{{lastSearch.predicate}}" target="_blank"
 					   class="uri" href="resource?uri={{lastSearch.predicate}}">{{lastSearch.predicate}}</a> -></span>
@@ -296,11 +296,11 @@
 				</em>
 
 				<em ng-show="lastSearch.type == 'searchAnalogical'">
-					If <a title="{{analogicalSubject}}" class="uri" href="resource?uri={{analogicalSubject}}" target="_blank">{{analogicalSubject}}</a>
+					If <a title="{{analogicalSubject}}" class="uri" href="resource?uri={{analogicalSubject}}" rel="noopener" target="_blank">{{analogicalSubject}}</a>
 
-					-> <a title="{{analogicalObject}}" target="_blank" class="uri" href="resource?uri={{analogicalObject}}">{{analogicalObject}}</a>
+					-> <a title="{{analogicalObject}}" rel="noopener" target="_blank" class="uri" href="resource?uri={{analogicalObject}}">{{analogicalObject}}</a>
 
-					then <a title="{{searchSubject}}" target="_blank" class="uri" href="resource?uri={{searchSubject}}">{{searchSubject}}</a> -> ?
+					then <a title="{{searchSubject}}" rel="noopener" target="_blank" class="uri" href="resource?uri={{searchSubject}}">{{searchSubject}}</a> -> ?
 
 				</em>
 

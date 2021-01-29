@@ -45,6 +45,10 @@ const validateNumberFields = function (params, invalidValues) {
     }
 }
 
+const getDocBase = function (productInfo) {
+    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
+}
+
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -284,10 +288,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = 'rest/repositories/' + repository.id + (repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download');
+        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}`;
         const token = $jwtAuth.getAuthToken();
         if (token) {
-            url = url + '?authToken=' + encodeURIComponent(token);
+            url = `${url}?authToken=${encodeURIComponent(token)}`;
         }
         return url;
     };
@@ -380,8 +384,7 @@ function AddLocationCtrl($scope, $modalInstance, toastr, productInfo) {
         'password': '',
         'active': false
     };
-    $scope.docBase = 'https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion
-        + '/' + productInfo.productType;
+    $scope.docBase = getDocBase(productInfo);
 
     $scope.isValidLocation = function () {
         return ($scope.newLocation.uri.length < 6 ||
@@ -407,8 +410,7 @@ EditLocationCtrl.$inject = ['$scope', '$modalInstance', 'location', 'productInfo
 function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
 
     $scope.editedLocation = angular.copy(location);
-    $scope.docBase = 'https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion
-        + '/' + productInfo.productType;
+    $scope.docBase = getDocBase(productInfo);
 
     $scope.ok = function () {
         $modalInstance.close($scope.editedLocation);
@@ -427,7 +429,7 @@ function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
     $scope.isFreeEdition = isFreeEdition;
 
     $scope.chooseRepositoryType = function (repoType) {
-        $location.path($location.path() + '/' + repoType);
+        $location.path(`${$location.path()}/${repoType}`);
     };
 }
 

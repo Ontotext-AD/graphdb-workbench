@@ -12,6 +12,8 @@
         <div ng-hide="loader">
             <form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
                 <fieldset>
+                    <!-- Simply to satisfy the HTML specs, because it's reported as bug from SonarCloud -->
+                    <legend style="display: none">Repository properties</legend>
                     <div class="form-group row">
                         <label for="id" class="col-md-3 col-lg-2 col-form-label">Repository ID*</label>
                         <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.id}}">

@@ -14,6 +14,8 @@ function rdfResourceSearchDirective($rootScope, $timeout,
     restrict: 'AE',
     link: function ($scope, element) {
 
+      const hiddenXSUpClass = 'hidden-xs-up';
+
       function refreshRepositoryInfo() {
         if ($scope.getActiveRepository()) {
           $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
@@ -42,6 +44,14 @@ function rdfResourceSearchDirective($rootScope, $timeout,
       };
 
       $scope.showInput = function () {
+        element.find('.search-rdf-btn')
+            .addClass(hiddenXSUpClass);
+        element.find('.search-rdf-input').addClass('show-rdf-search-box');
+        $timeout(function () {
+          element.find('.close-rdf-search-btn').removeClass(hiddenXSUpClass);
+          element.find('search-resource-input .view-res-input').focus();
+          window.addEventListener('mousedown', onWindowClick);
+        }, 200);
         if (!$scope.isHomePage()) {
             element.find('.search-rdf-btn')
                 .addClass('hidden-xs-up');
@@ -61,9 +71,9 @@ function rdfResourceSearchDirective($rootScope, $timeout,
 
       $scope.hideInput = function () {
         element.find('.search-rdf-input').removeClass('show-rdf-search-box');
-        element.find('.close-rdf-search-btn').addClass('hidden-xs-up');
+        element.find('.close-rdf-search-btn').addClass(hiddenXSUpClass);
         $timeout(function () {
-          element.find('.search-rdf-btn').removeClass('hidden-xs-up');
+          element.find('.search-rdf-btn').removeClass(hiddenXSUpClass);
           element.blur();
           window.removeEventListener('mousedown', onWindowClick);
         }, 200);

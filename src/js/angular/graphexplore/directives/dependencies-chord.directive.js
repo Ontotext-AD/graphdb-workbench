@@ -175,9 +175,9 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
              */
             function isZeroMatrix() {
                 let zeroMatrix = true;
-                // Using the old fashioned for loop because of break
-                for (let index = 0; index < matrix.length; index++) {
-                    let nonZeroFound = matrix[index].some(item => item !== 0);
+
+                for (const arr of matrix) {
+                    const nonZeroFound = arr.some(item => item !== 0);
                     if (nonZeroFound) {
                         zeroMatrix = false;
                         break;

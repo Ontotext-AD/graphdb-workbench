@@ -80,7 +80,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              * @returns {string} The built login URL.
              */
             this.getLoginUrl = function(state, code_challenge, redirectUrl, openIDConfig) {
-                let params = [];
+                const params = [];
                 let response_type = '';
 
                 switch (openIDConfig.authFlow) {
@@ -102,16 +102,16 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
 
                 // We want these first even though the order doesn't matter.
-                params.unshift('response_type=' + encodeURIComponent(response_type),
-                    'scope=' + encodeURIComponent(that.getScope()),
-                    'client_id=' + encodeURIComponent(openIDConfig.clientId),
-                    'redirect_uri=' + encodeURIComponent(redirectUrl));
+                params.unshift(`response_type=${encodeURIComponent(response_type)}`,
+                    `scope=${encodeURIComponent(that.getScope())}`,
+                    `client_id=${encodeURIComponent(openIDConfig.clientId)}`,
+                    `redirect_uri=${encodeURIComponent(redirectUrl)}`);
 
                 if (openIDConfig.authorizeParameters) {
                     params.push(openIDConfig.authorizeParameters);
                 }
 
-                return openIDConfig.oidcAuthorizationEndpoint + '?' + params.join('&');
+                return `${openIDConfig.oidcAuthorizationEndpoint}?${params.join('&')}`;
             }
 
 
@@ -239,10 +239,8 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
             this.hardLogout = function(redirectUrl) {
                 that.softLogout();
                 if (that.openIdEndSessionUrl) {
-                    $window.location.href = that.openIdEndSessionUrl +
-                        '?' +
-                        'client_id=' + encodeURIComponent(that.clientId) + '&' +
-                        'post_logout_redirect_uri=' + encodeURIComponent(redirectUrl);
+                    $window.location.href =
+                        `${that.openIdEndSessionUrl}?client_id=${encodeURIComponent(that.clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
                 }
             }
 
@@ -315,10 +313,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 if (!headerObj.kid) {
                     if (tokenName !== 'id') {
                         if (headerObj.error) {
-                            console.log('oidc: token ' + tokenName + ' is not a JWT token (token considered valid)');
+                            console.log(`oidc: token ${tokenName} is not a JWT token (token considered valid)`);
                             return true;
                         } else {
-                            console.log('oidc: invalid token ' + tokenName + ' (token is empty)');
+                            console.log(`oidc: invalid token ${tokenName} (token is empty)`);
                             return false;
                         }
                     } else {
@@ -433,7 +431,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 const str = [];
                 for(let p in obj) {
                     if (obj.hasOwnProperty(p)) {
-                        str.push(p + "=" + encodeURIComponent(obj[p]));
+                        str.push(`${p}=${encodeURIComponent(obj[p])}`);
                     }
                 }
                 return str.join("&");

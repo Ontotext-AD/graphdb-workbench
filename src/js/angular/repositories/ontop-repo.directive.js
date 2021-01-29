@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
 
-ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload', 'ModalService'];
+ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload'];
 
-function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, ModalService) {
+function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
     return {
         restrict: 'E',
         scope: false,
@@ -57,18 +57,17 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                 .success(function (response) {
                     $scope.supportedDriversData = response;
                 }).error(function (response) {
-                    const msg = getError(response);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', response);
                 });
         }
 
         $scope.loadDriverByClass = function (driverClass) {
-            const driver = $scope.supportedDriversData
+            const foundDriver = $scope.supportedDriversData
                 .find((driver) => driver.driverClass === driverClass);
-            if (driver) {
-                $scope.copyDriverProperties(driver);
+            if (foundDriver) {
+                $scope.copyDriverProperties(foundDriver);
             }
-            return driver;
+            return foundDriver;
         };
 
         $scope.selectDriverByType = function (driverType) {
@@ -109,8 +108,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                     $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
                     $scope.repositoryInfo.params[file].value = result.fileLocation;
                 }).error(function (error) {
-                    const msg = getError(error);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', error);
                 })
             });
         }
@@ -132,8 +130,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         }
                         $scope.uploadFileLoader = false;
                     }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', data);
                     $scope.uploadFile = '';
                     $scope.uploadFileLoader = false;
                 });
@@ -146,7 +143,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                 if ($scope.selectedDriver.jdbc.hostName) {
                     if ($scope.selectedDriver.jdbc.port) {
                         result = result.replace('{hostport}',
-                            $scope.selectedDriver.jdbc.hostName + ':' + $scope.selectedDriver.jdbc.port);
+                            `${$scope.selectedDriver.jdbc.hostName}:${$scope.selectedDriver.jdbc.port}`);
                     } else {
                         result = result.replace('{hostport}', $scope.selectedDriver.jdbc.hostName);
                     }
@@ -183,6 +180,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         toastr.error('Missing required ontop repo file');
                         return Promise.reject('Missing required ontop repo file');
                     }
+                    return Promise.resolve();
                 });
         }
 
@@ -200,8 +198,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         $scope.selectedDriver.jdbc.url = driverData.url;
                     }
                 }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
+                showErrorMsg('Error', data);
                 $scope.uploadFileLoader = false;
             });
         }
@@ -213,8 +210,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                         .success(function () {
                             toastr.success('Connection is successful');
                         }).error(function (data) {
-                        const msg = getError(data);
-                        toastr.error(msg, 'Failed to connect');
+                        showErrorMsg('Failed to connect', data);
                     });
                 });
         }
@@ -255,8 +251,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
                     $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;
                     $scope.uploadFileLoader = false;
                 }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    showErrorMsg('Error', data);
                     $scope.uploadFileLoader = false;
                 });
         }
@@ -302,6 +297,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, Mod
 
         $scope.goBackToPrevious = function () {
             $scope.goBackToPreviousLocation();
+        }
+
+        function showErrorMsg (title, data) {
+            const msg = getError(data);
+            toastr.error(msg, title);
         }
 
         getSupportedDriversData()
