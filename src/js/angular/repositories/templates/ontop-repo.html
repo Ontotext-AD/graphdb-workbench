@@ -4,7 +4,7 @@
         <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">Database driver</label>
         <div class="col-xs-8 col-md-5 col-lg-4" tooltip="{{repoTooltips.ontop.driverType}}">
             <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"
-                    ng-change="getDriverType(selectedDriver.driverType)"
+                    ng-change="selectDriverByType(selectedDriver.driverType)"
                     ng-options="driver.driverType as driver.driverName for driver in supportedDriversData">
             </select>
         </div>
