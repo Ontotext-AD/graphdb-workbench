@@ -70,7 +70,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             }).error(function (data) {
             $scope.repositoryError = getError(data);
             toastr.error(getError(data), 'Error getting graphs');
-        });
+            });
     };
 
     const setSelectedGraphFromCache = function () {
@@ -299,6 +299,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             return;
         }
         selectedGraph = allGraphs;
+        $scope.repositoryError = null;
         initView();
     }
 
