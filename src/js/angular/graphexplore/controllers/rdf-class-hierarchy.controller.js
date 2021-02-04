@@ -435,6 +435,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
+        $scope.repositoryError = null;
         if (!currentActiveRepository) {
             return;
         }
