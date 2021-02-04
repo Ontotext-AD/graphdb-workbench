@@ -51,10 +51,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
     };
 
-    let selectedGraph = allGraphs;
+    let selectedGraph;
 
-    const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs()
+    function resolveGraphs() {
+        return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
@@ -62,7 +62,18 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             $scope.repositoryError = getError(data);
             toastr.error(getError(data), 'Error getting graphs');
         });
-    };
+    }
+
+    function initView() {
+        $scope.repositoryError = null;
+        selectedGraph = allGraphs;
+        resolveGraphs()
+            .then(function () {
+                getClassHierarchyData();
+            }).catch(function (err) {
+            // The catch block is empty, because error is handled in promise
+        });
+    }
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
@@ -111,8 +122,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     $scope.instancesQueryObj.query = "";
     $scope.instancesFilterFunc = instancesFilterFunc;
-
-    initView();
 
     $scope.$watch('instancesObj.items', function () {
         if ($scope.instancesObj.items.length > 0) {
@@ -426,15 +435,21 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
 
     let currentActiveRepository = $repositories.getActiveRepository();
 
+    $scope.$watch('direction', function () {
+        if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
+            return;
+        }
+        initView();
+    });
+
     function onRepositoryIsSet() {
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
-        selectedGraph = allGraphs;
+
         initView();
-        getClassHierarchyData();
     }
 
     function getClassHierarchyData() {
