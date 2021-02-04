@@ -1,4 +1,4 @@
-# graphdb-workbench
+# graphdb-workbench test 1.6
 The web application for GraphDB APIs
 
 [![Build Status](https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline)]
