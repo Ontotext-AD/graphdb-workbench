@@ -22,6 +22,8 @@ function rdfResourceSearchDirective($rootScope, $timeout,
               $scope.getActiveRepository())
               .success(function () {
                 checkAutocompleteStatus();
+              }).error(function (error) {
+                  // error is handled in core directive $scope.$watch('namespacespromise', function ()
               });
         }
       }

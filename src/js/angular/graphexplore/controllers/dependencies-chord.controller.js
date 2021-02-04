@@ -52,26 +52,33 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     let timer = null;
 
-    $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
+    let selectedGraph;
 
-    let selectedGraph = allGraphs;
-
-    const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs()
+    function resolveGraphs() {
+        return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
+            }).error(function (data) {
+            $scope.repositoryError = getError(data);
+            toastr.error(getError(data), 'Error getting graphs');
+        });
+    }
+
+    function initView() {
+        $scope.repositoryError = null;
+        selectedGraph = allGraphs;
+        $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
+        resolveGraphs()
+            .then(function () {
                 if (!$scope.isSystemRepository()) {
                     $scope.status = 'WAIT';
                     getRelationshipsStatus(true);
                 } else if ($scope.status !== "READY") {
                     getRelationshipsStatus();
                 }
-            }).error(function (data) {
-            $scope.repositoryError = getError(data);
-            toastr.error(getError(data), 'Error getting graphs');
-        });
-    };
+            });
+    }
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
@@ -298,7 +305,6 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             $scope.status = STATUS.NO_REPO;
             return;
         }
-        selectedGraph = allGraphs;
         initView();
     }
 

@@ -14,13 +14,13 @@
 
 <div class="top-offset" core-errors></div>
 <div class="top-offset" system-repo-warning></div>
-<div class="top-offset alert alert-danger" ng-show="repositoryError">
+<div class="top-offset alert alert-danger" ng-if="repositoryError">
     <p>The currently selected repository cannot be used for queries due to an error:</p>
 
     <p>{{repositoryError}}</p>
 </div>
-<div class="content" ng-show="!isSystemRepository()">
-    <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
+<div class="content" ng-if="!repositoryError && !isSystemRepository()">
+    <div class="pull-right relations-toolbar" ng-if="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
         <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                     data-toggle="dropdown"
