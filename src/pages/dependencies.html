@@ -14,7 +14,7 @@
 
 <div class="top-offset" core-errors></div>
 <div class="top-offset" system-repo-warning></div>
-<div class="top-offset alert alert-danger" ng-if="repositoryError">
+<div class="top-offset alert alert-danger" ng-show="repositoryError">
     <p>The currently selected repository cannot be used for queries due to an error:</p>
 
     <p>{{repositoryError}}</p>
