@@ -57,7 +57,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         if (!$scope.getActiveRepository()) {
             return;
         }
-        RDF4JRepositoriesRestService.resolveGraphs()
+        return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
@@ -440,8 +440,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
             return;
         }
         selectedGraph = allGraphs;
-        initView();
-        getClassHierarchyData();
+        initView()
+            .then(getClassHierarchyData);
     }
 
     function getClassHierarchyData() {
