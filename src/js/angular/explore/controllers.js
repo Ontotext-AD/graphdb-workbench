@@ -216,7 +216,12 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
         $http({
             method: 'GET',
-            url: 'rest/explore/graph?' + param + encodedURI + "&role=" + $scope.role + "&inference=" + $scope.inference + "&bnodes=" + $scope.blanks + "&sameAs=" + $scope.sameAs + "&context=" + encodeURIComponent($scope.context),
+            url: 'rest/explore/graph?' + param + encodedURI +
+                "&role=" + $scope.role +
+                "&inference=" + $scope.inference +
+                "&bnodes=" + $scope.blanks +
+                "&sameAs=" + $scope.sameAs +
+                ($scope.context ? "&context=" + encodeURIComponent($scope.context) : ""),
             headers: {
                 'Accept': format.type
             }
