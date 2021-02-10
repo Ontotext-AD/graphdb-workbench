@@ -93,6 +93,10 @@ function rdfResourceSearchDirective($rootScope, $timeout,
 
       $scope.isHomePage = function() {
         return $location.url() === '/';
+      };
+
+      $scope.isNotLoading = function() {
+          return !$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository';
       }
     }
   };
