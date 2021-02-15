@@ -134,7 +134,6 @@ describe('My Settings', () => {
         cy.visit('/settings');
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-
         cy.get('#sameas-on label').click();
         cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
         cy.get('#inference-on label').click();
