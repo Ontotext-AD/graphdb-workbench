@@ -1,10 +1,15 @@
 describe('My Settings', () => {
 
     let repositoryId;
+    let testResultCountQuery = "select * where { \n" +
+        "\t?s ?p ?o .\n" +
+        "} limit 1001";
+    const FILE_TO_IMPORT = 'wine.rdf';
 
     before(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     });
 
     beforeEach(() => {
@@ -78,6 +83,67 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
+    it('should change settings for admin and verify changes are reflected in SAPRQL editor', () => {
+        cy.get('.sparql-editor-settings').should('be.visible');
+
+        //turn off inference, sameAs and count total results
+        cy.get('#sameas-on label').click();
+        cy.get('#sameas-on').find('.switch:checkbox').should('not.be.checked');
+        cy.get('#inference-on label').click();
+        cy.get('#inference-on').find('.switch:checkbox').should('not.be.checked');
+        cy.get('#defaultCount:checkbox').uncheck();
+        cy.get('#defaultCount:checkbox').should('not.be.checked');
+        getSaveButton().click();
+
+        //Go to SPARQL editor and verify changes are persisted for the admin user
+        cy.visit('/sparql');
+        cy.get('.ot-splash').should('not.be.visible');
+
+        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
+            const cm = codeMirrorEl[0].CodeMirror;
+            expect(cm.getValue().trim().length > 0).to.be.true;
+        });
+
+        //clear default query and paste a new one that will generate more than 1000 results
+        cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+        cy.get('#queryEditor .CodeMirror').find('textarea').
+            invoke('val', testResultCountQuery).trigger('change', {force: true});
+
+        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
+            const cm = codeMirrorEl[0].CodeMirror;
+            expect(cm.getValue().trim().length > 0).to.be.true;
+        });
+
+        cy.get('#wb-sparql-runQuery').click();
+        cy.get('.ot-loader-new-content').should('not.be.visible');
+
+        //verify disabled default inference, sameAs and total results count
+        cy.get('#inference ')
+            .find('.icon-inferred-off')
+            .should('be.visible');
+
+        cy.get('#sameAs ')
+            .find('.icon-sameas-off')
+            .should('be.visible');
+
+        cy.get('.results-info .text-xs-right')
+            .should('be.visible')
+            .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+
+        //return to My Settings to revert the changes
+        cy.visit('/settings');
+        // Wait for loader to disappear
+        cy.get('.ot-loader').should('not.be.visible');
+
+        cy.get('#sameas-on label').click();
+        cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
+        cy.get('#inference-on label').click();
+        cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
+        cy.get('#defaultCount:checkbox').check();
+        cy.get('#defaultCount:checkbox').should('be.checked');
+        getSaveButton().click();
+    });
+
     function getUserRepositoryTable() {
         return cy.get('.user-repositories .table');
     }
@@ -88,5 +154,9 @@ describe('My Settings', () => {
 
     function getUserRoleButtonGroup() {
         return cy.get('.user-role');
+    }
+
+    function getSaveButton() {
+        return cy.get('#wb-user-submit');
     }
 });
