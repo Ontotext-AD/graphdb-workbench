@@ -256,7 +256,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
                 if (status === 204) {
-                    toastr.warning("No domain-range data available for '" + name + "' !");
+                    toastr.warning("No domain-range data available for '" + name + "'");
                 } else {
                     LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS, $location.hash());
                     $location
