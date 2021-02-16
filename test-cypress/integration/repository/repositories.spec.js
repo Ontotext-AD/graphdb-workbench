@@ -1,8 +1,40 @@
 import HomeSteps from "../../steps/home-steps";
+import ImportSteps from "../../steps/import-steps";
 
 describe('Repositories', () => {
 
     let repositoryId;
+    const SHACL_SHAPE_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "<http://rdf4j.org/schema/rdf4j#SHACLShapeGraph>\n" +
+        "{\n" +
+        "ex:PersonShape\n" +
+        "    a sh:NodeShape  ;\n" +
+        "    sh:targetClass ex:Person ;\n" +
+        "    sh:property [\n" +
+        "        sh:path ex:age ;\n" +
+        "        sh:datatype xsd:integer ;\n" +
+        "] .\n" +
+        "}";
+
+    const SHACL_CORRECT_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "\n" +
+        "ex:Alice\n" +
+        "  rdf:type ex:Person ;\n" +
+        "  ex:age 12 ;\n" +
+        ".";
+
+    const SHACL_INCORRECT_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "\n" +
+        "ex:Alice\n" +
+        "  rdf:type ex:Person ;\n" +
+        "  ex:age 12.1 ;\n" +
+        ".";
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
@@ -613,6 +645,43 @@ describe('Repositories', () => {
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
+    it('should create SHACL repo and test shapes validation', () => {
+        //Prepare repository by enabling SHACL
+        createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/free');
+        typeRepositoryId(repositoryId);
+        getSHACLRepositoryCheckbox().check();
+        saveRepository();
+        selectRepoFromDropdown(repositoryId);
+
+        //Import a shape in the SHACL graph
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_SHAPE_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'Imported successfully');
+        //Import data that conforms with the shape - import is successfull
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_CORRECT_DATA)
+            .selectRDFFormat("Turtle")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'Imported successfully');
+        //Import data that does not conform with the shape - GraphDBShaclSailValidationException
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_INCORRECT_DATA)
+            .selectRDFFormat("Turtle")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+    });
+
     function assertRepositoryStatus(repositoryId, status) {
         getRepositoryFromList(repositoryId)
             .should('be.visible')
@@ -836,5 +905,9 @@ describe('Repositories', () => {
             .should('be.visible')
             .and('have.attr', 'href')
             .and('contain', expectedUrl);
+    }
+
+    function getSHACLRepositoryCheckbox(){
+        return cy.get('#isShacl');
     }
 });
