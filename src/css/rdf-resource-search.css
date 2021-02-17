@@ -43,3 +43,8 @@
     width: 75vw;
   }
 }
+
+.autocomplete-hint {
+    font-size: 12px;
+    color: gray;
+}
