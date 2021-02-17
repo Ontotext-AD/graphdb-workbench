@@ -25,6 +25,7 @@
         </button>
     </span>
 </div>
+<span class="autocomplete-hint">Hint: "ab c" matches "abC*", "ab c*" and "ab-c*"</span>
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)" ng-class="{active: activeSearchElm === $index}"

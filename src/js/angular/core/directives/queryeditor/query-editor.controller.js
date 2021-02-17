@@ -49,6 +49,28 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         scope.$on('repositoryIsSet', deleteCachedSparqlResults);
     }
 
+    this.hint =  document.createElement("span");
+    this.hint.innerHTML = "Hint: \"abC\" matches \"abC*\", \"ab c*\" and \"ab-c*\"";
+    this.hint.style.fontSize = "12px";
+    this.hint.style.color = "gray";
+    this.hint.style.backgroundColor = "white";
+    this.hint.style.position = "absolute";
+    this.hint.style.zIndex = "3";
+    this.hint.style.paddingLeft = 12 + "px";
+
+    $scope.$watch(function() {
+        return angular.element('.CodeMirror-hints').length;
+    }, (newValue) => {
+        if (newValue) {
+            const elRect = angular.element('.CodeMirror-hints')[0].getBoundingClientRect();
+            document.body.appendChild(this.hint);
+            this.hint.style.top = elRect.top - 20 + "px";
+            this.hint.style.left = elRect.right - this.hint.offsetWidth - 12 +  "px";
+        } else {
+            this.hint && this.hint.parentNode && this.hint.parentNode.removeChild(this.hint);
+        }
+    });
+
     $scope.resetCurrentTabConfig = function () {
         $scope.currentTabConfig = {
             pageSize: 1000,
