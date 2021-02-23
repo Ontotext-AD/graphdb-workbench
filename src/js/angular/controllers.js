@@ -165,8 +165,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.graphdbVersion =
-        $scope.engineVersion =
-            $scope.workbenchVersion = productInfo.productVersion;
+        $scope.engineVersion = productInfo.productVersion;
+    $scope.workbenchVersion = productInfo.Workbench;
 
     $scope.connectorsVersion = productInfo.connectors;
 
