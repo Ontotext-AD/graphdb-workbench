@@ -66,7 +66,7 @@ describe('Repositories', () => {
         cy.url().should('include', '/repository/create');
 
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         // Create a repository by supplying only an identifier
         getRepositoryCreateForm().should('be.visible');
@@ -133,7 +133,7 @@ describe('Repositories', () => {
     it('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         saveRepository();
 
@@ -151,7 +151,7 @@ describe('Repositories', () => {
 
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         getRepositoryIdField().type(repositoryId);
         getRepositoryTitleField()
@@ -198,14 +198,14 @@ describe('Repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
         saveRepository();
 
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(secondRepoId);
         saveRepository();
@@ -268,7 +268,7 @@ describe('Repositories', () => {
 
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
@@ -300,7 +300,7 @@ describe('Repositories', () => {
     it('should allow to delete existing repository', () => {
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
         saveRepository();
@@ -649,7 +649,7 @@ describe('Repositories', () => {
         //Prepare repository by enabling SHACL
         createRepository();
         chooseRepositoryType();
-        cy.url().should('include', '/repository/create/free');
+        cy.url().should('include', '/repository/create/');
         typeRepositoryId(repositoryId);
         getSHACLRepositoryCheckbox().check();
         saveRepository();
