@@ -43,6 +43,7 @@
 							<tr>
 								<th id="queryIdColumn">id</th>
 								<th id="queryId2Column">node</th>
+                                <th id="usernameColumn">username</th>
 								<th id="queryTypeColumn">type</th>
 								<th id="queryColumn">query</th>
 								<th id="lifetimeColumn">lifetime</th>
@@ -60,6 +61,7 @@
                                         <div>{{ query.parsedNode[1] }}</div>
                                     </div>
                                 </td>
+                                <td>{{query.username}}</td>
 								<td>{{query.type}}</td>
 								<td>
 									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">Download</button>
