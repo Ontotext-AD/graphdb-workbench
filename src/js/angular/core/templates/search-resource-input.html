@@ -1,14 +1,31 @@
-<div class="input-group input-group-lg">
+<div id="search-resource-box" class="input-group btn-group" ng-class="{'input-group-lg': !radioButtons}" style="white-space: nowrap">
     <input type="text" class="form-control view-res-input" placeholder="{{placeholder}}" ng-model="searchInput"
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
-    <span class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">{{textButton ? textButton : 'Text'}}</button>
+    <button ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon"
+          tooltip="Clear" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+        <i class="icon-close" aria-hidden="true" ng-click="clearInput()"></i>
+    </button>
+    <span ng-if="!radioButtons" class="input-group-btn">
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">
+            {{textButtonLabel}}
+        </button>
     </span>
-    <span class="input-group-btn show-btn">
-        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">{{visualButton ? visualButton : 'Visual'}}</button>
+    <span ng-if="!radioButtons" class="input-group-btn show-btn">
+        <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">
+            {{visualButtonLabel}}
+        </button>
+    </span>
+    <span ng-if="radioButtons" class="input-group-btn">
+        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
+            {{textButtonLabel}}
+        </button>
+        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
+            {{visualButtonLabel}}
+        </button>
     </span>
 </div>
+<span class="autocomplete-hint">Hint: "ab c" matches "abC*", "ab c*" and "ab-c*"</span>
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)" ng-class="{active: activeSearchElm === $index}"

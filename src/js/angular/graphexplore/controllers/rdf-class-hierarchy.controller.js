@@ -54,7 +54,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs()
+        if (!$scope.getActiveRepository()) {
+            return;
+        }
+        return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
@@ -253,7 +256,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
                 if (status === 204) {
-                    toastr.warning("No domain-range data available for '" + name + "' !");
+                    toastr.warning("No domain-range data available for '" + name + "'");
                 } else {
                     LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS, $location.hash());
                     $location
@@ -432,9 +435,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
+        $scope.repositoryError = null;
+        if (!currentActiveRepository) {
+            return;
+        }
         selectedGraph = allGraphs;
-        initView();
-        getClassHierarchyData();
+        initView()
+            .then(getClassHierarchyData);
     }
 
     function getClassHierarchyData() {

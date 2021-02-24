@@ -253,6 +253,24 @@ describe('SPARQL screen validation', () => {
             getGoogleChartButton().should('be.visible').and('not.be.disabled');
         });
 
+        it('Should check for XML star download format', () => {
+            cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
+
+            typeQuery(SPARQL_STAR_QUERY);
+
+            verifyQueryAreaEquals(SPARQL_STAR_QUERY);
+
+            executeQuery();
+
+            getResultPages().should('have.length', 1);
+
+            cy.get('.saveAsDropDown').click().within(() => {
+                cy.get('.dropdown-menu')
+                    .should('be.visible')
+                    .and('contain', 'XML*');
+            });
+        });
+
 
         it('Test filter query results', () => {
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -577,7 +595,7 @@ describe('SPARQL screen validation', () => {
             openDownloadAsMenu();
 
             getDownloadAsFormatButtons()
-                .should('have.length', 7);
+                .should('have.length', 8);
 
             verifyDownloadMenuFormat('JSON', 'application/sparql-results+json');
             verifyDownloadMenuFormat('XML', 'application/sparql-results+xml');
@@ -868,7 +886,10 @@ describe('SPARQL screen validation', () => {
             // Wait until editor is initialized with the query and then assert the whole query
             getQueryArea().should('contain', 'INSERT DATA');
             cy.fixture('queries/add-statement.txt').then((query) => {
-                verifyQueryAreaEquals(query);
+                // Convert new line symbols to \n regardless of OS. Query in SPARQL editor uses \n for new line.
+                const EOLregex = /(\r\n|\r|\n)/g;
+                const reformattedQuery = query.replace(EOLregex, '\n');
+                verifyQueryAreaEquals(reformattedQuery);
             });
         });
 

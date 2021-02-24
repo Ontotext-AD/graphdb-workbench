@@ -63,10 +63,10 @@
         <table class="table table-sm m-0" ng-init="settings = filterSettings(file.name)">
             <tr ng-repeat="setting in settings">
                 <td><strong>{{setting[0]}}</strong></td>
-                <td class="break-word" ng-show="setting[0] == 'parserSettings'">
+                <td ng-show="setting[0] == 'parserSettings' || setting[0] == 'requestIdHeadersToForward'">
                     <pre>{{pritifySettings(setting[1])}}</pre>
                 </td>
-                <td class="break-word" ng-show="!(setting[0] == 'parserSettings')">{{setting[1]}}</td>
+                <td class="break-word" ng-show="!(setting[0] == 'parserSettings' || setting[0] == 'requestIdHeadersToForward')">{{setting[1]}}</td>
             </tr>
         </table>
     </script>

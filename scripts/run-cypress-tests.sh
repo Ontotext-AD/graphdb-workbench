@@ -69,6 +69,12 @@ if ! unzip -q "$GDB_ZIP" -d "$GDB_TMPDIR"; then
     cleanup 1
 fi
 
+echo "Building Workbench"
+if ! npm run build; then
+    echo "Could not build Workbench"
+    cleanup 1
+fi
+
 echo "Starting GraphDB daemon"
 if ! "$GDB_TMPDIR/graphdb-free-${GDB_VERSION}/bin/graphdb" -d \
     -p "$GDB_TMPDIR/graphdb.pid" \

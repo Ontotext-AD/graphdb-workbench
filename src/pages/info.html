@@ -14,31 +14,35 @@
 			<div class="list-group border-top-0 application-info-body">
 				<div class="list-group-item">
 					<div class="row">
-						<div class="col-md-4 gdb-item">
+						<div class="col-md-3 gdb-item">
 							<h5 class="list-group-item-heading">GraphDB</h5>
 							<p class="list-group-item-text">{{graphdbVersion}}</p>
 						</div>
-						<div class="col-md-4 rdf4j-item">
+						<div class="col-md-3 rdf4j-item">
 							<h5 class="list-group-item-heading">RDF4J</h5>
 							<p class="list-group-item-text">{{sesameVersion}}</p>
 						</div>
-						<div class="col-md-4 connectors-item">
+						<div class="col-md-3 connectors-item">
 							<h5 class="list-group-item-heading">Connectors</h5>
 							<p class="list-group-item-text">{{connectorsVersion}}</p>
 						</div>
+                        <div class="col-md-3 gdb-item">
+                            <h5 class="list-group-item-heading">Workbench</h5>
+                            <p class="list-group-item-text">{{workbenchVersion}}</p>
+                        </div>
 					</div>
 				</div>
 				<div class="list-group-item">
 					<div class="row">
-						<div class="col-md-4 os-item">
+						<div class="col-md-3 os-item">
 							<h5 class="list-group-item-heading">OS</h5>
 							<p class="list-group-item-text">{{info.osVersion}}</p>
 						</div>
-						<div class="col-md-4 java-item">
+						<div class="col-md-3 java-item">
 							<h5 class="list-group-item-heading">Java</h5>
 							<p class="list-group-item-text">{{info.javaVersion}}</p>
 						</div>
-						<div class="col-md-4 heap-item">
+						<div class="col-md-3 heap-item">
 							<h5 class="list-group-item-heading">Heap memory</h5>
 							<p class="list-group-item-text">{{info.usedMemory}} out of {{info.maxMemory}}</p>
 						</div>

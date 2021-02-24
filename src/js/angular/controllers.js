@@ -11,6 +11,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/autocomplete-status.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -28,7 +29,8 @@ angular
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.core.services.autocompleteStatus'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -37,6 +39,7 @@ angular
 homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+    $scope.doClear = false;
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
         if (!repo) {
@@ -54,13 +57,21 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
+                    checkAutocompleteStatus();
                 });
         }
     }
+
+    function checkAutocompleteStatus() {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+            .success(function () {
+                $scope.getActiveRepositorySize();
+            });
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+    });
 
     // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
     // after security was initialized. This way we avoid a race condition when the newly logged in
@@ -80,11 +91,22 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
             }
         }
     });
+
+    $scope.onKeyDown = function (event) {
+        if (event.keyCode === 27) {
+            $scope.doClear = true;
+        }
+    };
+
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope',
+                    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
+                    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope,
+                  productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.productTypeHuman = '';
@@ -143,8 +165,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.graphdbVersion =
-        $scope.engineVersion =
-            $scope.workbenchVersion = productInfo.productVersion;
+        $scope.engineVersion = productInfo.productVersion;
+    $scope.workbenchVersion = productInfo.Workbench;
 
     $scope.connectorsVersion = productInfo.connectors;
 
@@ -472,7 +494,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
                 "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
                 "RDF statements. If you plan to load more check for more information: " +
-                "<a href=\"http://graphdb.ontotext.com/documentation/" + $scope.productType + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.productType + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
             },
             {
                 "title": "Load a sample dataset",

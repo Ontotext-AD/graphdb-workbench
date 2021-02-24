@@ -34,8 +34,9 @@
 <div class="nodetooltip" ng-hide="selectedNode == null">
     <strong>{{selectedNode.location}}</strong>
     <hr style="margin-top: 10px; margin-bottom: 10px"/>
+    <div ng-show="selectedNode.disabledReason" class="alert alert-warning" ng-bind-html="selectedNode.disabledReason"></div>
     <div ng-show="isWorker(selectedNode)">
-        <div ng-hide="selectedNode.disabledReason">
+        <div>
             <div ng-show="hasInfo(selectedNode)">
                 <div>
                     <div class="row">
@@ -53,7 +54,7 @@
                 </div>
                 <div class="fingerprint">{{selectedNode.fingerprint}}</div>
             </div>
-            <button ng-click="showCloneModal()" class="btn btn-sm btn-success" aria-expanded="false" id="cloneButton">Clone to another location</button>
+            <button ng-click="showCloneModal()" ng-disabled="selectedNode.disabledReason" class="btn btn-sm btn-success" aria-expanded="false" id="cloneButton">Clone to another location</button>
         </div>
     </div>
     <div ng-show="!isWorker(selectedNode)">
@@ -79,7 +80,6 @@
             </div>
         </div>
     </div>
-    <div ng-show="selectedNode.disabledReason" class="alert alert-warning">{{selectedNode.disabledReason}}</div>
 </div>
 
 <div class="node-tip node-connect-tip">Drag and drop nodes to connect them or click to get additional information.</div>

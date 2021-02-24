@@ -10,14 +10,15 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (data) {
                 $scope.autocompleteEnabled = data;
+                $autocompleteStatus.setAutocompleteStatus(data);
             }).error(function (data) {
                 toastr.error(getError(data));
             });
@@ -82,10 +83,6 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     const checkForPlugin = function () {
         $scope.pluginFound = false;
 
-        if (!$repositories.getActiveRepository()) {
-            return;
-        }
-
         $scope.setLoader(true);
 
         AutocompleteRestService.checkForPlugin()
@@ -120,10 +117,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     const init = function() {
-        if ($repositories.getActiveRepository()) {
-            checkForPlugin();
+        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+            return;
         }
-
+        checkForPlugin();
         pullStatus();
     };
 
@@ -230,7 +227,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.$on('repositoryIsSet', function () {
-        if (!$repositories.getActiveRepository()) {
+        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
             return;
         }
         checkForPlugin();

@@ -1,6 +1,40 @@
+import HomeSteps from "../../steps/home-steps";
+import ImportSteps from "../../steps/import-steps";
+
 describe('Repositories', () => {
 
     let repositoryId;
+    const SHACL_SHAPE_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "<http://rdf4j.org/schema/rdf4j#SHACLShapeGraph>\n" +
+        "{\n" +
+        "ex:PersonShape\n" +
+        "    a sh:NodeShape  ;\n" +
+        "    sh:targetClass ex:Person ;\n" +
+        "    sh:property [\n" +
+        "        sh:path ex:age ;\n" +
+        "        sh:datatype xsd:integer ;\n" +
+        "] .\n" +
+        "}";
+
+    const SHACL_CORRECT_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "\n" +
+        "ex:Alice\n" +
+        "  rdf:type ex:Person ;\n" +
+        "  ex:age 12 ;\n" +
+        ".";
+
+    const SHACL_INCORRECT_DATA = "prefix ex: <http://example.com/ns#>\n" +
+        "prefix sh: <http://www.w3.org/ns/shacl#>\n" +
+        "prefix xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "\n" +
+        "ex:Alice\n" +
+        "  rdf:type ex:Person ;\n" +
+        "  ex:age 12.1 ;\n" +
+        ".";
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
@@ -29,8 +63,10 @@ describe('Repositories', () => {
             .and('contain', 'Local');
 
         createRepository();
-
         cy.url().should('include', '/repository/create');
+
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
 
         // Create a repository by supplying only an identifier
         getRepositoryCreateForm().should('be.visible');
@@ -96,6 +132,9 @@ describe('Repositories', () => {
 
     it('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+
         saveRepository();
 
         getRepositoryCreateForm().should('be.visible');
@@ -109,9 +148,10 @@ describe('Repositories', () => {
 
     it('should allow creation of repositories with custom settings', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
-        const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
 
         getRepositoryIdField().type(repositoryId);
         getRepositoryTitleField()
@@ -125,19 +165,13 @@ describe('Repositories', () => {
 
         // RDFS-Plus (Optimized) -> OWL-Horst (Optimized)
         getRepositoryRulesetMenu()
-            .should('have.value', '7')
-            .select('8')
-            .should('have.value', '8');
+            .should('have.value', '3')
+            .select('4')
+            .should('have.value', '4');
 
         // Should be automatically enabled when the rule set is changed to one of the OWL rule set
         getRepositoryDisableSameAsCheckbox()
             .should('not.be.checked');
-
-        getRepositoryBaseURLField()
-            .should('have.value', 'http://example.org/owlim#')
-            .clear()
-            .type(newBaseUrl)
-            .should('have.value', newBaseUrl);
 
         getRepositoryContextIndexCheckbox()
             .should('not.be.checked')
@@ -154,20 +188,25 @@ describe('Repositories', () => {
         getRepositoryCreateForm().should('be.visible');
         getRepositoryIdField().should('have.value', repositoryId);
         getRepositoryTitleField().should('have.value', repoTitle);
-        // OWL-Horst (Optimized) has become 9
-        getRepositoryRulesetMenu().should('have.value', '9');
+        // OWL-Horst (Optimized) has become 4
+        getRepositoryRulesetMenu().should('have.value', '4');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
-        getRepositoryBaseURLField().should('have.value', newBaseUrl);
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
     it('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+
         typeRepositoryId(repositoryId);
         saveRepository();
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+
         typeRepositoryId(secondRepoId);
         saveRepository();
 
@@ -226,9 +265,11 @@ describe('Repositories', () => {
 
     it('should allow to edit existing repository', () => {
         const newTitle = 'Title edit';
-        const newBaseUrl = 'http://example.org/wine#';
 
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
@@ -240,7 +281,6 @@ describe('Repositories', () => {
         getRepositoryDisableSameAsCheckbox().should('be.disabled');
 
         typeRepositoryTitle(newTitle);
-        typeRepositoryBaseURL(newBaseUrl);
         getRepositoryContextIndexCheckbox().check();
 
         getSaveRepositoryButton().click();
@@ -254,12 +294,14 @@ describe('Repositories', () => {
         editRepository(repositoryId);
 
         getRepositoryTitleField().should('have.value', newTitle);
-        getRepositoryBaseURLField().should('have.value', newBaseUrl);
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
     it('should allow to delete existing repository', () => {
         createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+
         typeRepositoryId(repositoryId);
         saveRepository();
 
@@ -286,37 +328,35 @@ describe('Repositories', () => {
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
     it('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
-        getRepositoryTypeDropdown().should('contain', "Ontop").and('not.be.disabled');
-        getRepositoryTypeDropdown().select('Ontop');
+        getRepositoryTypeButton('ontop').should('be', 'visible');
+        chooseRepositoryType('ontop');
+        cy.url().should('include', '/repository/create/ontop');
+
         getOBDAFileField().should('be', "visible");
         getOntologyFileField().should('be', "visible");
-        ;
         getPropertiesFileField().should('be', "visible");
-        ;
         getConstraintFileField().should('be', "visible");
         getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
-        ;
         getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
         getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
         getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
-        ;
     });
 
+    // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
     //Create Ontop repository and test ontop functionality
     it.skip('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
-        let propertiesFileUpload = ''
+        let propertiesFileUpload = '';
         const url = 'http://localhost:9000/rest/repositories/uploadFile';
         const fileType = '';
+        const virtualRepoName = 'virtual-repo-' + Date.now();
 
         // upload obda file
         cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
             Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                 const formData = new FormData();
-                formData.set('uploadFile', blob, 'fileName');
+                formData.set('uploadFile', blob, 'university-complete.obda');
 
                 cy.form_request(url, formData).then(response => {
                     return obdaFileUpload = response.response.body.fileLocation;
@@ -327,7 +367,7 @@ describe('Repositories', () => {
             cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
                 Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                     const formData = new FormData();
-                    formData.set('uploadFile', blob, 'fileName');
+                    formData.set('uploadFile', blob, 'university-complete.ttl');
 
                     cy.form_request(url, formData).then(response => {
                         return ontologyFileUpload = response.response.body.fileLocation;
@@ -338,7 +378,7 @@ describe('Repositories', () => {
                 cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
                     Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                         const formData = new FormData();
-                        formData.set('uploadFile', blob, 'fileName');
+                        formData.set('uploadFile', blob, 'university-complete.properties');
 
                         cy.form_request(url, formData).then(response => {
                             return propertiesFileUpload = response.response.body.fileLocation;
@@ -347,12 +387,12 @@ describe('Repositories', () => {
                 });
             }).then(() => {
                 const body = {
-                    id: 'virtual-repo',
+                    id: virtualRepoName,
                     title: '',
                     type: 'ontop',
                     params: {
                         propertiesFile: {
-                            label: 'Ontop repository properties file',
+                            label: 'JDBC properties file',
                             name: 'propertiesFile',
                             value: propertiesFileUpload
                         },
@@ -362,12 +402,12 @@ describe('Repositories', () => {
                             value: false
                         },
                         owlFile: {
-                            label: 'Ontop repository ontology file',
+                            label: 'Ontology file',
                             name: 'owlFile',
                             value: ontologyFileUpload
                         },
                         constraintFile: {
-                            label: 'Ontop repository constraint file',
+                            label: 'Constraint file',
                             name: 'constraintFile',
                             value: ''
                         },
@@ -382,7 +422,7 @@ describe('Repositories', () => {
                             value: "Ontop virtual store"
                         },
                         obdaFile: {
-                            label: "Ontop repository OBDA or R2RML file",
+                            label: "OBDA or R2RML file",
                             name: "obdaFile",
                             value: obdaFileUpload
                         }
@@ -395,7 +435,7 @@ describe('Repositories', () => {
                     body,
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(response => {
-                    console.log(response)
+                    console.log(response);
                 });
             });
         });
@@ -403,7 +443,7 @@ describe('Repositories', () => {
         cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
 
         //Check workbench restricted sections when connected to an Ontop repository
-        selectRepoFromDropdown('virtual-repo');
+        selectRepoFromDropdown(virtualRepoName);
         cy.visit("/import");
         getOntopFunctionalityDisabledMessage();
         cy.visit("/monitor/queries");
@@ -417,14 +457,238 @@ describe('Repositories', () => {
         cy.visit("/jdbc");
         getOntopFunctionalityDisabledMessage();
 
-        //Check that Inference and SameAs are disabled also that explain plan is not supported.
-        cy.visit("/sparql");
-        cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
-
-        //check that Inference and SameAs buttons are disabled.
-        cy.get('#inference').should('be', 'visible').and('be', 'disabled');
-        cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+        //TODO - uncomment following when org.h2.Driver is added to the class path of the instance
+        //
+        // //Check that Inference and SameAs are disabled also that explain plan is not supported.
+        // cy.visit("/sparql");
+        // cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+        //
+        // //check that Inference and SameAs buttons are disabled.
+        // cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+        // cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+        cy.deleteRepository(virtualRepoName);
     });
+
+    it('should verify different virtual repository RDBMS provider elements', () => {
+        // There should be a default repository location
+        getLocationsList()
+            .should('have.length', 1)
+            .and('contain', 'Local');
+
+        createRepository();
+        cy.url().should('include', '/repository/create');
+
+        chooseRepositoryType("ontop");
+        cy.url().should('include', '/repository/create/ontop');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+
+        //Select Generic JDBC Driver driver type and verify elements and download url (if available)
+        selectDatabaseDriver('Generic JDBC Driver');
+        getDatabaseDriver().should('contain', 'Generic JDBC Driver');
+
+        testOntopConfigurationElementsVisibility('Database driver', '#driverType');
+        testOntopConfigurationElementsVisibility('JDBC properties file*', '#propertiesFile');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+
+        //Select MySQL driver type and verify elements and download url (if available)
+        selectDatabaseDriver('MySQL');
+        getDatabaseDriver().should('contain', 'MySQL');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://dev.mysql.com/downloads/connector/j/');
+
+        //Select postgreSQL driver type and verify elements and download url (if available)
+        selectDatabaseDriver('PostgreSQL');
+        getDatabaseDriver().should('contain', 'PostgreSQL');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://jdbc.postgresql.org/download.html');
+
+        //Select Oracle driver type and verify elements and download url (if available)
+        selectDatabaseDriver('Oracle');
+        getDatabaseDriver().should('contain', 'Oracle');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://www.cdata.com/drivers/oracledb/jdbc/');
+
+        //Select MS SQL Server driver type and verify elements and download url (if available)
+        selectDatabaseDriver('MS SQL Server');
+        getDatabaseDriver().should('contain', 'MS SQL Server');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server');
+
+        //Select DB2 driver type and verify elements and download url (if available)
+        selectDatabaseDriver('DB2');
+        getDatabaseDriver().should('contain', 'DB2');
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
+    });
+
+    it('should restart an existing repository', () => {
+
+        createRepository();
+        chooseRepositoryType();
+
+        cy.url().should('include', '/repository/create');
+
+        // Create a repository by supplying only an identifier
+        getRepositoryCreateForm().should('be.visible');
+        getRepositoryIdField()
+            .should('have.value', '')
+            .type(repositoryId)
+            .should('have.value', repositoryId);
+        saveRepository();
+
+        // Verify we are back at the setup page after saving
+        cy.url().should((url) => {
+            expect(url.endsWith('/repository')).to.equal(true);
+        });
+
+        //Make sure that repository is in status INACTIVE
+        assertRepositoryStatus(repositoryId, "INACTIVE");
+
+        getRepositoriesDropdown().click().within(() => {
+
+            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
+            // Alternative is to have the click forced, which might lead to false positive result.
+            cy.get('.dropdown-menu').should('be.visible').wait(500);
+            cy.get('.dropdown-menu .dropdown-item')
+                .contains(repositoryId)
+                .closest('a')
+                .click();
+            // Should visualize the selected repo
+            cy.get('.no-selected-repository').should('not.be.visible');
+            cy.get('.active-repository')
+                .should('be.visible')
+                .and('contain', repositoryId);
+        });
+
+        HomeSteps.visitAndWaitLoader();
+        cy.visit('/repository');
+        waitUntilRepositoriesPageIsLoaded();
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+
+        //Restart the repository
+        restartRepository(repositoryId);
+        confirmModal();
+        //Check toast for RESTARTING status and repo row for RUNNING status
+        getToast()
+            .find('.toast-success')
+            .should('be.visible')
+            .and('contain', "Restarting repository " + repositoryId);
+
+        assertRepositoryStatus(repositoryId, "RESTARTING");
+
+        getToast().should('not.be.visible');
+
+        assertRepositoryStatus(repositoryId, "RUNNING");
+    });
+
+    it('should create SHACL repo and test shapes validation', () => {
+        //Prepare repository by enabling SHACL
+        createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+        typeRepositoryId(repositoryId);
+        getSHACLRepositoryCheckbox().check();
+        saveRepository();
+        selectRepoFromDropdown(repositoryId);
+
+        //Import a shape in the SHACL graph
+        ImportSteps.visitUserImport(repositoryId);
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_SHAPE_DATA)
+            .selectRDFFormat("TriG")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'Imported successfully');
+        //Import data that conforms with the shape - import is successfull
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_CORRECT_DATA)
+            .selectRDFFormat("Turtle")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'Imported successfully');
+        //Import data that does not conform with the shape - GraphDBShaclSailValidationException
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(SHACL_INCORRECT_DATA)
+            .selectRDFFormat("Turtle")
+            .clickImportTextSnippetButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+    });
+
+    function assertRepositoryStatus(repositoryId, status) {
+        getRepositoryFromList(repositoryId)
+            .should('be.visible')
+            .find('.repository-status')
+            .should('be.visible')
+            .and('contain', status, { timeout: 2000 });
+    }
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
@@ -453,9 +717,17 @@ describe('Repositories', () => {
     }
 
     function editRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .edit-repository-btn');
+    }
+
+    function restartRepository(repositoryId) {
+        clickRepositoryIcon(repositoryId, '.repository-actions .restart-repository-btn');
+    }
+
+    function clickRepositoryIcon(repositoryId, selector) {
         getRepositoryFromList(repositoryId)
             .should('be.visible')
-            .find('.repository-actions .edit-repository-btn')
+            .find(selector)
             // Forcefully clicking it due to https://github.com/cypress-io/cypress/issues/695
             .should('be.visible')
             .and('not.be.disabled')
@@ -468,6 +740,18 @@ describe('Repositories', () => {
 
     function createRepository() {
         getCreateRepositoryButton().click();
+    }
+
+    function getRepositoryTypeButton(type) {
+        if (type) {
+            return cy.get('#repository-type-' + type + '-btn');
+        } else {
+            return cy.get('.create-repo-btn').first();
+        }
+    }
+
+    function chooseRepositoryType(type) {
+        getRepositoryTypeButton(type).click();
     }
 
     function getRepositoriesDropdown() {
@@ -590,5 +874,40 @@ describe('Repositories', () => {
             .should('be', 'visible')
             .and('contain', 'Some functionalities are not available because')
             .and('contain', ' is read-only Virtual Repository');
+    }
+
+    function getOntopContentConfiguration() {
+        return cy.get('#ontop-content');
+    }
+
+    function getDatabaseDriver(){
+        return cy.get('#driverType');
+    }
+
+    function selectDatabaseDriver(driverType) {
+        getDatabaseDriver()
+            .select(driverType);
+    }
+
+    function testOntopConfigurationElementsVisibility(param, idValue) {
+        getOntopContentConfiguration()
+            .find('.row.indented-div label')
+            .contains(param)
+            .next()
+            .within(() => {
+                cy.get(idValue)
+                    .should('be.visible');
+            });
+    }
+
+    function compareDriverDownloadUrl(expectedUrl){
+        cy.get('.uri')
+            .should('be.visible')
+            .and('have.attr', 'href')
+            .and('contain', expectedUrl);
+    }
+
+    function getSHACLRepositoryCheckbox(){
+        return cy.get('#isShacl');
     }
 });

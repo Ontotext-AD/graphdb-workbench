@@ -1,6 +1,9 @@
+import 'angular/utils/local-storage-adapter';
+
 angular
     .module('graphdb.framework.core.directives', [
-        'graphdb.framework.core.services.repositories'
+        'graphdb.framework.core.services.repositories',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -241,9 +244,11 @@ function multiRequired() {
     };
 }
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce'];
+const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce) {
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys) {
     return {
         restrict: 'EA',
         scope: {
@@ -256,20 +261,53 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             placeholder: '@',
             uriValidation: '@',
             preserveInput: '@',
-            empty: '='
+            empty: '=',
+            clear: '=?clear',
+            openInNewTab: '@',
+            preserveSearch: '@',
+            radioButtons: '@',
+            clearInputIcon: '@'
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function ($scope, element, attrs) {
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
-            $scope.searchInput = "";
+            $scope.clear = false;
+            $scope.searchDisplayType = SEARCH_DISPLAY_TYPE;
             const MIN_CHAR_LEN = 0;
+            const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
+            const SEARCH_INPUT_FIELD = element.find('.view-res-input');
+            $scope.textButtonLabel = $scope.textButton || 'Table';
+            $scope.visualButtonLabel = $scope.visualButton || 'Visual';
 
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
-
             let canceler;
+
+            $scope.showClearInputIcon = false;
+            $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
+
+            if (IS_SEARCH_PRESERVED) {
+                $scope.preserveInput = 'true';
+                $scope.searchInput = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_INPUT) || "";
+                expandedUri = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_EXPANDED_URI);
+            } else {
+                $scope.searchInput = "";
+            }
+
+            $scope.changeSearchType = function(type) {
+                $scope.searchType = type;
+                LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
+            };
+
+            $scope.clearInput = function() {
+                $scope.searchInput = '';
+                $scope.autoCompleteUriResults = [];
+                $scope.showClearInputIcon = false;
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_EXPANDED_URI);
+            };
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
@@ -291,6 +329,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 if (angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
                         element.autoCompleteStatus = !!response;
+                        if ($scope.searchInput !== '') {
+                            $scope.onChange();
+                        }
                     }).error(function () {
                         toastr.error('Error attempting to check autocomplete capability!');
                     });
@@ -298,19 +339,40 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('empty', function () {
-                $scope.searchInput = '';
-                $scope.empty = false;
+                if (!IS_SEARCH_PRESERVED) {
+                    $scope.searchInput = '';
+                    $scope.empty = false;
+                }
+            });
+
+            $scope.$watch('clear', function () {
+                if ($scope.clear) {
+                    $scope.clearInput();
+                    $scope.clear = false;
+                }
             });
 
             const defaultTextCallback = function (params) {
-                var param = params.type || 'uri';
-                $location.path('resource').search(param, params.uri);
+                const param = params.type || 'uri';
+                if ($scope.openInNewTab === 'true') {
+                    openInNewWindowTab(false, params);
+                } else {
+                    $location.path('resource').search(param, params.uri);
+                }
             };
 
             const defaultVisualCallback = function (params) {
-                if ('uri' === params.type || !params.type) {
-                    $location.path('graphs-visualizations').search('uri', params.uri);
+                const param = params.type || 'uri';
+                if ($scope.openInNewTab === 'true') {
+                    openInNewWindowTab(true, params);
+                } else {
+                    $location.path('graphs-visualizations').search(param, params.uri);
                 }
+            };
+
+            const openInNewWindowTab = function (visual, params) {
+                const view = visual ? 'graphs-visualizations' : 'resource';
+                window.open(`/${view}?uri=${encodeURIComponent(params.uri)}`);
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
@@ -350,7 +412,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchRdfResource = function (resource, callback) {
                 if (resource.type === 'prefix') {
                     $scope.searchInput = expandPrefix(resource.value + ':');
-                    $scope.autoCompleteUriResults = [];
+                    SEARCH_INPUT_FIELD.focus();
+                    $scope.onChange();
                 } else {
                     let textResource;
                     if (angular.isUndefined(resource)) {
@@ -373,17 +436,21 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
-                    $scope.autoCompleteUriResults = [];
-                    if ($scope.preserveInput === 'true') {
+                    if (IS_SEARCH_PRESERVED) {
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                    } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
+                        $scope.autoCompleteUriResults = [];
                     } else {
                         $scope.searchInput = "";
+                        $scope.autoCompleteUriResults = [];
                     }
                 }
             };
 
             $scope.searchRdfResourceByEvent = function (uri, event) {
-                if (event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
@@ -433,6 +500,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.onChange = function () {
+                $scope.showClearInputIcon = $scope.clearInputIcon;
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
                     if (element.autoCompleteStatus) {
@@ -478,6 +546,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     scrollContentToTop();
                 }
                 if (event.keyCode === 27) {
+                    if (IS_SEARCH_PRESERVED) {
+                        return;
+                    }
                     $scope.searchInput = '';
                     $scope.autoCompleteUriResults = [];
                 }
@@ -538,7 +609,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(element.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
-                            $(".view-res-input").val(expandedUri);
+                            SEARCH_INPUT_FIELD.val(expandedUri);
                             return expandedUri + localName;
                         }
                     }

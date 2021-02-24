@@ -11,6 +11,123 @@ describe('Home screen validation', () => {
 
     beforeEach(() => cy.viewport(1280, 1000));
 
+    context('RDF resource search', () => {
+        it('Search button should not be present when no repo is selected', () => {
+            HomeSteps.visitAndWaitLoader();
+            cy.get('.search-rdf-btn').should('not.be.visible');
+            cy.get('.search-rdf-input').should('not.be.visible');
+        });
+
+        it('Search should be made from home page search when repo is set and on home page', () => {
+            const repositoryId = '23repo' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
+            cy.enableAutocomplete(repositoryId);
+            cy.presetRepository(repositoryId);
+
+            // When I visit home page with selected repository
+            HomeSteps.visitAndWaitLoader();
+            // Search rdf button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+            // When I click the button
+            HomeSteps.doNotOpenRdfSearchBoxButFocusResourceSearch();
+            // I should be able to type some text in the input on home page
+            cy.get('#search-resource-input-home > #search-resource-box > input').type('hasPos');
+            // And the autocomplete dropdown should become visible
+            cy.get('#search-resource-input-home > #auto-complete-results-wrapper').should('be.visible');
+            // // When I click the close button
+            cy.get('#search-resource-input-home > #search-resource-box > .clear-icon').click();
+            // // The input should be cleared
+            cy.get('#search-resource-input-home > #search-resource-box > input').should('have.value', '');
+
+            cy.deleteRepository(repositoryId);
+        });
+
+        it('Search should be present when repo is set', () => {
+            const repositoryId = '23repo' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
+            cy.enableAutocomplete(repositoryId);
+            cy.presetRepository(repositoryId);
+
+            // When I visit not home page with selected repository
+            cy.visit('/graphs');
+            cy.get('.ot-splash').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.be.visible');
+            // Search rdf button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+            // When I click the button
+            HomeSteps.openRdfSearchBox();
+            // I should be able to type some text in the input
+            cy.get('.search-rdf-input search-resource-input .view-res-input').type('hasPos');
+            // And the autocomplete dropdown should become visible
+            cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
+            // When I click the close button
+            cy.get('.close-rdf-search-btn').click();
+            // The input should not be cleared
+            cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
+            // And the search bar should hide and not be visible
+            cy.get('.search-rdf-input').should('not.be.visible');
+            // And the suggestions list should not be visible
+            cy.get('.search-rdf-input #auto-complete-results-wrapper').should('not.be.visible');
+            // And the search button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+            // When I open again the search box
+            HomeSteps.openRdfSearchBox();
+            // The input should have value 'hasPos'
+            cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
+            // And dropdown should be visible
+            cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
+            // When I press 'escape'
+            cy.get('.search-rdf-input search-resource-input .view-res-input').type('{esc}');
+            // Search box should not be visible
+            cy.get('.search-rdf-input').should('not.be.visible');
+
+            cy.deleteRepository(repositoryId);
+        });
+
+        it('Search should be persisted on page reload', () => {
+            const repositoryId = '23repo' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
+            cy.enableAutocomplete(repositoryId);
+            cy.presetRepository(repositoryId);
+
+            cy.visit('/graphs', {
+                onBeforeLoad (win) {
+                    cy.stub(win, 'open').as('window.open');
+                }
+            });
+            cy.get('.ot-splash').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.be.visible');
+            // Search rdf button should be visible
+            cy.get('.search-rdf-btn').should('be.visible');
+            // When I click the button
+            HomeSteps.openRdfSearchBox();
+            // I should be able to type some text in the input
+            cy.get('.search-rdf-input search-resource-input .view-res-input').type('hasPos');
+            // When I select option from suggestions
+            cy.get(".search-rdf-input #auto-complete-results-wrapper p").contains('hasPos').click();
+            // Search result should be opened in new window
+            cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
+            // When I revisit the home page
+            cy.visit('/graphs');
+            // When I open again the search box
+            HomeSteps.openRdfSearchBox();
+            // The input should have value 'hasPos' from previous search
+            cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
+            // And dropdown should be visible
+            cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
+            // When I press 'escape'
+            cy.get('.search-rdf-input search-resource-input .view-res-input').type('{esc}');
+            // Search box should not be visible
+            cy.get('.search-rdf-input').should('not.be.visible');
+
+
+            cy.deleteRepository(repositoryId);
+        });
+    });
+
     context('First visit', () => {
         beforeEach(() => HomeSteps.visitAndWaitLoader());
 
@@ -40,7 +157,7 @@ describe('Home screen validation', () => {
         it('Test create and select new repository via home page', () => {
             HomeSteps.verifyCreateRepositoryLink();
 
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             // Initializing the repository to speed up retrieving repository info
             cy.initializeRepository(repositoryId);
 
@@ -52,7 +169,7 @@ describe('Home screen validation', () => {
         });
 
         it('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
             HomeSteps.verifyQueryLink('Add statements', true, '/sparql?savedQueryName=Add%20statements&owner=admin&execute');
@@ -66,7 +183,7 @@ describe('Home screen validation', () => {
 
     context('"View resource" autocomplete', () => {
         it('Test homepage autocomplete when it is enabled', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
             // Type an invalid resource
@@ -76,30 +193,21 @@ describe('Home screen validation', () => {
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
             cy.enableAutocomplete(repositoryId);
 
-            HomeSteps.visitAndWaitLoader().then((el) => el)
+            HomeSteps.visitAndWaitLoader(true).then((el) => el)
+                .then(() => HomeSteps.getAutocompleteDisplayTypeButton('table').click())
                 .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
-                .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click());
-
-            HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
-
-            HomeSteps.goBackAndWaitAutocomplete(function () {
-                HomeSteps.autocompleteText('Green', GOBLIN_URI);
-                HomeSteps.getAutocompleteButton('text').click();
-                HomeSteps.verifyAutocompleteResourceLink(GOBLIN_URI);
-            });
-
-            HomeSteps.goBackAndWaitAutocomplete(function () {
-                HomeSteps.autocompleteText('Green', GOBLIN_URI);
-                HomeSteps.getAutocompleteButton('visual').click();
-                cy.url()
-                    .should('contain', '/graphs-visualizations?uri=http:%2F%2Fexample.org%2F%23green-goblin');
-            });
-
+                .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
+                .then(() => // Search result should be opened in new window
+                    cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
+                .then(() => HomeSteps.getAutocompleteDisplayTypeButton('visual').click())
+                .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
+                .then(() => // Search result should be opened in new window
+                    cy.get('@window.open').should('be.calledWith', '/graphs-visualizations?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'));
             cy.deleteRepository(repositoryId);
         });
 
         it('should not suggest resources in "View resources" when autocomplete is not enabled', () => {
-            let repositoryId = HomeSteps.createRepo();
+            const repositoryId = HomeSteps.createRepo();
             cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
 
             HomeSteps.visitAndWaitLoader();
@@ -107,6 +215,8 @@ describe('Home screen validation', () => {
 
             HomeSteps.getAutocompleteInput().type('Green');
             HomeSteps.noAutocompleteToast();
+
+            cy.deleteRepository(repositoryId);
         });
     });
 

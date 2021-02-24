@@ -15,6 +15,7 @@ function replaceVersion(content) {
 
 const contextPath = __dirname;
 
+
 module.exports = {
     devtool: 'source-map',
     entry: {
@@ -128,6 +129,10 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/repositories/templates',
+                to: 'js/angular/repositories/templates',
+            },
+            {
                 context: contextPath,
                 from: 'src/js/angular/autocomplete/templates',
                 to: 'js/angular/autocomplete/templates'
@@ -184,6 +189,11 @@ module.exports = {
             },
             {
                 context: contextPath,
+                from: 'src/js/angular/core/directives/rdfresourcesearch/templates',
+                to: 'js/angular/core/directives/rdfresourcesearch/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }
@@ -206,12 +216,22 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                use: {
+                // Stacking html-loader to replace the image URLs, then extract-loader to extract
+                // the HTML and finally ejs-loader so that variables can be replaced via
+                // HtmlWebpackPlugin's templateParameters.
+                use: [{
+                    loader: 'ejs-loader',
+                    options: {
+                        esModule: false
+                    }
+                }, {
+                    loader: 'extract-loader'
+                }, {
                     loader: 'html-loader',
                     options: {
                         attrs: ['img:src', 'object:data']
                     }
-                }
+                }]
             },
             {
                 test: /\.(svg|png|jpg|gif)$/,

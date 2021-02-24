@@ -1,5 +1,5 @@
 
-	<link href="css/repositories.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+	<link href="css/repositories.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
 	<link href="css/lib/bootstrap-switch/bootstrap-switch.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
@@ -40,7 +40,7 @@
 			</div>
 
 			<div class="alert alert-warning" ng-hide="!getLocations().length || hasActiveLocation()">
-				There is no active location
+                {{ getLocationError() }}
 			</div>
 
 			<div ng-show="hasActiveLocation()" class="mb-3">
@@ -69,7 +69,7 @@
 										popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
 											<span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
 											<strong class="repository-id">{{repository.id}}</strong></span>
-                                            <span class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
+                                            <span class="repository-status" class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
                                             <span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
 									</div>
 								</td>
@@ -93,6 +93,7 @@
 											<span class="icon-edit"></span>
 										</a>
 										<a class="btn btn-link p-0 download-turtle-config download-repository-config-btn" ng-href="{{getRepositoryDownloadLink(repository)}}"
+                                                rel="noopener"
 												target="_blank"
 												tooltip="Download repository configuration as Turtle"
 												tooltip-placement="top"
@@ -164,7 +165,7 @@
 								<div class="text-overflow">
 									<strong>{{location.label}}</strong>
 								</div>
-								<div ng-show="location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
+								<div ng-show="!location.active && location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
 							</td>
 							<td width="150" class="text-nowrap">
 								<button class="btn btn-link p-0"

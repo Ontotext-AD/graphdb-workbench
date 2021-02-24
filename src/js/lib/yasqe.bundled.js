@@ -27055,14 +27055,20 @@ module.exports = function (YASQE, yasqe) {
 	var getSuggestionsAsHintObject = function (suggestions, completer, token) {
 		var hintList = [];
 		for (var i = 0; i < suggestions.length; i++) {
-			var suggestedString = suggestions[i];
-			if (completer.postProcessToken) {
-				suggestedString = completer.postProcessToken(token, suggestedString);
+			var suggestion = suggestions[i];
+
+			if (!suggestion.value) {
+				continue;
 			}
 
-			var displayTextVar = replaceAll(replaceAll(suggestedString, "<", "&lt;"), ">", "&gt;");
-			displayTextVar = replaceAll(replaceAll(displayTextVar, "&lt;b&gt;", "<span class='CodeMirror-highlight'>"), "&lt;/b&gt;", "</span>");
-			suggestedString = replaceAll(replaceAll(suggestedString, "<b>", ""), "</b>", "");
+			var suggestedString = suggestion.value;
+			var displayTextVar = suggestion.description;
+
+			if (suggestion.type === 'prefix') {
+				suggestedString = suggestedString + ":";
+			} else if (completer.postProcessToken) {
+				suggestedString = completer.postProcessToken(token, suggestedString);
+			}
 
 			if (!(suggestedString.startsWith("<") && suggestedString.endsWith(">")) && suggestedString.indexOf(":") > 0) {
 				var prefixSplit = suggestedString.indexOf(":");
@@ -27173,6 +27179,7 @@ var selectHint = function (yasqe, data, completion) {
 ////	storeBulkCompletions: storeBulkCompletions,
 //	loadBulkCompletions: loadBulkCompletions,
 //};
+
 },{"../../lib/trie.js":4,"../main.js":46,"../utils.js":52,"jquery":16,"yasgui-utils":30}],35:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
@@ -27282,9 +27289,9 @@ module.exports.fetchAutocomplete = function (yasqe, token, callback) {
             if (204 === jqXHR.status && !yasqe.fromAutoShow) {
                 yasqe.toastBuildIndex();
             } else {
-                callback(data.suggestions.map(function (d) {
-                    return d.value
-                }));
+                if (data) {
+                    callback(data.suggestions);
+                }
             }
         },
         dataType: 'json',
@@ -27317,6 +27324,7 @@ module.exports.preProcessToken = function (yasqe, token) {
 module.exports.postProcessToken = function (yasqe, token, suggestedString) {
     return require('./utils.js').postprocessResourceTokenForCompletion(yasqe, token, suggestedString);
 };
+
 },{"./utils.js":40,"jquery":16}],37:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
@@ -28954,7 +28962,7 @@ module.exports = {
 }
 
 function findFirstPrefix(cm, line, ch, lineText) {
-	if (lineText.charAt(0) === "#" || (lineText.startsWith('"') && lineText.endsWith('"'))) return;
+	if (lineText && (lineText.charAt(0) === "#" || (lineText.startsWith('"') && lineText.endsWith('"')))) return;
 	if (!ch) ch = 0;
 	if (!lineText) lineText = cm.getLine(line);
 	lineText = lineText.toUpperCase();
@@ -28981,7 +28989,7 @@ function findFirstPrefix(cm, line, ch, lineText) {
 		if (found > 0 && lineText.charAt(found - 1) === ":")
 		    // :PREFIX freeze bug, See GDB-2408
 		    return;
-		tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
+		var tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
 		if (!/^(comment|string)/.test(tokenType))
 			return found + 1;
 		at = found - 1;
@@ -28989,6 +28997,9 @@ function findFirstPrefix(cm, line, ch, lineText) {
 }
 
 CodeMirror.registerHelper("fold", "prefix", function(cm, start) {
+	if (!start) {
+		return;
+	}
 	var line = start.line,
 		lineText = cm.getLine(line);
 
