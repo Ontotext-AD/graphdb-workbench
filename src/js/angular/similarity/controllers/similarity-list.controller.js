@@ -115,9 +115,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
         return $repositories.getActiveRepository();
     }, function () {
         if ($scope.getActiveRepository()) {
-            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
-                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
                     checkAutocompleteStatus();
                     $scope.usedPrefixes = {};
                     data.results.bindings.forEach(function (e) {
