@@ -12,6 +12,7 @@
 // the project's config changing)
 
 const webpack = require('@cypress/webpack-preprocessor');
+const webpackOptions = require('../../webpack.config.dev');
 
 module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
@@ -20,7 +21,6 @@ module.exports = (on, config) => {
         failed: require('cypress-failed-log/src/failed')()
     });
 
-    let webpackOptions = require('../../webpack.config.dev');
     const options = {
         // use the same Webpack options to bundle spec files as your app does "normally"
         // which should instrument the spec files in this project
