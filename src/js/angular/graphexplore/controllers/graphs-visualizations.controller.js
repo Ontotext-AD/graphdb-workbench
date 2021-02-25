@@ -783,7 +783,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
 
         // Inits namespaces for repo
-        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
             .success(function (data) {
                 const nss = _.map(data.results.bindings, function (o) {
                     return {"uri": o.namespace.value, "prefix": o.prefix.value};
@@ -792,7 +792,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     return n.uri.length;
                 });
 
-                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
                 checkAutocompleteStatus();
             }).error(function (data) {
                 toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
@@ -828,10 +827,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.getGraphConfigs(loadGraphFromQueryParam);
 
-    // when the view is initialized without the page refresh
-    if (!$scope.getNamespacesPromise || !$scope.getAutocompletePromise) {
-        initForRepository();
-    }
+    initForRepository();
 
     const multiClickDelay = 500; // max delay between clicks for multiple click events
 
