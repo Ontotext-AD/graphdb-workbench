@@ -39,7 +39,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
         $scope.ontopRepoFiles.forEach(function(key) {
             if ($scope.repositoryInfo.params[key]) {
-                $scope.ontopRepoFileNames[key] = $scope.repositoryInfo.params[key].value;
+                $scope.ontopRepoFileNames[key] = getFileName($scope.repositoryInfo.params[key].value);
             }
         });
         $scope.supportedDriverLabels = {hostName: 'Hostname', port: "Port", databaseName: 'Database name',
