@@ -26537,28 +26537,33 @@ function clearAll() {
 
 },{"../src/util":21}],29:[function(require,module,exports){
 module.exports={
-  "_from": "yasgui-utils@^1.6.0",
+  "_args": [
+    [
+      "yasgui-utils@1.6.7",
+      "/ssd/IntelliJProjects/YASQE-Ontotext"
+    ]
+  ],
+  "_from": "yasgui-utils@1.6.7",
   "_id": "yasgui-utils@1.6.7",
   "_inBundle": false,
   "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
   "_location": "/yasgui-utils",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "yasgui-utils@^1.6.0",
+    "raw": "yasgui-utils@1.6.7",
     "name": "yasgui-utils",
     "escapedName": "yasgui-utils",
-    "rawSpec": "^1.6.0",
+    "rawSpec": "1.6.7",
     "saveSpec": null,
-    "fetchSpec": "^1.6.0"
+    "fetchSpec": "1.6.7"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
-  "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-  "_spec": "yasgui-utils@^1.6.0",
+  "_spec": "1.6.7",
   "_where": "/ssd/IntelliJProjects/YASQE-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
@@ -26566,11 +26571,9 @@ module.exports={
   "bugs": {
     "url": "https://github.com/YASGUI/Utils/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "store": "^2.0.4"
   },
-  "deprecated": false,
   "description": "Utils for YASGUI libs",
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
@@ -27124,6 +27127,7 @@ module.exports = function (YASQE, yasqe) {
 				//only draw when the user needs to use a keypress to summon autocompletions
 				if (!completer.autoshow) {
 					if (!completionNotifications[completer.name]) completionNotifications[completer.name] = $("<div class='completionNotification'></div>");
+					$('#keyboardShortcuts').hide();
 					completionNotifications[completer.name]
 						.show()
 						.text("Press Alt+Enter to autocomplete")
@@ -27133,6 +27137,7 @@ module.exports = function (YASQE, yasqe) {
 			hide: function (yasqe, completer) {
 				if (completionNotifications[completer.name]) {
 					completionNotifications[completer.name].hide();
+					$('#keyboardShortcuts').show();
 				}
 			}
 
