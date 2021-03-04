@@ -28,8 +28,9 @@
 <span class="autocomplete-hint">Hint: "ab c" matches "abC*", "ab c*" and "ab-c*"</span>
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
+         id="{{'auto_' + $index}}"
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)" ng-class="{active: activeSearchElm === $index}"
-         ng-mouseover="setActiveClassOnHover($index)"
+         ng-mousemove="setActiveClassOnHover($index)"
          class="result-item">
         <p ng-bind-html="getResultItemHtml(autoCompleteUriResult)"></p>
     </div>

@@ -307,6 +307,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.showClearInputIcon = false;
                 LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
                 LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_EXPANDED_URI);
+                LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
             };
 
             $scope.$watch('namespacespromise', function () {
@@ -439,6 +440,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     if (IS_SEARCH_PRESERVED) {
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                        LocalStorageAdapter.set(LSKeys.RDF_RESOURCE_DESCRIPTION, resource.description);
                     } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
                         $scope.autoCompleteUriResults = [];
@@ -552,7 +554,49 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     $scope.searchInput = '';
                     $scope.autoCompleteUriResults = [];
                 }
+
+                if (!$scope.searchInput) {
+                    $scope.clearInput();
+                }
             };
+
+            function isAutocompleteResultsLoaded() {
+                return new Promise(resolve => {
+                    const dropDown = document.getElementById('auto-complete-results-wrapper');
+                    const rect = dropDown.lastElementChild.getBoundingClientRect();
+                    setTimeout(() => {
+                        resolve(rect.top >= 0 && rect.left >= 0 &&
+                            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                            rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+                    });
+                })
+            }
+
+            function scrollToPreviouslySelectedEl() {
+                const dropDown = $('#auto-complete-results-wrapper');
+                const automaticScroll = $('#auto_' + $scope.activeSearchElm);
+                dropDown.animate({
+                    scrollTop: automaticScroll.offset().top - dropDown.offset().top +
+                        dropDown.scrollTop()
+                })
+            }
+
+            function findPreviousSearchResultIndex() {
+                let index = -1;
+                const focused = LocalStorageAdapter.get(LSKeys.RDF_RESOURCE_DESCRIPTION);
+                if (focused && $scope.autoCompleteUriResults) {
+                    index = $scope.autoCompleteUriResults.findIndex(el => el.description === focused);
+                }
+
+                $scope.activeSearchElm = index === -1 ? 0 : index;
+
+                isAutocompleteResultsLoaded()
+                    .then(function () {
+                        scrollToPreviouslySelectedEl();
+                    })
+            }
+
+            $scope.$on('rdfResourceSearchExpanded', findPreviousSearchResultIndex);
 
             $scope.setActiveClassOnHover = function (index) {
                 if (!element.autoCompleteStatus) {
@@ -560,7 +604,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
                 $scope.activeSearchElm = index;
             };
-
 
             function scrollContentToBottom() {
                 const $autoCompleteWrapper = $("#auto-complete-results-wrapper");
@@ -644,8 +687,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
                         .then(function (results) {
                             canceler = null;
-                            $scope.activeSearchElm = 0;
                             $scope.autoCompleteUriResults = results.data.suggestions;
+                            $scope.activeSearchElm = 0;
                         });
                 }
             }
