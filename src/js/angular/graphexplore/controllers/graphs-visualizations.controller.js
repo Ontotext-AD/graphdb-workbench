@@ -20,9 +20,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -218,18 +218,28 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         ModalService.openCopyToClipboardModal(uri);
     }
 
+    const settingsFromPrincipal = $jwtAuth.getPrincipal().appSettings;
+
     $scope.defaultSettings = {
         linksLimit: 20,
-        includeInferred: false,
-        sameAsState: false,
+        includeInferred: settingsFromPrincipal['DEFAULT_INFERENCE'],
+        sameAsState: settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
         languages: ['en'],
         showLinksText: true,
         preferredTypes: [],
         rejectedTypes: [],
         preferredPredicates: [],
-        rejectedPredicates: [],
+        rejectedPredicates: ["http://dbpedia.org/property/logo",
+                             "http://dbpedia.org/property/hasPhotoCollection",
+                             "http://dbpedia.org/property/website",
+                             "http://dbpedia.org/property/homepage",
+                             "http://dbpedia.org/ontology/thumbnail",
+                             "http://xmlns.com/foaf/0.1/depiction",
+                             "http://xmlns.com/foaf/0.1/homepage",
+                             "http://xmlns.com/foaf/0.1/mbox"],
         preferredTypesOnly: false,
-        preferredPredicatesOnly: false
+        preferredPredicatesOnly: false,
+        includeSchema: settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA']
     };
 
     $scope.saveSettings = angular.copy($scope.defaultSettings);
@@ -238,6 +248,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     if (localStorageSettings && typeof localStorageSettings === 'object') {
         try {
             $scope.saveSettings = localStorageSettings;
+            if ($scope.saveSettings['includeSchema'] === undefined) {
+                $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
+            }
         } catch (e) {
             $scope.saveSettings = angular.copy($scope.defaultSettings);
             LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
@@ -1642,9 +1655,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         if (newNodes.length === 0) {
             if (isStartNode) {
-                toastr.info('This node has no visible connections.');
+                toastr.info('This node has no visible connections. Check your Graph Settings if you expect such.');
             } else if (linksFound.length === 0) {
-                toastr.info('This node has no other visible connections.');
+                toastr.info('This node has no other visible connections. Check your Graph Settings if you expect such.');
             }
 
             graph.addAndMatchLinks(linksFound);
@@ -1712,7 +1725,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 preferredTypesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredTypesOnly'],
                 preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredPredicatesOnly'],
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                includeSchema: $scope.saveSettings['includeSchema']
             }
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
@@ -2071,7 +2085,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 config: $scope.configLoaded.id,
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                 includeInferred: $scope.saveSettings['includeInferred'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                rejectedPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedPredicates']
             }
         }).then(function (response) {
             $scope.data = _.mapKeys(response.data, function (value, key) {

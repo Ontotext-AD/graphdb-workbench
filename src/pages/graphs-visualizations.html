@@ -263,6 +263,14 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
+                        <label tooltip="Include/Exclude predicates from the following schemas: &lt;http://www.w3.org/2002/07/owl#&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; &lt;http://www.w3.org/2000/01/rdf-schema#&gt; &lt;http://www.openrdf.org/schema/sesame#&gt; &lt;http://www.ontologydesignpatterns.org/ont/dul/DUL.owl&gt; &lt;http://www.w3.org/ns/prov&gt; &lt;http://dbpedia.org/ontology/wikiPage&gt; &lt;http://dbpedia.org/property/wikiPage&gt; &lt;http://www.omg.org/spec/&gt; &lt;http://www.wikidata.org/entity/&gt; &lt;http://factforge.net/&gt;">
+                        <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
+                            Include Schema Statements
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-2">
+                    <div class="checkbox">
                         <label>
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
                             Include Inferred Statements

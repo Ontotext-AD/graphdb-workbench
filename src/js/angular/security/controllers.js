@@ -214,7 +214,8 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,
-                        'IGNORE_SHARED_QUERIES': false
+                        'IGNORE_SHARED_QUERIES': false,
+                        'DEFAULT_VIS_GRAPH_SCHEMA': true
                     };
                     const modalInstance = $modal.open({
                         templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
@@ -463,7 +464,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 'DEFAULT_SAMEAS': true,
                 'DEFAULT_INFERENCE': true,
                 'EXECUTE_COUNT': true,
-                'IGNORE_SHARED_QUERIES': false
+                'IGNORE_SHARED_QUERIES': false,
+                'DEFAULT_VIS_GRAPH_SCHEMA': true
             }
         };
 
@@ -557,7 +559,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             'DEFAULT_SAMEAS': true,
             'DEFAULT_INFERENCE': true,
             'EXECUTE_COUNT': true,
-            'IGNORE_SHARED_QUERIES': false
+            'IGNORE_SHARED_QUERIES': false,
+            'DEFAULT_VIS_GRAPH_SCHEMA': true
         };
 
         if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
@@ -706,6 +709,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             scope.user.confirmpassword = '';
             scope.user.external = scope.userData.external;
             scope.user.appSettings = scope.userData.appSettings;
+            // For backward compatibility
+            if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
+                scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
+            }
 
             const pa = parseAuthorities(scope.userData.authorities);
             $scope.userType = pa.userType;

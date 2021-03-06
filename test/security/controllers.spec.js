@@ -323,7 +323,7 @@ describe('==> Controllers tests', function () {
 
             httpCreateUser = $httpBackend.when('POST', "rest/security/user/testov", {
                 "grantedAuthorities": [],
-                "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true, 'IGNORE_SHARED_QUERIES': false}
+                "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true, 'IGNORE_SHARED_QUERIES': false, 'DEFAULT_VIS_GRAPH_SCHEMA': true}
             }, function (headers) {
                 return headers['X-GraphDB-Password'] === 'testova';
             }).respond(201, '');
