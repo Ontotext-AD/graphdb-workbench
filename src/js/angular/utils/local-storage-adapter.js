@@ -20,7 +20,8 @@ angular
         'AUTOCOMPLETE_ENABLED': 'autocomplete.enabled',
         'RDF_SEARCH_TYPE': 'rdf-search.search-type',
         'RDF_SEARCH_INPUT': 'rdf-search.search-input',
-        'RDF_SEARCH_EXPANDED_URI': 'rdf-search.search-expanded-uri'
+        'RDF_SEARCH_EXPANDED_URI': 'rdf-search.search-expanded-uri',
+        'RDF_RESOURCE_DESCRIPTION': 'rdf-search.resource-description'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];
