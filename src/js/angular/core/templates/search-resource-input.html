@@ -29,8 +29,9 @@
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          id="{{'auto_' + $index}}"
-         ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)" ng-class="{active: activeSearchElm === $index}"
-         ng-mousemove="setActiveClassOnHover($index)"
+         ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)"
+         ng-class="{active: activeSearchElm === $index, selected: selectedElementIndex === $index}"
+         ng-mousemove="setActiveClassOnMouseMove($index)"
          class="result-item">
         <p ng-bind-html="getResultItemHtml(autoCompleteUriResult)"></p>
     </div>

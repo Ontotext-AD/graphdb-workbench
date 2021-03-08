@@ -438,6 +438,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
                     if (IS_SEARCH_PRESERVED) {
+                        $scope.selectedElementIndex = $scope.activeSearchElm;
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
                         LocalStorageAdapter.set(LSKeys.RDF_RESOURCE_DESCRIPTION, resource.description);
@@ -586,19 +587,20 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 const focused = LocalStorageAdapter.get(LSKeys.RDF_RESOURCE_DESCRIPTION);
                 if (focused && $scope.autoCompleteUriResults) {
                     index = $scope.autoCompleteUriResults.findIndex(el => el.description === focused);
+                    $scope.selectedElementIndex = index;
+
+                    isAutocompleteResultsLoaded()
+                        .then(function () {
+                            scrollToPreviouslySelectedEl();
+                        })
                 }
 
                 $scope.activeSearchElm = index === -1 ? 0 : index;
-
-                isAutocompleteResultsLoaded()
-                    .then(function () {
-                        scrollToPreviouslySelectedEl();
-                    })
             }
 
             $scope.$on('rdfResourceSearchExpanded', findPreviousSearchResultIndex);
 
-            $scope.setActiveClassOnHover = function (index) {
+            $scope.setActiveClassOnMouseMove = function (index) {
                 if (!element.autoCompleteStatus) {
                     return;
                 }
