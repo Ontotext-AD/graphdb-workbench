@@ -2268,6 +2268,12 @@ input.switch:checked ~ label:after {
     cursor: pointer;
 }
 
+#auto-complete-results-wrapper div.selected {
+    background-color: #aee4df;
+    color: #0a6d63;
+    cursor: pointer;
+}
+
 #auto-complete-results-wrapper div p b {
     color: #ED4F2F;
 }
