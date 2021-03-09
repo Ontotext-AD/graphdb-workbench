@@ -287,14 +287,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.showClearInputIcon = false;
             $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
-
-            if (IS_SEARCH_PRESERVED) {
-                $scope.preserveInput = 'true';
-                $scope.searchInput = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_INPUT) || "";
-                expandedUri = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_EXPANDED_URI);
-            } else {
-                $scope.searchInput = "";
-            }
+            $scope.searchInput = "";
 
             $scope.changeSearchType = function(type) {
                 $scope.searchType = type;
@@ -303,6 +296,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
+                $scope.selectedElementIndex = -1;
                 $scope.autoCompleteUriResults = [];
                 $scope.showClearInputIcon = false;
                 LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
@@ -504,12 +498,16 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.onChange = function () {
                 $scope.showClearInputIcon = $scope.clearInputIcon;
+                if (IS_SEARCH_PRESERVED) {
+                    LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                }
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
                     if (element.autoCompleteStatus) {
-                        checkUriAutocomplete($scope.searchInput);
+                        return checkUriAutocomplete($scope.searchInput);
                     }
                 }
+                return Promise.resolve();
             };
 
             $scope.onKeyDown = function (event) {
@@ -564,7 +562,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             function isAutocompleteResultsLoaded() {
                 return new Promise(resolve => {
                     const dropDown = document.getElementById('auto-complete-results-wrapper');
-                    const rect = dropDown.lastElementChild.getBoundingClientRect();
+                    const rect = dropDown.getBoundingClientRect();
                     setTimeout(() => {
                         resolve(rect.top >= 0 && rect.left >= 0 &&
                             rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
@@ -575,11 +573,22 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             function scrollToPreviouslySelectedEl() {
                 const dropDown = $('#auto-complete-results-wrapper');
-                const automaticScroll = $('#auto_' + $scope.activeSearchElm);
+                const automaticScroll = $('#auto_' + $scope.selectedElementIndex);
                 dropDown.animate({
                     scrollTop: automaticScroll.offset().top - dropDown.offset().top +
                         dropDown.scrollTop()
                 })
+            }
+
+            function loadStoredSearchData() {
+                if (IS_SEARCH_PRESERVED) {
+                    $scope.preserveInput = 'true';
+                    $scope.searchInput = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_INPUT) || "";
+                    expandedUri = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_EXPANDED_URI);
+                    return $scope.onChange();
+                }
+                // Usually when this function is called search is preserved
+                return Promise.resolve();
             }
 
             function findPreviousSearchResultIndex() {
@@ -592,13 +601,22 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     isAutocompleteResultsLoaded()
                         .then(function () {
                             scrollToPreviouslySelectedEl();
-                        })
+                        }).catch(function (err) {
+                        toastr.error(getError(err), 'Could not find previous search element in menu!');
+                    });
                 }
 
                 $scope.activeSearchElm = index === -1 ? 0 : index;
             }
 
-            $scope.$on('rdfResourceSearchExpanded', findPreviousSearchResultIndex);
+            function loadAutocompleteData() {
+                loadStoredSearchData()
+                    .then(function () {
+                        findPreviousSearchResultIndex();
+                    })
+            }
+
+            $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
 
             $scope.setActiveClassOnMouseMove = function (index) {
                 if (!element.autoCompleteStatus) {
@@ -686,13 +704,16 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         canceler.resolve();
                     }
                     canceler = $q.defer();
-                    AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
+                    return AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
                         .then(function (results) {
                             canceler = null;
-                            $scope.autoCompleteUriResults = results.data.suggestions;
+                            // if (showDropDown) {
+                                $scope.autoCompleteUriResults = results.data.suggestions;
+                            // }
                             $scope.activeSearchElm = 0;
                         });
                 }
+                return Promise.resolve();
             }
         }
     };
