@@ -12,7 +12,7 @@ const modules = [
 ];
 
 angular.module('graphdb.framework.jdbc.controllers', modules, [
-    'graphdb.framework.utils.notifications',
+    'graphdb.framework.utils.notifications'
 ])
     .controller('JdbcListCtrl', JdbcListCtrl)
     .controller('JdbcCreateCtrl', JdbcCreateCtrl);
@@ -51,10 +51,11 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
             .then(function () {
                 JdbcRestService.deleteJdbcConfiguration(name).success(function () {
                     $scope.getSqlConfigurations();
+                }).error(function(e) {
+                    toastr.error(getError(e), 'Could not delete SQL table');
                 });
-
             });
-    }
+    };
 
     // Check if warning message should be shown or removed on repository change
     const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
@@ -133,7 +134,14 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     const defaultTabConfig = {
         id: '1',
         name: '',
-        query: '',
+        query: 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
+            '\n' +
+            '# Selects two variables to use as columns\n' +
+            'SELECT ?id ?label {\n' +
+            '    ?id rdfs:label ?label\n' +
+            '    # The following placeholder must be present in the query\n' +
+            '    #!filter\n' +
+            '}',
         inference: true,
         sameAs: true,
         isNewConfiguration: true,
@@ -146,9 +154,8 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             page: 1,
             allResultsCount: 0,
             resultsCount: 0,
-            // QueryType of currentTabConfig is needed for visualization of YASR.
-            // If not set, YASR is hidden
-            queryType: window.editor.getQueryType()
+            // Hide YASR by default, show on success in callback when needed
+            queryType: ''
         };
     };
 
@@ -161,7 +168,11 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         window.editor.setValue(query ? query : ' ');
     };
 
-    getJdbcConfiguration($scope.name);
+    if ($scope.name) {
+        getJdbcConfiguration($scope.name);
+    } else {
+        setQueryFromTabConfig();
+    }
 
     // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
@@ -237,19 +248,15 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         if (!$scope.canWriteActiveRepo()) {
             window.editor.options.readOnly = true;
         }
-    };
+    }
 
     $scope.goToPage = function (page) {
         $scope.page = page;
         const columns = $scope.currentQuery.columns;
-        if (page === 2 && (!columns || columns.length === 0)) {
+        if (page === 2 && (!columns || columns.length === 0) && hasValidQuery()) {
             $scope.getColumnsSuggestions();
         }
-        if (page === 2) {
-            $scope.viewMode = 'editor';
-        } else {
-            $scope.viewMode = 'none';
-        }
+        resetYasqeYasr();
     };
 
     function getJdbcConfiguration(name) {
@@ -260,34 +267,35 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
             defaultTabConfig.isNewConfiguration = !config.name;
 
-            $scope.tabsData = $scope.tabs = [defaultTabConfig];
-            $scope.currentQuery = angular.copy(defaultTabConfig);
-            // ViewMode should be set to "none" to be
-            // displayed YASQUE and YASR at the same time
-            $scope.viewMode = 'none';
-
-            if (window.editor) {
-                $scope.setQuery($scope.currentQuery.query);
-                loadTab();
-            }
-
-            $scope.$watch(function () {
-                return $scope.currentQuery.query;
-            }, function (newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    $scope.setDirty();
-                }
-            });
-
+            setQueryFromTabConfig();
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Could not get SQL table configuration');
         });
     }
 
+    function setQueryFromTabConfig() {
+        $scope.tabsData = $scope.tabs = [defaultTabConfig];
+        $scope.currentQuery = angular.copy(defaultTabConfig);
+
+        resetYasqeYasr();
+
+        if (window.editor) {
+            $scope.setQuery($scope.currentQuery.query);
+            loadTab();
+        }
+
+        $scope.$watch(function () {
+            return $scope.currentQuery.query;
+        }, function (newValue, oldValue) {
+            if (newValue !== oldValue) {
+                $scope.setDirty();
+            }
+        });
+    }
+
     $scope.save = function () {
-        if ($scope.currentQuery.queryType !== 'SELECT') {
-            toastr.error('Sparql query must be SELECT');
+        if (!validateDefinition()) {
             return;
         }
 
@@ -301,6 +309,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewConfiguration = false;
                 toastr.success('SQL table configuration saved');
+                $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Could not save SQL table configuration');
@@ -310,12 +319,12 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewConfiguration = false;
                 toastr.success('SQL table configuration updated');
+                $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Could not save SQL table configuration');
             });
         }
-        $scope.goBack();
     };
 
     $scope.hasPrecision = function (columnType) {
@@ -323,7 +332,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     $scope.containsColumnsWithPrecision = function (columns) {
-        return columns && columns.some(el => $scope.hasPrecision(el.column_type));
+        return columns && columns.some((el) => $scope.hasPrecision(el.column_type));
     };
 
     $scope.hasScale = function (columnType) {
@@ -331,17 +340,21 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     $scope.containsColumnsWithScale = function (columns) {
-        return columns && columns.some(el => $scope.hasScale(el.column_type));
+        return columns && columns.some((el) => $scope.hasScale(el.column_type));
     };
 
-    $scope.isIri = function (columnType) {
-        return columnType === 'iri';
+    $scope.isLiteral = function (columnType) {
+        return columnType !== 'iri' && columnType !== 'unknown';
     };
 
-    $scope.containsIriColumnsOnly = function (columns) {
-        return columns && columns.every(el => $scope.isIri(el.column_type));
+    $scope.containsNonLiteralColumnsOnly = function (columns) {
+        return columns && columns.every((el) => !$scope.isLiteral(el.column_type));
     };
 
+    $scope.containsUnknownColumns = function () {
+        return $scope.currentQuery.columns && $scope.currentQuery.columns
+            .find((el) => el.column_type === 'unknown');
+    };
 
     // Add known prefixes
     function addKnownPrefixes() {
@@ -364,7 +377,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         }, 0);
     });
 
-    $scope.selectColumnType = function (columnName) {
+    $scope.selectColumnType = function (columnName, prevColumnType) {
         const column = _.find($scope.currentQuery.columns, function (column) {
             return column.column_name === columnName;
         });
@@ -372,8 +385,16 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         if (column.column_type === 'Get suggestion...') {
             JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, [columnName]).success(function (columnSuggestion) {
                 column.column_type = columnSuggestion[columnName].column_type;
-                column.nullable = false;
-                column.sparql_type = columnSuggestion[columnName].sparql_type;;
+                if (column.column_type === prevColumnType) {
+                    toastr.info('SQL type is the same after suggest: <b>' + column.column_type + '</b>',
+                        'Suggest SQL type', {allowHtml: true});
+                } else {
+                    toastr.success('SQL type set to: <b>' + column.column_type + '</b>',
+                        'Suggest SQL type', {allowHtml: true});
+                }
+                column.sparql_type = columnSuggestion[columnName].sparql_type;
+            }).error(function(e) {
+                toastr.error(getError(e), 'Could not suggest column type');
             });
         }
         $scope.setDirty();
@@ -395,20 +416,28 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     function getSuggestions() {
+        if (!validateQuery()) {
+            return;
+        }
+
         JdbcRestService.getColumnNames($scope.currentQuery.query).success(function (columns) {
             JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, columns).success(function (columnTypes) {
-                let suggestedColumns = [];
-                _.forEach(columnTypes, function (value, key) {
+                const suggestedColumns = [];
+                _.forEach(columns, function (columnName) {
                     suggestedColumns.push({
-                        column_name: key,
-                        column_type: value.column_type,
-                        nullable: false,
-                        sparql_type: value.sparql_type
+                        column_name: columnName,
+                        column_type: columnTypes[columnName].column_type,
+                        nullable: true,
+                        sparql_type: columnTypes[columnName].sparql_type
                     });
                 });
                 $scope.currentQuery.columns = suggestedColumns;
                 $scope.setDirty();
+            }).error(function (e) {
+                toastr.error(getError(e), "Could not suggest column types");
             });
+        }).error(function (e) {
+            toastr.error(getError(e), "Could not suggest column names");
         });
     }
 
@@ -425,11 +454,11 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     $scope.getPreview = function () {
-        $scope.executedQueryTab = $scope.currentQuery;
-        if (window.editor.getQueryType() !== 'SELECT' && $scope.canWriteActiveRepo()) {
-            toastr.error('JDBC works only with SELECT queries.');
+        if (!validateDefinition()) {
             return;
         }
+
+        $scope.executedQueryTab = $scope.currentQuery;
 
         if (!$scope.queryIsRunning) {
             $scope.currentQuery.outputType = 'table';
@@ -437,29 +466,28 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
             setLoader(true, 'Preview of first 100 rows of table ' + $scope.name,
                 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+
+            const successCallback = function (data, textStatus, jqXhr) {
+                setPreviewResult(data, jqXhr, textStatus);
+                setLoader(false);
+            };
+
+            const failCallback = function (data) {
+                setLoader(false);
+                toastr.error(getError(data, 0, 100), 'Could not show preview');
+            };
+
             if ($scope.canWriteActiveRepo()) {
                 const sqlView = JSON.stringify({
                     name: $scope.currentQuery.name,
                     query: $scope.currentQuery.query,
                     columns: $scope.currentQuery.columns || []
-                })
-                JdbcRestService.getNewSqlTablePreview(sqlView)
-                    .done(function (data, textStatus, jqXhr) {
-                        setLoader(false);
-                        window.yasr.setResponse(jqXhr, textStatus, null);
-                    }).fail(function (data) {
-                    setLoader(false);
-                    toastr.error('Could not show preview ' + getError(data));
                 });
+                JdbcRestService.getNewSqlTablePreview(sqlView)
+                    .done(successCallback).fail(failCallback);
             } else {
                 JdbcRestService.getExistingSqlTablePreview($scope.currentQuery.name)
-                    .done(function (data, textStatus, jqXhr) {
-                        setLoader(false);
-                        window.yasr.setResponse(jqXhr, textStatus, null);
-                    }).fail(function (data) {
-                    setLoader(false);
-                    toastr.error('Could not show preview ' + getError(data));
-                });
+                    .done(successCallback).fail(failCallback);
             }
         }
     };
@@ -467,4 +495,77 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.setDirty = function () {
         $scope.currentQuery.isPristine = false;
     };
+
+    $scope.getTypeLabel = function (type) {
+        switch (type) {
+            case 'iri':
+                return 'VARCHAR: IRI';
+            case 'string':
+                return 'VARCHAR: String';
+            default:
+                return type.indexOf(' ') > 0 ? type : type.toUpperCase();
+        }
+    };
+
+    function resetYasqeYasr() {
+        if ($scope.page === 2) {
+            $scope.viewMode = 'editor';
+        } else {
+            $scope.viewMode = 'none';
+        }
+    }
+
+    function getCellContentSQL(yasr, plugin, bindings, sparqlVar, context) {
+        let value = bindings[sparqlVar].value;
+        value = value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const entityHtml = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>"
+            + value + "</p>";
+        return "<div class = 'literal-cell'>" + entityHtml + "</div>";
+    }
+
+
+    function setPreviewResult(data, jqXhr, textStatus) {
+        if (!data.results || !data.results.bindings || !data.results.bindings.length) {
+            // Hides YASR as it may contain previous results
+            toastr.info('The table definition produced no results', 'Preview SQL');
+        } else {
+            // Custom content extractor that won't insert " in SQL values (since we treat them as fake literals)
+            window.yasr.plugins.table.options.getCellContent = getCellContentSQL;
+
+            // Set query type so YASR shows the results
+            $scope.currentTabConfig.queryType = 'SELECT';
+            window.yasr.setResponse(jqXhr, textStatus, null);
+        }
+    }
+
+    function hasValidQuery() {
+        return window.editor && window.editor.getQueryType() === 'SELECT';
+    }
+
+    function validateDefinition() {
+        return validateQuery() && validateColumns();
+    }
+
+    function validateQuery() {
+        if (!hasValidQuery()) {
+            toastr.error('The data query must be a SELECT query', 'Invalid query');
+            return false;
+        }
+
+        return true;
+    }
+
+    function validateColumns() {
+        if (!$scope.currentQuery.columns || !$scope.currentQuery.columns.length) {
+            toastr.error('Please define at least one column', 'Invalid columns');
+            return false;
+        }
+
+        if ($scope.containsUnknownColumns()) {
+            toastr.error('Please select SQL type for all columns', 'Invalid columns');
+            return false;
+        }
+
+        return true;
+    }
 }
