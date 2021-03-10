@@ -1,9 +1,9 @@
 (function(window) {
     // Expose it in the global scope as it is used throughout the whole application.
-    window.getError = function(data, status) {
+    window.getError = function(data, status, limit) {
         if (angular.isObject(data) && data.status && data.data) {
             // called with the result object instead of its data property
-            return getError(data.data, status);
+            return getError(data.data, status, limit);
         }
 
         //To use in future - if we add status code
@@ -26,9 +26,16 @@
                 if ('error' in data) {
                     msg = data.error.message;
                 }
+                if ('responseJSON' in data && 'message' in data.responseJSON) {
+                    return getError(data.responseJSON, status, limit);
+                }
                 if ('responseText' in data) {
                     msg = data.responseText;
                 }
+            }
+
+            if (limit > 0 && msg.length > limit) {
+                msg = msg.substr(0, limit) + '...';
             }
             return msg;
         } else {
