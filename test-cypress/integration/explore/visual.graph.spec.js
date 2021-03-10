@@ -164,10 +164,10 @@ describe('Visual graph screen validation', () => {
                 .trigger('mouseover', {force: true});
             // Select remove function
             removeNode();
-            // // Verify that link between parent node and the one child node is expanded
-            // getPredicates().should('have.length', 1);
-            // // Verify that the USRegion node is not the only node left in the graph
-            // getNodes().should('have.length', 2);
+            // Verify that links between parent node and the child nodes are expanded
+            getPredicates().should('have.length', 2);
+            // Verify that the nodes left are one less
+            getNodes().should('have.length', 3);
         });
 
         it('Test remove parent node', () => {
@@ -516,6 +516,10 @@ describe('Visual graph screen validation', () => {
         return cy.get('.rdf-info-side-panel .tab-content');
     }
 
+    function getSettingsPanel() {
+        return cy.get('.rdf-info-side-panel .filter-sidepanel');
+    }
+
     // Visual graph settings form field access
 
     function openPredicatesTab() {
@@ -529,6 +533,7 @@ describe('Visual graph screen validation', () => {
 
     function toggleInferredStatements(enable) {
         openVisualGraphSettings();
+        getSettingsPanel().should('be.visible');
         let command = enable ? 'check' : 'uncheck';
         getIncludeInferredStatementsCheckbox()[command]();
         saveSettings();
@@ -618,7 +623,7 @@ describe('Visual graph screen validation', () => {
     }
 
     function removeNode() {
-        cy.get('.menu-events .close-icon circle').click();
+        cy.get('.menu-events .close-icon circle').click({force: true});
     }
 
     // Visual graph toolbar actions
