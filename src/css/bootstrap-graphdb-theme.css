@@ -2085,6 +2085,10 @@ input.ng-invalid.ng-touched, .ng-submitted input.ng-invalid {
     padding-left: 2.2em;
 }
 
+.form-control.b-0 {
+    border: 0;
+}
+
 /*-------------------------------------------------------------
 	List groups
 -------------------------------------------------------------*/

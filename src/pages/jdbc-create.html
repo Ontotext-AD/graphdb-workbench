@@ -46,9 +46,12 @@
                 </li>
             </ul>
 
-            <div ng-show="page === 2">
+            <div ng-show="page === 2 && !currentQuery.columns.length" class="mt-2">
+                No columns are defined. Please start with a data query and come back to this tab to review the column definitions.
+            </div>
+            <div ng-show="page === 2 && currentQuery.columns.length">
                 <div class="form-group row pt-1">
-                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>Column</strong></label>
+                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>Column name</strong></label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
                         <label class="col-form-label"><strong>SQL type</strong></label>
                     </div>
@@ -59,28 +62,48 @@
                         <label class="col-form-label"><strong>Scale</strong></label>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
-                        <label class="col-form-label"><strong>Is nullable</strong></label>
+                        <label class="col-form-label"><strong>Nullable</strong></label>
                     </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4" ng-if="!containsIriColumnsOnly(currentQuery.columns)">
-                        <label class="col-form-label"><strong>RDF type for SPARQL FILTER()</strong></label>
+                    <div class="col-xs-4 col-sm-4 col-md-4" ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
+                        <label class="col-form-label"><strong>Literal type or language tag for SPARQL FILTER</strong></label>
                     </div>
                 </div>
                 <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
-                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">{{column.column_name}}</label>
+                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">
+                        <span tooltip="The column names are derived from the projection variables of the SPARQL query."
+                              tooltip-placement="top" tooltip-trigger="mouseenter">
+                            {{column.column_name | uppercase}}
+                        </span>
+                    </label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <select class="form-control" id="sql-type" ng-model="column.column_type" ng-options="type as type for type in sqlTypes track by type" ng-change="selectColumnType(column.column_name)" ng-disabled="!canWriteActiveRepo()"></select>
+                        <select tooltip="Sets the SQL type. VARCHAR's variants IRI and String are the same on the SQL side but handled differently on the SPARQL side."
+                                tooltip-placement="top" tooltip-trigger="mouseenter"
+                                class="form-control" id="sql-type" ng-model="column.column_type"
+                                ng-options="type as getTypeLabel(type) for type in sqlTypes track by type"
+                                ng-change="selectColumnType(column.column_name, '{{column.column_type}}')"
+                                ng-disabled="!canWriteActiveRepo()"></select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <input class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                        <input tooltip="Sets the precision of the SQL type. For VARCHAR it is only informational and will not be enforced in any way."
+                               tooltip-placement="top" tooltip-trigger="mouseenter"
+                               class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <input class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                        <input tooltip="Sets the scale of the SQL type, e.g. DECIMAL(10, 2)."
+                               tooltip-placement="top" tooltip-trigger="mouseenter"
+                               class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
-                        <input class="form-control" type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                        <div class="form-control b-0">
+                            <input tooltip="If unchecked the column will be defined as NOT NULL. Nullability is only informational and not enforced in any way."
+                                   tooltip-placement="top" tooltip-trigger="mouseenter"
+                                   type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                        </div>
                     </div>
-                    <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isIri(column.column_type) ? 'hidden' : ''"  ng-if="!containsIriColumnsOnly(currentQuery.columns)">
-                        <input class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                    <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isLiteral(column.column_type) ? '' : 'hidden'"  ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
+                        <input tooltip="Controls how literals are created for filtering on the SPARQL side. Leave empty for a plain literal, enter an IRI for a typed literal, or enter a language tag prefixed by @ for a language-tagged literal."
+                               tooltip-placement="top" tooltip-trigger="mouseenter"
+                               class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"

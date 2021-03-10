@@ -29450,9 +29450,7 @@ var getCompleteToken = function(yasqe, token, cur) {
 		ch: token.start
 	});
 	// not start of line, and not whitespace
-	if (
-		prevToken.type != null && prevToken.type != "ws" && token.type != null && token.type != "ws"
-	) {
+	if (prevToken.type != null && prevToken.type != "ws" && prevToken.type != "punc" && token.type != null && token.type != "ws") {
 		token.start = prevToken.start;
 		token.string = prevToken.string + token.string;
 		return getCompleteToken(yasqe, token, {
