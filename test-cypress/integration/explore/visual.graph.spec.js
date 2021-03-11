@@ -190,7 +190,7 @@ describe('Visual graph screen validation', () => {
             getTargetNode().trigger('mouseover');
             collapseGraph();
             // Verify that all links to the USRegion node are collapsed
-            getPredicates().should('have.length', 0);
+            getPredicates().should('not.exist');
             // Verify that the USRegion node is the only node left in the graph
             getNodes().should('have.length', 1).and('contain', 'USRegion');
 
