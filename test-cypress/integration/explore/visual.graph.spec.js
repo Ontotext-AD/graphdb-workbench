@@ -186,6 +186,7 @@ describe('Visual graph screen validation', () => {
 
         it('Test expand collapsed node which has connections with double click', () => {
             searchForResource(VALID_RESOURCE);
+            toggleInferredStatements(false);
 
             getTargetNode().trigger('mouseover');
             collapseGraph();
@@ -201,9 +202,9 @@ describe('Visual graph screen validation', () => {
             });
 
             // Verify that all links to the USRegion node are expanded
-            // getPredicates().should('have.length', 20);
-            // // Verify that the USRegion node is not the only node left in the graph
-            // getNodes().should('have.length', 21);
+            getPredicates().should('have.length', 3);
+            // Verify that the USRegion node is not the only node left in the graph
+            getNodes().should('have.length', 4);
         });
 
         it('Test verify mouse/keyboard actions', () => {
