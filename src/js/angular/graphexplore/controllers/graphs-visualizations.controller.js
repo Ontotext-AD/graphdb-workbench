@@ -219,7 +219,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     }
 
     const settingsFromPrincipal = $jwtAuth.getPrincipal().appSettings;
-
     $scope.defaultSettings = {
         linksLimit: 20,
         includeInferred: settingsFromPrincipal['DEFAULT_INFERENCE'],
@@ -236,7 +235,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                              "http://dbpedia.org/ontology/thumbnail",
                              "http://xmlns.com/foaf/0.1/depiction",
                              "http://xmlns.com/foaf/0.1/homepage",
-                             "http://xmlns.com/foaf/0.1/mbox"],
+                             "http://xmlns.com/foaf/0.1/mbox",
+                             "http://dbpedia.org/ontology/wikiPage*",
+                             "http://dbpedia.org/property/wikiPage*",
+                             "http://factforge.net/*"],
         preferredTypesOnly: false,
         preferredPredicatesOnly: false,
         includeSchema: settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA']
@@ -249,7 +251,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         try {
             $scope.saveSettings = localStorageSettings;
             if ($scope.saveSettings['includeSchema'] === undefined) {
+                // Add the new defaults when migrating from an old GDB
                 $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
+                $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
             }
         } catch (e) {
             $scope.saveSettings = angular.copy($scope.defaultSettings);

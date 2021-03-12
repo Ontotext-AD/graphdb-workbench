@@ -235,11 +235,11 @@
         </ul>
 
         <div ng-if="showFilter" class="filter-sidepanel tab-content">
-            <h4>Graph Settings</h4>
+            <h4>Graph settings</h4>
 
             <div>
                 <div class="form-group mb-2">
-                    <label>Maximum Links to Show</label>
+                    <label tooltip="Limit the number of links when often they are too many">Maximum links to show</label>
                     <div class="form-inline">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
                                 ng-click="changeLimit(-1)">
@@ -255,7 +255,7 @@
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label>Preferred languages</label>
+                    <label tooltip="Preferred languages for node and predicates labels">Preferred languages</label>
                     <div class="input-group preferred-languages">
                         <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="Add a language tag"></tags-input>
@@ -263,17 +263,17 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Include/Exclude predicates from the following schemas: &lt;http://www.w3.org/2002/07/owl#&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; &lt;http://www.w3.org/2000/01/rdf-schema#&gt; &lt;http://www.openrdf.org/schema/sesame#&gt; &lt;http://www.ontologydesignpatterns.org/ont/dul/DUL.owl&gt; &lt;http://www.w3.org/ns/prov&gt; &lt;http://dbpedia.org/ontology/wikiPage&gt; &lt;http://dbpedia.org/property/wikiPage&gt; &lt;http://www.omg.org/spec/&gt; &lt;http://www.wikidata.org/entity/&gt; &lt;http://factforge.net/&gt;">
+                        <label tooltip="Include/Exclude predicates from owl: rdf: rdfs: sesame: dul: prov: fibo: wd:">
                         <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
-                            Include Schema Statements
+                            Include schema statements
                         </label>
                     </div>
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label>
+                        <label tooltip="Include/exclude inferred statements">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
-                            Include Inferred Statements
+                            Include inferred statements
                         </label>
                     </div>
                 </div>
@@ -282,7 +282,7 @@
 
                 <div class="form-group mb-2">
                     <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}">
-                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}">
+                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
                             Expand results over owl:sameAs
@@ -294,9 +294,9 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label>
+                        <label tooltip="Show predicate labels as links titles">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
-                            Show Predicate Labels
+                            Show predicate labels
                         </label>
                     </div>
                 </div>
@@ -307,7 +307,7 @@
                                      tooltip-placement="bottom"
                                      tooltip-trigger="mouseenter"><span class="nav-link">Types</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label>Preferred types</label>
+                            <label tooltip="Types of nodes to show with preference when there are too many nodes">Preferred types</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
@@ -316,15 +316,15 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label>
+                                <label tooltip="Show only nodes of the preferred types">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
-                                    Show Preferred Types Only
+                                    Show preferred types only
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Ignored types</label>
+                            <label tooltip="Types of nodes to exclude from the visual graph">Ignored types</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
@@ -337,8 +337,9 @@
                                      tooltip-placement="bottom"
                                      tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label>Preferred predicates</label>
                             <div>
+                                <label tooltip="Predicates to show with preference when there are too many links">Preferred predicates</label>
+
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred predicate"
@@ -347,15 +348,15 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label>
+                                <label tooltip="Show only links of the preferred predicates">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
-                                    Show Preferred Predicates Only
+                                    Show preferred predicates only
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group ">
-                            <label>Ignored predicates</label>
+                            <label tooltip="Ignored predicates will not appear as links in the visual graph but will be listed as instance properties when you click on a node">Ignored predicates</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
