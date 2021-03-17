@@ -218,11 +218,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         ModalService.openCopyToClipboardModal(uri);
     }
 
-    const settingsFromPrincipal = $jwtAuth.getPrincipal().appSettings;
     $scope.defaultSettings = {
         linksLimit: 20,
-        includeInferred: settingsFromPrincipal['DEFAULT_INFERENCE'],
-        sameAsState: settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
+        includeInferred: true,
+        sameAsState: true,
         languages: ['en'],
         showLinksText: true,
         preferredTypes: [],
@@ -241,10 +240,26 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                              "http://factforge.net/*"],
         preferredTypesOnly: false,
         preferredPredicatesOnly: false,
-        includeSchema: settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA']
+        includeSchema: true
     };
 
-    $scope.saveSettings = angular.copy($scope.defaultSettings);
+    function initSettings(principal) {
+        const settingsFromPrincipal = principal.appSettings;
+        $scope.defaultSettings.includeInferred = settingsFromPrincipal['DEFAULT_INFERENCE'];
+        $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
+            $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
+        $scope.saveSettings = angular.copy($scope.defaultSettings);
+    }
+
+    // Resolves race condition with security init if this is the first loaded page
+    const principal = $jwtAuth.getPrincipal();
+    if (principal) {
+        initSettings(principal);
+    } else {
+        $scope.$on('securityInit', function () {
+            initSettings($jwtAuth.getPrincipal());
+        });
+    }
 
     const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
     if (localStorageSettings && typeof localStorageSettings === 'object') {
@@ -784,10 +799,43 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         return str;
     }
 
-    $scope.addingTag = function (tag) {
+    $scope.addedTag = function (tag) {
+        if (tag.text.indexOf(':') < 0) {
+            toastr.warning('Enter an absolute full or prefixed IRI');
+            return null;
+        }
         tag.text = expandPrefix(tag.text, $scope.namespaces);
         $scope.pageslideExpanded = true;
         return tag;
+    };
+
+    $scope.validateTag = function (tag, category, wildcardOK) {
+        if (tag.text.indexOf(':') < 0) {
+            if (wildcardOK) {
+                toastr.warning('Enter an absolute full or prefixed IRI, optionally ending in *', category);
+            } else {
+                toastr.warning('Enter an absolute full or prefixed IRI', category);
+            }
+            return false;
+        }
+        const wildcardPos = tag.text.indexOf('*');
+        if (wildcardPos >= 0) {
+            if (!wildcardOK) {
+                toastr.warning('Wildcards not allowed here', category);
+                return false;
+            } else if (wildcardPos < tag.text.length - 1) {
+                toastr.warning('Wildcard allowed only as the last character', category);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    $scope.getTagClass = function (tagText) {
+        if (tagText.endsWith('*')) {
+            return 'tag-item-wildcard';
+        }
+        return null;
     };
 
     $scope.getActiveRepository = function () {

@@ -311,7 +311,8 @@
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Preferred types', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
@@ -328,7 +329,8 @@
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Ignored types', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                     </tab>
@@ -343,7 +345,8 @@
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred predicate"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Preferred predicates', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
@@ -361,7 +364,10 @@
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored predicate"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Ignored predicates', true)"
+                                            on-tag-added="addedTag($tag)"
+                                            template="ignored-predicates-template"
+                                            tag-class="getTagClass($tag.text)"></tags-input>
                             </div>
                         </div>
                     </tab>
@@ -371,6 +377,15 @@
                     <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">Reset</button>
                     <button type="submit" class="btn btn-primary btn-lg save-settings-btn" ng-click="updateSettings()">Save</button>
                 </div>
+
+                <script type="text/ng-template" id="ignored-predicates-template">
+                    <div class="tag-template">
+                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *' : ''}}">
+                            <span>{{$getDisplayText()}}</span>
+                            <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
+                        </div>
+                    </div>
+                </script>
             </div>
         </div>
 

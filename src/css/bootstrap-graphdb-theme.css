@@ -2585,6 +2585,12 @@ input[name=namespace] {
     color: #3D3D3D;
 }
 
+.wb-tags-input .tags .tag-item.tag-item-wildcard {
+    background: #cae4f5;
+    border-color: #cae4f5;
+    font-weight: bold;
+}
+
 .wb-tags-input .tags .tag-item .remove-button {
     margin: 0 0 0 5px;
     padding: 0;
