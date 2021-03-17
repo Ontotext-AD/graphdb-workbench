@@ -242,38 +242,46 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         preferredPredicatesOnly: false,
         includeSchema: true
     };
+    // Static defaults before we do the actual dynamic default settings in initSettings
+    $scope.saveSettings = angular.copy($scope.defaultSettings);
 
     function initSettings(principal) {
         const settingsFromPrincipal = principal.appSettings;
+
+        // New style settings from principal
         $scope.defaultSettings.includeInferred = settingsFromPrincipal['DEFAULT_INFERENCE'];
         $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
             $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
-        $scope.saveSettings = angular.copy($scope.defaultSettings);
+
+        const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
+        if (localStorageSettings && typeof localStorageSettings === 'object') {
+            // Patch existing settings
+            try {
+                $scope.saveSettings = localStorageSettings;
+                if ($scope.saveSettings['includeSchema'] === undefined) {
+                    // Add the new defaults when migrating from an old GDB
+                    $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
+                    $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
+                }
+            } catch (e) {
+                $scope.saveSettings = angular.copy($scope.defaultSettings);
+                LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
+            }
+        } else {
+            $scope.saveSettings = angular.copy($scope.defaultSettings);
+        }
     }
 
     // Resolves race condition with security init if this is the first loaded page
     const principal = $jwtAuth.getPrincipal();
     if (principal) {
+        // We already got a principal, safe to call initSettings
         initSettings(principal);
     } else {
+        // No principal yet, delegate to the securityInit event to do call initSettings for us
         $scope.$on('securityInit', function () {
             initSettings($jwtAuth.getPrincipal());
         });
-    }
-
-    const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
-    if (localStorageSettings && typeof localStorageSettings === 'object') {
-        try {
-            $scope.saveSettings = localStorageSettings;
-            if ($scope.saveSettings['includeSchema'] === undefined) {
-                // Add the new defaults when migrating from an old GDB
-                $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
-                $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
-            }
-        } catch (e) {
-            $scope.saveSettings = angular.copy($scope.defaultSettings);
-            LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
-        }
     }
 
     $scope.resetSettings = function () {
@@ -842,9 +850,23 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         return $repositories.getActiveRepository();
     };
 
-    function initForRepository() {
-        if (!$repositories.getActiveRepository()) {
+    // Flag to avoid calling repo init logic twice
+    $scope.hasInitedRepository = false;
+
+    // This method may be called twice - once by us explicitly and once by the repositoryInit event.
+    // In some race conditions getActiveRepository() will be already set when we enter it the first
+    // time but then we'll be called again by the event, so we need the above flag to avoid double
+    // initialization and weirdness.
+    function initForRepository(newRepo) {
+        if (!$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
             return;
+        }
+
+        $scope.hasInitedRepository = true;
+
+        if (!newRepo) {
+            // Process params only if this isn't a repo that was just selected from the dropdown menu
+            $scope.getGraphConfigs(loadGraphFromQueryParam);
         }
 
         // Inits namespaces for repo
@@ -872,6 +894,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     });
 
     $scope.$on('repositoryIsSet', function (event, args) {
+        // New repo set from dropdown, clear init state
+        if (args.newRepo) {
+            $scope.hasInitedRepository = false;
+        }
+
         initForRepository();
 
         // New repo set from dropdown, clear state and go to home page
@@ -889,8 +916,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         }
     });
-
-    $scope.getGraphConfigs(loadGraphFromQueryParam);
 
     initForRepository();
 
