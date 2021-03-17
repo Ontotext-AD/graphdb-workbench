@@ -68,11 +68,11 @@ describe('Visual graph screen validation', () => {
                 cy.get('.preferred-languages .tag-item').should('have.length', 1)
                     .and('contain', 'en');
                 // Include inferred: false
-                getIncludeInferredStatementsCheckbox().should('not.be.checked')
+                getIncludeInferredStatementsCheckbox().should('be.checked')
                     .and('not.be.disabled');
                 // Expand results over owl:sameAs: false
-                getSameAsCheckbox().should('not.be.checked')
-                    .and('be.disabled');
+                getSameAsCheckbox().should('be.checked')
+                    .and('not.be.disabled');
                 // Show predicate labels: true
                 getShowPredicateLabelsCheckbox().should('be.checked')
                     .and('not.be.disabled');
@@ -114,6 +114,7 @@ describe('Visual graph screen validation', () => {
 
         it('Test collapse and expand a node', () => {
             searchForResource(VALID_RESOURCE);
+            toggleInferredStatements(false);
 
             // Hover over node with the mouse and collapse it through the menu
             getTargetNode().trigger('mouseover');
@@ -129,9 +130,9 @@ describe('Visual graph screen validation', () => {
             expandGraph();
 
             // Verify that all links to the USRegion node are expanded
-            getPredicates().should('have.length', 2);
+            getPredicates().should('have.length', 3);
             // Verify that the USRegion node is not the only node left in the graph
-            getNodes().should('have.length', 3);
+            getNodes().should('have.length', 4);
         });
 
         it('Test expand and collapse node info panel with single click', () => {
@@ -152,20 +153,21 @@ describe('Visual graph screen validation', () => {
 
         it('Test remove child node', () => {
             searchForResource(VALID_RESOURCE);
-            // Verify that before given node is removed there are 3 of them
-            getNodes().should('have.length', 3);
+            toggleInferredStatements(false);
+            // Verify that before given node is removed there are 4 of them
+            getNodes().should('have.length', 4);
             // Click once on node different than parent one with the mouse
             cy.get('.node-wrapper circle').eq(1)
             // The wait is needed because mouseover event will result in
             // pop-up of menu icons only if nodes are not moving
                 .should('be.visible').wait(5000)
-                .trigger('mouseover');
+                .trigger('mouseover', {force: true});
             // Select remove function
             removeNode();
-            // Verify that link between parent node and the one child node is expanded
-            getPredicates().should('have.length', 1);
-            // Verify that the USRegion node is not the only node left in the graph
-            getNodes().should('have.length', 2);
+            // Verify that links between parent node and the child nodes are expanded
+            getPredicates().should('have.length', 2);
+            // Verify that the nodes left are one less
+            getNodes().should('have.length', 3);
         });
 
         it('Test remove parent node', () => {
@@ -184,11 +186,12 @@ describe('Visual graph screen validation', () => {
 
         it('Test expand collapsed node which has connections with double click', () => {
             searchForResource(VALID_RESOURCE);
+            toggleInferredStatements(false);
 
             getTargetNode().trigger('mouseover');
             collapseGraph();
             // Verify that all links to the USRegion node are collapsed
-            getPredicates().should('have.length', 0);
+            getPredicates().should('not.exist');
             // Verify that the USRegion node is the only node left in the graph
             getNodes().should('have.length', 1).and('contain', 'USRegion');
 
@@ -199,9 +202,9 @@ describe('Visual graph screen validation', () => {
             });
 
             // Verify that all links to the USRegion node are expanded
-            getPredicates().should('have.length', 2);
+            getPredicates().should('have.length', 3);
             // Verify that the USRegion node is not the only node left in the graph
-            getNodes().should('have.length', 3);
+            getNodes().should('have.length', 4);
         });
 
         it('Test verify mouse/keyboard actions', () => {
@@ -250,7 +253,6 @@ describe('Visual graph screen validation', () => {
 
         it('Test maximum links to show', () => {
             searchForResource(VALID_RESOURCE);
-            toggleInferredStatements(true);
 
             // Verify that 20 links (nodes) are displayed
             getPredicates().should('have.length', 20);
@@ -267,7 +269,7 @@ describe('Visual graph screen validation', () => {
             getLinksNumberField().clear().type('100');
             saveSettings();
             // Verify that the diagram is updated
-            getPredicates().should('have.length', 35);
+            getPredicates().should('have.length', 36);
         });
 
         it('Test include inferred Statements', () => {
@@ -285,10 +287,10 @@ describe('Visual graph screen validation', () => {
             toggleInferredStatements(false);
 
             // Verify that 20 links (nodes) are displayed
-            getPredicates().should('have.length', 2);
+            getPredicates().should('have.length', 3);
 
             // Verify that three nodes are displayed
-            getNodes().should('have.length', 3);
+            getNodes().should('have.length', 4);
 
             // Verify that only "Texas" and "California" regions are displayed
             getNodes().should('contain', 'Texas').and('contain', 'California');
@@ -350,6 +352,7 @@ describe('Visual graph screen validation', () => {
 
         it('Test ignored predicates', () => {
             typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            toggleInferredStatements(false);
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
             getPredicates().should('contain', 'hasSugar');
@@ -422,11 +425,11 @@ describe('Visual graph screen validation', () => {
             // Preferred lang: en
             cy.get('.preferred-languages .tag-item').should('have.length', 0);
             // Include inferred: false
-            getIncludeInferredStatementsCheckbox().should('not.be.checked')
+            getIncludeInferredStatementsCheckbox().should('be.checked')
                 .and('not.be.disabled');
-            // Expand results over owl:sameAs: false
-            getSameAsCheckbox().should('not.be.checked')
-                .and('be.disabled');
+            // Expand results over owl:sameAs: true
+            getSameAsCheckbox().should('be.checked')
+                .and('not.be.disabled');
             // Show predicate labels: true
             getShowPredicateLabelsCheckbox().should('be.checked')
                 .and('not.be.disabled');
@@ -514,6 +517,10 @@ describe('Visual graph screen validation', () => {
         return cy.get('.rdf-info-side-panel .tab-content');
     }
 
+    function getSettingsPanel() {
+        return cy.get('.rdf-info-side-panel .filter-sidepanel');
+    }
+
     // Visual graph settings form field access
 
     function openPredicatesTab() {
@@ -527,6 +534,7 @@ describe('Visual graph screen validation', () => {
 
     function toggleInferredStatements(enable) {
         openVisualGraphSettings();
+        getSettingsPanel().should('be.visible');
         let command = enable ? 'check' : 'uncheck';
         getIncludeInferredStatementsCheckbox()[command]();
         saveSettings();
@@ -616,7 +624,7 @@ describe('Visual graph screen validation', () => {
     }
 
     function removeNode() {
-        cy.get('.menu-events .close-icon circle').click();
+        cy.get('.menu-events .close-icon circle').click({force: true});
     }
 
     // Visual graph toolbar actions

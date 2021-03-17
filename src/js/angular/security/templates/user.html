@@ -74,7 +74,7 @@
 
 				<div class="card sparql-editor-settings" id="user-settings">
 					<div class="card-block">
-						<h3>SPARQL editor settings</h3>
+						<h3>User settings</h3>
 
 						<div id="sameas-on" class="mb-1">
 							<span class="sameas-label">
@@ -89,7 +89,7 @@
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_SAMEAS"/>
 								<label for="sameas-on"></label>
 							</span>
-							by default
+							by default in SPARQL editor and visual graph
 						</div>
 
 						<div id="inference-on" class="mb-1">
@@ -105,17 +105,33 @@
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
 								<label for="inference-on"></label>
 							</span>
-							by default
+                            by default in SPARQL editor and visual graph
 						</div>
+
+                        <div id="schema-on" class="mb-1">
+							<span class="schema-label">
+								Show schema
+								<span class="tag {{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'tag-primary' : 'tag-default'}}">
+									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'ON' : 'OFF'}}
+								</span>
+                                <span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                      ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"
+                                      class="switch mr-0">
+								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
+								<label for="schema-on"></label>
+							</span>
+                                by default in visual graph
+							</span>
+                        </div>
 
 						<label class="d-block">
 							<input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
-							Count total results
+							Count total results in SPARQL editor
 						</label>
 
 						<label class="d-block">
 							<input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
-							Ignore shared saved queries
+							Ignore shared saved queries in SPARQL editor
 						</label>
 
 					</div>

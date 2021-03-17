@@ -20,9 +20,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -220,24 +220,56 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.defaultSettings = {
         linksLimit: 20,
-        includeInferred: false,
-        sameAsState: false,
+        includeInferred: true,
+        sameAsState: true,
         languages: ['en'],
         showLinksText: true,
         preferredTypes: [],
         rejectedTypes: [],
         preferredPredicates: [],
-        rejectedPredicates: [],
+        rejectedPredicates: ["http://dbpedia.org/property/logo",
+                             "http://dbpedia.org/property/hasPhotoCollection",
+                             "http://dbpedia.org/property/website",
+                             "http://dbpedia.org/property/homepage",
+                             "http://dbpedia.org/ontology/thumbnail",
+                             "http://xmlns.com/foaf/0.1/depiction",
+                             "http://xmlns.com/foaf/0.1/homepage",
+                             "http://xmlns.com/foaf/0.1/mbox",
+                             "http://dbpedia.org/ontology/wikiPage*",
+                             "http://dbpedia.org/property/wikiPage*",
+                             "http://factforge.net/*"],
         preferredTypesOnly: false,
-        preferredPredicatesOnly: false
+        preferredPredicatesOnly: false,
+        includeSchema: true
     };
 
-    $scope.saveSettings = angular.copy($scope.defaultSettings);
+    function initSettings(principal) {
+        const settingsFromPrincipal = principal.appSettings;
+        $scope.defaultSettings.includeInferred = settingsFromPrincipal['DEFAULT_INFERENCE'];
+        $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
+            $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
+        $scope.saveSettings = angular.copy($scope.defaultSettings);
+    }
+
+    // Resolves race condition with security init if this is the first loaded page
+    const principal = $jwtAuth.getPrincipal();
+    if (principal) {
+        initSettings(principal);
+    } else {
+        $scope.$on('securityInit', function () {
+            initSettings($jwtAuth.getPrincipal());
+        });
+    }
 
     const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
     if (localStorageSettings && typeof localStorageSettings === 'object') {
         try {
             $scope.saveSettings = localStorageSettings;
+            if ($scope.saveSettings['includeSchema'] === undefined) {
+                // Add the new defaults when migrating from an old GDB
+                $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
+                $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
+            }
         } catch (e) {
             $scope.saveSettings = angular.copy($scope.defaultSettings);
             LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
@@ -767,10 +799,43 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         return str;
     }
 
-    $scope.addingTag = function (tag) {
+    $scope.addedTag = function (tag) {
+        if (tag.text.indexOf(':') < 0) {
+            toastr.warning('Enter an absolute full or prefixed IRI');
+            return null;
+        }
         tag.text = expandPrefix(tag.text, $scope.namespaces);
         $scope.pageslideExpanded = true;
         return tag;
+    };
+
+    $scope.validateTag = function (tag, category, wildcardOK) {
+        if (tag.text.indexOf(':') < 0) {
+            if (wildcardOK) {
+                toastr.warning('Enter an absolute full or prefixed IRI, optionally ending in *', category);
+            } else {
+                toastr.warning('Enter an absolute full or prefixed IRI', category);
+            }
+            return false;
+        }
+        const wildcardPos = tag.text.indexOf('*');
+        if (wildcardPos >= 0) {
+            if (!wildcardOK) {
+                toastr.warning('Wildcards not allowed here', category);
+                return false;
+            } else if (wildcardPos < tag.text.length - 1) {
+                toastr.warning('Wildcard allowed only as the last character', category);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    $scope.getTagClass = function (tagText) {
+        if (tagText.endsWith('*')) {
+            return 'tag-item-wildcard';
+        }
+        return null;
     };
 
     $scope.getActiveRepository = function () {
@@ -1642,9 +1707,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         if (newNodes.length === 0) {
             if (isStartNode) {
-                toastr.info('This node has no visible connections.');
+                toastr.info('This node has no visible connections. Check your Graph Settings if you expect such.');
             } else if (linksFound.length === 0) {
-                toastr.info('This node has no other visible connections.');
+                toastr.info('This node has no other visible connections. Check your Graph Settings if you expect such.');
             }
 
             graph.addAndMatchLinks(linksFound);
@@ -1712,7 +1777,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 preferredTypesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredTypesOnly'],
                 preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredPredicatesOnly'],
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                includeSchema: $scope.saveSettings['includeSchema']
             }
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
@@ -2071,7 +2137,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 config: $scope.configLoaded.id,
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                 includeInferred: $scope.saveSettings['includeInferred'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                rejectedPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedPredicates']
             }
         }).then(function (response) {
             $scope.data = _.mapKeys(response.data, function (value, key) {
