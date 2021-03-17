@@ -644,6 +644,15 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             $rootScope.$broadcast("classCount", currentClassCount, currentSliderValue);
         }
 
+        window.addEventListener('resize', sendSliderData);
+
+        window.addEventListener('beforeunload', removeResizeListener);
+
+        function removeResizeListener() {
+            window.removeEventListener('resize', sendSliderData);
+            window.removeEventListener('beforeunload', removeResizeListener);
+        }
+
         var prefixesWatch,
             currentClassCountWatch,
             searchedClassBroadcast,
