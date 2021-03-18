@@ -899,7 +899,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.hasInitedRepository = false;
         }
 
-        initForRepository();
+        initForRepository(args.newRepo);
 
         // New repo set from dropdown, clear state and go to home page
         if (args.newRepo) {
