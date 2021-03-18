@@ -489,7 +489,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.checkIfValidAndSearchEvent = function (event) {
-                if (event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     checkIfValidAndSearch($scope.visualCallback);
                 } else {
                     checkIfValidAndSearch($scope.textCallback);
