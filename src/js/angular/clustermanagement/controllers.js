@@ -52,7 +52,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.setMasterAttribute = function (master, attribute, value) {
-        let attrData = {};
+        const attrData = {};
         attrData[attribute] = value;
 
         $scope.setLoader(true, 'Setting attribute...');
@@ -89,7 +89,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.showCloneModal = function () {
         $scope.clone.locations = $scope.locations();
         $scope.clone.repositoryID = $scope.selectedNode.name;
-        var modalInstance = $modal.open({
+        const modalInstance = $modal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/clone-modal.html',
             controller: 'CloneRepositoryCtrl',
             resolve: {
@@ -107,7 +107,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.cloneCurrentRepository = function () {
-        var currentNodeLocation = getLocation($scope.selectedNode);
+        const currentNodeLocation = getLocation($scope.selectedNode);
 
         $scope.setLoader(true, 'Cloning worker...');
 
@@ -139,8 +139,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
      * if firstNode is a master or it's secondNode
      */
     $scope.connectNodes = function (source, target, onSuccess) {
-        var master,
-            worker;
+        let master;
+        let worker;
 
         if ('disabledReason' in source) {
             toastr.error(source.disabledReason, "Error");
@@ -183,7 +183,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         ClusterRestService.connectWorker($scope.getLabel(master.location), getLocation(master), worker.location)
             .success(function () {
-                let timestamp = Date.now();
+                const timestamp = Date.now();
 
                 worker.cluster = worker.cluster || [];
                 worker.cluster.push(master.cluster);
@@ -260,8 +260,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     }
 
     $scope.disconnectLink = function (d, onSuccess, overrideDisabled) {
-        var master = {};
-        var worker = {};
+        let master = {};
+        let worker = {};
         if (d.source.repositoryType === 'master') {
             master = d.source;
             worker = d.target;
@@ -309,8 +309,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.connectMasters = function (first, second, bidirectional, onSuccess) {
-        var firstConfigs = first.location.split('/repositories/');
-        var secondConfigs = second.location.split('/repositories/');
+        const firstConfigs = first.location.split('/repositories/');
+        const secondConfigs = second.location.split('/repositories/');
 
         $scope.setLoader(true, 'Connecting nodes...');
 
@@ -323,7 +323,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             bidirectional: bidirectional
         }).success(function (data) {
             // FIXME?? is there a proper connection between the masters. We don't know so we use 'ON'
-            var timestamp = Date.now();
+            const timestamp = Date.now();
 
             $scope.addOrUpdateLink(first, second, 'ON', timestamp);
             first.peers[second.location] = 1;
@@ -344,10 +344,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.addOrUpdateLink = function (source, target, status, timestamp) {
-        var key = source.location + '|' + target.location;
-        var link = $scope.linksHash[key];
-        var reverseKey = target.location + '|' + source.location;
-        var reverseLink = $scope.linksHash[reverseKey];
+        const key = source.location + '|' + target.location;
+        let link = $scope.linksHash[key];
+        const reverseKey = target.location + '|' + source.location;
+        const reverseLink = $scope.linksHash[reverseKey];
         if (!link) {
             // adding a new link
             link = {};
@@ -378,7 +378,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     $scope.deleteLink = function (link, deleteReverse) {
         $scope.links.splice($scope.links.indexOf(link), 1);
-        var key = link.source.location + '|' + link.target.location;
+        const key = link.source.location + '|' + link.target.location;
         delete $scope.linksHash[key];
         if (link.source.disabledReason || link.target.disabledReason) {
             // removing a link to a funky node triggers a refresh to get rid of that node
@@ -387,8 +387,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         }
 
         if (deleteReverse) {
-            var reverseKey = link.target.location + '|' + link.source.location;
-            var reverseLink = $scope.linksHash[reverseKey];
+            const reverseKey = link.target.location + '|' + link.source.location;
+            const reverseLink = $scope.linksHash[reverseKey];
             if (reverseLink) {
                 $scope.deleteLink(reverseLink, false);
             }
@@ -402,7 +402,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             }
         })
             .error(function (data) {
-                var newDisabledReason = "The location is unreachable.";
+                const newDisabledReason = "The location is unreachable.";
 
                 if (node.disabledReason !== newDisabledReason) {
                     // show toast only once per disabled reason
@@ -463,7 +463,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
                 masterData.workers.forEach(function (worker) {
                     node.workers[worker.location] = 1;
-                    var workerNode = {};
+                    let workerNode = {};
                     if (worker.location in $scope.urlToNode) {
                         workerNode = $scope.urlToNode[worker.location];
                     } else {
@@ -509,7 +509,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                         workerNode.cluster.push(node.cluster);
                     }
 
-                    var status = worker.status;
+                    let status = worker.status;
 
                     // debug stuff
                     if (isRandomLink) {
@@ -543,24 +543,24 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 $scope.linksHash = {};
                 $scope.clusters = [];
 
-                var timestamp = Date.now();
+                const timestamp = Date.now();
 
                 $scope.urlToNode = data.reduce(function (result, node) {
                     if (node.type === "master" || node.type === "worker") {
-                        result[node.externalUrl] = {
+                        result[node.uri] = {
                             name: $scope.getLabel(node.uri),
                             local: node.local,
-                            location: node.externalUrl,
+                            location: node.uri,
                             repositoryType: node.type,
                             timestamp: timestamp
-                        }
+                        };
                     }
                     return result;
                 }, {});
 
-                var clusterIdx = 0;
+                let clusterIdx = 0;
 
-                var mastersData = Object.keys($scope.urlToNode).filter(function (key) {
+                const mastersData = Object.keys($scope.urlToNode).filter(function (key) {
                     return $scope.urlToNode[key].repositoryType === 'master';
                 }).sort(function (k1, k2) {
                     if (k1 < k2) {
@@ -571,7 +571,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
                     return 0;
                 }).map(function (key) {
-                    var node = $scope.urlToNode[key];
+                    const node = $scope.urlToNode[key];
 
                     node.cluster = clusterIdx;
                     $scope.clusters.push(node);
@@ -606,18 +606,18 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.trackAddedOrRemovedNodes = function (timestamp) {
         return RepositoriesRestService.getCluster()
             .success(function (data) {
-                var uri2tempNode = data.reduce(function (result, node) {
+                const uri2tempNode = data.reduce(function (result, node) {
                     if (node.type === "master" || node.type === "worker") {
-                        result[node.externalUrl] = {
-                            location: node.externalUrl,
+                        result[node.uri] = {
+                            location: node.uri,
                             repositoryType: node.type
-                        }
+                        };
                     }
                     return result;
                 }, {});
 
-                for (var i in $scope.nodes) {
-                    var node = $scope.nodes[i];
+                for (let i = 0; i < $scope.nodes.length; i++) {
+                    const node = $scope.nodes[i];
                     if (node.location in uri2tempNode) {
                         if (!node.artificiallyAdded) {
                             // old node exists in new list, update timestamp and delete from new list
@@ -639,7 +639,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 }
             })
             .error(function (data) {
-                toastr.error(getError(data), "Error getting nodes")
+                toastr.error(getError(data), "Error getting nodes");
             });
     };
 
@@ -647,13 +647,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         // raise flag to prevent calling this more than once before one invocation completes
         $scope.updating = true;
 
-        var timestamp = Date.now();
+        const timestamp = Date.now();
 
-        var processUpdate = function () {
+        const processUpdate = function () {
             if (!$scope.needsToRefresh) {
                 // check for nodes disconnected behind our back, or nodes entirely removed
-                for (var i in $scope.links) {
-                    var link = $scope.links[i];
+                for (let i = 0; i < $scope.links.length; i++) {
+                    const link = $scope.links[i];
                     if (link['timestamp'] !== timestamp) {
                         console.log('nodes disconnected, removing link');
                         // In reality if a user disconnects the bidirectional peer-to-peer link
@@ -687,9 +687,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         if (checkNodes) {
             $scope.trackAddedOrRemovedNodes(timestamp).then(function () {
                 if (!$scope.needsToRefresh) {
-                    var promises = [];
-                    for (var i in $scope.nodes) {
-                        var node = $scope.nodes[i];
+                    const promises = [];
+                    for (let i = 0; i < $scope.nodes.length; i++) {
+                        const node = $scope.nodes[i];
                         if (node.repositoryType === 'master') {
                             promises.push($scope.updateMasterNode(node, timestamp, true));
                         }
@@ -700,9 +700,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 }
             });
         } else {
-            var promises = [];
-            for (var i in $scope.nodes) {
-                var node = $scope.nodes[i];
+            const promises = [];
+            for (let i = 0; i < $scope.nodes.length; i++) {
+                const node = $scope.nodes[i];
                 if (node.repositoryType === 'master') {
                     promises.push($scope.updateMasterNode(node, timestamp, true));
                 }
@@ -724,8 +724,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         $scope.setMasterAttribute($scope.selectedNode, 'ReadOnly', readonly);
     };
 
-    var timerCounter = 0;
-    var timer = $interval(function () {
+    let timerCounter = 0;
+    const timer = $interval(function () {
         // check for update only if not in the middle of set attribute operation
         if (!$scope.attributeChange && !$scope.updating) {
             timerCounter++;
@@ -742,9 +742,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.updating = false;
 
     // track window resizing
-    var w = angular.element($window);
-    var resize = function () {
-        $scope.resize()
+    const w = angular.element($window);
+    const resize = function () {
+        $scope.resize();
     };
     w.bind('resize', resize);
     $scope.$on('$destroy', function () {
@@ -752,7 +752,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     });
 
     // track collapsing the nav bar
-    $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
+    $scope.$on('onToggleNavWidth', function () {
         $scope.resize();
     });
 }
@@ -763,7 +763,7 @@ function CloneRepositoryCtrl($scope, $modalInstance, clone) {
 
     $scope.clone = angular.copy(clone);
     $scope.ok = function () {
-        var patt = new RegExp('^[a-zA-Z0-9-_]+$');
+        const patt = new RegExp('^[a-zA-Z0-9-_]+$');
         $scope.isInvalidRepoName = !patt.test($scope.clone.repositoryID);
         if (!$scope.isInvalidRepoName) {
             $modalInstance.close($scope.clone);

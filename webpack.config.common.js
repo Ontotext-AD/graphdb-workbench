@@ -49,6 +49,10 @@ module.exports = {
         }),
         new CopyPlugin([
             {
+                from: 'src/js/angular/basehref.js',
+                to: 'basehref.js'
+            },
+            {
                 from: 'src/js/angular/plugin-registry.js',
                 to: 'plugin-registry.js'
             },
