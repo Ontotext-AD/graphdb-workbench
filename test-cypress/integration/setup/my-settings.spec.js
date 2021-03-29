@@ -21,6 +21,8 @@ describe('My Settings', () => {
     });
 
     after(() => {
+        // Verify that the default user settings are returned
+        cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
     });
 
@@ -83,16 +85,22 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it('should change settings for admin and verify changes are reflected in SAPRQL editor', () => {
+    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        cy.get('#sameas-on label').click();
-        cy.get('#sameas-on').find('.switch:checkbox').should('not.be.checked');
-        cy.get('#inference-on label').click();
-        cy.get('#inference-on').find('.switch:checkbox').should('not.be.checked');
-        cy.get('#defaultCount:checkbox').uncheck();
-        cy.get('#defaultCount:checkbox').should('not.be.checked');
+        cy.get('#sameas-on label').click()
+            .then(() => {
+                cy.get('#sameas-on').find('.switch:checkbox').should('not.be.checked');
+            });
+        cy.get('#inference-on label').click()
+            .then(() => {
+                cy.get('#inference-on').find('.switch:checkbox').should('not.be.checked');
+            });
+        cy.get('#defaultCount:checkbox').uncheck()
+            .then(() => {
+                cy.get('#defaultCount:checkbox').should('not.be.checked');
+            });
         getSaveButton().click();
 
         //Go to SPARQL editor and verify changes are persisted for the admin user
@@ -134,12 +142,21 @@ describe('My Settings', () => {
         cy.visit('/settings');
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-        cy.get('#sameas-on label').click();
-        cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
-        cy.get('#inference-on label').click();
-        cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
-        cy.get('#defaultCount:checkbox').check();
-        cy.get('#defaultCount:checkbox').should('be.checked');
+        // Note that '.switch:checkbox' doesn't present when unchecked.
+        // Verify that the buttons will be clicked first and afterwards
+        // verification will happen.
+        cy.get('#sameas-on label').click()
+            .then(() => {
+                cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
+            });
+        cy.get('#inference-on label').click()
+            .then(() => {
+                cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
+            });
+        cy.get('#defaultCount:checkbox').check()
+            .then(() => {
+                cy.get('#defaultCount:checkbox').should('be.checked');
+            });
         getSaveButton().click();
     });
 
