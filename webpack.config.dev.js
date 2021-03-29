@@ -46,7 +46,10 @@ module.exports = merge(commonConfig, {
         host: host,
         // needed to handle urls sent by open id providers that contain dots
         historyApiFallback: {
-            disableDotRule: true
+            disableDotRule: true,
+            rewrites: [
+                {from: /basehref.js/, to: '/basehref.js'}
+            ]
         },
         proxy: [{
             context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
