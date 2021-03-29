@@ -692,8 +692,8 @@ describe('Repositories', () => {
             .should('be.visible');
         cy.waitUntil(() =>
             cy.get('.repository-status .text-secondary')
-            .then($el => $el.text())
-            .then(token => token === status));
+            .then($el => $el)
+            .then($el => $el && $el.text() === status));
     }
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';

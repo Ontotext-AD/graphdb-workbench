@@ -276,8 +276,8 @@ describe('Similarity screen validation', () => {
 
     function setIndexName() {
         cy.url().should('eq', Cypress.config('baseUrl') + INDEX_CREATE_URL);
-        getSimilarity().type(INDEX_NAME);
-        getSimilarity().invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
+        getSimilarity().should('be.visible').type(INDEX_NAME);
+        getSimilarity().should('be.visible').invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
     }
 
     function clickMoreOptionsMenu() {
