@@ -584,7 +584,7 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
-    it.only('should restart an existing repository', () => {
+    it('should restart an existing repository', () => {
 
         createRepository();
         chooseRepositoryType();

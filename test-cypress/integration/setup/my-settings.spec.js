@@ -85,7 +85,7 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it.only('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
