@@ -85,23 +85,29 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+    it.only('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
         cy.get('#sameas-on label').click()
             .then(() => {
-                cy.get('#sameas-on').should('be.visible')
-                    .find('.switch:checkbox').should('be.visible').and('not.be.checked');
+                cy.get('#sameas-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible')
+                    .and('not.have.attr', 'checked');
             });
         cy.get('#inference-on label').click()
             .then(() => {
-                cy.get('#inference-on').should('be.visible')
-                    .find('.switch:checkbox').should('be.visible').and('not.be.checked');
+                cy.get('#inference-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible')
+                    .and('not.have.attr', 'checked');
             });
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
-                cy.get('#defaultCount:checkbox').should('be.visible').and('not.be.checked');
+                cy.get('#defaultCount:checkbox')
+                    .should('be.visible')
+                    .and('not.be.checked');
             });
         getSaveButton().click();
 
@@ -149,15 +155,22 @@ describe('My Settings', () => {
         // verification will happen.
         cy.get('#sameas-on label').click()
             .then(() => {
-                cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
+                cy.get('#sameas-on')
+                    .should('be.visible')
+                    .find('.switch:checkbox')
+                    .should('be.checked');
             });
         cy.get('#inference-on label').click()
             .then(() => {
-                cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
+                cy.get('#inference-on').should('be.visible')
+                    .find('.switch:checkbox')
+                    .should('be.checked');
             });
         cy.get('#defaultCount:checkbox').check()
             .then(() => {
-                cy.get('#defaultCount:checkbox').should('be.checked');
+                cy.get('#defaultCount:checkbox')
+                    .should('be.visible')
+                    .and('be.checked');
             });
         getSaveButton().click();
     });
