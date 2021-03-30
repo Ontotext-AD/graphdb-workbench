@@ -304,8 +304,11 @@ describe('Similarity screen validation', () => {
     function createSimilarityIndex() {
         getCreateIndexButton().click();
         getExistingIndexesPanel();
-        cy.get('#indexes-table table').should('be.visible')
-            .find('.index-row').should('have.length', 1);
+        cy.waitUntil(() =>
+            cy.get('#indexes-table table').should('be.visible')
+                .find('.index-row')
+                .then($el => $el)
+                .then($el => $el && $el.length === 1));
         // Just wait for the row in the table to appear and the cell with the index name to be
         // visible. Waiting for the loading indicator to disappear is just too brittle.
         // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
