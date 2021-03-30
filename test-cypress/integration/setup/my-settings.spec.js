@@ -91,15 +91,17 @@ describe('My Settings', () => {
         //turn off inference, sameAs and count total results
         cy.get('#sameas-on label').click()
             .then(() => {
-                cy.get('#sameas-on').find('.switch:checkbox').should('not.be.checked');
+                cy.get('#sameas-on').should('be.visible')
+                    .find('.switch:checkbox').should('be.visible').and('not.be.checked');
             });
         cy.get('#inference-on label').click()
             .then(() => {
-                cy.get('#inference-on').find('.switch:checkbox').should('not.be.checked');
+                cy.get('#inference-on').should('be.visible')
+                    .find('.switch:checkbox').should('be.visible').and('not.be.checked');
             });
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
-                cy.get('#defaultCount:checkbox').should('not.be.checked');
+                cy.get('#defaultCount:checkbox').should('be.visible').and('not.be.checked');
             });
         getSaveButton().click();
 
