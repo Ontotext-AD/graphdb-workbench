@@ -584,7 +584,7 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
-    it('should restart an existing repository', () => {
+    it.only('should restart an existing repository', () => {
 
         createRepository();
         chooseRepositoryType();
@@ -688,12 +688,12 @@ describe('Repositories', () => {
     });
 
     function assertRepositoryStatus(repositoryId, status) {
-        getRepositoryFromList(repositoryId)
-            .should('be.visible');
         cy.waitUntil(() =>
-            cy.get('.repository-status .text-secondary')
-            .then($el => $el)
-            .then($el => $el && $el.text() === status));
+            getRepositoryFromList(repositoryId)
+                .should('be.visible')
+                .find('.repository-status .text-secondary')
+                .then($el => $el)
+                .then($el => $el && $el.text() === status));
     }
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
