@@ -302,20 +302,22 @@ describe('Similarity screen validation', () => {
     }
 
     function createSimilarityIndex() {
-        getCreateIndexButton().click();
-        cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
-        getExistingIndexesPanel();
-        cy.waitUntil(() =>
-            cy.get('#indexes-table table').should('be.visible')
-                .find('.index-row')
-                .then($el => $el)
-                .then($el => $el && $el.length === 1));
-        // Just wait for the row in the table to appear and the cell with the index name to be
-        // visible. Waiting for the loading indicator to disappear is just too brittle.
-        // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
-        // fails often because during completing the index name on a previous step the WB seems to
-        // cut off part of the name on the leading side.
-        getIndexLinks().should('be.visible');
+        getCreateIndexButton().click()
+            .then(() => {
+                cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
+                getExistingIndexesPanel();
+                cy.waitUntil(() =>
+                    cy.get('#indexes-table table').should('be.visible')
+                        .find('.index-row')
+                        .then($el => $el)
+                        .then($el => $el && $el.length === 1));
+                // Just wait for the row in the table to appear and the cell with the index name to be
+                // visible. Waiting for the loading indicator to disappear is just too brittle.
+                // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
+                // fails often because during completing the index name on a previous step the WB seems to
+                // cut off part of the name on the leading side.
+                getIndexLinks().should('be.visible');
+            });
     }
 
     function deleteSimilarityIndex() {

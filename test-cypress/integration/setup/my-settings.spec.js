@@ -111,6 +111,7 @@ describe('My Settings', () => {
 
         //Go to SPARQL editor and verify changes are persisted for the admin user
         cy.visit('/sparql');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
         cy.get('.ot-splash').should('not.be.visible');
 
         cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
