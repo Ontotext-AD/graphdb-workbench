@@ -348,7 +348,7 @@ describe('Similarity screen validation', () => {
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
         getCreateIndexButton().should('be.visible').click()
             .then(() => {
-                cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
+                cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity`);
                 getExistingIndexesPanel();
                 waitForIndexBuildingIndicatorToHide();
                 getIndexLinks().should('have.length', 2);
