@@ -340,10 +340,12 @@ describe('Similarity screen validation', () => {
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
-        getCreateIndexButton().should('be.visible').click();
-        waitForIndexBuildingIndicatorToHide();
-        getExistingIndexesPanel();
-        getIndexLinks().should('have.length', 2);
+        getCreateIndexButton().should('be.visible').click()
+            .then(() => {
+                getExistingIndexesPanel();
+                waitForIndexBuildingIndicatorToHide();
+                getIndexLinks().should('have.length', 2);
+            });
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
