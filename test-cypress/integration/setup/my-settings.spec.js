@@ -7,6 +7,7 @@ describe('My Settings', () => {
     const FILE_TO_IMPORT = 'wine.rdf';
 
     before(() => {
+        cy.clearLocalStorage();
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
