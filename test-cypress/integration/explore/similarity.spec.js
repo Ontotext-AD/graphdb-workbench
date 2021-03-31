@@ -346,13 +346,13 @@ describe('Similarity screen validation', () => {
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
-        getCreateIndexButton().should('be.visible').click()
-            .then(() => {
-                cy.window();
-                getExistingIndexesPanel();
-                waitForIndexBuildingIndicatorToHide();
-                getIndexLinks().should('have.length', 2);
-            });
+        getCreateIndexButton().should('be.visible').click();
+        cy.window();
+        // This method is used because of the timer in similarity indexes controller
+        cy.waitUntil(() =>
+        getExistingIndexesPanel()
+            .find('#indexes-table .index-row')
+            .then(el => el.length === 2));
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
@@ -437,13 +437,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getExistingIndexesPanel() {
-        // This method is used because of the timer in similarity indexes controller
-        cy.waitUntil(() =>
-            cy.get('.existing-indexes')
-                .then(panel => panel), {
-            timeout: 10000, // waits up to 10000 ms, default to 5000
-            interval: 500
-        });
+        return cy.get('.existing-indexes').should('be.visible');
     }
 
     function waitForIndexBuildingIndicatorToHide() {
