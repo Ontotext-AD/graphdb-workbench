@@ -224,6 +224,7 @@ describe('Similarity screen validation', () => {
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
         cy.visit('/similarity');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
     }
 
     function openIndex(index) {
@@ -337,7 +338,8 @@ describe('Similarity screen validation', () => {
 
     function cloneExistingIndex() {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
-        cy.get('.clone-index-btn').click();
+        cy.get('.clone-index-btn').click()
+            .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
 
         // This is just an implicit wait in order to allow the view to catch up with the rendering
         // before trying to click the button. Its needed because the button doesn't always accept
