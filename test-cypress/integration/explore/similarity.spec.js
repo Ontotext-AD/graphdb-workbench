@@ -224,7 +224,7 @@ describe('Similarity screen validation', () => {
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
         cy.visit('/similarity');
-        cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
+        cy.window();
     }
 
     function openIndex(index) {
@@ -340,20 +340,21 @@ describe('Similarity screen validation', () => {
     function cloneExistingIndex() {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
         cy.get('.clone-index-btn').click()
-            .then(() => {
-                cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`);
+            .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
 
-                // This is just an implicit wait in order to allow the view to catch up with the rendering
-                // before trying to click the button. Its needed because the button doesn't always accept
-                // the click most likely due to some async behavior
-                cy.contains('Sample queries:').next('.list-group').should('be.visible');
-                getCreateIndexButton().should('be.visible').click()
-                    .then(() => {
-                        cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity`);
-                        waitForIndexBuildingIndicatorToHide();
-                        getIndexLinks().should('have.length', 2);
-                    });
+        // This is just an implicit wait in order to allow the view to catch up with the rendering
+        // before trying to click the button. Its needed because the button doesn't always accept
+        // the click most likely due to some async behavior
+        cy.contains('Sample queries:').next('.list-group').should('be.visible');
+        getCreateIndexButton().should('be.visible').click()
+            .then(() => {
+                cy.window();
+                getExistingIndexesPanel();
+                waitForIndexBuildingIndicatorToHide();
+                getIndexLinks().should('have.length', 2);
             });
+
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
 
     function getIndexLinks() {
