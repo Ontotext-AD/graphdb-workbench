@@ -428,7 +428,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getExistingIndexesPanel() {
-        return cy.get('.existing-indexes').should('be.visible');
+        return cy.get('.existing-indexes', {timeout: 10000}).should('be.visible');
     }
 
     function waitForIndexBuildingIndicatorToHide() {

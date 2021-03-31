@@ -458,7 +458,7 @@ describe('Visual graph screen validation', () => {
         });
     });
 
-    it('Test can create custom visual graph', () => {
+    it.only('Test can create custom visual graph', () => {
         cy.visit('/graphs-visualizations');
         getCreateCustomGraphLink().click();
         cy.url().should('include', '/config/save');
@@ -485,10 +485,18 @@ describe('Visual graph screen validation', () => {
             .and('contain', 'configName');
         // After successful confirmation that the custom config presents
         // make sure that latter will be removed
-        cy.get('.delete-config')
-            .should('be.visible').click()
-            .then(() =>
-                cy.get('.modal-content .confirm-btn').should('be.visible').click());
+        cy.waitUntil(() =>
+            cy.get('.delete-config')
+                .should('be.visible')
+                .then($el => {
+                    cy.wrap($el).first().click()
+                        .then(() => {
+                            cy.get('.modal-content .confirm-btn').should('be.visible').click()
+                                // This will allow to call function multiple times
+                                // and clear all graph configuration. Electron caching problem
+                                .then(() => $el.length === 1);
+                        });
+                }));
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'No graph configs');
     });
