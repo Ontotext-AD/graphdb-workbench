@@ -16,8 +16,7 @@ describe('My Settings', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/settings');
-        // Wait for loader to disappear
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
     });
 
     after(() => {
@@ -89,13 +88,13 @@ describe('My Settings', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        cy.get('#sameas-on > .mr-0 > label').click()
+        cy.get('#sameas-on label').click()
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
                     .should('not.be.visible');
             });
-        cy.get('#inference-on > .mr-0 > label').click()
+        cy.get('#inference-on label').click()
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
@@ -147,19 +146,20 @@ describe('My Settings', () => {
 
         //return to My Settings to revert the changes
         cy.visit('/settings');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
         // Note that '.switch:checkbox' doesn't present when unchecked.
         // Verify that the buttons will be clicked first and afterwards
         // verification will happen.
-        cy.get('#sameas-on > .mr-0 > label').click()
+        cy.get('#sameas-on label').click()
             .then(() => {
                 cy.get('#sameas-on')
                     .should('be.visible')
                     .find('.switch:checkbox')
                     .should('be.checked');
             });
-        cy.get('#inference-on > .mr-0 > label').click()
+        cy.get('#inference-on label').click()
             .then(() => {
                 cy.get('#inference-on').should('be.visible')
                     .find('.switch:checkbox')
