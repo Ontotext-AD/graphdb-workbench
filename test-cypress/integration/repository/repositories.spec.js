@@ -36,6 +36,10 @@ describe('Repositories', () => {
         "  ex:age 12.1 ;\n" +
         ".";
 
+    before(() => {
+        cy.clearLocalStorage();
+    });
+
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
 

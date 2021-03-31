@@ -65,6 +65,10 @@ describe('SPARQL screen validation', () => {
         getLoader().should('not.be.visible');
     }
 
+    before(() => {
+        cy.clearLocalStorage();
+    });
+
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
