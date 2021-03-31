@@ -482,10 +482,10 @@ describe('Visual graph screen validation', () => {
         getSaveConfig().click();
         cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
         getGraphConfigurationsArea().should('be.visible')
-            .and('contain', 'configName')
-            // After successful confirmation that the custom config presents
-            // make sure that latter will be removed
-            .find('.delete-config')
+            .and('contain', 'configName');
+        // After successful confirmation that the custom config presents
+        // make sure that latter will be removed
+        cy.get('.delete-config')
             .should('be.visible').click()
             .then(() =>
                 cy.get('.modal-content .confirm-btn').should('be.visible').click());
