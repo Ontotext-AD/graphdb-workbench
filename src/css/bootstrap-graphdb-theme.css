@@ -2586,8 +2586,10 @@ input[name=namespace] {
 }
 
 .wb-tags-input .tags .tag-item.tag-item-wildcard {
-    background: #cae4f5;
-    border-color: #cae4f5;
+    background: #cbeeea;
+    border: 1px solid #cbeeea;
+    border-radius: 0;
+    color: #3D3D3D;
     font-weight: bold;
 }
 
