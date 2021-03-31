@@ -270,6 +270,7 @@ describe('Similarity screen validation', () => {
 
     function openCreateNewIndexForm() {
         cy.get('.create-similarity-index').click();
+        cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`);
         // Wait for query editor to become ready because consecutive command for index creation might
         // fail because the query may not be submitted with the request.
         cy.waitUntilQueryIsVisible();
