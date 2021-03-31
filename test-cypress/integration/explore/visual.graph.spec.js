@@ -448,6 +448,17 @@ describe('Visual graph screen validation', () => {
                 .and('not.be.disabled');
             getIgnoredPredicatesField().should('be.empty');
         });
+
+        it('Test include schema statements', () => {
+            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            getPredicates().should('contain', 'type');
+            openVisualGraphSettings();
+            getSettingsPanel().should('be.visible');
+            cy.get('.include-schema-statements').should('be.checked');
+            cy.get('.include-schema-statements').uncheck();
+            saveSettings();
+            getPredicates().should('not.contain', 'type');
+        });
     });
 
     it('Test can create custom visual graph', () => {
