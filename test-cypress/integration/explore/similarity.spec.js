@@ -431,7 +431,6 @@ describe('Similarity screen validation', () => {
         // This method is used because of the timer in similarity indexes controller
         cy.waitUntil(() =>
             cy.get('.existing-indexes')
-                .should('be.visible')
                 .then(panel => panel));
     }
 
