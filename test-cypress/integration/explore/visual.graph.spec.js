@@ -483,20 +483,6 @@ describe('Visual graph screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'configName');
-        // After successful confirmation that the custom config presents
-        // make sure that latter will be removed
-        cy.waitUntil(() =>
-            cy.get('.delete-config')
-                .should('be.visible')
-                .then($el => {
-                    cy.wrap($el).first().click()
-                        .then(() => {
-                            cy.get('.modal-content .confirm-btn').should('be.visible').click()
-                                // This will allow to call function multiple times
-                                // and clear all graph configuration. Electron caching problem
-                                .then(() => $el.length === 1);
-                        });
-                }));
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'No graph configs');
     });
