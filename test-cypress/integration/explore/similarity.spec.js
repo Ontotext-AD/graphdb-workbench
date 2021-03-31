@@ -264,7 +264,7 @@ describe('Similarity screen validation', () => {
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        getExistingIndexesPanel().should('contain', 'No Indexes');
+        cy.get('.existing-indexes').should('be.visible').and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
@@ -428,7 +428,11 @@ describe('Similarity screen validation', () => {
     }
 
     function getExistingIndexesPanel() {
-        return cy.get('.existing-indexes', {timeout: 10000}).should('be.visible');
+        // This method is used because of the timer in similarity indexes controller
+        cy.waitUntil(() =>
+            cy.get('.existing-indexes')
+                .should('be.visible')
+                .then(panel => panel));
     }
 
     function waitForIndexBuildingIndicatorToHide() {

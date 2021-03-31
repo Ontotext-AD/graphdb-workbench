@@ -458,7 +458,7 @@ describe('Visual graph screen validation', () => {
         });
     });
 
-    it.only('Test can create custom visual graph', () => {
+    it('Test can create custom visual graph', () => {
         cy.visit('/graphs-visualizations');
         getCreateCustomGraphLink().click();
         cy.url().should('include', '/config/save');
