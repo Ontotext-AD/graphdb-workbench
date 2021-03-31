@@ -143,6 +143,49 @@ describe('My Settings', () => {
         getSaveButton().click();
     });
 
+    it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
+        //Verify that schema statements are ON in My settings
+        cy.visit('/settings');
+        cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+        //Verify that schema statements ON is reflected in Visual graph
+        cy.visit('/graphs-visualizations');
+        cy.get('.search-rdf-resources input:visible')
+            .type("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry")
+            .trigger('change')
+            .wait(1000)
+            .type('{enter}');
+        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
+        cy.get('.include-schema-statements').should('be.checked');
+        cy.get('.save-settings-btn').click();
+        cy.get('.predicate').should('contain','type');
+        //Set schema statements OFF in my settings
+        cy.visit('/settings');
+        cy.get('#schema-on label').click();
+        cy.get('#schema-on').find('.switch:checkbox').should('not.be.checked');
+        getSaveButton().click();
+        //Verify that schema statements OFF is reflected in Visual graph
+        cy.visit('/graphs-visualizations');
+        cy.get('.search-rdf-resources input:visible')
+            .type("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry")
+            .trigger('change')
+            .wait(1000)
+            .type('{enter}');
+        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
+        cy.get('.include-schema-statements').click();
+        cy.get('.include-schema-statements').should('not.be.checked');
+        cy.get('.save-settings-btn').click();
+        cy.get('.predicate').should('not.contain','type');
+        //return to My Settings to revert the changes
+        cy.visit('/settings');
+        // Wait for loader to disappear
+        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('#schema-on label').click();
+        cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+        getSaveButton().click();
+    });
+
     function getUserRepositoryTable() {
         return cy.get('.user-repositories .table');
     }
