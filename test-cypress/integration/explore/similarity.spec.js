@@ -440,7 +440,10 @@ describe('Similarity screen validation', () => {
         // This method is used because of the timer in similarity indexes controller
         cy.waitUntil(() =>
             cy.get('.existing-indexes')
-                .then(panel => panel));
+                .then(panel => panel), {
+            timeout: 10000, // waits up to 10000 ms, default to 5000
+            interval: 500
+        });
     }
 
     function waitForIndexBuildingIndicatorToHide() {
