@@ -303,6 +303,7 @@ describe('Similarity screen validation', () => {
 
     function createSimilarityIndex() {
         getCreateIndexButton().click();
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
         getExistingIndexesPanel();
         cy.waitUntil(() =>
             cy.get('#indexes-table table').should('be.visible')
@@ -342,6 +343,7 @@ describe('Similarity screen validation', () => {
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
         getCreateIndexButton().should('be.visible').click()
             .then(() => {
+                cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
                 getExistingIndexesPanel();
                 waitForIndexBuildingIndicatorToHide();
                 getIndexLinks().should('have.length', 2);
