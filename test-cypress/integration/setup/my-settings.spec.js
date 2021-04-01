@@ -7,7 +7,8 @@ describe('My Settings', () => {
     const FILE_TO_IMPORT = 'wine.rdf';
 
     before(() => {
-        cy.clearLocalStorage();
+        // Verify that the default user settings are set
+        cy.setDefaultUserData();
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -17,6 +18,7 @@ describe('My Settings', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/settings');
+        cy.window();
         cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
     });
 
@@ -113,6 +115,7 @@ describe('My Settings', () => {
 
         //Go to SPARQL editor and verify changes are persisted for the admin user
         cy.visit('/sparql');
+        cy.window();
         cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
         cy.get('.ot-splash').should('not.be.visible');
 
@@ -136,11 +139,11 @@ describe('My Settings', () => {
 
         //verify disabled default inference, sameAs and total results count
         cy.get('#inference')
-            .find('.icon-inferred-off')
+            .find('.icon-2-5x.icon-inferred-off')
             .should('be.visible');
 
         cy.get('#sameAs')
-            .find('.icon-sameas-off')
+            .find('.icon-2-5x.icon-sameas-off')
             .should('be.visible');
 
         cy.get('.results-info .text-xs-right')
