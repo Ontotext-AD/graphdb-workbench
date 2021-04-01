@@ -33,7 +33,6 @@ describe('Similarity screen validation', () => {
     let repositoryId;
 
     afterEach(() => {
-        cy.visit('/');
         cy.deleteRepository(repositoryId);
     });
 
@@ -266,7 +265,7 @@ describe('Similarity screen validation', () => {
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        getExistingIndexesPanel().should('be.visible').and('contain', 'No Indexes');
+        getExistingIndexesPanel().and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
@@ -309,11 +308,8 @@ describe('Similarity screen validation', () => {
             .then(() => {
                 cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
                 getExistingIndexesPanel();
-                cy.waitUntil(() =>
-                    cy.get('#indexes-table table').should('be.visible')
-                        .find('.index-row')
-                        .then($el => $el)
-                        .then($el => $el && $el.length === 1));
+                cy.get('#indexes-table table').should('be.visible')
+                    .find('.index-row').should('have.length', 1);
                 // Just wait for the row in the table to appear and the cell with the index name to be
                 // visible. Waiting for the loading indicator to disappear is just too brittle.
                 // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
@@ -348,17 +344,16 @@ describe('Similarity screen validation', () => {
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
         getCreateIndexButton().should('be.visible').click();
-        cy.waitUntil(() =>
-            cy.url()
-                .then(url => url === `${Cypress.config('baseUrl')}/similarity`), {
-            timeout: 10000 // waits up to 10000 ms, default to 5000
-        }).then(() => {
-            getExistingIndexesPanel();
-            waitForIndexBuildingIndicatorToHide();
-            cy.get(`#indexes-table .index-name`).should('have.length', 2);
+        // Note that while cloning index there is a small amount of time
+        // during which actual URL is /similarity?<and_the_config_appended>
+        // we should bypass this going to th
+        cy.visit('/similarity');
+        cy.window();
+        getExistingIndexesPanel();
+        waitForIndexBuildingIndicatorToHide();
+        cy.get(`#indexes-table .index-name`).should('have.length', 2);
 
-            cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
-        });
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
 
     function getIndexLinks() {
