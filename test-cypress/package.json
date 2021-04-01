@@ -29,7 +29,10 @@
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
-        "minimist": "^1.2.5"
+        "@cypress/code-coverage": "^3.8.8",
+        "@cypress/webpack-preprocessor": "^5.5.0",
+        "minimist": "^1.2.5",
+        "nyc": "^15.1.0"
     },
     "resolutions": {
         "minimist": "^1.2.5"

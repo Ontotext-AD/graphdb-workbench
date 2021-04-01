@@ -1,4 +1,4 @@
-import snippetImportTemplate from '../fixtures/snippet-import-template.json';
+// import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 
 const UPLOAD_URL = '/rest/data/import/upload/';
 const SERVER_IMPORT_URL = '/rest/data/import/server/';
@@ -43,3 +43,14 @@ function waitServerOperation(url, repositoryId, fileName) {
         waitServerOperation(url, repositoryId, fileName);
     });
 }
+
+const snippetImportTemplate = {
+    "name": "Text snippet",
+    "status":"NONE",
+    "message":"",
+    "context":"",
+    "type":"text",
+    "format":"text/turtle",
+    "data":"<http://example.org/#spiderman> <http://www.perceive.net/schemas/relationship/enemyOf> <http://example.org/#green-goblin> ."
+};
+

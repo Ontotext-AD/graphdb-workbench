@@ -12,3 +12,5 @@ coverage/
 report/
 cypress/
 .downloads
+
+.nyc_output
