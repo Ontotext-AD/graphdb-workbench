@@ -351,9 +351,10 @@ describe('Similarity screen validation', () => {
         cy.window();
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
-        cy.waitUntil(() => {
+        cy.waitUntil(() =>
             cy.get(`#indexes-table .index-name`)
-                .then(indexes => indexes.length === 2)
+                .then(indexes => indexes.length === 2), {
+            timeout: 10000
         })
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
