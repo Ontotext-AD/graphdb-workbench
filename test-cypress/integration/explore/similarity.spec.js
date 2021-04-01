@@ -346,9 +346,7 @@ describe('Similarity screen validation', () => {
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
-        getCreateIndexButton().should('be.visible').click();
-        cy.window();
-        // This method is used because of the timer in similarity indexes controller
+        getCreateIndexButton().should('be.visible').click().wait(10000);
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
         cy.get(`#indexes-table .index-name`).should('have.length', 2);
