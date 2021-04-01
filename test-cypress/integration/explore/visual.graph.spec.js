@@ -6,11 +6,11 @@ describe('Visual graph screen validation', () => {
     const VALID_RESOURCE = 'USRegion';
 
     before(() => {
-        cy.clearLocalStorage();
+        cy.clearLocalStorage('ls.graphs-viz');
     });
 
     after(() => {
-        cy.clearLocalStorage();
+        cy.clearLocalStorage('ls.graphs-viz');
     });
 
     beforeEach(() => {
