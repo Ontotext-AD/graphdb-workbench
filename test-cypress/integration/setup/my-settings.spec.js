@@ -89,17 +89,21 @@ describe('My Settings', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        cy.get('#sameas-on label').click()
+        cy.get('#sameas-on')
+            .find('.switch.mr-0').click()
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.be.visible')
+                    .and('not.be.checked');
             });
-        cy.get('#inference-on label').click()
+        cy.get('#inference-on')
+            .find('.switch.mr-0').click()
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.be.visible')
+                    .and('not.be.checked');
             });
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
@@ -153,14 +157,16 @@ describe('My Settings', () => {
         // Note that '.switch:checkbox' doesn't present when unchecked.
         // Verify that the buttons will be clicked first and afterwards
         // verification will happen.
-        cy.get('#sameas-on label').click()
+        cy.get('#sameas-on')
+            .find('.switch.mr-0').click()
             .then(() => {
                 cy.get('#sameas-on')
                     .should('be.visible')
                     .find('.switch:checkbox')
                     .should('be.checked');
             });
-        cy.get('#inference-on label').click()
+        cy.get('#inference-on')
+            .find('.switch.mr-0').click()
             .then(() => {
                 cy.get('#inference-on').should('be.visible')
                     .find('.switch:checkbox')

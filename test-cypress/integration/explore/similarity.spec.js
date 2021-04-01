@@ -154,7 +154,7 @@ describe('Similarity screen validation', () => {
             initRepositoryAndVisitSimilarityView()
         });
 
-        it('Search for entiry in index', () => {
+        it('Search for entity in index', () => {
             // I have created similarity index
             openCreateNewIndexForm();
             setIndexName();
@@ -352,9 +352,10 @@ describe('Similarity screen validation', () => {
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
         cy.waitUntil(() =>
-            cy.get(`#indexes-table .index-name`)
+            cy.get('#indexes-table')
+                .find('.index-row')
                 .then(indexes => indexes.length === 2), {
-            timeout: 10000
+            timeout: 60000
         })
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
