@@ -265,7 +265,7 @@ describe('Similarity screen validation', () => {
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        cy.get('.existing-indexes').should('be.visible').and('contain', 'No Indexes');
+        getExistingIndexesPanel().should('be.visible').and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
@@ -346,7 +346,7 @@ describe('Similarity screen validation', () => {
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
-        getCreateIndexButton().should('be.visible').click().wait(10000);
+        getCreateIndexButton().should('be.visible').click();
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
         cy.get(`#indexes-table .index-name`).should('have.length', 2);
