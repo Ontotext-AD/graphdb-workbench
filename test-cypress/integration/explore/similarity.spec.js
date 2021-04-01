@@ -349,10 +349,9 @@ describe('Similarity screen validation', () => {
         getCreateIndexButton().should('be.visible').click();
         cy.window();
         // This method is used because of the timer in similarity indexes controller
-        cy.waitUntil(() =>
-        getExistingIndexesPanel()
-            .find('#indexes-table .index-row')
-            .then(el => el.length === 2));
+        getExistingIndexesPanel();
+        waitForIndexBuildingIndicatorToHide();
+        cy.get(`#indexes-table .index-name`).should('have.length', 2);
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
