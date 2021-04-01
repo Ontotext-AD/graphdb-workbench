@@ -134,7 +134,7 @@ describe('Similarity screen validation', () => {
             verifyQueryIsChanged();
         });
 
-        it.only('Clone existing similarity index', () => {
+        it('Clone existing similarity index', () => {
             openCreateNewIndexForm();
             setIndexName();
             createSimilarityIndex();
