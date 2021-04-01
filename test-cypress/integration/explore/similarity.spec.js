@@ -33,6 +33,7 @@ describe('Similarity screen validation', () => {
     let repositoryId;
 
     afterEach(() => {
+        cy.visit('/');
         cy.deleteRepository(repositoryId);
     });
 

@@ -133,11 +133,11 @@ describe('My Settings', () => {
         cy.get('.ot-loader-new-content').should('not.be.visible');
 
         //verify disabled default inference, sameAs and total results count
-        cy.get('#inference ')
+        cy.get('#inference')
             .find('.icon-inferred-off')
             .should('be.visible');
 
-        cy.get('#sameAs ')
+        cy.get('#sameAs')
             .find('.icon-sameas-off')
             .should('be.visible');
 
