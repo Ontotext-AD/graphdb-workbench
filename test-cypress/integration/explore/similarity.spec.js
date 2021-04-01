@@ -351,12 +351,13 @@ describe('Similarity screen validation', () => {
             cy.url()
                 .then(url => url === `${Cypress.config('baseUrl')}/similarity`), {
             timeout: 10000 // waits up to 10000 ms, default to 5000
-        });
-        getExistingIndexesPanel();
-        waitForIndexBuildingIndicatorToHide();
-        cy.get(`#indexes-table .index-name`).should('have.length', 2);
+        }).then(() => {
+            getExistingIndexesPanel();
+            waitForIndexBuildingIndicatorToHide();
+            cy.get(`#indexes-table .index-name`).should('have.length', 2);
 
-        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
+            cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
+        });
     }
 
     function getIndexLinks() {
