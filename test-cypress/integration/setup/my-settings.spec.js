@@ -94,16 +94,14 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible')
-                    .and('not.be.checked');
+                    .should('not.be.visible');
             });
         cy.get('#inference-on')
             .find('.switch.mr-0').click()
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible')
-                    .and('not.be.checked');
+                    .should('not.be.visible');
             });
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {

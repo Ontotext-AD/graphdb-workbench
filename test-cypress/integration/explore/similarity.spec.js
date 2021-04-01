@@ -134,7 +134,7 @@ describe('Similarity screen validation', () => {
             verifyQueryIsChanged();
         });
 
-        it('Clone existing similarity index', () => {
+        it.only('Clone existing similarity index', () => {
             openCreateNewIndexForm();
             setIndexName();
             createSimilarityIndex();
@@ -338,17 +338,12 @@ describe('Similarity screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
         cy.get('.clone-index-btn').click()
             .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
-
+        cy.window();
         // This is just an implicit wait in order to allow the view to catch up with the rendering
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
         getCreateIndexButton().should('be.visible').click();
-        // Note that while cloning index there is a small amount of time
-        // during which actual URL is /similarity?<and_the_config_appended>
-        // we should bypass this going to th
-        cy.visit('/similarity');
-        cy.window();
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
         cy.waitUntil(() =>
