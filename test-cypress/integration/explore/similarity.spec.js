@@ -347,6 +347,11 @@ describe('Similarity screen validation', () => {
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
         getCreateIndexButton().should('be.visible').click();
+        cy.waitUntil(() =>
+            cy.url()
+                .then(url => url === `${Cypress.config('baseUrl')}/similarity`), {
+            timeout: 10000 // waits up to 10000 ms, default to 5000
+        });
         getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
         cy.get(`#indexes-table .index-name`).should('have.length', 2);
