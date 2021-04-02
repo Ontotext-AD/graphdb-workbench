@@ -44,8 +44,25 @@ describe('SPARQL screen validation', () => {
                 }
             }
         });
-        cy.window();
         selectRepoFromDropdown(repositoryId);
+        waitUntilSparqlPageIsLoaded();
+    }
+
+    function waitUntilSparqlPageIsLoaded() {
+        cy.window();
+        // Workbench loading screen should not be visible
+        cy.get('.ot-splash').should('not.be.visible');
+
+        // Run query button should be clickable
+        getRunQueryButton().should('be.visible').and('not.be.disabled');
+
+        waitUntilQueryIsVisible();
+
+        // Editor should have a visible tab
+        getTabs().find('.nav-link').should('be.visible');
+
+        // No active loader
+        getLoader().should('not.be.visible');
     }
 
     afterEach(() => {
@@ -861,7 +878,7 @@ describe('SPARQL screen validation', () => {
 
             // Visit performs full page load
             cy.visit(expectedUrl);
-            cy.window();
+            waitUntilSparqlPageIsLoaded();
 
             getTabs().should('have.length', 2);
             getActiveTabLink().should('have.text', queryName);
@@ -896,8 +913,7 @@ describe('SPARQL screen validation', () => {
 
             // Visit performs full page load
             cy.visit(expectedUrl);
-            cy.window();
-
+            waitUntilSparqlPageIsLoaded();
             getTabs().should('have.length', 1);
 
             // Wait until editor is initialized with the query and then assert the whole query

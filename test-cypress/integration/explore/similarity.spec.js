@@ -343,27 +343,17 @@ describe('Similarity screen validation', () => {
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
-        // Should intercept create request to
-        // search for loaded elements close enough
-        cy.server()
-        cy.route({
-            method: 'POST',
-            url: 'rest/similarity',
-        }).as('create_request')
 
         getCreateIndexButton().should('be.visible').click();
 
-        cy.wait('@create_request')
-            .then(() => {
-                getExistingIndexesPanel();
-                waitForIndexBuildingIndicatorToHide();
-                cy.waitUntil(() =>
-                    cy.get('#indexes-table')
-                        .find('.index-row')
-                        .then(indexes => indexes.length === 2))
+        getExistingIndexesPanel();
+        waitForIndexBuildingIndicatorToHide();
+        cy.waitUntil(() =>
+            cy.get('#indexes-table')
+                .find('.index-row')
+                .then(indexes => indexes.length === 2))
 
-                cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
-            });
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
 
     function getIndexLinks() {

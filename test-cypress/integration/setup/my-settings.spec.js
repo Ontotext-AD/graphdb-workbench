@@ -7,8 +7,6 @@ describe('My Settings', () => {
     const FILE_TO_IMPORT = 'wine.rdf';
 
     before(() => {
-        // Verify that the default user settings are set
-        cy.setDefaultUserData();
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -92,14 +90,14 @@ describe('My Settings', () => {
 
         //turn off inference, sameAs and count total results
         cy.get('#sameas-on')
-            .find('.switch.mr-0').click()
+            .find('.switch.mr-0').should('be.visible').click()
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
                     .should('not.be.visible');
             });
         cy.get('#inference-on')
-            .find('.switch.mr-0').click()
+            .find('.switch.mr-0').should('be.visible').click()
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
@@ -152,6 +150,7 @@ describe('My Settings', () => {
 
         //return to My Settings to revert the changes
         cy.visit('/settings');
+        cy.window();
         cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
@@ -195,6 +194,6 @@ describe('My Settings', () => {
     }
 
     function getSaveButton() {
-        return cy.get('#wb-user-submit');
+        return cy.get('#wb-user-submit').should('be.visible');
     }
 });
