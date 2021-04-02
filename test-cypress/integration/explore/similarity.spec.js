@@ -316,6 +316,9 @@ describe('Similarity screen validation', () => {
                 // fails often because during completing the index name on a previous step the WB seems to
                 // cut off part of the name on the leading side.
                 getIndexLinks().should('be.visible');
+                cy.waitUntil(() =>
+                    cy.get('.edit-query-btn')
+                            .then(editBtn => editBtn));
             });
     }
 
