@@ -62,7 +62,7 @@ describe('SPARQL screen validation', () => {
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryIsVisible();
+        cy.waitUntilQueryIsVisible();
 
         // Editor should have a visible tab
         getTabs().find('.nav-link').should('be.visible');
@@ -99,8 +99,6 @@ describe('SPARQL screen validation', () => {
 
             // Verify pasting also works
             pasteQuery(DEFAULT_QUERY_MODIFIED);
-
-            verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             executeQuery();
 
@@ -234,8 +232,6 @@ describe('SPARQL screen validation', () => {
 
             pasteQuery(describeQuery);
 
-            verifyQueryAreaEquals(describeQuery);
-
             executeQuery();
 
             getResultsMessage()
@@ -317,8 +313,6 @@ describe('SPARQL screen validation', () => {
             let describeQuery = 'DESCRIBE <http://www.ontotext.com/SYSINFO> FROM <http://www.ontotext.com/SYSINFO>';
 
             pasteQuery(describeQuery);
-
-            verifyQueryAreaEquals(describeQuery);
 
             executeQuery();
 
@@ -1109,22 +1103,6 @@ describe('SPARQL screen validation', () => {
         });
     }
 
-    function waitUntilQueryHasValue(value) {
-        getQueryArea()
-            .should('be.visible')
-            .and(codeMirrorEl => {
-                const cm = codeMirrorEl[0].CodeMirror;
-                expect(cm.getValue().trim()).contain(value.trim());
-            });
-    }
-
-    function waitUntilQueryIsVisible() {
-        cy.waitUntil(() =>
-            getQueryArea()
-                .should(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
-    }
-
     function getQueryArea() {
         return cy.get('#queryEditor .CodeMirror');
     }
@@ -1154,7 +1132,7 @@ describe('SPARQL screen validation', () => {
         clearQuery();
         // Using force because the textarea is not visible
         getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        waitUntilQueryHasValue(query);
+        verifyQueryAreaEquals(query);
     }
 
     function goToPage(page) {

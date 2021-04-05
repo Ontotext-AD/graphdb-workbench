@@ -117,23 +117,14 @@ describe('My Settings', () => {
         cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.waitUntilQueryIsVisible();
 
         //clear default query and paste a new one that will generate more than 1000 results
         cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
         cy.get('#queryEditor .CodeMirror').find('textarea').
             invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-        cy.get('#queryEditor')
-            .find('.CodeMirror.cm-s-default.CodeMirror-wrap')
-            .should('be.visible')
-            .and(codeMirrorEl => {
-                const cm = codeMirrorEl[0].CodeMirror;
-                expect(cm.getValue().trim().length > 0).to.be.true;
-            });
+        cy.verifyQueryAreaContains(testResultCountQuery);
 
         cy.get('#wb-sparql-runQuery').click();
         cy.get('.ot-loader-new-content').should('not.be.visible');

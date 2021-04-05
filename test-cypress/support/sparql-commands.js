@@ -46,10 +46,10 @@ function getQueryTextArea() {
 }
 
 function waitUntilQueryIsVisible() {
-    getQueryArea().should(codeMirrorEl => {
-        const cm = codeMirrorEl[0].CodeMirror;
-        expect(cm.getValue().trim().length > 0).to.be.true;
-    });
+    cy.waitUntil(() =>
+        getQueryArea()
+            .should(codeMirrorEl =>
+                codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
 }
 
 function verifyQueryAreaContains(query) {
