@@ -29,14 +29,6 @@ Cypress.Commands.add('waitUntilQueryIsVisible', () => {
 Cypress.Commands.add('verifyQueryAreaContains', (query) => {
     verifyQueryAreaContains(query);
 });
-
-Cypress.Commands.add('waitUntilQueryAreaAppear', () => {
-    cy.waitUntil(() =>
-        getQueryArea()
-            .should(codeMirrorEl =>
-                codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
-});
-
 // Helper functions
 
 function clearQuery() {

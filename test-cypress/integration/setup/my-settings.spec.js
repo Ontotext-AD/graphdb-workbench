@@ -124,7 +124,7 @@ describe('My Settings', () => {
         cy.get('#queryEditor .CodeMirror').find('textarea').
             invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-        cy.verifyQueryAreaContains(testResultCountQuery);
+        waitUntilQueryValueEquals(testResultCountQuery);
 
         cy.get('#wb-sparql-runQuery').click();
         cy.get('.ot-loader-new-content').should('not.be.visible');
@@ -191,5 +191,11 @@ describe('My Settings', () => {
 
     function getSaveButton() {
         return cy.get('#wb-user-submit').should('be.visible');
+    }
+
+    function waitUntilQueryValueEquals(query) {
+        cy.waitUntil(() =>
+            cy.get('#queryEditor .CodeMirror')
+                .should(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
     }
 });
