@@ -1104,10 +1104,12 @@ describe('SPARQL screen validation', () => {
     }
 
     function waitUntilQueryIsVisible() {
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        getQueryArea()
+            .should('be.visible')
+            .and(codeMirrorEl => {
+                const cm = codeMirrorEl[0].CodeMirror;
+                expect(cm.getValue().trim().length > 0).to.be.true;
+            });
     }
 
     function getQueryArea() {
