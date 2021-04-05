@@ -117,7 +117,7 @@ describe('My Settings', () => {
         cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.waitUntilQueryAreaAppear();
+        waitUntilQueryAreaAppear();
 
         //clear default query and paste a new one that will generate more than 1000 results
         cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
@@ -191,6 +191,13 @@ describe('My Settings', () => {
 
     function getSaveButton() {
         return cy.get('#wb-user-submit').should('be.visible');
+    }
+
+    function waitUntilQueryAreaAppear() {
+        cy.waitUntil(() =>
+            getQueryArea()
+                .should(codeMirrorEl =>
+                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
     function waitUntilQueryValueEquals(query) {
