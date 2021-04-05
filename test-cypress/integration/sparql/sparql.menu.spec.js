@@ -1113,8 +1113,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function getQueryArea() {
-        return cy.get('#queryEditor')
-            .find('.CodeMirror.cm-s-default.CodeMirror-wrap');
+        return cy.get('#queryEditor .CodeMirror');
     }
 
     function getQueryTextArea() {
@@ -1355,6 +1354,7 @@ describe('SPARQL screen validation', () => {
         getRepositoriesDropdown()
             .click()
             .find('.dropdown-menu .dropdown-item')
+            .should('be.visible')
             .contains(repositoryId)
             .closest('a')
             // Force the click because Cypress sometimes determines that the item has 0x0 dimensions

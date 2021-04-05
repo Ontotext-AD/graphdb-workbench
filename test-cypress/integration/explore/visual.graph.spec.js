@@ -5,6 +5,14 @@ describe('Visual graph screen validation', () => {
     let repositoryId = 'graphRepo' + Date.now();
     const VALID_RESOURCE = 'USRegion';
 
+    before(() => {
+        cy.clearLocalStorage('ls.graphs-viz');
+    });
+
+    after(() => {
+        cy.clearLocalStorage('ls.graphs-viz');
+    });
+
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
