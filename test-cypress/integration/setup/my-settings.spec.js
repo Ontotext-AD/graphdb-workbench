@@ -117,7 +117,7 @@ describe('My Settings', () => {
         cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.waitUntilQueryIsVisible();
+        cy.waitUntilQueryAreaAppear();
 
         //clear default query and paste a new one that will generate more than 1000 results
         cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
