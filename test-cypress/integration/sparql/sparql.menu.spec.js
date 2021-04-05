@@ -1103,6 +1103,15 @@ describe('SPARQL screen validation', () => {
         });
     }
 
+    function waitUntilQueryHasValue(value) {
+        getQueryArea()
+            .should('be.visible')
+            .and(codeMirrorEl => {
+                const cm = codeMirrorEl[0].CodeMirror;
+                expect(cm.getValue().trim()).contain(value.trim());
+            });
+    }
+
     function waitUntilQueryIsVisible() {
         cy.waitUntil(() =>
             getQueryArea()
@@ -1139,7 +1148,7 @@ describe('SPARQL screen validation', () => {
         clearQuery();
         // Using force because the textarea is not visible
         getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        waitUntilQueryIsVisible();
+        waitUntilQueryHasValue(query);
     }
 
     function goToPage(page) {
