@@ -127,20 +127,25 @@ describe('My Settings', () => {
         cy.get('#queryEditor .CodeMirror').find('textarea').
             invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.get('#queryEditor')
+            .find('.CodeMirror.cm-s-default.CodeMirror-wrap')
+            .should('be.visible')
+            .and(codeMirrorEl => {
+                const cm = codeMirrorEl[0].CodeMirror;
+                expect(cm.getValue().trim().length > 0).to.be.true;
+            });
 
         cy.get('#wb-sparql-runQuery').click();
         cy.get('.ot-loader-new-content').should('not.be.visible');
 
         //verify disabled default inference, sameAs and total results count
         cy.get('#inference')
+            .should('be.visible')
             .find('.icon-2-5x.icon-inferred-off')
             .should('be.visible');
 
         cy.get('#sameAs')
+            .should('be.visible')
             .find('.icon-2-5x.icon-sameas-off')
             .should('be.visible');
 

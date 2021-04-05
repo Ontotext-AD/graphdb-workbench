@@ -1113,7 +1113,8 @@ describe('SPARQL screen validation', () => {
     }
 
     function getQueryArea() {
-        return cy.get('#queryEditor .CodeMirror');
+        return cy.get('#queryEditor')
+            .find('.CodeMirror.cm-s-default.CodeMirror-wrap');
     }
 
     function getQueryTextArea() {
