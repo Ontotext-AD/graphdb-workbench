@@ -39,8 +39,14 @@ describe('SPARQL screen validation', () => {
                 if (resetLocalStorage) {
                     // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
                     // TODO: Add a test that tests this !
-                    win.localStorage.clear();
-                    win.sessionStorage.clear();
+                    if (win) {
+                        if (win.localStorage) {
+                            win.localStorage.clear();
+                        }
+                        if (win.sessionStorage) {
+                            win.sessionStorage.clear();
+                        }
+                    }
                 }
             }
         });
@@ -1116,7 +1122,7 @@ describe('SPARQL screen validation', () => {
         cy.waitUntil(() =>
             getQueryArea()
                 .should(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() > 0));
+                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
     function getQueryArea() {
