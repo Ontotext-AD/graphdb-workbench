@@ -10,6 +10,9 @@ describe('My Settings', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        // Verify that the default user settings are returned
+        cy.clearLocalStorage();
+        cy.setDefaultUserData();
     });
 
     beforeEach(() => {
@@ -22,6 +25,7 @@ describe('My Settings', () => {
 
     after(() => {
         // Verify that the default user settings are returned
+        cy.clearLocalStorage();
         cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
     });
@@ -115,11 +119,11 @@ describe('My Settings', () => {
         // will happen after successful save
         getSaveButton().click()
             .then(() => {
+                verifyUserSettingsUpdated();
                 //Go to SPARQL editor and verify changes are persisted for the admin user
                 cy.visit('/sparql');
                 cy.window();
                 cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
-                cy.get('.ot-splash').should('not.be.visible');
 
                 waitUntilQueryAreaAppear();
 
@@ -130,23 +134,23 @@ describe('My Settings', () => {
 
                 waitUntilQueryValueEquals(testResultCountQuery);
 
-                cy.get('#wb-sparql-runQuery').click();
-                cy.get('.ot-loader-new-content').should('not.be.visible');
+                cy.get('#wb-sparql-runQuery').click()
+                    .then(() => {
+                        //verify disabled default inference, sameAs and total results count
+                        cy.get('#inference')
+                            .should('be.visible')
+                            .find('.icon-2-5x.icon-inferred-off')
+                            .should('be.visible');
 
-                //verify disabled default inference, sameAs and total results count
-                cy.get('#inference')
-                    .should('be.visible')
-                    .find('.icon-2-5x.icon-inferred-off')
-                    .should('be.visible');
+                        cy.get('#sameAs')
+                            .should('be.visible')
+                            .find('.icon-2-5x.icon-sameas-off')
+                            .should('be.visible');
 
-                cy.get('#sameAs')
-                    .should('be.visible')
-                    .find('.icon-2-5x.icon-sameas-off')
-                    .should('be.visible');
-
-                cy.get('.results-info .text-xs-right')
-                    .should('be.visible')
-                    .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+                        cy.get('.results-info .text-xs-right')
+                            .should('be.visible')
+                            .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+                    });
 
                 //return to My Settings to revert the changes
                 cy.visit('/settings');
@@ -178,7 +182,10 @@ describe('My Settings', () => {
                             .should('be.visible')
                             .and('be.checked');
                     });
-                getSaveButton().click();
+                getSaveButton().click()
+                    .then(() => {
+                        verifyUserSettingsUpdated();
+                    });
             });
 
     });
@@ -210,5 +217,12 @@ describe('My Settings', () => {
         cy.waitUntil(() =>
             cy.get('#queryEditor .CodeMirror')
                 .should(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
+    }
+
+    function verifyUserSettingsUpdated() {
+        cy.get('#toast-container')
+            .find('.toast-success')
+            .should('be.visible')
+            .and('contain', 'The user admin was updated');
     }
 });

@@ -28,9 +28,6 @@ describe('SPARQL screen validation', () => {
         repoOptions.id = repositoryId;
         cy.createRepository(repoOptions);
         cy.initializeRepository(repositoryId);
-
-        // Avoids having to select the repository through the UI
-        cy.presetRepository(repositoryId);
     }
 
     function visitSparql(resetLocalStorage) {
@@ -39,14 +36,14 @@ describe('SPARQL screen validation', () => {
                 if (resetLocalStorage) {
                     // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
                     // TODO: Add a test that tests this !
-                    // Don't clear the preset repo, because of race condition that happens
-                    Object.keys(win.localStorage).forEach((key) => {
-                        if (!key.startsWith('com.ontotext.graphdb.repository')) {
-                            win.localStorage.removeItem(key);
-                        }
-                    })
-                    win.sessionStorage.clear();
+                    if (win.localStorage) {
+                        win.localStorage.clear();
+                    }
+                    if (win.sessionStorage) {
+                        win.sessionStorage.clear();
+                    }
                 }
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
             }
         });
         waitUntilSparqlPageIsLoaded();
