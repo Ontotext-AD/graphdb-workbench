@@ -136,6 +136,7 @@ describe('My Settings', () => {
 
                 cy.get('#wb-sparql-runQuery').click()
                     .then(() => {
+                        cy.get('.sparql-loader').should('not.be.visible');
                         //verify disabled default inference, sameAs and total results count
                         cy.get('#inference')
                             .should('be.visible')
