@@ -39,12 +39,16 @@ describe('SPARQL screen validation', () => {
                 if (resetLocalStorage) {
                     // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
                     // TODO: Add a test that tests this !
-                    win.localStorage.clear();
+                    // Don't clear the preset repo, because of race condition that happens
+                    Object.keys(win.localStorage).forEach((key) => {
+                        if (!key.startsWith('com.ontotext.graphdb.repository')) {
+                            win.localStorage.removeItem(key);
+                        }
+                    })
                     win.sessionStorage.clear();
                 }
             }
         });
-        selectRepoFromDropdown(repositoryId);
         waitUntilSparqlPageIsLoaded();
     }
 
@@ -1340,20 +1344,5 @@ describe('SPARQL screen validation', () => {
 
     function getToast() {
         return cy.get('#toast-container');
-    }
-
-    function selectRepoFromDropdown(repositoryId) {
-        getRepositoriesDropdown()
-            .click()
-            .find('.dropdown-menu .dropdown-item')
-            .should('be.visible')
-            .contains(repositoryId)
-            .closest('a')
-            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
-            .click({force: true});
-    }
-
-    function getRepositoriesDropdown() {
-        return cy.get('#repositorySelectDropdown');
     }
 });
