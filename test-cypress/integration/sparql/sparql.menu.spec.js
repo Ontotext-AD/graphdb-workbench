@@ -39,14 +39,8 @@ describe('SPARQL screen validation', () => {
                 if (resetLocalStorage) {
                     // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
                     // TODO: Add a test that tests this !
-                    if (win) {
-                        if (win.localStorage) {
-                            win.localStorage.clear();
-                        }
-                        if (win.sessionStorage) {
-                            win.sessionStorage.clear();
-                        }
-                    }
+                    win.localStorage.clear();
+                    win.sessionStorage.clear();
                 }
             }
         });

@@ -195,7 +195,7 @@ describe('My Settings', () => {
 
     function waitUntilQueryAreaAppear() {
         cy.waitUntil(() =>
-            getQueryArea()
+            cy.get('#queryEditor .CodeMirror')
                 .should(codeMirrorEl =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
