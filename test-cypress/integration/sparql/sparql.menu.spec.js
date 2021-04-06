@@ -59,6 +59,9 @@ describe('SPARQL screen validation', () => {
 
         waitUntilQueryAreaAppear();
 
+        // Run query button should be clickable
+        getRunQueryButton().should('be.visible').and('not.be.disabled');
+
         // Editor should have a visible tab
         getTabs().find('.nav-link').should('be.visible');
 
@@ -529,6 +532,7 @@ describe('SPARQL screen validation', () => {
             ImportSteps.visitUserImport();
 
             cy.visit("/sparql");
+            waitUntilSparqlPageIsLoaded();
 
             // Still two after navigation
             getTabs().should('have.length', 2);
