@@ -127,6 +127,17 @@ describe('My Settings', () => {
 
                 waitUntilQueryAreaAppear();
 
+                //verify disabled default inference, sameAs and total results count
+                cy.get('#inference')
+                    .should('be.visible')
+                    .find('.icon-2-5x.icon-inferred-off')
+                    .should('be.visible');
+
+                cy.get('#sameAs')
+                    .should('be.visible')
+                    .find('.icon-2-5x.icon-sameas-off')
+                    .should('be.visible');
+
                 //clear default query and paste a new one that will generate more than 1000 results
                 cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
                 cy.get('#queryEditor .CodeMirror').find('textarea').
@@ -137,17 +148,6 @@ describe('My Settings', () => {
                 cy.get('#wb-sparql-runQuery').click()
                     .then(() => {
                         cy.get('.sparql-loader').should('not.be.visible');
-                        //verify disabled default inference, sameAs and total results count
-                        cy.get('#inference')
-                            .should('be.visible')
-                            .find('.icon-2-5x.icon-inferred-off')
-                            .should('be.visible');
-
-                        cy.get('#sameAs')
-                            .should('be.visible')
-                            .find('.icon-2-5x.icon-sameas-off')
-                            .should('be.visible');
-
                         cy.get('.results-info .text-xs-right')
                             .should('be.visible')
                             .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
