@@ -224,7 +224,8 @@ describe('Similarity screen validation', () => {
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
         cy.visit('/similarity');
-        cy.window();
+        cy.window()
+            .then(() => getExistingIndexesPanel());
     }
 
     function openIndex(index) {
