@@ -166,16 +166,15 @@ describe('My Settings', () => {
                     .find('.switch.mr-0').click()
                     .then(() => {
                         cy.get('#sameas-on')
-                            .should('be.visible')
                             .find('.switch:checkbox')
-                            .should('be.checked');
+                            .and('be.checked');
                     });
                 cy.get('#inference-on')
                     .find('.switch.mr-0').click()
                     .then(() => {
-                        cy.get('#inference-on').should('be.visible')
+                        cy.get('#inference-on')
                             .find('.switch:checkbox')
-                            .should('be.checked');
+                            .and('be.checked');
                     });
                 cy.get('#defaultCount:checkbox').check()
                     .then(() => {
