@@ -144,7 +144,9 @@ describe('My Settings', () => {
 
                 waitUntilQueryValueEquals(testResultCountQuery);
 
-                cy.get('#wb-sparql-runQuery').click()
+                cy.get('#wb-sparql-runQuery')
+                    .should('be.visible')
+                    .and('not.be.disabled').click()
                     .then(() => {
                         cy.get('.sparql-loader').should('not.be.visible');
                         cy.get('.results-info .text-xs-right')
