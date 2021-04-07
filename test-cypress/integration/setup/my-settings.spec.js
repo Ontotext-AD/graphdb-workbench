@@ -150,8 +150,10 @@ describe('My Settings', () => {
                         cy.get('.sparql-loader').should('not.be.visible');
                         cy.get('.results-info .text-xs-right')
                             .find('.results-description')
-                            .should('be.visible')
-                            .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+                            // Don't add 'is.visible' assertion here,
+                            // because the parent element .results-info
+                            // has CSS property: 'display: none'
+                            .should('contain', 'Showing results from 1 to 1,000 of at least 1,001');
                     });
 
                 //return to My Settings to revert the changes
