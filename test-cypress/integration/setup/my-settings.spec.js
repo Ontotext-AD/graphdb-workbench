@@ -110,8 +110,7 @@ describe('My Settings', () => {
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
                 cy.get('#defaultCount:checkbox')
-                    .should('be.visible')
-                    .and('not.be.checked');
+                    .should('not.be.checked');
             });
 
         // Note that saving settings takes time.
@@ -165,19 +164,24 @@ describe('My Settings', () => {
                 // Note that '.switch:checkbox' doesn't present when unchecked.
                 // Verify that the buttons will be clicked first and afterwards
                 // verification will happen.
+
+                // Note that when following two checkboxes are unchecked,
+                // they are not visible, which means that it's impossible
+                // Cypress to interact normally with them.
+                // That's why {force: true} should be used
                 cy.get('#sameas-on')
-                    .find('.switch.mr-0').click()
+                    .find('input[type="checkbox"]').check({force: true})
                     .then(() => {
                         cy.get('#sameas-on')
-                            .find('.switch:checkbox')
-                            .and('be.checked');
+                            .find('input[type="checkbox"]')
+                            .should('be.checked');
                     });
                 cy.get('#inference-on')
-                    .find('.switch.mr-0').click()
+                    .find('input[type="checkbox"]').check({force: true})
                     .then(() => {
                         cy.get('#inference-on')
-                            .find('.switch:checkbox')
-                            .and('be.checked');
+                            .find('input[type="checkbox"]')
+                            .should('be.checked');
                     });
                 cy.get('#defaultCount:checkbox').check()
                     .then(() => {
