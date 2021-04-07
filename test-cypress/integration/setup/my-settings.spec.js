@@ -149,6 +149,7 @@ describe('My Settings', () => {
                     .then(() => {
                         cy.get('.sparql-loader').should('not.be.visible');
                         cy.get('.results-info .text-xs-right')
+                            .find('.results-description')
                             .should('be.visible')
                             .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
                     });
