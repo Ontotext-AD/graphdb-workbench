@@ -124,7 +124,7 @@ describe('My Settings', () => {
                 cy.window();
                 cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
 
-                waitUntilQueryAreaAppear();
+                waitUntilYASQUEBtnsAreVisible();
 
                 //verify disabled default inference, sameAs and total results count
                 cy.get('#inference')
@@ -217,11 +217,12 @@ describe('My Settings', () => {
         return cy.get('#wb-user-submit').should('be.visible');
     }
 
-    function waitUntilQueryAreaAppear() {
+    function waitUntilYASQUEBtnsAreVisible() {
         cy.waitUntil(() =>
-            cy.get('#queryEditor .CodeMirror')
-                .then(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
+            cy.get('#queryEditor #yasqe_buttons')
+                .find('#buttons')
+                .then(buttons =>
+                    buttons && buttons.length > 0));
     }
 
     function waitUntilQueryValueEquals(query) {
