@@ -149,8 +149,11 @@ describe('My Settings', () => {
                     .and('not.be.disabled').click()
                     .then(() => {
                         cy.get('.sparql-loader').should('not.be.visible');
-                        cy.get('.results-info .text-xs-right')
-                            .find('.results-description', { timeout: 10000 })
+                        cy.get('#yasr-inner')
+                            .should('be.visible')
+                            .find('.results-info .text-xs-right')
+                            .find('.results-description')
+                            // .scrollIntoView()
                             // Don't add 'is.visible' assertion here,
                             // because the parent element .results-info
                             // has CSS property: 'display: none'
@@ -176,6 +179,7 @@ describe('My Settings', () => {
                     .then(() => {
                         cy.get('#sameas-on')
                             .find('input[type="checkbox"]')
+                            .scrollIntoView()
                             .should('be.checked');
                     });
                 cy.get('#inference-on')
@@ -183,6 +187,7 @@ describe('My Settings', () => {
                     .then(() => {
                         cy.get('#inference-on')
                             .find('input[type="checkbox"]')
+                            .scrollIntoView()
                             .should('be.checked');
                     });
                 cy.get('#defaultCount:checkbox').check()
