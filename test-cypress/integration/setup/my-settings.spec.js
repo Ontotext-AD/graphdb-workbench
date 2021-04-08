@@ -150,7 +150,7 @@ describe('My Settings', () => {
                     .then(() => {
                         cy.get('.sparql-loader').should('not.be.visible');
                         cy.get('.results-info .text-xs-right')
-                            .find('.results-description')
+                            .find('.results-description', { timeout: 10000 })
                             // Don't add 'is.visible' assertion here,
                             // because the parent element .results-info
                             // has CSS property: 'display: none'
