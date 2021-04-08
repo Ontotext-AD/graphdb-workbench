@@ -1105,7 +1105,7 @@ describe('SPARQL screen validation', () => {
     function waitUntilQueryAreaAppear() {
         cy.waitUntil(() =>
             getQueryArea()
-                .should(codeMirrorEl =>
+                .then(codeMirrorEl =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 

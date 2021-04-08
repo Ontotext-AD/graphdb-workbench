@@ -148,16 +148,13 @@ describe('My Settings', () => {
                     .should('be.visible')
                     .and('not.be.disabled').click()
                     .then(() => {
-                        cy.get('.sparql-loader').should('not.be.visible');
-                        cy.get('#yasr-inner')
-                            .should('be.visible')
-                            .find('.results-info .text-xs-right')
-                            .find('.results-description')
-                            // .scrollIntoView()
-                            // Don't add 'is.visible' assertion here,
-                            // because the parent element .results-info
-                            // has CSS property: 'display: none'
-                            .should('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+                        // Retry until success message is shown
+                        cy.waitUntil(() =>
+                            cy.get('#yasr-inner')
+                                .should('be.visible')
+                                .find('.results-info .text-xs-right')
+                                .find('.results-description')
+                                .then(result => result && result.text().indexOf('Showing results from 1 to 1,000 of at least 1,001') > -1));
                     });
 
                 //return to My Settings to revert the changes
@@ -223,14 +220,14 @@ describe('My Settings', () => {
     function waitUntilQueryAreaAppear() {
         cy.waitUntil(() =>
             cy.get('#queryEditor .CodeMirror')
-                .should(codeMirrorEl =>
+                .then(codeMirrorEl =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
     function waitUntilQueryValueEquals(query) {
         cy.waitUntil(() =>
             cy.get('#queryEditor .CodeMirror')
-                .should(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
+                .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
     }
 
     function verifyUserSettingsUpdated() {
