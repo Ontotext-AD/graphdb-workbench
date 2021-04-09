@@ -203,7 +203,6 @@ describe('My Settings', () => {
 
     it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
         //Verify that schema statements are ON in My settings
-        cy.visit('/settings');
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
         //Verify that schema statements ON is reflected in Visual graph
         cy.visit('/graphs-visualizations');
