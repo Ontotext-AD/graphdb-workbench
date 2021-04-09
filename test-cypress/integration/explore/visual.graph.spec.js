@@ -5,6 +5,14 @@ describe('Visual graph screen validation', () => {
     let repositoryId = 'graphRepo' + Date.now();
     const VALID_RESOURCE = 'USRegion';
 
+    before(() => {
+        cy.clearLocalStorage('ls.graphs-viz');
+    });
+
+    after(() => {
+        cy.clearLocalStorage('ls.graphs-viz');
+    });
+
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
@@ -20,7 +28,7 @@ describe('Visual graph screen validation', () => {
         it('Test notification when autocomplete is disabled', () => {
             cy.visit('/graphs-visualizations');
 
-            getSearchField().type('http://');
+            getSearchField().should('be.visible').type('http://');
 
             // Verify that a message with a redirection to the autocomplete section is displayed.
             cy.get('.autocomplete-toast a').should('contain', 'Autocomplete is OFF')
@@ -37,13 +45,13 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test search for a resource - suggestions', () => {
-            getSearchField().type(VALID_RESOURCE);
+            getSearchField().should('be.visible').type(VALID_RESOURCE);
             // Verify that a list of suggested resources is displayed as you type.
             cy.get('#auto-complete-results-wrapper .result-item').should('have.length', 1);
         });
 
         it('Test search for an invalid resource', () => {
-            getSearchField().type('.invalid_resource');
+            getSearchField().should('be.visible').type('.invalid_resource');
             // There are two buttons rendered in the DOM where one of them is hidden. We need the visible one.
             cy.get('.autocomplete-visual-btn:visible').click();
             // Verify that an "Invalid URI" message is displayed
@@ -63,33 +71,33 @@ describe('Visual graph screen validation', () => {
             cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
                 // Verify that the default settings are as follows:
                 // Maximum links to show: 20
-                getLinksNumberField().should('have.value', '20');
+                getLinksNumberField().and('have.value', '20');
                 // Preferred lang: en
                 cy.get('.preferred-languages .tag-item').should('have.length', 1)
                     .and('contain', 'en');
                 // Include inferred: false
-                getIncludeInferredStatementsCheckbox().should('be.checked')
+                getIncludeInferredStatementsCheckbox().and('be.checked')
                     .and('not.be.disabled');
                 // Expand results over owl:sameAs: false
-                getSameAsCheckbox().should('be.checked')
+                getSameAsCheckbox().and('be.checked')
                     .and('not.be.disabled');
                 // Show predicate labels: true
-                getShowPredicateLabelsCheckbox().should('be.checked')
+                getShowPredicateLabelsCheckbox().and('be.checked')
                     .and('not.be.disabled');
 
                 // No pre-added preferred/ignored types
-                getPreferredTypesField().should('be.empty');
-                getShowPreferredTypesOnlyCheckbox().should(('not.be.checked'))
+                getPreferredTypesField().and('be.empty');
+                getShowPreferredTypesOnlyCheckbox().and(('not.be.checked'))
                     .and('not.be.disabled');
                 getIgnoredTypesField().should('be.empty');
 
                 // Go to predicates tab
                 openPredicatesTab();
                 // No pre-added preferred/ignored predicates
-                getPreferredPredicatesField().should('be.empty');
-                getShowPreferredPredicatesOnlyCheckbox().should('not.be.checked')
+                getPreferredPredicatesField().and('be.empty');
+                getShowPreferredPredicatesOnlyCheckbox().and('not.be.checked')
                     .and('not.be.disabled');
-                getIgnoredPredicatesField().should('be.empty');
+                getIgnoredPredicatesField().and('be.empty');
 
                 // Save and rest buttons should be visible and enabled
                 cy.get('@sidepanel').scrollIntoView();
@@ -109,7 +117,7 @@ describe('Visual graph screen validation', () => {
             // Verify that 20 links (nodes) are displayed
             getPredicates().should('have.length', 20);
             // Verify that links are counted by nodes and not by triples (predicates)
-            getNodes().should('have.length', 21);
+            getNodes().and('have.length', 21);
         });
 
         it('Test collapse and expand a node', () => {
@@ -123,7 +131,7 @@ describe('Visual graph screen validation', () => {
             // Verify that all links to the USRegion node are collapsed
             getPredicates().should('have.length', 0);
             // Verify that the USRegion node is the only node left in the graph
-            getNodes().should('have.length', 1).and('contain', 'USRegion');
+            getNodes().and('have.length', 1).and('contain', 'USRegion');
 
             // Hover over node with the mouse and expand it through the menu
             getTargetNode().trigger('mouseover');
@@ -132,7 +140,7 @@ describe('Visual graph screen validation', () => {
             // Verify that all links to the USRegion node are expanded
             getPredicates().should('have.length', 3);
             // Verify that the USRegion node is not the only node left in the graph
-            getNodes().should('have.length', 4);
+            getNodes().and('have.length', 4);
         });
 
         it('Test expand and collapse node info panel with single click', () => {
@@ -155,7 +163,7 @@ describe('Visual graph screen validation', () => {
             searchForResource(VALID_RESOURCE);
             toggleInferredStatements(false);
             // Verify that before given node is removed there are 4 of them
-            getNodes().should('have.length', 4);
+            getNodes().and('have.length', 4);
             // Click once on node different than parent one with the mouse
             cy.get('.node-wrapper circle').eq(1)
             // The wait is needed because mouseover event will result in
@@ -167,7 +175,7 @@ describe('Visual graph screen validation', () => {
             // Verify that links between parent node and the child nodes are expanded
             getPredicates().should('have.length', 2);
             // Verify that the nodes left are one less
-            getNodes().should('have.length', 3);
+            getNodes().and('have.length', 3);
         });
 
         it('Test remove parent node', () => {
@@ -193,7 +201,7 @@ describe('Visual graph screen validation', () => {
             // Verify that all links to the USRegion node are collapsed
             getPredicates().should('not.exist');
             // Verify that the USRegion node is the only node left in the graph
-            getNodes().should('have.length', 1).and('contain', 'USRegion');
+            getNodes().and('have.length', 1).and('contain', 'USRegion');
 
             // Double click on collapsed node
             // This is ugly but unfortunately I couldn't make cypress's dblclick to work reliably here
@@ -204,7 +212,7 @@ describe('Visual graph screen validation', () => {
             // Verify that all links to the USRegion node are expanded
             getPredicates().should('have.length', 3);
             // Verify that the USRegion node is not the only node left in the graph
-            getNodes().should('have.length', 4);
+            getNodes().and('have.length', 4);
         });
 
         it('Test verify mouse/keyboard actions', () => {
@@ -281,7 +289,7 @@ describe('Visual graph screen validation', () => {
             // Verify that 20 links (nodes) are displayed
             getPredicates().should('have.length', 20);
             // Verify that more than three nodes are displayed
-            getNodes().should('have.length', 21);
+            getNodes().and('have.length', 21);
 
             // Switch Include Inferred Statements off
             toggleInferredStatements(false);
@@ -293,7 +301,7 @@ describe('Visual graph screen validation', () => {
             getNodes().should('have.length', 4);
 
             // Verify that only "Texas" and "California" regions are displayed
-            getNodes().should('contain', 'Texas').and('contain', 'California');
+            getNodes().and('contain', 'Texas').and('contain', 'California');
         });
 
         it('Test preferred types', () => {
@@ -308,7 +316,7 @@ describe('Visual graph screen validation', () => {
             saveSettings();
 
             // Verify that there are a total of 6 ( 5 children plus one parent nodes ) are connected to the DRY node
-            getNodes().should('have.length', 6).each(($el) => {
+            getNodes().and('have.length', 6).each(($el) => {
                 // Exclude parent node
                 if ($el.text() !== 'Dry') {
                     expect($el.text()).to.contain('Chardonnay');
@@ -320,7 +328,7 @@ describe('Visual graph screen validation', () => {
             typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
-            getNodes().should('contain', 'Zinfandel');
+            getNodes().and('contain', 'Zinfandel');
 
             openVisualGraphSettings();
             // Go to Settings and set "vin:Zinfandel" as an ignored type
@@ -331,7 +339,7 @@ describe('Visual graph screen validation', () => {
 
             saveSettings();
             // Verify that "vin:Zinfandel" has been removed from the diagram
-            getNodes().should('not.contain', 'Zinfandel');
+            getNodes().and('not.contain', 'Zinfandel');
         });
 
         it('Test preferred predicates', () => {
@@ -421,32 +429,32 @@ describe('Visual graph screen validation', () => {
             openVisualGraphSettings();
             // Verify that the default settings are as follows:
             // Maximum links to show: 20
-            getLinksNumberField().should('have.value', '20');
+            getLinksNumberField().and('have.value', '20');
             // Preferred lang: en
             cy.get('.preferred-languages .tag-item').should('have.length', 0);
             // Include inferred: false
-            getIncludeInferredStatementsCheckbox().should('be.checked')
+            getIncludeInferredStatementsCheckbox().and('be.checked')
                 .and('not.be.disabled');
             // Expand results over owl:sameAs: true
-            getSameAsCheckbox().should('be.checked')
+            getSameAsCheckbox().and('be.checked')
                 .and('not.be.disabled');
             // Show predicate labels: true
-            getShowPredicateLabelsCheckbox().should('be.checked')
+            getShowPredicateLabelsCheckbox().and('be.checked')
                 .and('not.be.disabled');
 
             // No pre-added preferred/ignored types
-            getPreferredTypesField().should('be.empty');
-            getShowPreferredTypesOnlyCheckbox().should(('not.be.checked'))
+            getPreferredTypesField().and('be.empty');
+            getShowPreferredTypesOnlyCheckbox().and(('not.be.checked'))
                 .and('not.be.disabled');
             getIgnoredTypesField().should('be.empty');
 
             // Go to predicates tab
             openPredicatesTab();
             // No pre-added preferred/ignored predicates
-            getPreferredPredicatesField().should('be.empty');
-            getShowPreferredPredicatesOnlyCheckbox().should(('not.be.checked'))
+            getPreferredPredicatesField().and('be.empty');
+            getShowPreferredPredicatesOnlyCheckbox().and(('not.be.checked'))
                 .and('not.be.disabled');
-            getIgnoredPredicatesField().should('be.empty');
+            getIgnoredPredicatesField().and('be.empty');
         });
     });
 
@@ -475,6 +483,8 @@ describe('Visual graph screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'configName');
+        getGraphConfigurationsArea().should('be.visible')
+            .and('contain', 'No graph configs');
     });
 
     // Visual graph home view access
@@ -485,7 +495,7 @@ describe('Visual graph screen validation', () => {
 
     function typeInSearchField(resource) {
         // Wait should guarantee that the dropdown has been rendered and the focus is properly set.
-        getSearchField().type(resource).trigger('change').wait(1000).type('{enter}');
+        getSearchField().should('be.visible').invoke('val', resource).trigger('change').wait(1000).type('{enter}');
     }
 
     function searchForResource(resource) {
@@ -496,17 +506,17 @@ describe('Visual graph screen validation', () => {
     }
 
     function getTargetNodeElement() {
-        return cy.get(`[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#${VALID_RESOURCE}"] circle`);
+        return cy.get(`[id="http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#${VALID_RESOURCE}"] circle`).should('be.visible');
     }
 
     function getTargetNode() {
         // The wait is needed because mouseover event will result in
         // pop-up of menu icons only if nodes are not moving
-        return getTargetNodeElement().should('be.visible').wait(5000);
+        return getTargetNodeElement().wait(5000);
     }
 
     function getNodes() {
-        return cy.get('.node-wrapper');
+        return cy.get('.node-wrapper').should('be.visible');
     }
 
     function getPredicates() {
@@ -524,7 +534,7 @@ describe('Visual graph screen validation', () => {
     // Visual graph settings form field access
 
     function openPredicatesTab() {
-        cy.get('.predicates-tab').click();
+        cy.get('.predicates-tab').should('be.visible').click();
     }
 
     function showPreferredTypes(enable) {
@@ -541,11 +551,13 @@ describe('Visual graph screen validation', () => {
     }
 
     function getLinksNumberField() {
+        // This element could not be checked with 'be.visible' because it has
+        // CSS property: 'position: fixed' and its being covered by another element
         return cy.get('.input-number');
     }
 
     function getSaveSettingsButton() {
-        return cy.get('.save-settings-btn');
+        return cy.get('.save-settings-btn').scrollIntoView().should('be.visible');
     }
 
     function saveSettings() {
@@ -553,7 +565,7 @@ describe('Visual graph screen validation', () => {
     }
 
     function getResetSettingsButton() {
-        return cy.get('.reset-settings');
+        return cy.get('.reset-settings').scrollIntoView().should('be.visible');
     }
 
     function resetSettings() {
@@ -561,51 +573,55 @@ describe('Visual graph screen validation', () => {
     }
 
     function getSameAsCheckbox() {
-        return cy.get('#sameAsCheck');
+        return cy.get('#sameAsCheck').should('be.visible');
     }
 
     function getIncludeInferredStatementsCheckbox() {
-        return cy.get('.include-inferred-statements');
+        return cy.get('.include-inferred-statements').should('be.visible');
     }
 
     function getShowPredicateLabelsCheckbox() {
-        return cy.get('.show-predicate-labels');
+        return cy.get('.show-predicate-labels').should('be.visible');
     }
 
     function getPreferredTypesField() {
-        return cy.get('.preferred-types input');
+        return cy.get('.preferred-types input').scrollIntoView().should('be.visible');
     }
 
     function getShowPreferredTypesOnlyCheckbox() {
-        return cy.get('.show-preferred-types-only');
+        return cy.get('.show-preferred-types-only').should('be.visible');
     }
 
     function getIgnoredTypesField() {
+        // This element could not be checked with 'be.visible' because it has
+        // CSS property: 'position: fixed' and its being covered by another element
         return cy.get('.ignored-types input');
     }
 
     function getPreferredPredicatesField() {
-        return cy.get('.preferred-predicates input');
+        return cy.get('.preferred-predicates input').should('be.visible');
     }
 
     function getShowPreferredPredicatesOnlyCheckbox() {
-        return cy.get('.show-preferred-predicates-only');
+        return cy.get('.show-preferred-predicates-only').should('be.visible');
     }
 
     function getIgnoredPredicatesField() {
+        // This element could not be checked with 'be.visible' because it has
+        // CSS property: 'position: fixed' and its being covered by another element
         return cy.get('.ignored-predicates input');
     }
 
     function getCreateCustomGraphLink() {
-        return cy.get('.create-graph-config');
+        return cy.get('.create-graph-config').should('be.visible');
     }
 
     function getGraphConfigName() {
-        return cy.get('.graph-config-name');
+        return cy.get('.graph-config-name').should('be.visible');
     }
 
     function getSaveConfig() {
-        return cy.get('.btn-save-config');
+        return cy.get('.btn-save-config').should('be.visible');
     }
 
     function getGraphConfigurationsArea() {
@@ -616,11 +632,11 @@ describe('Visual graph screen validation', () => {
     // Node actions
 
     function collapseGraph() {
-        cy.get('.menu-events .collapse-icon circle').click();
+        cy.get('.menu-events .collapse-icon circle').should('be.visible').click();
     }
 
     function expandGraph() {
-        cy.get('.menu-events .expand-icon circle').click();
+        cy.get('.menu-events .expand-icon circle').should('be.visible').click();
     }
 
     function removeNode() {
@@ -630,10 +646,10 @@ describe('Visual graph screen validation', () => {
     // Visual graph toolbar actions
 
     function openVisualGraphSettings() {
-        return cy.get('.visual-graph-settings-btn').click();
+        return cy.get('.visual-graph-settings-btn').should('be.visible').click();
     }
 
     function openVisualGraphHome() {
-        cy.get('.return-home-btn').click();
+        cy.get('.return-home-btn').should('be.visible').click();
     }
 });
