@@ -28,9 +28,6 @@ describe('SPARQL screen validation', () => {
         repoOptions.id = repositoryId;
         cy.createRepository(repoOptions);
         cy.initializeRepository(repositoryId);
-
-        // Avoids having to select the repository through the UI
-        cy.presetRepository(repositoryId);
     }
 
     function visitSparql(resetLocalStorage) {
@@ -39,24 +36,31 @@ describe('SPARQL screen validation', () => {
                 if (resetLocalStorage) {
                     // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
                     // TODO: Add a test that tests this !
-                    win.localStorage.clear();
-                    win.sessionStorage.clear();
+                    if (win.localStorage) {
+                        win.localStorage.clear();
+                    }
+                    if (win.sessionStorage) {
+                        win.sessionStorage.clear();
+                    }
                 }
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
             }
         });
-        selectRepoFromDropdown(repositoryId);
-
         waitUntilSparqlPageIsLoaded();
     }
 
     function waitUntilSparqlPageIsLoaded() {
+        cy.window();
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryIsVisible();
+        waitUntilQueryAreaAppear();
+
+        // Run query button should be clickable
+        getRunQueryButton().should('be.visible').and('not.be.disabled');
 
         // Editor should have a visible tab
         getTabs().find('.nav-link').should('be.visible');
@@ -93,8 +97,6 @@ describe('SPARQL screen validation', () => {
 
             // Verify pasting also works
             pasteQuery(DEFAULT_QUERY_MODIFIED);
-
-            verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             executeQuery();
 
@@ -228,8 +230,6 @@ describe('SPARQL screen validation', () => {
 
             pasteQuery(describeQuery);
 
-            verifyQueryAreaEquals(describeQuery);
-
             executeQuery();
 
             getResultsMessage()
@@ -311,8 +311,6 @@ describe('SPARQL screen validation', () => {
             let describeQuery = 'DESCRIBE <http://www.ontotext.com/SYSINFO> FROM <http://www.ontotext.com/SYSINFO>';
 
             pasteQuery(describeQuery);
-
-            verifyQueryAreaEquals(describeQuery);
 
             executeQuery();
 
@@ -534,6 +532,7 @@ describe('SPARQL screen validation', () => {
             ImportSteps.visitUserImport();
 
             cy.visit("/sparql");
+            waitUntilSparqlPageIsLoaded();
 
             // Still two after navigation
             getTabs().should('have.length', 2);
@@ -914,7 +913,6 @@ describe('SPARQL screen validation', () => {
             // Visit performs full page load
             cy.visit(expectedUrl);
             waitUntilSparqlPageIsLoaded();
-
             getTabs().should('have.length', 1);
 
             // Wait until editor is initialized with the query and then assert the whole query
@@ -1104,11 +1102,11 @@ describe('SPARQL screen validation', () => {
         });
     }
 
-    function waitUntilQueryIsVisible() {
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+    function waitUntilQueryAreaAppear() {
+        cy.waitUntil(() =>
+            getQueryArea()
+                .then(codeMirrorEl =>
+                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
     function getQueryArea() {
@@ -1140,7 +1138,7 @@ describe('SPARQL screen validation', () => {
         clearQuery();
         // Using force because the textarea is not visible
         getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        waitUntilQueryIsVisible();
+        verifyQueryAreaEquals(query);
     }
 
     function goToPage(page) {
@@ -1347,19 +1345,5 @@ describe('SPARQL screen validation', () => {
 
     function getToast() {
         return cy.get('#toast-container');
-    }
-
-    function selectRepoFromDropdown(repositoryId) {
-        getRepositoriesDropdown()
-            .click()
-            .find('.dropdown-menu .dropdown-item')
-            .contains(repositoryId)
-            .closest('a')
-            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
-            .click({force: true});
-    }
-
-    function getRepositoriesDropdown() {
-        return cy.get('#repositorySelectDropdown');
     }
 });

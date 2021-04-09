@@ -154,7 +154,7 @@ describe('Similarity screen validation', () => {
             initRepositoryAndVisitSimilarityView()
         });
 
-        it('Search for entiry in index', () => {
+        it('Search for entity in index', () => {
             // I have created similarity index
             openCreateNewIndexForm();
             setIndexName();
@@ -224,6 +224,8 @@ describe('Similarity screen validation', () => {
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
         cy.visit('/similarity');
+        cy.window()
+            .then(() => getExistingIndexesPanel());
     }
 
     function openIndex(index) {
@@ -264,11 +266,12 @@ describe('Similarity screen validation', () => {
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        getExistingIndexesPanel().should('be.visible').and('contain', 'No Indexes');
+        getExistingIndexesPanel().and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
         cy.get('.create-similarity-index').click();
+        cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`);
         // Wait for query editor to become ready because consecutive command for index creation might
         // fail because the query may not be submitted with the request.
         cy.waitUntilQueryIsVisible();
@@ -276,8 +279,8 @@ describe('Similarity screen validation', () => {
 
     function setIndexName() {
         cy.url().should('eq', Cypress.config('baseUrl') + INDEX_CREATE_URL);
-        getSimilarity().type(INDEX_NAME);
-        getSimilarity().invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
+        getSimilarity().invoke('val', INDEX_NAME).trigger('change')
+            .then(() => getSimilarity().should('have.value', INDEX_NAME));
     }
 
     function clickMoreOptionsMenu() {
@@ -302,16 +305,22 @@ describe('Similarity screen validation', () => {
     }
 
     function createSimilarityIndex() {
-        getCreateIndexButton().click();
-        getExistingIndexesPanel().should('be.visible');
-        cy.get('#indexes-table table').should('be.visible')
-            .find('.index-row').should('have.length', 1);
-        // Just wait for the row in the table to appear and the cell with the index name to be
-        // visible. Waiting for the loading indicator to disappear is just too brittle.
-        // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
-        // fails often because during completing the index name on a previous step the WB seems to
-        // cut off part of the name on the leading side.
-        getIndexLinks().should('be.visible');
+        getCreateIndexButton().click()
+            .then(() => {
+                cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
+                getExistingIndexesPanel();
+                cy.get('#indexes-table table').should('be.visible')
+                    .find('.index-row').should('have.length', 1);
+                // Just wait for the row in the table to appear and the cell with the index name to be
+                // visible. Waiting for the loading indicator to disappear is just too brittle.
+                // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
+                // fails often because during completing the index name on a previous step the WB seems to
+                // cut off part of the name on the leading side.
+                getIndexLinks().should('be.visible');
+                cy.waitUntil(() =>
+                    cy.get('.edit-query-btn')
+                            .then(editBtn => editBtn));
+            });
     }
 
     function deleteSimilarityIndex() {
@@ -331,16 +340,22 @@ describe('Similarity screen validation', () => {
 
     function cloneExistingIndex() {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
-        cy.get('.clone-index-btn').click();
-
+        cy.get('.clone-index-btn').click()
+            .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
+        cy.window();
         // This is just an implicit wait in order to allow the view to catch up with the rendering
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
+
         getCreateIndexButton().should('be.visible').click();
-        getExistingIndexesPanel().should('be.visible');
+
+        getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
-        getIndexLinks().should('have.length', 2);
+        cy.waitUntil(() =>
+            cy.get('#indexes-table')
+                .find('.index-row')
+                .then(indexes => indexes.length === 2))
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
@@ -425,7 +440,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getExistingIndexesPanel() {
-        return cy.get('.existing-indexes');
+        return cy.get('.existing-indexes').should('be.visible');
     }
 
     function waitForIndexBuildingIndicatorToHide() {
