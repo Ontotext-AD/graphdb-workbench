@@ -2,7 +2,7 @@ Cypress.Commands.add('pasteQuery', (query) => {
     clearQuery();
     // Using force because the textarea is not visible
     getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-    waitUntilQueryIsVisible();
+    waitUntilQueryIsVisible(query);
 });
 
 Cypress.Commands.add('executeQuery', () => {
@@ -29,7 +29,6 @@ Cypress.Commands.add('waitUntilQueryIsVisible', () => {
 Cypress.Commands.add('verifyQueryAreaContains', (query) => {
     verifyQueryAreaContains(query);
 });
-
 // Helper functions
 
 function clearQuery() {

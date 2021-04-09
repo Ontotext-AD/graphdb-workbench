@@ -29,6 +29,7 @@
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
+        "cypress-wait-until": "^1.7.1",
         "minimist": "^1.2.5"
     },
     "resolutions": {
