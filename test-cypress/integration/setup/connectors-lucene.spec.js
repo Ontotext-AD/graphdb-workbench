@@ -42,7 +42,6 @@ describe('Setup / Connectors - Lucene', () => {
         getOkButton()
             .click();
         getConnectorCreationDialog()
-            .should('be.visible')
             .and('contain', luceneConnectorName);
         getConnectorStatusToastMessage()
             .should('be.visible')
@@ -55,7 +54,6 @@ describe('Setup / Connectors - Lucene', () => {
         getOkButton()
             .click({force:true});
         getConnectorCreationDialog()
-            .should('be.visible')
             .and('contain', luceneConnectorName + '-copy');
         getConnectorStatusToastMessage()
             .should('be.visible')
@@ -74,7 +72,7 @@ describe('Setup / Connectors - Lucene', () => {
     });
 
     function getConnectorsPage() {
-        return cy.get('.connectorsPage');
+        return cy.get('.connectorsPage').should('be.visible');
     }
 
     function getNewLuceneConnectorButton() {
@@ -82,7 +80,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getCreateLuceneConnectorPage() {
-        return cy.get('.modal-content');
+        return cy.get('.modal-content').should('be.visible');
     }
 
     function getConnectorNameField() {
@@ -102,22 +100,14 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getOkButton() {
-        return getCreateLuceneConnectorPage().find('.create-connector-btn');
-    }
-
-    function waitUntilConnectorsPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
-        cy.get('.creating-connector-dialog').should('not.be.visible');
-        getConnectorsPage()
+        return getCreateLuceneConnectorPage()
+            .find('.create-connector-btn')
+            .scrollIntoView()
             .should('be.visible');
     }
 
     function getConnectorCreationDialog() {
-        return cy.get('.modal-content > .modal-header.creating-connector-dialog');
+        return cy.get('.modal-content > .modal-header.creating-connector-dialog').should('be.visible');
     }
 
     function getConnectorStatusToastMessage() {
