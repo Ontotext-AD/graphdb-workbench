@@ -158,19 +158,25 @@ describe('Home screen validation', () => {
             cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...')
 
             //Verify autocomplete suggestions count
-            cy.focused().then(($el) => {
-                cy.get('#search-resource-box input').type('Dry');
-                cy.get('#auto-complete-results-wrapper').children().should('have.length', 7);
+            cy.focused().then(() => {
+                cy.get('#search-resource-box input')
+                    .should('be.visible')
+                    .type('Dry');
+                cy.get('#auto-complete-results-wrapper')
+                    .should('be.visible')
+                    .children()
+                    .should('have.length', 7);
             })
 
             //Test table and visual buttons.
-            cy.get("#auto_0").click();
+            cy.get("#auto_0").should('be.visible').click();
             // Search result should be opened in new window
             cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
 
             getVisualButton().click();
-            cy.get("#auto_0").click();
+            cy.get("#auto_0").should('be.visible').click();
             cy.get('@window.open').should('be.calledWith', '/graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+            cy.deleteRepository(repositoryId);
         });
     });
 
@@ -267,16 +273,10 @@ describe('Home screen validation', () => {
     });
 
     function getRDFResourceSearchBox() {
-        return cy.get('rdf-resource-search');
+        return cy.get('rdf-resource-search').should('be.visible');
     }
 
     function getVisualButton() {
-        return cy.get('.display-type-visual-btn');
+        return cy.get('.display-type-visual-btn').should('be.visible');
     }
-
-    function getTableButton() {
-        return cy.get('.display-type-table-btn');
-
-    }
-
 });
