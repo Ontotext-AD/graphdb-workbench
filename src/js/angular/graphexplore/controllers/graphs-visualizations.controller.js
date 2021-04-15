@@ -284,25 +284,24 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         });
     }
 
-    function renderSettings(isUpdateSettings) {
-        let settingsObject = isUpdateSettings ? $scope.saveSettings : $scope.settings;
-        settingsObject.languagesMap = _.map(settingsObject.languages, function (v) {
+    function renderSettings() {
+        $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
             return {'text': v};
         });
 
-        settingsObject.preferredTypesMap = _.map(settingsObject.preferredTypes, function (v) {
+        $scope.settings.preferredTypesMap = _.map($scope.settings.preferredTypes, function (v) {
             return {'text': v};
         });
 
-        settingsObject.rejectedTypesMap = _.map(settingsObject.rejectedTypes, function (v) {
+        $scope.settings.rejectedTypesMap = _.map($scope.settings.rejectedTypes, function (v) {
             return {'text': v};
         });
 
-        settingsObject.preferredPredicatesMap = _.map(settingsObject.preferredPredicates, function (v) {
+        $scope.settings.preferredPredicatesMap = _.map($scope.settings.preferredPredicates, function (v) {
             return {'text': v};
         });
 
-        settingsObject.rejectedPredicatesMap = _.map(settingsObject.rejectedPredicates, function (v) {
+        $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
             return {'text': v};
         });
     }
@@ -368,7 +367,23 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.updateSettings = function () {
         $scope.saveSettings = $scope.settings;
-        renderSettings(true);
+        $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
+            return s['text'];
+        });
+
+        $scope.saveSettings.preferredTypes = _.map($scope.saveSettings['preferredTypesMap'], function (t) {
+            return t['text'];
+        });
+        $scope.saveSettings.rejectedTypes = _.map($scope.saveSettings['rejectedTypesMap'], function (t) {
+            return t['text'];
+        });
+
+        $scope.saveSettings.preferredPredicates = _.map($scope.saveSettings['preferredPredicatesMap'], function (t) {
+            return t['text'];
+        });
+        $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function (t) {
+            return t['text'];
+        });
 
         // TODO
         // reexpand root node
