@@ -42,6 +42,7 @@ describe('Visual graph screen validation', () => {
         beforeEach(() => {
             cy.enableAutocomplete(repositoryId);
             cy.visit('/graphs-visualizations');
+            cy.window();
         });
 
         it('Test search for a resource - suggestions', () => {
@@ -456,6 +457,17 @@ describe('Visual graph screen validation', () => {
                 .and('not.be.disabled');
             getIgnoredPredicatesField().and('be.empty');
         });
+
+        it('Test include schema statements', () => {
+            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            getPredicates().should('contain', 'type');
+            openVisualGraphSettings();
+            getSettingsPanel().should('be.visible');
+            cy.get('.include-schema-statements').should('be.checked');
+            cy.get('.include-schema-statements').uncheck();
+            saveSettings();
+            getPredicates().should('not.contain', 'type');
+        });
     });
 
     it('Test can create custom visual graph', () => {
@@ -651,5 +663,10 @@ describe('Visual graph screen validation', () => {
 
     function openVisualGraphHome() {
         cy.get('.return-home-btn').should('be.visible').click();
+    }
+
+    function confirmDelete() {
+        cy.get('.modal-footer .confirm-btn').click();
+        cy.get('.modal').should('not.be.visible');
     }
 });
