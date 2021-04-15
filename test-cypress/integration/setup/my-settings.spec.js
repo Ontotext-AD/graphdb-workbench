@@ -18,9 +18,7 @@ describe('My Settings', () => {
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/settings');
-        cy.window();
-        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+        visitSettingsView();
     });
 
     after(() => {
@@ -138,9 +136,10 @@ describe('My Settings', () => {
                     .should('be.visible');
 
                 //clear default query and paste a new one that will generate more than 1000 results
-                cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-                cy.get('#queryEditor .CodeMirror').find('textarea').
-                invoke('val', testResultCountQuery).trigger('change', {force: true});
+                cy.get('#queryEditor .CodeMirror').find('textarea')
+                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+                cy.get('#queryEditor .CodeMirror').find('textarea')
+                    .invoke('val', testResultCountQuery).trigger('change', {force: true});
 
                 waitUntilQueryValueEquals(testResultCountQuery);
 
@@ -158,9 +157,7 @@ describe('My Settings', () => {
                     });
 
                 //return to My Settings to revert the changes
-                cy.visit('/settings');
-                cy.window();
-                cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+                visitSettingsView();
                 // Wait for loader to disappear
                 cy.get('.ot-loader').should('not.be.visible');
                 // Note that '.switch:checkbox' doesn't present when unchecked.
@@ -202,45 +199,59 @@ describe('My Settings', () => {
     });
 
     it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
+        const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
         //Verify that schema statements are ON in My settings
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+
         //Verify that schema statements ON is reflected in Visual graph
-        cy.visit('/graphs-visualizations');
-        cy.get('.search-rdf-resources input:visible')
-            .type("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry")
+        visitVisualGraphView();
+        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
+            .type(DRY_GRAPH)
             .trigger('change')
-            .wait(1000)
+            .should('have.value', DRY_GRAPH)
             .type('{enter}');
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.checked');
-        cy.get('.save-settings-btn').click();
+        saveGraphSettings();
         cy.get('.predicate').should('contain','type');
+
         //Set schema statements OFF in my settings
-        cy.visit('/settings');
+        visitSettingsView();
+
         cy.get('#schema-on label').click();
         cy.get('#schema-on').find('.switch:checkbox').should('not.be.checked');
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
+
         //Verify that schema statements OFF is reflected in Visual graph
-        cy.visit('/graphs-visualizations');
-        cy.get('.search-rdf-resources input:visible')
-            .type("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry")
+        visitVisualGraphView();
+
+        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
+            .type(DRY_GRAPH)
             .trigger('change')
-            .wait(1000)
+            .should('have.value', DRY_GRAPH)
             .type('{enter}');
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').click();
         cy.get('.include-schema-statements').should('not.be.checked');
-        cy.get('.save-settings-btn').click();
+        saveGraphSettings();
         cy.get('.predicate').should('not.contain','type');
         //return to My Settings to revert the changes
-        cy.visit('/settings');
+        visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
         cy.get('#schema-on label').click();
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
     });
 
     function getUserRepositoryTable() {
@@ -278,5 +289,23 @@ describe('My Settings', () => {
             .find('.toast-success')
             .should('be.visible')
             .and('contain', 'The user admin was updated');
+    }
+
+    function saveGraphSettings() {
+        cy.get('.save-settings-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
+    }
+
+    function visitSettingsView() {
+        cy.visit('/settings');
+        cy.window();
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+    }
+
+    function visitVisualGraphView() {
+        cy.visit('/graphs-visualizations');
+        cy.window();
     }
 });

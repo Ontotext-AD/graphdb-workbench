@@ -42,6 +42,7 @@ describe('Visual graph screen validation', () => {
         beforeEach(() => {
             cy.enableAutocomplete(repositoryId);
             cy.visit('/graphs-visualizations');
+            cy.window();
         });
 
         it('Test search for a resource - suggestions', () => {
@@ -494,6 +495,9 @@ describe('Visual graph screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'configName');
+        cy.get('.table').find('.delete-config')
+            .first().should('be.visible').click();
+        confirmDelete();
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'No graph configs');
     });
@@ -662,5 +666,10 @@ describe('Visual graph screen validation', () => {
 
     function openVisualGraphHome() {
         cy.get('.return-home-btn').should('be.visible').click();
+    }
+
+    function confirmDelete() {
+        cy.get('.modal-footer .confirm-btn').click();
+        cy.get('.modal').should('not.be.visible');
     }
 });
