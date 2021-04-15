@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "1.7.0-TR6",
+    "version": "1.8.0-TR1",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
@@ -29,6 +29,7 @@
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
+        "cypress-wait-until": "^1.7.1",
         "minimist": "^1.2.5"
     },
     "resolutions": {

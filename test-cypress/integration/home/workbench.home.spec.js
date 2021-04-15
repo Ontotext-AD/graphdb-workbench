@@ -1,5 +1,7 @@
 import HomeSteps from '../../steps/home-steps';
 
+const FILE_TO_IMPORT = 'wine.rdf';
+
 describe('Home screen validation', () => {
 
     const FOAT_SNIPPET = '@base <http://example.org/> .\n' +
@@ -126,6 +128,56 @@ describe('Home screen validation', () => {
 
             cy.deleteRepository(repositoryId);
         });
+
+        it('Should test RDF resource search box', () => {
+            //Prepare repository, autocomplete and import data.
+            const repositoryId = 'repository-' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
+            cy.presetRepository(repositoryId);
+            cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+            cy.enableAutocomplete(repositoryId);
+            HomeSteps.visitAndWaitLoader();
+
+            //Verify that the main resource search box is focused
+            getRDFResourceSearchBox().click();
+            cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...');
+
+            //Navigate away from the Homepage, to be able to test the new resource search box
+            cy.visit('/graphs', {
+                onBeforeLoad (win) {
+                    cy.stub(win, 'open').as('window.open');
+                }
+            });
+
+            cy.get('.ot-splash').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.be.visible');
+
+            getRDFResourceSearchBox().click();
+            //Verify that the new resource search box is focused
+            cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...')
+
+            //Verify autocomplete suggestions count
+            cy.focused().then(() => {
+                cy.get('#search-resource-box input')
+                    .should('be.visible')
+                    .type('Dry');
+                cy.get('#auto-complete-results-wrapper')
+                    .should('be.visible')
+                    .children()
+                    .should('have.length', 7);
+            })
+
+            //Test table and visual buttons.
+            cy.get("#auto_0").should('be.visible').click();
+            // Search result should be opened in new window
+            cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+
+            getVisualButton().click();
+            cy.get("#auto_0").should('be.visible').click();
+            cy.get('@window.open').should('be.calledWith', '/graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+            cy.deleteRepository(repositoryId);
+        });
     });
 
     context('First visit', () => {
@@ -220,4 +272,11 @@ describe('Home screen validation', () => {
         });
     });
 
+    function getRDFResourceSearchBox() {
+        return cy.get('rdf-resource-search').should('be.visible');
+    }
+
+    function getVisualButton() {
+        return cy.get('.display-type-visual-btn').should('be.visible');
+    }
 });
