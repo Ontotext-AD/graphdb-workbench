@@ -495,9 +495,6 @@ describe('Visual graph screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'configName');
-        cy.get('.table').find('.delete-config')
-            .first().should('be.visible').click();
-        confirmDelete();
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'No graph configs');
     });
