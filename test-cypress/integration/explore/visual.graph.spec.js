@@ -121,7 +121,7 @@ describe('Visual graph screen validation', () => {
             getNodes().and('have.length', 21);
         });
 
-        it('Test collapse and expand a node', () => {
+        it.only('Test collapse and expand a node', () => {
             searchForResource(VALID_RESOURCE);
             toggleInferredStatements(false);
 
@@ -511,7 +511,12 @@ describe('Visual graph screen validation', () => {
             .invoke('val', resource)
             .trigger('change')
             .should('have.value', resource)
-            .type('{enter}');
+            .then((searchInput) => {
+                cy.waitUntil(() =>
+                    cy.get('#auto-complete-results-wrapper')
+                        .each((el) => el && el.text().indexOf(resource) > -1));
+                cy.wrap(searchInput).type('{enter}');
+            });
     }
 
     function searchForResource(resource) {
