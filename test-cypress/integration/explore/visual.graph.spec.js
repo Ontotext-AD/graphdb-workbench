@@ -121,7 +121,7 @@ describe('Visual graph screen validation', () => {
             getNodes().and('have.length', 21);
         });
 
-        it('Test collapse and expand a node', () => {
+        it.only('Test collapse and expand a node', () => {
             searchForResource(VALID_RESOURCE);
             toggleInferredStatements(false);
 
@@ -432,7 +432,7 @@ describe('Visual graph screen validation', () => {
             // Maximum links to show: 20
             getLinksNumberField().and('have.value', '20');
             // Preferred lang: en
-            cy.get('.preferred-languages .tag-item').should('have.length', 0);
+            cy.get('.preferred-languages .tag-item').should('have.length', 1);
             // Include inferred: false
             getIncludeInferredStatementsCheckbox().and('be.checked')
                 .and('not.be.disabled');
@@ -507,7 +507,16 @@ describe('Visual graph screen validation', () => {
 
     function typeInSearchField(resource) {
         // Wait should guarantee that the dropdown has been rendered and the focus is properly set.
-        getSearchField().should('be.visible').invoke('val', resource).trigger('change').wait(1000).type('{enter}');
+        getSearchField().should('be.visible')
+            .invoke('val', resource)
+            .trigger('change')
+            .should('have.value', resource)
+            .then((searchInput) => {
+                cy.waitUntil(() =>
+                    cy.get('#auto-complete-results-wrapper')
+                        .each((el) => el && el.text().indexOf(resource) > -1));
+                cy.wrap(searchInput).type('{enter}');
+            });
     }
 
     function searchForResource(resource) {

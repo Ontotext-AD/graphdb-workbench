@@ -187,6 +187,7 @@ describe('Similarity screen validation', () => {
         initRepository();
 
         cy.visit('/sparql');
+        cy.window();
         waitUntilSparqlPageIsLoaded();
 
         // When I disable the plugin.
@@ -203,15 +204,17 @@ describe('Similarity screen validation', () => {
 
         // When I visit similarity view while the plugin is disabled.
         cy.visit('/similarity');
+        cy.window();
 
         // Then I expect a message to be displayed informing me that the plugin is disabled.
         cy.get('.plugin-disabled-warning').should('be.visible').and('contain', 'Similarity Plugin is disabled for this repository.');
 
         // When I enable the plugin
-        cy.get('.enable-plugin-link').click();
-
-        // Then I expect default similarity view with no indexes available
-        checkSimilarityPageDefaultState();
+        cy.get('.enable-plugin-link')
+            .click().then(() => {
+            // Then I expect default similarity view with no indexes available
+            checkSimilarityPageDefaultState();
+        });
     });
 
     function initRepository() {
