@@ -23,13 +23,13 @@
         "cypress": "^3.4.1",
         "cypress-failed-log": "^2.5.1",
         "cypress-localstorage-commands": "^1.2.4",
-        "cypress-plugin-retries": "^1.4.0"
+        "cypress-plugin-retries": "^1.4.0",
+        "cypress-wait-until": "^1.7.1"
     },
     "bin": {
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
-        "cypress-wait-until": "^1.7.1",
         "minimist": "^1.2.5"
     },
     "resolutions": {
