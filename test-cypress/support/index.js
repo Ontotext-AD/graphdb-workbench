@@ -28,3 +28,4 @@ Cypress.env('RETRIES', 0);
 Cypress.env('modifierKey', Cypress.platform === 'darwin' ? '{cmd}' : '{ctrl}');
 
 require('cypress-failed-log');
+require('cypress-wait-until');
