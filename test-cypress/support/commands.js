@@ -1,9 +1,9 @@
 import 'cypress-localstorage-commands';
+import 'cypress-wait-until';
 import './repository-commands';
 import './sparql-commands';
 import './import-commands';
 import './settings-commands';
-import 'cypress-wait-until';
 
 
 /**

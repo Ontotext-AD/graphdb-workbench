@@ -9,6 +9,5 @@
     "videosFolder": "report/videos",
     "video": false,
     "defaultCommandTimeout": 30000,
-    "numTestsKeptInMemory": 10,
-    "chromeWebSecurity": false
+    "numTestsKeptInMemory": 10
 }
