@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.8.0-TR2-WebSecurity-OFF",
+    "version": "1.8.0-TR2-WebSecurityOff2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
