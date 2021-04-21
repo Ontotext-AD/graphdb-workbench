@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "1.8.0-HOSTS-TR3",
+    "version": "1.8.0-TR2",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
@@ -23,7 +23,8 @@
         "cypress": "^3.4.1",
         "cypress-failed-log": "^2.5.1",
         "cypress-localstorage-commands": "^1.2.4",
-        "cypress-plugin-retries": "^1.4.0"
+        "cypress-plugin-retries": "^1.4.0",
+        "cypress-wait-until": "^1.7.1"
     },
     "bin": {
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"

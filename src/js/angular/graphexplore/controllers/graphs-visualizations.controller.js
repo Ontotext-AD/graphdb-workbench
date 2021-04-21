@@ -284,8 +284,31 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         });
     }
 
+    function renderSettings() {
+        $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
+            return {'text': v};
+        });
+
+        $scope.settings.preferredTypesMap = _.map($scope.settings.preferredTypes, function (v) {
+            return {'text': v};
+        });
+
+        $scope.settings.rejectedTypesMap = _.map($scope.settings.rejectedTypes, function (v) {
+            return {'text': v};
+        });
+
+        $scope.settings.preferredPredicatesMap = _.map($scope.settings.preferredPredicates, function (v) {
+            return {'text': v};
+        });
+
+        $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
+            return {'text': v};
+        });
+    }
+
     $scope.resetSettings = function () {
         $scope.settings = angular.copy($scope.defaultSettings);
+        renderSettings();
     };
 
     $scope.changeLimit = function (delta) {
@@ -309,25 +332,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         } else {
             $scope.settings = angular.copy($scope.saveSettings);
         }
-        $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
-            return {'text': v};
-        });
-
-        $scope.settings.preferredTypesMap = _.map($scope.settings.preferredTypes, function (v) {
-            return {'text': v};
-        });
-
-        $scope.settings.rejectedTypesMap = _.map($scope.settings.rejectedTypes, function (v) {
-            return {'text': v};
-        });
-
-        $scope.settings.preferredPredicatesMap = _.map($scope.settings.preferredPredicates, function (v) {
-            return {'text': v};
-        });
-
-        $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
-            return {'text': v};
-        });
+        renderSettings();
     };
 
     $scope.reExpandNode = function () {

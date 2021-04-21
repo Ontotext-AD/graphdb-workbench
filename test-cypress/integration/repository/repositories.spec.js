@@ -625,9 +625,14 @@ describe('Repositories', () => {
 
         HomeSteps.visitAndWaitLoader();
         cy.visit('/repository');
-        waitUntilRepositoriesPageIsLoaded();
 
-        assertRepositoryStatus(repositoryId, "RUNNING");
+        // Verify that the repositories are loaded
+        // and only afterwards continue with the check
+        cy.get('#wb-repositories-repositoryInGetRepositories .repository')
+            .should('have.length.greaterThan', 0)
+            .then(() => {
+                assertRepositoryStatus(repositoryId, "RUNNING");
+            })
 
         //Restart the repository
         restartRepository(repositoryId);
@@ -683,11 +688,12 @@ describe('Repositories', () => {
     });
 
     function assertRepositoryStatus(repositoryId, status) {
-        getRepositoryFromList(repositoryId)
-            .should('be.visible')
-            .find('.repository-status')
-            .should('be.visible')
-            .and('contain', status, { timeout: 2000 });
+        cy.waitUntil(() =>
+            getRepositoryFromList(repositoryId)
+                .should('be.visible')
+                .find('.repository-status .text-secondary')
+                .then($el => $el)
+                .then($el => $el && $el.text() === status));
     }
 
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';

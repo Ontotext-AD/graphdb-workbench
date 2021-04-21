@@ -10,17 +10,21 @@ describe('My Settings', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        // Verify that the default user settings are returned
+        cy.clearLocalStorage();
+        cy.setDefaultUserData();
     });
 
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/settings');
-        // Wait for loader to disappear
-        cy.get('.ot-loader').should('not.be.visible');
+        visitSettingsView();
     });
 
     after(() => {
+        // Verify that the default user settings are returned
+        cy.clearLocalStorage();
+        cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
     });
 
@@ -83,64 +87,171 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it('should change settings for admin and verify changes are reflected in SAPRQL editor', () => {
+    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        cy.get('#sameas-on label').click();
-        cy.get('#sameas-on').find('.switch:checkbox').should('not.be.checked');
-        cy.get('#inference-on label').click();
-        cy.get('#inference-on').find('.switch:checkbox').should('not.be.checked');
-        cy.get('#defaultCount:checkbox').uncheck();
-        cy.get('#defaultCount:checkbox').should('not.be.checked');
-        getSaveButton().click();
+        cy.get('#sameas-on')
+            .find('.switch.mr-0').should('be.visible').click()
+            .then(() => {
+                cy.get('#sameas-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
+        cy.get('#inference-on')
+            .find('.switch.mr-0').should('be.visible').click()
+            .then(() => {
+                cy.get('#inference-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
+        cy.get('#defaultCount:checkbox').uncheck()
+            .then(() => {
+                cy.get('#defaultCount:checkbox')
+                    .should('not.be.checked');
+            });
 
-        //Go to SPARQL editor and verify changes are persisted for the admin user
-        cy.visit('/sparql');
-        cy.get('.ot-splash').should('not.be.visible');
+        // Note that saving settings takes time.
+        // Make sure that visiting SPARQL view
+        // will happen after successful save
+        getSaveButton().click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+                //Go to SPARQL editor and verify changes are persisted for the admin user
+                cy.visit('/sparql');
+                cy.window();
+                cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+                waitUntilYASQUEBtnsAreVisible();
 
-        //clear default query and paste a new one that will generate more than 1000 results
-        cy.get('#queryEditor .CodeMirror').find('textarea').type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-        cy.get('#queryEditor .CodeMirror').find('textarea').
-            invoke('val', testResultCountQuery).trigger('change', {force: true});
+                //verify disabled default inference, sameAs and total results count
+                cy.get('#inference')
+                    .should('be.visible')
+                    .find('.icon-2-5x.icon-inferred-off')
+                    .should('be.visible');
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+                cy.get('#sameAs')
+                    .should('be.visible')
+                    .find('.icon-2-5x.icon-sameas-off')
+                    .should('be.visible');
 
-        cy.get('#wb-sparql-runQuery').click();
-        cy.get('.ot-loader-new-content').should('not.be.visible');
+                //clear default query and paste a new one that will generate more than 1000 results
+                cy.get('#queryEditor .CodeMirror').find('textarea')
+                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+                cy.get('#queryEditor .CodeMirror').find('textarea')
+                    .invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-        //verify disabled default inference, sameAs and total results count
-        cy.get('#inference ')
-            .find('.icon-inferred-off')
-            .should('be.visible');
+                waitUntilQueryValueEquals(testResultCountQuery);
 
-        cy.get('#sameAs ')
-            .find('.icon-sameas-off')
-            .should('be.visible');
+                cy.get('#wb-sparql-runQuery')
+                    .should('be.visible')
+                    .and('not.be.disabled').click()
+                    .then(() => {
+                        // Retry until success message is shown
+                        cy.waitUntil(() =>
+                            cy.get('#yasr-inner')
+                                .should('be.visible')
+                                .find('.results-info .text-xs-right')
+                                .find('.results-description')
+                                .then(result => result && result.text().indexOf('Showing results from 1 to 1,000 of at least 1,001') > -1));
+                    });
 
-        cy.get('.results-info .text-xs-right')
-            .should('be.visible')
-            .and('contain', 'Showing results from 1 to 1,000 of at least 1,001');
+                //return to My Settings to revert the changes
+                visitSettingsView();
+                // Wait for loader to disappear
+                cy.get('.ot-loader').should('not.be.visible');
+                // Note that '.switch:checkbox' doesn't present when unchecked.
+                // Verify that the buttons will be clicked first and afterwards
+                // verification will happen.
 
+                // Note that when following two checkboxes are unchecked,
+                // they are not visible, which means that it's impossible
+                // Cypress to interact normally with them.
+                // That's why {force: true} should be used
+                cy.get('#sameas-on')
+                    .find('input[type="checkbox"]').check({force: true})
+                    .then(() => {
+                        cy.get('#sameas-on')
+                            .find('input[type="checkbox"]')
+                            .scrollIntoView()
+                            .should('be.checked');
+                    });
+                cy.get('#inference-on')
+                    .find('input[type="checkbox"]').check({force: true})
+                    .then(() => {
+                        cy.get('#inference-on')
+                            .find('input[type="checkbox"]')
+                            .scrollIntoView()
+                            .should('be.checked');
+                    });
+                cy.get('#defaultCount:checkbox').check()
+                    .then(() => {
+                        cy.get('#defaultCount:checkbox')
+                            .should('be.visible')
+                            .and('be.checked');
+                    });
+                getSaveButton().click()
+                    .then(() => {
+                        verifyUserSettingsUpdated();
+                    });
+            });
+
+    });
+
+    it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
+        const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
+        //Verify that schema statements are ON in My settings
+        cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+
+        //Verify that schema statements ON is reflected in Visual graph
+        visitVisualGraphView();
+        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
+            .type(DRY_GRAPH)
+            .trigger('change')
+            .should('have.value', DRY_GRAPH)
+            .type('{enter}');
+        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
+        cy.get('.include-schema-statements').should('be.checked');
+        saveGraphSettings();
+        cy.get('.predicate').should('contain','type');
+
+        //Set schema statements OFF in my settings
+        visitSettingsView();
+
+        cy.get('#schema-on label').click();
+        cy.get('#schema-on').find('.switch:checkbox').should('not.be.checked');
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
+
+        //Verify that schema statements OFF is reflected in Visual graph
+        visitVisualGraphView();
+
+        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
+            .type(DRY_GRAPH)
+            .trigger('change')
+            .should('have.value', DRY_GRAPH)
+            .type('{enter}');
+        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
+        cy.get('.include-schema-statements').click();
+        cy.get('.include-schema-statements').should('not.be.checked');
+        saveGraphSettings();
+        cy.get('.predicate').should('not.contain','type');
         //return to My Settings to revert the changes
-        cy.visit('/settings');
+        visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-        cy.get('#sameas-on label').click();
-        cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
-        cy.get('#inference-on label').click();
-        cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
-        cy.get('#defaultCount:checkbox').check();
-        cy.get('#defaultCount:checkbox').should('be.checked');
-        getSaveButton().click();
+        cy.get('#schema-on label').click();
+        cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
     });
 
     function getUserRepositoryTable() {
@@ -156,6 +267,45 @@ describe('My Settings', () => {
     }
 
     function getSaveButton() {
-        return cy.get('#wb-user-submit');
+        return cy.get('#wb-user-submit').should('be.visible');
+    }
+
+    function waitUntilYASQUEBtnsAreVisible() {
+        cy.waitUntil(() =>
+            cy.get('#queryEditor #yasqe_buttons')
+                .find('#buttons')
+                .then(buttons =>
+                    buttons && buttons.length > 0));
+    }
+
+    function waitUntilQueryValueEquals(query) {
+        cy.waitUntil(() =>
+            cy.get('#queryEditor .CodeMirror')
+                .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
+    }
+
+    function verifyUserSettingsUpdated() {
+        cy.get('#toast-container')
+            .find('.toast-success')
+            .should('be.visible')
+            .and('contain', 'The user admin was updated');
+    }
+
+    function saveGraphSettings() {
+        cy.get('.save-settings-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
+    }
+
+    function visitSettingsView() {
+        cy.visit('/settings');
+        cy.window();
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+    }
+
+    function visitVisualGraphView() {
+        cy.visit('/graphs-visualizations');
+        cy.window();
     }
 });

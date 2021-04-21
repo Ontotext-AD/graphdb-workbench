@@ -175,7 +175,7 @@ class ImportSteps {
 
     static resetStatusOfUploadedFiles() {
         // Button should disappear
-        cy.get('#import-server #wb-import-clearStatuses').click().should('not.be.visible');
+        cy.get('#import-server #wb-import-clearStatuses').click().should('not.be.visible').wait(10000);
 
         return ImportSteps;
     }
@@ -219,7 +219,7 @@ class ImportSteps {
         ImportSteps
             .getServerFileElement(filename)
             .find('.import-status .import-status-message')
-            .should('be.visible').and('contain', message);
+            .should('be.visible').and('contain', message).wait(10000);
 
         return ImportSteps;
     }

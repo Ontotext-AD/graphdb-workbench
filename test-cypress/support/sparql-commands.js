@@ -29,7 +29,6 @@ Cypress.Commands.add('waitUntilQueryIsVisible', () => {
 Cypress.Commands.add('verifyQueryAreaContains', (query) => {
     verifyQueryAreaContains(query);
 });
-
 // Helper functions
 
 function clearQuery() {
