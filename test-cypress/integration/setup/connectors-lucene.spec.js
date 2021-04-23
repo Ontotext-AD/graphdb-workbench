@@ -13,6 +13,7 @@ describe('Setup / Connectors - Lucene', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.visit('/connectors');
+        cy.window();
     });
 
     afterEach(() => {
@@ -39,36 +40,37 @@ describe('Setup / Connectors - Lucene', () => {
             .type(connectorPropertyChain, {force:true});
         getUriTypes()
             .type(uriType);
-        getOkButton()
-            .click();
+        confirmCreateConnector();
         getConnectorCreationDialog()
             .and('contain', luceneConnectorName);
         getConnectorStatusToastMessage()
             .should('be.visible')
             .and('contain', connectorCreateToastMessage);
+        hideToastContainer();
         //copy connector
         getConnectorInstance(0)
             .find('.icon-copy')
             .should('be.visible')
-            .click();
-        getOkButton()
-            .click({force:true});
-        getConnectorCreationDialog()
-            .and('contain', luceneConnectorName + '-copy');
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorCreateToastMessage + '-copy');
-        //delete connector copy
-        getConnectorInstance(1)
-            .find('.icon-trash')
-            .should('be.visible')
-            .click();
-        getConfirmConnectorDeletebutton()
-            .should('be.visible')
-            .click();
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorDeleteToastMessage + '-copy');
+            .click()
+            .then(() => {
+                confirmCreateConnector();
+                getConnectorCreationDialog()
+                    .and('contain', luceneConnectorName + '-copy');
+                getConnectorStatusToastMessage()
+                    .and('contain', connectorCreateToastMessage + '-copy');
+                hideToastContainer();
+                //delete connector copy
+                getConnectorInstance(1)
+                    .find('.icon-trash')
+                    .should('be.visible')
+                    .click();
+                getConfirmConnectorDeletebutton()
+                    .should('be.visible')
+                    .click();
+                getConnectorStatusToastMessage()
+                    .and('contain', connectorDeleteToastMessage + '-copy');
+                hideToastContainer();
+        });
     });
 
     function getConnectorsPage() {
@@ -99,11 +101,16 @@ describe('Setup / Connectors - Lucene', () => {
         return getCreateLuceneConnectorPage().find('.property-types input');
     }
 
-    function getOkButton() {
-        return getCreateLuceneConnectorPage()
-            .find('.create-connector-btn')
-            .scrollIntoView()
-            .should('be.visible');
+    function confirmCreateConnector() {
+        getCreateLuceneConnectorPage()
+            .within(() => {
+                cy.get('.create-connector-btn')
+                    .scrollIntoView()
+                    .should('be.visible')
+                    .then((btn) => {
+                        cy.wrap(btn).click();
+                    });
+        });
     }
 
     function getConnectorCreationDialog() {
@@ -114,20 +121,20 @@ describe('Setup / Connectors - Lucene', () => {
         return cy.get('.toast-message');
     }
 
-    function getIconCopyButton() {
-        return getConnectorsPage().find('.icon-copy');
-    }
-
     function getConnectorInstance(indexNumber) {
         return cy.get('#heading-Lucene' + indexNumber);
-    }
-
-    function getIconTrashButton() {
-        return cy.get('.icon-trash');
     }
 
     function getConfirmConnectorDeletebutton() {
         return cy.get('.delete-connector-btn');
     }
 
+    /**
+     *  Toast success container for some reason
+     *  is overlapping create connector button
+     */
+    function hideToastContainer() {
+        cy.get('.toast-success')
+            .then(toastContainer => toastContainer.hide());
+    }
 });
