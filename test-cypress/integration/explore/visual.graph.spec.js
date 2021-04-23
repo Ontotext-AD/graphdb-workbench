@@ -1,4 +1,5 @@
 const FILE_TO_IMPORT = 'wine.rdf';
+const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
 
 describe('Visual graph screen validation', () => {
 
@@ -121,7 +122,7 @@ describe('Visual graph screen validation', () => {
             getNodes().and('have.length', 21);
         });
 
-        it.only('Test collapse and expand a node', () => {
+        it('Test collapse and expand a node', () => {
             searchForResource(VALID_RESOURCE);
             toggleInferredStatements(false);
 
@@ -306,7 +307,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test preferred types', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
 
             openVisualGraphSettings();
             // Set "vin:Chardonnay" as a preferred type
@@ -326,7 +327,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test ignored types', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
             getNodes().and('contain', 'Zinfandel');
@@ -344,7 +345,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test preferred predicates', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
 
             openVisualGraphSettings();
             // Go to predicates tab
@@ -360,7 +361,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test ignored predicates', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
             toggleInferredStatements(false);
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
@@ -381,7 +382,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test reset settings', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
 
             // Modify the settings first
             openVisualGraphSettings();
@@ -459,7 +460,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test include schema statements', () => {
-            typeInSearchField('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry');
+            cy.searchEasyVisualGraph(DRY_GRAPH);
             getPredicates().should('contain', 'type');
             openVisualGraphSettings();
             getSettingsPanel().should('be.visible');
@@ -505,22 +506,8 @@ describe('Visual graph screen validation', () => {
         return cy.get('.search-rdf-resources input:visible');
     }
 
-    function typeInSearchField(resource) {
-        // Wait should guarantee that the dropdown has been rendered and the focus is properly set.
-        getSearchField().should('be.visible')
-            .invoke('val', resource)
-            .trigger('change')
-            .should('have.value', resource)
-            .then((searchInput) => {
-                cy.waitUntil(() =>
-                    cy.get('#auto-complete-results-wrapper')
-                        .each((el) => el && el.text().indexOf(resource) > -1));
-                cy.wrap(searchInput).type('{enter}');
-            });
-    }
-
     function searchForResource(resource) {
-        typeInSearchField(resource);
+        cy.searchEasyVisualGraph(resource);
         // Verify redirection to existing visual graph
         cy.get('.graph-visualization').should('be.visible')
             .find('.nodes-container').should('be.visible');

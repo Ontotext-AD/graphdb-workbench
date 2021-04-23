@@ -91,20 +91,10 @@ describe('My Settings', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        cy.get('#sameas-on')
-            .find('.switch.mr-0').should('be.visible').click()
-            .then(() => {
-                cy.get('#sameas-on')
-                    .find('.switch:checkbox')
-                    .should('not.be.visible');
-            });
-        cy.get('#inference-on')
-            .find('.switch.mr-0').should('be.visible').click()
-            .then(() => {
-                cy.get('#inference-on')
-                    .find('.switch:checkbox')
-                    .should('not.be.visible');
-            });
+        turnOffLabelBtn('#sameas-on');
+
+        turnOffLabelBtn('#inference-on')
+
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
                 cy.get('#defaultCount:checkbox')
@@ -168,22 +158,8 @@ describe('My Settings', () => {
                 // they are not visible, which means that it's impossible
                 // Cypress to interact normally with them.
                 // That's why {force: true} should be used
-                cy.get('#sameas-on')
-                    .find('input[type="checkbox"]').check({force: true})
-                    .then(() => {
-                        cy.get('#sameas-on')
-                            .find('input[type="checkbox"]')
-                            .scrollIntoView()
-                            .should('be.checked');
-                    });
-                cy.get('#inference-on')
-                    .find('input[type="checkbox"]').check({force: true})
-                    .then(() => {
-                        cy.get('#inference-on')
-                            .find('input[type="checkbox"]')
-                            .scrollIntoView()
-                            .should('be.checked');
-                    });
+                turnOnLabelBtn('#sameas-on');
+                turnOnLabelBtn('#inference-on');
                 cy.get('#defaultCount:checkbox').check()
                     .then(() => {
                         cy.get('#defaultCount:checkbox')
@@ -202,14 +178,10 @@ describe('My Settings', () => {
         const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
         //Verify that schema statements are ON in My settings
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
-
+        cy.enableAutocomplete(repositoryId);
         //Verify that schema statements ON is reflected in Visual graph
         visitVisualGraphView();
-        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
-            .type(DRY_GRAPH)
-            .trigger('change')
-            .should('have.value', DRY_GRAPH)
-            .type('{enter}');
+        cy.searchEasyVisualGraph(DRY_GRAPH);
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.checked');
@@ -219,8 +191,8 @@ describe('My Settings', () => {
         //Set schema statements OFF in my settings
         visitSettingsView();
 
-        cy.get('#schema-on label').click();
-        cy.get('#schema-on').find('.switch:checkbox').should('not.be.checked');
+        turnOffLabelBtn('#schema-on')
+
         getSaveButton()
             .click()
             .then(() => {
@@ -230,11 +202,8 @@ describe('My Settings', () => {
         //Verify that schema statements OFF is reflected in Visual graph
         visitVisualGraphView();
 
-        cy.get('.search-rdf-resources > #search-resource-box > .form-control')
-            .type(DRY_GRAPH)
-            .trigger('change')
-            .should('have.value', DRY_GRAPH)
-            .type('{enter}');
+        cy.searchEasyVisualGraph(DRY_GRAPH);
+
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').click();
@@ -245,8 +214,7 @@ describe('My Settings', () => {
         visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-        cy.get('#schema-on label').click();
-        cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
+        turnOnLabelBtn('#schema-on');
         getSaveButton()
             .click()
             .then(() => {
@@ -307,5 +275,26 @@ describe('My Settings', () => {
     function visitVisualGraphView() {
         cy.visit('/graphs-visualizations');
         cy.window();
+    }
+
+    function turnOffLabelBtn(btnId) {
+        cy.get(btnId)
+            .find('.switch.mr-0').should('be.visible').click()
+            .then(() => {
+                cy.get(btnId)
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
+    }
+
+    function turnOnLabelBtn(btnId) {
+        cy.get(btnId)
+            .find('input[type="checkbox"]').check({force: true})
+            .then(() => {
+                cy.get(btnId)
+                    .find('input[type="checkbox"]')
+                    .scrollIntoView()
+                    .should('be.checked');
+            });
     }
 });
