@@ -513,10 +513,6 @@ describe('Visual graph screen validation', () => {
             cy.get('.graph-visualization')
                 .find('.nodes-container')
                 .then(nodesContainer => nodesContainer));
-        // Verify that Visual graph has loaded
-        cy.waitUntil(() =>
-            cy.get('.node-wrapper')
-                .then(nodes => nodes && nodes.length > 0));
     }
 
     function getTargetNodeElement() {
