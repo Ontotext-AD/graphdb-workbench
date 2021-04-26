@@ -91,9 +91,19 @@ describe('My Settings', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
-        turnOffLabelBtn('#sameas-on');
+        clickLabelBtn('#sameas-on')
+            .then(() => {
+                cy.get('#sameas-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
 
-        turnOffLabelBtn('#inference-on')
+        clickLabelBtn('#inference-on')
+            .then(() => {
+                cy.get('#inference-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
 
         cy.get('#defaultCount:checkbox').uncheck()
             .then(() => {
@@ -184,7 +194,11 @@ describe('My Settings', () => {
         //Set schema statements OFF in my settings
         visitSettingsView();
 
-        turnOffLabelBtn('#schema-on')
+        clickLabelBtn('#schema-on').then(() => {
+            cy.get('#schema-on')
+                .find('.switch:checkbox')
+                .should('not.be.visible');
+        });
 
         getSaveButton()
             .click()
@@ -207,7 +221,11 @@ describe('My Settings', () => {
         visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-        turnOnLabelBtn('#schema-on');
+        clickLabelBtn('#schema-on').then(() => {
+            cy.get('#schema-on')
+                .find('.switch:checkbox')
+                .should('be.checked');
+        });
         getSaveButton()
             .click()
             .then(() => {
@@ -270,19 +288,14 @@ describe('My Settings', () => {
         cy.window();
     }
 
-    function turnOffLabelBtn(btnId) {
-        cy.get(btnId)
-            .find('.switch.mr-0').should('be.visible').click()
-            .then(() => {
-                cy.get(btnId)
-                    .find('.switch:checkbox')
-                    .should('not.be.visible');
-            });
+    function clickLabelBtn(btnId) {
+        return cy.get(btnId)
+            .find('.switch.mr-0').should('be.visible').click();
     }
 
     function turnOnLabelBtn(btnId) {
         cy.get(btnId)
-            .find('.switch.mr-0').should('be.visible').click()
+            .find('input[type="checkbox"]').check({force: true})
             .then(() => {
                 cy.get(btnId)
                     .find('input[type="checkbox"]')
