@@ -282,9 +282,7 @@ describe('My Settings', () => {
 
     function turnOnLabelBtn(btnId) {
         cy.get(btnId)
-            .find('.switch.mr-0')
-            .scrollIntoView()
-            .click()
+            .find('.switch.mr-0').should('be.visible').click()
             .then(() => {
                 cy.get(btnId)
                     .find('input[type="checkbox"]')
