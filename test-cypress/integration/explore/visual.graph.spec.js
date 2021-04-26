@@ -509,7 +509,9 @@ describe('Visual graph screen validation', () => {
     function searchForResource(resource) {
         cy.searchEasyVisualGraph(resource);
         // Verify redirection to existing visual graph
-        cy.get('.graph-visualization').should('be.visible')
+        cy.get('.graph-visualization')
+            .scrollIntoView()
+            .should('be.visible')
             .find('.nodes-container').should('be.visible');
     }
 

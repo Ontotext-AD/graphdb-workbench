@@ -150,14 +150,7 @@ describe('My Settings', () => {
                 visitSettingsView();
                 // Wait for loader to disappear
                 cy.get('.ot-loader').should('not.be.visible');
-                // Note that '.switch:checkbox' doesn't present when unchecked.
-                // Verify that the buttons will be clicked first and afterwards
-                // verification will happen.
 
-                // Note that when following two checkboxes are unchecked,
-                // they are not visible, which means that it's impossible
-                // Cypress to interact normally with them.
-                // That's why {force: true} should be used
                 turnOnLabelBtn('#sameas-on');
                 turnOnLabelBtn('#inference-on');
                 cy.get('#defaultCount:checkbox').check()
@@ -289,12 +282,14 @@ describe('My Settings', () => {
 
     function turnOnLabelBtn(btnId) {
         cy.get(btnId)
-            .find('input[type="checkbox"]').check({force: true})
+            .find('.switch.mr-0')
+            .scrollIntoView()
+            .click()
             .then(() => {
                 cy.get(btnId)
                     .find('input[type="checkbox"]')
                     .scrollIntoView()
-                    .should('be.checked');
+                            .should('be.checked');
             });
     }
 });
