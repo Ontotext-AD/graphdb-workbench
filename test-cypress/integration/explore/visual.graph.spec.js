@@ -22,6 +22,7 @@ describe('Visual graph screen validation', () => {
     });
 
     afterEach(() => {
+        cy.visit('/graphs-visualizations');
         cy.deleteRepository(repositoryId);
     });
 
@@ -196,7 +197,6 @@ describe('Visual graph screen validation', () => {
 
         it('Test expand collapsed node which has connections with double click', () => {
             searchForResource(VALID_RESOURCE);
-            getPredicates().should('be.visible');
             toggleInferredStatements(false);
 
             getTargetNode().trigger('mouseover');
@@ -513,7 +513,10 @@ describe('Visual graph screen validation', () => {
         cy.waitUntil(() =>
             cy.get('.graph-visualization')
                 .find('.nodes-container')
-                .then(nodesContainer => nodesContainer));
+                .then(nodesContainer => nodesContainer))
+            .then(() => {
+                getNodes();
+            });
     }
 
     function getTargetNodeElement() {
@@ -657,13 +660,14 @@ describe('Visual graph screen validation', () => {
     // Visual graph toolbar actions
 
     function openVisualGraphSettings() {
-        return cy.get('.visual-graph-settings-btn')
-            .scrollIntoView()
+        return cy.get('.toolbar-holder').should('be.visible')
+            .find('.visual-graph-settings-btn')
             .should('be.visible').click();
     }
 
     function openVisualGraphHome() {
-        cy.get('.return-home-btn').should('be.visible').click();
+        cy.get('.toolbar-holder').should('be.visible')
+            .find('.return-home-btn').should('be.visible').click();
     }
 
     function confirmDelete() {
