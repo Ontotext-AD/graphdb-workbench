@@ -509,10 +509,14 @@ describe('Visual graph screen validation', () => {
     function searchForResource(resource) {
         cy.searchEasyVisualGraph(resource);
         // Verify redirection to existing visual graph
-        cy.get('.graph-visualization')
-            .scrollIntoView()
-            .should('be.visible')
-            .find('.nodes-container').should('be.visible');
+        cy.waitUntil(() =>
+            cy.get('.graph-visualization')
+                .find('.nodes-container')
+                .then(nodesContainer => nodesContainer));
+        // Verify that Visual graph has loaded
+        cy.waitUntil(() =>
+            cy.get('.node-wrapper')
+                .then(nodes => nodes && nodes.length > 0));
     }
 
     function getTargetNodeElement() {
