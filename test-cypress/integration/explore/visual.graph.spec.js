@@ -196,6 +196,7 @@ describe('Visual graph screen validation', () => {
 
         it('Test expand collapsed node which has connections with double click', () => {
             searchForResource(VALID_RESOURCE);
+            getPredicates().should('be.visible');
             toggleInferredStatements(false);
 
             getTargetNode().trigger('mouseover');
@@ -656,7 +657,9 @@ describe('Visual graph screen validation', () => {
     // Visual graph toolbar actions
 
     function openVisualGraphSettings() {
-        return cy.get('.visual-graph-settings-btn').should('be.visible').click();
+        return cy.get('.visual-graph-settings-btn')
+            .scrollIntoView()
+            .should('be.visible').click();
     }
 
     function openVisualGraphHome() {
