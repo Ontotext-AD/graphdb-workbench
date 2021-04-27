@@ -95,14 +95,14 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.have.attr', 'checked');
             });
 
         clickLabelBtn('#inference-on')
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.have.attr', 'checked');
             });
 
         cy.get('#defaultCount:checkbox').uncheck()
@@ -197,7 +197,7 @@ describe('My Settings', () => {
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
                 .find('.switch:checkbox')
-                .should('not.be.visible');
+                .should('not.have.attr', 'checked');
         });
 
         getSaveButton()
@@ -224,7 +224,7 @@ describe('My Settings', () => {
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
                 .find('.switch:checkbox')
-                .should('be.checked');
+                .should('have.attr', 'checked');
         });
         getSaveButton()
             .click()
@@ -300,7 +300,7 @@ describe('My Settings', () => {
                 cy.get(btnId)
                     .find('input[type="checkbox"]')
                     .scrollIntoView()
-                            .should('be.checked');
+                            .should('have.attr', 'checked');
             });
     }
 });

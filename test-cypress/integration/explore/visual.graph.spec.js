@@ -8,22 +8,18 @@ describe('Visual graph screen validation', () => {
 
     before(() => {
         cy.clearLocalStorage('ls.graphs-viz');
+        repositoryId = 'repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     });
 
     after(() => {
+        cy.deleteRepository(repositoryId);
         cy.clearLocalStorage('ls.graphs-viz');
     });
 
     beforeEach(() => {
-        repositoryId = 'repo' + Date.now();
-        cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-    });
-
-    afterEach(() => {
-        cy.visit('/graphs-visualizations');
-        cy.deleteRepository(repositoryId);
     });
 
     context('When autocomplete is disabled', () => {
@@ -41,8 +37,10 @@ describe('Visual graph screen validation', () => {
     });
 
     context('When autocomplete is enabled', () => {
-        beforeEach(() => {
+        before(() => {
             cy.enableAutocomplete(repositoryId);
+        });
+        beforeEach(() => {
             cy.visit('/graphs-visualizations');
             cy.window();
         });
