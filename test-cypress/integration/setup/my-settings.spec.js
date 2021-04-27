@@ -221,12 +221,14 @@ describe('My Settings', () => {
         visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
-        clickLabelBtn('#schema-on').then(() => {
-            cy.get('#schema-on')
-                .find('input[type="checkbox"]')
-                .scrollIntoView()
-                .should('have.attr', 'checked');
-        });
+        clickLabelBtn('#schema-on')
+            .then(() => {
+                cy.waitUntil(() =>
+                    cy.get('#schema-on')
+                        .find('input[type="checkbox"]')
+                        .scrollIntoView()
+                        .then(input => input && input.attr('checked')));
+            });
         getSaveButton()
             .click()
             .then(() => {
@@ -298,10 +300,11 @@ describe('My Settings', () => {
         cy.get(btnId)
             .find('input[type="checkbox"]').check({force: true})
             .then(() => {
-                cy.get(btnId)
-                    .find('input[type="checkbox"]')
-                    .scrollIntoView()
-                            .should('have.attr', 'checked');
+                cy.waitUntil(() =>
+                    cy.get(btnId)
+                        .find('input[type="checkbox"]')
+                        .scrollIntoView()
+                        .then(input => input && input.attr('checked')));
             });
     }
 });
