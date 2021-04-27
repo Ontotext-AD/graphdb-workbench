@@ -94,14 +94,16 @@ describe('My Settings', () => {
         clickLabelBtn('#sameas-on')
             .then(() => {
                 cy.get('#sameas-on')
-                    .find('.switch:checkbox')
+                    .find('input[type="checkbox"]')
+                    .scrollIntoView()
                     .should('not.have.attr', 'checked');
             });
 
         clickLabelBtn('#inference-on')
             .then(() => {
                 cy.get('#inference-on')
-                    .find('.switch:checkbox')
+                    .find('input[type="checkbox"]')
+                    .scrollIntoView()
                     .should('not.have.attr', 'checked');
             });
 
@@ -196,7 +198,8 @@ describe('My Settings', () => {
 
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
-                .find('.switch:checkbox')
+                .find('input[type="checkbox"]')
+                .scrollIntoView()
                 .should('not.have.attr', 'checked');
         });
 
@@ -223,7 +226,8 @@ describe('My Settings', () => {
         cy.get('.ot-loader').should('not.be.visible');
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
-                .find('.switch:checkbox')
+                .find('input[type="checkbox"]')
+                .scrollIntoView()
                 .should('have.attr', 'checked');
         });
         getSaveButton()
