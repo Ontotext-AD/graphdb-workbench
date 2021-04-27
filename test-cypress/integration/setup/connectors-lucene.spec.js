@@ -111,7 +111,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function verifyStatusToastMessage(successMessage) {
-        cy.waitUntil(fn =>
+        cy.waitUntil(() =>
             cy.get('.toast-message')
                 .then(msg => msg && msg.text().indexOf(successMessage) > -1))
             .then(() => {
