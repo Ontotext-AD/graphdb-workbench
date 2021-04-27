@@ -8,21 +8,18 @@ describe('Visual graph screen validation', () => {
 
     before(() => {
         cy.clearLocalStorage('ls.graphs-viz');
+        repositoryId = 'repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     });
 
     after(() => {
+        cy.deleteRepository(repositoryId);
         cy.clearLocalStorage('ls.graphs-viz');
     });
 
     beforeEach(() => {
-        repositoryId = 'repo' + Date.now();
-        cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-    });
-
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
     });
 
     context('When autocomplete is disabled', () => {
@@ -40,8 +37,10 @@ describe('Visual graph screen validation', () => {
     });
 
     context('When autocomplete is enabled', () => {
-        beforeEach(() => {
+        before(() => {
             cy.enableAutocomplete(repositoryId);
+        });
+        beforeEach(() => {
             cy.visit('/graphs-visualizations');
             cy.window();
         });
@@ -512,7 +511,10 @@ describe('Visual graph screen validation', () => {
         cy.waitUntil(() =>
             cy.get('.graph-visualization')
                 .find('.nodes-container')
-                .then(nodesContainer => nodesContainer));
+                .then(nodesContainer => nodesContainer))
+            .then(() => {
+                getNodes();
+            });
     }
 
     function getTargetNodeElement() {
@@ -656,11 +658,14 @@ describe('Visual graph screen validation', () => {
     // Visual graph toolbar actions
 
     function openVisualGraphSettings() {
-        return cy.get('.visual-graph-settings-btn').should('be.visible').click();
+        return cy.get('.toolbar-holder').should('be.visible')
+            .find('.visual-graph-settings-btn')
+            .should('be.visible').click();
     }
 
     function openVisualGraphHome() {
-        cy.get('.return-home-btn').should('be.visible').click();
+        cy.get('.toolbar-holder').should('be.visible')
+            .find('.return-home-btn').should('be.visible').click();
     }
 
     function confirmDelete() {

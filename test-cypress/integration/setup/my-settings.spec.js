@@ -223,8 +223,9 @@ describe('My Settings', () => {
         cy.get('.ot-loader').should('not.be.visible');
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
-                .find('.switch:checkbox')
-                .should('be.checked');
+                .find('input[type="checkbox"]')
+                .scrollIntoView()
+                .should('have.attr', 'checked');
         });
         getSaveButton()
             .click()
@@ -300,7 +301,7 @@ describe('My Settings', () => {
                 cy.get(btnId)
                     .find('input[type="checkbox"]')
                     .scrollIntoView()
-                            .should('be.checked');
+                            .should('have.attr', 'checked');
             });
     }
 });
