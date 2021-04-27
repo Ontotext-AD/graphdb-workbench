@@ -41,12 +41,8 @@ describe('Setup / Connectors - Lucene', () => {
         getUriTypes()
             .type(uriType);
         confirmCreateConnector();
-        getConnectorCreationDialog()
-            .and('contain', luceneConnectorName);
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorCreateToastMessage);
-        hideToastContainer();
+        verifyStatusToastMessage(connectorCreateToastMessage);
+        verifyConnectorExists(luceneConnectorName);
         //copy connector
         getConnectorInstance(0)
             .find('.icon-copy')
@@ -54,11 +50,8 @@ describe('Setup / Connectors - Lucene', () => {
             .click()
             .then(() => {
                 confirmCreateConnector();
-                getConnectorCreationDialog()
-                    .and('contain', luceneConnectorName + '-copy');
-                getConnectorStatusToastMessage()
-                    .and('contain', connectorCreateToastMessage + '-copy');
-                hideToastContainer();
+                verifyStatusToastMessage(connectorCreateToastMessage + '-copy');
+                verifyConnectorExists(luceneConnectorName + '-copy');
                 //delete connector copy
                 getConnectorInstance(1)
                     .find('.icon-trash')
@@ -67,9 +60,7 @@ describe('Setup / Connectors - Lucene', () => {
                 getConfirmConnectorDeletebutton()
                     .should('be.visible')
                     .click();
-                getConnectorStatusToastMessage()
-                    .and('contain', connectorDeleteToastMessage + '-copy');
-                hideToastContainer();
+                verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
         });
     });
 
@@ -113,12 +104,19 @@ describe('Setup / Connectors - Lucene', () => {
         });
     }
 
-    function getConnectorCreationDialog() {
-        return cy.get('.modal-content > .modal-header.creating-connector-dialog').should('be.visible');
+    function verifyConnectorExists(connectorName) {
+        cy.waitUntil(() =>
+            cy.get('#accordion-Lucene')
+                .then(connectorTable => connectorTable && cy.wrap(connectorTable).contains(connectorName)));
     }
 
-    function getConnectorStatusToastMessage() {
-        return cy.get('.toast-message');
+    function verifyStatusToastMessage(successMessage) {
+        cy.waitUntil(fn =>
+            cy.get('.toast-message')
+                .then(msg => msg && msg.text().indexOf(successMessage) > -1))
+            .then(() => {
+                hideToastContainer();
+            });
     }
 
     function getConnectorInstance(indexNumber) {
