@@ -1288,8 +1288,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 } else if (virtualClickEventTimer === 2) {
                     // expand node
                     const shownLinks = graph.countLinks(d, graph.links);
-                    if (!(shownLinks >= $scope.saveSettings['linksLimit'])) {
+                    if (shownLinks <= $scope.saveSettings['linksLimit']) {
                         expandNode(d, false, element.parentNode);
+                    } else {
+                        toastr.info('Increase limit to see more connections and try again', 'Node already expanded to predefined maximum links to show.');
                     }
                     $scope.closeInfoPanel();
                 }
