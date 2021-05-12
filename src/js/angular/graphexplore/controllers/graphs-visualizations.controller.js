@@ -1755,6 +1755,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     params: {
                         iri: newNode,
                         config: $scope.configLoaded.id,
+                        languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                         includeInferred: $scope.saveSettings['includeInferred'],
                         sameAsState: $scope.saveSettings['sameAsState']
                     }
