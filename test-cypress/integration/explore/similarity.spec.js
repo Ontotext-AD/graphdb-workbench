@@ -211,6 +211,8 @@ describe('Similarity screen validation', () => {
 
         // When I enable the plugin
         cy.get('.enable-plugin-link')
+            .should('be.visible')
+            .and('contain', 'Enable plugin')
             .click().then(() => {
             // Then I expect default similarity view with no indexes available
             checkSimilarityPageDefaultState();
@@ -269,7 +271,10 @@ describe('Similarity screen validation', () => {
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        getExistingIndexesPanel().and('contain', 'No Indexes');
+        getExistingIndexesPanel()
+            .find('.no-indexes')
+            .should('be.visible')
+            .and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
