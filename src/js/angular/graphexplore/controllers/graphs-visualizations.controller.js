@@ -2497,6 +2497,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.rotate(false);
         }
     });
+
+    $scope.getLiteralFromPropValue = function (value) {
+        return value.substring(value.indexOf(':') + 1);
+    }
 }
 
 SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
