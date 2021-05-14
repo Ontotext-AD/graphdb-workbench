@@ -187,7 +187,7 @@ describe('My Settings', () => {
         cy.searchEasyVisualGraph(DRY_GRAPH);
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').should('be.checked');
+        cy.get('.include-schema-statements').should('be.visible').and('be.checked');
         saveGraphSettings();
         cy.get('.predicate').should('contain','type');
 
@@ -213,8 +213,8 @@ describe('My Settings', () => {
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').click();
-        cy.get('.include-schema-statements').should('not.be.checked');
+        cy.get('.include-schema-statements').should('be.visible').click();
+        cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
         saveGraphSettings();
         cy.get('.predicate').should('not.contain','type');
         //return to My Settings to revert the changes
