@@ -1288,8 +1288,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 } else if (virtualClickEventTimer === 2) {
                     // expand node
                     const shownLinks = graph.countLinks(d, graph.links);
-                    if (!(shownLinks >= $scope.saveSettings['linksLimit'])) {
+                    if (shownLinks <= $scope.saveSettings['linksLimit']) {
                         expandNode(d, false, element.parentNode);
+                    } else {
+                        toastr.info('Increase limit to see more connections and try again', 'Node already expanded to predefined maximum links to show.');
                     }
                     $scope.closeInfoPanel();
                 }
@@ -1755,6 +1757,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     params: {
                         iri: newNode,
                         config: $scope.configLoaded.id,
+                        languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                         includeInferred: $scope.saveSettings['includeInferred'],
                         sameAsState: $scope.saveSettings['sameAsState']
                     }
@@ -2496,6 +2499,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.rotate(false);
         }
     });
+
+    $scope.getLiteralFromPropValue = function (value) {
+        return value.substring(value.indexOf(':') + 1);
+    }
 }
 
 SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
