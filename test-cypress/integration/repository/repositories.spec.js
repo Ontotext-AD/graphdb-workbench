@@ -114,7 +114,7 @@ describe('Repositories', () => {
                 .click();
 
             // Should visualize the selected repo
-            cy.get('.no-selected-repository').should('not.be.visible');
+            cy.get('.no-selected-repository').should('not.exist');
             cy.get('.active-repository')
                 .should('be.visible')
                 .and('contain', repositoryId);
@@ -127,7 +127,7 @@ describe('Repositories', () => {
         getRepositoriesDropdown()
             .click()
             .find('.dropdown-menu .dropdown-item')
-            .should('not.contain', repositoryId);
+            .should('not.exist', repositoryId);
     });
 
     it('should disallow creation of repositories without mandatory settings', () => {
@@ -254,13 +254,16 @@ describe('Repositories', () => {
             .should('have.class', 'active');
         // The currently selected repository is kept in local storage
         cy.visit('/repository');
+        cy.window();
         // Should automatically select the default repository
         getRepositoriesDropdown()
             .find('.active-repository')
-            .should('contain', repositoryId);
-
-        // TODO: Could push the repo in an array and afterEach can delete all of them
-        cy.deleteRepository(secondRepoId);
+            .should('contain', repositoryId)
+            .then(() => {
+                // TODO: Could push the repo in an array and afterEach can delete all of them
+                // Moved delete second repository in then block to avoid concurrency
+                cy.deleteRepository(secondRepoId);
+            });
     });
 
     it('should allow to edit existing repository', () => {
@@ -321,25 +324,25 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            cy.get('.dropdown-menu .dropdown-item').should('not.contain', repositoryId);
+            cy.get('.dropdown-menu .dropdown-item').should('not.exist');
         });
     });
 
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
     it('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
-        getRepositoryTypeButton('ontop').should('be', 'visible');
+        getRepositoryTypeButton('ontop').should('be.visible');
         chooseRepositoryType('ontop');
         cy.url().should('include', '/repository/create/ontop');
 
-        getOBDAFileField().should('be', "visible");
-        getOntologyFileField().should('be', "visible");
-        getPropertiesFileField().should('be', "visible");
-        getConstraintFileField().should('be', "visible");
-        getOBDAUploadButton().should('be', "visible.").and('not.be.disabled');
-        getOntologyUploadButton().should('be', "visible").and('not.be.disabled');
-        getPropertiesUploadButton().should('be', "visible").and('not.be.disabled');
-        getConstraintUploadButton().should('be', "visible").and('not.be.disabled');
+        getOBDAFileField().should('be.visible');
+        getOntologyFileField().should('be.visible');
+        getPropertiesFileField().should('be.visible');
+        getConstraintFileField().should('be.visible');
+        getOBDAUploadButton().should('be.visible').and('not.be.disabled');
+        getOntologyUploadButton().should('be.visible').and('not.be.disabled');
+        getPropertiesUploadButton().should('be.visible').and('not.be.disabled');
+        getConstraintUploadButton().should('be.visible').and('not.be.disabled');
     });
 
     // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
@@ -461,7 +464,7 @@ describe('Repositories', () => {
         //
         // //Check that Inference and SameAs are disabled also that explain plan is not supported.
         // cy.visit("/sparql");
-        // cy.get('.ot-splash').should('not.be.visible'); //wait until SPARQL page is loaded completely
+        // cy.get('.ot-splash').should('not.exist'); //wait until SPARQL page is loaded completely
         //
         // //check that Inference and SameAs buttons are disabled.
         // cy.get('#inference').should('be', 'visible').and('be', 'disabled');
@@ -617,7 +620,7 @@ describe('Repositories', () => {
                 .closest('a')
                 .click();
             // Should visualize the selected repo
-            cy.get('.no-selected-repository').should('not.be.visible');
+            cy.get('.no-selected-repository').should('not.exist');
             cy.get('.active-repository')
                 .should('be.visible')
                 .and('contain', repositoryId);
@@ -645,7 +648,7 @@ describe('Repositories', () => {
 
         assertRepositoryStatus(repositoryId, "RESTARTING");
 
-        getToast().should('not.be.visible');
+        getToast().should('not.exist');
 
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
@@ -844,35 +847,35 @@ describe('Repositories', () => {
     }
 
     function getOBDAFileField() {
-        return cy.get('div').contains("Ontop repository OBDA or R2RML file*");
+        return cy.get('div').contains("OBDA or R2RML file*");
     }
 
     function getOntologyFileField() {
-        return cy.get('div').contains("Ontop repository ontology file");
+        return cy.get('div').contains("Ontology file");
     }
 
     function getPropertiesFileField() {
-        return cy.get('div').contains("Ontop repository properties file*");
+        return cy.get('div').contains("JDBC properties file*");
     }
 
     function getConstraintFileField() {
-        return cy.get('div').contains("Ontop repository constraint file");
+        return cy.get('div').contains("Constraint file");
     }
 
     function getOBDAUploadButton() {
-        return cy.get('div').contains("Upload obda or r2rml file");
+        return cy.get('span[for="obdaFile"]').contains("Upload file...");
     }
 
     function getOntologyUploadButton() {
-        return cy.get('div').contains("Upload ontology file");
+        return cy.get('span[for="owlFile"]').contains("Upload file...");
     }
 
     function getPropertiesUploadButton() {
-        return cy.get('div').contains("Upload properties file");
+        return cy.get('span[for="propertiesFile"]').contains("Upload file...");
     }
 
     function getConstraintUploadButton() {
-        return cy.get('div').contains("Upload constraint file");
+        return cy.get('span[for="constraintFile"]').contains("Upload file...");
     }
 
     function getOntopFunctionalityDisabledMessage() {

@@ -66,7 +66,7 @@ describe('SPARQL screen validation', () => {
         getTabs().find('.nav-link').should('be.visible');
 
         // No active loader
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     afterEach(() => {
@@ -688,7 +688,7 @@ describe('SPARQL screen validation', () => {
             '}';
 
         function waitUntilSavedQueryModalIsVisible() {
-            getModal().should('be.visible');
+            getModal().should('not.have.class', 'ng-animate').and('be.visible');
             getSavedQueryForm().should('be.visible');
             getSubmitSavedQueryBtn()
                 .should('be.visible')
@@ -862,7 +862,7 @@ describe('SPARQL screen validation', () => {
             verifyResultsPageLength(74);
         });
 
-        it('Test saved query link', () => {
+        it.only('Test saved query link', () => {
             const queryName = 'Add statements';
             openSavedQueriesPopup();
             getPopover().should('be.visible');
@@ -872,6 +872,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName) + '&owner=admin';
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -907,6 +908,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?name=&infer=true&sameAs=true&query=' + encodedQuery;
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -984,7 +986,7 @@ describe('SPARQL screen validation', () => {
 
     function executeQuery() {
         getRunQueryButton().click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getLoader() {
@@ -1021,12 +1023,13 @@ describe('SPARQL screen validation', () => {
     }
 
     function getModal() {
-        return cy.get('.modal').should('not.have.class', 'ng-animate');
+        return cy.get('.modal');
     }
 
     function confirmModal() {
         getModal()
             .should('be.visible')
+            .and('not.have.class', 'ng-animate')
             .find('.modal-footer')
             .should('be.visible')
             .find('.btn-primary')
@@ -1143,7 +1146,7 @@ describe('SPARQL screen validation', () => {
 
     function goToPage(page) {
         getResultPages().contains(page).click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getResultFilterField() {

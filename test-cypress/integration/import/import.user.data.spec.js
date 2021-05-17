@@ -297,7 +297,7 @@ describe('Import screen validation - user data', () => {
         cy.get(`.uri-cell:contains(${c})`).should('be.visible');
 
         if (checkForReplacedData) {
-            cy.get(`.uri-cell:contains(${oldData})`).should('not.be.visible');
+            cy.get(`.uri-cell:contains(${oldData})`).should('not.exist');
         }
     }
 
@@ -310,7 +310,7 @@ describe('Import screen validation - user data', () => {
             getReplaceGraphConfirmationCheckbox().click();
         }
         getImportSettingsImportButton().click();
-        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
     }
 
     function importInTheDefaultGraph(shouldReplaceGraph) {
@@ -320,7 +320,7 @@ describe('Import screen validation - user data', () => {
             getReplaceGraphConfirmationCheckbox().click();
         }
         getImportSettingsImportButton().click();
-        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
     }
 
     function importInNamedGraph(shouldReplaceGraph, graph) {
@@ -331,6 +331,6 @@ describe('Import screen validation - user data', () => {
             getReplaceGraphConfirmationCheckbox().click();
         }
         getImportSettingsImportButton().click();
-        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in less than a second.')
+        getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
     }
 });

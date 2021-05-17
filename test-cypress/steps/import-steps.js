@@ -209,7 +209,7 @@ class ImportSteps {
 
                 // set timeout in order to yield the mousemove
                 cy.wait(0);
-            }).should('not.be.visible').and('not.exist');
+            }).should('not.exist');
         });
 
         return ImportSteps;

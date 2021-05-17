@@ -7,7 +7,7 @@ Cypress.Commands.add('pasteQuery', (query) => {
 
 Cypress.Commands.add('executeQuery', () => {
     getRunQueryButton().click();
-    getLoader().should('not.be.visible');
+    getLoader().should('not.exist');
 });
 
 Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {

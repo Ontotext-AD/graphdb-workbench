@@ -265,7 +265,7 @@ describe('Similarity screen validation', () => {
         });
 
         // No active loader
-        cy.get('.ot-loader-new-content').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     function checkSimilarityPageDefaultState() {
@@ -385,8 +385,8 @@ describe('Similarity screen validation', () => {
         cy.get('.modal-title').should('be.visible').and('contain', 'View SPARQL Query');
         cy.get('.btn-primary').should('be.visible').and('contain', 'Copy to clipboard');
         cy.get('.close').click();
-        cy.get('.modal').should('not.be.visible');
-        cy.get('.modal-backdrop').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
+        cy.get('.modal-backdrop').should('not.exist');
     }
 
     function openEditQueryView(isPredication) {
@@ -408,7 +408,7 @@ describe('Similarity screen validation', () => {
 
         cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
-        cy.get('.sparql-loader').should('not.be.visible');
+        cy.get('.sparql-loader').should('not.exist');
         cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
         cy.get('.uri-cell').eq(0).should('contain', 'http://dbpedia.org/resource/Aaron_Jay_Kernis');
     }

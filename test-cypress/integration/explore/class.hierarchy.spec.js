@@ -61,7 +61,7 @@ describe('Class hierarchy screen validation', () => {
         // When a class is focused in diagram a side panel is opened on the right and covers the
         // buttons toolbar.
         cy.get('[ps-class=rdf-info-side-panel] .close').click()
-            .should('not.be.visible');
+            .should('not.exist');
         cy.get('.toolbar-holder .focus-diagram-btn').click();
 
         // Verify that the diagram zooms out without resetting the class count.
@@ -113,7 +113,7 @@ describe('Class hierarchy screen validation', () => {
     it('Test search for a class', () => {
         let className = 'wine';
         cy.get(SEARCH_INPUT_DROPDOWN_ID)
-            .should('not.be.visible');
+            .should('not.exist');
 
         searchForClass(className);
 

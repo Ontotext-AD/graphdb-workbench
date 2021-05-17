@@ -216,7 +216,7 @@ describe('My Settings', () => {
         cy.get('.include-schema-statements').should('be.visible').click();
         cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
         saveGraphSettings();
-        cy.get('.predicate').should('not.contain','type');
+        cy.get('.predicate').should('not.exist');
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
