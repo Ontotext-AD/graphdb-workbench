@@ -23,7 +23,6 @@
         "cypress": "^7.3.0",
         "cypress-failed-log": "^2.5.1",
         "cypress-localstorage-commands": "^1.4.4",
-        "cypress-plugin-retries": "^1.4.0",
         "cypress-wait-until": "^1.7.1"
     },
     "bin": {
