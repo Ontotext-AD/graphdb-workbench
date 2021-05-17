@@ -719,7 +719,9 @@ describe('SPARQL screen validation', () => {
             // Press the pen icon to edit the custom query created earlier
             executeSavedQueryCommand(savedQueryName, EDIT_SAVED_QUERY_COMMAND);
 
-            getPopover().should('not.exist');
+            // Note that popover fades away, which in newer versions of cypress
+            // is considered that does not exist. All other checks will fail
+            cy.get('.popover').should('not.exist');
             waitUntilSavedQueryModalIsVisible();
 
             getSavedQueryNameField().should('have.value', savedQueryName);
@@ -761,7 +763,7 @@ describe('SPARQL screen validation', () => {
             // Confirm dialog
             confirmModal();
             getModal().should('not.exist');
-            getPopover().should('not.exist');
+            cy.get('.popover').should('not.exist');
 
             // Verify that the query is deleted
             openSavedQueriesPopup();
@@ -862,7 +864,7 @@ describe('SPARQL screen validation', () => {
             verifyResultsPageLength(74);
         });
 
-        it.only('Test saved query link', () => {
+        it('Test saved query link', () => {
             const queryName = 'Add statements';
             openSavedQueriesPopup();
             getPopover().should('be.visible');
@@ -1274,7 +1276,6 @@ describe('SPARQL screen validation', () => {
         // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
             .trigger('mouseover', {force: true})
             .find('.actions-bar')
-            .should('be.visible')
             .find(commandSelector)
             .parent('.btn')
             // Cypress sometimes determines the element has 0x0 dimensions...
