@@ -127,7 +127,7 @@ describe('Repositories', () => {
         getRepositoriesDropdown()
             .click()
             .find('.dropdown-menu .dropdown-item')
-            .should('not.exist', repositoryId);
+            .should('not.contain', repositoryId);
     });
 
     it('should disallow creation of repositories without mandatory settings', () => {
@@ -324,7 +324,7 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            cy.get('.dropdown-menu .dropdown-item').should('not.exist', repositoryId);
+            cy.get('.dropdown-menu .dropdown-item').should('not.contain', repositoryId);
         });
     });
 
