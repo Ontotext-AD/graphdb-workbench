@@ -14,7 +14,7 @@ describe('Monitor Resources', () => {
 
         // Wait for loaders to disappear
         cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader').should('not.exist');
+        cy.get('.ot-loader').should('not.be.visible');
 
         // Ensure the chart on the default active tab is rendered
         getActiveTabContent().find('svg').should('be.visible');
