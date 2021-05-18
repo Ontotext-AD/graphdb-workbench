@@ -13,13 +13,18 @@ Cypress.Commands.add('createRepository', (options = {}) => {
         headers: {
             'Content-Type': 'application/json'
         }
-    }).should((response) => expect(response.status).to.equal(201)); // 201 Created
+    }).then((response) => {
+        cy.waitUntil(() => response && response.status === 201); // 201 Created
+    });
 });
 
 Cypress.Commands.add('deleteRepository', (id) => {
     // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + id;
-    cy.request('DELETE', url).should((response) => expect(response.status).to.equal(200));
+    cy.request('DELETE', url)
+        .then((response) => {
+            cy.waitUntil(() => response && response.status === 200);
+        });
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
@@ -31,7 +36,10 @@ Cypress.Commands.add('presetRepository', (id) => {
  */
 Cypress.Commands.add('initializeRepository', (id) => {
     const url = REPOSITORIES_URL + id + '/size';
-    cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
+    cy.request('GET', url)
+        .then((response) => {
+            cy.waitUntil(() => response && response.status === 200);
+        });
 });
 
 Cypress.Commands.add('enableAutocomplete', (repositoryId) => {

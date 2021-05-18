@@ -130,6 +130,7 @@ class ImportSteps {
         // Dialog should disappear
         ImportSteps.getModal().
         find('.modal-footer > .btn-primary')
+            .should('exist')
             .click()
             .should('not.exist');
 

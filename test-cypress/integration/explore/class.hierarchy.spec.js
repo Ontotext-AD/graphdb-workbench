@@ -10,6 +10,10 @@ const CLASS_HIERARCHY = 'class hierarchy';
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
+    const isVisible = (elem) => !!(
+        elem.offsetWidth || elem.offsetHeight
+    )
+
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
@@ -18,11 +22,12 @@ describe('Class hierarchy screen validation', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/hierarchy');
+        cy.window();
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
-        cy.get('#classChart').should('be.visible').within(() => {
-            cy.get('#main-group').should('be.visible');
+        cy.get('#classChart').scrollIntoView().should('be.visible').within(() => {
+            cy.get('#main-group').scrollIntoView().should('be.visible');
             findClassByName('food:Grape');
-            cy.get('@classInHierarchy').should('be.visible');
+            cy.get('@classInHierarchy').scrollIntoView().should('be.visible');
         });
     });
 

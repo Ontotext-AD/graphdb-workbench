@@ -40,6 +40,7 @@ describe('Repositories', () => {
         repositoryId = 'repo-' + Date.now();
 
         cy.visit('/repository');
+        cy.window();
 
         waitUntilRepositoriesPageIsLoaded();
     });
@@ -52,7 +53,7 @@ describe('Repositories', () => {
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
-        getRepositoriesDropdown().should('be.visible').and('not.be.disabled');
+        getRepositoriesDropdown().should('not.be.disabled');
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
@@ -764,7 +765,7 @@ describe('Repositories', () => {
     }
 
     function getRepositoriesDropdown() {
-        return cy.get('#repositorySelectDropdown');
+        return cy.get('#repositorySelectDropdown').should('be.visible');
     }
 
     function getRepositoryCreateForm() {
@@ -863,19 +864,19 @@ describe('Repositories', () => {
     }
 
     function getOBDAUploadButton() {
-        return cy.get('span[for="obdaFile"]').contains("Upload file...");
+        return cy.get('span [for="obdaFile"]').contains("Upload file...");
     }
 
     function getOntologyUploadButton() {
-        return cy.get('span[for="owlFile"]').contains("Upload file...");
+        return cy.get('span [for="owlFile"]').contains("Upload file...");
     }
 
     function getPropertiesUploadButton() {
-        return cy.get('span[for="propertiesFile"]').contains("Upload file...");
+        return cy.get('span [for="propertiesFile"]').contains("Upload file...");
     }
 
     function getConstraintUploadButton() {
-        return cy.get('span[for="constraintFile"]').contains("Upload file...");
+        return cy.get('span [for="constraintFile"]').contains("Upload file...");
     }
 
     function getOntopFunctionalityDisabledMessage() {
