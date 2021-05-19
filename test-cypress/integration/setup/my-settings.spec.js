@@ -141,7 +141,7 @@ describe('My Settings', () => {
                 cy.get('#queryEditor .CodeMirror').find('textarea')
                     .invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-                waitUntilQueryValueEquals(testResultCountQuery);
+                cy.verifyQueryAreaContains(testResultCountQuery);
 
                 cy.get('#wb-sparql-runQuery')
                     .should('be.visible')
@@ -258,12 +258,6 @@ describe('My Settings', () => {
                 .find('#buttons')
                 .then(buttons =>
                     buttons && buttons.length > 0));
-    }
-
-    function waitUntilQueryValueEquals(query) {
-        cy.waitUntil(() =>
-            cy.get('#queryEditor .CodeMirror')
-                .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
     }
 
     function verifyUserSettingsUpdated() {

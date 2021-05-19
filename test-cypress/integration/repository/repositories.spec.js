@@ -112,6 +112,7 @@ describe('Repositories', () => {
             cy.get('.dropdown-menu .dropdown-item')
                 .contains(repositoryId)
                 .closest('a')
+                .scrollIntoView()
                 .click();
 
             // Should visualize the selected repo
@@ -126,9 +127,10 @@ describe('Repositories', () => {
 
         // And it should not be present in the dropdown items
         getRepositoriesDropdown()
-            .click()
-            .find('.dropdown-menu .dropdown-item')
-            .should('not.contain', repositoryId);
+            .click().within(() => {
+            cy.get('.dropdown-menu .dropdown-item')
+                .should('not.exist');
+        })
     });
 
     it('should disallow creation of repositories without mandatory settings', () => {
@@ -325,7 +327,7 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            cy.get('.dropdown-menu .dropdown-item').should('not.contain', repositoryId);
+            cy.get('.dropdown-menu .dropdown-item').should('not.exist');
         });
     });
 
@@ -340,10 +342,10 @@ describe('Repositories', () => {
         getOntologyFileField().should('be.visible');
         getPropertiesFileField().should('be.visible');
         getConstraintFileField().should('be.visible');
-        getOBDAUploadButton().should('be.visible').and('not.be.disabled');
-        getOntologyUploadButton().should('be.visible').and('not.be.disabled');
-        getPropertiesUploadButton().should('be.visible').and('not.be.disabled');
-        getConstraintUploadButton().should('be.visible').and('not.be.disabled');
+        getOBDAUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
+        getOntologyUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
+        getPropertiesUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
+        getConstraintUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
     });
 
     // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
@@ -765,7 +767,9 @@ describe('Repositories', () => {
     }
 
     function getRepositoriesDropdown() {
-        return cy.get('#repositorySelectDropdown').should('be.visible');
+        return cy.get('#repositorySelectDropdown')
+            .scrollIntoView()
+            .should('be.visible');
     }
 
     function getRepositoryCreateForm() {
@@ -864,19 +868,19 @@ describe('Repositories', () => {
     }
 
     function getOBDAUploadButton() {
-        return cy.get('span [for="obdaFile"]').contains("Upload file...");
+        return cy.get('span[for="obdaFile"]').contains("Upload file...");
     }
 
     function getOntologyUploadButton() {
-        return cy.get('span [for="owlFile"]').contains("Upload file...");
+        return cy.get('span[for="owlFile"]').contains("Upload file...");
     }
 
     function getPropertiesUploadButton() {
-        return cy.get('span [for="propertiesFile"]').contains("Upload file...");
+        return cy.get('span[for="propertiesFile"]').contains("Upload file...");
     }
 
     function getConstraintUploadButton() {
-        return cy.get('span [for="constraintFile"]').contains("Upload file...");
+        return cy.get('span[for="constraintFile"]').contains("Upload file...");
     }
 
     function getOntopFunctionalityDisabledMessage() {

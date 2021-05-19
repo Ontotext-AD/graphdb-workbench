@@ -392,7 +392,7 @@ describe('Similarity screen validation', () => {
     function openEditQueryView(isPredication) {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
         // Open "Edit search query" view
-        cy.get('.edit-query-btn').click();
+        cy.get('.edit-query-btn').should('be.visible').click();
         // Verify that 'similarity-index-name' input field is disabled
         getSimilarity().should('be.disabled');
         getSearchQueryTab().should('be.visible');
@@ -414,12 +414,12 @@ describe('Similarity screen validation', () => {
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().click();
+        getSearchQueryTab().scrollIntoView().should('be.visible').click();
         cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().click();
+        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
         cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 

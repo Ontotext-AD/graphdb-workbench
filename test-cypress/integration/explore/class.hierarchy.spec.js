@@ -10,10 +10,6 @@ const CLASS_HIERARCHY = 'class hierarchy';
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
-    const isVisible = (elem) => !!(
-        elem.offsetWidth || elem.offsetHeight
-    )
-
     beforeEach(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
@@ -45,7 +41,11 @@ describe('Class hierarchy screen validation', () => {
         verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
 
         // Switch show prefixes to off
-        cy.get('.toolbar-holder .prefix-toggle-btn').click();
+        cy.get('.toolbar-holder')
+            .find('.prefix-toggle-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
 
         // Verify that prefixes are removed from diagram
         verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));

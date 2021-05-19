@@ -57,7 +57,7 @@ describe('SPARQL screen validation', () => {
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryAreaAppear();
+        cy.waitUntilQueryIsVisible();
 
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
@@ -1105,13 +1105,6 @@ describe('SPARQL screen validation', () => {
             const cm = codeMirrorEl[0].CodeMirror;
             expect(cm.getValue().trim()).to.equal(query.trim());
         });
-    }
-
-    function waitUntilQueryAreaAppear() {
-        cy.waitUntil(() =>
-            getQueryArea()
-                .then(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
     function getQueryArea() {
