@@ -55,7 +55,7 @@ describe('User and Access', () => {
         cy.get('@user').find('.edit-user-btn').should('be.visible')
             .and('not.be.disabled');
         // And cannot be deleted
-        cy.get('@user').find('.delete-user-btn').should('not.exist');
+        cy.get('@user').find('.delete-user-btn').should('not.be.visible');
         // Date created should be visible
         cy.get('@user').find('.date-created').should('be.visible');
     });
