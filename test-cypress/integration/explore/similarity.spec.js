@@ -130,7 +130,7 @@ describe('Similarity screen validation', () => {
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
             openEditQueryView(true);
-            getAnalogicalQueryTab().click();
+            getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
             verifyQueryIsChanged();
         });
 
@@ -437,7 +437,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getSaveEditedQueryButton() {
-        return cy.get('.save-query-btn');
+        return cy.get('.save-query-btn').scrollIntoView().should('be.visible');
     }
 
     function getSimilarity() {
