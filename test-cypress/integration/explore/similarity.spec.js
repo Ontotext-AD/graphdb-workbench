@@ -259,10 +259,7 @@ describe('Similarity screen validation', () => {
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.waitUntilQueryIsVisible();
 
         // No active loader
         cy.get('.ot-loader-new-content').should('not.exist');

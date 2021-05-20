@@ -20,6 +20,7 @@ describe('Graphs overview screen validation', () => {
         });
 
         cy.visit('/graphs');
+        cy.window();
         // Assume that page is loaded once the table has rendered all expected elements.
         verifyVisibleGraphsCount(10);
     });
