@@ -331,10 +331,6 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            // Because of the timer of this view, getting element should be retried
-            cy.waitUntil(() =>
-                cy.get('.dropdown-menu .dropdown-item')
-                    .then((dropDown) => !dropDown));
         });
     });
 
