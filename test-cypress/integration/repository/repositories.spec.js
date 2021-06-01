@@ -127,10 +127,9 @@ describe('Repositories', () => {
 
         // And it should not be present in the dropdown items
         getRepositoriesDropdown()
-            .click().within(() => {
-            cy.get('.dropdown-menu .dropdown-item')
-                .should('not.be.visible');
-        })
+            .click()
+            .find('.dropdown-menu .dropdown-item')
+            .should('not.be.visible');
     });
 
     it('should disallow creation of repositories without mandatory settings', () => {
@@ -327,7 +326,7 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            cy.get('.dropdown-menu .dropdown-item').should('not.be.visible');
+            cy.get('.dropdown-menu .dropdown-item').should('not.contain', repositoryId);
         });
     });
 
