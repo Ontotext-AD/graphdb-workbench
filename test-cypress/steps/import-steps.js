@@ -181,11 +181,6 @@ class ImportSteps {
             .then((el) => {
                 cy.waitUntil(() => cy.wrap(el).should('not.be.visible'));
             })
-        // cy.waitUntil(() =>
-        //     ImportSteps
-        //         .getServerFileElement(filename)
-        //         .find('.import-status .import-status-message')
-        //         .then(status => status && status.text().indexOf(message) > -1));
 
         return ImportSteps;
     }
