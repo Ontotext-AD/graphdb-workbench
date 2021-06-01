@@ -128,8 +128,12 @@ describe('Repositories', () => {
         // And it should not be present in the dropdown items
         getRepositoriesDropdown()
             .click()
-            .find('.dropdown-menu .dropdown-item')
-            .should('not.be.visible');
+            .then(() => {
+                // Because of the timer of this view, getting element should be retried
+                cy.waitUntil(() =>
+                    cy.get('.dropdown-menu .dropdown-item')
+                        .then((dropDown) => !dropDown));
+            });
     });
 
     it('should disallow creation of repositories without mandatory settings', () => {
