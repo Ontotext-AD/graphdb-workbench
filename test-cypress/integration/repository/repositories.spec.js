@@ -129,7 +129,7 @@ describe('Repositories', () => {
         getRepositoriesDropdown()
             .click().within(() => {
             cy.get('.dropdown-menu .dropdown-item')
-                .should('not.exist');
+                .should('not.be.visible');
         })
     });
 
@@ -327,7 +327,7 @@ describe('Repositories', () => {
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
             cy.get('#btnReposGroup').should('not.contain', repositoryId);
-            cy.get('.dropdown-menu .dropdown-item').should('not.exist');
+            cy.get('.dropdown-menu .dropdown-item').should('not.be.visible');
         });
     });
 
