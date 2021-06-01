@@ -18,6 +18,50 @@ describe('SPARQL screen validation', () => {
 
     const SPARQL_STAR_QUERY = 'select (<<?s ?p ?o>> as ?t) {?s ?p ?o}';
 
+    const GATE_CLIENT_CREATE_QUERY = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'INSERT DATA {\n' +
+        '    inst:gateService :connect :Gate;\n' +
+        '                     :service "https://cloud-api.gate.ac.uk/process-document/annie-named-entity-recognizer?annotations=:Address&annotations=:Date&annotations=:Location&annotations=:Organization&annotations=:Person&annotations=:Money&annotations=:Percent&annotations=:Sentence" .\n' +
+        '}';
+
+    const GATE_CLIENT_SEARCH_QUERY = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT ?annotationText ?annotationType ?annotationStart ?annotationEnd ?feature ?value\n' +
+        'WHERE {\n' +
+        '        ?searchDocument a inst:gateService;\n' +
+        '                           :text \'\'\'Dyson Ltd. plans to hire 450 people globally, with more than half the recruits in its headquarters in Singapore.\n' +
+        'The company best known for its vacuum cleaners and hand dryers will add 250 engineers in the city-state. This comes short before the founder James Dyson announced he is moving back to the UK after moving residency to Singapore. Dyson, a prominent Brexit supporter who is worth US$29 billion, faced criticism from British lawmakers for relocating his company\'\'\' .\n' +
+        '\n' +
+        '    graph inst:gateService {\n' +
+        '        ?annotatedDocument :annotations ?annotation .\n' +
+        '\n' +
+        '        ?annotation :annotationText ?annotationText ;\n' +
+        '            :annotationType ?annotationType ;\n' +
+        '            :annotationStart ?annotationStart ;\n' +
+        '            :annotationEnd ?annotationEnd ;\n' +
+        '        optional { ?annotation :features ?item . ?item ?feature ?value }\n' +
+        '    }\n' +
+        '}';
+
+    const LIST_TEXT_MINING_SERVICES = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT * where {\n' +
+        '    ?instance a :Service .\n' +
+        '}';
+
+    const LIST_TEXT_MINING_INSTANCE_CONFIG = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT * WHERE {\n' +
+        '   inst:gateService ?p ?o .\n' +
+        '}';
+
+    const DROP_TEXT_MINING_INSTANCE = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'INSERT DATA {\n' +
+        '   inst:gateService :dropService "".\n' +
+        '}';
+
     function createRepoAndVisit(repoOptions = {}) {
         createRepository(repoOptions);
         visitSparql(true);
@@ -404,6 +448,35 @@ describe('SPARQL screen validation', () => {
             // Confirm that only inferred statements (only 2) are available
             executeQuery();
             verifyResultsPageLength(2);
+        });
+
+        it('should test text mining plugin', () => {
+            clearQuery();
+            pasteQuery(GATE_CLIENT_CREATE_QUERY);
+            executeQuery();
+            clearQuery();
+            pasteQuery(GATE_CLIENT_SEARCH_QUERY);
+            executeQuery();
+            getResultPages().should('have.length', 1);
+            verifyResultsPageLength(33);
+            clearQuery();
+            pasteQuery(LIST_TEXT_MINING_SERVICES);
+            executeQuery();
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining/instance#gateService');
+            clearQuery();
+            pasteQuery(LIST_TEXT_MINING_INSTANCE_CONFIG);
+            executeQuery();
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#Gate');
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#connect');
+            getTableResultRows().should('contain', 'https://cloud-api.gate.ac.uk');
+            clearQuery();
+            pasteQuery(DROP_TEXT_MINING_INSTANCE);
+            executeQuery();
+            clearQuery();
+            pasteQuery(LIST_TEXT_MINING_SERVICES);
+            executeQuery();
+            getResultPages().should('have.length', 1);
+            getTableResultRows().should('contain', 'No data available in table');
         });
     });
 
