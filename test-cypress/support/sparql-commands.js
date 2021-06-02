@@ -7,7 +7,7 @@ Cypress.Commands.add('pasteQuery', (query) => {
 
 Cypress.Commands.add('executeQuery', () => {
     getRunQueryButton().click();
-    getLoader().should('not.be.visible');
+    getLoader().should('not.exist');
 });
 
 Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
@@ -41,22 +41,21 @@ function getQueryArea() {
 }
 
 function getQueryTextArea() {
-    return getQueryArea().find('textarea');
+    return getQueryArea().find('textarea').scrollIntoView().should('be.visible');
 }
 
 function waitUntilQueryIsVisible() {
-    getQueryArea().should(codeMirrorEl => {
-        const cm = codeMirrorEl[0].CodeMirror;
-        expect(cm.getValue().trim().length > 0).to.be.true;
-    });
+    cy.waitUntil(() =>
+        getQueryArea()
+            .then(codeMirrorEl =>
+                codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
 }
 
 function verifyQueryAreaContains(query) {
     // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-    getQueryArea().should(codeMirrorEl => {
-        const cm = codeMirrorEl[0].CodeMirror;
-        expect(cm.getValue().includes(query)).to.be.true;
-    });
+    cy.waitUntil(() =>
+        getQueryArea()
+            .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().indexOf(query) > -1));
 }
 
 function getRunQueryButton() {

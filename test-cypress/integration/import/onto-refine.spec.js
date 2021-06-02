@@ -8,7 +8,7 @@ describe('Import/ OntoRefine', () => {
 
         cy.visit('/ontorefine');
 
-        cy.get('.ot-splash').should('not.be.visible');
+        cy.get('.ot-splash').should('not.exist');
         getOntoRefineFrame().should('be.visible');
     });
 
@@ -64,7 +64,7 @@ describe('Import/ OntoRefine', () => {
 
         // Go to Open project and check if the panels are properly switched
         getOntoRefineTabs().eq(1).click();
-        getCreateProjectPanel().should('not.be.visible');
+        getCreateProjectPanel().should('not.exist');
         getOpenProjectPanel()
             .should('be.visible')
             // Should have no existing projects for new repositories
@@ -74,7 +74,7 @@ describe('Import/ OntoRefine', () => {
         // -------- Import project --------
 
         getOntoRefineTabs().eq(2).click();
-        getOpenProjectPanel().should('not.be.visible');
+        getOpenProjectPanel().should('not.exist');
         getImportProjectPanel()
             .should('be.visible')
             .find('#import-project-button')
@@ -83,7 +83,7 @@ describe('Import/ OntoRefine', () => {
         // -------- Language Settings --------
 
         getOntoRefineTabs().eq(3).click();
-        getImportProjectPanel().should('not.be.visible');
+        getImportProjectPanel().should('not.exist');
         getLanguageSettingsPanel()
             .should('be.visible')
             .find('#set-lang-button')

@@ -130,6 +130,7 @@ class ImportSteps {
         // Dialog should disappear
         ImportSteps.getModal().
         find('.modal-footer > .btn-primary')
+            .should('exist')
             .click()
             .should('not.exist');
 
@@ -175,7 +176,11 @@ class ImportSteps {
 
     static resetStatusOfUploadedFiles() {
         // Button should disappear
-        cy.get('#import-server #wb-import-clearStatuses').click().should('not.be.visible').wait(10000);
+        cy.get('#import-server #wb-import-clearStatuses')
+            .click()
+            .then((el) => {
+                cy.waitUntil(() => cy.wrap(el).should('not.be.visible'));
+            })
 
         return ImportSteps;
     }
@@ -209,17 +214,18 @@ class ImportSteps {
 
                 // set timeout in order to yield the mousemove
                 cy.wait(0);
-            }).should('not.be.visible').and('not.exist');
+            }).should('not.exist');
         });
 
         return ImportSteps;
     }
 
     static verifyImportStatus(filename, message) {
-        ImportSteps
-            .getServerFileElement(filename)
-            .find('.import-status .import-status-message')
-            .should('be.visible').and('contain', message).wait(10000);
+        cy.waitUntil(() =>
+            ImportSteps
+                .getServerFileElement(filename)
+                .find('.import-status .import-status-message')
+                .then(status => status && status.text().indexOf(message) > -1));
 
         return ImportSteps;
     }

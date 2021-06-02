@@ -65,7 +65,7 @@ describe('JDBC configuration', () => {
 
         typeQuery("{downarrow}"); //used to verify that the input field is active
         getPreviewButton().click({force:true}); //click preview button
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
 
         //verify results content
         getPreviewTable()
@@ -93,7 +93,7 @@ describe('JDBC configuration', () => {
         //Verify that changes have been applied upon saving
         typeQuery("{downarrow}"); //used to verify that the input field is active
         getPreviewButton().click({force:true}); //click preview button
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
 
         //verify results content
         getPreviewTable()
