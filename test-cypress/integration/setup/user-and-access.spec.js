@@ -49,6 +49,12 @@ describe('User and Access', () => {
         createUser("second-admin", "pass", "#roleAdmin");
     });
 
+    it('Delete users', () => {
+        deleteUser("user");
+        deleteUser("repo-manager");
+        deleteUser("second-admin");
+    });
+
     function getCreateNewUserButton() {
         return cy.get('#wb-users-userCreateLink');
     }
@@ -113,6 +119,12 @@ describe('User and Access', () => {
             });
         }
         getConfirmUserCreateButton().click();
+    }
 
+    function deleteUser(username) {
+        cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
+            cy.get('.icon-trash').click();
+        })
+        cy.get('.confirm-btn').click();
     }
 });
