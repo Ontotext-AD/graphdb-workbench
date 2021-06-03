@@ -19,23 +19,6 @@ describe('User and Access', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    function getCreateNewUserButton() {
-        return cy.get('#wb-users-userCreateLink');
-    }
-
-    function getToggleSecuritySwitch() {
-        return cy.get('#toggle-security');
-    }
-
-    function getUsersTable() {
-        return cy.get('#wb-users-userInUsers');
-    }
-
-    function findUserInTable(username) {
-        return getUsersTable().find(`tbody .username:contains(${username})`)
-            .closest('tr').as('user');
-    }
-
     it('Initial state', () => {
         // Create new user button should be visible
         getCreateNewUserButton().should('be.visible');
@@ -59,4 +42,77 @@ describe('User and Access', () => {
         // Date created should be visible
         cy.get('@user').find('.date-created').should('be.visible');
     });
+
+    it('Create users of each type', () => {
+        createUser("user", "pass", "#roleUser");
+        createUser("repo-manager", "pass", "#roleRepoAdmin");
+        createUser("second-admin", "pass", "#roleAdmin");
+    });
+
+    function getCreateNewUserButton() {
+        return cy.get('#wb-users-userCreateLink');
+    }
+
+    function getToggleSecuritySwitch() {
+        return cy.get('#toggle-security');
+    }
+
+    function getUsersTable() {
+        return cy.get('#wb-users-userInUsers');
+    }
+
+    function findUserInTable(username) {
+        return getUsersTable().find(`tbody .username:contains(${username})`)
+            .closest('tr').as('user');
+    }
+
+    function getUsernameField() {
+        return cy.get('#wb-user-username');
+    }
+
+    function getPasswordField() {
+        return cy.get('#wb-user-password');
+    }
+
+    function getConfirmPasswordField() {
+        return cy.get('#wb-user-confirmpassword');
+    }
+
+    function getConfirmUserCreateButton() {
+        return cy.get('#wb-user-submit');
+    }
+
+    // function getRoleAdminRadioButton() {
+    //     return cy.get('#roleRepoAdmin');
+    // }
+    //
+    // function getRoleRepoManagerRadioButton() {
+    //     return cy.get('#roleRepoAdmin');
+    // }
+    //
+    // function getRoleUserRadioButton() {
+    //     return cy.get('#roleUser');
+    // }
+    function getRoleRadioButton(userRole) {
+        return cy.get(userRole);
+    }
+
+    function getRepoitoryRightsList() {
+        return cy.get('#user-repos');
+    }
+
+    function createUser(username, password, role) {
+        getCreateNewUserButton().click();
+        getUsernameField().type(username);
+        getPasswordField().type(password);
+        getConfirmPasswordField().type(password);
+        getRoleRadioButton(role).click();
+        if(role == "#roleUser") {
+            getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').within(() => {
+                cy.get('.write').click();
+            });
+        }
+        getConfirmUserCreateButton().click();
+
+    }
 });
