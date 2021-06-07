@@ -76,7 +76,7 @@ describe('User and Access', () => {
         cy.url().should('include', '/users');
         cy.get('.alert-danger').should('contain', 'You have no permission to access this functionality with your current credentials.');
         logout();
-        //login with admin
+        //login with the admin
         loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
