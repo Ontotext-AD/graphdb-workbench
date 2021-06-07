@@ -1,6 +1,11 @@
 describe('User and Access', () => {
 
     let repositoryId;
+    const PASSWORD = "password";
+    const ROLE_USER = "#roleUser";
+    const ROLE_REPO_MANAGER = "#roleRepoAdmin";
+    const ROLE_CUSTOM_ADMIN = "#roleAdmin";
+    const DEFAULT_ADMIN_PASSWORD = "root";
 
     before(() => {
         repositoryId = 'setup-repo' + Date.now();
@@ -23,9 +28,9 @@ describe('User and Access', () => {
         // Create new user button should be visible
         getCreateNewUserButton().should('be.visible');
         // Security should be disabled
-        getToggleSecuritySwitch().find('.security-switch-label').should('be.visible')
+        cy.get('#toggle-security').find('.security-switch-label').should('be.visible')
             .and('contain', 'Security is OFF');
-        getToggleSecuritySwitch().find('.switch:checkbox').should('not.be.checked');
+        cy.get('#toggle-security').find('.switch:checkbox').should('not.be.checked');
         // Only admin user should be created by default
         getUsersTable().find('tbody tr').should('have.length', 1);
         findUserInTable('admin');
@@ -44,15 +49,55 @@ describe('User and Access', () => {
     });
 
     it('Create users of each type', () => {
-        createUser("user", "pass", "#roleUser");
-        createUser("repo-manager", "pass", "#roleRepoAdmin");
-        createUser("second-admin", "pass", "#roleAdmin");
-    });
-
-    it('Delete users', () => {
+        //create a normal read/write user
+        createUser("user", PASSWORD, ROLE_USER);
+        getUsersTable().should('contain','user');
+        //enable security
+        getToggleSecuritySwitch().click();
+        //login with the user
+        loginWithUser("user", PASSWORD);
+        cy.url().should('include', '/users');
+        //verify permissions
+        cy.get('.alert-danger').should('contain', 'You have no permission to access this functionality with your current credentials.');
+        logout();
+        //login with admin
+        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        cy.get('.ot-splash').should('not.be.visible');
+        getUsersTable().should('be.visible');
+        //delete user
         deleteUser("user");
+        //create repository manager
+        createUser("repo-manager", PASSWORD, ROLE_REPO_MANAGER);
+        getUsersTable().should('contain','repo-manager');
+        logout();
+        //login with the repository manager
+        loginWithUser("repo-manager", PASSWORD);
+        //verify permissions
+        cy.url().should('include', '/users');
+        cy.get('.alert-danger').should('contain', 'You have no permission to access this functionality with your current credentials.');
+        logout();
+        //login with admin
+        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        cy.get('.ot-splash').should('not.be.visible');
+        getUsersTable().should('be.visible');
+        //delete repository manager
         deleteUser("repo-manager");
+        //create a custom admin
+        createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
+        getUsersTable().should('contain','second-admin');
+        logout();
+        //login with custom admin
+        loginWithUser("second-admin", PASSWORD);
+        cy.url().should('include', '/users');
+        logout();
+        //login with admin
+        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        cy.get('.ot-splash').should('not.be.visible');
+        getUsersTable().should('be.visible');
+        //delete custom admin
         deleteUser("second-admin");
+        //disable security
+        getToggleSecuritySwitch().click();
     });
 
     function getCreateNewUserButton() {
@@ -60,7 +105,7 @@ describe('User and Access', () => {
     }
 
     function getToggleSecuritySwitch() {
-        return cy.get('#toggle-security');
+        return cy.get('#toggle-security span.switch');
     }
 
     function getUsersTable() {
@@ -88,17 +133,6 @@ describe('User and Access', () => {
         return cy.get('#wb-user-submit');
     }
 
-    // function getRoleAdminRadioButton() {
-    //     return cy.get('#roleRepoAdmin');
-    // }
-    //
-    // function getRoleRepoManagerRadioButton() {
-    //     return cy.get('#roleRepoAdmin');
-    // }
-    //
-    // function getRoleUserRadioButton() {
-    //     return cy.get('#roleUser');
-    // }
     function getRoleRadioButton(userRole) {
         return cy.get(userRole);
     }
@@ -126,5 +160,20 @@ describe('User and Access', () => {
             cy.get('.icon-trash').click();
         })
         cy.get('.confirm-btn').click();
+    }
+
+    function loginWithUser(username, password) {
+        cy.get('#wb-login-username').type(username)
+        cy.get('#wb-login-password').type(password);
+        cy.get('#wb-login-submitLogin').click();
+    }
+
+    function logout() {
+        cy.get('#btnGroupDrop2').click();
+        cy.get('.dropdown-item')
+            .contains('Logout')
+            .closest('a')
+            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
+            .click({force: true});
     }
 });
