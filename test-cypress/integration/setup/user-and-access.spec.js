@@ -51,7 +51,6 @@ describe('User and Access', () => {
     it('Create users of each type', () => {
         //create a normal read/write user
         createUser("user", PASSWORD, ROLE_USER);
-        getUsersTable().should('contain','user');
         //enable security
         getToggleSecuritySwitch().click();
         //login with the user
@@ -68,7 +67,6 @@ describe('User and Access', () => {
         deleteUser("user");
         //create repository manager
         createUser("repo-manager", PASSWORD, ROLE_REPO_MANAGER);
-        getUsersTable().should('contain','repo-manager');
         logout();
         //login with the repository manager
         loginWithUser("repo-manager", PASSWORD);
@@ -84,7 +82,6 @@ describe('User and Access', () => {
         deleteUser("repo-manager");
         //create a custom admin
         createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
-        getUsersTable().should('contain','second-admin');
         logout();
         //login with custom admin
         loginWithUser("second-admin", PASSWORD);
@@ -147,12 +144,14 @@ describe('User and Access', () => {
         getPasswordField().type(password);
         getConfirmPasswordField().type(password);
         getRoleRadioButton(role).click();
-        if(role == "#roleUser") {
+        if(role === "#roleUser") {
             getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').within(() => {
                 cy.get('.write').click();
             });
         }
         getConfirmUserCreateButton().click();
+        cy.get('.ot-splash').should('not.be.visible');
+        getUsersTable().should('contain',username);
     }
 
     function deleteUser(username) {
