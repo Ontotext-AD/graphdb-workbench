@@ -130,7 +130,7 @@ describe('Similarity screen validation', () => {
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
             openEditQueryView(true);
-            getAnalogicalQueryTab().click();
+            getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
             verifyQueryIsChanged();
         });
 
@@ -259,13 +259,10 @@ describe('Similarity screen validation', () => {
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.waitUntilQueryIsVisible();
 
         // No active loader
-        cy.get('.ot-loader-new-content').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     function checkSimilarityPageDefaultState() {
@@ -385,14 +382,14 @@ describe('Similarity screen validation', () => {
         cy.get('.modal-title').should('be.visible').and('contain', 'View SPARQL Query');
         cy.get('.btn-primary').should('be.visible').and('contain', 'Copy to clipboard');
         cy.get('.close').click();
-        cy.get('.modal').should('not.be.visible');
-        cy.get('.modal-backdrop').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
+        cy.get('.modal-backdrop').should('not.exist');
     }
 
     function openEditQueryView(isPredication) {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
         // Open "Edit search query" view
-        cy.get('.edit-query-btn').click();
+        cy.get('.edit-query-btn').should('be.visible').click();
         // Verify that 'similarity-index-name' input field is disabled
         getSimilarity().should('be.disabled');
         getSearchQueryTab().should('be.visible');
@@ -408,18 +405,18 @@ describe('Similarity screen validation', () => {
 
         cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
-        cy.get('.sparql-loader').should('not.be.visible');
+        cy.get('.sparql-loader').should('not.exist');
         cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
         cy.get('.uri-cell').eq(0).should('contain', 'http://dbpedia.org/resource/Aaron_Jay_Kernis');
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().click();
+        getSearchQueryTab().scrollIntoView().should('be.visible').click();
         cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().click();
+        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
         cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 
@@ -440,7 +437,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getSaveEditedQueryButton() {
-        return cy.get('.save-query-btn');
+        return cy.get('.save-query-btn').scrollIntoView().should('be.visible');
     }
 
     function getSimilarity() {

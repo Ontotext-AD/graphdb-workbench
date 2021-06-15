@@ -31,6 +31,7 @@ describe('Repository commands test', () => {
             expect(response.body.id).to.equal(repoId);
             expect(response.body.params.ruleset.value).to.equal('owl-horst-optimized');
         });
+        cy.deleteRepository(repoId);
     });
 
     it('should delete repository via REST call', () => {

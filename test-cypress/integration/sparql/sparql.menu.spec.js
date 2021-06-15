@@ -101,7 +101,7 @@ describe('SPARQL screen validation', () => {
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryAreaAppear();
+        cy.waitUntilQueryIsVisible();
 
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
@@ -110,7 +110,7 @@ describe('SPARQL screen validation', () => {
         getTabs().find('.nav-link').should('be.visible');
 
         // No active loader
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     afterEach(() => {
@@ -761,7 +761,7 @@ describe('SPARQL screen validation', () => {
             '}';
 
         function waitUntilSavedQueryModalIsVisible() {
-            getModal().should('be.visible');
+            getModal().should('not.have.class', 'ng-animate').and('be.visible');
             getSavedQueryForm().should('be.visible');
             getSubmitSavedQueryBtn()
                 .should('be.visible')
@@ -792,7 +792,9 @@ describe('SPARQL screen validation', () => {
             // Press the pen icon to edit the custom query created earlier
             executeSavedQueryCommand(savedQueryName, EDIT_SAVED_QUERY_COMMAND);
 
-            getPopover().should('not.exist');
+            // Note that popover fades away, which in newer versions of cypress
+            // is considered that does not exist. All other checks will fail
+            cy.get('.popover').should('not.exist');
             waitUntilSavedQueryModalIsVisible();
 
             getSavedQueryNameField().should('have.value', savedQueryName);
@@ -834,7 +836,7 @@ describe('SPARQL screen validation', () => {
             // Confirm dialog
             confirmModal();
             getModal().should('not.exist');
-            getPopover().should('not.exist');
+            cy.get('.popover').should('not.exist');
 
             // Verify that the query is deleted
             openSavedQueriesPopup();
@@ -945,6 +947,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName) + '&owner=admin';
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -980,6 +983,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?name=&infer=true&sameAs=true&query=' + encodedQuery;
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -1057,7 +1061,7 @@ describe('SPARQL screen validation', () => {
 
     function executeQuery() {
         getRunQueryButton().click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getLoader() {
@@ -1094,12 +1098,13 @@ describe('SPARQL screen validation', () => {
     }
 
     function getModal() {
-        return cy.get('.modal').should('not.have.class', 'ng-animate');
+        return cy.get('.modal');
     }
 
     function confirmModal() {
         getModal()
             .should('be.visible')
+            .and('not.have.class', 'ng-animate')
             .find('.modal-footer')
             .should('be.visible')
             .find('.btn-primary')
@@ -1175,13 +1180,6 @@ describe('SPARQL screen validation', () => {
         });
     }
 
-    function waitUntilQueryAreaAppear() {
-        cy.waitUntil(() =>
-            getQueryArea()
-                .then(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
-    }
-
     function getQueryArea() {
         return cy.get('#queryEditor .CodeMirror');
     }
@@ -1216,7 +1214,7 @@ describe('SPARQL screen validation', () => {
 
     function goToPage(page) {
         getResultPages().contains(page).click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getResultFilterField() {
@@ -1344,7 +1342,6 @@ describe('SPARQL screen validation', () => {
         // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
             .trigger('mouseover', {force: true})
             .find('.actions-bar')
-            .should('be.visible')
             .find(commandSelector)
             .parent('.btn')
             // Cypress sometimes determines the element has 0x0 dimensions...

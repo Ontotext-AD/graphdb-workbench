@@ -20,6 +20,7 @@ describe('Graphs overview screen validation', () => {
         });
 
         cy.visit('/graphs');
+        cy.window();
         // Assume that page is loaded once the table has rendered all expected elements.
         verifyVisibleGraphsCount(10);
     });
@@ -55,7 +56,7 @@ describe('Graphs overview screen validation', () => {
 
     function confirmDelete() {
         cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
     }
 
     context('Test graphs overview pagination', () => {
@@ -69,11 +70,11 @@ describe('Graphs overview screen validation', () => {
         it('Should switch pages', () => {
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
-                .closest('li').should('be', 'active');
+                .closest('li').should('have.class', 'active');
             verifyGraphExistence('urn:11');
 
             selectPage(3).should('contain', '3')
-                .closest('li').should('be', 'active');
+                .closest('li').should('have.class', 'active');
             verifyGraphExistence('urn:21');
         });
     });

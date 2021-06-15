@@ -157,7 +157,7 @@ describe('Visual graph screen validation', () => {
 
             // Close side panel and verify it's missing
             getTargetNode().click();
-            getNodeInfoPanel().should('not.be.visible');
+            getNodeInfoPanel().should('not.exist');
         });
 
         it('Test remove child node', () => {
@@ -183,7 +183,7 @@ describe('Visual graph screen validation', () => {
             searchForResource(VALID_RESOURCE);
 
             // Verify that search bar isn't visible
-            getSearchField().should('not.be.visible');
+            getSearchField().should('not.exist');
             // Hover over node with the mouse
             getTargetNode().trigger('mouseover');
             // Select remove function for the parent node
@@ -466,7 +466,7 @@ describe('Visual graph screen validation', () => {
             cy.get('.include-schema-statements').should('be.checked');
             cy.get('.include-schema-statements').uncheck();
             saveSettings();
-            getPredicates().should('not.contain', 'type');
+            getPredicates().should('not.exist');
         });
     });
 
@@ -670,6 +670,6 @@ describe('Visual graph screen validation', () => {
 
     function confirmDelete() {
         cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
     }
 });

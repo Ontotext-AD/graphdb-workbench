@@ -12,7 +12,7 @@ class HomeSteps {
         }
 
         cy.get('.ot-splash').should('not.be.visible');
-        return cy.get('.ot-loader-new-content').should('not.be.visible');
+        return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     static verifyTutorialVisible(shouldBeVisible) {
@@ -21,7 +21,7 @@ class HomeSteps {
                 .should('be.visible');
         } else {
             cy.get('.tutorial-container')
-                .should('not.be.visible');
+                .should('not.exist');
         }
     }
 
@@ -40,7 +40,7 @@ class HomeSteps {
 
     static verifyQueryLink(queryName, modifiesRepoModal, queryURL) {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
-        modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.be.visible');
+        modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.exist');
         cy.url().should('eq', Cypress.config("baseUrl") + queryURL);
         HomeSteps.visitAndWaitLoader();
     }
@@ -124,7 +124,7 @@ class HomeSteps {
     }
 
     static verifyAutocompleteResourceLink(uri) {
-        cy.get('#results-loader.ot-loader').should('not.be.visible');
+        cy.get('#results-loader.ot-loader').should('not.exist');
         cy.get('.resource-info').should('be.visible').and("contain", uri);
     }
 
@@ -152,8 +152,8 @@ class HomeSteps {
 
     static doNotOpenRdfSearchBoxButFocusResourceSearch() {
         cy.get('.search-rdf-btn').click();
-        cy.get('.search-rdf-input').should('not.be.visible');
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.be.visible')
+        cy.get('.search-rdf-input').should('not.exist');
+        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.exist')
         cy.get('#search-resource-input-home > #search-resource-box > input').should('be.visible')
             .and('be.focused');
     }
