@@ -105,6 +105,25 @@ form div label.error {
     text-indent: 8px
 }
 
+#fedx-content {
+    width: 69%;
+}
+
+.form-group2 {
+    float: right;
+    width: 49%;
+    margin-bottom:1rem;
+}
+
+.form-group3 {
+    float: left;
+    width: 49%;
+}
+
+.boolOptions {
+    margin-bottom:10rem;
+}
+
 span.required {
     color: #D8000C
 }

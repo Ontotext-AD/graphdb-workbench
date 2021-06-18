@@ -1,0 +1,96 @@
+<div id="fedx-content" class="pt-1">
+    <div ng-show="getRepositories().length" class="mb-1">
+        <h4>Federation members</h4>
+        <table style="height:120px" class="table table-hover table-striped form-group3" aria-describedby="Repositories table">
+<!--            <div class="fedx-members" ng-repeat="repository in getMembers() | orderBy: ['type === \'system\'', 'id']">&ndash;&gt;-->
+<!--                <tr id={{repository.id}}-member class="repository">-->
+<!--                    <td>-->
+<!--                        <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">-->
+<!--                            <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>-->
+<!--                            <strong class="repository-id">{{repository.id}}</strong>-->
+<!--                        </div>-->
+<!--                    </td>-->
+                    <!--                <td width="100" class="text-nowrap repository-actions">-->
+                    <!--                    <span ng-show="getDegradedReason()">-->
+                    <!--										<em class="icon-warning icon-lg text-warning"-->
+                    <!--                                            tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."-->
+                    <!--                                            tooltip-placement="top" tooltip-trigger="mouseenter"></em>-->
+                    <!--									</span>-->
+                    <!--                    <span ng-hide="repository.type === 'system' || getDegradedReason()">-->
+                    <!--										<a class="btn btn-link p-0 edit-repository-btn"-->
+                    <!--                                           href="repository/edit/{{repository.id}}"-->
+                    <!--                                           tooltip="Edit repository"-->
+                    <!--                                           tooltip-placement="top"-->
+                    <!--                                           tooltip-trigger="mouseenter">-->
+                    <!--											<span class="icon-edit"></span>-->
+                    <!--										</a>-->
+                    <!--										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"-->
+                    <!--                                                tooltip="Delete repository"-->
+                    <!--                                                tooltip-placement="top"-->
+                    <!--                                                tooltip-trigger="mouseenter"-->
+                    <!--                                                ng-click="deleteRepository(repository.id)">-->
+                    <!--											<em class="icon-trash"></em>-->
+                    <!--										</button>-->
+                    <!--                    </span>-->
+<!--                    </td>-->
+<!--                </tr>-->
+
+<!--            </div>-->
+        </table>
+    </div>
+
+    <h5 class="form-group2"> Local repositories </h5>
+    <form class="form-local-repos form-group2 pre-scrollable">
+        <div ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']" id="{{repository.id}}"
+            ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
+            popover-trigger="mouseenter" popover-placement="left"
+            popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+            <a ng-click="addMember(repository.id)">
+                    <span class="multiline-text">
+                        <em ng-class="'icon-repo-' + repository.type"></em>
+                        {{repository.id}} <br/>
+                    </span>
+            </a>
+        </div>
+    </form>
+    <button class="form-group2"> Add remote repository </button>
+
+    <h4>FedX options</h4>
+    <div class="boolOptions">
+        <div ng-repeat="boolParam in optionsOfTypeBool" class="form-group3 checkbox">
+            <label id="{{boolParam}}-label" for="{{boolParam}}" class="indented-div col-lg-6 col-form-label">
+                <input id="{{boolParam}}" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
+                   ng-model="repositoryInfo.params[boolParam].value"/>
+                   {{repositoryInfo.params[boolParam].label}} </label>
+        </div>
+    </div>
+    <div class = "intOptions">
+        <div ng-repeat="param in optionsOfTypeInt" class="form-group2 row indented-div">
+            <label for="{{param}}" class="offset-xs-0 col-md-3 col-lg-5 col-form-label">
+                {{repositoryInfo.params[param].label}}</label>
+            <div class="col-xs-10 col-md-30 col-lg-3">
+                <input class="form-control" id="{{param}}" type="number" step="1"
+                       ng-model="repositoryInfo.params[param].value"/>
+            </div>
+        </div>
+    </div>
+
+
+    <!--    <div class="form-group row indented-div">-->
+<!--        <label-->
+<!--            class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>-->
+<!--        <div class="col-xs-3 col-md-2" tooltip="{{repoTooltips.queryTimeout}}">-->
+<!--            <input class="form-control" id="queryTimeout" type="number" step="1"-->
+<!--                   ng-model="repositoryInfo.params.queryTimeout.value"-->
+<!--                   ng-change="validateNumberInput()"/>-->
+<!--        </div>-->
+<!--        <div class="checkbox offset-xs-3 offset-md-2">-->
+<!--            <label class="padding-label col-form-label" tooltip="{{repoTooltips.throwQueryEvaluationExceptionOnTimeout}}">-->
+<!--                <input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox"-->
+<!--                       ng-true-value="'true'" ng-false-value="'false'"-->
+<!--                       ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>-->
+<!--                {{repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.label}}-->
+<!--            </label>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>

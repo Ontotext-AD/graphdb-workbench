@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="form-group row"
-                         ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
+                         ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop' && repositoryInfo.type != 'fedx'">
                         <div class="checkbox offset-md-3 offset-lg-2">
                             <label class="padding-label" tooltip="{{repoTooltips.readOnly}}">
                                 <input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
@@ -49,8 +49,11 @@
                     <!-- Ontop repository related directive -->
                     <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
 
+                    <!-- FedX repository related directive -->
+                    <fedx-repo ng-if="repositoryInfo.type === 'fedx'"></fedx-repo>
+
                     <div id="additionalParams" class="pt-1"
-                         ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop'">
+                         ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop' && repositoryInfo.type != 'fedx'">
                         <h5>Inference and Validation</h5>
                         <div class="form-group row indented-div">
                             <label for="ruleset" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
@@ -126,100 +129,6 @@
                                         SHACL options
                                     </button>
                                 </label>
-                            </div>
-                        </div>
-                        <div ng-if="repositoryInfo.params.isShacl.value === 'true'" id="shaclOptions" class="collapse pb-1">
-                            <div class="row">
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" tooltip="{{repoTooltips.shaclOptions.cacheSelectNodes}}">
-                                        <input id="cacheSelectNodes" name="cacheSelectNodes" type="checkbox"
-                                               ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
-                                        {{repositoryInfo.params.cacheSelectNodes.label}}
-                                    </label>
-                                </div>
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.undefinedTargetValidatesAllSubjects}}">
-                                        <input id="undefinedTargetValidatesAllSubjects"
-                                               name="undefinedTargetValidatesAllSubjects" type="checkbox"
-                                               ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.undefinedTargetValidatesAllSubjects.value"/>
-                                        {{repositoryInfo.params.undefinedTargetValidatesAllSubjects.label}}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4"
-                                           tooltip="{{repoTooltips.shaclOptions.logValidationPlans}}">
-                                        <input id="logValidationPlans" name="logValidationPlans" type="checkbox"
-                                               ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.logValidationPlans.value"/>
-                                        {{repositoryInfo.params.logValidationPlans.label}}
-                                    </label>
-                                </div>
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.logValidationViolations}}">
-                                        <input id="logValidationViolations" name="logValidationViolations"
-                                               type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.logValidationViolations.value"/>
-                                        {{repositoryInfo.params.logValidationViolations.label}}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" tooltip="{{repoTooltips.shaclOptions.parallelValidation}}">
-                                        <input id="parallelValidation" name="parallelValidation" type="checkbox"
-                                               ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.parallelValidation.value"/>
-                                        {{repositoryInfo.params.parallelValidation.label}}
-                                    </label>
-                                </div>
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.globalLogValidationExecution}}">
-                                        <input id="globalLogValidationExecution" name="globalLogValidationExecution"
-                                               type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
-                                        {{repositoryInfo.params.globalLogValidationExecution.label}}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4"
-                                           tooltip="{{repoTooltips.shaclOptions.performanceLogging}}">
-                                        <input id="performanceLogging" name="performanceLogging" type="checkbox"
-                                               ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.performanceLogging.value"/>
-                                        {{repositoryInfo.params.performanceLogging.label}}
-                                    </label>
-                                </div>
-                                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions}}">
-                                        <input id="eclipseRdf4jShaclExtensions" name="eclipseRdf4jShaclExtensions"
-                                               type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
-                                               ng-model="repositoryInfo.params.eclipseRdf4jShaclExtensions.value"/>
-                                        {{repositoryInfo.params.eclipseRdf4jShaclExtensions.label}}
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="row">
-                                    <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                        <label class="col-lg-4"
-                                               tooltip="{{repoTooltips.shaclOptions.dashDataShapes}}">
-                                            <input id="dashDataShapes" name="dashDataShapes" type="checkbox"
-                                                   ng-true-value="'true'" ng-false-value="'false'"
-                                                   ng-model="repositoryInfo.params.dashDataShapes.value"/>
-                                            {{repositoryInfo.params.dashDataShapes.label}}
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <h5>Indexing</h5>
