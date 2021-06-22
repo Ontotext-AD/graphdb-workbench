@@ -56,12 +56,15 @@
 								<td width="25">
 									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-click="setRepository(repository.id)"
-										  ng-if="getActiveRepository() !== repository.id"
+										  ng-if="getActiveRepository() !== repository.id && isRepositoryTypeSupported(repository)"
 										  data-repository-id="{{repository.id}}"></span>
 									<span role="button" class="icon-connection-on icon-lg text-tertiary"
 										  tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-if="getActiveRepository() === repository.id"></span>
-								</td>
+                                    <span class="small" ng-if="!isRepositoryTypeSupported(repository)"
+                                          tooltip-html-unsafe="{{generateUnsupportedTooltip(repository)}}" tooltip-placement="top" tooltip-trigger="mouseenter">
+                                        <small><em class="icon-warning icon-2x"></em></small></span>
+                                </td>
 								<td>
 									<div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
 										<span popover-popup-delay="500"
@@ -76,7 +79,8 @@
 								<td width="150" class="text-nowrap repository-actions">
 									<button class="btn btn-link p-0"
 											ng-click="copyToClipboard(repository.externalUrl)"
-											tooltip="Copy repository URL to clipboard">
+											tooltip="Copy repository URL to clipboard"
+                                            ng-if="isRepositoryTypeSupported(repository)">
 										<span class="icon-link"></span>
 									</button>
 									<span ng-show="getDegradedReason()">
@@ -85,14 +89,17 @@
 											tooltip-placement="top" tooltip-trigger="mouseenter"></em>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
-										<a class="btn btn-link p-0 edit-repository-btn"
+										<a ng-if="isRepositoryTypeSupported(repository)"
+                                            class="btn btn-link p-0 edit-repository-btn"
 											href="repository/edit/{{repository.id}}"
 											tooltip="Edit repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter">
 											<span class="icon-edit"></span>
 										</a>
-										<a class="btn btn-link p-0 download-turtle-config download-repository-config-btn" ng-href="{{getRepositoryDownloadLink(repository)}}"
+										<a ng-if="isRepositoryTypeSupported(repository)"
+                                                class="btn btn-link p-0 download-turtle-config download-repository-config-btn"
+                                                ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                 rel="noopener"
 												target="_blank"
 												tooltip="Download repository configuration as Turtle"
@@ -100,11 +107,12 @@
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
-                                        <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                           tooltip="Restart repository {{repository.id}}"
-                                           tooltip-placement="top"
-                                           tooltip-trigger="mouseenter"
-                                           ng-click="restartRepository(repository.id)">
+                                        <button ng-if="isRepositoryTypeSupported(repository)"
+                                            class="btn btn-link p-0 restart-repository-btn" type="button"
+                                            tooltip="Restart repository {{repository.id}}"
+                                            tooltip-placement="top"
+                                            tooltip-trigger="mouseenter"
+                                            ng-click="restartRepository(repository.id)">
 												<span class="icon-reload"></span>
 										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
@@ -117,12 +125,13 @@
 									</span>
 								</td>
 								<td width="50">
-									<button class="btn btn-link p-0 pin-repository-btn" ng-hide="repository.type === 'system'"
-										ng-click="toggleDefaultRepository(repository.id)"
-										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
-										tooltip="Set as default repository">
-										<em class="icon-pin"></em>
-									</button>
+                                    <button class="btn btn-link p-0 pin-repository-btn"
+                                            ng-hide="repository.type === 'system' || !isRepositoryTypeSupported(repository)"
+                                            ng-click="toggleDefaultRepository(repository.id)"
+                                            ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
+                                            tooltip="Set as default repository">
+                                        <em class="icon-pin"></em>
+                                    </button>
 								</td>
 							</tr>
 						</tbody>

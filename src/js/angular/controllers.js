@@ -12,6 +12,7 @@ import 'angular/core/services/repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/autocomplete-status.service';
+import {REPO_TOOLTIPS} from "./repositories/repository.constants";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -431,6 +432,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.setPopoverRepo = function (repository) {
         $scope.popoverRepo = repository;
     };
+
+    $scope.isRepositoryTypeSupported = function (repository) {
+        return 'UNSUPPORTED' !== repository.state;
+    };
+
+    $scope.generateUnsupportedTooltip = function (repository) {
+        return REPO_TOOLTIPS.unsupportedRepoType.replace('{{repo_type}}', repository.sesameType);
+    }
 
     $scope.getRepositorySize = function () {
         $scope.repositorySize = {};

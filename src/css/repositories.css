@@ -337,3 +337,7 @@ span.label {
     position: relative;
     z-index: -1;
 }
+
+.repository-actions {
+    text-align: right;
+}
