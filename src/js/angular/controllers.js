@@ -433,7 +433,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.popoverRepo = repository;
     };
 
-    $scope.isRepositoryTypeSupported = function (repository) {
+    $scope.isRepoStateSupported = function (repository) {
         return 'UNSUPPORTED' !== repository.state;
     };
 

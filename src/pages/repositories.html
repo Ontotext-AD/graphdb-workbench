@@ -56,12 +56,12 @@
 								<td width="25">
 									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-click="setRepository(repository.id)"
-										  ng-if="getActiveRepository() !== repository.id && isRepositoryTypeSupported(repository)"
+										  ng-if="getActiveRepository() !== repository.id && isRepoStateSupported(repository)"
 										  data-repository-id="{{repository.id}}"></span>
 									<span role="button" class="icon-connection-on icon-lg text-tertiary"
 										  tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
-										  ng-if="getActiveRepository() === repository.id"></span>
-                                    <span class="small" ng-if="!isRepositoryTypeSupported(repository)"
+										  ng-if="getActiveRepository() === repository.id && isRepoStateSupported(repository)"></span>
+                                    <span class="small" ng-if="!isRepoStateSupported(repository)"
                                           tooltip-html-unsafe="{{generateUnsupportedTooltip(repository)}}" tooltip-placement="top" tooltip-trigger="mouseenter">
                                         <small><em class="icon-warning icon-2x"></em></small></span>
                                 </td>
@@ -80,7 +80,7 @@
 									<button class="btn btn-link p-0"
 											ng-click="copyToClipboard(repository.externalUrl)"
 											tooltip="Copy repository URL to clipboard"
-                                            ng-if="isRepositoryTypeSupported(repository)">
+                                            ng-if="isRepoStateSupported(repository)">
 										<span class="icon-link"></span>
 									</button>
 									<span ng-show="getDegradedReason()">
@@ -89,7 +89,7 @@
 											tooltip-placement="top" tooltip-trigger="mouseenter"></em>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
-										<a ng-if="isRepositoryTypeSupported(repository)"
+										<a ng-if="isRepoStateSupported(repository)"
                                             class="btn btn-link p-0 edit-repository-btn"
 											href="repository/edit/{{repository.id}}"
 											tooltip="Edit repository"
@@ -97,7 +97,7 @@
 											tooltip-trigger="mouseenter">
 											<span class="icon-edit"></span>
 										</a>
-										<a ng-if="isRepositoryTypeSupported(repository)"
+										<a ng-if="isRepoStateSupported(repository)"
                                                 class="btn btn-link p-0 download-turtle-config download-repository-config-btn"
                                                 ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                 rel="noopener"
@@ -107,7 +107,7 @@
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
-                                        <button ng-if="isRepositoryTypeSupported(repository)"
+                                        <button ng-if="isRepoStateSupported(repository)"
                                             class="btn btn-link p-0 restart-repository-btn" type="button"
                                             tooltip="Restart repository {{repository.id}}"
                                             tooltip-placement="top"
@@ -126,7 +126,7 @@
 								</td>
 								<td width="50">
                                     <button class="btn btn-link p-0 pin-repository-btn"
-                                            ng-hide="repository.type === 'system' || !isRepositoryTypeSupported(repository)"
+                                            ng-hide="repository.type === 'system' || !isRepoStateSupported(repository)"
                                             ng-click="toggleDefaultRepository(repository.id)"
                                             ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
                                             tooltip="Set as default repository">
