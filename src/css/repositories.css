@@ -109,10 +109,52 @@ form div label.error {
     width: 69%;
 }
 
+#fedx-members {
+    overflow: auto;
+}
+#fedx-options {
+    overflow: hidden;
+}
+
+.form-local-repos {
+    border: 1px solid;
+    border-radius: 10px;
+    width:70%;
+    height:8rem;
+    font-size: 1.3em;
+}
+
+.form-repo-members {
+    font-size: 1.3em;
+}
+
 .form-group2 {
     float: right;
     width: 49%;
     margin-bottom:1rem;
+}
+
+.table-fedx {
+    display: none;
+    overflow-y: scroll;
+    height: 10rem;
+    width: 80%;
+}
+
+.fedx-no-members-message {
+    color: #C4781E;
+    background-color: #FCF8E3;
+    display: block;
+    height: 4rem;
+    border-radius: 1rem;
+    text-align: center;
+    padding: 1em;
+}
+
+.tbody-fedx {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .form-group3 {
@@ -121,7 +163,8 @@ form div label.error {
 }
 
 .boolOptions {
-    margin-bottom:10rem;
+    margin-bottom:1rem;
+    overflow:auto;
 }
 
 span.required {

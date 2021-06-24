@@ -1,0 +1,53 @@
+<!-- Start addFedXRepository.html -->
+<div class="modal-header">
+    <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
+    </button>
+    <h3 class="modal-title">Add remote repository</h3>
+</div>
+<form id="addFedXRepositoryForm" novalidate name="form">
+    <div class="modal-body">
+        <input type="radio" name="remote_repo_type" ng-model="remote_repo_type" ng-disabled="model.editRepoPage" id="graphdb-server" value="graphdb-server">
+        <label for="graphdb-server">GraphDB/RDF4J server</label>
+        <input type="radio" name="remote_repo_type" ng-model="remote_repo_type" ng-disabled="model.editRepoPage" id="sparql-endpoint" value="sparql-endpoint">
+        <label for="sparql-endpoint">Generic SPARQL endpoint</label>
+        <div ng-show="remote_repo_type == 'graphdb-server';">
+            <div class="form-group row">
+                <label for="server-url" class="col-lg-3 col-form-label">Server URL*:</label>
+                <input name="serverurl" ng-model="serverurl" type="text" id="server-url" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!sparqlendpoint'>
+            </div>
+            <div class="form-group row">
+                <label for="repository-id" class="col-lg-3 col-form-label">Repository ID*:</label>
+                <input name="repoid" ng-model="repoid" type="text" id="repository-id" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!sparqlendpoint'>
+            </div>
+        </div>
+        <div ng-show="remote_repo_type == 'sparql-endpoint'">
+            <div class="form-group row">
+                <label for="url-endpoint" class="col-lg-3 col-form-label">Endpoint URL*:</label>
+                <input name="sparqlendpoint" ng-model="sparqlendpoint" type="text" id="url-endpoint" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!serverurl' ng-required='!repoid'>
+            </div>
+            <div class="form-group row indented-div">
+                <label for="ask-queries" class="col-lg-7 offset-xs-2">
+                    <input type="checkbox" id="ask-queries">  Supports ASK queries
+                </label>
+            </div>
+        </div>
+        <div id="auth-credentials">
+            <p> <strong>Authentication credentials</strong> </p>
+            <div id="username" class="form-group row indented-div">
+                <label for="username-credentials" class=" col-lg-3 col-form-label">Username:</label>
+                <input type="text" id="username-credentials" class="col-lg-8">
+            </div>
+            <div id="password" class="form-group row indented-div">
+                <label for="password-credentials" class="col-lg-3 col-form-label">Password:</label>
+                <input type="text" id="password-credentials" class="col-lg-8">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" ng-click="ok();" class="btn btn-primary"
+                ng-disabled="form.$invalid"> Add
+        </button>
+        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+<!-- End addFedXRepository.html -->
