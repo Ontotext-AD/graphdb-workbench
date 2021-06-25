@@ -17,5 +17,7 @@ Cypress.Commands.add('setDefaultUserData', () => {
                 appSettings: defaultUserSettings
             }
         }
-    }).should((response) => expect(response.status).to.equal(200));
+    }).then((response) => {
+        cy.waitUntil(() => response && response.status === 200); // 201 Created
+    });
 });

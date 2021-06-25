@@ -130,8 +130,13 @@ describe('Similarity screen validation', () => {
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
             openEditQueryView(true);
-            getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
-            verifyQueryIsChanged();
+            getAnalogicalQueryTab()
+                .scrollIntoView()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    verifyQueryIsChanged();
+                });
         });
 
         it('Clone existing similarity index', () => {

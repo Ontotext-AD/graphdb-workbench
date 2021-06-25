@@ -263,7 +263,6 @@ describe('My Settings', () => {
     function verifyUserSettingsUpdated() {
         cy.waitUntil(() =>
             cy.get('#toast-container')
-                .find('.toast-success')
                 .find('.toast-message')
                 .then(msg => msg && msg.text().indexOf('The user admin was updated') !== -1));
     }
