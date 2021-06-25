@@ -261,10 +261,11 @@ describe('My Settings', () => {
     }
 
     function verifyUserSettingsUpdated() {
-        cy.waitUntil(() =>
-            cy.get('#toast-container')
-                .find('.toast-message')
-                .then(msg => msg && msg.text().indexOf('The user admin was updated') !== -1));
+        cy.get('#toast-container')
+            .find('.toast-success')
+            .find('.toast-message')
+            .should('be.visible')
+            .and('contain', 'The user admin was updated');
     }
 
     function saveGraphSettings() {

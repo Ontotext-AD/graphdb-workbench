@@ -27,10 +27,14 @@ Cypress.Commands.add('deleteRepository', (id) => {
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
+    console.log("passed repo Id: " + id);
     cy.setLocalStorage(PRESET_REPO, id);
     cy.waitUntil(() =>
         cy.getLocalStorage(PRESET_REPO)
-            .then((preset) => preset && preset === id));
+            .then((preset) => {
+                console.log("repo Id: " + preset);
+                return preset && preset === id;
+            }));
 });
 
 /**

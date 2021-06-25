@@ -191,7 +191,11 @@ describe('Similarity screen validation', () => {
     it('Disable and enable similarity plugin', () => {
         initRepository();
 
-        cy.visit('/sparql');
+        cy.visit('/sparql', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
         cy.window();
         waitUntilSparqlPageIsLoaded();
 
@@ -227,13 +231,16 @@ describe('Similarity screen validation', () => {
     function initRepository() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     }
 
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
-        cy.visit('/similarity');
+        cy.visit('/similarity', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
         cy.window()
             .then(() => getExistingIndexesPanel());
     }
