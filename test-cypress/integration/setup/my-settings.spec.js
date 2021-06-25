@@ -262,8 +262,6 @@ describe('My Settings', () => {
 
     function verifyUserSettingsUpdated() {
         cy.get('#toast-container')
-            .find('.toast-success')
-            .find('.toast-message')
             .should('be.visible')
             .and('contain', 'The user admin was updated');
     }

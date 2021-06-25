@@ -399,7 +399,7 @@ describe('Similarity screen validation', () => {
     }
 
     function openEditQueryView(isPredication) {
-        cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
         // Open "Edit search query" view
         cy.get('.edit-query-btn').should('be.visible').click();
         // Verify that 'similarity-index-name' input field is disabled
@@ -467,9 +467,5 @@ describe('Similarity screen validation', () => {
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
         cy.verifyQueryAreaContains(query);
-    }
-
-    function getToast() {
-        return cy.get('#toast-container');
     }
 });
