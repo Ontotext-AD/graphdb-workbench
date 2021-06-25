@@ -13,17 +13,17 @@
         <div ng-show="remote_repo_type == 'graphdb-server';">
             <div class="form-group row">
                 <label for="server-url" class="col-lg-3 col-form-label">Server URL*:</label>
-                <input name="serverurl" ng-model="serverurl" type="text" id="server-url" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!sparqlendpoint'>
+                <input name="serverurl" ng-model="model.serverurl" type="text" id="server-url" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.sparqlendpoint'>
             </div>
             <div class="form-group row">
                 <label for="repository-id" class="col-lg-3 col-form-label">Repository ID*:</label>
-                <input name="repoid" ng-model="repoid" type="text" id="repository-id" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!sparqlendpoint'>
+                <input name="repoid" ng-model="model.repoid" type="text" id="repository-id" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.sparqlendpoint'>
             </div>
         </div>
         <div ng-show="remote_repo_type == 'sparql-endpoint'">
             <div class="form-group row">
                 <label for="url-endpoint" class="col-lg-3 col-form-label">Endpoint URL*:</label>
-                <input name="sparqlendpoint" ng-model="sparqlendpoint" type="text" id="url-endpoint" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!serverurl' ng-required='!repoid'>
+                <input name="sparqlendpoint" ng-model="model.sparqlendpoint" type="text" id="url-endpoint" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.serverurl' ng-required='!model.repoid'>
             </div>
             <div class="form-group row indented-div">
                 <label for="ask-queries" class="col-lg-7 offset-xs-2">
@@ -39,7 +39,7 @@
             </div>
             <div id="password" class="form-group row indented-div">
                 <label for="password-credentials" class="col-lg-3 col-form-label">Password:</label>
-                <input type="text" id="password-credentials" class="col-lg-8">
+                <input type="password" id="password-credentials" class="col-lg-8">
             </div>
         </div>
     </div>

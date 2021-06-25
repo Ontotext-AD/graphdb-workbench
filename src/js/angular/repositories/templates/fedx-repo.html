@@ -10,7 +10,7 @@
         <h8> Local repositories </h8>
         <div class = "form-group2">
             <form class="form-local-repos pre-scrollable">
-                <div ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']" style="display:block" id="{{repository.id}}-member" class = "fedXMember">
+                <div ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']" style="display:block" id="{{repository.id}}" class = "fedXMember">
                     <a ng-click="addMember(repository.id, repository.type)" id="{{repository.id}}-a">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>

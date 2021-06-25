@@ -43,7 +43,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             var elements = Array.from(document.querySelector('.pt-1').querySelector('.form-local-repos').childNodes);
             var elIndex = -1;
             for (let i = 0; i < elements.length; ++i) {
-                if (elements[i].id === repositoryId + "-member") {
+                if (elements[i].id === repositoryId) {
                     elIndex = i;
                     break;
                 }
@@ -88,9 +88,14 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
             var writableBtn = document.createElement('btn');
             writableBtn.setAttribute("class", "btn btn-link p-0 secondary");
+
+            // workaround
+            writableBtn.id=repositoryId + "-toWrite";
+            // workaround
+
             var writableIcon = document.createElement("span");
             writableIcon.setAttribute("class", "icon-import");
-            writableBtn.appendChild(writableIcon);
+            writableIcon.id=repositoryId + "-icon";
             writableBtn.style.float = "right";
 
             if (repositoryType !== 'graphdb-server' && repositoryType !== 'sparql-endpoint') {
@@ -121,6 +126,9 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     document.querySelector('.pt-1').querySelector('.form-local-repos').appendChild(nodeToDel);
                 }
                 repoMembers.removeChild(newMemberTr);
+                if (nodeToAdd.id === $scope.writableRepository) {
+                    $scope.writableRepository = null;
+                }
                 $scope.fedxMembersNum--;
 
                 if ($scope.fedxMembersNum === 0) {
@@ -130,23 +138,28 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             })
 
             editBtn.addEventListener('click', (event) => {
-                if (repositoryType !== 'graphdb-server' && repositoryType !== 'sparql-endpoint') {
+                if (repositoryType === 'graphdb-server' || repositoryType === 'sparql-endpoint') {
                     $scope.editFedXRepository(repositoryType);
+                } else {
+                    $scope.editLocalFedXRepository()
                 }
             })
             writableBtn.addEventListener('click', (event) => {
                 if ($scope.writableRepository) {
-                    var newWritableIcon = document.createElement("span");
-                    newWritableIcon.setAttribute("class", "icon-import");
-                    $scope.writableRepository.childNodes[1].replaceChild(newWritableIcon, $scope.writableRepository.childNodes[1].firstChild)
+                    var currWritableId = $scope.writableRepository;
+                    document.getElementById(currWritableId + "-icon").removeAttribute('style');
+                    // var newWritableIcon = document.createElement("span");
+                    // newWritableIcon.setAttribute("class", "icon-import");
+                    // currBtn.appendChild(newWritableIcon);
+                    // currBtn.removeChild(currBtn.firstChild);
+                    // $scope.writableRepository.childNodes[1].replaceChild(newWritableIcon, $scope.writableRepository.childNodes[1].firstChild)
                 }
 
-                writableBtn.removeChild(writableIcon);
                 writableIcon.style.color="#11b0a1";
-                writableBtn.appendChild(writableIcon);
-                $scope.writableRepository = nodeToAdd;
+                $scope.writableRepository = repositoryId;
             })
 
+            writableBtn.appendChild(writableIcon);
             nodeToAdd.appendChild(writableBtn);
             nodeToAdd.appendChild(closeBtn);
             nodeToAdd.appendChild(editBtn);
@@ -159,25 +172,43 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
         $scope.addFedXRepository = function () {
             $scope.model = {
-                'editRepoPage': false
+                'editRepoPage': false,
+                'repoid' : "",
+                'serverurl' : "",
+                'sparqlendpoint' : ""
+
             }
             $scope.remote_repo_type = 'graphdb-server';
             $scope.$modalInstance = $modal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope,
-                controller: 'AddRepositoryCtrl',
+                controller: 'AddRepositoryCtrl'
+            });
+        };
+
+        $scope.editLocalFedXRepository = function () {
+            $scope.access_rights = "respect_access";
+
+            $scope.$modalInstance = $modal.open({
+                templateUrl: 'js/angular/templates/modal/edit-fedx-local-repo.html',
+                scope: $scope,
+                controller: 'AddRepositoryCtrl'
             });
         };
 
         $scope.editFedXRepository = function (repositoryType) {
             $scope.model = {
                 'editRepoPage': true,
+                'repoid' : $scope.repoid,
+                'serverurl' : $scope.serverurl,
+                'sparqlendpoint' : $scope.sparqlendpoint
             }
             $scope.remote_repo_type = repositoryType;
+
             $scope.$modalInstance = $modal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope,
-                controller: 'AddRepositoryCtrl',
+                controller: 'AddRepositoryCtrl'
             });
         };
 
@@ -190,8 +221,11 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             var repoId = document.querySelector('#addFedXRepositoryForm').querySelector('#repository-id').value
             var endpointUrl = document.querySelector('#addFedXRepositoryForm').querySelector('#url-endpoint').value
             if (serverUrl && repoId) {
+                $scope.repoid = repoId;
+                $scope.serverurl = serverUrl;
                 $scope.addMember(repoId + '@' + serverUrl, 'graphdb-server');
             } else {
+                $scope.sparqlendpoint = endpointUrl;
                 $scope.addMember(endpointUrl, 'sparql-endpoint');
             }
         };
