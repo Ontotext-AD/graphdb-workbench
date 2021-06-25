@@ -2,7 +2,6 @@ import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 
 const UPLOAD_URL = '/rest/data/import/upload/';
 const SERVER_IMPORT_URL = '/rest/data/import/server/';
-const POLL_INTERVAL = 200;
 
 Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}) => {
     const importData = Cypress._.defaultsDeep(importSettings, snippetImportTemplate);
@@ -31,15 +30,12 @@ Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings
 });
 
 function waitServerOperation(url, repositoryId, fileName) {
-    cy.request({
-        method: 'GET',
-        url: url + repositoryId,
-    }).then((response) => {
-        const importStatus = Cypress._.find(response.body, (importStatus) => importStatus.name === fileName);
-        if (importStatus.status === 'DONE') {
-            return;
-        }
-        cy.wait(POLL_INTERVAL);
-        waitServerOperation(url, repositoryId, fileName);
-    });
+    cy.waitUntil(() =>
+        cy.request({
+            method: 'GET',
+            url: url + repositoryId,
+        }).then((response) => {
+            const importStatus = Cypress._.find(response.body, (importStatus) => importStatus.name === fileName);
+            return importStatus.status === 'DONE';
+        }));
 }
