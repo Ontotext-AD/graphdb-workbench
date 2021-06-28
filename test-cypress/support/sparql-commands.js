@@ -55,7 +55,11 @@ function verifyQueryAreaContains(query) {
     // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
     cy.waitUntil(() =>
         getQueryArea()
-            .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().includes(query)));
+            .then(codeMirrorEl => {
+                const cm = codeMirrorEl[0].CodeMirror;
+                console.log('Savata ' + cm.getValue());
+                return cm && cm.getValue().includes(query);
+            }));
 }
 
 function getRunQueryButton() {

@@ -116,6 +116,7 @@ describe('My Settings', () => {
         // will happen after successful save
         getSaveButton().click()
             .then(() => {
+                verifyUserSettingsUpdated();
                 //Go to SPARQL editor and verify changes are persisted for the admin user
                 cy.visit('/sparql');
                 cy.window();
@@ -152,7 +153,7 @@ describe('My Settings', () => {
                                 .should('be.visible')
                                 .find('.results-info .text-xs-right')
                                 .find('.results-description')
-                                .then(result => result && result.text().indexOf('Showing results from 1 to 1,000 of at least 1,001') > -1));
+                                .then(result => result && result.text().indexOf('Showing results from 1 to ') > -1));
                     });
 
                 //return to My Settings to revert the changes
@@ -168,7 +169,10 @@ describe('My Settings', () => {
                             .should('be.visible')
                             .and('be.checked');
                     });
-                getSaveButton().click();
+                getSaveButton().click()
+                    .then(() => {
+                    verifyUserSettingsUpdated();
+                });
             });
 
     });
@@ -244,8 +248,15 @@ describe('My Settings', () => {
         cy.waitUntil(() =>
             cy.get('#queryEditor #yasqe_buttons')
                 .find('#buttons')
-                .then(buttons =>
-                    buttons && buttons.length > 0));
+                .then(buttons => buttons && buttons.length > 0));
+    }
+
+    function verifyUserSettingsUpdated() {
+        cy.get('#toast-container')
+            .find('.toast.toast-success')
+            .find('.toast-message')
+            .should('be.visible')
+            .and('contain', 'The user admin was updated');
     }
 
     function saveGraphSettings() {
