@@ -116,7 +116,6 @@ describe('My Settings', () => {
         // will happen after successful save
         getSaveButton().click()
             .then(() => {
-                verifyUserSettingsUpdated();
                 //Go to SPARQL editor and verify changes are persisted for the admin user
                 cy.visit('/sparql');
                 cy.window();
@@ -169,10 +168,7 @@ describe('My Settings', () => {
                             .should('be.visible')
                             .and('be.checked');
                     });
-                getSaveButton().click()
-                    .then(() => {
-                        verifyUserSettingsUpdated();
-                    });
+                getSaveButton().click();
             });
 
     });
@@ -230,10 +226,7 @@ describe('My Settings', () => {
                         .then(input => input && input.attr('checked')));
             });
         getSaveButton()
-            .click()
-            .then(() => {
-                verifyUserSettingsUpdated();
-            });
+            .click();
     });
 
     function getUserRepositoryTable() {
@@ -262,6 +255,8 @@ describe('My Settings', () => {
 
     function verifyUserSettingsUpdated() {
         cy.get('#toast-container')
+            .find('.toast.toast-success')
+            .find('.toast-message')
             .should('be.visible')
             .and('contain', 'The user admin was updated');
     }

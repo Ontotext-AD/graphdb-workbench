@@ -117,6 +117,7 @@ describe('Similarity screen validation', () => {
             openEditQueryView();
             changeSearchQuery();
             getSaveEditedQueryButton().click();
+            getExistingIndexesPanel();
             openEditQueryView();
             verifyQueryIsChanged();
         });
@@ -129,6 +130,7 @@ describe('Similarity screen validation', () => {
             openEditQueryView(true);
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
+            getExistingIndexesPanel();
             openEditQueryView(true);
             getAnalogicalQueryTab()
                 .scrollIntoView()
