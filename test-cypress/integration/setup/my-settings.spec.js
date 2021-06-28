@@ -196,11 +196,7 @@ describe('My Settings', () => {
                 .should('not.be.visible');
         });
 
-        getSaveButton()
-            .click()
-            .then(() => {
-                verifyUserSettingsUpdated();
-            });
+        getSaveButton().click();
 
         //Verify that schema statements OFF is reflected in Visual graph
         visitVisualGraphView();
@@ -225,8 +221,7 @@ describe('My Settings', () => {
                         .scrollIntoView()
                         .then(input => input && input.attr('checked')));
             });
-        getSaveButton()
-            .click();
+        getSaveButton().click();
     });
 
     function getUserRepositoryTable() {
@@ -251,14 +246,6 @@ describe('My Settings', () => {
                 .find('#buttons')
                 .then(buttons =>
                     buttons && buttons.length > 0));
-    }
-
-    function verifyUserSettingsUpdated() {
-        cy.get('#toast-container')
-            .find('.toast.toast-success')
-            .find('.toast-message')
-            .should('be.visible')
-            .and('contain', 'The user admin was updated');
     }
 
     function saveGraphSettings() {
