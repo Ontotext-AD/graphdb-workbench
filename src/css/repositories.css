@@ -134,13 +134,6 @@ form div label.error {
     margin-bottom:1rem;
 }
 
-.table-fedx {
-    display: none;
-    overflow-y: scroll;
-    height: 10rem;
-    width: 80%;
-}
-
 .fedx-no-members-message {
     color: #C4781E;
     background-color: #FCF8E3;

@@ -1,4 +1,4 @@
-<!-- Start addFedXRepository.html -->
+<!-- Start addRemoteMember.html -->
 <div class="modal-header">
     <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
     </button>
@@ -6,24 +6,24 @@
 </div>
 <form id="addFedXRepositoryForm" novalidate name="form">
     <div class="modal-body">
-        <input type="radio" name="remote_repo_type" ng-model="remote_repo_type" ng-disabled="model.editRepoPage" id="graphdb-server" value="graphdb-server">
+        <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="graphdb-server" value="RemoteRepository">
         <label for="graphdb-server">GraphDB/RDF4J server</label>
-        <input type="radio" name="remote_repo_type" ng-model="remote_repo_type" ng-disabled="model.editRepoPage" id="sparql-endpoint" value="sparql-endpoint">
+        <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="sparql-endpoint" value="SPARQLEndpoint">
         <label for="sparql-endpoint">Generic SPARQL endpoint</label>
-        <div ng-show="remote_repo_type == 'graphdb-server';">
+        <div ng-if="model.store === 'RemoteRepository'">
             <div class="form-group row">
                 <label for="server-url" class="col-lg-3 col-form-label">Server URL*:</label>
-                <input name="serverurl" ng-model="model.serverurl" type="text" id="server-url" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.sparqlendpoint'>
+                <input name="model.repositoryServer" ng-model="model.repositoryServer" type="text" id="server-url" class="col-lg-8" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
             </div>
             <div class="form-group row">
                 <label for="repository-id" class="col-lg-3 col-form-label">Repository ID*:</label>
-                <input name="repoid" ng-model="model.repoid" type="text" id="repository-id" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.sparqlendpoint'>
+                <input name="model.repositoryName" ng-model="model.repositoryName" type="text" id="repository-id" class="col-lg-8" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
             </div>
         </div>
-        <div ng-show="remote_repo_type == 'sparql-endpoint'">
+        <div ng-if="model.store === 'SPARQLEndpoint'">
             <div class="form-group row">
                 <label for="url-endpoint" class="col-lg-3 col-form-label">Endpoint URL*:</label>
-                <input name="sparqlendpoint" ng-model="model.sparqlendpoint" type="text" id="url-endpoint" class="col-lg-8" ng-disabled="model.editRepoPage" ng-required='!model.serverurl' ng-required='!model.repoid'>
+                <input name="model.sparqlEndpoint" ng-model="model.sparqlEndpoint" type="text" id="url-endpoint" class="col-lg-8" ng-disabled="model.editMode" ng-required='!model.repositoryServer' ng-required='!model.repositoryName'>
             </div>
             <div class="form-group row indented-div">
                 <label for="ask-queries" class="col-lg-7 offset-xs-2">
@@ -50,4 +50,3 @@
         <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
     </div>
 </form>
-<!-- End addFedXRepository.html -->
