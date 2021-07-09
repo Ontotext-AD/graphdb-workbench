@@ -17,7 +17,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
         const LOCAL_REPO_STORE = 'ResolvableRepository';
         const REMOTE_REPO_STORE = 'RemoteRepository';
-        const SOARQL_ENDPOINT_STORE = 'SPARQLEndpoint';
+        const SPARQL_ENDPOINT_STORE = 'SPARQLEndpoint';
         const NATIVE_STORE = 'NativeStore';
 
         $scope.intOptionsLabels = {
@@ -53,17 +53,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
         }
 
         function populateLocalRepos() {
-            let indexesToDelete = [];
-            for (let i = 0; i < $scope.fedxMembers.length; i++) {
-                for (let j = 0; j < $scope.localRepos.length; j++) {
-                    if ($scope.localRepos[j].id === $scope.fedxMembers[i].repositoryName) {
-                        indexesToDelete.push(j);
-                        break;
-                    }
-                }
-            }
-            for (let i = 0; i < indexesToDelete.length; i++) {
-                $scope.localRepos.splice(indexesToDelete[i],1);
+            for (const member of $scope.fedxMembers) {
+                $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName);
             }
         }
 
@@ -137,7 +128,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                 store : member.store,
                 repositoryName: member.repositoryName,
                 repositoryServer: member.repositoryServer,
-                sparqlEndpoint: member.store === 'SPARQLEndpoint' ? member.endpoint : member.repositoryLocation
+                sparqlEndpoint: member.store === SPARQL_ENDPOINT_STORE ? member.endpoint : member.repositoryLocation
             }
 
             $scope.$modalInstance = $modal.open({
@@ -180,12 +171,12 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             } else {
                 if ($scope.model.sparqlEndpoint.toString().includes("http://")) {
                     member = {
-                        store : 'SPARQLEndpoint',
+                        store : SPARQL_ENDPOINT_STORE,
                         endpoint : $scope.model.sparqlEndpoint
                     };
                 } else {
                     member = {
-                        store : 'NativeStore',
+                        store : NATIVE_STORE,
                         repositoryLocation : $scope.model.sparqlEndpoint
                     };
                 }
