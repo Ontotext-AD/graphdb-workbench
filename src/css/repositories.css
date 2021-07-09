@@ -118,8 +118,7 @@ form div label.error {
 
 .form-local-repos {
     border: 1px solid;
-    border-radius: 10px;
-    width:70%;
+    width:66%;
     height:8rem;
     font-size: 1.3em;
 }

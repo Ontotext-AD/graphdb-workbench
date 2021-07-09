@@ -5,29 +5,35 @@
             <div class="alert alert-warning" ng-if="fedxMembers.length === 0"> No members - add at least one local or remote repository</div>
             <table id="fedx-members-table" class="table table-hover table-striped" aria-describedby="Repositories table">
                 <tbody class="tbody-fedx">
-                    <tr class="repository"
+                    <tr class="repository" style="display: flex"
                         ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'id']">
-                        <td>
-                            <div id="{{member.repositoryName}}-member-repo" class="lead text-overflow">
+                        <td style="display: inline-block; flex: 1">
+<!--                            <div id="{{member.repositoryName}}-member-repo" class="lead text-overflow">-->
                                 <span class="multiline-text">
                                     <em ng-class="getMemberIcon(member)"></em>
                                     {{resolveName(member)}}
                                 </span>
-                            </div>
+<!--                            </div>-->
                         </td>
-                        <td width="120">
-                            <div class="text-nowrap repository-actions">
+                        <td style="display: inline-block">
+<!--                            <div class="text-nowrap repository-actions" style="display:flex">-->
                                 <button class="btn btn-link p-0 edit-repository-btn" type="button">
-                                    <span id="{{member.repositoryName}}-icon-edit" class="icon-edit" ng-click="editFedXRepository(member)"></span>
-                                </button>
-                                <button class="btn btn-link p-0 secondary" type="button">
-                                    <span id="{{member.repositoryName}}-icon-writable" class="icon-import"></span>
+                                    <span id="{{member.repositoryName}}-icon-edit" class="icon-edit" ng-click="editFedXRepository(member)" ng-if="member.store !== 'NativeStore'"></span>
                                 </button>
                                 <button class="btn btn-link p-0 secondary" type="button">
                                     <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
                                           class="icon-close"></span>
                                 </button>
-                            </div>
+                                <button class="btn btn-link p-0 secondary">
+                                    <span class="icon-import"
+                                          ng-click="setWritableRepo(member)"
+                                          ng-if="member.writable === 'false'"></span>
+                                    <span class="icon-import"
+                                          ng-click="setWritableRepo(member)"
+                                          style="color:green"
+                                          ng-if="member.writable === 'true'"></span>
+                                </button>
+<!--                            </div>-->
                         </td>
                     </tr>
                 </tbody>
