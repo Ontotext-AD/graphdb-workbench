@@ -135,6 +135,7 @@ describe('Similarity screen validation', () => {
             getAnalogicalQueryTab()
                 .scrollIntoView()
                 .should('be.visible')
+                .find('.nav-link')
                 .click()
                 .then(() => {
                     verifyQueryIsChanged();

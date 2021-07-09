@@ -57,7 +57,6 @@ function verifyQueryAreaContains(query) {
         getQueryArea()
             .then(codeMirrorEl => {
                 const cm = codeMirrorEl[0].CodeMirror;
-                console.log('Savata ' + cm.getValue());
                 return cm && cm.getValue().includes(query);
             }));
 }
