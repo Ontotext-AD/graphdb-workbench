@@ -18,11 +18,12 @@ describe('Class hierarchy screen validation', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/hierarchy');
+        cy.window();
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
-        cy.get('#classChart').should('be.visible').within(() => {
-            cy.get('#main-group').should('be.visible');
+        cy.get('#classChart').scrollIntoView().should('be.visible').within(() => {
+            cy.get('#main-group').scrollIntoView().should('be.visible');
             findClassByName('food:Grape');
-            cy.get('@classInHierarchy').should('be.visible');
+            cy.get('@classInHierarchy').scrollIntoView().should('be.visible');
         });
     });
 
@@ -40,7 +41,11 @@ describe('Class hierarchy screen validation', () => {
         verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
 
         // Switch show prefixes to off
-        cy.get('.toolbar-holder .prefix-toggle-btn').click();
+        cy.get('.toolbar-holder')
+            .find('.prefix-toggle-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
 
         // Verify that prefixes are removed from diagram
         verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));

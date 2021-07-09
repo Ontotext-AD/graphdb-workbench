@@ -6,7 +6,7 @@ Cypress.Commands.add('searchEasyVisualGraph', (searchGraph) => {
         .then((searchInput) => {
             cy.waitUntil(() =>
                 cy.get('#auto-complete-results-wrapper')
-                    .each((el) => el && el.text().indexOf(searchGraph) > -1));
-            cy.wrap(searchInput).type('{enter}');
+                    .each((el) => el && el.text().indexOf(searchGraph) > -1))
+                .then(() => cy.wrap(searchInput).type('{enter}'));
         });
 });

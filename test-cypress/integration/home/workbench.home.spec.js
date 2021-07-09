@@ -16,8 +16,8 @@ describe('Home screen validation', () => {
     context('RDF resource search', () => {
         it('Search button should not be present when no repo is selected', () => {
             HomeSteps.visitAndWaitLoader();
-            cy.get('.search-rdf-btn').should('not.be.visible');
-            cy.get('.search-rdf-input').should('not.be.visible');
+            cy.get('.search-rdf-btn').should('not.exist');
+            cy.get('.search-rdf-input').should('not.exist');
         });
 
         it('Search should be made from home page search when repo is set and on home page', () => {
@@ -55,7 +55,7 @@ describe('Home screen validation', () => {
             // When I visit not home page with selected repository
             cy.visit('/graphs');
             cy.get('.ot-splash').should('not.be.visible');
-            cy.get('.ot-loader-new-content').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.exist');
             // Search rdf button should be visible
             cy.get('.search-rdf-btn').should('be.visible');
             // When I click the button
@@ -101,7 +101,7 @@ describe('Home screen validation', () => {
                 }
             });
             cy.get('.ot-splash').should('not.be.visible');
-            cy.get('.ot-loader-new-content').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.exist');
             // Search rdf button should be visible
             cy.get('.search-rdf-btn').should('be.visible');
             // When I click the button
@@ -151,7 +151,7 @@ describe('Home screen validation', () => {
             });
 
             cy.get('.ot-splash').should('not.be.visible');
-            cy.get('.ot-loader-new-content').should('not.be.visible');
+            cy.get('.ot-loader-new-content').should('not.exist');
 
             getRDFResourceSearchBox().click();
             //Verify that the new resource search box is focused

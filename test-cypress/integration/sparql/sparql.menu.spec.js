@@ -18,6 +18,50 @@ describe('SPARQL screen validation', () => {
 
     const SPARQL_STAR_QUERY = 'select (<<?s ?p ?o>> as ?t) {?s ?p ?o}';
 
+    const GATE_CLIENT_CREATE_QUERY = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'INSERT DATA {\n' +
+        '    inst:gateService :connect :Gate;\n' +
+        '                     :service "https://cloud-api.gate.ac.uk/process-document/annie-named-entity-recognizer?annotations=:Address&annotations=:Date&annotations=:Location&annotations=:Organization&annotations=:Person&annotations=:Money&annotations=:Percent&annotations=:Sentence" .\n' +
+        '}';
+
+    const GATE_CLIENT_SEARCH_QUERY = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT ?annotationText ?annotationType ?annotationStart ?annotationEnd ?feature ?value\n' +
+        'WHERE {\n' +
+        '        ?searchDocument a inst:gateService;\n' +
+        '                           :text \'\'\'Dyson Ltd. plans to hire 450 people globally, with more than half the recruits in its headquarters in Singapore.\n' +
+        'The company best known for its vacuum cleaners and hand dryers will add 250 engineers in the city-state. This comes short before the founder James Dyson announced he is moving back to the UK after moving residency to Singapore. Dyson, a prominent Brexit supporter who is worth US$29 billion, faced criticism from British lawmakers for relocating his company\'\'\' .\n' +
+        '\n' +
+        '    graph inst:gateService {\n' +
+        '        ?annotatedDocument :annotations ?annotation .\n' +
+        '\n' +
+        '        ?annotation :annotationText ?annotationText ;\n' +
+        '            :annotationType ?annotationType ;\n' +
+        '            :annotationStart ?annotationStart ;\n' +
+        '            :annotationEnd ?annotationEnd ;\n' +
+        '        optional { ?annotation :features ?item . ?item ?feature ?value }\n' +
+        '    }\n' +
+        '}';
+
+    const LIST_TEXT_MINING_SERVICES = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT * where {\n' +
+        '    ?instance a :Service .\n' +
+        '}';
+
+    const LIST_TEXT_MINING_INSTANCE_CONFIG = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'SELECT * WHERE {\n' +
+        '   inst:gateService ?p ?o .\n' +
+        '}';
+
+    const DROP_TEXT_MINING_INSTANCE = 'PREFIX : <http://www.ontotext.com/textmining#>\n' +
+        'PREFIX inst: <http://www.ontotext.com/textmining/instance#>\n' +
+        'INSERT DATA {\n' +
+        '   inst:gateService :dropService "".\n' +
+        '}';
+
     function createRepoAndVisit(repoOptions = {}) {
         createRepository(repoOptions);
         visitSparql(true);
@@ -57,7 +101,7 @@ describe('SPARQL screen validation', () => {
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
 
-        waitUntilQueryAreaAppear();
+        cy.waitUntilQueryIsVisible();
 
         // Run query button should be clickable
         getRunQueryButton().should('be.visible').and('not.be.disabled');
@@ -66,7 +110,7 @@ describe('SPARQL screen validation', () => {
         getTabs().find('.nav-link').should('be.visible');
 
         // No active loader
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     afterEach(() => {
@@ -405,6 +449,29 @@ describe('SPARQL screen validation', () => {
             executeQuery();
             verifyResultsPageLength(2);
         });
+
+        it('should test text mining plugin', () => {
+            cy.pasteQuery(GATE_CLIENT_CREATE_QUERY);
+            cy.executeQuery();
+            cy.pasteQuery(GATE_CLIENT_SEARCH_QUERY);
+            cy.executeQuery();
+            getResultPages().should('have.length', 1);
+            verifyResultsPageLength(44);
+            cy.pasteQuery(LIST_TEXT_MINING_SERVICES);
+            cy.executeQuery();
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining/instance#gateService');
+            cy.pasteQuery(LIST_TEXT_MINING_INSTANCE_CONFIG);
+            cy.executeQuery();
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#Gate');
+            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#connect');
+            getTableResultRows().should('contain', 'https://cloud-api.gate.ac.uk');
+            cy.pasteQuery(DROP_TEXT_MINING_INSTANCE);
+            cy.executeQuery();
+            cy.pasteQuery(LIST_TEXT_MINING_SERVICES);
+            cy.executeQuery();
+            getResultPages().should('have.length', 1);
+            getTableResultRows().should('contain', 'No data available in table');
+        });
     });
 
     context('SPARQL queries with OWL-Horst Optimized', () => {
@@ -688,7 +755,7 @@ describe('SPARQL screen validation', () => {
             '}';
 
         function waitUntilSavedQueryModalIsVisible() {
-            getModal().should('be.visible');
+            getModal().should('not.have.class', 'ng-animate').and('be.visible');
             getSavedQueryForm().should('be.visible');
             getSubmitSavedQueryBtn()
                 .should('be.visible')
@@ -719,7 +786,9 @@ describe('SPARQL screen validation', () => {
             // Press the pen icon to edit the custom query created earlier
             executeSavedQueryCommand(savedQueryName, EDIT_SAVED_QUERY_COMMAND);
 
-            getPopover().should('not.exist');
+            // Note that popover fades away, which in newer versions of cypress
+            // is considered that does not exist. All other checks will fail
+            cy.get('.popover').should('not.exist');
             waitUntilSavedQueryModalIsVisible();
 
             getSavedQueryNameField().should('have.value', savedQueryName);
@@ -761,7 +830,7 @@ describe('SPARQL screen validation', () => {
             // Confirm dialog
             confirmModal();
             getModal().should('not.exist');
-            getPopover().should('not.exist');
+            cy.get('.popover').should('not.exist');
 
             // Verify that the query is deleted
             openSavedQueriesPopup();
@@ -872,6 +941,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?savedQueryName=' + encodeURI(queryName) + '&owner=admin';
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -907,6 +977,7 @@ describe('SPARQL screen validation', () => {
             const expectedUrl = Cypress.config().baseUrl + '/sparql?name=&infer=true&sameAs=true&query=' + encodedQuery;
             getModal()
                 .should('be.visible')
+                .and('not.have.class', 'ng-animate')
                 .find('#clipboardURI')
                 .should('have.value', expectedUrl);
 
@@ -984,7 +1055,7 @@ describe('SPARQL screen validation', () => {
 
     function executeQuery() {
         getRunQueryButton().click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getLoader() {
@@ -1021,12 +1092,13 @@ describe('SPARQL screen validation', () => {
     }
 
     function getModal() {
-        return cy.get('.modal').should('not.have.class', 'ng-animate');
+        return cy.get('.modal');
     }
 
     function confirmModal() {
         getModal()
             .should('be.visible')
+            .and('not.have.class', 'ng-animate')
             .find('.modal-footer')
             .should('be.visible')
             .find('.btn-primary')
@@ -1102,13 +1174,6 @@ describe('SPARQL screen validation', () => {
         });
     }
 
-    function waitUntilQueryAreaAppear() {
-        cy.waitUntil(() =>
-            getQueryArea()
-                .then(codeMirrorEl =>
-                    codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
-    }
-
     function getQueryArea() {
         return cy.get('#queryEditor .CodeMirror');
     }
@@ -1143,7 +1208,7 @@ describe('SPARQL screen validation', () => {
 
     function goToPage(page) {
         getResultPages().contains(page).click();
-        getLoader().should('not.be.visible');
+        getLoader().should('not.exist');
     }
 
     function getResultFilterField() {
@@ -1271,7 +1336,6 @@ describe('SPARQL screen validation', () => {
         // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
             .trigger('mouseover', {force: true})
             .find('.actions-bar')
-            .should('be.visible')
             .find(commandSelector)
             .parent('.btn')
             // Cypress sometimes determines the element has 0x0 dimensions...

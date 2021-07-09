@@ -141,7 +141,7 @@ describe('My Settings', () => {
                 cy.get('#queryEditor .CodeMirror').find('textarea')
                     .invoke('val', testResultCountQuery).trigger('change', {force: true});
 
-                waitUntilQueryValueEquals(testResultCountQuery);
+                cy.verifyQueryAreaContains(testResultCountQuery);
 
                 cy.get('#wb-sparql-runQuery')
                     .should('be.visible')
@@ -187,7 +187,7 @@ describe('My Settings', () => {
         cy.searchEasyVisualGraph(DRY_GRAPH);
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').should('be.checked');
+        cy.get('.include-schema-statements').should('be.visible').and('be.checked');
         saveGraphSettings();
         cy.get('.predicate').should('contain','type');
 
@@ -213,10 +213,10 @@ describe('My Settings', () => {
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').click();
-        cy.get('.include-schema-statements').should('not.be.checked');
+        cy.get('.include-schema-statements').should('be.visible').click();
+        cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
         saveGraphSettings();
-        cy.get('.predicate').should('not.contain','type');
+        cy.get('.predicate').should('not.exist');
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
@@ -258,12 +258,6 @@ describe('My Settings', () => {
                 .find('#buttons')
                 .then(buttons =>
                     buttons && buttons.length > 0));
-    }
-
-    function waitUntilQueryValueEquals(query) {
-        cy.waitUntil(() =>
-            cy.get('#queryEditor .CodeMirror')
-                .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim() === query.trim()));
     }
 
     function verifyUserSettingsUpdated() {
