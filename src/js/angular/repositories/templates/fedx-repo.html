@@ -25,14 +25,17 @@
                                           class="icon-close"></span>
                                 </button>
                                 <button class="btn btn-link p-0 secondary">
-<!--                                    <span class="icon-import"-->
-<!--                                          ng-click="setWritableRepo(member)"-->
-<!--                                          ng-if="member.writable === 'false'"></span>-->
+                                    <span id = "{{member.repositoryName}}-icon-not-writable"
+                                          class="icon-import"
+                                          ng-click="setWritableRepo(member)"
+                                          ng-if="member.writable === 'false'"></span>
                                     <span id = "{{member.repositoryName}}-icon-writable"
                                           class="icon-import"
-                                          ng-click="setWritableRepo(member)"></span>
-<!--                                    ng-if="member.writable === 'true'"-->
-<!--                                    style="color:#11b0a1"-->
+                                          ng-click="setWritableRepo(member)"
+                                          ng-if="member.writable === 'true'"
+                                          style="color:#11b0a1">
+
+                                    </span>
                                 </button>
 <!--                            </div>-->
                         </td>

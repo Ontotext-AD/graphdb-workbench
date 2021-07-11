@@ -13,7 +13,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
         link: linkFunc
     };
 
-    function linkFunc($scope, $element) {
+    function linkFunc($scope) {
 
         const LOCAL_REPO_STORE = 'ResolvableRepository';
         const REMOTE_REPO_STORE = 'RemoteRepository';
@@ -41,6 +41,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
         $scope.fedxMembers = [];
         $scope.localRepos = [];
+        $scope.writableRepo = undefined;
 
         function getRepositories() {
             return RepositoriesRestService.getRepositories()
@@ -58,12 +59,30 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             }
         }
 
+        $scope.setWritableRepo = function(member) {
+            if ($scope.writableRepo) {
+                $scope.writableRepo.writable = "false";
+            }
+            member.writable = "true";
+            $scope.writableRepo = member;
+        }
+
+        function getWritableRepo() {
+            debugger;
+            for (const member of $scope.fedxMembers) {
+                if (member.writable === "true") {
+                    $scope.writableRepo = member;
+                }
+            }
+        }
+
         function getLocalRepositories() {
             getRepositories()
                 .then(function () {
                     if ($scope.editRepoPage) {
                         $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
                         populateLocalRepos();
+                        getWritableRepo();
                     }
                 });
         }
@@ -83,7 +102,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
         $scope.removeMember = function(member) {
             $scope.fedxMembers = $scope.fedxMembers.filter(el => el !== member);
-            if ($scope.writableRepo && $scope.writableRepo === member.repositoryName) {
+            if ($scope.writableRepo && $scope.writableRepo.repositoryName === member.repositoryName) {
                 $scope.writableRepo = undefined;
             }
             if (member.store && member.store === LOCAL_REPO_STORE) {
@@ -93,18 +112,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                         $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
                     });
             }
-        }
-
-        $scope.writableRepo = undefined;
-        $scope.setWritableRepo = function(member) {
-            if ($scope.writableRepo) {
-                let currWritableId = $scope.writableRepo;
-                document.getElementById(currWritableId + "-icon-writable").removeAttribute('style');
-            }
-            $scope.writableRepo = member.repositoryName;
-            document.getElementById(member.repositoryName + "-icon-writable").setAttribute('style', "color:#11b0a1");
-            $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
-
         }
 
         $scope.addRemoteMember = function () {
@@ -122,7 +129,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
             $scope.$modalInstance = $modal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope,
-                controller: 'AddRepositoryCtrl'
             });
         };
 
@@ -145,7 +151,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     respectRights: member.respectRights,
                     repositoryName: member.repositoryName,
                     repoType : member.repoType,
-                    // writable: "false"
+                    writable: "false"
                 }
             } else {
                 $scope.mode = 'remote';
@@ -156,14 +162,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     repositoryServer: member.repositoryServer,
                     sparqlEndpoint: member.store === SPARQL_ENDPOINT_STORE ? member.endpoint : member.repositoryLocation,
                     supportsASKQueries : member.supportsASKQueries,
-                    // writable: "false"
+                    writable: "false"
                 }
             }
 
             $scope.$modalInstance = $modal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope
-                // controller: 'AddRepositoryCtrl'
             });
         };
 
@@ -203,7 +208,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     repositoryName: $scope.model.repositoryName,
                     repoType: $scope.model.repoType,
                     respectRights: $scope.model.respectRights,
-                    // writable: $scope.model.writable
+                    writable: $scope.model.writable
                 }
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
 
@@ -212,7 +217,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     store : REMOTE_REPO_STORE,
                     repositoryName : $scope.model.repositoryName,
                     repositoryServer : $scope.model.repositoryServer,
-                    // writable: $scope.model.writable
+                    writable: $scope.model.writable
                 };
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
 
@@ -222,7 +227,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                         store : SPARQL_ENDPOINT_STORE,
                         endpoint : $scope.model.sparqlEndpoint,
                         supportsASKQueries : $scope.model.supportsASKQueries,
-                        // writable: $scope.model.writable
+                        writable: $scope.model.writable
                     };
                     $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
 
@@ -231,7 +236,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                         store : NATIVE_STORE,
                         repositoryLocation : $scope.model.sparqlEndpoint,
                         supportsASKQueries : $scope.model.supportsASKQueries,
-                        // writable: $scope.model.writable
+                        writable: $scope.model.writable
                     };
                     $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryLocation !== member.repositoryLocation);
                 }
