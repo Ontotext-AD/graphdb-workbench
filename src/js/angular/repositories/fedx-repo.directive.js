@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr'];
+fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
+function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
     return {
         restrict: 'E',
         scope: false,
@@ -41,12 +41,14 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
         $scope.fedxMembers = [];
         $scope.localRepos = [];
+        $scope.allLocalRepos = [];
         $scope.writableRepo = undefined;
 
         function getRepositories() {
             return RepositoriesRestService.getRepositories()
                 .success(function (response) {
                     $scope.localRepos = response;
+                    $scope.allLocalRepos = $scope.localRepos.slice();
                 }).error(function (response) {
                     const msg = getError(response);
                     toastr.error(msg, 'Error');
@@ -85,6 +87,22 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     }
                 });
         }
+
+        $scope.checkIfRepoExist = function (member) {
+            if (member.store === LOCAL_REPO_STORE) {
+                return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
+            } else {
+                return true;
+            }
+        }
+
+        const localReposTimer = $timeout(function () {
+            getLocalRepositories();
+        }, 2000);
+
+        $scope.$on('$destroy', function () {
+            $timeout.cancel(localReposTimer);
+        });
 
         $scope.addMember = function (repository) {
             let member = {

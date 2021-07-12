@@ -13,6 +13,7 @@
                                     <em ng-class="getMemberIcon(member)"></em>
                                     {{resolveName(member)}}
                                 </span>
+                            <span class="icon-warning" ng-if="!checkIfRepoExist(member)"> </span>
 <!--                            </div>-->
                         </td>
                         <td style="display: inline-block">
