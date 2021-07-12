@@ -51,6 +51,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         $scope.newIndex.name = getNewIndexName($location.search().name);
         $scope.newIndex.options = ($location.search().options ? $location.search().options : ($scope.viewType === "text") ? textDefaultOptions : predDefaultOptions);
 
+
         if ($scope.searchQueries) {
             $scope.newIndex.searchQuery = $location.search().searchQuery ? $location.search().searchQuery : $scope.searchQueries[$scope.viewType];
             if ($scope.viewType === 'predication') {
@@ -251,7 +252,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                 }
 
                 window.editor.setValue($scope.currentQuery.query);
-            });
+            }, 200);
         }
 
         $scope.saveQueries();
@@ -263,10 +264,12 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         } else if (page === 3) {
             $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
         }
-        loadTab();
-        $scope.notoolbar = page !== 1;
+        $timeout(function () {
+            loadTab();
+            $scope.notoolbar = page !== 1;
 
-        $scope.page = page;
+            $scope.page = page;
+        }, 500);
     };
 
     $scope.createIndex = function () {

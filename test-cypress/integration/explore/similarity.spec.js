@@ -135,9 +135,7 @@ describe('Similarity screen validation', () => {
             getAnalogicalQueryTab()
                 .scrollIntoView()
                 .should('be.visible')
-                .find('.nav-link')
                 .click()
-                .wait(2000)
                 .then(() => {
                     verifyQueryIsChanged();
                 });
@@ -427,13 +425,23 @@ describe('Similarity screen validation', () => {
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().scrollIntoView().should('be.visible').click().wait(2000);
-        cy.pasteQuery(MODIFIED_SEARCH_QUERY);
+        getSearchQueryTab()
+            .scrollIntoView()
+            .should('be.visible')
+            .click().wait(200)
+            .then(() => {
+                cy.pasteQuery(MODIFIED_SEARCH_QUERY);
+            });
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click().wait(2000);
-        cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+        getAnalogicalQueryTab()
+            .scrollIntoView()
+            .should('be.visible')
+            .click().wait(200)
+            .then(() => {
+                cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+            });
     }
 
     function getDeleteIndexButton() {
@@ -449,7 +457,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getAnalogicalQueryTab() {
-        return cy.get('.analogical-query-tab');
+        return cy.get('.nav-tabs').find('.analogical-query-tab').find('.nav-link');
     }
 
     function getSaveEditedQueryButton() {

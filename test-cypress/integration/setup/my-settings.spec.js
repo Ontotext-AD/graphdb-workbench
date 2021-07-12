@@ -169,10 +169,11 @@ describe('My Settings', () => {
                             .should('be.visible')
                             .and('be.checked');
                     });
-                getSaveButton().click()
+                getSaveButton()
+                    .click()
                     .then(() => {
-                    verifyUserSettingsUpdated();
-                });
+                        verifyUserSettingsUpdated();
+                    });
             });
 
     });
@@ -200,7 +201,11 @@ describe('My Settings', () => {
                 .should('not.be.visible');
         });
 
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
 
         //Verify that schema statements OFF is reflected in Visual graph
         visitVisualGraphView();
@@ -225,7 +230,11 @@ describe('My Settings', () => {
                         .scrollIntoView()
                         .then(input => input && input.attr('checked')));
             });
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                verifyUserSettingsUpdated();
+            });
     });
 
     function getUserRepositoryTable() {
@@ -253,7 +262,6 @@ describe('My Settings', () => {
 
     function verifyUserSettingsUpdated() {
         cy.get('#toast-container')
-            .find('.toast-success')
             .find('.toast-message')
             .should('be.visible')
             .and('contain', 'The user admin was updated');
