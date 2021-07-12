@@ -262,9 +262,9 @@ describe('My Settings', () => {
     }
 
     function verifyUserSettingsUpdated() {
-        cy.get('#toast-container')
-            .should('be.visible')
-            .and('contain', 'The user admin was updated');
+        cy.waitUntil(() =>
+            cy.get('#toast-container')
+                .then(toast => toast && toast.html().includes('The user admin was updated')));
     }
 
     function saveGraphSettings() {

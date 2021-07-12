@@ -407,7 +407,9 @@ describe('Similarity screen validation', () => {
         getSearchQueryTab().should('be.visible');
         let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
-        cy.verifyQueryAreaContains('SELECT ?entity ?score {')
+        if (isPredication) {
+            cy.verifyQueryAreaContains('SELECT ?entity ?score {');
+        }
     }
 
     function changeDataQuery() {
