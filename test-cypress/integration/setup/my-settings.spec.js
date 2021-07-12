@@ -10,12 +10,9 @@ describe('My Settings', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        // Verify that the default user settings are returned
-        cy.clearLocalStorage();
     });
 
     beforeEach(() => {
-        cy.presetRepository(repositoryId);
         cy.setDefaultUserData();
         visitSettingsView();
     });
@@ -266,9 +263,13 @@ describe('My Settings', () => {
     }
 
     function visitSettingsView() {
-        cy.visit('/settings');
-        cy.window();
-        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+        cy.visit('/settings', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
+        cy.window()
+            .then(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`));
     }
 
     function visitVisualGraphView() {
