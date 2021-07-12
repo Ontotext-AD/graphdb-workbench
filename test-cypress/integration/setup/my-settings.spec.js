@@ -20,16 +20,12 @@ describe('My Settings', () => {
     after(() => {
         // Verify that the default user settings are returned
         cy.clearLocalStorage();
+        cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
     });
 
     it('Initial state', () => {
-        // Everything should be related to admin user.
         // Password change field is for admin.
-        cy.get('.login-credentials').should('be.visible');
-        cy.get('#wb-user-username').should('be.visible')
-            .and('have.value', 'admin')
-            .and('have.attr', 'readonly', 'readonly');
         // explicitly state that the fields must be of type password
         cy.get('#wb-user-password:password').should('be.visible')
             .and('have.value', '')
@@ -270,6 +266,11 @@ describe('My Settings', () => {
         });
         cy.window()
             .then(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`));
+        // Everything should be related to admin user.
+        cy.get('.login-credentials').should('be.visible');
+        cy.get('#wb-user-username').should('be.visible')
+            .and('have.value', 'admin')
+            .and('have.attr', 'readonly', 'readonly');
     }
 
     function visitVisualGraphView() {

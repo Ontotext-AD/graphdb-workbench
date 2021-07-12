@@ -14,8 +14,9 @@ describe('Visual graph screen validation', () => {
     });
 
     after(() => {
-        cy.deleteRepository(repositoryId);
         cy.clearLocalStorage('ls.graphs-viz');
+        cy.setDefaultUserData();
+        cy.deleteRepository(repositoryId);
     });
 
     beforeEach(() => {
