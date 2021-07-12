@@ -137,11 +137,12 @@ describe('My Settings', () => {
 
                 //clear default query and paste a new one that will generate more than 1000 results
                 cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-                cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .invoke('val', testResultCountQuery).trigger('change', {force: true});
-
-                cy.verifyQueryAreaContains(testResultCountQuery);
+                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true})
+                    .then(() => {
+                        cy.get('#queryEditor .CodeMirror').find('textarea')
+                            .invoke('val', testResultCountQuery).trigger('change', {force: true})
+                            .then(() => cy.verifyQueryAreaContains(testResultCountQuery));
+                    });
 
                 cy.get('#wb-sparql-runQuery')
                     .should('be.visible')
@@ -262,7 +263,7 @@ describe('My Settings', () => {
 
     function verifyUserSettingsUpdated() {
         cy.get('#toast-container')
-            .find('.toast-success')
+            .find('.toast-message')
             .should('be.visible')
             .and('contain', 'The user admin was updated');
     }

@@ -1160,10 +1160,9 @@ describe('SPARQL screen validation', () => {
 
     function verifyQueryAreaContains(query) {
         // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().includes(query)).to.be.true;
-        });
+        cy.waitUntil(() =>
+            getQueryArea()
+                .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().includes(query)));
     }
 
     function verifyQueryAreaEquals(query) {

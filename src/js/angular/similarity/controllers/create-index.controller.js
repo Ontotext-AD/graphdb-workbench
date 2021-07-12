@@ -250,7 +250,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                     $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
                 }
 
-                window.editor.setValue($scope.currentQuery.query);
+                window.editor.setValue($scope.currentQuery.query || ' ');
             });
         }
 
@@ -263,10 +263,12 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         } else if (page === 3) {
             $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
         }
-        loadTab();
-        $scope.notoolbar = page !== 1;
+        $timeout(function () {
+            loadTab();
+            $scope.notoolbar = page !== 1;
 
-        $scope.page = page;
+            $scope.page = page;
+        }, 500);
     };
 
     $scope.createIndex = function () {
@@ -681,7 +683,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
             // hack for YASQE bug
             window.editor.setValue(' ');
         } else {
-            window.editor.setValue($scope.currentQuery.query);
+            window.editor.setValue($scope.currentQuery.query || ' ');
         }
 
         $timeout(function () {
