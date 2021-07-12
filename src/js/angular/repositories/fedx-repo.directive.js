@@ -68,7 +68,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
         }
 
         function getWritableRepo() {
-            debugger;
             for (const member of $scope.fedxMembers) {
                 if (member.writable === "true") {
                     $scope.writableRepo = member;
