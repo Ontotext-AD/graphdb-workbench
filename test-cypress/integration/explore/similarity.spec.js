@@ -137,6 +137,7 @@ describe('Similarity screen validation', () => {
                 .should('be.visible')
                 .find('.nav-link')
                 .click()
+                .wait(2000)
                 .then(() => {
                     verifyQueryIsChanged();
                 });
@@ -426,12 +427,12 @@ describe('Similarity screen validation', () => {
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().scrollIntoView().should('be.visible').click();
+        getSearchQueryTab().scrollIntoView().should('be.visible').click().wait(2000);
         cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
+        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click().wait(2000);
         cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
     }
 
