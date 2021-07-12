@@ -12,19 +12,17 @@ describe('My Settings', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         // Verify that the default user settings are returned
         cy.clearLocalStorage();
-        cy.setDefaultUserData();
     });
 
     beforeEach(() => {
         cy.presetRepository(repositoryId);
-
+        cy.setDefaultUserData();
         visitSettingsView();
     });
 
     after(() => {
         // Verify that the default user settings are returned
         cy.clearLocalStorage();
-        cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
     });
 
@@ -171,7 +169,6 @@ describe('My Settings', () => {
                             .and('be.checked');
                     });
             });
-
     });
 
     it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
@@ -182,11 +179,11 @@ describe('My Settings', () => {
         //Verify that schema statements ON is reflected in Visual graph
         visitVisualGraphView();
         cy.searchEasyVisualGraph(DRY_GRAPH);
-        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.visual-graph-settings-btn').scrollIntoView().click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.visible').and('be.checked');
-        saveGraphSettings();
-        cy.get('.predicate').should('contain','type');
+        saveGraphSettings()
+            .then(() => cy.get('.predicate').should('contain','type'));
 
         //Set schema statements OFF in my settings
         visitSettingsView();
@@ -210,10 +207,13 @@ describe('My Settings', () => {
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').should('be.visible').click();
-        cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
-        saveGraphSettings();
-        cy.get('.predicate').should('not.exist');
+        cy.get('.include-schema-statements')
+            .scrollIntoView().should('be.visible').click()
+            .then(() => {
+                cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
+                saveGraphSettings()
+                    .then(() => cy.get('.predicate').should('not.exist'));
+            });
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
@@ -241,7 +241,7 @@ describe('My Settings', () => {
     }
 
     function getSaveButton() {
-        return cy.get('#wb-user-submit').should('be.visible');
+        return cy.get('#wb-user-submit').scrollIntoView().should('be.visible');
     }
 
     function waitUntilYASQUEBtnsAreVisible() {
@@ -259,7 +259,7 @@ describe('My Settings', () => {
     }
 
     function saveGraphSettings() {
-        cy.get('.save-settings-btn')
+        return cy.get('.save-settings-btn')
             .scrollIntoView()
             .should('be.visible')
             .click();
@@ -278,7 +278,7 @@ describe('My Settings', () => {
 
     function clickLabelBtn(btnId) {
         return cy.get(btnId)
-            .find('.switch.mr-0').should('be.visible').click();
+            .find('.switch.mr-0').scrollIntoView().should('be.visible').click();
     }
 
     function turnOnLabelBtn(btnId) {
