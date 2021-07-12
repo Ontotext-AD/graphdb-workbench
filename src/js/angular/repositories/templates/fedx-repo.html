@@ -9,10 +9,10 @@
                         ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'id']">
                         <td style="display: inline-block; flex: 1">
 <!--                            <div id="{{member.repositoryName}}-member-repo" class="lead text-overflow">-->
-                                <span class="multiline-text">
-                                    <em ng-class="getMemberIcon(member)"></em>
-                                    {{resolveName(member)}}
-                                </span>
+                            <span class="multiline-text">
+                                <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
+                                {{resolveName(member)}}
+                            </span>
                             <span class="icon-warning" ng-if="!checkIfRepoExist(member)"> </span>
 <!--                            </div>-->
                         </td>
@@ -50,7 +50,7 @@
                 <div ng-repeat="repository in localRepos | orderBy: ['type === \'system\'', 'id']" ng-if="repository.type !== 'fedx'" style="display:block" id="{{repository.id}}-local-repo" class = "fedXMember">
                     <a ng-click="addMember(repository)" id="{{repository.id}}-a" >
                         <span class="multiline-text">
-                            <em ng-class="'icon-repo-' + repository.type"></em>
+                            <em ng-class="'icon-repo-' + repository.type" class="fedx-repo-member-icon"></em>
                             {{repository.id}}
                         </span>
                     </a>
@@ -79,5 +79,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class = "cache">
+        <label for="cache-spec"> Source selection cache spec</label>
+        <input id="cache-spec" style="width: 64%" value="maximumSize=1000,expireAfterWrite=6h"/>
     </div>
 </div>
