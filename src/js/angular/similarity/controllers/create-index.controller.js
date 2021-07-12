@@ -263,12 +263,11 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         } else if (page === 3) {
             $scope.currentQuery.query = $scope.newIndex.analogicalQuery;
         }
-        $timeout(function () {
-            loadTab();
-            $scope.notoolbar = page !== 1;
 
-            $scope.page = page;
-        }, 500);
+        loadTab();
+        $scope.notoolbar = page !== 1;
+
+        $scope.page = page;
     };
 
     $scope.createIndex = function () {

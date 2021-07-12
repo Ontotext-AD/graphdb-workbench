@@ -121,7 +121,7 @@ describe('Similarity screen validation', () => {
             verifyQueryIsChanged();
         });
 
-        it.only('Change Analogical query of existing predication index', () => {
+        it('Change Analogical query of existing predication index', () => {
             openCreateNewIndexForm();
             switchToPredicationIndex();
             setIndexName();
@@ -133,7 +133,7 @@ describe('Similarity screen validation', () => {
             getAnalogicalQueryTab()
                 .scrollIntoView()
                 .should('be.visible')
-                .click().wait(1000)
+                .click()
                 .then(() => {
                     verifyQueryIsChanged();
                 });
@@ -407,6 +407,7 @@ describe('Similarity screen validation', () => {
         getSearchQueryTab().should('be.visible');
         let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
+        cy.verifyQueryAreaContains('SELECT ?entity ?score {')
     }
 
     function changeDataQuery() {
@@ -428,7 +429,6 @@ describe('Similarity screen validation', () => {
     }
 
     function changeAnalogicalQuery() {
-        cy.verifyQueryAreaContains('SELECT ?entity ?score {')
         getAnalogicalQueryTab()
             .scrollIntoView()
             .should('be.visible').click()
