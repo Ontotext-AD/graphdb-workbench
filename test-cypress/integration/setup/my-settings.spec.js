@@ -120,7 +120,7 @@ describe('My Settings', () => {
                 //Go to SPARQL editor and verify changes are persisted for the admin user
                 cy.visit('/sparql');
                 cy.window();
-                cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
+                cy.url().should('contain', `${Cypress.config('baseUrl')}/sparql`);
 
                 waitUntilYASQUEBtnsAreVisible();
 
@@ -169,10 +169,6 @@ describe('My Settings', () => {
                         cy.get('#defaultCount:checkbox')
                             .should('be.visible')
                             .and('be.checked');
-                    });
-                getSaveButton().click()
-                    .then(() => {
-                        verifyUserSettingsUpdated();
                     });
             });
 
@@ -229,11 +225,6 @@ describe('My Settings', () => {
                         .find('input[type="checkbox"]')
                         .scrollIntoView()
                         .then(input => input && input.attr('checked')));
-            });
-        getSaveButton()
-            .click()
-            .then(() => {
-                verifyUserSettingsUpdated();
             });
     });
 
