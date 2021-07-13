@@ -130,8 +130,13 @@ describe('Similarity screen validation', () => {
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
             openEditQueryView(true);
-            getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
-            verifyQueryIsChanged();
+            getAnalogicalQueryTab()
+                .scrollIntoView()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    verifyQueryIsChanged();
+                });
         });
 
         it('Clone existing similarity index', () => {
@@ -186,7 +191,11 @@ describe('Similarity screen validation', () => {
     it('Disable and enable similarity plugin', () => {
         initRepository();
 
-        cy.visit('/sparql');
+        cy.visit('/sparql', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
         cy.window();
         waitUntilSparqlPageIsLoaded();
 
@@ -222,13 +231,16 @@ describe('Similarity screen validation', () => {
     function initRepository() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     }
 
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
-        cy.visit('/similarity');
+        cy.visit('/similarity', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
         cy.window()
             .then(() => getExistingIndexesPanel());
     }
@@ -387,7 +399,7 @@ describe('Similarity screen validation', () => {
     }
 
     function openEditQueryView(isPredication) {
-        cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
         // Open "Edit search query" view
         cy.get('.edit-query-btn').should('be.visible').click();
         // Verify that 'similarity-index-name' input field is disabled
@@ -395,6 +407,9 @@ describe('Similarity screen validation', () => {
         getSearchQueryTab().should('be.visible');
         let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
+        if (isPredication) {
+            cy.verifyQueryAreaContains('SELECT ?entity ?score {');
+        }
     }
 
     function changeDataQuery() {
@@ -416,8 +431,12 @@ describe('Similarity screen validation', () => {
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().scrollIntoView().should('be.visible').click();
-        cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+        getAnalogicalQueryTab()
+            .scrollIntoView()
+            .should('be.visible').click()
+            .then(() => {
+                cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+            });
     }
 
     function getDeleteIndexButton() {
@@ -455,9 +474,5 @@ describe('Similarity screen validation', () => {
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
         cy.verifyQueryAreaContains(query);
-    }
-
-    function getToast() {
-        return cy.get('#toast-container');
     }
 });
