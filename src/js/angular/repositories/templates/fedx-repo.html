@@ -49,30 +49,142 @@
     </div>
     <div id="fedx-options">
         <h4>FedX options</h4>
-        <div class="boolOptions">
-            <div ng-repeat="boolParam in optionsOfTypeBool" class="form-group3 checkbox">
-                <label id="{{boolParam}}-label" for="{{boolParam}}" class="indented-div col-lg-6 col-form-label">
-                    <input id="{{boolParam}}" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
-                           ng-model="repositoryInfo.params[boolParam].value"/>
-                    {{repositoryInfo.params[boolParam].label}} </label>
+        <div class="pb-1">
+            <div class="form-group row">
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-5">
+                        <input id="includeInferredDefault" name="includeInferredDefault" type="checkbox"
+                               ng-true-value="'true'" ng-false-value="'false'"
+                               ng-model="repositoryInfo.params.includeInferredDefault.value"/>
+                        {{repositoryInfo.params.includeInferredDefault.label}}
+                    </label>
+                </div>
+                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-2">
+                    <label class="padding-label">
+                        <input id="enableServiceAsBoundJoin"
+                               name="enableServiceAsBoundJoin" type="checkbox"
+                               ng-true-value="'true'" ng-false-value="'false'"
+                               ng-model="repositoryInfo.params.enableServiceAsBoundJoin.value"/>
+                        {{repositoryInfo.params.enableServiceAsBoundJoin.label}}
+                    </label>
+                </div>
             </div>
-        </div>
-        <div class = "intOptions">
-            <div ng-repeat="param in optionsOfTypeInt" class="form-group2 row indented-div">
-                <label for="{{param}}" class="offset-xs-0 col-md-3 col-lg-5 col-form-label">
-                    {{repositoryInfo.params[param].label}}</label>
-                <div class="col-xs-10 col-md-30 col-lg-3">
-                    <input class="form-control" id="{{param}}" type="number" step="1"
-                           ng-model="repositoryInfo.params[param].value"/>
+            <div class="form-group row">
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-5">
+                        <input id="isLogQueries" name="isLogQueries" type="checkbox"
+                               ng-true-value="'true'" ng-false-value="'false'"
+                               ng-model="repositoryInfo.params.isLogQueries.value"/>
+                        {{repositoryInfo.params.isLogQueries.label}}
+                    </label>
+                </div>
+                <div class="checkbox offset-xs-1 offset-md-4 offset-lg-2">
+                    <label class="padding-label">
+                        <input id="debugQueryPlan"
+                               name="debugQueryPlan" type="checkbox"
+                               ng-true-value="'true'" ng-false-value="'false'"
+                               ng-model="repositoryInfo.params.debugQueryPlan.value"/>
+                        {{repositoryInfo.params.debugQueryPlan.label}}
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-5">
+                        <input id="isLogQueryPlan" name="isLogQueryPlan" type="checkbox"
+                               ng-true-value="'true'" ng-false-value="'false'"
+                               ng-model="repositoryInfo.params.isLogQueryPlan.value"/>
+                        {{repositoryInfo.params.isLogQueryPlan.label}}
+                    </label>
                 </div>
             </div>
         </div>
-    </div>
-    <div class = "form-group row  indented-div">
-        <label for="cache-spec" class="col-md-3 col-lg-3 col-form-label"> Source selection cache spec</label>
-        <div class="col-lg-7 col-xl-7">
-            <input id="cache-spec" class="form-control" ng-model="repositoryInfo.params['sourceCacheSpec'].value" placeholder="maximumSize=1000,expireAfterWrite=6h"/>
+        <div class="pb-1">
+            <div class="form-group row">
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                        {{repositoryInfo.params.enforceMaxQueryTime.label}}
+                    </label>
+                    <div class="col-lg-2">
+                        <input id="enforceMaxQueryTime"
+                               name="enforceMaxQueryTime"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.enforceMaxQueryTime.value"
+                               class="form-control"/>
+                    </div>
+                </div>
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                        {{repositoryInfo.params.boundJoinBlockSize.label}}
+                    </label>
+                    <div class="col-lg-2">
+                        <input id="boundJoinBlockSize"
+                                   name="boundJoinBlockSize"
+                                   type="number" step="1"
+                                   ng-model="repositoryInfo.params.boundJoinBlockSize.value"
+                                   class="form-control"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                        {{repositoryInfo.params.joinWorkerThreads.label}}
+                    </label>
+                    <div class="col-lg-2">
+                        <input id="joinWorkerThreads"
+                               name="joinWorkerThreads"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.joinWorkerThreads.value"
+                               class="form-control"/>
+                    </div>
+                </div>
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                        {{repositoryInfo.params.leftJoinWorkerThreads.label}}
+                    </label>
+                    <div class="col-lg-2">
+                        <input id="leftJoinWorkerThreads"
+                               name="leftJoinWorkerThreads"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.leftJoinWorkerThreads.value"
+                               class="form-control"/>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                    </label>
+                    <div class="col-lg-2">
+                    </div>
+                </div>
+                <div class="offset-xs-1 offset-md-4 indented-div">
+                    <label class="col-lg-3">
+                        {{repositoryInfo.params.unionWorkerThreads.label}}
+                    </label>
+                    <div class="col-lg-2">
+                        <input id="unionWorkerThreads"
+                               name="unionWorkerThreads"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.unionWorkerThreads.value"
+                               class="form-control"/>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="pb-1">
+            <div class="form-group row">
+                <div class = "indented-div">
+                    <label for="cache-spec" class="col-md-3 col-lg-3 col-form-label"> Source selection cache spec</label>
+                    <div class="col-lg-7 col-xl-7">
+                        <input id="cache-spec" class="form-control" ng-model="repositoryInfo.params['sourceCacheSpec'].value" placeholder="maximumSize=1000,expireAfterWrite=6h"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
 </div>

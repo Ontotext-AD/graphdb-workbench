@@ -154,11 +154,6 @@ form div label.error {
     width: 49%;
 }
 
-.boolOptions {
-    margin-bottom:1rem;
-    overflow:auto;
-}
-
 span.required {
     color: #D8000C
 }

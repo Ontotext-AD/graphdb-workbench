@@ -20,25 +20,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         const SPARQL_ENDPOINT_STORE = 'SPARQLEndpoint';
         const NATIVE_STORE = 'NativeStore';
 
-        $scope.intOptionsLabels = {
-            enforceMaxQueryTime: 'Query timeout (seconds)',
-            boundJoinBlockSize: 'Bound join block size',
-            joinWorkerThreads: 'Join worker threads',
-            leftJoinWorkerThreads: 'Left join worker threads',
-            unionWorkerThreads: 'Union worker threads'
-        };
-        $scope.optionsOfTypeInt = Object.keys($scope.intOptionsLabels);
-
-        $scope.boolOptionsLabels =
-            {
-                includeInferredDefault: 'Include inferred default',
-                enableServiceAsBoundJoin: 'Enable SERVICE as bound join',
-                isLogQueries: 'Log queries',
-                debugQueryPlan: 'Debug query plan',
-                isLogQueryPlan: 'Log query plan'
-            };
-        $scope.optionsOfTypeBool = Object.keys($scope.boolOptionsLabels);
-
         $scope.fedxMembers = [];
         $scope.localRepos = [];
         $scope.allLocalRepos = [];
