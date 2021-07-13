@@ -82,9 +82,9 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 .then(function () {
                     if ($scope.editRepoPage) {
                         $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
-                        populateLocalRepos();
-                        getWritableRepo();
                     }
+                    populateLocalRepos();
+                    getWritableRepo();
                 });
         }
 
@@ -96,13 +96,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             }
         }
 
-        // const localReposTimer = $timeout(function () {
-        //     getLocalRepositories();
-        // }, 2000);
-        //
-        // $scope.$on('$destroy', function () {
-        //     $timeout.cancel(localReposTimer);
-        // });
+        const localReposTimer = $timeout(function () {
+            getLocalRepositories();
+        }, 2000);
+
+        $scope.$on('$destroy', function () {
+            $timeout.cancel(localReposTimer);
+        });
 
         $scope.addMember = function (repository) {
             let member = {
