@@ -62,19 +62,17 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         }
 
         $scope.setWritableRepo = function(member) {
-            if ($scope.writableRepo) {
-                $scope.writableRepo.writable = "false";
+            if (getWritableRepo()) {
+                getWritableRepo().writable = 'false';
             }
-            member.writable = "true";
-            $scope.writableRepo = member;
+            member.writable = 'true';
+        }
+        $scope.getActiveClass = function (member) {
+            return member.writable === 'true' ? ' active' : '';
         }
 
         function getWritableRepo() {
-            for (const member of $scope.fedxMembers) {
-                if (member.writable === "true") {
-                    $scope.writableRepo = member;
-                }
-            }
+            return $scope.fedxMembers.find(member => member.writable === "true");
         }
 
         function getLocalRepositories() {

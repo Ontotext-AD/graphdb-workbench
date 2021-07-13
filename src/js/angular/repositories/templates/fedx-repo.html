@@ -8,37 +8,25 @@
                     <tr class="repository" style="display: flex"
                         ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'id']">
                         <td style="display: inline-block; flex: 1">
-<!--                            <div id="{{member.repositoryName}}-member-repo" class="lead text-overflow">-->
                             <span class="multiline-text">
                                 <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                                 {{resolveName(member)}}
                             </span>
                             <span class="icon-warning" ng-if="!checkIfRepoExist(member)"> </span>
-<!--                            </div>-->
                         </td>
                         <td style="display: inline-block">
-<!--                            <div class="text-nowrap repository-actions" style="display:flex">-->
-                                <button class="btn btn-link p-0 edit-repository-btn" type="button">
-                                    <span id="{{member.repositoryName}}-icon-edit" class="icon-edit" ng-click="editFedXRepository(member)" ng-if="member.store !== 'NativeStore'"></span>
-                                </button>
-                                <button class="btn btn-link p-0 secondary" type="button">
-                                    <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
-                                          class="icon-close"></span>
-                                </button>
-                                <button class="btn btn-link p-0 secondary">
-                                    <span id = "{{member.repositoryName}}-icon-not-writable"
-                                          class="icon-import"
-                                          ng-click="setWritableRepo(member)"
-                                          ng-if="member.writable === 'false'"></span>
-                                    <span id = "{{member.repositoryName}}-icon-writable"
-                                          class="icon-import"
-                                          ng-click="setWritableRepo(member)"
-                                          ng-if="member.writable === 'true'"
-                                          style="color:#11b0a1">
-
-                                    </span>
-                                </button>
-<!--                            </div>-->
+                            <button class="btn btn-link p-0 edit-repository-btn" type="button">
+                                <span id="{{member.repositoryName}}-icon-edit" class="icon-edit" ng-click="editFedXRepository(member)" ng-if="member.store !== 'NativeStore'"></span>
+                            </button>
+                            <button class="btn btn-link p-0 secondary" type="button">
+                                <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
+                                      class="icon-close"></span>
+                            </button>
+                            <button class="btn btn-link p-0 secondary">
+                                <span id = "{{member.repositoryName}}-icon-writable"
+                                      ng-click="setWritableRepo(member)"
+                                      class="icon-import{{getActiveClass(member)}}"></span>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -80,8 +68,11 @@
             </div>
         </div>
     </div>
-    <div class = "cache">
-        <label for="cache-spec"> Source selection cache spec</label>
-        <input id="cache-spec" style="width: 64%" value="maximumSize=1000,expireAfterWrite=6h"/>
+    <div class = "form-group row  indented-div">
+        <label for="cache-spec" class="col-md-3 col-lg-3 col-form-label"> Source selection cache spec</label>
+        <div class="col-lg-7 col-xl-7">
+            <input id="cache-spec" class="form-control" ng-model="repositoryInfo.params['sourceCacheSpec'].value" placeholder="maximumSize=1000,expireAfterWrite=6h"/>
+        </div>
     </div>
+
 </div>
