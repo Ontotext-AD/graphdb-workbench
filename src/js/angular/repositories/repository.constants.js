@@ -85,5 +85,6 @@ export const REPO_TOOLTIPS = {
             "It can be in any supported RDF format.",
         constraintFile: "Specifies override of SQL primary and foreign keys.",
         testConn: "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct."
-    }
+    },
+    unsupportedRepoType: "Repository type <b>{{repo_type}}</b><br>is not supported by the running instance"
 };

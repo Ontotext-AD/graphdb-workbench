@@ -64,7 +64,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
                 <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id']"
-                    ng-if="repository.id !== getActiveRepository()"
+                    ng-if="repository.id !== getActiveRepository() && isRepoStateSupported(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
                     popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
