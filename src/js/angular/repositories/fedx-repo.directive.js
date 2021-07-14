@@ -23,7 +23,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         $scope.fedxMembers = [];
         $scope.localRepos = [];
         $scope.allLocalRepos = [];
-        $scope.writableRepo = undefined;
 
         function getRepositories() {
             return RepositoriesRestService.getRepositories()
@@ -43,11 +42,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         }
 
         $scope.setWritableRepo = function(member) {
-            if (getWritableRepo()) {
-                getWritableRepo().writable = 'false';
+            let currentWritable = getWritableRepo();
+            if (currentWritable && currentWritable.repositoryName !== member.repositoryName) {
+                currentWritable.writable = 'false';
             }
-            member.writable = 'true';
+            member.writable = JSON.stringify(member.writable === 'false');
         }
+
         $scope.getActiveClass = function (member) {
             return member.writable === 'true' ? ' active' : '';
         }
@@ -98,9 +99,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         $scope.removeMember = function(member) {
             $scope.fedxMembers = $scope.fedxMembers.filter(el => el !== member);
-            if ($scope.writableRepo && $scope.writableRepo.repositoryName === member.repositoryName) {
-                $scope.writableRepo = undefined;
-            }
             if (member.store && member.store === LOCAL_REPO_STORE) {
                 getRepositories()
                     .then(function () {
