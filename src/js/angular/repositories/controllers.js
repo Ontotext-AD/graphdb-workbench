@@ -19,10 +19,19 @@ export const getFileName = function(path) {
 };
 
 const parseNumberParamsIfNeeded = function (params) {
-    if (params && params.queryTimeout && params.queryLimitResults) {
-        // Parse both parameters properly to number
-        params.queryTimeout.value = parseInt(params.queryTimeout.value);
-        params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+    if (params) {
+        if (params.queryTimeout && params.queryLimitResults) {
+            // Parse both parameters properly to number
+            params.queryTimeout.value = parseInt(params.queryTimeout.value);
+            params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+            && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+            params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
+            params.boundJoinBlockSize.value = parseInt(params.boundJoinBlockSize.value);
+            params.joinWorkerThreads.value = parseInt(params.joinWorkerThreads.value);
+            params.enforceMaxQueryTime.value = parseInt(params.enforceMaxQueryTime.value);
+            params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
+        }
     }
 }
 
@@ -427,7 +436,6 @@ function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
-
     $scope.chooseRepositoryType = function (repoType) {
         $location.path(`${$location.path()}/${repoType}`);
     };
@@ -475,9 +483,14 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         return repositoryType === REPOSITORY_TYPES.ontop;
     }
 
+    function isValidFedXRepository(repositoryType) {
+        return repositoryType === REPOSITORY_TYPES.fedx;
+    }
+
     function isRepositoryTypeValid(repositoryType) {
         return isValidEERepository(repositoryType) || isValidSERepository(repositoryType)
-            || isValidFRRepository(repositoryType) || isValidOntopRepository(repositoryType);
+            || isValidFRRepository(repositoryType) || isValidOntopRepository(repositoryType)
+            || isValidFedXRepository(repositoryType);
     }
 
     function setPageTitle(repositoryType) {
@@ -496,6 +509,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
                 break;
             case REPOSITORY_TYPES.ontop:
                 $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
+                break;
+            case REPOSITORY_TYPES.fedx:
+                $scope.pageTitle = 'Create FedX Virtual SPARQL repository';
                 break;
         }
     }
