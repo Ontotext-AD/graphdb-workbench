@@ -180,7 +180,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     return member.repositoryLocation;
                 }
                 default :
-                    return;
+                    return "";
             }
         }
 
@@ -215,24 +215,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
 
             } else {
-                if ($scope.model.sparqlEndpoint.toString().includes("http://")) {
-                    member = {
-                        store : SPARQL_ENDPOINT_STORE,
-                        endpoint : $scope.model.sparqlEndpoint,
-                        supportsASKQueries : $scope.model.supportsASKQueries,
-                        writable: $scope.model.writable
-                    };
-                    $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
-
-                } else {
-                    member = {
-                        store : NATIVE_STORE,
-                        repositoryLocation : $scope.model.sparqlEndpoint,
-                        supportsASKQueries : $scope.model.supportsASKQueries,
-                        writable: $scope.model.writable
-                    };
-                    $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryLocation !== member.repositoryLocation);
-                }
+                member = {
+                    store: SPARQL_ENDPOINT_STORE,
+                    endpoint: $scope.model.sparqlEndpoint,
+                    supportsASKQueries: $scope.model.supportsASKQueries,
+                    writable: $scope.model.writable
+                };
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
             }
 
             updateMembers(member);
