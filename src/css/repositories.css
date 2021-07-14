@@ -105,6 +105,56 @@ form div label.error {
     text-indent: 8px
 }
 
+#fedx-content {
+    width: 69%;
+}
+
+#fedx-members {
+    overflow: auto;
+}
+#fedx-options {
+    overflow: hidden;
+}
+
+.form-local-repos {
+    border: 1px solid;
+    width:66%;
+    height:8rem;
+    font-size: 1.3em;
+}
+
+.form-repo-members {
+    font-size: 1.3em;
+}
+
+.form-group2 {
+    float: right;
+    width: 49%;
+    margin-bottom:1rem;
+    padding-top: 14px;
+}
+
+.fedx-no-members-message {
+    color: #C4781E;
+    background-color: #FCF8E3;
+    display: block;
+    height: 4rem;
+    border-radius: 1rem;
+    text-align: center;
+    padding: 1em;
+}
+
+.tbody-fedx {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.form-group3 {
+    float: left;
+    width: 49%;
+}
+
 span.required {
     color: #D8000C
 }
@@ -336,6 +386,14 @@ span.label {
 .wrapper-div select[disabled] {
     position: relative;
     z-index: -1;
+}
+
+.fedx-repo-member-icon {
+    color:#04355E
+}
+
+.icon-import.active {
+    color:#11b0a1
 }
 
 .repository-actions {

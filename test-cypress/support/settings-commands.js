@@ -10,12 +10,14 @@ Cypress.Commands.add('setDefaultUserData', () => {
         method: 'PATCH',
         url: `rest/security/user/${encodeURIComponent('admin')}`,
         headers: {
-            'X-GraphDB-Password': undefined
+            'X-GraphDB-Password': 'root'
         },
         body: {
             data: {
                 appSettings: defaultUserSettings
             }
         }
-    }).should((response) => expect(response.status).to.equal(200));
+    }).then((response) => {
+        cy.waitUntil(() => response && response.status === 200); // 201 Created
+    });
 });

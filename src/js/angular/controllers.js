@@ -372,6 +372,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 return 'System';
             case 'ontop':
                 return 'Ontop';
+            case 'fedx':
+                return 'FedX';
             default:
                 return 'Unknown';
         }
