@@ -84,7 +84,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             $timeout.cancel(localReposTimer);
         });
 
-        $scope.addMember = function (repository) {
+        $scope.addLocalMember = function (repository) {
             let member = {
                 store : LOCAL_REPO_STORE,
                 repositoryName : repository.id,
