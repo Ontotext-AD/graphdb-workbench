@@ -131,6 +131,7 @@ form div label.error {
     float: right;
     width: 49%;
     margin-bottom:1rem;
+    padding-top: 14px;
 }
 
 .fedx-no-members-message {
