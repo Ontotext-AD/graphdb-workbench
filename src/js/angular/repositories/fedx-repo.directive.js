@@ -64,7 +64,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                         $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
                     }
                     populateLocalRepos();
-                    getWritableRepo();
                 });
         }
 
