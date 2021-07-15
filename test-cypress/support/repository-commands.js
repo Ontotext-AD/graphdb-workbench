@@ -53,6 +53,16 @@ Cypress.Commands.add('disableAutocomplete', (repositoryId) => {
     toggleAutocomplete(repositoryId, false);
 });
 
+Cypress.Commands.add('getNamespaces', (id) => {
+    return cy.request({
+        method: 'GET',
+        url: `repositories/${id}/namespaces`,
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+});
+
 let toggleAutocomplete = (repositoryId, enable) => {
     cy.request({
         method: 'POST',
