@@ -203,7 +203,8 @@ describe('My Settings', () => {
         cy.get('.include-schema-statements')
             .scrollIntoView().should('be.visible').click()
             .then(() => {
-                cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
+                cy.get('.include-schema-statements').scrollIntoView()
+                    .should('be.visible').and('not.be.checked');
                 saveGraphSettings()
                     .then(() => cy.get('.predicate').should('not.exist'));
             });
