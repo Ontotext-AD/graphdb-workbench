@@ -97,14 +97,14 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         }
 
         $scope.removeMember = function(member) {
-            $scope.fedxMembers = $scope.fedxMembers.filter(el => el !== member);
+            $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
             if (member.store && member.store === LOCAL_REPO_STORE) {
                 getRepositories()
                     .then(function () {
                         populateLocalRepos();
-                        $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
                     });
             }
+            $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
         }
 
         $scope.addRemoteMember = function () {
