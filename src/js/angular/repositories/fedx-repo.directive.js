@@ -115,6 +115,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 repositoryName: '',
                 repositoryServer: '',
                 sparqlEndpoint: '',
+                username : '',
+                password : '',
                 supportsASKQueries : "true",
                 writable: "false"
             }
@@ -154,6 +156,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     repositoryName: member.repositoryName,
                     repositoryServer: member.repositoryServer,
                     sparqlEndpoint: member.store === SPARQL_ENDPOINT_STORE ? member.endpoint : member.repositoryLocation,
+                    username : member.username,
+                    password : member.password,
                     supportsASKQueries : member.supportsASKQueries,
                     writable: "false"
                 }
@@ -210,6 +214,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     store : REMOTE_REPO_STORE,
                     repositoryName : $scope.model.repositoryName,
                     repositoryServer : $scope.model.repositoryServer,
+                    username : $scope.model.username,
+                    password : $scope.model.password,
                     writable: $scope.model.writable
                 };
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
@@ -218,6 +224,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 member = {
                     store: SPARQL_ENDPOINT_STORE,
                     endpoint: $scope.model.sparqlEndpoint,
+                    username : $scope.model.username,
+                    password : $scope.model.password,
                     supportsASKQueries: $scope.model.supportsASKQueries,
                     writable: $scope.model.writable
                 };
