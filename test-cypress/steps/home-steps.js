@@ -91,7 +91,7 @@ class HomeSteps {
         cy.get('.big-logo').click();
     }
 
-    static verifyTutorialText = function(number, text) {
+    static verifyTutorialText(number, text) {
         cy.get('.btn-toolbar > .btn-group >').eq(number).click();
         cy.get('.tutorial-container h1').contains(text).should('be.visible');
     }
