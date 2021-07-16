@@ -85,5 +85,23 @@ export const REPO_TOOLTIPS = {
             "It can be in any supported RDF format.",
         constraintFile: "Specifies override of SQL primary and foreign keys.",
         testConn: "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct."
+    },
+    fedx: {
+        repositoryNotExistWarning: 'The repository member has been removed from the local repositories',
+        localReposInstructions: 'Click on a repo to add a local repository as a member',
+        withLogQueries: 'Set whether to log queries',
+        withDebugQueryPlan: 'Whether to print the optimized query execution plan to stdout',
+        enforceMaxQueryTime: 'Max query time in seconds, 0 to disable',
+        withIncludeInferredDefault: 'Set whether to include inferred statements or not',
+        withBoundJoinBlockSize: 'Set the block size for bound joins',
+        withJoinWorkerThreads: 'Set the number of join worker threads for parallelization',
+        withLeftJoinWorkerThreads: 'Set the number of left join worker threads',
+        unionWorkerThreads: 'Set the number of union worker threads for parallelization',
+        withLogQueryPlan: 'Whether to log the query plan',
+        withEnableServiceAsBoundJoin: 'Whether external SERVICE clauses are evaluated using bound join',
+        withSourceSelectionCacheSpec: 'The cache specification for the SourceSelectionMemoryCache',
+        removeMember: 'Remove repository as a FedX member',
+        editRepository: 'Edit repository',
+        setAsWritable: 'Set repository as writable'
     }
 };
