@@ -696,6 +696,73 @@ describe('Repositories', () => {
             .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
 
+    it('should verify fedx repo is present and verify initial state', () => {
+        //create a dummy repository to satisfy the afterEach() function
+        createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+        typeRepositoryId(repositoryId);
+        saveRepository();
+
+        createRepository();
+        getRepositoryTypeButton('fedx').should('be.visible');
+        chooseRepositoryType("fedx");
+        cy.url().should('include', '/repository/create/fedx');
+        cy.get('#id').should('be.visible');
+        cy.get('#title').should('be.visible');
+        cy.get('#fedx-members').should('be.visible');
+        //cy.get('#fedx-members-table').should('be.visible');
+        cy.get('#addFedXRepository').should('be.visible');
+        cy.get('#fedx-options').should('be.visible');
+        cy.get('#enforceMaxQueryTime').should('be.visible');
+        cy.get('#joinWorkerThreads').should('be.visible');
+        cy.get('#boundJoinBlockSize').should('be.visible');
+        cy.get('#leftJoinWorkerThreads').should('be.visible');
+        cy.get('#unionWorkerThreads').should('be.visible');
+        cy.get('#cache-spec').should('be.visible');
+
+    });
+
+    it('should test no member repository selected validation', () => {
+        //create a dummy repository to satisfy the afterEach() function
+        createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+        typeRepositoryId(repositoryId);
+        saveRepository();
+
+        createRepository();
+        getRepositoryTypeButton('fedx').should('be.visible');
+        chooseRepositoryType("fedx");
+        cy.url().should('include', '/repository/create/fedx');
+        typeRepositoryId('fedx-repo');
+        saveRepository();
+        //to change the expected error message once fedx validation is fixed.
+        getToast()
+            .find('.toast-error')
+            .should('be.visible')
+            .and('contain', 'Error processing request (java.lang.String cannot be cast to java.util.List).');
+    });
+
+    it('should create a default FedX repository', () => {
+        createRepository();
+        chooseRepositoryType();
+        cy.url().should('include', '/repository/create/');
+        typeRepositoryId(repositoryId);
+        saveRepository();
+
+        createRepository();
+        getRepositoryTypeButton('fedx').should('be.visible');
+        chooseRepositoryType("fedx");
+        cy.url().should('include', '/repository/create/fedx');
+        typeRepositoryId("fedx-repository");
+        cy.get('#'+ repositoryId + '-a').click();
+        saveRepository();
+        cy.get('#wb-repositories-repositoryInGetRepositories').should('contain', 'fedx-repository');
+        cy.deleteRepository("fedx-repository")
+        cy.get('#wb-repositories-repositoryInGetRepositories').should('not.contain', 'fedx-repository');
+    });
+
     function assertRepositoryStatus(repositoryId, status) {
         cy.waitUntil(() =>
             getRepositoryFromList(repositoryId)
