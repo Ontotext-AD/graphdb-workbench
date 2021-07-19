@@ -613,6 +613,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         toastr.error('There is an error in the form!');
     };
 
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
+    };
+
     $scope.goBackToPreviousLocation = function () {
         if (angular.isDefined($routeParams.previous)) {
             delete $location.$$search.previous;
@@ -648,8 +652,12 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
             && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
             && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize && $scope.repositoryInfo.params.member.value.length !== 0) {
-            $scope.createRepoHttp();
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+                $scope.noMembersError();
+            } else {
+                $scope.createRepoHttp();
+            }
         } else {
             $scope.formError();
         }
@@ -791,6 +799,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         toastr.error('There is an error in the form!');
     };
 
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
+    };
+
     $scope.editRepoHttp = function () {
         $scope.loader = true;
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
@@ -821,10 +833,12 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
+        if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+            $scope.noMembersError();
+        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
             && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
             && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize && $scope.repositoryInfo.params.member.value.length !== 0) {
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
