@@ -36,8 +36,8 @@ const parseNumberParamsIfNeeded = function (params) {
 }
 
 const parseMemberParamIfNeeded = function(param) {
-    if (param) {
-        param.value = [];
+    if (param && param.member) {
+        param.member.value = [];
     }
 }
 
@@ -538,7 +538,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
-            parseMemberParamIfNeeded($scope.repositoryInfo.params['member']);
+            parseMemberParamIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
