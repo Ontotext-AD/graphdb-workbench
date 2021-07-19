@@ -51,6 +51,13 @@ const validateNumberFields = function (params, invalidValues) {
     if (params.queryTimeout && params.queryLimitResults) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
+    } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+        && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+        invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.enforceMaxQueryTime.value);
+        invalidValues.isInvalidLeftJoinWorkerThreads = !NUMBER_PATTERN.test(params.leftJoinWorkerThreads.value);
+        invalidValues.isInvalidBoundJoinBlockSize = !NUMBER_PATTERN.test(params.boundJoinBlockSize.value);
+        invalidValues.isInvalidJoinWorkerThreads = !NUMBER_PATTERN.test(params.joinWorkerThreads.value);
+        invalidValues.isInvalidUnionWorkerThreads = !NUMBER_PATTERN.test(params.unionWorkerThreads.value);
     }
 }
 
@@ -464,7 +471,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.isFreeEdition = isFreeEdition;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false
     };
 
     function isValidEERepository(repositoryType) {
@@ -627,7 +638,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
+        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
+            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
+            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
             $scope.createRepoHttp();
         } else {
             $scope.formError();
@@ -712,7 +726,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false
     };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -796,7 +814,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryTimeout && !$scope.isInvalidQueryLimit) {
+        if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
+            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
+            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
