@@ -35,6 +35,12 @@ const parseNumberParamsIfNeeded = function (params) {
     }
 }
 
+const parseMemberParamIfNeeded = function(param) {
+    if (param) {
+        param.value = [];
+    }
+}
+
 const getShaclOptionsClass = function () {
     const optionsModule = document.getElementById('shaclOptions');
 
@@ -532,6 +538,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
+            parseMemberParamIfNeeded($scope.repositoryInfo.params['member']);
             $scope.loader = false;
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
@@ -641,7 +648,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
             && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
             && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize && $scope.repositoryInfo.params.member.value.length !== 0) {
             $scope.createRepoHttp();
         } else {
             $scope.formError();
@@ -817,7 +824,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
             && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
             && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize && $scope.repositoryInfo.params.member.value.length !== 0) {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
