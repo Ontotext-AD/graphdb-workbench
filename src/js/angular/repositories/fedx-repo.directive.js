@@ -97,12 +97,19 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         }
 
         $scope.removeMember = function(member) {
-            $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
             if (member.store && member.store === LOCAL_REPO_STORE) {
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
                 getRepositories()
                     .then(function () {
                         populateLocalRepos();
                     });
+            } else if (member.store && member.store === SPARQL_ENDPOINT_STORE) {
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
+            } else if (member.store && member.store === NATIVE_STORE) {
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryLocation !== member.repositoryLocation);
+            } else if (member.store && member.store === REMOTE_REPO_STORE) {
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
+                    || el.repositoryServer !== member.repositoryServer);
             }
             $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
         }
@@ -218,7 +225,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     password : $scope.model.password,
                     writable: $scope.model.writable
                 };
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
+                    || el.repositoryServer !== member.repositoryServer);
 
             } else {
                 member = {
