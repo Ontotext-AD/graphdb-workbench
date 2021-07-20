@@ -112,6 +112,11 @@ form div label.error {
 #fedx-members {
     overflow: auto;
 }
+
+.fedXMember:hover {
+    background-color: rgba(0,0,0,.05)
+}
+
 #fedx-options {
     overflow: hidden;
 }
