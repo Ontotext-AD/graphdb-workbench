@@ -153,7 +153,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     respectRights: member.respectRights,
                     repositoryName: member.repositoryName,
                     repoType : member.repoType,
-                    writable: "false"
+                    writable: member.writable
                 }
             } else {
                 $scope.mode = 'remote';
@@ -166,7 +166,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     username : member.username,
                     password : member.password,
                     supportsASKQueries : member.supportsASKQueries,
-                    writable: "false"
+                    writable: member.writable
                 }
             }
 
