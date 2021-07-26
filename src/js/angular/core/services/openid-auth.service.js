@@ -349,7 +349,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     iss: [that.idTokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [that.idTokenAudience];
+                    // Field validation is a bit counter-intuitive, the provided list should provide
+                    // all expected values and validation will work even if some are missing from the token,
+                    // but it will fail if the token contains a value that isn't in verifyFields.
+                    verifyFields['aud'] = [that.idTokenAudience, that.idTokenIssuer];
                     verifyFields['nonce'] = [that.getStorageItem('nonce')];
                 } else if (tokenName === 'access') {
                     verifyFields['aud'] = [that.accessTokenAudience];
