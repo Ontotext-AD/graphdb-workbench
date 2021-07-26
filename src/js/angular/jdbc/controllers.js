@@ -84,6 +84,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.currentTabConfig = {};
     // This property is obligatory in order to show YASQUE and YASR properly
     $scope.orientationViewMode = true;
+    $scope.currentQuery = {};
 
 
     $scope.$watch(function () {
