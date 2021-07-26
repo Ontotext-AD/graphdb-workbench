@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "1.9.0-TR1",
+    "version": "1.9.0-RC1",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -99,7 +99,7 @@
         "ng-file-upload": "^12.2.13",
         "ng-tags-input": "^3.2.0",
         "oclazyload": "^1.1.0",
-        "jsrsasign": "^10.2.0"
+        "jsrsasign": "^10.3.0"
     },
     "resolutions": {
         "minimist": "^1.2.5"
