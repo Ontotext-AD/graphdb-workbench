@@ -246,9 +246,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories) {
     return {
         restrict: 'EA',
         scope: {
@@ -321,7 +321,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('autocompletepromisestatus', function () {
-                if (angular.isDefined($scope.autocompletepromisestatus)) {
+                let activeRepo = $repositories.repositories.filter(el => el.id === $repositories.getActiveRepository())[0];
+                if (activeRepo.type !== 'fedx' && angular.isDefined($scope.autocompletepromisestatus) ) {
                     $scope.autocompletepromisestatus.success(function (response) {
                         element.autoCompleteStatus = !!response;
                         if ($scope.searchInput !== '') {
