@@ -10,14 +10,10 @@ describe('My Settings', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        // Verify that the default user settings are returned
-        cy.clearLocalStorage();
-        cy.setDefaultUserData();
     });
 
     beforeEach(() => {
-        cy.presetRepository(repositoryId);
-
+        cy.setDefaultUserData();
         visitSettingsView();
     });
 
@@ -29,12 +25,7 @@ describe('My Settings', () => {
     });
 
     it('Initial state', () => {
-        // Everything should be related to admin user.
         // Password change field is for admin.
-        cy.get('.login-credentials').should('be.visible');
-        cy.get('#wb-user-username').should('be.visible')
-            .and('have.value', 'admin')
-            .and('have.attr', 'readonly', 'readonly');
         // explicitly state that the fields must be of type password
         cy.get('#wb-user-password:password').should('be.visible')
             .and('have.value', '')
@@ -120,7 +111,7 @@ describe('My Settings', () => {
                 //Go to SPARQL editor and verify changes are persisted for the admin user
                 cy.visit('/sparql');
                 cy.window();
-                cy.url().should('eq', `${Cypress.config('baseUrl')}/sparql`);
+                cy.url().should('contain', `${Cypress.config('baseUrl')}/sparql`);
 
                 waitUntilYASQUEBtnsAreVisible();
 
@@ -137,11 +128,12 @@ describe('My Settings', () => {
 
                 //clear default query and paste a new one that will generate more than 1000 results
                 cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-                cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .invoke('val', testResultCountQuery).trigger('change', {force: true});
-
-                cy.verifyQueryAreaContains(testResultCountQuery);
+                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true})
+                    .then(() => {
+                        cy.get('#queryEditor .CodeMirror').find('textarea')
+                            .invoke('val', testResultCountQuery).trigger('change', {force: true})
+                            .then(() => cy.verifyQueryAreaContains(testResultCountQuery));
+                    });
 
                 cy.get('#wb-sparql-runQuery')
                     .should('be.visible')
@@ -169,12 +161,7 @@ describe('My Settings', () => {
                             .should('be.visible')
                             .and('be.checked');
                     });
-                getSaveButton().click()
-                    .then(() => {
-                        verifyUserSettingsUpdated();
-                    });
             });
-
     });
 
     it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
@@ -185,11 +172,11 @@ describe('My Settings', () => {
         //Verify that schema statements ON is reflected in Visual graph
         visitVisualGraphView();
         cy.searchEasyVisualGraph(DRY_GRAPH);
-        cy.get('.visual-graph-settings-btn').click();
+        cy.get('.visual-graph-settings-btn').scrollIntoView().click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.visible').and('be.checked');
-        saveGraphSettings();
-        cy.get('.predicate').should('contain','type');
+        saveGraphSettings()
+            .then(() => cy.get('.predicate').should('contain','type'));
 
         //Set schema statements OFF in my settings
         visitSettingsView();
@@ -213,10 +200,14 @@ describe('My Settings', () => {
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements').should('be.visible').click();
-        cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
-        saveGraphSettings();
-        cy.get('.predicate').should('not.exist');
+        cy.get('.include-schema-statements')
+            .scrollIntoView().should('be.visible').click()
+            .then(() => {
+                cy.get('.include-schema-statements').scrollIntoView()
+                    .should('be.visible').and('not.be.checked');
+                saveGraphSettings()
+                    .then(() => cy.get('.predicate').should('not.exist'));
+            });
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
@@ -228,11 +219,6 @@ describe('My Settings', () => {
                         .find('input[type="checkbox"]')
                         .scrollIntoView()
                         .then(input => input && input.attr('checked')));
-            });
-        getSaveButton()
-            .click()
-            .then(() => {
-                verifyUserSettingsUpdated();
             });
     });
 
@@ -249,7 +235,7 @@ describe('My Settings', () => {
     }
 
     function getSaveButton() {
-        return cy.get('#wb-user-submit').should('be.visible');
+        return cy.get('#wb-user-submit').scrollIntoView().should('be.visible');
     }
 
     function waitUntilYASQUEBtnsAreVisible() {
@@ -261,23 +247,31 @@ describe('My Settings', () => {
     }
 
     function verifyUserSettingsUpdated() {
-        cy.get('#toast-container')
-            .find('.toast-success')
-            .should('be.visible')
-            .and('contain', 'The user admin was updated');
+        cy.waitUntil(() =>
+            cy.get('#toast-container')
+                .then(toast => toast && toast.text().includes('The user admin was updated')));
     }
 
     function saveGraphSettings() {
-        cy.get('.save-settings-btn')
+        return cy.get('.save-settings-btn')
             .scrollIntoView()
             .should('be.visible')
             .click();
     }
 
     function visitSettingsView() {
-        cy.visit('/settings');
-        cy.window();
-        cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`);
+        cy.visit('/settings', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
+        cy.window()
+            .then(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/settings`));
+        // Everything should be related to admin user.
+        cy.get('.login-credentials').should('be.visible');
+        cy.get('#wb-user-username').should('be.visible')
+            .and('have.value', 'admin')
+            .and('have.attr', 'readonly', 'readonly');
     }
 
     function visitVisualGraphView() {
@@ -287,7 +281,7 @@ describe('My Settings', () => {
 
     function clickLabelBtn(btnId) {
         return cy.get(btnId)
-            .find('.switch.mr-0').should('be.visible').click();
+            .find('.switch.mr-0').scrollIntoView().should('be.visible').click();
     }
 
     function turnOnLabelBtn(btnId) {

@@ -19,10 +19,25 @@ export const getFileName = function(path) {
 };
 
 const parseNumberParamsIfNeeded = function (params) {
-    if (params && params.queryTimeout && params.queryLimitResults) {
-        // Parse both parameters properly to number
-        params.queryTimeout.value = parseInt(params.queryTimeout.value);
-        params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+    if (params) {
+        if (params.queryTimeout && params.queryLimitResults) {
+            // Parse both parameters properly to number
+            params.queryTimeout.value = parseInt(params.queryTimeout.value);
+            params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+            && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+            params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
+            params.boundJoinBlockSize.value = parseInt(params.boundJoinBlockSize.value);
+            params.joinWorkerThreads.value = parseInt(params.joinWorkerThreads.value);
+            params.enforceMaxQueryTime.value = parseInt(params.enforceMaxQueryTime.value);
+            params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
+        }
+    }
+}
+
+const parseMemberParamIfNeeded = function(param) {
+    if (param && param.member) {
+        param.member.value = [];
     }
 }
 
@@ -42,6 +57,13 @@ const validateNumberFields = function (params, invalidValues) {
     if (params.queryTimeout && params.queryLimitResults) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
+    } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+        && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+        invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.enforceMaxQueryTime.value);
+        invalidValues.isInvalidLeftJoinWorkerThreads = !NUMBER_PATTERN.test(params.leftJoinWorkerThreads.value);
+        invalidValues.isInvalidBoundJoinBlockSize = !NUMBER_PATTERN.test(params.boundJoinBlockSize.value);
+        invalidValues.isInvalidJoinWorkerThreads = !NUMBER_PATTERN.test(params.joinWorkerThreads.value);
+        invalidValues.isInvalidUnionWorkerThreads = !NUMBER_PATTERN.test(params.unionWorkerThreads.value);
     }
 }
 
@@ -427,7 +449,6 @@ function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.isEnterprise = isEnterprise;
     $scope.isFreeEdition = isFreeEdition;
-
     $scope.chooseRepositoryType = function (repoType) {
         $location.path(`${$location.path()}/${repoType}`);
     };
@@ -456,7 +477,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.isFreeEdition = isFreeEdition;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false
     };
 
     function isValidEERepository(repositoryType) {
@@ -475,9 +500,14 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         return repositoryType === REPOSITORY_TYPES.ontop;
     }
 
+    function isValidFedXRepository(repositoryType) {
+        return repositoryType === REPOSITORY_TYPES.fedx;
+    }
+
     function isRepositoryTypeValid(repositoryType) {
         return isValidEERepository(repositoryType) || isValidSERepository(repositoryType)
-            || isValidFRRepository(repositoryType) || isValidOntopRepository(repositoryType);
+            || isValidFRRepository(repositoryType) || isValidOntopRepository(repositoryType)
+            || isValidFedXRepository(repositoryType);
     }
 
     function setPageTitle(repositoryType) {
@@ -497,6 +527,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             case REPOSITORY_TYPES.ontop:
                 $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
                 break;
+            case REPOSITORY_TYPES.fedx:
+                $scope.pageTitle = 'Create FedX Virtual SPARQL repository';
+                break;
         }
     }
 
@@ -505,6 +538,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
+            parseMemberParamIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
@@ -579,6 +613,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         toastr.error('There is an error in the form!');
     };
 
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
+    };
+
     $scope.goBackToPreviousLocation = function () {
         if (angular.isDefined($routeParams.previous)) {
             delete $location.$$search.previous;
@@ -611,8 +649,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
-            $scope.createRepoHttp();
+        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
+            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
+            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+                $scope.noMembersError();
+            } else {
+                $scope.createRepoHttp();
+            }
         } else {
             $scope.formError();
         }
@@ -696,7 +741,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false
     };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -750,6 +799,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         toastr.error('There is an error in the form!');
     };
 
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
+    };
+
     $scope.editRepoHttp = function () {
         $scope.loader = true;
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
@@ -780,7 +833,12 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryTimeout && !$scope.isInvalidQueryLimit) {
+        if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+            $scope.noMembersError();
+        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
+            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
+            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
+            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
