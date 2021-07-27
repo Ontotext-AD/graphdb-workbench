@@ -63,15 +63,10 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
     }
 
     function checkAutocompleteStatus() {
-        let activeRepo = $repositories.repositories.filter(el => el.id === $repositories.getActiveRepository())[0];
-        if (activeRepo.type === 'fedx') {
-            $scope.getActiveRepositorySize();
-        } else {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                .success(function () {
-                    $scope.getActiveRepositorySize();
-                });
-        }
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+            .success(function () {
+                $scope.getActiveRepositorySize();
+            });
     }
 
     $scope.$on('autocompleteStatus', function() {
