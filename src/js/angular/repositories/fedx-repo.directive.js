@@ -220,7 +220,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 member = {
                     store: REMOTE_REPO_STORE,
                     repositoryName: $scope.model.repositoryName,
-                    repositoryServer: $scope.model.repositoryServer.charAt($scope.model.repositoryServer.length - 1) === '/' ? $scope.model.repositoryServer.substring(0, $scope.model.repositoryServer.length - 1) : $scope.model.repositoryServer,
+                    repositoryServer: $scope.model.repositoryServer.slice(-1) === '/' ? $scope.model.repositoryServer.slice(0, -1) : $scope.model.repositoryServer,
                     username: $scope.model.username,
                     password: $scope.model.password,
                     writable: $scope.model.writable
