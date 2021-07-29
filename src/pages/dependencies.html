@@ -19,7 +19,12 @@
 
     <p>{{repositoryError}}</p>
 </div>
-<div class="content" ng-show="!repositoryError && !isSystemRepository()">
+<div class="alert alert-info" ng-if="isActiveRepoFedXType()">
+    <h4>Dependency plugin supported</h4>
+    <p>The current repository does not support the Dependency plugin. Please check the type of the repository or select
+        another one.</p>
+</div>
+<div class="content" ng-show= "!isActiveRepoFedXType() && !repositoryError && !isSystemRepository()">
     <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
         <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
