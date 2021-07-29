@@ -609,10 +609,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         }
     };
 
-    $scope.formError = function () {
-        toastr.error('There is an error in the form!');
-    };
-
     $scope.noMembersError = function () {
         toastr.error('FedX repository should be created with at least one member!');
     };
@@ -649,17 +645,24 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
-            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
-            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
-            if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
-                $scope.noMembersError();
-            } else {
-                $scope.createRepoHttp();
-            }
+        } else if ($scope.isInvalidRepoName) {
+            toastr.error('Wrong repo name');
+        } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+            $scope.noMembersError();
+        } else  if($scope.invalidValues.isInvalidQueryLimit) {
+            toastr.error('Invalid parameter query limit');
+        } else if ($scope.invalidValues.isInvalidQueryTimeout) {
+            toastr.error('Invalid parameter query timeout');
+        } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
+            toastr.error('Invalid parameter join worker threads');
+        } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
+            toastr.error('Invalid parameter left join worker threads');
+        } else if ($scope.invalidValues.isInvalidUnionWorkerThreads) {
+            toastr.error('Invalid parameter union worker threads');
+        } else if ($scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            toastr.error('Invalid parameter bound join block size');
         } else {
-            $scope.formError();
+                $scope.createRepoHttp();
         }
     };
 
@@ -795,10 +798,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         $scope.repositoryType = type;
     };
 
-    $scope.formError = function () {
-        toastr.error('There is an error in the form!');
-    };
-
     $scope.noMembersError = function () {
         toastr.error('FedX repository should be created with at least one member!');
     };
@@ -833,12 +832,23 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+        if ($scope.isInvalidRepoName) {
+            toastr.error('Wrong repo name');
+        } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
             $scope.noMembersError();
-        } else if (!$scope.isInvalidRepoName && !$scope.invalidValues.isInvalidQueryLimit
-            && !$scope.invalidValues.isInvalidQueryTimeout && !$scope.invalidValues.isInvalidJoinWorkerThreads
-            && !$scope.invalidValues.isInvalidLeftJoinWorkerThreads && !$scope.invalidValues.isInvalidUnionWorkerThreads
-            && !$scope.invalidValues.isInvalidBoundJoinBlockSize) {
+        } else if($scope.invalidValues.isInvalidQueryLimit) {
+            toastr.error('Invalid parameter query limit');
+        } else if ($scope.invalidValues.isInvalidQueryTimeout) {
+            toastr.error('Invalid parameter query timeout');
+        } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
+            toastr.error('Invalid parameter join worker threads');
+        } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
+            toastr.error('Invalid parameter left join worker threads');
+        } else if ($scope.invalidValues.isInvalidUnionWorkerThreads) {
+            toastr.error('Invalid parameter union worker threads');
+        } else if ($scope.invalidValues.isInvalidBoundJoinBlockSize) {
+            toastr.error('Invalid parameter bound join block size');
+        } else {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
@@ -847,8 +857,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 .then(function () {
                     $scope.editRepoHttp();
                 });
-        } else {
-            $scope.formError();
         }
     }
 

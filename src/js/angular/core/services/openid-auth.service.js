@@ -33,7 +33,9 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              *      proxyOidc : boolean,
              *      tokenAudience : string,
              *      tokenIssuer : string,
-             *      tokenType : string
+             *      tokenType : string,
+             *      extraScopes : string,
+             *      oracleDomain : string
              * }} OpenIdConfig
              */
 
@@ -60,6 +62,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
                     $window.location.href = that.getLoginUrl(state, code_challenge, returnToUrl, openIDConfig);
                 } else if (authFlow === 'code_no_pkce') {
+                    that.removeStorageItem('pkce_code_verifier');
                     $window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else if (authFlow === 'implicit') {
                     that.setStorageItem('nonce', state);
@@ -103,9 +106,14 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
                 // We want these first even though the order doesn't matter.
                 params.unshift(`response_type=${encodeURIComponent(response_type)}`,
-                    `scope=${encodeURIComponent(that.getScope())}`,
+                    `scope=${encodeURIComponent(that.getScope(openIDConfig.extraScopes))}`,
                     `client_id=${encodeURIComponent(openIDConfig.clientId)}`,
                     `redirect_uri=${encodeURIComponent(redirectUrl)}`);
+
+                if (openIDConfig.oracleDomain) {
+                    // Oracle OAM deviates from the spec and requires this as well
+                    params.push(`domain=${encodeURIComponent(openIDConfig.oracleDomain)}`)
+                }
 
                 if (openIDConfig.authorizeParameters) {
                     params.push(openIDConfig.authorizeParameters);
@@ -161,6 +169,11 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }
                 that.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
                 that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
+
+                if (openIDConfig.oracleDomain) {
+                    // Oracle OAM deviates from the spec and requires this as well
+                    openIDReqHeaders['headers']['X-OAuth-Identity-Domain-Name'] = openIDConfig.oracleDomain;
+                }
 
                 that.withOpenIdKeys(openIdKeysUri, function() {
                     that.isLoggedIn = that.hasValidIdToken();
@@ -336,7 +349,10 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     iss: [that.idTokenIssuer],
                 };
                 if (tokenName === 'id') {
-                    verifyFields['aud'] = [that.idTokenAudience];
+                    // Field validation is a bit counter-intuitive, the provided list should provide
+                    // all expected values and validation will work even if some are missing from the token,
+                    // but it will fail if the token contains a value that isn't in verifyFields.
+                    verifyFields['aud'] = [that.idTokenAudience, that.idTokenIssuer];
                     verifyFields['nonce'] = [that.getStorageItem('nonce')];
                 } else if (tokenName === 'access') {
                     verifyFields['aud'] = [that.accessTokenAudience];
@@ -613,10 +629,16 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              * Returns the OpenID scope we need to request. The scope may include offline_access,
              * which is determined by OpenID configuration.
              *
+             * @param {string} extraScopes Extra scopes to add to the default list
              * @returns {string} The OpenID scope to request.
              */
-            this.getScope = function() {
-                return 'openid' + (that.supportsOfflineAccess ? ' offline_access' : '');
+            this.getScope = function(extraScopes) {
+                let scope = 'openid' + (that.supportsOfflineAccess ? ' offline_access' : '');
+                if (extraScopes) {
+                    scope += ' ' + extraScopes;
+                }
+                console.log(`oidc: requesting scopes '${scope}'`);
+                return scope;
             }
 
             this.setStorageItem = function (name, value) {
