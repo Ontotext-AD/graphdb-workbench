@@ -27,10 +27,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
             }
 
             function checkAutocompleteStatus() {
-                let activeRepo = $repositories.repositories.filter(el => el.id === $repositories.getActiveRepository())[0];
-                if (activeRepo.type !== 'fedx') {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-                }
+                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
             }
 
             $scope.$on('autocompleteStatus', function () {
