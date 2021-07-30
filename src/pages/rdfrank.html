@@ -21,7 +21,7 @@
     <div core-errors write ontop></div>
 
     <div ng-show="canWriteActiveRepo() && !loading">
-		<div class="alert alert-info" ng-if="!loader && !pluginFound">
+		<div class="alert alert-info" ng-if="isActiveRepoFedXType() || (!loader && !pluginFound)">
 			<h4>RDFRank not supported</h4>
 			<p>The current repository does not support the RDFRank plugin. Please check the type of the repository or select
 				another one.</p>
@@ -30,7 +30,7 @@
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
 		</div>
-		<div ng-show="pluginFound && !getDegradedReason()">
+		<div ng-show="!isActiveRepoFedXType() && pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="rdf-rank-status">RDFRank for repository <strong>{{getActiveRepository()}}</strong> is with status</span>
                 <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> Computed</span>

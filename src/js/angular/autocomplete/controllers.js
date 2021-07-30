@@ -233,6 +233,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
         checkForPlugin();
     });
 
+    $scope.isActiveRepoFedXType = function () {
+        return $repositories.isActiveRepoFedXType();
+    }
+
     init();
 }
 

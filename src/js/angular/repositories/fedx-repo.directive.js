@@ -37,7 +37,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         function populateLocalRepos() {
             for (const member of $scope.fedxMembers) {
-                $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName);
+                $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName || member.store !== LOCAL_REPO_STORE);
             }
         }
 
@@ -98,7 +98,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         $scope.removeMember = function (member) {
             if (member.store && member.store === LOCAL_REPO_STORE) {
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store);
                 getRepositories()
                     .then(function () {
                         populateLocalRepos();
