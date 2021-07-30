@@ -8,7 +8,7 @@
                     <tr class="repository" style="display: flex"
                         ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'repositoryName']">
                         <td style="display: inline-block; flex: 1">
-                            <span class="multilined">
+                            <span class="multiline-text multilined">
                                 <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                                 {{resolveName(member)}}
                             </span>

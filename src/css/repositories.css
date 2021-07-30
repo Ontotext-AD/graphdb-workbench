@@ -415,9 +415,5 @@ span.label {
 }
 
 .multilined {
-    line-height: 0.75em;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: left;
     word-break: break-all;
 }
