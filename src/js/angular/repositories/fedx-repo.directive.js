@@ -37,11 +37,11 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         function populateLocalRepos() {
             for (const member of $scope.fedxMembers) {
-                $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName);
+                $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName || member.store !== LOCAL_REPO_STORE);
             }
         }
 
-        $scope.setWritableRepo = function(member) {
+        $scope.setWritableRepo = function (member) {
             let currentWritable = getWritableRepo();
             if (currentWritable && currentWritable.repositoryName !== member.repositoryName) {
                 currentWritable.writable = 'false';
@@ -85,9 +85,9 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         $scope.addLocalMember = function (repository) {
             let member = {
-                store : LOCAL_REPO_STORE,
-                repositoryName : repository.id,
-                repoType : repository.type,
+                store: LOCAL_REPO_STORE,
+                repositoryName: repository.id,
+                repoType: repository.type,
                 respectRights: "true",
                 writable: "false"
             };
@@ -96,9 +96,9 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             updateMembers(member);
         }
 
-        $scope.removeMember = function(member) {
+        $scope.removeMember = function (member) {
             if (member.store && member.store === LOCAL_REPO_STORE) {
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store);
                 getRepositories()
                     .then(function () {
                         populateLocalRepos();
@@ -122,9 +122,9 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 repositoryName: '',
                 repositoryServer: '',
                 sparqlEndpoint: '',
-                username : '',
-                password : '',
-                supportsASKQueries : "true",
+                username: '',
+                password: '',
+                supportsASKQueries: "true",
                 writable: "false"
             }
 
@@ -148,25 +148,25 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             if (member.store === LOCAL_REPO_STORE) {
                 $scope.mode = 'local';
                 $scope.model = {
-                    editMode : true,
-                    store : member.store,
+                    editMode: true,
+                    store: member.store,
                     respectRights: member.respectRights,
                     repositoryName: member.repositoryName,
-                    repoType : member.repoType,
-                    writable: "false"
+                    repoType: member.repoType,
+                    writable: member.writable
                 }
             } else {
                 $scope.mode = 'remote';
                 $scope.model = {
-                    editMode : true,
-                    store : member.store,
+                    editMode: true,
+                    store: member.store,
                     repositoryName: member.repositoryName,
                     repositoryServer: member.repositoryServer,
                     sparqlEndpoint: member.store === SPARQL_ENDPOINT_STORE ? member.endpoint : member.repositoryLocation,
-                    username : member.username,
-                    password : member.password,
-                    supportsASKQueries : member.supportsASKQueries,
-                    writable: "false"
+                    username: member.username,
+                    password: member.password,
+                    supportsASKQueries: member.supportsASKQueries,
+                    writable: member.writable
                 }
             }
 
@@ -182,7 +182,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     return member.repositoryName;
                 }
                 case REMOTE_REPO_STORE : {
-                    return member.repositoryName  + '@' + member.repositoryServer;
+                    return member.repositoryName + '@' + member.repositoryServer;
                 }
                 case SPARQL_ENDPOINT_STORE : {
                     return member.endpoint;
@@ -218,25 +218,37 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
             } else if ($scope.model.repositoryName && $scope.model.store === REMOTE_REPO_STORE) {
                 member = {
-                    store : REMOTE_REPO_STORE,
-                    repositoryName : $scope.model.repositoryName,
-                    repositoryServer : $scope.model.repositoryServer,
-                    username : $scope.model.username,
-                    password : $scope.model.password,
+                    store: REMOTE_REPO_STORE,
+                    repositoryName: $scope.model.repositoryName,
+                    repositoryServer: $scope.model.repositoryServer.slice(-1) === '/' ? $scope.model.repositoryServer.slice(0, -1) : $scope.model.repositoryServer,
+                    username: $scope.model.username,
+                    password: $scope.model.password,
                     writable: $scope.model.writable
                 };
+                if ($scope.fedxMembers.find(el => el.repositoryName === member.repositoryName
+                    && el.repositoryServer === member.repositoryServer)) {
+                    let resolvedName = $scope.resolveName(member);
+                    toastr.error("Repository " + resolvedName + " already added as a FedX member")
+                }
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
                     || el.repositoryServer !== member.repositoryServer);
+
 
             } else {
                 member = {
                     store: SPARQL_ENDPOINT_STORE,
                     endpoint: $scope.model.sparqlEndpoint,
-                    username : $scope.model.username,
-                    password : $scope.model.password,
+                    username: $scope.model.username,
+                    password: $scope.model.password,
                     supportsASKQueries: $scope.model.supportsASKQueries,
                     writable: $scope.model.writable
                 };
+
+                if ($scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
+                    let resolvedName = $scope.resolveName(member);
+                    toastr.error("SPARQL endpoint " + resolvedName + " already added as a FedX member")
+                }
+
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
             }
 

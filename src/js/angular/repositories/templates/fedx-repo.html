@@ -8,7 +8,7 @@
                     <tr class="repository" style="display: flex"
                         ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'repositoryName']">
                         <td style="display: inline-block; flex: 1">
-                            <span class="multiline-text">
+                            <span class="multiline-text multilined">
                                 <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                                 {{resolveName(member)}}
                             </span>
@@ -119,6 +119,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.enforceMaxQueryTime.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.enforceMaxQueryTime}}"/>
                     </div>
                 </div>
@@ -128,11 +129,12 @@
                     </label>
                     <div class="col-lg-2">
                         <input id="boundJoinBlockSize"
-                                   name="boundJoinBlockSize"
-                                   type="number" step="1"
-                                   ng-model="repositoryInfo.params.boundJoinBlockSize.value"
-                                   class="form-control"
-                                   tooltip="{{repoTooltips.fedx.withBoundJoinBlockSize}}"/>
+                               name="boundJoinBlockSize"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.boundJoinBlockSize.value"
+                               class="form-control"
+                               required
+                               tooltip="{{repoTooltips.fedx.withBoundJoinBlockSize}}"/>
                     </div>
                 </div>
             </div>
@@ -147,6 +149,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.joinWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.withJoinWorkerThreads}}"/>
                     </div>
                 </div>
@@ -160,6 +163,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.leftJoinWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.withLeftJoinWorkerThreads}}"/>
                     </div>
                 </div>
@@ -181,6 +185,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.unionWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.unionWorkerThreads}}"/>
                     </div>
                 </div>

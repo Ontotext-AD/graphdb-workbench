@@ -336,6 +336,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoOntopType();
     }
 
+    $scope.isActiveRepoFedXType = function () {
+        return $repositories.isActiveRepoFedXType();
+    }
+
     /**
      *  Sets attrs property in the directive
      * @param attrs

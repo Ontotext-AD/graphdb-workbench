@@ -32,6 +32,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         const that = this;
         const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
+        const FEDX_REPOSITORY_LABEL = 'graphdb:FedXRepository';
+
 
         const loadingDone = function (err, locationError) {
             that.loading = false;
@@ -233,6 +235,15 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+            }
+
+            return false;
+        }
+
+        this.isActiveRepoFedXType = function() {
+            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+            if (activeRepo) {
+                return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
             }
 
             return false;

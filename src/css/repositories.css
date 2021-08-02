@@ -413,3 +413,7 @@ span.label {
     padding-left: 15px;
     float:left
 }
+
+.multilined {
+    word-break: break-all;
+}

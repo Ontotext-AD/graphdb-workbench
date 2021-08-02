@@ -873,13 +873,14 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     /**
      * In case of Ontop repository, sameAs, inference and nocount are
-     * overridden to true and #sameAs and #inference buttons is disabled
+     * overridden to true and #sameAs and #inference buttons is disabled, In case of FedX repo nocount is overriden
      */
     function overrideSameAsInferenceAndNoCountIfNeeded() {
         const isOntop = $repositories.isActiveRepoOntopType();
+        const isFedX = $repositories.isActiveRepoFedXType();
         handleSameAsAndInferenceBtns(isOntop);
 
-        $scope.nocount = isOntop ? true : !principal.appSettings.EXECUTE_COUNT;
+        $scope.nocount = (isOntop || isFedX) ? true : !principal.appSettings.EXECUTE_COUNT;
         $scope.currentQuery.inference = isOntop ? true : principal.appSettings.DEFAULT_INFERENCE;
         $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
     }
