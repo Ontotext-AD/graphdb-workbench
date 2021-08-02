@@ -344,12 +344,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     const loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
         const sendSameAs = (sameAsParam === undefined) ? ($scope.saveSettings['sameAsState']) : sameAsParam === true;
         const sendInferred = (inferredParam === undefined) ? ($scope.saveSettings['includeInferred']) : inferredParam === true;
-
         $scope.loading = true;
         $http({
             url: 'rest/explore-graph/graph',
-            method: 'GET',
-            params: {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            data: {
                 query: queryString,
                 linksLimit: $scope.saveSettings['linksLimit'],
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
