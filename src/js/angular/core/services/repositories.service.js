@@ -219,7 +219,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isOntopRepo(repo.id)
+                return $jwtAuth.canWriteRepo(that.location, repo.id) && that.isRepoTypeSupported(repo.id);
             });
         };
 
@@ -232,27 +232,35 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.isActiveRepoOntopType = function () {
-            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+            const that = this;
+            let activeRepo = this.repositories.find(current => current.id === that.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
 
-            return false;
+            // On F5 or refresh of page active repo first is undefined,
+            // so return the following check to ensure that repositories will
+            // be loaded first repo type will be evaluated properly afterwards
+            return typeof activeRepo === "undefined";
         }
 
         this.isActiveRepoFedXType = function() {
-            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+            const that = this;
+            let activeRepo = this.repositories.find(current => current.id === that.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
             }
 
-            return false;
+            // On F5 or refresh of page active repo first is undefined,
+            // so return the following check to ensure that repositories will
+            // be loaded first repo type will be evaluated properly afterwards
+            return typeof activeRepo === "undefined";
         }
 
-        this.isOntopRepo = function (repoId) {
+        this.isRepoTypeSupported = function (repoId) {
             let activeRepo = this.repositories.find(current => current.id === repoId);
             if (activeRepo) {
-                return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+                return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL && activeRepo.sesameType !== FEDX_REPOSITORY_LABEL;
             }
 
             return false;
@@ -264,6 +272,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repo;
         };
+
         this.setRepositoryHeaders();
 
         this.setRepository = function (id) {

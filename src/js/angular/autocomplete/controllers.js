@@ -117,7 +117,9 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     const init = function() {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        if (!$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
@@ -227,15 +229,13 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.$on('repositoryIsSet', function () {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        if (!$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
     });
-
-    $scope.isActiveRepoFedXType = function () {
-        return $repositories.isActiveRepoFedXType();
-    }
 
     init();
 }

@@ -18,14 +18,9 @@
 		 size="75">
 	</div>
 
-    <div core-errors write ontop></div>
+    <div core-errors write ontop fedx></div>
 
     <div ng-show="canWriteActiveRepo() && !loading">
-		<div class="alert alert-info" ng-if="isActiveRepoFedXType() || (!loader && !pluginFound)">
-			<h4>RDFRank not supported</h4>
-			<p>The current repository does not support the RDFRank plugin. Please check the type of the repository or select
-				another one.</p>
-		</div>
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>

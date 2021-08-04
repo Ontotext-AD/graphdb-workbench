@@ -10,23 +10,17 @@
 			  popover-placement="bottom-right"
 			  popover-append-to-body="true"><span class="icon-info"></span></span>
 	</h1>
-	<div core-errors ontop></div>
+	<div core-errors ontop fedx></div>
 	<div system-repo-warning></div>
 	<div class="alert alert-danger" ng-show="!isActiveRepoFedXType() && repositoryError">
 		<p>The currently selected repository cannot be used for queries due to an error:</p>
 		<p>{{repositoryError}}</p>
 	</div>
-
-    <div class="alert alert-info" ng-if="isActiveRepoFedXType()">
-        <h4>Similarity not supported</h4>
-        <p>The current repository does not support the Similarity plugin. Please check the type of the repository or select
-            another one.</p>
-    </div>
-	<div class="alert alert-danger plugin-disabled-warning" ng-show="!isActiveRepoFedXType() && pluginDisabled">
+	<div class="alert alert-danger plugin-disabled-warning" ng-show="pluginDisabled">
 		<p>Similarity Plugin is disabled for this repository. <a href="#" class="enable-plugin-link" ng-click="enabledSimilarityPlugin()">Enable plugin</a></p>
 	</div>
 
-	<div class="card mb-2 existing-indexes" ng-if="getActiveRepository() && !pluginDisabled && !isActiveRepoOntopType() && !isActiveRepoFedXType() ">
+	<div class="card mb-2 existing-indexes" ng-if="getActiveRepository() && !pluginDisabled && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
 		<div class="card-block" ng-init="getSimilarityIndexes();">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">

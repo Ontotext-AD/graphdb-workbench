@@ -323,7 +323,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const activeRepository = $repositories.getActiveRepository();
         // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
         return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem) && !$scope.isActiveRepoOntopType();
+            && (activeRepository !== 'SYSTEM' || !noSystem) && $repositories.isRepoTypeSupported(activeRepository);
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -340,6 +340,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoFedXType();
     }
 
+    $scope.isRepoTypeSupported = function (repoId) {
+        return $repositories.isRepoTypeSupported(repoId);
+    }
+
     /**
      *  Sets attrs property in the directive
      * @param attrs
@@ -351,13 +355,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     /**
      *  If the attribute "write" is provided and repository other than Ontop one,
      * directive will require a repository with write access.
-     *  If on the other hand attribute "ontop" is found and such repo, proper message about the
-     * restrictions related with repository of type Ontop will be shown to the user
+     *  If on the other hand attribute "ontop" or "fedx" is found and such repo, proper message about the
+     * restrictions related with repository of type Ontop or FedX will be shown to the user
      */
     $scope.setRestricted = function () {
         if ($scope.attrs) {
-            $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
-                $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+            const activeRepo = $scope.getActiveRepository();
+            $scope.isRestricted =
+                $scope.attrs.hasOwnProperty('write') && $scope.isRepoTypeSupported(activeRepo) ||
+                $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
+                $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
         }
     };
 
