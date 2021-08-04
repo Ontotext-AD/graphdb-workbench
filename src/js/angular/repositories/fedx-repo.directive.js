@@ -236,7 +236,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             } else {
                 member = {
                     store: SPARQL_ENDPOINT_STORE,
-                    endpoint: $scope.model.sparqlEndpoint,
+                    endpoint: $scope.model.sparqlEndpoint.slice(-1) === '/' ? $scope.model.sparqlEndpoint.slice(0, -1) : $scope.model.sparqlEndpoint,
                     username: $scope.model.username,
                     password: $scope.model.password,
                     supportsASKQueries: $scope.model.supportsASKQueries,
