@@ -204,6 +204,10 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
         }
 
+        function removeEndingSlash(url) {
+            return url.slice(-1) === '/' ? url.slice(0, -1) : url
+        }
+
         $scope.ok = function () {
             let member;
             if ($scope.model.repositoryName && $scope.model.store === LOCAL_REPO_STORE) {
@@ -219,7 +223,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 member = {
                     store: REMOTE_REPO_STORE,
                     repositoryName: $scope.model.repositoryName,
-                    repositoryServer: $scope.model.repositoryServer.slice(-1) === '/' ? $scope.model.repositoryServer.slice(0, -1) : $scope.model.repositoryServer,
+                    repositoryServer: removeEndingSlash($scope.model.repositoryServer),
                     username: $scope.model.username,
                     password: $scope.model.password,
                     writable: $scope.model.writable
@@ -236,7 +240,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             } else {
                 member = {
                     store: SPARQL_ENDPOINT_STORE,
-                    endpoint: $scope.model.sparqlEndpoint.slice(-1) === '/' ? $scope.model.sparqlEndpoint.slice(0, -1) : $scope.model.sparqlEndpoint,
+                    endpoint: removeEndingSlash($scope.model.sparqlEndpoint),
                     username: $scope.model.username,
                     password: $scope.model.password,
                     supportsASKQueries: $scope.model.supportsASKQueries,
