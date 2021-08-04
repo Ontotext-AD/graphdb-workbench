@@ -233,7 +233,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.isActiveRepoOntopType = function () {
             const that = this;
-            let activeRepo = this.repositories.find(current => current.id === that.getActiveRepository());
+            let activeRepo = that.repositories.find(current => current.id === that.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
@@ -246,7 +246,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.isActiveRepoFedXType = function() {
             const that = this;
-            let activeRepo = this.repositories.find(current => current.id === that.getActiveRepository());
+            let activeRepo = that.repositories.find(current => current.id === that.getActiveRepository());
             if (activeRepo) {
                 return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
             }
