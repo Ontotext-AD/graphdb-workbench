@@ -6,7 +6,7 @@
             <table id="fedx-members-table" class="table table-hover table-striped" aria-describedby="Repositories table">
                 <tbody class="tbody-fedx">
                     <tr class="repository" style="display: flex"
-                        ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'repositoryName']">
+                        ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'endpoint', 'repositoryServer', 'repositoryName'] : true ">
                         <td style="display: inline-block; flex: 1">
                             <span class="multiline-text multilined">
                                 <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>

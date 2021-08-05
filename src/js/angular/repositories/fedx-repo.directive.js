@@ -208,6 +208,10 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             return url.slice(-1) === '/' ? url.slice(0, -1) : url
         }
 
+        function checkEditMode() {
+            return $scope.editRepoPage && !$scope.editRepoPage || !$scope.model.editMode;
+        }
+
         $scope.ok = function () {
             let member;
             if ($scope.model.repositoryName && $scope.model.store === LOCAL_REPO_STORE) {
@@ -218,7 +222,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     respectRights: $scope.model.respectRights,
                     writable: $scope.model.writable
                 }
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName);
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store );
             } else if ($scope.model.repositoryName && $scope.model.store === REMOTE_REPO_STORE) {
                 member = {
                     store: REMOTE_REPO_STORE,
@@ -228,7 +232,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     password: $scope.model.password,
                     writable: $scope.model.writable
                 };
-                if ((!$scope.editRepoPage || !$scope.model.editMode) && $scope.fedxMembers.find(el => el.repositoryName === member.repositoryName
+                if (checkEditMode() && $scope.fedxMembers.find(el => el.repositoryName === member.repositoryName
                     && el.repositoryServer === member.repositoryServer)) {
                     let resolvedName = $scope.resolveName(member);
                     toastr.error(`Repository ${resolvedName} already added as a FedX member`);
@@ -247,7 +251,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                     writable: $scope.model.writable
                 };
 
-                if ((!$scope.editRepoPage || !$scope.model.editMode) && $scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
+                if (checkEditMode() && $scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
                     let resolvedName = $scope.resolveName(member);
                     toastr.error(`SPARQL endpoint ${resolvedName} already added as a FedX member`);
                     $scope.$modalInstance.close();
