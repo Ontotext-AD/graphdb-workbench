@@ -274,7 +274,10 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabsData);
             $scope.tabs = $scope.tabsData;
 
+            // The repository is changed. Remove error messages as well, if any
             $scope.currentQuery = {};
+            $scope.errorMessage = null;
+            $scope.repositoryError = null;
         }
     }
 
