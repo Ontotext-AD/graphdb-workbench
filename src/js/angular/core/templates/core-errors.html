@@ -4,8 +4,11 @@
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
                     <div ng-if="!getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
-                    <div ng-if="getActiveRepository() && isRestricted && !canWriteActiveRepo()">Some functionalities are not available because <span ng-if="!isActiveRepoOntopType()">you have no write permission to repository </span>
-                        <strong>{{getActiveRepository()}}</strong><span ng-if="isActiveRepoOntopType()"> is read-only Virtual Repository</span>.</div>
+                    <div ng-if="getActiveRepository() && isRestricted && !canWriteActiveRepo()">Some functionalities are not available because
+                        <span ng-if="!isActiveRepoOntopType() && !isActiveRepoFedXType()">you have no write permission to repository </span>
+                        <strong ng-if="isActiveRepoOntopType()">{{getActiveRepository()}}</strong>
+                        <span ng-if="isActiveRepoOntopType()"> is read-only Virtual Repository</span>
+                        <span ng-if="isActiveRepoFedXType()"> <b>{{title}}</b> is not supported by FedX Repository</span>.</div>
                     <small>
                         <span ng-if="getAccessibleRepositories().length">
                             Click one of the repositories below to connect to it<span ng-if="canManageRepositories()"> or create a new repository</span>.

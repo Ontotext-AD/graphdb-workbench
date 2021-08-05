@@ -14,6 +14,14 @@ AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$
 
 function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
 
+    let timer;
+
+    function cancelTimer() {
+        if (timer) {
+            $interval.cancel(timer);
+        }
+    }
+
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (data) {
@@ -105,19 +113,21 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     const pullStatus = function () {
-        const timer = $interval(function () {
+        timer = $interval(function () {
             if ($scope.autocompleteEnabled) {
                 refreshIndexStatus();
             }
         }, 5000);
-
-        $scope.$on("$destroy", function () {
-            $interval.cancel(timer);
-        });
     };
 
+    $scope.$on("$destroy", function () {
+        cancelTimer();
+    });
+
     const init = function() {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        if (!$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
@@ -227,15 +237,15 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.$on('repositoryIsSet', function () {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        cancelTimer();
+        if (!$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
+        pullStatus();
     });
-
-    $scope.isActiveRepoFedXType = function () {
-        return $repositories.isActiveRepoFedXType();
-    }
 
     init();
 }
