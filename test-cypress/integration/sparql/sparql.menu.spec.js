@@ -140,7 +140,7 @@ describe('SPARQL screen validation', () => {
             verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             // Verify pasting also works
-            pasteQuery(DEFAULT_QUERY_MODIFIED);
+            cy.pasteQuery(DEFAULT_QUERY_MODIFIED);
 
             executeQuery();
 
@@ -272,7 +272,7 @@ describe('SPARQL screen validation', () => {
 
             let describeQuery = 'describe ?t {bind (<<?s ?p ?o>> as ?t) .}';
 
-            pasteQuery(describeQuery);
+            cy.pasteQuery(describeQuery);
 
             executeQuery();
 
@@ -354,7 +354,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute (Describe) query', () => {
             let describeQuery = 'DESCRIBE <http://www.ontotext.com/SYSINFO> FROM <http://www.ontotext.com/SYSINFO>';
 
-            pasteQuery(describeQuery);
+            cy.pasteQuery(describeQuery);
 
             executeQuery();
 
@@ -383,7 +383,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute (ASK) query', () => {
             let askQuery = 'ASK WHERE { ?s ?p ?o .FILTER (regex(?o, "ontotext.com")) }';
 
-            pasteQuery(askQuery);
+            cy.pasteQuery(askQuery);
             executeQuery();
 
             // Confirm that all tabs (Table, Pivot Table, Google chart) are disabled
@@ -397,7 +397,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test execute (CONSTRUCT) query', () => {
             cy.fixture('queries/construct-query.sparql').then(constructQuery => {
-                pasteQuery(constructQuery);
+                cy.pasteQuery(constructQuery);
             });
 
             executeQuery();
@@ -420,7 +420,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute query with and without "Including inferred" selected', () => {
             let insertQuery = 'INSERT DATA { <urn:a> <http://a/b> <urn:b> . <urn:b> <http://a/b> <urn:c> . }';
 
-            pasteQuery(insertQuery);
+            cy.pasteQuery(insertQuery);
             executeQuery();
 
             getUpdateMessage().should('be.visible');
@@ -431,7 +431,7 @@ describe('SPARQL screen validation', () => {
                 .find('.icon-inferred-on')
                 .should('be.visible');
 
-            pasteQuery(DEFAULT_QUERY);
+            cy.pasteQuery(DEFAULT_QUERY);
             executeQuery();
 
             // Confirm that all statements are available (70 from ruleset, 2 explicit and 2 inferred)
@@ -441,6 +441,7 @@ describe('SPARQL screen validation', () => {
 
             // Uncheck ‘Include inferred’
             getInferenceButton()
+                .scrollIntoView()
                 .click()
                 .find('.icon-inferred-off')
                 .should('be.visible');
@@ -493,7 +494,7 @@ describe('SPARQL screen validation', () => {
                 '\t?s ?p ?o .\n' +
                 '}';
 
-            pasteQuery(defaultQueryWithoutLimit);
+            cy.pasteQuery(defaultQueryWithoutLimit);
             executeQuery();
 
             getResultsMessage()
@@ -530,7 +531,7 @@ describe('SPARQL screen validation', () => {
                 '  :a ?p ?o .\n' +
                 '}';
 
-            pasteQuery(updateToExecute);
+            cy.pasteQuery(updateToExecute);
             executeQuery();
             getUpdateMessage()
                 .should('be.visible')
@@ -541,7 +542,7 @@ describe('SPARQL screen validation', () => {
                 .find('.icon-sameas-on')
                 .should('be.visible');
 
-            pasteQuery(selectQuery);
+            cy.pasteQuery(selectQuery);
             executeQuery();
             verifyResultsPageLength(2);
 
@@ -765,7 +766,7 @@ describe('SPARQL screen validation', () => {
         it('Test create, edit and delete saved query', () => {
             let savedQueryName = 'Saved query - ' + Date.now();
 
-            pasteQuery(QUERY_FOR_SAVING);
+            cy.pasteQuery(QUERY_FOR_SAVING);
 
             saveQuery();
             waitUntilSavedQueryModalIsVisible();
@@ -964,7 +965,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test URL to current query', () => {
             const query = 'SELECT ?sub ?pred ?obj WHERE {?sub ?pred ?obj .} LIMIT 100';
-            pasteQuery(query);
+            cy.pasteQuery(query);
 
             // Press the link icon to generate a link for a query
             getQueryLinkBtn().click();
@@ -1196,13 +1197,6 @@ describe('SPARQL screen validation', () => {
         }
         // Using force because the textarea is not visible
         getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
-    }
-
-    function pasteQuery(query) {
-        clearQuery();
-        // Using force because the textarea is not visible
-        getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        verifyQueryAreaEquals(query);
     }
 
     function goToPage(page) {

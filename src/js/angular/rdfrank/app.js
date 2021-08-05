@@ -14,6 +14,14 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
 rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
     function ($scope, $interval, toastr, $repositories, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
 
+        let timer;
+
+        function cancelTimer() {
+            if (timer) {
+                $interval.cancel(timer);
+            }
+        }
+
         const refreshStatus = function () {
             RdfRankRestService.getStatus()
                 .success(function (data) {
@@ -174,10 +182,14 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.$on('repositoryIsSet', function () {
-            if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+            cancelTimer();
+            if (!$repositories.getActiveRepository() ||
+                    $repositories.isActiveRepoOntopType() ||
+                        $repositories.isActiveRepoFedXType()) {
                 return;
             }
             checkForPlugin();
+            pullStatus();
         });
 
         $scope.toggleFiltering = function () {
@@ -255,16 +267,16 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         const pullStatus = function () {
-            const timer = $interval(function () {
+            timer = $interval(function () {
                 if ($scope.pluginFound) {
                     refreshStatus();
                 }
             }, 5000);
-
-            $scope.$on('$destroy', function () {
-                $interval.cancel(timer);
-            });
         };
+
+        $scope.$on('$destroy', function () {
+            cancelTimer();
+        });
 
         function expandPrefix(str, namespaces) {
             const ABS_URI_REGEX = /^<?(http|urn).*>?/;
@@ -290,8 +302,10 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             return folded === '' ? iri : folded + ':' + localPart;
         }
 
-        const init = function() {
-            if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        const init = function () {
+            if (!$repositories.getActiveRepository() ||
+                    $repositories.isActiveRepoOntopType() ||
+                        $repositories.isActiveRepoFedXType()) {
                 return;
             }
             checkForPlugin();

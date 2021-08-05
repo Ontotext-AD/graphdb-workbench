@@ -11,6 +11,9 @@ mocks.service('$repositories', function () {
     this.isActiveRepoOntopType = function () {
         return false;
     };
+    this.isActiveRepoFedXType = function () {
+        return false;
+    };
     this.getDegradedReason = function () {
     };
 });
