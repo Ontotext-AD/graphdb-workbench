@@ -25,11 +25,11 @@ const parseNumberParamsIfNeeded = function (params) {
             params.queryTimeout.value = parseInt(params.queryTimeout.value);
             params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
         } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
-            && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+            && params.queryTimeout && params.unionWorkerThreads) {
             params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
             params.boundJoinBlockSize.value = parseInt(params.boundJoinBlockSize.value);
             params.joinWorkerThreads.value = parseInt(params.joinWorkerThreads.value);
-            params.enforceMaxQueryTime.value = parseInt(params.enforceMaxQueryTime.value);
+            params.queryTimeout.value = parseInt(params.queryTimeout.value);
             params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
         }
     }
