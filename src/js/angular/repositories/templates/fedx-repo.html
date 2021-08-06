@@ -56,8 +56,8 @@
         <h4>FedX options</h4>
         <div class="pb-1">
             <div class="form-group row">
-                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
-                    <label class="checkbox-param-include-inferred"
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-include-inferred">
+                    <label
                            tooltip="{{repoTooltips.fedx.withIncludeInferredDefault}}">
                         <input id="includeInferredDefault" name="includeInferredDefault" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -76,8 +76,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
-                    <label class = "checkbox-param-padded"
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-padded">
+                    <label
                            tooltip="{{repoTooltips.fedx.withLogQueries}}">
                         <input id="isLogQueries" name="isLogQueries" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -111,13 +111,13 @@
             <div class="form-group row">
                 <div class="offset-xs-1 offset-md-4 indented-div">
                     <label class="col-lg-3">
-                        {{repositoryInfo.params.enforceMaxQueryTime.label}}
+                        {{repositoryInfo.params.queryTimeout.label}}
                     </label>
                     <div class="col-lg-2">
                         <input id="enforceMaxQueryTime"
                                name="enforceMaxQueryTime"
                                type="number" step="1"
-                               ng-model="repositoryInfo.params.enforceMaxQueryTime.value"
+                               ng-model="repositoryInfo.params.queryTimeout.value"
                                class="form-control"
                                required
                                tooltip="{{repoTooltips.fedx.enforceMaxQueryTime}}"/>
