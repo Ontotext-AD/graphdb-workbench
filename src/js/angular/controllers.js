@@ -360,9 +360,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      */
     $scope.setRestricted = function () {
         if ($scope.attrs) {
-            const activeRepo = $scope.getActiveRepository();
             $scope.isRestricted =
-                $scope.attrs.hasOwnProperty('write') && $scope.isRepoTypeSupported(activeRepo) ||
+                $scope.attrs.hasOwnProperty('write') && $scope.isRepoTypeSupported() ||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
         }
