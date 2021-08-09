@@ -258,9 +258,17 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         }
 
         this.isRepoTypeSupported = function (repoId) {
-            let activeRepo = this.repositories.find(current => current.id === repoId);
+            const that = this;
+            if (!repoId) {
+                repoId = that.getActiveRepository();
+            }
+            let activeRepo = that.repositories.find(current => current.id === repoId);
             if (activeRepo) {
-                return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL && activeRepo.sesameType !== FEDX_REPOSITORY_LABEL;
+                if ($location.path().includes('import')) {
+                    return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL;
+                } else {
+                    return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL && activeRepo.sesameType !== FEDX_REPOSITORY_LABEL;
+                }
             }
 
             return false;
