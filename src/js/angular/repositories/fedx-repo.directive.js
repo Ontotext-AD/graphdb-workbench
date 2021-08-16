@@ -35,6 +35,23 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 });
         }
 
+        $scope.locations = $scope.getLocations();
+
+        function getRepositoriesFromLocation(location) {
+            window.location.host = location;
+            return RepositoriesRestService.getRepositories()
+                .success(function (response) {
+                    $scope.localRepos = response;
+                    $scope.allLocalRepos = $scope.localRepos.slice();
+                    $window.location.host="";
+                }).error(function (response) {
+                    const msg = getError(response);
+                    toastr.error(msg, 'Error');
+                });
+        }
+
+        $scope.test7300 = getRepositoriesFromLocation("http://localhost:7300");
+
         function populateLocalRepos() {
             for (const member of $scope.fedxMembers) {
                 $scope.localRepos = $scope.localRepos.filter(repo => repo.id !== member.repositoryName || member.store !== LOCAL_REPO_STORE);
