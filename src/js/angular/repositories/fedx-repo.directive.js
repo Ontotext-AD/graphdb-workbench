@@ -41,6 +41,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             return RepositoriesRestService.getRepositoriesFromKnownLocation(location)
                 .success(function (response) {
                     $scope.localRepos = $scope.localRepos.concat(response);
+                    $scope.attachedRepos = $scope.attachedRepos.concat(response);
                 }).error(function (response) {
                     const msg = getError(response);
                     toastr.error(msg, 'Error');
@@ -80,6 +81,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         }
 
         function getAttachedRepositories() {
+            $scope.locations = $scope.getLocations().filter(l => l.uri !== "");
             $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
                 .then(function () {
                     if ($scope.editRepoPage) {
@@ -94,6 +96,18 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
             } else {
                 return true;
+            }
+        }
+
+        function checkIfRepoIsLocal(repo) {
+            return $scope.allLocalRepos.filter(el => el === repo).length > 0;
+        }
+
+        $scope.getRepositoryServer = function (repo) {
+            if (checkIfRepoIsLocal(repo)) {
+                return "Local"
+            } else {
+                return repo.location;
             }
         }
 
@@ -289,7 +303,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         };
 
         getLocalRepositories();
-        $scope.locations = $scope.getLocations().filter(l => l.uri !== "");
         getAttachedRepositories();
     }
 }
