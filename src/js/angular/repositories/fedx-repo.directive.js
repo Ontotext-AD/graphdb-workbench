@@ -23,6 +23,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         $scope.fedxMembers = [];
         $scope.localRepos = [];
         $scope.allLocalRepos = [];
+        $scope.attachedRepos = [];
+        $scope.allAttachedRepos = [];
 
         function getRepositories() {
             return RepositoriesRestService.getRepositories()
@@ -35,22 +37,15 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 });
         }
 
-        $scope.locations = $scope.getLocations();
-
         function getRepositoriesFromLocation(location) {
-            window.location.host = location;
-            return RepositoriesRestService.getRepositories()
+            return RepositoriesRestService.getRepositoriesFromKnownLocation(location)
                 .success(function (response) {
-                    $scope.localRepos = response;
-                    $scope.allLocalRepos = $scope.localRepos.slice();
-                    $window.location.host="";
+                    $scope.localRepos = $scope.localRepos.concat(response);
                 }).error(function (response) {
                     const msg = getError(response);
                     toastr.error(msg, 'Error');
                 });
         }
-
-        $scope.test7300 = getRepositoriesFromLocation("http://localhost:7300");
 
         function populateLocalRepos() {
             for (const member of $scope.fedxMembers) {
@@ -84,6 +79,16 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 });
         }
 
+        function getAttachedRepositories() {
+            $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
+                .then(function () {
+                    if ($scope.editRepoPage) {
+                        $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
+                    }
+                    populateLocalRepos();
+                }));
+        }
+
         $scope.checkIfRepoExist = function (member) {
             if (member.store === LOCAL_REPO_STORE) {
                 return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
@@ -94,6 +99,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         const localReposTimer = $timeout(function () {
             getLocalRepositories();
+            getAttachedRepositories();
         }, 2000);
 
         $scope.$on('$destroy', function () {
@@ -283,5 +289,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         };
 
         getLocalRepositories();
+        $scope.locations = $scope.getLocations().filter(l => l.uri !== "");
+        getAttachedRepositories();
     }
 }
