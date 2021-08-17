@@ -67,8 +67,12 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
 
         $scope.setWritableRepo = function (member) {
             let currentWritable = getWritableRepo();
-            if (currentWritable && currentWritable.repositoryName !== member.repositoryName) {
-                currentWritable.writable = 'false';
+            if (currentWritable) {
+                if (currentWritable.store === LOCAL_REPO_STORE && (member.store !== LOCAL_REPO_STORE || currentWritable.repositoryName !== member.repositoryName) ) {
+                    currentWritable.writable = 'false';
+                } else if (currentWritable.store === REMOTE_REPO_STORE && (member.store !== REMOTE_REPO_STORE || currentWritable.repositoryName !== member.repositoryName || currentWritable.repositoryServer !== member.repositoryServer)) {
+                    currentWritable.writable = 'false';
+                }
             }
             member.writable = JSON.stringify(member.writable === 'false');
         }
@@ -339,6 +343,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
             }
 
             updateMembers(member);
+            populateAttachedRepos();
             $scope.$modalInstance.close();
         };
 
