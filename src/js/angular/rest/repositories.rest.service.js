@@ -24,19 +24,19 @@ function RepositoriesRestService($http) {
         getSupportedDriversData,
         updatePropertiesFile,
         loadPropertiesFile,
-        getRepositoryFromLocation
+        getRepositoriesFromKnownLocation
     };
 
     function getRepository(repositoryid) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}`);
     }
 
-    function getRepositoryFromLocation(repositoryid, location) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}?location=${location}`);
-    }
-
     function getRepositories() {
         return $http.get(REPOSITORIES_ENDPOINT);
+    }
+
+    function getRepositoriesFromKnownLocation(location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}?location=${location}`);
     }
 
     function deleteRepository(repositoryId) {

@@ -37,15 +37,17 @@
                 </tbody>
             </table>
         </form>
-        <h8 class = "indented-div"> Local repositories </h8>
+        <h8 class = "indented-div"> Local repositories and attached locations </h8>
         <div class = "form-group2">
             <form class="form-local-repos pre-scrollable">
                 <div ng-repeat="repository in localRepos | orderBy: ['type === \'system\'', 'id']" ng-if="repository.type !== 'fedx'" style="display:block" id="{{repository.id}}-local-repo" class = "fedXMember">
-                    <a ng-click="addLocalMember(repository)" id="{{repository.id}}-a" tooltip="{{repoTooltips.fedx.localReposInstructions}}">
+                    <a ng-click="addMember(repository)" id="{{repository.id}}-a" tooltip="{{repoTooltips.fedx.localReposInstructions}}">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type" class="fedx-repo-member-icon"></em>
                             {{repository.id}}
                         </span>
+<!--                        <small> " . " <span> </span> </small>-->
+                        <span class="small"><small> &middot; {{getRepositoryServer(repository)}}</small></span>
                     </a>
                 </div>
             </form>
