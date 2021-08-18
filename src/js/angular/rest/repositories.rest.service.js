@@ -23,11 +23,16 @@ function RepositoriesRestService($http) {
         restartRepository,
         getSupportedDriversData,
         updatePropertiesFile,
-        loadPropertiesFile
+        loadPropertiesFile,
+        getRepositoryFromLocation
     };
 
     function getRepository(repositoryid) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}`);
+    }
+
+    function getRepositoryFromLocation(repositoryid, location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}?location=${location}`);
     }
 
     function getRepositories() {

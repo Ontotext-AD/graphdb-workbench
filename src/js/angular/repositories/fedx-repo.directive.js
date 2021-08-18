@@ -70,6 +70,16 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         $scope.checkIfRepoExist = function (member) {
             if (member.store === LOCAL_REPO_STORE) {
                 return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
+            } else if (member.store === REMOTE_REPO_STORE) {
+                let repoExists = true;
+                RepositoriesRestService.getRepositoryFromLocation(member.repositoryName, member.repositoryServer)
+                    .success(function() {
+                        repoExists = true;
+                    }).error(function() {
+                        repoExists = false;
+                });
+                return repoExists;
+
             } else {
                 return true;
             }
