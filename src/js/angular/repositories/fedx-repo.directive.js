@@ -123,15 +123,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
             if (member.store === LOCAL_REPO_STORE) {
                 return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
             } else if (member.store === REMOTE_REPO_STORE) {
-                let repoExists = true;
-                RepositoriesRestService.getRepositoryFromLocation(member.repositoryName, member.repositoryServer)
-                    .success(function() {
-                        repoExists = true;
-                    }).error(function() {
-                        repoExists = false;
-                });
-                return repoExists;
-
+                return $scope.allAttachedRepos.filter(repo => repo.id === member.repositoryName && repo.location === member.repositoryServer).length !== 0;
             } else {
                 return true;
             }
