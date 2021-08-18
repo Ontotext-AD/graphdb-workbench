@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout'];
+fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout', 'LocationsRestService'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
+function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, LocationsRestService) {
     return {
         restrict: 'E',
         scope: false,
@@ -25,6 +25,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
         $scope.allLocalRepos = [];
         $scope.attachedRepos = [];
         $scope.allAttachedRepos = [];
+        $scope.locations = [];
 
         function getRepositories() {
             return RepositoriesRestService.getRepositories()
@@ -95,15 +96,27 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout) {
                 });
         }
 
+        function getLocations() {
+            return LocationsRestService.getLocations()
+                .success(function(response) {
+                    $scope.locations = response.filter(l => l.uri !== "");
+                }).error(function (response) {
+                    const msg = getError(response);
+                    toastr.error(msg, 'Error');
+                });
+        }
+
         function getAttachedRepositories() {
-            $scope.locations = $scope.getLocations().filter(l => l.uri !== "");
-            $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
-                .then(function () {
-                    if ($scope.editRepoPage) {
-                        $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
-                    }
-                    populateAttachedRepos();
-                }));
+            getLocations()
+                .then(function() {
+                    $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
+                        .then(function () {
+                            if ($scope.editRepoPage) {
+                                $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
+                            }
+                            populateAttachedRepos();
+                        }))
+                });
         }
 
         $scope.checkIfRepoExist = function (member) {
