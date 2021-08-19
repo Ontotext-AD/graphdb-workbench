@@ -119,10 +119,14 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 });
         }
 
+        function checkIfLocationIsAttached(repoServer) {
+            return $scope.locations.filter(location => location.uri === repoServer).length !== 0;
+        }
+
         $scope.checkIfRepoExist = function (member) {
             if (member.store === LOCAL_REPO_STORE) {
                 return $scope.allLocalRepos.filter(repo => repo.id === member.repositoryName).length !== 0;
-            } else if (member.store === REMOTE_REPO_STORE) {
+            } else if (member.store === REMOTE_REPO_STORE && checkIfLocationIsAttached(member.repositoryServer)) {
                 return $scope.allAttachedRepos.filter(repo => repo.id === member.repositoryName && repo.location === member.repositoryServer).length !== 0;
             } else {
                 return true;
