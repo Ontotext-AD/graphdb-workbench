@@ -23,7 +23,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         $scope.fedxMembers = [];
         $scope.localRepos = [];
         $scope.allLocalRepos = [];
-        $scope.attachedRepos = [];
         $scope.allAttachedRepos = [];
         $scope.locations = [];
 
@@ -42,11 +41,10 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
             return RepositoriesRestService.getRepositoriesFromKnownLocation(location)
                 .success(function (response) {
                     $scope.localRepos = $scope.allLocalRepos.filter(el => $scope.localRepos.indexOf(el) !== -1);
-                    $scope.attachedRepos = response;
-                    for (const member of $scope.attachedRepos) {
+                    for (const member of response) {
                         $scope.allAttachedRepos = $scope.allAttachedRepos.filter(repo => repo.id !== member.id || repo.location !== member.location);
                     }
-                    $scope.allAttachedRepos = $scope.allAttachedRepos.concat($scope.attachedRepos.slice());
+                    $scope.allAttachedRepos = $scope.allAttachedRepos.concat(response.slice());
                     $scope.localRepos = $scope.localRepos.concat($scope.allAttachedRepos);
                 }).error(function (response) {
                     const msg = getError(response);
@@ -87,12 +85,15 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         }
 
         function getLocalRepositories() {
-            getRepositories()
+            return getRepositories()
                 .then(function () {
                     if ($scope.editRepoPage) {
                         $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
                     }
-                    populateLocalRepos();
+                    getAttachedRepositories()
+                        .then(function () {
+                            populateLocalRepos()
+                        });
                 });
         }
 
@@ -107,7 +108,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         }
 
         function getAttachedRepositories() {
-            getLocations()
+            return getLocations()
                 .then(function() {
                     $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
                         .then(function () {
@@ -145,8 +146,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
 
         const localReposTimer = setInterval(function () {
             getLocalRepositories();
-            getAttachedRepositories();
-        }, 2000);
+        }, 5000);
 
         $scope.$on('$destroy', function () {
             clearInterval(localReposTimer);
@@ -188,9 +188,11 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store);
                 getRepositories()
                     .then(function () {
-                        populateLocalRepos();
+                        getAttachedRepositories()
+                            .then(function () {
+                                populateLocalRepos()
+                            });
                     });
-                getAttachedRepositories();
             } else if (member.store && member.store === SPARQL_ENDPOINT_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
             } else if (member.store && member.store === NATIVE_STORE) {
@@ -361,6 +363,5 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         };
 
         getLocalRepositories();
-        getAttachedRepositories();
     }
 }
