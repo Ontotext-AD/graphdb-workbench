@@ -143,13 +143,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
             }
         }
 
-        const localReposTimer = $timeout(function () {
+        const localReposTimer = setInterval(function () {
             getLocalRepositories();
             getAttachedRepositories();
         }, 2000);
 
         $scope.$on('$destroy', function () {
-            $timeout.cancel(localReposTimer);
+            clearInterval(localReposTimer);
         });
 
         $scope.addMember = function(repository) {
