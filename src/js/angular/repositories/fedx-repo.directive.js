@@ -54,12 +54,12 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         function populateKnownRepos() {
             for (const member of $scope.fedxMembers) {
                 $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
-                    if (member.uri) {
+                    if (member.uri && repo.uri) {
                         return member.uri !== repo.uri;
                     } else if (member.repositoryServer) {
                         return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
                     } else {
-                        return repo.id !== member.repositoryName;
+                        return repo.id !== member.repositoryName || repo.location !== "";
                     }
                 });
             }
