@@ -41,7 +41,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 .success(function (response) {
                     $scope.knownRepos = $scope.allLocalRepos.filter(el => $scope.knownRepos.indexOf(el) !== -1);
                     for (const member of response) {
-                        $scope.allAttachedRepos = $scope.allAttachedRepos.filter(repo => member.uri !== repo.uri);
+                        $scope.allAttachedRepos = $scope.allAttachedRepos.filter(repo => repo.id !== member.id || repo.location !== member.location);
                     }
                     $scope.allAttachedRepos = $scope.allAttachedRepos.concat(response.slice());
                     $scope.knownRepos = $scope.knownRepos.concat($scope.allAttachedRepos);
@@ -155,7 +155,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     username: '',
                     password: '',
                     supportsASKQueries: "true",
-                    uri: repository.uri,
                     writable: "false"
                 }
                 $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
@@ -174,7 +173,6 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 repositoryName: repository.id,
                 repoType: repository.type,
                 respectRights: "true",
-                // uri: repository.uri,
                 writable: "false"
             };
 
