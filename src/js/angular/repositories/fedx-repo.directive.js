@@ -54,12 +54,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         function populateKnownRepos() {
             for (const member of $scope.fedxMembers) {
                 $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
-                    if (member.uri && repo.uri) {
-                        return member.uri !== repo.uri;
-                    } else if (member.repositoryServer) {
+                    // if (member.uri && repo.uri) {
+                    //     return member.uri !== repo.uri;
+                    // }
+                    if (member.repositoryServer) {
                         return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
                     } else {
-                        return repo.id !== member.repositoryName || repo.location !== "";
+                        return repo.id !== member.repositoryName || !repo.local;
                     }
                 });
             }
@@ -157,8 +158,13 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     uri: repository.uri,
                     writable: "false"
                 }
-                $scope.knownRepos = $scope.knownRepos.filter(el => el.uri !== member.uri);
-                updateMembers(member);
+                $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
+                    if (member.repositoryServer) {
+                        return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
+                    } else {
+                        return repo.id !== member.repositoryName || !repo.local;
+                    }
+                });                updateMembers(member);
             }
         }
 
@@ -168,12 +174,17 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 repositoryName: repository.id,
                 repoType: repository.type,
                 respectRights: "true",
-                uri: repository.uri,
+                // uri: repository.uri,
                 writable: "false"
             };
 
-            $scope.knownRepos = $scope.knownRepos.filter(el => el.uri !== member.uri);
-            updateMembers(member);
+            $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
+                if (member.repositoryServer) {
+                    return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
+                } else {
+                    return repo.id !== member.repositoryName || !repo.local;
+                }
+            });            updateMembers(member);
         }
 
         $scope.removeMember = function (member) {
