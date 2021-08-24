@@ -54,12 +54,11 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         function populateKnownRepos() {
             for (const member of $scope.fedxMembers) {
                 $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
-                    // if (member.uri && repo.uri) {
-                    //     return member.uri !== repo.uri;
-                    // }
                     if (member.repositoryServer) {
+                        // if the member is a remote attached member
                         return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
                     } else {
+                        // if the member is a local one
                         return repo.id !== member.repositoryName || !repo.local;
                     }
                 });
