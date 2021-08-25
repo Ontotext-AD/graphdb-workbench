@@ -162,7 +162,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     } else {
                         return repo.id !== member.repositoryName || !repo.local;
                     }
-                });                updateMembers(member);
+                });
+                updateMembers(member);
             }
         }
 
