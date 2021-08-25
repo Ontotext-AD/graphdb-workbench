@@ -1375,11 +1375,11 @@ describe('SPARQL screen validation', () => {
     }
 
     function getInferenceButton() {
-        return cy.get('#inference');
+        return cy.get('#inference').scrollIntoView();
     }
 
     function getSameAsButton() {
-        return cy.get('#sameAs');
+        return cy.get('#sameAs').scrollIntoView();
     }
 
     function getAutoSuggestHints() {
