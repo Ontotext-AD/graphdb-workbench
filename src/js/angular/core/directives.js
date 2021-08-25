@@ -321,8 +321,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('autocompletepromisestatus', function () {
-                let activeRepo = $repositories.repositories.filter(el => el.id === $repositories.getActiveRepository())[0];
-                if (activeRepo && activeRepo.type !== 'fedx' && angular.isDefined($scope.autocompletepromisestatus) ) {
+                if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
                         element.autoCompleteStatus = !!response;
                         if ($scope.searchInput !== '') {
