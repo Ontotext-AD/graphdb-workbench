@@ -2,6 +2,7 @@ describe('Main menu tests', function () {
 
     beforeEach(function () {
         cy.visit('/');
+        cy.window();
 
         cy.get('.card-title').should('contain', 'Welcome to GraphDB');
     });

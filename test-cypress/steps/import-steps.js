@@ -17,6 +17,7 @@ class ImportSteps {
         }
 
         cy.visit('/import#' + type);
+        cy.window();
 
         cy.get('.ot-splash').should('not.be.visible');
 

@@ -15,7 +15,8 @@ describe('User and Access', () => {
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/users');
+        cy.visit('/users')
+        cy.window();
         // Users table should be visible
         getUsersTable().should('be.visible');
     });
