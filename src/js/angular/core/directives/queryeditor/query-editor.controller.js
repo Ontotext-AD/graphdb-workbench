@@ -892,17 +892,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         const sameAsBtn = document.getElementById('sameAs');
         const inferenceBtn = document.getElementById('inference');
 
-        if (sameAsBtn) {
-            sameAsBtn.disabled = isOntop;
-        } else {
-            sameAsBtn.disabled = false;
-        }
-
-        if (inferenceBtn) {
-            inferenceBtn.disabled = isOntop;
-        } else {
-            sameAsBtn.disabled = false;
-        }
+        sameAsBtn.disabled = !!(sameAsBtn && isOntop);
+        inferenceBtn.disabled = !!(inferenceBtn && isOntop);
     }
 }
 
