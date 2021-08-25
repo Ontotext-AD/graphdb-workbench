@@ -38,17 +38,18 @@ describe('Class hierarchy screen validation', () => {
     it('Test show/hide prefixes', () => {
         // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
         // prefixes are displayed/hidden
-        verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
+        verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
 
         // Switch show prefixes to off
         cy.get('.toolbar-holder')
             .find('.prefix-toggle-btn')
             .scrollIntoView()
             .should('be.visible')
-            .click();
-
-        // Verify that prefixes are removed from diagram
-        verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));
+            .click()
+            .then(() => {
+                // Verify that prefixes are removed from diagram
+                verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
+            });
     });
 
     it('Test focus on diagram', () => {
