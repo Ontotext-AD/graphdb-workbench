@@ -108,8 +108,8 @@ describe('Repositories', () => {
             cy.get('#btnReposGroup').should('have.attr', 'aria-expanded', 'true');
             // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
             // Alternative is to have the click forced, which might lead to false positive result.
-            cy.get('.dropdown-menu').should('be.visible').wait(500);
-            cy.get('.dropdown-menu .dropdown-item')
+            cy.get('.dropdown-menu-right').should('be.visible').wait(500);
+            cy.get('.dropdown-menu-right .dropdown-item')
                 .contains(repositoryId)
                 .closest('a')
                 .scrollIntoView()
@@ -242,7 +242,7 @@ describe('Repositories', () => {
         // The first should return back to the dropdown items
         getRepositoriesDropdown()
             .click()
-            .find('.dropdown-menu .dropdown-item')
+            .find('.dropdown-menu-right .dropdown-item')
             .should('contain', repositoryId);
         // Hide the menu
         getRepositoriesDropdown().click();
@@ -617,8 +617,8 @@ describe('Repositories', () => {
 
             // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
             // Alternative is to have the click forced, which might lead to false positive result.
-            cy.get('.dropdown-menu').should('be.visible').wait(500);
-            cy.get('.dropdown-menu .dropdown-item')
+            cy.get('.dropdown-menu-right').should('be.visible').wait(500);
+            cy.get('.dropdown-menu-right .dropdown-item')
                 .contains(repositoryId)
                 .closest('a')
                 .click();
@@ -828,7 +828,7 @@ describe('Repositories', () => {
     function selectRepoFromDropdown(repositoryId) {
         getRepositoriesDropdown()
             .click()
-            .find('.dropdown-menu .dropdown-item')
+            .find('.dropdown-menu-right .dropdown-item')
             .contains(repositoryId)
             .closest('a')
             // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
