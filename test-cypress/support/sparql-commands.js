@@ -17,9 +17,21 @@ Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
 });
 
 Cypress.Commands.add('verifyResultsMessage', (msg) => {
-    getResultsMessage()
-        .should('be.visible')
-        .and('contain', msg);
+    cy.waitUntil(() =>
+        cy.get('.results-description')
+            .then(resultInfo => resultInfo.text().trim().indexOf(msg) > -1));
+});
+
+Cypress.Commands.add('verifyResultsMessage', (msg) => {
+    cy.waitUntil(() =>
+        getResultsMessage()
+            .then(resultInfo => resultInfo.text().trim().indexOf(msg) > -1));
+});
+
+Cypress.Commands.add('getResultsMessage', () => {
+    cy.waitUntil(() =>
+        getResultsMessage()
+            .then(resultInfo => resultInfo));
 });
 
 Cypress.Commands.add('waitUntilQueryIsVisible', () => {
@@ -75,5 +87,5 @@ function getResultsWrapper() {
 }
 
 function getResultsMessage() {
-    return cy.get('#yasr-inner .alert-info.results-info', { timeout: 30000 });
+    return cy.get('#yasr-inner .alert-info.results-info').scrollIntoView();
 }
