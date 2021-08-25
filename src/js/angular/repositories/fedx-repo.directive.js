@@ -118,13 +118,15 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         $scope.checkIfRepoExist = function (member) {
             if (member.store === LOCAL_REPO_STORE) {
                 return $scope.allLocalRepos.find(repo => repo.id === member.repositoryName);
+            } else if (member.store === REMOTE_REPO_STORE && checkIfLocationIsAttached(member)) {
+                return $scope.allAttachedRepos.find(repo => repo.id === member.repositoryName && repo.location === member.repositoryServer);
             } else {
                 return true;
             }
         }
 
-        function checkIfRepoIsAttached(repo) {
-            return $scope.allAttachedRepos.filter(el => el.id === repo.repositoryName && el.location === repo.repositoryServer).length > 0;
+        function checkIfLocationIsAttached(repo) {
+            return $scope.locations.find(el => el.uri === repo.repositoryServer);
         }
 
         $scope.getRepositoryServer = function (repo) {
@@ -188,6 +190,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         $scope.removeMember = function (member) {
             if (member.store && member.store === LOCAL_REPO_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store);
+                $scope.allLocalRepos = [];
                 getKnownRepos();
             } else if (member.store && member.store === SPARQL_ENDPOINT_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
@@ -196,9 +199,8 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
             } else if (member.store && member.store === REMOTE_REPO_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
                     || el.repositoryServer !== member.repositoryServer || el.store !== member.store);
-                if (checkIfRepoIsAttached(member)) {
-                    getKnownRepos();
-                }
+                $scope.allAttachedRepos = []
+                getKnownRepos();
             }
             $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
         }
