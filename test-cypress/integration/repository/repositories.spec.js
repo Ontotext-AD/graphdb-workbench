@@ -129,11 +129,7 @@ describe('Repositories', () => {
         getRepositoriesDropdown()
             .click()
             .then(() => {
-                // Because of the timer of this view, getting element should be retried
-                cy.get('.dropdown-menu .dropdown-item')
-                    .then((dropDown) => {
-                        cy.waitUntil(() => cy.wrap(dropDown).should('not.be.visible'));
-                    });
+                cy.get('.dropdown-menu-right .dropdown-item').should('not.exist');
             });
     });
 
