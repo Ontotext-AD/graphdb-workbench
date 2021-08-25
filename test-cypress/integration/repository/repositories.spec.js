@@ -129,7 +129,8 @@ describe('Repositories', () => {
         getRepositoriesDropdown()
             .click()
             .then(() => {
-                cy.get('.dropdown-menu-right .dropdown-item').should('not.exist');
+                cy.get('.dropdown-menu-right')
+                    .find('.dropdown-item').should('not.exist');
             });
     });
 
