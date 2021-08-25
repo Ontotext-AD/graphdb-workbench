@@ -436,10 +436,8 @@ describe('SPARQL screen validation', () => {
             // Uncheck ‘Include inferred’
             getInferenceButton()
                 .click()
-                .then(() => {
-                    cy.get('.icon-inferred-off')
-                        .should('be.visible');
-                });
+                .find('.icon-inferred-off')
+                .should('be.visible');
 
             // Confirm that only inferred statements (only 2) are available
             executeQuery();
@@ -1061,7 +1059,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function getRunQueryButton() {
-        return cy.get('#wb-sparql-runQuery').scrollIntoView();
+        return cy.get('#wb-sparql-runQuery');
     }
 
     function getTableResultRows() {

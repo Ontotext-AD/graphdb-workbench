@@ -894,10 +894,14 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
         if (sameAsBtn) {
             sameAsBtn.disabled = isOntop;
+        } else {
+            sameAsBtn.disabled = false;
         }
 
         if (inferenceBtn) {
             inferenceBtn.disabled = isOntop;
+        } else {
+            sameAsBtn.disabled = false;
         }
     }
 }
