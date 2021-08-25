@@ -276,10 +276,9 @@ describe('SPARQL screen validation', () => {
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', 'Showing results')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results');
+            cy.verifyResultsMessage('Query took');
+
             getResultsWrapper()
                 .should('be.visible');
 
@@ -345,8 +344,7 @@ describe('SPARQL screen validation', () => {
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible');
+            cy.getResultsMessage();
             getResultsWrapper()
                 .should('be.visible');
         });
@@ -358,10 +356,8 @@ describe('SPARQL screen validation', () => {
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', 'Showing results')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results')
+            cy.verifyResultsMessage('Query took');
             getResultsWrapper()
                 .should('be.visible');
 
@@ -402,8 +398,7 @@ describe('SPARQL screen validation', () => {
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible');
+            cy.getResultsMessage();
             getResultsWrapper()
                 .should('be.visible');
 
@@ -497,9 +492,7 @@ describe('SPARQL screen validation', () => {
             cy.pasteQuery(defaultQueryWithoutLimit);
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', '1,000 of 7,065');
+            cy.verifyResultsMessage('1,000 of 7,065');
             getResultsWrapper()
                 .should('be.visible');
             verifyResultsPageLength(1000);
@@ -512,9 +505,7 @@ describe('SPARQL screen validation', () => {
             executeQuery();
 
             // Verify that there are 1,839 results
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', '1,000 of 1,839');
+            cy.verifyResultsMessage('1,000 of 1,839');
         });
 
         it('Test execute query including inferred with ruleset "OWL-Horst (Optimized)" enabled sameAs functionality', () => {
@@ -925,9 +916,8 @@ describe('SPARQL screen validation', () => {
             getQueryArea().should('contain', 'SELECT');
             executeQuery();
             getUpdateMessage().should('not.be.visible');
-            getResultsMessage()
-                .should('contain', 'Showing results from 1 to 74 of 74')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results from 1 to 74 of 74');
+            cy.verifyResultsMessage('Query took');
 
             verifyResultsPageLength(74);
         });
@@ -1339,10 +1329,6 @@ describe('SPARQL screen validation', () => {
         return cy.get('#yasr-inner .alert-info.update-info');
     }
 
-    function getResultsMessage() {
-        return cy.get('#yasr-inner .alert-info.results-info', {timeout: 40000});
-    }
-
     function getQueryLinkBtn() {
         return cy.get('#wb-sparql-copyToClipboardQuery');
     }
@@ -1389,11 +1375,11 @@ describe('SPARQL screen validation', () => {
     }
 
     function getInferenceButton() {
-        return cy.get('#inference');
+        return cy.get('#inference').scrollIntoView();
     }
 
     function getSameAsButton() {
-        return cy.get('#sameAs');
+        return cy.get('#sameAs').scrollIntoView();
     }
 
     function getAutoSuggestHints() {
