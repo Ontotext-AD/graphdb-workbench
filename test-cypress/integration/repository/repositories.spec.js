@@ -130,7 +130,7 @@ describe('Repositories', () => {
             .click()
             .then(() => {
                 cy.get('.dropdown-menu-right')
-                    .should('not.have.descendants', '.dropdown-item');
+                    .should('not.contain', repositoryId);
             });
     });
 
