@@ -38,14 +38,18 @@ describe('Class hierarchy screen validation', () => {
     it('Test show/hide prefixes', () => {
         // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
         // prefixes are displayed/hidden
-        verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
+        verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
 
         // Switch show prefixes to off
         cy.get('.toolbar-holder')
             .find('.prefix-toggle-btn')
             .scrollIntoView()
             .should('be.visible')
-            .click();
+            .click()
+            .then(() => {
+                // Verify that prefixes are removed from diagram
+                verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
+            });
 
         // Verify that prefixes are removed from diagram
         verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));
@@ -148,16 +152,11 @@ describe('Class hierarchy screen validation', () => {
         let className = ':Region';
         searchForClass(className);
         getDomainRangeGraphButton().click();
-        getDomainRangeGraphHeader().should('contain','Domain-Range graph');
+        getDomainRangeGraphHeader().should('contain', 'Domain-Range graph');
         getLegendContainer().should('be.visible');
-        getLegendContainer().should('contain', 'main class node').
-            and('contain', 'class node').
-            and('contain', 'collapsed property');
+        getLegendContainer().should('contain', 'main class node').and('contain', 'class node').and('contain', 'collapsed property');
         getMainDomainRangeDiagram().should('be.visible');
-        getMainDomainRangeDiagram().should('contain', className).
-            and('contain', 'locatedIn').
-            and('contain', ':adjacentRegion').
-            and('contain', 'owl:Thing');
+        getMainDomainRangeDiagram().should('contain', className).and('contain', 'locatedIn').and('contain', ':adjacentRegion').and('contain', 'owl:Thing');
         getReturnButton().should('be.visible').click();
     });
 
