@@ -14,6 +14,7 @@ describe('Class relations screen validation', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/relationships');
+        cy.window();
         // The diagram and the list should be visible in order to assume the page is ready
         cy.get('#dependencies-chord').should('be.visible');
         cy.get('#wb-dependencies-classInClasses').should('be.visible');

@@ -18,6 +18,7 @@ describe('Namespaces', () => {
         });
 
         cy.visit('/namespaces');
+        cy.window();
 
         waitUntilPageIsLoaded();
     });

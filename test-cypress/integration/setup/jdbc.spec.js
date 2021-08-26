@@ -117,6 +117,7 @@ describe('JDBC configuration', () => {
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         cy.visit('/jdbc');
+        cy.window();
     }
 
     function getCreateNewJDBCConfigurationButon() {

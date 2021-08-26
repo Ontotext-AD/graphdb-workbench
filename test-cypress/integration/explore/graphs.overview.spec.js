@@ -11,6 +11,7 @@ describe('Graphs overview screen validation', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.visit("/");
+        cy.window();
 
         cy.fixture('graph/rdf.txt').then((rdf) => {
             return new Cypress.Promise((resolve, reject) => {
