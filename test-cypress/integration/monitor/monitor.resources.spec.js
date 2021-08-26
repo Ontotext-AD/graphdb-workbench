@@ -11,6 +11,7 @@ describe('Monitor Resources', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/monitor/resources');
+        cy.window();
 
         // Wait for loaders to disappear
         cy.get('.ot-splash').should('not.be.visible');

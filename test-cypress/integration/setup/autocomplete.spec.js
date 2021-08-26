@@ -25,6 +25,7 @@ describe('Autocomplete ', () => {
     beforeEach(() => {
         createRepository();
         cy.visit('/autocomplete');
+        cy.window();
         waitUntilAutocompletePageIsLoaded();
     });
 

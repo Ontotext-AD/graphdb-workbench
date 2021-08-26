@@ -23,6 +23,7 @@ describe('Setup / RDF Rank', () => {
     beforeEach(() => {
         createRepository();
         cy.visit('/rdfrank');
+        cy.window();
         waitUntilRdfRankPageIsLoaded();
     });
 

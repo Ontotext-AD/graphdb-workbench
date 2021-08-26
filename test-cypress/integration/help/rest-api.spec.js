@@ -8,6 +8,7 @@ describe('Help / REST API', () => {
 
     beforeEach(() => {
         cy.visit('/webapi');
+        cy.window();
         getSwaggerFrame()
             .find('#message-bar')
             .should('be.visible');
