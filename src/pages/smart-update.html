@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors ontop></div>
+    <div class="smart-updates-list card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType()">
+        <div class="card-block" ng-init="getSmartUpdateTemplates();">
+            <div class="clearfix">
+                <a ng-href="smart-update/templates/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
+                    <span class="icon-plus create-sql-table-configuration"></span> Create new Smart Update template
+                </a>
+                <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
+                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> Smart Update templates</span>
+                </h3>
+            </div>
+
+            <div class="collapse in mt-1" id="configurations-table">
+                <div class="no-indexes" ng-if="smartUpdatesNames.length == 0"><em>No templates are defined</em></div>
+                <table class="table table-hover mb-0" aria-describedby="Smart Update templates">
+                    <tbody>
+                    <tr ng-repeat="index in smartUpdatesNames track by $index"
+                        class="configuration-row">
+                        <td>
+                            <a class="lead configuration-name" ng-href="smart-update/templates/create?name={{index}}">{{index}}</a>
+                        </td>
+
+                        <td class="text-xs-right">
+                            <span class="actions-bar hovered-item">
+                                    <a class="btn btn-link edit-query-btn"
+                                       ng-if="canWriteActiveRepo()" href="smart-update/templates/create?name={{index}}"
+                                       tooltip="Edit Smart Update template">
+                                        <em class="icon-edit"></em>
+                                    </a>
+                                </span>
+                            <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(index)"
+                                    class="btn btn-link delete-configuration-btn" tooltip="Delete Smart Update template"><span
+                                class="icon-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

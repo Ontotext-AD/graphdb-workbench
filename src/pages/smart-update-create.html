@@ -1,0 +1,70 @@
+<link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
+<link href="css/lib/yasqe.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/new-sparql.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/graphs-config.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/jdbc.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="container-fluid">
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors></div>
+    <div system-repo-warning></div>
+    <div class="alert alert-danger" ng-show="repositoryError">
+        <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+        <p>{{repositoryError}}</p>
+    </div>
+
+    <div class="card mb-2 sql-table-config">
+        <div class="card-block pt-1">
+            <p class="lead">Template name</p>
+            <div class="table-group table-group-lg">
+                <input required class="form-control smart-update-template-name" type="text" placeholder="Smart update template name (required)"
+                       ng-model="currentQuery.name" ng-disabled="!currentQuery.isNewTemplate" >
+                <div style="margin-top: 5px" ng-show="isInvalidTemplateName" class="idError alert alert-danger">
+                    Smart update template name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <br/>
+                <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
+                              notoolbar-inference
+                              notoolbar-same-as callback-on-change="updateDirty">
+                </query-editor>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
+            popover="Save Smart update template"
+            popover-placement="top"
+            popover-trigger="mouseenter"
+            ng-if="canWriteActiveRepo()">
+        Save
+    </button>
+    <a ng-href="/smart-update" class="btn btn-lg btn-secondary cancel-query-btn"
+       popover="Cancel Smart update template creation"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="canWriteActiveRepo()">
+        Cancel
+    </a>
+    <a ng-href="/smart-update" class="btn btn-lg btn-secondary"
+       popover="Cancel Smart update template creation"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="!canWriteActiveRepo()">
+        Close
+    </a>
+    <br/><br/><br/>
+</div>
