@@ -14,6 +14,7 @@ describe('System information', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/sysinfo');
+        cy.window();
         // Wait for tabs to be rendered
         getTabs().find('.nav-item').should('have.length', 3);
     });
