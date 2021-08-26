@@ -26,6 +26,7 @@ describe('Visual graph screen validation', () => {
     context('When autocomplete is disabled', () => {
         it('Test notification when autocomplete is disabled', () => {
             cy.visit('/graphs-visualizations');
+            cy.window();
 
             getSearchField().should('be.visible').type('http://');
 

@@ -116,11 +116,11 @@ class ImportSteps {
     static importServerFiles(changeSettings) {
         if (changeSettings) {
             // TODO: Check for dialog?
-            cy.get('#import-server .import-btn').click();
+            cy.get('#import-server .import-btn').scrollIntoView().click();
         } else {
-            cy.get('#import-server .import-dropdown-btn').click()
+            cy.get('#import-server .import-dropdown-btn').scrollIntoView().click()
                 .should('have.attr', 'aria-expanded', 'true');
-            cy.get('#import-server .import-without-change-btn').click();
+            cy.get('#import-server .import-without-change-btn').scrollIntoView().click();
         }
 
         return ImportSteps;

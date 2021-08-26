@@ -7,6 +7,7 @@ describe('Import/ OntoRefine', () => {
         cy.createRepository({id: repositoryId});
 
         cy.visit('/ontorefine');
+        cy.window();
 
         cy.get('.ot-splash').should('not.exist');
         getOntoRefineFrame().should('be.visible');
