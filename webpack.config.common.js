@@ -240,6 +240,9 @@ module.exports = {
                         outputPath: 'font'
                     }
                 }
+            }, {
+                test: /\.(png|jpg|jpeg|gif)$/,
+                loader: 'url-loader'
             }
         ]
     }
