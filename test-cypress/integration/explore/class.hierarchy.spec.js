@@ -35,7 +35,7 @@ describe('Class hierarchy screen validation', () => {
         verifyCounterValue(INITIAL_CLASS_COUNT);
     });
 
-    it.only('Test show/hide prefixes', () => {
+    it('Test show/hide prefixes', () => {
         // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
         // prefixes are displayed/hidden
         verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
