@@ -20,10 +20,13 @@ export const getFileName = function(path) {
 
 const parseNumberParamsIfNeeded = function (params) {
     if (params) {
-        if (params.queryTimeout && params.queryLimitResults) {
-            // Parse both parameters properly to number
+        if (params.queryTimeout && params.queryLimitResults && params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint) {
+            // Parse parameters properly to number
             params.queryTimeout.value = parseInt(params.queryTimeout.value);
             params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
+            params.validationResultsLimitTotal.value = parseInt(params.validationResultsLimitTotal.value);
+            params.validationResultsLimitPerConstraint.value = parseInt(params.validationResultsLimitPerConstraint.value);
+
         } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
             && params.queryTimeout && params.unionWorkerThreads) {
             params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
