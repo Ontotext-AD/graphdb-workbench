@@ -57,9 +57,11 @@ const getShaclOptionsClass = function () {
 }
 
 const validateNumberFields = function (params, invalidValues) {
-    if (params.queryTimeout && params.queryLimitResults) {
+    if (params.queryTimeout && params.queryLimitResults && params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
+        invalidValues.isInvalidValidationResultsLimitTotal = !NUMBER_PATTERN.test(params.validationResultsLimitTotal.value);
+        invalidValues.isInvalidValidationResultsLimitPerConstraint = !NUMBER_PATTERN.test(params.validationResultsLimitPerConstraint.value);
     } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
         && params.enforceMaxQueryTime && params.unionWorkerThreads) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.enforceMaxQueryTime.value);
@@ -484,7 +486,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidLeftJoinWorkerThreads: false,
         isInvalidBoundJoinBlockSize: false,
         isInvalidJoinWorkerThreads : false,
-        isInvalidUnionWorkerThreads : false
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
 
     function isValidEERepository(repositoryType) {
@@ -656,6 +660,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             toastr.error('Invalid parameter query limit');
         } else if ($scope.invalidValues.isInvalidQueryTimeout) {
             toastr.error('Invalid parameter query timeout');
+        } else if ($scope.invalidValues.isInvalidValidationResultsLimitTotal) {
+            toastr.error('Invalid parameter validation results limit total');
+        } else if ($scope.invalidValues.isInvalidValidationResultsLimitPerConstraint) {
+            toastr.error('Invalid parameter validation results limit per constraint');
         } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
             toastr.error('Invalid parameter join worker threads');
         } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
@@ -751,7 +759,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         isInvalidLeftJoinWorkerThreads: false,
         isInvalidBoundJoinBlockSize: false,
         isInvalidJoinWorkerThreads : false,
-        isInvalidUnionWorkerThreads : false
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -843,6 +853,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             toastr.error('Invalid parameter query limit');
         } else if ($scope.invalidValues.isInvalidQueryTimeout) {
             toastr.error('Invalid parameter query timeout');
+        } else if ($scope.invalidValues.isInvalidValidationResultsLimitTotal) {
+            toastr.error('Invalid parameter validation results limit total');
+        } else if ($scope.invalidValues.isInvalidValidationResultsLimitPerConstraint) {
+            toastr.error('Invalid parameter validation results limit per constraint');
         } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
             toastr.error('Invalid parameter join worker threads');
         } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
