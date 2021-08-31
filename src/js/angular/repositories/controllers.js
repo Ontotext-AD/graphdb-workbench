@@ -97,13 +97,13 @@ const getInvalidParameterErrorMessage = function(param) {
 const checkInvalidValues = function(invalidValues) {
     let invalidValuesKeys = Object.keys(invalidValues);
     let invalidValuesVal = Object.values(invalidValues);
-    let result = false;
+
     for (let i = 0; i < invalidValuesKeys.length; i++) {
         if (invalidValuesVal[i]) {
-            result = getInvalidParameterErrorMessage(invalidValuesKeys[i]);
+            return getInvalidParameterErrorMessage(invalidValuesKeys[i]);
         }
     }
-    return result;
+    return '';
 }
 
 const getDocBase = function (productInfo) {
