@@ -120,7 +120,7 @@
                             </span>
                             <span ng-show="file.status == 'ERROR'" class="text-danger">
                                 <em class="icon-warning"></em>
-                                <small>{{file.message.substr(0,160)}}</small>
+                                <small>{{file.message}}</small>
                             </span>
                             <span class="text-secondary import-status-loader"
                                 ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'">

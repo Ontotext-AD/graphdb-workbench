@@ -70,6 +70,15 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 });
         }
 
+        $scope.truncateErrorMessage = function(file) {
+            if (file.message.length > 160) {
+                let result = file.message.substr(0, 160);
+                result += " ...";
+                return result;
+            } else {
+                return file.message;
+            }
+        }
         $scope.updateListHttp = function (force) {
             $http({
                 method: 'GET',
@@ -81,6 +90,9 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                         if (!f.type) {
                             f.type = $scope.defaultType;
                         }
+                        if (f.status === "ERROR") {
+                            f.message = $scope.truncateErrorMessage(f);
+                        }
                     });
                     $scope.rebatch();
                 } else {
@@ -91,6 +103,9 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                         }
                         if (!f.type) {
                             f.type = $scope.defaultType;
+                        }
+                        if (f.status === "ERROR") {
+                            f.message = $scope.truncateErrorMessage(f);
                         }
                     });
                 }
