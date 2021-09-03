@@ -22,7 +22,7 @@ SmartUpdateListCtrl.$inject = ['$scope', '$repositories', 'SmartUpdatesRestServi
 
 function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toastr, ModalService) {
 
-    $scope.getSmartUpdateTemplates = function () {
+    $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos don't support Smart updates.
         if ($repositories.getActiveRepository() && !$repositories.isActiveRepoOntopType()) {
@@ -40,7 +40,7 @@ function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toa
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
     }, function () {
-        $scope.getSmartUpdateTemplates();
+        $scope.getSparqlTemplates();
     });
 
     $scope.deleteTemplate = function (name) {
@@ -53,7 +53,7 @@ function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toa
                 SmartUpdatesRestService.deleteSmartUpdateTemplate(name)
                     .success(function () {
                         toastr.success(`${name} template deleted successfully`);
-                        $scope.getSmartUpdateTemplates();
+                        $scope.getSparqlTemplates();
                     }).error(function (e) {
                     toastr.error(getError(e), `Could not delete ${name} template`);
                 });
@@ -349,7 +349,7 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
 
     function validateQuery() {
         if (!hasValidQuery()) {
-            toastr.error('The template query must be a UPDATE query', 'Invalid query');
+            toastr.error('The template query must be an UPDATE query', 'Invalid query');
             return false;
         }
 
