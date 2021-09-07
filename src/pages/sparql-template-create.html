@@ -27,12 +27,12 @@
 
     <div class="card mb-2 sql-table-config">
         <div class="card-block pt-1">
-            <p class="lead">Template name</p>
+            <p class="lead">Template IRI</p>
             <div class="table-group table-group-lg">
-                <input required class="form-control smart-update-template-name" type="text" placeholder="Smart update template name (required)"
-                       ng-model="currentQuery.name" ng-disabled="!currentQuery.isNewTemplate" >
-                <div style="margin-top: 5px" ng-show="isInvalidTemplateName" class="idError alert alert-danger">
-                    Smart update template name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"
+                <input required class="form-control sparql-template-name" type="text" ng-blur="validateTemplateID()" placeholder="http://exampleuri.com/examplepath (required)"
+                       ng-model="currentQuery.templateID" ng-disabled="!currentQuery.isNewTemplate">
+                <div style="margin-top: 5px" ng-if="isInvalidTemplateId" class="idError alert alert-danger">
+                    {{currentQuery.templateID}} is not a valid IRI
                 </div>
             </div>
 
@@ -52,15 +52,15 @@
             ng-if="canWriteActiveRepo()">
         Save
     </button>
-    <a ng-href="/smart-update" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="Cancel Smart update template creation"
+    <a ng-href="/sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
+       popover="Cancel SPARQL template creation"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
         Cancel
     </a>
-    <a ng-href="/smart-update" class="btn btn-lg btn-secondary"
-       popover="Cancel Smart update template creation"
+    <a ng-href="/sparql-templates" class="btn btn-lg btn-secondary"
+       popover="Cancel SPARQL template creation"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">

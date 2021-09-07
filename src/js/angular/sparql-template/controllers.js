@@ -2,8 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
-import {FILENAME_PATTERN} from "../repositories/repository.constants";
-
+import 'angular/utils/uri-utils';
 
 const modules = [
     'ui.bootstrap',
@@ -12,28 +11,28 @@ const modules = [
     'toastr'
 ];
 
-angular.module('graphdb.framework.smart-update.smart-update.controllers', modules, [
+angular.module('graphdb.framework.sparql-template.controllers', modules, [
     'graphdb.framework.utils.notifications'
 ])
-    .controller('SmartUpdateListCtrl', SmartUpdateListCtrl)
-    .controller('SmartUpdateCreateCtrl', SmartUpdateCreateCtrl);
+    .controller('SparqlTemplatesCtrl', SparqlTemplatesCtrl)
+    .controller('SparqlTemplateCreateCtrl', SparqlTemplateCreateCtrl);
 
-SmartUpdateListCtrl.$inject = ['$scope', '$repositories', 'SmartUpdatesRestService', 'toastr', 'ModalService'];
+SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService'];
 
-function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toastr, ModalService) {
+function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService) {
 
     $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
-        // Ontop repos don't support Smart updates.
+        // Ontop repos doesn't support update operations.
         if ($repositories.getActiveRepository() && !$repositories.isActiveRepoOntopType()) {
-            SmartUpdatesRestService.getSmartUpdateTemplates().success(function (data) {
-                $scope.smartUpdatesNames = data;
+            SparqlTemplatesRestService.getSparqlTemplates().success(function (data) {
+                $scope.sparqlTemplateIds = data;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not get Smart update templates');
+                toastr.error(msg, 'Could not get SPARQL templates');
             });
         } else {
-            $scope.smartUpdatesNames = [];
+            $scope.sparqlTemplateIds = [];
         }
     };
 
@@ -43,19 +42,19 @@ function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toa
         $scope.getSparqlTemplates();
     });
 
-    $scope.deleteTemplate = function (name) {
+    $scope.deleteTemplate = function (templateID) {
         ModalService.openSimpleModal({
             title: 'Warning',
-            message: 'Are you sure you want to delete the Smart update template ' + '\'' + name + '\'?',
+            message: 'Are you sure you want to delete the SPARQL template ' + '\'' + templateID + '\'?',
             warning: true
         }).result
             .then(function () {
-                SmartUpdatesRestService.deleteSmartUpdateTemplate(name)
+                SparqlTemplatesRestService.deleteSparqlTemplate(templateID)
                     .success(function () {
-                        toastr.success(`${name} template deleted successfully`);
+                        toastr.success('SPARQL template deleted successfully', templateID);
                         $scope.getSparqlTemplates();
                     }).error(function (e) {
-                    toastr.error(getError(e), `Could not delete ${name} template`);
+                    toastr.error(getError(e), `Could not delete ${templateID} template`);
                 });
             });
     };
@@ -73,12 +72,12 @@ function SmartUpdateListCtrl($scope, $repositories, SmartUpdatesRestService, toa
     }
 }
 
-SmartUpdateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SmartUpdatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];
+SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils'];
 
-function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SmartUpdatesRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService) {
+function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils) {
 
-    $scope.name = $location.search().name || '';
-    $scope.title = $scope.name ? `Edit ${$scope.name} Template` : 'Create Smart Update Template';
+    $scope.templateID = $location.search().templateID || '';
+    $scope.title = ($scope.templateID ? 'Edit' : 'Create') + ' SPARQL Template';
     $scope.getNamespaces = getNamespaces;
     $scope.setLoader = setLoader;
     $scope.addKnownPrefixes = addKnownPrefixes;
@@ -93,7 +92,7 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
         return $repositories.getActiveRepository();
     }, function (newValue, oldValue) {
         if (newValue !== oldValue) {
-            $location.path('smart-update');
+            $location.path('/sparql-templates');
         }
     });
 
@@ -135,8 +134,7 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
     });
 
     const defaultTabConfig = {
-        id: '1',
-        name: '',
+        templateID: '',
         query: 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
             'PREFIX urn: <http://example.com#>\n' +
             'DELETE {\n' +
@@ -163,8 +161,8 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
         window.editor.setValue(query ? query : ' ');
     };
 
-    if ($scope.name) {
-        getSmartTemplate($scope.name);
+    if ($scope.templateID) {
+        getSparqlTemplate($scope.templateID);
     } else {
         setQueryFromTabConfig();
     }
@@ -245,17 +243,17 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
         }
     }
 
-    function getSmartTemplate(name) {
-        SmartUpdatesRestService.getSmartUpdateTemplate(name).success(function (templateContent) {
+    function getSparqlTemplate(templateID) {
+        SparqlTemplatesRestService.getSparqlTemplate(templateID).success(function (templateContent) {
             defaultTabConfig.query = templateContent;
-            defaultTabConfig.name = name;
+            defaultTabConfig.templateID = templateID;
 
-            defaultTabConfig.isNewTemplate = !name;
+            defaultTabConfig.isNewTemplate = !templateID;
 
             setQueryFromTabConfig();
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, `Could not get ${$scope.currentQuery.name} template`);
+            toastr.error(msg, `Could not get ${$scope.currentQuery.templateID} template`);
             $scope.repositoryError = msg;
         });
     }
@@ -283,36 +281,36 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
             return;
         }
 
-        if (!$scope.currentQuery.name) {
-            toastr.error('Smart update template name is required');
+        if (!$scope.currentQuery.templateID) {
+            toastr.error('SPARQL template IRI is required');
             return;
         } else {
-            $scope.isInvalidTemplateName = !FILENAME_PATTERN.test($scope.currentQuery.name);
-            if ($scope.isInvalidTemplateName) {
-                toastr.error('Invalid Smart update template name');
+            $scope.validateTemplateID();
+            if ($scope.isInvalidTemplateId) {
+                toastr.error('Invalid SPARQL template IRI');
                 return;
             }
         }
 
         if ($scope.currentQuery.isNewTemplate) {
-            SmartUpdatesRestService.createSmartUpdateTemplate($scope.currentQuery).success(function () {
+            SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewTemplate = false;
-                toastr.success(`${$scope.currentQuery.name} template saved`);
+                toastr.success('SPARQL template saved', $scope.currentQuery.templateID);
                 $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, `Could not save ${$scope.currentQuery.name} template`);
+                toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
             });
         } else {
-            SmartUpdatesRestService.updateSmartUpdateTemplate($scope.currentQuery).success(function () {
+            SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewTemplate = false;
-                toastr.success(`${$scope.currentQuery.name} template updated`);
+                toastr.success('SPARQL template updated', $scope.currentQuery.templateID);
                 $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, `Could not save ${$scope.currentQuery.name} template`);
+                toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
             });
         }
     };
@@ -354,5 +352,9 @@ function SmartUpdateCreateCtrl($scope, $location, toastr, $repositories, $window
         }
 
         return true;
+    }
+
+    $scope.validateTemplateID = function () {
+        $scope.isInvalidTemplateId = !UriUtils.validateRdfUri($scope.currentQuery.templateID);
     }
 }
