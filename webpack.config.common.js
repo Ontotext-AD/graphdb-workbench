@@ -214,12 +214,12 @@ module.exports = {
                 }
             },
             {
-                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                test: /\.woff(2)?(\?v=\d+\.\d+\.\d+)?$/,
                 use: {
-                    loader: "url-loader?mimetype=application/font-woff",
+                    loader: "file-loader",
                     options: {
-                        name: '[name].[hash].[ext]',
-                        outputPath: 'font'
+                        name: '[name].[ext]',
+                        outputPath: 'res/swagger/fonts'
                     }
                 }
             }, {
@@ -241,7 +241,7 @@ module.exports = {
                     }
                 }
             }, {
-                test: /\.(png|jpg|jpeg|gif|woff|woff2)$/,
+                test: /\.(png|jpg|jpeg|gif)$/,
                 loader: 'url-loader'
             }
         ]

@@ -20,16 +20,18 @@ export const getFileName = function(path) {
 
 const parseNumberParamsIfNeeded = function (params) {
     if (params) {
-        if (params.queryTimeout && params.queryLimitResults) {
-            // Parse both parameters properly to number
+        if (params.queryTimeout) {
             params.queryTimeout.value = parseInt(params.queryTimeout.value);
+        }
+        if (params.queryLimitResults && params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint) {
+            // Parse parameters properly to number
             params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
-        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
-            && params.queryTimeout && params.unionWorkerThreads) {
+            params.validationResultsLimitTotal.value = parseInt(params.validationResultsLimitTotal.value);
+            params.validationResultsLimitPerConstraint.value = parseInt(params.validationResultsLimitPerConstraint.value);
+        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads && params.unionWorkerThreads) {
             params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
             params.boundJoinBlockSize.value = parseInt(params.boundJoinBlockSize.value);
             params.joinWorkerThreads.value = parseInt(params.joinWorkerThreads.value);
-            params.queryTimeout.value = parseInt(params.queryTimeout.value);
             params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
         }
     }
@@ -54,17 +56,53 @@ const getShaclOptionsClass = function () {
 }
 
 const validateNumberFields = function (params, invalidValues) {
-    if (params.queryTimeout && params.queryLimitResults) {
+    if (params.queryTimeout) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
+    }
+    if (params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint && params.queryLimitResults) {
+        invalidValues.isInvalidValidationResultsLimitTotal = !NUMBER_PATTERN.test(params.validationResultsLimitTotal.value);
+        invalidValues.isInvalidValidationResultsLimitPerConstraint = !NUMBER_PATTERN.test(params.validationResultsLimitPerConstraint.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
-    } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
-        && params.enforceMaxQueryTime && params.unionWorkerThreads) {
-        invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.enforceMaxQueryTime.value);
+    }
+    else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+        && params.unionWorkerThreads) {
         invalidValues.isInvalidLeftJoinWorkerThreads = !NUMBER_PATTERN.test(params.leftJoinWorkerThreads.value);
         invalidValues.isInvalidBoundJoinBlockSize = !NUMBER_PATTERN.test(params.boundJoinBlockSize.value);
         invalidValues.isInvalidJoinWorkerThreads = !NUMBER_PATTERN.test(params.joinWorkerThreads.value);
         invalidValues.isInvalidUnionWorkerThreads = !NUMBER_PATTERN.test(params.unionWorkerThreads.value);
     }
+}
+
+const getInvalidParameterErrorMessage = function(param) {
+    if(param === "isInvalidQueryLimit") {
+        return 'Invalid parameter query limit';
+    } else if (param === "isInvalidQueryTimeout") {
+        return 'Invalid parameter query timeout';
+    } else if (param === "isInvalidValidationResultsLimitTotal") {
+        return 'Invalid parameter validation results limit total';
+    } else if (param === "isInvalidValidationResultsLimitPerConstraint") {
+        return 'Invalid parameter validation results limit per constraint';
+    } else if (param === "isInvalidJoinWorkerThreads") {
+        return 'Invalid parameter join worker threads';
+    } else if (param === "isInvalidLeftJoinWorkerThreads") {
+        return 'Invalid parameter left join worker threads';
+    } else if (param === "isInvalidUnionWorkerThreads") {
+        return 'Invalid parameter union worker threads';
+    } else if (param === "isInvalidBoundJoinBlockSize") {
+        return 'Invalid parameter bound join block size';
+    }
+}
+
+const checkInvalidValues = function(invalidValues) {
+    let invalidValuesKeys = Object.keys(invalidValues);
+    let invalidValuesVal = Object.values(invalidValues);
+
+    for (let i = 0; i < invalidValuesKeys.length; i++) {
+        if (invalidValuesVal[i]) {
+            return getInvalidParameterErrorMessage(invalidValuesKeys[i]);
+        }
+    }
+    return '';
 }
 
 const getDocBase = function (productInfo) {
@@ -481,7 +519,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidLeftJoinWorkerThreads: false,
         isInvalidBoundJoinBlockSize: false,
         isInvalidJoinWorkerThreads : false,
-        isInvalidUnionWorkerThreads : false
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
 
     function isValidEERepository(repositoryType) {
@@ -642,6 +682,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
         $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+        const invalidValues = checkInvalidValues($scope.invalidValues);
 
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
@@ -649,20 +690,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             toastr.error('Wrong repo name');
         } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
             $scope.noMembersError();
-        } else  if($scope.invalidValues.isInvalidQueryLimit) {
-            toastr.error('Invalid parameter query limit');
-        } else if ($scope.invalidValues.isInvalidQueryTimeout) {
-            toastr.error('Invalid parameter query timeout');
-        } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
-            toastr.error('Invalid parameter join worker threads');
-        } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
-            toastr.error('Invalid parameter left join worker threads');
-        } else if ($scope.invalidValues.isInvalidUnionWorkerThreads) {
-            toastr.error('Invalid parameter union worker threads');
-        } else if ($scope.invalidValues.isInvalidBoundJoinBlockSize) {
-            toastr.error('Invalid parameter bound join block size');
+        } else if (invalidValues) {
+            toastr.error(invalidValues);
         } else {
-                $scope.createRepoHttp();
+            $scope.createRepoHttp();
         }
     };
 
@@ -748,7 +779,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         isInvalidLeftJoinWorkerThreads: false,
         isInvalidBoundJoinBlockSize: false,
         isInvalidJoinWorkerThreads : false,
-        isInvalidUnionWorkerThreads : false
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -821,6 +854,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+        const invalidValues = checkInvalidValues($scope.invalidValues);
         let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
@@ -836,18 +870,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             toastr.error('Wrong repo name');
         } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
             $scope.noMembersError();
-        } else if($scope.invalidValues.isInvalidQueryLimit) {
-            toastr.error('Invalid parameter query limit');
-        } else if ($scope.invalidValues.isInvalidQueryTimeout) {
-            toastr.error('Invalid parameter query timeout');
-        } else if ($scope.invalidValues.isInvalidJoinWorkerThreads) {
-            toastr.error('Invalid parameter join worker threads');
-        } else if ($scope.invalidValues.isInvalidLeftJoinWorkerThreads) {
-            toastr.error('Invalid parameter left join worker threads');
-        } else if ($scope.invalidValues.isInvalidUnionWorkerThreads) {
-            toastr.error('Invalid parameter union worker threads');
-        } else if ($scope.invalidValues.isInvalidBoundJoinBlockSize) {
-            toastr.error('Invalid parameter bound join block size');
+        } else if(invalidValues) {
+            toastr.error(invalidValues);
         } else {
             ModalService.openSimpleModal({
                 title: 'Confirm save',

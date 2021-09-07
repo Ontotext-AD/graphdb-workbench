@@ -40,19 +40,28 @@ describe('Class hierarchy screen validation', () => {
         // prefixes are displayed/hidden
         verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
 
-        // Switch show prefixes to off
-        cy.get('.toolbar-holder')
-            .find('.prefix-toggle-btn')
-            .scrollIntoView()
-            .should('be.visible')
-            .click()
-            .then(() => {
-                // Verify that prefixes are removed from diagram
-                verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
-            });
-
-        // Verify that prefixes are removed from diagram
-        verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));
+        // Because some of the labels are truncated and is not guaranteed,
+        // that after calling cy.get labels will be in the same order,
+        // get the initial value of 'Chardonnay' label's text
+        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay').then($initialVal => {
+            // Switch show prefixes to off
+            cy.get('.toolbar-holder')
+                .find('.prefix-toggle-btn')
+                .scrollIntoView()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    // Because of the timeout of 50 milliseconds after which the redraw of the prefixes happens
+                    // and we would like to validate successful removal, wait until the value of the 'Chardonnay'
+                    // label has changed. If not the test will fail
+                    cy.waitUntil(() =>
+                        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay')
+                            .then($newVal =>
+                                $newVal.text() !== $initialVal.text()));
+                    // Verify that prefixes are removed from diagram
+                    verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
+                });
+        });
     });
 
     it('Test focus on diagram', () => {
