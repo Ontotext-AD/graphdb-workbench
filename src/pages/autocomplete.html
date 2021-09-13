@@ -18,7 +18,7 @@
 
     <div core-errors write ontop fedx></div>
 
-    <div ng-show="canWriteActiveRepo() && !loading">
+    <div ng-show="canWriteActiveRepo() && !loading && !isRestricted">
 		<div class="alert alert-info autocomplete-configuring-not-supported-alert" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>Autocomplete not fully supported</h4>
 			<p>Configuring autocomplete is not supported. {{getDegradedReason()}}</p>

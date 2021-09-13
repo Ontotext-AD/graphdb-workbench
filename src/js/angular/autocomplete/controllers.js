@@ -127,7 +127,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     const init = function() {
         if (!$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
-                $repositories.isActiveRepoFedXType()) {
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
@@ -238,9 +238,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
+        $scope.setRestricted();
         if (!$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
-                $repositories.isActiveRepoFedXType()) {
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();

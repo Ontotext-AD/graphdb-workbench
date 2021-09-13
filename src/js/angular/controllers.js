@@ -323,7 +323,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const activeRepository = $repositories.getActiveRepository();
         // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
         return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem) && $repositories.isRepoTypeSupported(activeRepository);
+            && (activeRepository !== 'SYSTEM' || !noSystem);
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -338,10 +338,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.isActiveRepoFedXType = function () {
         return $repositories.isActiveRepoFedXType();
-    }
-
-    $scope.isRepoTypeSupported = function (repoId) {
-        return $repositories.isRepoTypeSupported(repoId);
     }
 
     /**
@@ -361,7 +357,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.setRestricted = function () {
         if ($scope.attrs) {
             $scope.isRestricted =
-                $scope.attrs.hasOwnProperty('write') && $scope.isRepoTypeSupported() ||
+                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
         }

@@ -12,7 +12,7 @@
 	</h1>
 	<div core-errors ontop fedx></div>
 	<div system-repo-warning></div>
-	<div class="alert alert-danger" ng-show="!isActiveRepoFedXType() && repositoryError">
+	<div class="alert alert-danger" ng-show="repositoryError">
 		<p>The currently selected repository cannot be used for queries due to an error:</p>
 		<p>{{repositoryError}}</p>
 	</div>
