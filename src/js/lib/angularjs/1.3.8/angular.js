@@ -5678,7 +5678,7 @@ function $CacheFactoryProvider() {
  * Adding via the `script` tag:
  *
  * ```html
- *   <script type="text/ng-template" id="templateID.html">
+ *   <script type="text/ng-template" id="templateId.html">
  *     <p>This is the content of the template</p>
  *   </script>
  * ```
@@ -5692,18 +5692,18 @@ function $CacheFactoryProvider() {
  * ```js
  * var myApp = angular.module('myApp', []);
  * myApp.run(function($templateCache) {
- *   $templateCache.put('templateID.html', 'This is the content of the template');
+ *   $templateCache.put('templateId.html', 'This is the content of the template');
  * });
  * ```
  *
  * To retrieve the template later, simply use it in your HTML:
  * ```html
- * <div ng-include=" 'templateID.html' "></div>
+ * <div ng-include=" 'templateId.html' "></div>
  * ```
  *
  * or get it via Javascript:
  * ```js
- * $templateCache.get('templateID.html')
+ * $templateCache.get('templateId.html')
  * ```
  *
  * See {@link ng.$cacheFactory $cacheFactory}.

@@ -136,15 +136,14 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     const defaultTabConfig = {
         templateID: '',
         query: 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
-            'PREFIX urn: <http://example.com#>\n' +
+            'PREFIX ex: <http://example.com#>\n' +
             'DELETE {\n' +
-            '  ?worker urn:hasSalary ?xxx .\n' +
+            '  ?subject ex:myPredicate ?oldValue .\n' +
             '} INSERT {\n' +
-            '  ?id <urn:updatedOn> ?now .\n' +
+            '  ?subject ex:myPredicate ?newValue .\n' +
             '} WHERE {\n' +
-            '  ?id rdf:type urn:Factory .\n' +
-            '  ?worker urn:worksIn ?id .\n' +
-            '  bind(now() as ?now)\n' +
+            '  ?id rdf:type ex:MyType .\n' +
+            '  ?subject ex:isRelatedTo ?id .\n' +
             '}\n',
         inference: true,
         sameAs: true,
