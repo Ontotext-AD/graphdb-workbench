@@ -177,61 +177,6 @@ function coreErrors($timeout) {
                     event.stopPropagation();
                 }
             };
-
-            scope.createWarningTemplate = function () {
-                let restrictedDiv = document.getElementById('restrictedDiv');
-                if (!restrictedDiv) {
-                    return;
-                }
-                // remove all previously created children
-                restrictedDiv.querySelectorAll('*').forEach(n => n.remove());
-                let activeRepo = scope.getActiveRepository();
-                if (scope.isSecurityEnabled() && !scope.canWriteActiveRepo()) {
-                    let spanNode = document.createElement('span');
-                    spanNode.appendChild(document.createTextNode('you have no write permission to repository '));
-                    let boldedEl = document.createElement('b');
-                    boldedEl.appendChild(document.createTextNode(` ${activeRepo} `));
-                    spanNode.appendChild(boldedEl);
-                    restrictedDiv.appendChild(spanNode);
-                } else if (scope.isActiveRepoOntopType()) {
-                    let spanNode = document.createElement('span');
-                    let boldedEl = document.createElement('b');
-                    boldedEl.appendChild(document.createTextNode(` ${activeRepo} `));
-                    spanNode.appendChild(boldedEl);
-                    spanNode.appendChild(document.createTextNode(' is read-only Virtual Repository'));
-                    restrictedDiv.appendChild(spanNode);
-                } else if (scope.isActiveRepoFedXType()) {
-                    let spanNode = document.createElement('span');
-                    let boldedEl = document.createElement('b');
-                    boldedEl.appendChild(document.createTextNode(` ${scope.title} `));
-                    spanNode.appendChild(boldedEl);
-                    spanNode.appendChild(document.createTextNode('view is not supported by FedX Repository'));
-                    restrictedDiv.appendChild(spanNode);
-                }
-            }
-
-            // Following will create the proper warning message if some restriction for the active repository is applied.
-            // Note that user doesn't have security write access to the repository only this warning will be shown
-            $(document).ready(function() {
-                setTimeout(function() {
-                    scope.createWarningTemplate();
-                    }, 100);
-            });
-
-            // Check if warning message should be shown or removed on repository change
-            const repoIsSetListener = scope.$on('repositoryIsSet', function () {
-                setTimeout(function () {
-                    scope.setRestricted();
-                    scope.createWarningTemplate();
-                }, 100);
-            });
-
-            window.addEventListener('beforeunload', removeRepoIsSetListener);
-
-            function removeRepoIsSetListener() {
-                repoIsSetListener();
-                window.removeEventListener('beforeunload', removeRepoIsSetListener);
-            }
         }
     };
 }

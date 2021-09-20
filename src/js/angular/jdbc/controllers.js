@@ -22,9 +22,11 @@ JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 
 function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService) {
 
     $scope.getSqlConfigurations = function () {
-        // Only do this if there is an active repo that isn't an Ontop repo.
-        // Ontop repos don't support JDBC.
-        if ($repositories.getActiveRepository() && !$repositories.isActiveRepoOntopType()) {
+        // Only do this if there is an active repo that isn't an Ontop or FedX repo.
+        // Ontop and FedX repos don't support JDBC.
+        if ($repositories.getActiveRepository()
+                && !$repositories.isActiveRepoOntopType()
+                    && !$repositories.isActiveRepoFedXType()) {
             JdbcRestService.getJdbcConfigurations().success(function (data) {
                 $scope.jdbcConfigurations = data;
             }).error(function (data) {
