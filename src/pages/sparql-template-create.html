@@ -1,0 +1,70 @@
+<link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
+<link href="css/lib/yasqe.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/new-sparql.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/graphs-config.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<link href="css/jdbc.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="container-fluid">
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors></div>
+    <div system-repo-warning></div>
+    <div class="alert alert-danger" ng-show="repositoryError">
+        <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+        <p>{{repositoryError}}</p>
+    </div>
+
+    <div class="card mb-2 sql-table-config">
+        <div class="card-block pt-1">
+            <p class="lead">Template IRI</p>
+            <div class="table-group table-group-lg">
+                <input required class="form-control sparql-template-name" type="text" ng-blur="validateTemplateID()" placeholder="http://exampleuri.com/examplepath (required)"
+                       ng-model="currentQuery.templateID" ng-disabled="!currentQuery.isNewTemplate">
+                <div style="margin-top: 5px" ng-if="isInvalidTemplateId" class="idError alert alert-danger">
+                    {{currentQuery.templateID}} is not a valid IRI
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <br/>
+                <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
+                              notoolbar-inference
+                              notoolbar-same-as callback-on-change="updateDirty">
+                </query-editor>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
+            popover="Save SPARQL template"
+            popover-placement="top"
+            popover-trigger="mouseenter"
+            ng-if="canWriteActiveRepo()">
+        Save
+    </button>
+    <a ng-href="/sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
+       popover="Cancel SPARQL template creation"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="canWriteActiveRepo()">
+        Cancel
+    </a>
+    <a ng-href="/sparql-templates" class="btn btn-lg btn-secondary"
+       popover="Cancel SPARQL template creation"
+       popover-placement="top"
+       popover-trigger="mouseenter"
+       ng-if="!canWriteActiveRepo()">
+        Close
+    </a>
+    <br/><br/><br/>
+</div>
