@@ -161,6 +161,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.$on("repositoryIsSet", function () {
+        $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
 

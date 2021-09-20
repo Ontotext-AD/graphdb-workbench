@@ -58,18 +58,6 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
                 });
             });
     };
-
-    // Check if warning message should be shown or removed on repository change
-    const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
-        $scope.setRestricted();
-    });
-
-    window.addEventListener('beforeunload', removeRepoIsSetListener);
-
-    function removeRepoIsSetListener() {
-        repoIsSetListener();
-        window.removeEventListener('beforeunload', removeRepoIsSetListener);
-    }
 }
 
 JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];

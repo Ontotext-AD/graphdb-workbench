@@ -109,7 +109,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
 
     // Check if warning message should be shown or removed on repository change
     const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
-        $scope.setRestricted();
         $scope.checkPluginEnabled();
         $scope.pullList();
     });

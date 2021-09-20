@@ -297,7 +297,6 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         $scope.classQuery.query = '';
         $scope.repositoryError = null;
         selectedGraph = allGraphs;
-        $scope.setRestricted();
         if (!$repositories.getActiveRepository() || $repositories.isActiveRepoFedXType()) {
             $scope.status = STATUS.NO_REPO;
             return;

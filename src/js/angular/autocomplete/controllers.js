@@ -238,7 +238,6 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
-        $scope.setRestricted();
         if (!$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {
