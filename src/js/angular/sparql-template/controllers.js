@@ -24,7 +24,9 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos doesn't support update operations.
-        if ($repositories.getActiveRepository() && !$repositories.isActiveRepoOntopType()) {
+        if ($repositories.getActiveRepository()
+                && !$repositories.isActiveRepoOntopType()
+                    && !$repositories.isActiveRepoFedXType()) {
             SparqlTemplatesRestService.getSparqlTemplates().success(function (data) {
                 $scope.sparqlTemplateIds = data;
             }).error(function (data) {
