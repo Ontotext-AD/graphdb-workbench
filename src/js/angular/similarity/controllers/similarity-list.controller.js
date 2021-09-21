@@ -34,7 +34,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     $scope.checkPluginEnabled = function () {
-        if (!$scope.getActiveRepository()) {
+        if (shouldSkipCall()) {
             return;
         }
         RDF4JRepositoriesRestService.checkSimilarityPluginEnabled()
@@ -57,12 +57,21 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
             });
     };
 
-    SimilarityRestService.getSearchQueries().success(function (data) {
-        $scope.searchQueries = data;
-    }).error(function (data) {
-        const msg = getError(data);
-        toastr.error(msg, 'Could not get search queries');
-    });
+    // Don't call functions if one of the following conditions are met
+    function shouldSkipCall() {
+        return !$scope.getActiveRepository() ||
+                    $scope.isActiveRepoFedXType() ||
+                         $scope.isActiveRepoOntopType();
+    }
+
+    if (!shouldSkipCall()) {
+        SimilarityRestService.getSearchQueries().success(function (data) {
+            $scope.searchQueries = data;
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Could not get search queries');
+        });
+    }
 
     $scope.encodeURIComponent = function (param) {
         return encodeURIComponent(param);
@@ -70,7 +79,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
 
     // get similarity indexes
     $scope.getSimilarityIndexes = function () {
-        if (!$scope.getActiveRepository() || $scope.pluginDisabled) {
+        if (shouldSkipCall() || $scope.pluginDisabled) {
             return;
         }
         SimilarityRestService.getIndexes()
@@ -84,7 +93,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     $scope.pullList = function () {
-        if (!$scope.getActiveRepository() || $scope.pluginDisabled) {
+        if (shouldSkipCall() || $scope.pluginDisabled) {
             return;
         }
         $scope.getSimilarityIndexes();
@@ -100,7 +109,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
 
     // Check if warning message should be shown or removed on repository change
     const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
-        $scope.setRestricted();
         $scope.checkPluginEnabled();
         $scope.pullList();
     });
@@ -114,7 +122,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.getActiveRepository()) {
+        // Don't try to get namespaces for ontop or fedx repository
+        if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
                     checkAutocompleteStatus();

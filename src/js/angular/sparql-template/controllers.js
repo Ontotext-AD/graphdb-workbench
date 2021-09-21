@@ -60,18 +60,6 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
                 });
             });
     };
-
-    // Check if warning message should be shown or removed on repository change
-    const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
-        $scope.setRestricted();
-    });
-
-    window.addEventListener('beforeunload', removeRepoIsSetListener);
-
-    function removeRepoIsSetListener() {
-        repoIsSetListener();
-        window.removeEventListener('beforeunload', removeRepoIsSetListener);
-    }
 }
 
 SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils'];

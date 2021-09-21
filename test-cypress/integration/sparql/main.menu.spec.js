@@ -1,5 +1,9 @@
 describe('Main menu tests', function () {
 
+    before(function () {
+        cy.clearLocalStorage();
+    });
+
     beforeEach(function () {
         cy.visit('/');
         cy.window();
