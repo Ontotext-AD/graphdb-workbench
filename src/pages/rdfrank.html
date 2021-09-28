@@ -25,7 +25,7 @@
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
 		</div>
-		<div ng-show="!isActiveRepoFedXType() && pluginFound && !getDegradedReason()">
+		<div ng-show="!isRestricted && pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="rdf-rank-status">RDFRank for repository <strong>{{getActiveRepository()}}</strong> is with status</span>
                 <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> Computed</span>

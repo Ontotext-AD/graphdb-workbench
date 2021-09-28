@@ -127,7 +127,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     const init = function() {
         if (!$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
-                $repositories.isActiveRepoFedXType()) {
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();
@@ -240,7 +240,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
         cancelTimer();
         if (!$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
-                $repositories.isActiveRepoFedXType()) {
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
         checkForPlugin();

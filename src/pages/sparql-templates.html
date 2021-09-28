@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+    <div core-errors ontop fedx></div>
+    <div class="sparql-templates-list card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
+        <div class="card-block" ng-init="getSparqlTemplates();">
+            <div class="clearfix">
+                <a ng-href="sparql-template/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
+                    <span class="icon-plus create-sql-table-configuration"></span> Create new SPARQL template
+                </a>
+                <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
+                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> Existing templates</span>
+                </h3>
+            </div>
+
+            <div class="collapse in mt-1" id="configurations-table">
+                <div class="no-indexes" ng-if="sparqlTemplateIds.length == 0"><em>No templates are defined</em></div>
+                <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
+                    <tbody>
+                    <tr ng-repeat="templateID in sparqlTemplateIds track by $index"
+                        class="configuration-row">
+                        <td>
+                            <a class="lead configuration-name" ng-href="sparql-template/create?templateID={{templateID}}">{{templateID}}</a>
+                        </td>
+
+                        <td class="text-xs-right">
+                            <span class="actions-bar hovered-item">
+                                    <a class="btn btn-link edit-query-btn"
+                                       ng-if="canWriteActiveRepo()" href="sparql-template/create?templateID={{templateID}}"
+                                       tooltip="Edit SPARQL template">
+                                        <em class="icon-edit"></em>
+                                    </a>
+                                </span>
+                            <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(templateID)"
+                                    class="btn btn-link delete-configuration-btn" tooltip="Delete SPARQL template"><span
+                                class="icon-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

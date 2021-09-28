@@ -217,7 +217,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(that.location, repo.id) && that.isRepoTypeSupported(repo.id);
+                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isActiveRepoOntopType(repo.id);
             });
         };
 
@@ -229,9 +229,12 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.repository === 'SYSTEM';
         };
 
-        this.isActiveRepoOntopType = function () {
+        this.isActiveRepoOntopType = function (repoId) {
             const that = this;
-            let activeRepo = that.repositories.find(current => current.id === that.getActiveRepository());
+            if (!repoId) {
+                repoId = that.getActiveRepository();
+            }
+            let activeRepo = that.repositories.find(current => current.id === repoId);
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
@@ -253,23 +256,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             // so return the following check to ensure that repositories will
             // be loaded first repo type will be evaluated properly afterwards
             return typeof activeRepo === "undefined";
-        }
-
-        this.isRepoTypeSupported = function (repoId) {
-            const that = this;
-            if (!repoId) {
-                repoId = that.getActiveRepository();
-            }
-            let activeRepo = that.repositories.find(current => current.id === repoId);
-            if (activeRepo) {
-                if ($location.path().includes('import')) {
-                    return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL;
-                } else {
-                    return activeRepo.sesameType !== ONTOP_REPOSITORY_LABEL && activeRepo.sesameType !== FEDX_REPOSITORY_LABEL;
-                }
-            }
-
-            return false;
         }
 
         this.setRepositoryHeaders = function () {

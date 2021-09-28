@@ -14,7 +14,7 @@
          size="75"
          message="getLoaderMessage"
          timeout="[1]"></div>
-    <div ng-show="canWriteActiveRepo() && !loader">
+    <div ng-show="canWriteActiveRepo() && !loader && !isRestricted">
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
