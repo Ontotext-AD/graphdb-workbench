@@ -21,7 +21,6 @@ PluginRegistry.add('main.menu', {
         href: 'cluster',
         order: 20,
         role: 'ROLE_ADMIN',
-        editions: ['enterprise'],
         parent: 'Setup'
     }]
 });
