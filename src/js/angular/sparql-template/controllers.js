@@ -62,9 +62,9 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     };
 }
 
-SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils'];
+SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils', 'ModalService'];
 
-function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils) {
+function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils, ModalService) {
 
     $scope.templateID = $location.search().templateID || '';
     $scope.title = ($scope.templateID ? 'Edit' : 'Create') + ' SPARQL Template';
@@ -282,15 +282,21 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         }
 
         if ($scope.currentQuery.isNewTemplate) {
-            SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
-                $scope.currentQuery.isPristine = true;
-                $scope.currentQuery.isNewTemplate = false;
-                toastr.success('SPARQL template saved', $scope.currentQuery.templateID);
-                $scope.goBack();
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
-            });
+            if (templateExists()) {
+                let modalMsg = `<span class="icon-2x icon-warning" style="color: #d54a33"/>&nbsp;SPARQL Template <strong>${$scope.currentQuery.templateID}</strong><br>`;
+                modalMsg += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;already exists.<br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do you want to override the template query?`;
+                ModalService.openSimpleModal({
+                    title: 'Confirm save',
+                    message: modalMsg,
+                    warning: true
+                }).result
+                    .then(function () {
+                        saveNewTemplate();
+                    });
+            } else {
+                saveNewTemplate();
+            }
         } else {
             SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
@@ -345,5 +351,28 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
 
     $scope.validateTemplateID = function () {
         $scope.isInvalidTemplateId = !UriUtils.isValidIri($scope.currentQuery.templateID);
+    }
+
+    function saveNewTemplate() {
+        SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
+            $scope.currentQuery.isPristine = true;
+            $scope.currentQuery.isNewTemplate = false;
+            toastr.success('SPARQL template saved', $scope.currentQuery.templateID);
+            $scope.goBack();
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
+        });
+    }
+
+    function templateExists() {
+        return SparqlTemplatesRestService
+            .getSparqlTemplates()
+                .success(function (data) {
+                    data.find((templateId) => templateId === $scope.currentQuery.templateID);
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, 'Could not get SPARQL templates');
+        });
     }
 }
