@@ -76,6 +76,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     // This property is obligatory in order to show YASQUE and YASR properly
     $scope.orientationViewMode = true;
     $scope.currentQuery = {};
+    let templateExist = false;
 
 
     $scope.$watch(function () {
@@ -282,31 +283,39 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         }
 
         if ($scope.currentQuery.isNewTemplate) {
-            if (templateExists()) {
-                let modalMsg = `<span class="icon-2x icon-warning" style="color: #d54a33"/>&nbsp;SPARQL Template <strong>${$scope.currentQuery.templateID}</strong><br>`;
-                modalMsg += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;already exists.<br><br>
+            checkIfTemplateExists()
+                .then(() => {
+                    if (templateExist) {
+                        let modalMsg = `<span class="icon-2x icon-warning" style="color: #d54a33"/>&nbsp;SPARQL Template <strong>${$scope.currentQuery.templateID}</strong><br>`;
+                        modalMsg += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;already exists.<br><br>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do you want to override the template query?`;
-                ModalService.openSimpleModal({
-                    title: 'Confirm save',
-                    message: modalMsg,
-                    warning: true
-                }).result
-                    .then(function () {
+                        ModalService.openSimpleModal({
+                            title: 'Confirm save',
+                            message: modalMsg,
+                            warning: true
+                        }).result
+                            .then(function () {
+                                saveNewTemplate();
+                            });
+                    } else {
                         saveNewTemplate();
-                    });
-            } else {
-                saveNewTemplate();
-            }
+                    }
+                })
         } else {
-            SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
-                $scope.currentQuery.isPristine = true;
-                $scope.currentQuery.isNewTemplate = false;
-                toastr.success('SPARQL template updated', $scope.currentQuery.templateID);
+            if (!$scope.currentQuery.isPristine) {
+                SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
+                    $scope.currentQuery.isPristine = true;
+                    $scope.currentQuery.isNewTemplate = false;
+                    toastr.success('SPARQL template updated', $scope.currentQuery.templateID);
+                    $scope.goBack();
+                }).error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
+                });
+            } else {
+                // No changes to template query, go back to
                 $scope.goBack();
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
-            });
+            }
         }
     };
 
@@ -365,11 +374,11 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         });
     }
 
-    function templateExists() {
+    function checkIfTemplateExists() {
         return SparqlTemplatesRestService
             .getSparqlTemplates()
                 .success(function (data) {
-                    data.find((templateId) => templateId === $scope.currentQuery.templateID);
+                    templateExist = data.find((templateId) => templateId === $scope.currentQuery.templateID);
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, 'Could not get SPARQL templates');
