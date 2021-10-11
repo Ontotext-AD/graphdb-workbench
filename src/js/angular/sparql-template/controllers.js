@@ -275,9 +275,8 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
             toastr.error('SPARQL template IRI is required');
             return;
         } else {
-            $scope.validateTemplateID();
+            validateTemplateID();
             if ($scope.isInvalidTemplateId) {
-                toastr.error('Invalid SPARQL template IRI');
                 return;
             }
         }
@@ -357,7 +356,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         return true;
     }
 
-    $scope.validateTemplateID = function () {
+    function validateTemplateID() {
         $scope.isInvalidTemplateId = !UriUtils.isValidIri($scope.currentQuery.templateID);
     }
 

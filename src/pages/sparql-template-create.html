@@ -29,7 +29,7 @@
         <div class="card-block pt-1">
             <p class="lead">Template IRI</p>
             <div class="table-group table-group-lg">
-                <input required class="form-control sparql-template-name" type="text" ng-blur="validateTemplateID()" placeholder="http://exampleuri.com/examplepath (required)"
+                <input required class="form-control sparql-template-name" type="text" ng-mousedown="isInvalidTemplateId = false" ng-placeholder="http://exampleuri.com/examplepath (required)"
                        ng-model="currentQuery.templateID" ng-disabled="!currentQuery.isNewTemplate">
                 <div style="margin-top: 5px" ng-if="isInvalidTemplateId" class="idError alert alert-danger">
                     {{currentQuery.templateID}} is not a valid IRI
