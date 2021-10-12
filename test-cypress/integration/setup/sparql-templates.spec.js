@@ -74,7 +74,13 @@ describe('SPARQL Templates', () => {
         //Paste new template query and verify content
         cy.pasteQuery(SPARQL_TEMPLATE);
         verifyQueryAreaEquals(SPARQL_TEMPLATE);
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                cy.waitUntil(() =>
+                    cy.get('.edit-query-btn')
+                        .then(editBtn => editBtn));
+            });
         //Verify new template is stored in the templates table
         getTemplatesTable().should('be.visible')
             .and('contain',TEMPLATE_NAME);
