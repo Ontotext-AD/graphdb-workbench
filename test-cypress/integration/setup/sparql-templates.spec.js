@@ -34,9 +34,13 @@ describe('SPARQL Templates', () => {
     });
 
     beforeEach(() => {
-        cy.presetRepository(repositoryId);
-        cy.visit('/sparql-templates');
-        cy.window().then(() => getTemplatesTable().should('be.visible'));
+        cy.visit('/sparql-templates', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
+        cy.window()
+            .then(() => getTemplatesTable().scrollIntoView().should('be.visible'));
     });
 
     after(() => {
