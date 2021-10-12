@@ -1,4 +1,4 @@
-describe('User and Access', () => {
+describe('SPARQL Templates', () => {
 
     let repositoryId;
     const TEMPLATE_NAME = "http://example.com/salary_template";
@@ -27,8 +27,6 @@ describe('User and Access', () => {
         "  ?id rdf:type ex:MyType .\n" +
         "  ?subject ex:isRelatedTo ?id .\n" +
         "}\n";
-    const ROLE_CUSTOM_ADMIN = "#roleAdmin";
-    const DEFAULT_ADMIN_PASSWORD = "root";
 
     before(() => {
         repositoryId = 'sparql-templates-repo' + Date.now();
@@ -37,11 +35,8 @@ describe('User and Access', () => {
 
     beforeEach(() => {
         cy.presetRepository(repositoryId);
-
         cy.visit('/sparql-templates');
-        cy.window();
-        // Users table should be visible
-       // getUsersTable().should('be.visible');
+        cy.window().then(() => getTemplatesTable().should('be.visible'));
     });
 
     after(() => {
