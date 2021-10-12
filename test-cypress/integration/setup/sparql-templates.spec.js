@@ -75,6 +75,7 @@ describe('SPARQL Templates', () => {
         cy.pasteQuery(SPARQL_TEMPLATE);
         verifyQueryAreaEquals(SPARQL_TEMPLATE);
         getSaveButton()
+            .scrollIntoView()
             .click()
             .then(() => {
                 cy.waitUntil(() =>
