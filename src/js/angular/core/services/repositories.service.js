@@ -86,8 +86,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                         // New style, check version and product
                         if (res.productVersion !== productInfo.productVersion) {
                             that.degradedReason = 'The remote location is running a different GraphDB version.';
-                        } else if (res.productType !== productInfo.productType) {
-                            that.degradedReason = 'The remote location is running a different GraphDB edition.';
                         }
                     } else {
                         // Pre 7.1 style
