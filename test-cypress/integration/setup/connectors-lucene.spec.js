@@ -69,7 +69,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getNewLuceneConnectorButton() {
-        return getConnectorsPage().find('.new-connector-btn');
+        return getConnectorsPage().find('.new-connector-btn').contains('Lucene');
     }
 
     function getCreateLuceneConnectorPage() {

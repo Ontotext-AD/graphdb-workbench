@@ -3,7 +3,7 @@
 <div>
     <h1 class="mb-3">{{pageTitle}}</h1>
     <div class="create-buttons">
-        <div class="mr-1 mb-1" ng-if="!isEnterprise && !isFreeEdition">
+        <div class="mr-1 mb-1" ng-if="!isEnterprise() && !isFreeEdition()">
             <button id="repository-type-se-btn" class="btn btn-outline-primary d-block create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.se)">
                 <span class="repository-heading">
                     <em class="icon-repo-se icon-2-5x"></em>
@@ -13,7 +13,7 @@
             </button>
         </div>
 
-        <div class="mr-1 mb-1" ng-if="isFreeEdition">
+        <div class="mr-1 mb-1" ng-if="isFreeEdition()">
             <button id="repository-type-free-btn" class="btn btn-outline-primary create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.free)">
                 <span class="repository-heading">
                     <em class="icon-repo-free icon-2-5x"></em>
@@ -23,7 +23,7 @@
             </button>
         </div>
 
-        <div class="mr-1 mb-1" ng-if="isEnterprise">
+        <div class="mr-1 mb-1" ng-if="isEnterprise()">
             <button id="repository-type-worker-btn" class="btn btn-outline-primary btn-lg create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.eeWorker)">
                 <span class="repository-heading">
                     <i class="icon-repo-worker icon-2-5x" aria-hidden="true"></i>
@@ -33,7 +33,7 @@
             </button>
         </div>
 
-        <div class="mr-1  mb-1" ng-if="isEnterprise">
+        <div class="mr-1  mb-1" ng-if="isEnterprise()">
             <button id="repository-type-master-btn" class="btn btn-outline-primary btn-lg create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.eeMaster)">
                 <span class="repository-heading">
                     <i class="icon-repo-master icon-2-5x" aria-hidden="true"></i>

@@ -38,7 +38,7 @@ echo "Working directory: $(pwd)"
 echo "Running tests with GDB: $GDB_VERSION"
 
 DOWNLOADS=.downloads
-DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb-free/${GDB_VERSION}/graphdb-free-${GDB_VERSION}-dist.zip"
+DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb/${GDB_VERSION}/graphdb-${GDB_VERSION}-dist.zip"
 GDB_ZIP="$DOWNLOADS/graphdb-$GDB_VERSION.zip"
 
 if ! mkdir -p "$DOWNLOADS"; then
@@ -76,7 +76,7 @@ if ! npm run build; then
 fi
 
 echo "Starting GraphDB daemon"
-if ! "$GDB_TMPDIR/graphdb-free-${GDB_VERSION}/bin/graphdb" -d \
+if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
     -p "$GDB_TMPDIR/graphdb.pid" \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
