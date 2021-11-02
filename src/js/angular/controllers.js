@@ -357,14 +357,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
-            case 'worker':
-                return 'EE Worker';
-            case 'master':
-                return 'EE Master';
-            case 'se':
-                return 'Standard';
-            case 'free':
-                return 'Free';
+            case 'gdb':
+                return 'Graphdb';
             case 'system':
                 return 'System';
             case 'ontop':
@@ -795,6 +789,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         } else if ($scope.productType === "free") {
             $scope.productTypeHuman = "Free";
             $scope.documentation = "free/";
+        }
+        else if ($scope.productType === "gdb") {
+            $scope.productTypeHuman = "GraphDB";
+            $scope.documentation = "gdb/";
         }
         $scope.mainTitle = $scope.productTypeHuman;
     };

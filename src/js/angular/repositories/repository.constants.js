@@ -14,7 +14,7 @@ export const STATIC_RULESETS = [
 
 ];
 
-export const REPOSITORY_TYPES = {free: 'free', eeWorker: 'worker', eeMaster: 'master', ontop: 'ontop', se: 'se', fedx: 'fedx'};
+export const REPOSITORY_TYPES = {graphdbRepo: 'gdb', free: 'free', eeWorker: 'worker', eeMaster: 'master', ontop: 'ontop', se: 'se', fedx: 'fedx'};
 export const FILENAME_PATTERN = new RegExp('^[a-zA-Z0-9-_]+$');
 export const NUMBER_PATTERN = new RegExp('[0-9]');
 
