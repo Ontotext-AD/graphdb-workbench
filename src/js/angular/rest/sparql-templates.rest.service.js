@@ -4,7 +4,7 @@ angular
 
 SparqlTemplatesRestService.$inject = ['$http'];
 
-const SPARQL_TEMPLATES_ENDPOINT = '/rest/sparql-template';
+const SPARQL_TEMPLATES_ENDPOINT = 'rest/sparql-template';
 
 function SparqlTemplatesRestService($http) {
     return {

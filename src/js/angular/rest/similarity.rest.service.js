@@ -34,7 +34,7 @@ function SimilarityRestService($http) {
     function createIndex(method, name, options, selectQuery, searchQuery, analogicalQuery, stopList, infer, sameAs, type, analyzer) {
         return $http({
                 method,
-                url: `/${SIMILARITY_ENDPOINT}`,
+                url: `${SIMILARITY_ENDPOINT}`,
                 noCancelOnRouteChange: true,
                 data: {
                     name,
@@ -61,7 +61,7 @@ function SimilarityRestService($http) {
     }
 
     function getQuery(data) {
-        return $http.get('/rest/similarity/query',
+        return $http.get('rest/similarity/query',
             {
                 params: {
                     name: data.indexName,
@@ -79,7 +79,7 @@ function SimilarityRestService($http) {
     function saveSearchQuery(data) {
         return $http({
             method: 'put',
-            url: '/rest/similarity/search-query',
+            url: 'rest/similarity/search-query',
             data
         });
     }
