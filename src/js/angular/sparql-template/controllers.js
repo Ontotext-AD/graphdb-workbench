@@ -53,7 +53,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
             .then(function () {
                 SparqlTemplatesRestService.deleteSparqlTemplate(templateID)
                     .success(function () {
-                        toastr.success('SPARQL template deleted successfully', templateID);
+                        toastr.success(templateID, 'Deleted successfully SPARQL template');
                         $scope.getSparqlTemplates();
                     }).error(function (e) {
                     toastr.error(getError(e), `Could not delete ${templateID} template`);
@@ -144,6 +144,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     };
 
     $scope.saveTab = function () {
+        // Should have this empty function in this view
     };
 
     // Called when user clicks on a sample query
@@ -305,7 +306,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                 SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
                     $scope.currentQuery.isPristine = true;
                     $scope.currentQuery.isNewTemplate = false;
-                    toastr.success('SPARQL template updated', $scope.currentQuery.templateID);
+                    toastr.success($scope.currentQuery.templateID, 'Updated SPARQL template');
                     $scope.goBack();
                 }).error(function (data) {
                     const msg = getError(data);
@@ -365,7 +366,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
             $scope.currentQuery.isPristine = true;
             $scope.currentQuery.isNewTemplate = false;
-            toastr.success('SPARQL template saved', $scope.currentQuery.templateID);
+            toastr.success($scope.currentQuery.templateID, 'Saved SPARQL template');
             $scope.goBack();
         }).error(function (data) {
             const msg = getError(data);
