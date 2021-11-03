@@ -37,6 +37,10 @@ describe('homeCtrl', function () {
         $scope.getActiveRepository = () => {
         };
 
+        $scope.checkLicenseStatus = () => {
+            
+        };
+
         createController = () => $controller('homeCtrl', {
             $scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService
         });

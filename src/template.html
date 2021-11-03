@@ -106,7 +106,6 @@
             <img class="big-logo" src="img/graphdb-logo.svg" alt="GraphDB logo" width="181" height="45">
             <img class="small-logo" src="img/graphdb-logo-sq.svg" alt="GraphDB logo" ng-href="./" href="./" width="58"
                  height="58">
-            <span class="product-version" title="GraphDB {{mainTitle}}">{{mainTitle}}</span>
         </a>
     </li>
     <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
@@ -126,7 +125,7 @@
             <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
-                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
+                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository()) && checkEdition(submenu.editions)">
                 <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
                 </a>

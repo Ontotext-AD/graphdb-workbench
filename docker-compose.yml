@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   graphdb:
-    image: docker-registry.ontotext.com/graphdb-free:${GDB_VERSION}-adoptopenjdk11
+    image: docker-registry.ontotext.com/graphdb:${GDB_VERSION}-adoptopenjdk11
     environment:
       GDB_JAVA_OPTS: >-
         -Dgraphdb.workbench.importDirectory=/opt/home/import-data/

@@ -160,11 +160,6 @@
                         <strong>{{license.message}}</strong><br>
                         Please supply a valid license or contact Ontotext AD sales department to acquire one.
                     </p>
-                    <a href="license/register" ng-href="license/register" ng-hide="isLicenseHardcoded">
-                        <button class="btn btn-primary license-button">
-                            Set new license
-                        </button>
-                    </a>
                 </div>
                 <div class="card-block" ng-hide="hasActiveLocation()">
                     <div class="">
@@ -193,8 +188,19 @@
                         </div>
                     </div>
 
-                    <div class="small text-muted">
+                    <p class="small text-muted">
                         {{license.typeOfUse}}
+                    </p>
+
+                    <div>
+                        <a href="license" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
+                            License settings
+                        </a>
+                    </div>
+
+                    <div class="mt-2" ng-show="isFreeEdition() || !license.valid">
+                        You do not have a valid license for GraphDB SE/EE and GraphDB works in Free mode. Set a valid SE/EE license
+                        to get access to all SE/EE features.
                     </div>
                 </div>
             </div>

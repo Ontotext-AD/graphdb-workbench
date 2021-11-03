@@ -46,7 +46,15 @@
 				<a href="license/register" ng-hide="isLicenseHardcoded || !isAdmin()" class="btn btn-primary">
 					Set new license
 				</a>
+                <button ng-click="revertToFree()" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-secondary">
+                    Revert to Free license
+                </button>
 			</div>
+
+            <div class="mt-2" ng-show="isFreeEdition() || !license.valid">
+                You do not have a valid license for GraphDB SE/EE and GraphDB works in Free mode. Set a valid SE/EE license
+                to get access to all SE/EE features.
+            </div>
 		</div>
 	</div>
 

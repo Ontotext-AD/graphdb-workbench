@@ -40,6 +40,8 @@ homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth'
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     $scope.doClear = false;
+    $scope.checkLicenseStatus();
+
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
         if (!repo) {
@@ -173,17 +175,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.sesameVersion = productInfo.sesame;
 
-    $scope.productType = productInfo.productType;
-    if ($scope.productType === "standard") {
-        $scope.productTypeHuman = "Standard";
-        $scope.documentation = "standard/";
-    } else if ($scope.productType === "enterprise") {
-        $scope.productTypeHuman = "Enterprise";
-        $scope.documentation = "enterprise/";
-    } else if ($scope.productType === "free") {
-        $scope.productTypeHuman = "Free";
-        $scope.documentation = "free/";
-    }
     $scope.mainTitle = $scope.productTypeHuman;
 
     $scope.select = function (index, event, clicked) {
@@ -793,6 +784,36 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $scope.updateProductType = function (license) {
+        $scope.productType = license.productType;
+        if ($scope.productType === "standard") {
+            $scope.productTypeHuman = "Standard";
+            $scope.documentation = "standard/";
+        } else if ($scope.productType === "enterprise") {
+            $scope.productTypeHuman = "Enterprise";
+            $scope.documentation = "enterprise/";
+        } else if ($scope.productType === "free") {
+            $scope.productTypeHuman = "Free";
+            $scope.documentation = "free/";
+        }
+        $scope.mainTitle = $scope.productTypeHuman;
+    };
+
+    $scope.isEnterprise = function () {
+        return $scope.productType === "enterprise";
+    };
+
+    $scope.isFreeEdition = function () {
+        return $scope.productType === "free";
+    };
+
+    $scope.checkEdition = function (editions) {
+        if (editions == null) {
+            return true;
+        }
+        return _.indexOf(editions, $scope.productType) >= 0;
+    };
+
     $scope.checkLicenseStatus = function () {
         LicenseRestService.getHardcodedLicense().success(function (res) {
             $scope.isLicenseHardcoded = (res === 'true');
@@ -802,9 +823,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             LicenseRestService.getLicenseInfo().then(function (res) {
                 $scope.license = res.data;
                 $scope.showLicense = true;
+                $scope.updateProductType($scope.license);
             }, function () {
                 $scope.license = {message: 'No license was set.', valid: false};
                 $scope.showLicense = true;
+                $scope.updateProductType($scope.license);
             });
         });
     };
