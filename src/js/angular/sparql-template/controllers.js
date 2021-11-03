@@ -66,7 +66,8 @@ SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositor
 
 function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils, ModalService) {
 
-    $scope.templateID = $location.search().templateID || '';
+    const hash = $location.hash() || '';
+    $scope.templateID = ($location.search().templateID || '') + (hash ? (`#${hash}`) : '');
     $scope.title = ($scope.templateID ? 'Edit' : 'Create') + ' SPARQL Template';
     $scope.getNamespaces = getNamespaces;
     $scope.setLoader = setLoader;
@@ -286,7 +287,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
             checkIfTemplateExists()
                 .then(() => {
                     if (templateExist) {
-                        let modalMsg = `<div>SPARQL Template <strong>${$scope.currentQuery.templateID}</strong> already exists.</div><br>
+                        const modalMsg = `<div>SPARQL Template <strong>${$scope.currentQuery.templateID}</strong> already exists.</div><br>
                                         <div><span class="icon-2x icon-warning" style="color: #d54a33"/> Do you want to override the template query?</div>`;
                         ModalService.openSimpleModal({
                             title: 'Confirm save',
@@ -299,7 +300,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                     } else {
                         saveNewTemplate();
                     }
-                })
+                });
         } else {
             if (!$scope.currentQuery.isPristine) {
                 SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
