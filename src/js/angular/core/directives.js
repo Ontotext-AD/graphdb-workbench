@@ -367,7 +367,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             const openInNewWindowTab = function (visual, params) {
                 const view = visual ? 'graphs-visualizations' : 'resource';
-                window.open(`/${view}?uri=${encodeURIComponent(params.uri)}`);
+                window.open(`${view}?uri=${encodeURIComponent(params.uri)}`);
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
