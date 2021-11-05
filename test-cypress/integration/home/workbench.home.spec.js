@@ -115,7 +115,7 @@ describe('Home screen validation', () => {
                     .click()
                     .then(() => {
                         // Search result should be opened in new window
-                        cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
+                        cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
                     });
             });
 
@@ -180,7 +180,7 @@ describe('Home screen validation', () => {
             //Test table and visual buttons.
             cy.get("#auto_0").should('be.visible').click();
             // Search result should be opened in new window
-            cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+            cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
 
             getVisualButton().click();
             cy.get("#auto_0").should('be.visible').click();
@@ -259,7 +259,7 @@ describe('Home screen validation', () => {
                 .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
                 .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
                 .then(() => // Search result should be opened in new window
-                    cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
+                    cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
                 .then(() => HomeSteps.getAutocompleteDisplayTypeButton('visual').click())
                 .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
                 .then(() => // Search result should be opened in new window
