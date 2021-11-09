@@ -293,6 +293,17 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
+            $scope.$on('addStartFixedNodeAutomatically', function () {
+                const uri = $scope.searchInput;
+                if (!element.autoCompleteStatus) {
+                    if (validateRdfUri(uri)) {
+                        $scope.searchRdfResource(uri, $scope.textCallback);
+                    } else if (uri !== '') {
+                        toastr.error(`Invalid URI: "${uri}"`);
+                        $scope.clearInput();
+                    }
+                }
+            });
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
@@ -708,7 +719,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         .then(function (results) {
                             canceler = null;
                             // if (showDropDown) {
-                                $scope.autoCompleteUriResults = results.data.suggestions;
+                            $scope.autoCompleteUriResults = results.data.suggestions;
                             // }
                             $scope.activeSearchElm = 0;
                         });
