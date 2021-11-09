@@ -208,10 +208,16 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         };
 
         $scope.goToNextPage = function () {
+            if ($scope.page === 1 && $scope.uri !== '') {
+                $scope.$broadcast('addStartFixedNodeAutomatically');
+            }
             $scope.goToPage($scope.page + 1);
         };
 
         $scope.saveGraphConfig = function () {
+            if ($scope.page === 1  && $scope.uri !== '') {
+                $scope.$broadcast('addStartFixedNodeAutomatically');
+            }
             $scope.newConfig.startQueryIncludeInferred = $scope.currentQuery.inference;
             $scope.newConfig.startQuerySameAs = $scope.currentQuery.sameAs;
 
