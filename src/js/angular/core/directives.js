@@ -293,16 +293,12 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
-            $scope.$on('addStartFixedNodeAutomatically', function () {
-                const uri = $scope.searchInput;
-                if (!element.autoCompleteStatus) {
-                    if (validateRdfUri(uri)) {
-                        $scope.searchRdfResource(uri, $scope.textCallback);
-                    } else if (uri !== '') {
-                        toastr.error(`Invalid URI: "${uri}"`);
-                        $scope.clearInput();
-                    }
+            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+                if (!$scope.searchInput && args.startIRI) {
+                    $scope.visualCallback({uri: args.startIRI, label: ''});
+                    return;
                 }
+                $scope.checkIfValidAndSearchText();
             });
 
             $scope.clearInput = function() {
@@ -468,7 +464,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const checkIfValidAndSearch = function (callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
-                    toastr.error('Please fill input field!');
+                    toastr.error('Please fill the input field!');
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {

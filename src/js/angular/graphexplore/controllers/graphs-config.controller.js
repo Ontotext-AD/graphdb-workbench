@@ -30,9 +30,11 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         }
     };
 
+    var selectedFixedNodeChanged;
     $scope.fixedVisualCallback = function (uri, label) {
         $scope.newConfig.startIRI = uri;
         $scope.newConfig.startIRILabel = label;
+        selectedFixedNodeChanged = true;
     };
 
     $scope.isDefaultGraph = function (sample) {
@@ -205,19 +207,32 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
             if ($scope.page > 1) {
                 $scope.goToPage($scope.page - 1);
             }
+
+            if ($scope.page === 1 && $scope.newConfig.startMode === 'node') {
+                selectedFixedNodeChanged = false;
+            }
         };
 
         $scope.goToNextPage = function () {
-            if ($scope.page === 1 && $scope.uri !== '') {
-                $scope.$broadcast('addStartFixedNodeAutomatically');
+            $scope.broadcastAddStartFixedNodeEvent();
+            if (selectedFixedNodeChanged) {
+                $scope.goToPage($scope.page + 1);
             }
-            $scope.goToPage($scope.page + 1);
         };
+        $scope.broadcastAddStartFixedNodeEvent = function ()
+        {
+            if ($scope.page === 1) {
+                $scope.$broadcast('addStartFixedNodeAutomatically', {startIRI: $scope.newConfig.startIRI});
+            }
+        }
 
         $scope.saveGraphConfig = function () {
-            if ($scope.page === 1  && $scope.uri !== '') {
-                $scope.$broadcast('addStartFixedNodeAutomatically');
+            $scope.broadcastAddStartFixedNodeEvent();
+
+            if (!selectedFixedNodeChanged) {
+                return;
             }
+
             $scope.newConfig.startQueryIncludeInferred = $scope.currentQuery.inference;
             $scope.newConfig.startQuerySameAs = $scope.currentQuery.sameAs;
 
