@@ -208,28 +208,32 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 $scope.goToPage($scope.page - 1);
             }
 
-            if ($scope.page === 1 && $scope.newConfig.startMode === 'node') {
+            if (checkPageAndMode()) {
                 selectedFixedNodeChanged = false;
             }
         };
 
         $scope.goToNextPage = function () {
-            $scope.broadcastAddStartFixedNodeEvent();
+            broadcastAddStartFixedNodeEvent();
             if (selectedFixedNodeChanged) {
                 $scope.goToPage($scope.page + 1);
             }
         };
-        $scope.broadcastAddStartFixedNodeEvent = function ()
-        {
-            if ($scope.page === 1) {
+
+        function broadcastAddStartFixedNodeEvent() {
+            if (checkPageAndMode()) {
                 $scope.$broadcast('addStartFixedNodeAutomatically', {startIRI: $scope.newConfig.startIRI});
             }
         }
 
-        $scope.saveGraphConfig = function () {
-            $scope.broadcastAddStartFixedNodeEvent();
+        function checkPageAndMode() {
+            return $scope.page === 1 && $scope.newConfig.startMode === 'node';
+        }
 
-            if (!selectedFixedNodeChanged) {
+        $scope.saveGraphConfig = function () {
+           broadcastAddStartFixedNodeEvent();
+
+            if (checkPageAndMode() && !selectedFixedNodeChanged) {
                 return;
             }
 
