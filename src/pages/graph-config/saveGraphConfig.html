@@ -21,6 +21,22 @@
         <div class="input-group input-group-lg">
             <input required class="form-control graph-config-name" type="text" placeholder="My graph config (required)" ng-model="newConfig.name" >
         </div>
+        <br/>
+        <p>Description</p>
+        <div class="input-group input-group-lg">
+            <input class="form-control graph-config-description" type="text"
+                   placeholder="Enter a description to guide users what this visual graph represents"
+                   ng-model="newConfig.description" >
+        </div>
+        <div ng-if="newConfig.startMode === 'search'">
+            <br/>
+            <p>Hint</p>
+            <div class="input-group input-group-lg">
+                <input  class="form-control graph-config-example" type="text"
+                        placeholder="Add a hint to guide users what the starting point IRI should be"
+                        ng-model="newConfig.hint" >
+            </div>
+        </div>
     </div>
 </div>
 
@@ -63,7 +79,6 @@
 <div class="card" style="border-top: none">
     <div class="card-block">
         <div>
-
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
@@ -116,7 +131,7 @@
                 </div>
                 <!-- help info boxes -->
                 <div collapse="helpHidden" class="alert alert-info no-icon p-1 mb-2" ng-if="page != 1">
-                   <div class="d-flex" ng-if="page == 2">
+                    <div class="d-flex" ng-if="page == 2">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
                             <p class="lead">This is a <span class="small-caps">CONSTRUCT</span> query that determines which nodes and edges are added to the graph when the user expands an existing node.</p>
@@ -303,11 +318,8 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
-
         </div>
     </div>
 </div>
