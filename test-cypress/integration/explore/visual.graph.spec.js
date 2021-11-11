@@ -25,7 +25,7 @@ describe('Visual graph screen validation', () => {
 
     context('When autocomplete is disabled', () => {
         it('Test notification when autocomplete is disabled', () => {
-            cy.visit('/graphs-visualizations');
+            cy.visit('graphs-visualizations');
             cy.window();
             getSearchField().should('be.visible').type('http://');
 
@@ -42,7 +42,7 @@ describe('Visual graph screen validation', () => {
             cy.enableAutocomplete(repositoryId);
         });
         beforeEach(() => {
-            cy.visit('/graphs-visualizations');
+            cy.visit('graphs-visualizations');
             cy.window();
         });
 
@@ -472,7 +472,7 @@ describe('Visual graph screen validation', () => {
     });
 
     it('Test can create custom visual graph', () => {
-        cy.visit('/graphs-visualizations');
+        cy.visit('graphs-visualizations');
         getCreateCustomGraphLink().click();
         cy.url().should('include', '/config/save');
         getGraphConfigName().type('configName');
