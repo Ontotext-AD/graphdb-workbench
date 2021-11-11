@@ -293,6 +293,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
+            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+                if (!$scope.searchInput && args.startIRI) {
+                    $scope.visualCallback({uri: args.startIRI, label: ''});
+                    return;
+                }
+                $scope.checkIfValidAndSearchText();
+            });
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
@@ -457,7 +464,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const checkIfValidAndSearch = function (callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
-                    toastr.error('Please fill input field!');
+                    toastr.error('Please fill the input field!');
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {
@@ -708,7 +715,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         .then(function (results) {
                             canceler = null;
                             // if (showDropDown) {
-                                $scope.autoCompleteUriResults = results.data.suggestions;
+                            $scope.autoCompleteUriResults = results.data.suggestions;
                             // }
                             $scope.activeSearchElm = 0;
                         });
