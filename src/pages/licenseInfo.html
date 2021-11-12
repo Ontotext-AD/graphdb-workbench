@@ -43,26 +43,26 @@
 			</div>
 			<p class="text-muted">{{license.typeOfUse}}</p>
 			<div>
-				<a href="license/register" ng-hide="isLicenseHardcoded || !isAdmin()" class="btn btn-primary">
+				<a href="license/register" ng-if="!isLicenseHardcoded && isAdmin()" class="btn btn-primary">
 					Set new license
 				</a>
-                <button ng-click="revertToFree()" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-secondary">
+                <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded && !isFreeEdition() && isAdmin()" class="btn btn-secondary">
                     Revert to Free license
                 </button>
 			</div>
 
-            <div class="mt-2" ng-show="isFreeEdition() || !license.valid">
+            <div class="mt-2" ng-if="isFreeEdition() || !license.valid">
                 You do not have a valid license for GraphDB SE/EE and GraphDB works in Free mode. Set a valid SE/EE license
                 to get access to all SE/EE features.
             </div>
 		</div>
 	</div>
 
-	<div class="alert alert-warning" ng-show="isLicenseHardcoded && isAdmin() && productType !== 'free'">
+	<div class="alert alert-warning" ng-if="isLicenseHardcoded && isAdmin() && !isFreeEdition()">
 		License cannot be changed from the Workbench as it was set through a file or config parameter.
 	</div>
 
-	<div class="alert alert-warning" ng-show="!isAdmin() && productType !== 'free'">
+	<div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
 		License can be changed by Admins only.
 	</div>
 </div>
