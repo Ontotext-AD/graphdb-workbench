@@ -107,11 +107,18 @@ describe('Home screen validation', () => {
             // When I click the button
             HomeSteps.openRdfSearchBox();
             // I should be able to type some text in the input
-            cy.get('.search-rdf-input search-resource-input .view-res-input').type('hasPos');
-            // When I select option from suggestions
-            cy.get(".search-rdf-input #auto-complete-results-wrapper p").contains('hasPos').click();
-            // Search result should be opened in new window
-            cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
+            cy.get('.search-rdf-input search-resource-input .view-res-input')
+                .type('hasPos').then(() => {
+                // When I select option from suggestions
+                cy.get(".search-rdf-input #auto-complete-results-wrapper p")
+                    .contains('hasPos')
+                    .click()
+                    .then(() => {
+                        // Search result should be opened in new window
+                        cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
+                    });
+            });
+
             // When I revisit the home page
             cy.visit('/graphs');
             // When I open again the search box
@@ -121,10 +128,12 @@ describe('Home screen validation', () => {
             // And dropdown should be visible
             cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
             // When I press 'escape'
-            cy.get('.search-rdf-input search-resource-input .view-res-input').type('{esc}');
-            // Search box should not be visible
-            cy.get('.search-rdf-input').should('not.be.visible');
-
+            cy.get('.search-rdf-input search-resource-input .view-res-input')
+                .type('{esc}')
+                .then(() => {
+                    // Search box should not be visible
+                    cy.get('.search-rdf-input').should('not.be.visible');
+                });
 
             cy.deleteRepository(repositoryId);
         });
@@ -171,11 +180,11 @@ describe('Home screen validation', () => {
             //Test table and visual buttons.
             cy.get("#auto_0").should('be.visible').click();
             // Search result should be opened in new window
-            cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+            cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
 
             getVisualButton().click();
             cy.get("#auto_0").should('be.visible').click();
-            cy.get('@window.open').should('be.calledWith', '/graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+            cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
             cy.deleteRepository(repositoryId);
         });
     });
@@ -250,11 +259,11 @@ describe('Home screen validation', () => {
                 .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
                 .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
                 .then(() => // Search result should be opened in new window
-                    cy.get('@window.open').should('be.calledWith', '/resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
+                    cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
                 .then(() => HomeSteps.getAutocompleteDisplayTypeButton('visual').click())
                 .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
                 .then(() => // Search result should be opened in new window
-                    cy.get('@window.open').should('be.calledWith', '/graphs-visualizations?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'));
+                    cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'));
             cy.deleteRepository(repositoryId);
         });
 
