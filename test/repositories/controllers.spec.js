@@ -270,7 +270,7 @@ describe('==> Repository module controllers tests', function () {
                 $controller = _$controller_;
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
-                routeParamsMock = {repositoryId: 'repo', repositoryType: 'worker'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'gdb'};
 
                 $scope = $rootScope.$new();
 
@@ -308,11 +308,11 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.verifyNoOutstandingRequest();
             });
 
-            it('should call $scope.getConfig with "worker" when isEnterprise()', function () {
+            it('should call $scope.getConfig with "gdb" when isEnterprise()', function () {
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(200, {
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/gdb').respond(200, {
                     params: { param1: 'param1'},
-                    type: 'worker'
+                    type: 'gdb'
                 });
 
                 $httpBackend.expectGET('rest/security/all');
@@ -326,14 +326,14 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.flush();
 
                 expect($scope.repositoryInfo.params).toEqual({ param1: 'param1'});
-                expect($scope.repositoryInfo.type).toEqual('worker');
+                expect($scope.repositoryInfo.type).toEqual('gdb');
                 expect($scope.loader).toEqual(false);
             });
 
             it('should show notification if getting configuration fails', () => {
                 spyOn(toastr, 'error');
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(500, {
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/gdb').respond(500, {
                     error: {
                         message: 'Get repo config error!'
                     }
@@ -347,7 +347,7 @@ describe('==> Repository module controllers tests', function () {
 
             it('$scope.createRepoHttp() should call $repositories.init() and change location to /repository', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/worker').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/defaultConfig/gdb').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 $httpBackend.flush();
                 $scope.repositoryInfo = {};
@@ -378,7 +378,7 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
-                routeParamsMock = {repositoryId: 'repo', repositoryType: 'se'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'gdb'};
 
                 $scope = $rootScope.$new();
                 $scope.isEnterprise = function () {
@@ -409,9 +409,9 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.verifyNoOutstandingRequest();
             });
 
-            it('should call $scope.getConfig with "se" when !isEnterprise()', function () {
+            it('should call $scope.getConfig with "gdb" when !isEnterprise()', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/se').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/defaultConfig/gdb').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 expect($httpBackend.flush).not.toThrow();
             });
