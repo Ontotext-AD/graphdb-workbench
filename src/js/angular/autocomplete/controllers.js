@@ -22,6 +22,12 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
         }
     }
 
+    $scope.pluginName = 'autocomplete';
+
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
+    }
+
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (data) {
@@ -88,7 +94,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
             });
     };
 
-    const checkForPlugin = function () {
+    $scope.checkForPlugin = function () {
         $scope.pluginFound = false;
 
         $scope.setLoader(true);
@@ -114,6 +120,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     const pullStatus = function () {
         timer = $interval(function () {
+            $scope.$broadcast('checkIsActive');
             if ($scope.autocompleteEnabled) {
                 refreshIndexStatus();
             }
@@ -130,7 +137,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
                     $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
         pullStatus();
     };
 
@@ -243,7 +250,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
                     $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
         pullStatus();
     });
 
