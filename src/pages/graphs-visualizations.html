@@ -89,7 +89,10 @@
                 <div class="card">
                     <div class="card-block">
                         <h3>{{configLoaded.name}}</h3>
-                        <p>Search for an IRI to view it. <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span></p>
+                        <p>Search for an IRI to view it.
+                            <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span>
+                            <p ng-if="configLoaded.hint">Hint: {{configLoaded.hint}}</p>
+                        </p>
                         <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
@@ -141,7 +144,7 @@
                                 </td>
                                 <td>
                                     <h5>
-                                        <a href ng-click="goToGraphConfig(config)">{{config.name}}</a>
+                                        <a href ng-click="goToGraphConfig(config)" popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
                                     </h5>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
@@ -194,11 +197,8 @@
                         </table>
                     </div>
                 </div>
+            </div>
         </div>
-
-
-        </div>
-
     </div>
 </div>
 
