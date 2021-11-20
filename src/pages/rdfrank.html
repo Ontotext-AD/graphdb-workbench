@@ -20,7 +20,14 @@
 
     <div core-errors write ontop fedx></div>
 
-    <div ng-show="canWriteActiveRepo() && !loading">
+    <inactive-plugin-directive
+        plugin-name="{{pluginName}}"
+        human-readable-plugin-name="RDF Rank Plugin"
+        load-saved="checkForPlugin()"
+        set-plugin-active="setPluginIsActive(isPluginActive)">
+    </inactive-plugin-directive>
+
+    <div ng-show="canWriteActiveRepo() && !loading && pluginIsActive">
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>

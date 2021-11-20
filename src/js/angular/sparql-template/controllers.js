@@ -21,6 +21,12 @@ SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestSe
 
 function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService) {
 
+    $scope.pluginName = 'sparql-template';
+
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
+    }
+
     $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos doesn't support update operations.
