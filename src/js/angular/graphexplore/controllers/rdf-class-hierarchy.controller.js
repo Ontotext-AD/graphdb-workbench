@@ -20,9 +20,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
     .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -54,6 +54,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     let selectedGraph = allGraphs;
 
     const initView = function () {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         if (!$scope.getActiveRepository()) {
             return;
         }
@@ -430,6 +433,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     let currentActiveRepository = $repositories.getActiveRepository();
 
     function onRepositoryIsSet() {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
@@ -471,6 +477,11 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.hasClassHierarchy = function () {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
+
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
+
 
     $scope.chosenGraph = function (graph) {
         selectedGraph = graph;

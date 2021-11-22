@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -87,7 +87,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     if ($scope.getActiveRepository()) {
-        $scope.pullList();
+        if ($licenseService.isLicenseValid()) {
+            $scope.pullList();
+        }
     }
 
     let yasr;
@@ -117,7 +119,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     });
 
     function checkAutocompleteStatus() {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
     }
 
     $scope.$on('autocompleteStatus', function() {

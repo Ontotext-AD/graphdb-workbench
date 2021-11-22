@@ -10,7 +10,7 @@
 			  popover-placement="bottom-right"
 			  popover-append-to-body="true"><span class="icon-info"></span></span>
 	</h1>
-	<div core-errors ontop fedx></div>
+	<div core-errors ontop fedx license></div>
 	<div system-repo-warning></div>
 	<div class="alert alert-danger" ng-show="repositoryError">
 		<p>The currently selected repository cannot be used for queries due to an error:</p>
@@ -21,10 +21,11 @@
         plugin-name="{{pluginName}}"
         human-readable-plugin-name="Similarity Plugin"
         load-saved="pullList()"
-        set-plugin-active="setPluginIsActive(isPluginActive)">
+        set-plugin-active="setPluginIsActive(isPluginActive)"
+        ng-if="isLicenseValid()">
     </inactive-plugin-directive>
 
-	<div class="card mb-2 existing-indexes" ng-if="getActiveRepository() && pluginIsActive && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
+	<div class="card mb-2 existing-indexes" ng-if="isLicenseValid() && getActiveRepository() && pluginIsActive && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
 		<div class="card-block" ng-init="getSimilarityIndexes();">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">

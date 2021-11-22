@@ -9,6 +9,7 @@ import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
+import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/autocomplete-status.service';
@@ -17,6 +18,7 @@ angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
+        'graphdb.framework.core.services.licenseService',
         'ngCookies',
         'ngFileUpload',
         'graphdb.framework.core',
@@ -36,9 +38,9 @@ angular
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     $scope.doClear = false;
     $scope.checkLicenseStatus();
 
@@ -65,10 +67,12 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
     }
 
     function checkAutocompleteStatus() {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-            .success(function () {
-                $scope.getActiveRepositorySize();
-            });
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
+                .success(function () {
+                    $scope.getActiveRepositorySize();
+                });
+        }
     }
 
     $scope.$on('autocompleteStatus', function() {
@@ -102,11 +106,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
 
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope',
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
                     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
                     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope,
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
@@ -267,9 +271,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
     };
-    $scope.isS4 = function () {
-        return $scope.license && $scope.license.version === "S4";
-    };
 
     $scope.isUserLoggedIn = function () {
         return $scope.userLoggedIn;
@@ -332,6 +333,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoFedXType();
     }
 
+    $scope.isLicenseValid = function() {
+        return $licenseService.isLicenseValid();
+    }
+
     /**
      *  Sets attrs property in the directive
      * @param attrs
@@ -349,6 +354,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.setRestricted = function () {
         if ($scope.attrs) {
             $scope.isRestricted =
+                $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
                 $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();

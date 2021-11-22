@@ -760,8 +760,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$licenseService'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $licenseService) {
     return {
         restrict: 'E',
         transclude: true,

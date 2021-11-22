@@ -16,16 +16,17 @@
 		 size="75">
 	</div>
 
-    <div core-errors write ontop fedx></div>
+    <div core-errors write ontop fedx license></div>
 
     <inactive-plugin-directive
         plugin-name="{{pluginName}}"
         human-readable-plugin-name="Autocomplete Plugin"
         load-saved="checkForPlugin()"
-        set-plugin-active="setPluginIsActive(isPluginActive)">
+        set-plugin-active="setPluginIsActive(isPluginActive)"
+        ng-if="isLicenseValid()">
     </inactive-plugin-directive>
 
-    <div ng-if="canWriteActiveRepo() && !loading && !isRestricted && pluginIsActive">
+    <div ng-if="isLicenseValid() && canWriteActiveRepo() && !loading && !isRestricted && pluginIsActive">
 		<div class="alert alert-info autocomplete-configuring-not-supported-alert" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>Autocomplete not fully supported</h4>
 			<p>Configuring autocomplete is not supported. {{getDegradedReason()}}</p>

@@ -103,7 +103,7 @@
                   ng-hide="isSystemRepository()"></rzslider>
     </div>
     <div class='explore_results'>
-        <div class="top-offset" core-errors></div>
+        <div class="top-offset" core-errors license></div>
         <div class="top-offset" system-repo-warning></div>
         <div class="top-offset alert alert-danger" ng-show="repositoryError">
             <p>The currently selected repository cannot be used for queries due to an error:</p>
@@ -123,7 +123,7 @@
 			<p>{{hierarchyError}}</p>
 
 		</div>
-        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
+        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && isLicenseValid() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
             <p class="alert alert-warning">The currently selected repository does not contain a class hierarchy.</p>
         </div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
