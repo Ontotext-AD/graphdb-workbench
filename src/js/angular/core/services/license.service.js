@@ -5,7 +5,8 @@ function licenseService($rootScope, LicenseRestService) {
 
     const that = this;
 
-    const getLicenseInfo = function () {
+    this.checkLicenseStatus = function () {
+        that.loadingLicense = true;
         LicenseRestService.getHardcodedLicense().success(function (res) {
             that.isLicenseHardcoded = (res === 'true');
         }).error(function () {
@@ -13,35 +14,32 @@ function licenseService($rootScope, LicenseRestService) {
         }).then(function () {
             LicenseRestService.getLicenseInfo().then(function (res) {
                 that.license = res.data;
-                // that.showLicense = true;
-                //$scope.updateProductType($scope.license);
+                that.showLicense = true;
+                that.loadingLicense = false;
+                updateProductType(that.license);
             }, function () {
                 that.license = {message: 'No license was set.', valid: false};
-                // $scope.showLicense = true;
-                //$scope.updateProductType($scope.license);
+                that.showLicense = true;
+                that.loadingLicense = false;
+                updateProductType(that.license);
             });
         });
     };
-
-    getLicenseInfo();
-
-    this.isLicenseValid = function() {
-        return this.license && this.license.valid;
-    }
 
     const updateProductType = function (license) {
         that.productType = license.productType;
         if (that.productType === "standard") {
             that.productTypeHuman = "Standard";
-            that.documentation = "standard/";
         } else if (that.productType === "enterprise") {
             that.productTypeHuman = "Enterprise";
-            that.documentation = "enterprise/";
         } else if (that.productType === "free") {
             that.productTypeHuman = "Free";
-            that.documentation = "free/";
         }
-        that.mainTitle = that.productTypeHuman;
     };
 
+    this.checkLicenseStatus();
+
+    this.isLicenseValid = function() {
+        return that.license && that.license.valid;
+    }
 }
