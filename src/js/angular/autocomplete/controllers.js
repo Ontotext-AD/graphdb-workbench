@@ -246,7 +246,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
-        if (!licenseService.isLicenseValid() ||
+        if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {

@@ -291,7 +291,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.getConnectors = function () {
-        if (!scope.isLicenseValid()) {
+        if (!$scope.isLicenseValid()) {
             return;
         }
         if (!$scope.canWriteActiveRepo()) {

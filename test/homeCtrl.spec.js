@@ -13,6 +13,7 @@ describe('homeCtrl', function () {
     let $scope;
     let $http;
     let $repositories;
+    let $licenseService;
     let LicenseRestService;
     let ClassInstanceDetailsService;
     let AutocompleteRestService;
@@ -21,10 +22,11 @@ describe('homeCtrl', function () {
     let $httpBackend;
     let createController;
 
-    beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$repositories_, _ClassInstanceDetailsService_, _AutocompleteRestService_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_) {
+    beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$repositories_, _$licenseService_, _ClassInstanceDetailsService_, _AutocompleteRestService_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_) {
         $scope = _$rootScope_.$new();
         $http = _$http_;
         $repositories = _$repositories_;
+        $licenseService = _$licenseService_;
         LicenseRestService = _LicenseRestService_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         AutocompleteRestService = _AutocompleteRestService_;
@@ -37,12 +39,11 @@ describe('homeCtrl', function () {
         $scope.getActiveRepository = () => {
         };
 
-        $scope.checkLicenseStatus = () => {
-            
-        };
+        $licenseService.checkLicenseStatus = () => {};
+
 
         createController = () => $controller('homeCtrl', {
-            $scope, $http, $repositories, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService
+            $scope, $http, $repositories, $licenseService, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService
         });
 
         createController();
@@ -59,6 +60,7 @@ describe('homeCtrl', function () {
             $scope.activeRepositorySizeError = undefined;
 
             $scope.getActiveRepositorySize();
+            $httpBackend.flush();
 
             expect($scope.activeRepositorySize).toBeUndefined();
             expect($scope.activeRepositorySizeError).toBeUndefined();
