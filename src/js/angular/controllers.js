@@ -357,7 +357,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
-            case 'gdb':
+            case 'graphdb':
                 return 'Graphdb';
             case 'system':
                 return 'System';
@@ -790,9 +790,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $scope.productTypeHuman = "Free";
             $scope.documentation = "free/";
         }
-        else if ($scope.productType === "gdb") {
+        else if ($scope.productType === "graphdb") {
             $scope.productTypeHuman = "GraphDB";
-            $scope.documentation = "gdb/";
+            $scope.documentation = "graphdb/";
         }
         $scope.mainTitle = $scope.productTypeHuman;
     };
