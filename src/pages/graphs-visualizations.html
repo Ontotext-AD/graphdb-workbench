@@ -391,7 +391,7 @@
 
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
-                <a class="uri" rel="noopener" target="_blank" href="resource?uri={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
+                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
