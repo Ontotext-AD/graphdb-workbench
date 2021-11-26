@@ -359,14 +359,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
-            case 'worker':
-                return 'EE Worker';
-            case 'master':
-                return 'EE Master';
-            case 'se':
-                return 'Standard';
-            case 'free':
-                return 'Free';
+            case 'graphdb':
+                return 'Graphdb';
             case 'system':
                 return 'System';
             case 'ontop':
