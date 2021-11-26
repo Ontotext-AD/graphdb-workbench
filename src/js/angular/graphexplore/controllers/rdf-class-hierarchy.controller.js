@@ -54,9 +54,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        if (!$licenseService.isLicenseValid()) {
-            return;
-        }
         if (!$scope.getActiveRepository()) {
             return;
         }
@@ -431,7 +428,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     let currentActiveRepository = $repositories.getActiveRepository();
-
     function onRepositoryIsSet() {
         if (!$licenseService.isLicenseValid()) {
             return;
