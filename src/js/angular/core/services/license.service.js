@@ -34,6 +34,8 @@ function licenseService($rootScope, LicenseRestService) {
             that.productTypeHuman = "Enterprise";
         } else if (that.productType === "free") {
             that.productTypeHuman = "Free";
+        } else if (that.productType === "graphdb") {
+            that.productTypeHuman = "GraphDB";
         }
     };
 
