@@ -85,7 +85,15 @@
 
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
 
-<div class="explore" ng-hide="loader">
+<div class="top-offset" core-errors license></div>
+<div class="top-offset" system-repo-warning></div>
+<div class="top-offset alert alert-danger" ng-show="repositoryError">
+    <p>The currently selected repository cannot be used for queries due to an error:</p>
+
+    <p>{{repositoryError}}</p>
+</div>
+
+<div class="explore" ng-hide="loader || repositoryError || !isLicenseValid()">
 
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
@@ -103,13 +111,6 @@
                   ng-hide="isSystemRepository()"></rzslider>
     </div>
     <div class='explore_results'>
-        <div class="top-offset" core-errors></div>
-        <div class="top-offset" system-repo-warning></div>
-        <div class="top-offset alert alert-danger" ng-show="repositoryError">
-            <p>The currently selected repository cannot be used for queries due to an error:</p>
-
-            <p>{{repositoryError}}</p>
-        </div>
 		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
 			<p>The class hierarchy for the currently selected repository cannot be loaded:
 				<button class="btn btn-link p-0 pull-right"
@@ -140,7 +141,7 @@
                 show-external-elements="showExternalElements"
                 hide-prefixes="hidePrefixes"
                 current-browser-limit="currentBrowserLimit"
-                ng-show="hasClassHierarchy()">
+                ng-show="isLicenseValid() && hasClassHierarchy()">
         </rdf-class-hierarchy>
 
         <pageslide

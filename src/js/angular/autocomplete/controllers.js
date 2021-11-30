@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
 
     let timer;
 
@@ -132,7 +132,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     });
 
     const init = function() {
-        if (!$repositories.getActiveRepository() ||
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {
             return;
@@ -245,7 +246,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
-        if (!$repositories.getActiveRepository() ||
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {
             return;
