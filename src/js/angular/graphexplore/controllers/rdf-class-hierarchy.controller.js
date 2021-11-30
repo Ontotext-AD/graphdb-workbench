@@ -450,7 +450,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository()) {
+        if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
