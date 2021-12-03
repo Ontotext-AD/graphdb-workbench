@@ -4,11 +4,11 @@ angular
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
     'AutocompleteRestService', 'RDF4JRepositoriesRestService',
-    'RepositoriesRestService', '$repositories', '$location', 'toastr'];
+    'RepositoriesRestService', '$repositories', '$location', '$licenseService', 'toastr'];
 
 function rdfResourceSearchDirective($rootScope, $timeout,
                                     AutocompleteRestService, RDF4JRepositoriesRestService,
-                                    RepositoriesRestService, $repositories, $location, toastr) {
+                                    RepositoriesRestService, $repositories, $location, $licenseService, toastr) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -27,7 +27,9 @@ function rdfResourceSearchDirective($rootScope, $timeout,
             }
 
             function checkAutocompleteStatus() {
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                if ($licenseService.isLicenseValid()) {
+                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                }
             }
 
             $scope.$on('autocompleteStatus', function () {

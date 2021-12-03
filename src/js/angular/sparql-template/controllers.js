@@ -19,7 +19,7 @@ angular.module('graphdb.framework.sparql-template.controllers', modules, [
 
 SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService'];
 
-function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService) {
+function SparqlTemplatesCtrl($scope, $repositories, $licenseService, SparqlTemplatesRestService, toastr, ModalService) {
 
     $scope.pluginName = 'sparql-template';
 
@@ -30,7 +30,8 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos doesn't support update operations.
-        if ($repositories.getActiveRepository()
+        if ($licenseService.isLicenseValid() &&
+            $repositories.getActiveRepository()
                 && !$repositories.isActiveRepoOntopType()
                     && !$repositories.isActiveRepoFedXType()) {
             SparqlTemplatesRestService.getSparqlTemplates().success(function (data) {

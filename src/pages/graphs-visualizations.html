@@ -13,7 +13,7 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors></div>
+    <div core-errors license></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
         <p>The currently selected repository cannot be used for queries due to an error:</p>
@@ -21,7 +21,7 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="toolbar-holder" ng-show="configLoaded && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
+    <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 tooltip="Back to visual graph home"
                 tooltip-placement="bottom"
@@ -81,7 +81,7 @@
         </button>
     </div>
 
-    <div class="search-bar" ng-show="getActiveRepository() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
+    <div class="search-bar" ng-show="getActiveRepository() && isLicenseValid() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
 
         <div class="row slider mb-2"
              ng-show="configLoaded.startMode == 'search' && (searchVisible || !nodeSelected)" ng-cloak>

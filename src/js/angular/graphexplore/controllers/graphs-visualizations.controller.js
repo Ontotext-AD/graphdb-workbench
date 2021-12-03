@@ -20,9 +20,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -1027,6 +1027,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         return $repositories.getActiveRepository();
     };
 
+    $scope.isLicenseValid = function() {
+        return $licenseService.isLicenseValid();
+    }
+
     // Flag to avoid calling repo init logic twice
     $scope.hasInitedRepository = false;
 
@@ -1063,7 +1067,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     }
 
     function checkAutocompleteStatus() {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
     }
 
     $scope.$on('autocompleteStatus', function() {
