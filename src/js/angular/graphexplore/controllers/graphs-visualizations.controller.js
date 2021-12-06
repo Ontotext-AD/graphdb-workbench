@@ -474,6 +474,17 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 
     /**
+     *  Creates unique arrow-marker id will allow change color and refX for particular one
+     * @param d
+     * @returns {string}
+     */
+    function createArrowMarkerUniqueID(d) {
+        let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
+        let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+        return `${source}>${target}`;
+    }
+
+    /**
      *  Filters nodes array on a given field
      * @param iri
      * @param array
@@ -1335,8 +1346,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .enter().append("marker")
             .attr("class", "arrow-marker")
             .attr("id", function (d) {
-                // Create unique arrow-marker id will allow change color and refX for particular one
-                return d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+                return createArrowMarkerUniqueID(d);
             })
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", function (d) {
@@ -1363,7 +1373,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .style("stroke-width", 1)
             .style("fill", "transparent")
             .style("marker-end", function (d) {
-                let targetArrowId = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+                let targetArrowId = createArrowMarkerUniqueID(d);
                 return `url(${$location.absUrl()}#${targetArrowId})`;
             });
 
