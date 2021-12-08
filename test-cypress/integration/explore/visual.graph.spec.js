@@ -507,14 +507,18 @@ describe('Visual graph screen validation', () => {
     }
 
     function searchForResource(resource) {
-        cy.searchEasyVisualGraph(resource);
-        // Verify redirection to existing visual graph
-        cy.waitUntil(() =>
-            cy.get('.graph-visualization')
-                .find('.nodes-container')
-                .then(nodesContainer => nodesContainer))
+        // verify that the easy graph search has occured and a valid resource was input and only
+        // after that execute the next operation
+        cy.searchEasyVisualGraph(resource)
             .then(() => {
-                getNodes();
+                // Verify redirection to existing visual graph
+                cy.waitUntil(() =>
+                    cy.get('.graph-visualization')
+                        .find('.nodes-container')
+                        .then(nodesContainer => nodesContainer))
+                    .then(() => {
+                        getNodes();
+                    });
             });
     }
 

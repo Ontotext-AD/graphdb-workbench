@@ -2796,6 +2796,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             $scope.configLoaded = $scope.defaultGraphConfig;
         }
 
+        $location.url("?saved=" + graphToLoad.id);
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
             $scope.pushHistory({saved: graphToLoad.id}, {savedGraph: graphToLoad});
