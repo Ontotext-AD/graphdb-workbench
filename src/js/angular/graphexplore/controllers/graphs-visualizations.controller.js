@@ -440,7 +440,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         if (node.isTriple) {
             let el = document.getElementById(convertTripleToLinkId(node.iri));
             if (el) {
-                return (typeof el.__data__.x === "undefined" ? -1 : el.__data__.x);
+                return (typeof el.__data__.x === "undefined" ? node.x : el.__data__.x);
             }
             return -1;
         }
@@ -460,7 +460,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         if (node.isTriple) {
             let el = document.getElementById(convertTripleToLinkId(node.iri));
             if (el) {
-                return (typeof el.__data__.y === "undefined" ? -1 : el.__data__.y);
+                return (typeof el.__data__.y === "undefined" ? node.y : el.__data__.y);
             }
             return -1;
         }
@@ -481,7 +481,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     function createArrowMarkerUniqueID(d) {
         let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
         let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
-        return `${source}>${target}`;
+        return `${source}>${target}>marker`;
     }
 
     /**
@@ -683,7 +683,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             this.computeConnectedness();
         };
 
-        this.addTriple = function (triple) {
+        this.addTriple = function (triple, x, y) {
+            triple.x = x;
+            triple.y = y;
+            triple.weight = 0;
             let key = convertTripleToLinkId(triple.iri)
             if (!this.triples.has(key)) {
                 this.triples.set(key, [triple]);
@@ -1990,7 +1993,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     const x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
                     const y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
                     if (newNodeData.isTriple) {
-                        graph.addTriple(newNodeData);
+                        graph.addTriple(newNodeData, x, y);
                     } else {
                         graph.addNode(newNodeData, x, y);
                     }
