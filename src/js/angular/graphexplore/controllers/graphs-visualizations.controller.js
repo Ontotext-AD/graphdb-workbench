@@ -431,7 +431,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     /**
      *  If source or target of a link is a triple returns a x
      *  for the link, otherwise returns this of the node.
-     *  Because tick is called before links are created we return -1,
+     *  Because tick is called before links are created we return node's x,
      *  which afterwards will be overridden
      * @param node
      * @returns {number|number|*}
@@ -439,19 +439,17 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     function getNodeX(node) {
         if (node.isTriple) {
             let el = document.getElementById(convertTripleToLinkId(node.iri));
-            if (el) {
-                return (typeof el.__data__.x === "undefined" ? node.x : el.__data__.x);
+            if (el && typeof el.__data__.x !== "undefined") {
+                return el.__data__.x;
             }
-            return -1;
         }
-
         return node.x;
     }
 
     /**
      *  If source or target of a link is a triple returns a y
      *  for the link, otherwise returns this of the node.
-     *  Because tick is called before links are created we return -1,
+     *  Because tick is called before links are created we return node's y,
      *  which afterwards will be overridden
      * @param node
      * @returns {number|number|*}
@@ -459,12 +457,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     function getNodeY(node) {
         if (node.isTriple) {
             let el = document.getElementById(convertTripleToLinkId(node.iri));
-            if (el) {
-                return (typeof el.__data__.y === "undefined" ? node.y : el.__data__.y);
+            if (el && typeof el.__data__.y !== "undefined") {
+                return el.__data__.y;
             }
-            return -1;
         }
-
         return node.y;
     }
 
@@ -645,22 +641,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             let triplesToRemove = [];
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
-                let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1) ||
-                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1) &&
+                let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
+                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple) &&
                                     !graph.triples.has(convertLinkDataToLinkId(l));
                 if (!isRejected) {
                     let targetLinks;
-                    if (l.source.iri === d.iri && countLinks(l.target, links) >= 2) {
+                    if (l.source.iri === d.iri && countLinks(l.target, links) === 2 && !l.target.isTriple) {
                         targetLinks = findLinksForNode(l.target, links);
-                    } else if (l.target.iri === d.iri && countLinks(l.source, links) >= 2) {
+                    } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2 && !l.source.isTriple) {
                         targetLinks = findLinksForNode(l.source, links);
                     }
                     if (!targetLinks) {
                         return false;
                     }
                     // the node to which (or from which) d has link to has only two links, check if the second one is to d also
-                    isRejected = (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri === d.iri) &&
-                        (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri === d.iri)
+                    isRejected = (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
+                        (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
                 }
                 if (isRejected) {
                     if (l.target.isTriple) {
@@ -686,8 +682,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         this.addTriple = function (triple, x, y) {
             triple.x = x;
             triple.y = y;
-            triple.weight = 0;
-            let key = convertTripleToLinkId(triple.iri)
+            let key = convertTripleToLinkId(triple.iri);
             if (!this.triples.has(key)) {
                 this.triples.set(key, [triple]);
             } else {
@@ -1337,10 +1332,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         force.nodes(graph.nodes).charge(-3000);
 
-        force.links(graph.links).linkDistance(function (link) {
+        force.links(graph.links).linkDistance(function (l) {
+            if (l.source.isTriple || l.target.isTriple) {
+                return 0;
+            }
             // link distance depends on length of text with an added bonus for strongly connected nodes,
             // i.e. they will be pushed further from each other so that their common nodes can cluster up
-            return getPredicateTextLength(link) + 30 * link.connectedness;
+            return getPredicateTextLength(l) + 30 * l.connectedness;
         });
 
         // arrow markers
