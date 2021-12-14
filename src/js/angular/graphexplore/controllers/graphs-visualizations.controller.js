@@ -64,6 +64,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     const width = 1000;
     const height = 1000;
     let tipElement;
+    let openedLink;
 
     $rootScope.key = "";
 
@@ -409,9 +410,92 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.showInfoPanel = false;
 
+    /**
+     *  Converts triple to link id or generates unique id (needed for arrows)
+     * @param triple
+     * @param tripleLike
+     * @returns {string}
+     */
+    function convertTripleToLinkId(triple, tripleLike) {
+        let tripleParts = triple.split(' ');
+        if (tripleLike) {
+            return [tripleParts[0], tripleParts[1], tripleParts[2]].join('>');
+        }
+        return [tripleParts[0], tripleParts[2]].join('>');
+    }
+
+    function convertLinkDataToLinkId(link) {
+        return [link.source.iri, link.target.iri].join('>');
+    }
+
+    /**
+     *  If source or target of a link is a triple returns a x
+     *  for the link, otherwise returns this of the node.
+     *  Because tick is called before links are created we return node's x,
+     *  which afterwards will be overridden
+     * @param node
+     * @returns {number|number|*}
+     */
+    function getNodeX(node) {
+        if (node.isTriple) {
+            let el = document.getElementById(convertTripleToLinkId(node.iri));
+            if (el && typeof el.__data__.x !== "undefined") {
+                return el.__data__.x;
+            }
+        }
+        return node.x;
+    }
+
+    /**
+     *  If source or target of a link is a triple returns a y
+     *  for the link, otherwise returns this of the node.
+     *  Because tick is called before links are created we return node's y,
+     *  which afterwards will be overridden
+     * @param node
+     * @returns {number|number|*}
+     */
+    function getNodeY(node) {
+        if (node.isTriple) {
+            let el = document.getElementById(convertTripleToLinkId(node.iri));
+            if (el && typeof el.__data__.y !== "undefined") {
+                return el.__data__.y;
+            }
+        }
+        return node.y;
+    }
+
+    function createTriple(value) {
+        let tripleParts = value.trim().split(' ');
+        return `<<<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>>>`;
+    }
+
+    /**
+     *  Creates unique arrow-marker id will allow change color and refX for particular one
+     * @param d
+     * @returns {string}
+     */
+    function createArrowMarkerUniqueID(d) {
+        let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
+        let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+        return `${source}>${target}>marker`;
+    }
+
+    /**
+     *  Filters nodes array on a given field
+     * @param iri
+     * @param array
+     * @returns {*}
+     */
+    function distinctBy(iri, array) {
+        let keys = array.map(function (value) { return value[iri]; });
+        return array.filter(function (value, index) { return keys.indexOf(value[iri]) === index; });
+    }
+
     function Graph() {
         this.nodes = [];
         this.links = [];
+        this.tripleNodes = new Map();
+        this.tripleLinksCopy = new Map();
 
         this.addNode = function (node, x, y) {
             node.x = x;
@@ -452,7 +536,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         this.addAndMatchLinks = function (newLinks) {
             const nodes = this.nodes;
             Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
-
+            for (let key of graph.tripleLinksCopy.keys()) {
+                if (graph.tripleLinksCopy.get(key).length === 1) {
+                    graph.tripleLinksCopy.delete(key);
+                }
+            }
+            this.links = this.links.filter(link => link !== null);
             this.computeConnectedness();
         };
 
@@ -488,10 +577,64 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         this.linksPredicates = linksPredicates;
 
-        this.removeNode = function (d) {
-            this.links = _.reject(this.links, function (l) {
-                return l.source.iri === d.iri || l.target.iri === d.iri;
+        /**
+         *  Removes generated triple links and related nodes
+         * @param triplesToRemove
+         */
+        this.removeTriples = function (triplesToRemove) {
+            let targetTriples = [];
+            if (this.tripleNodes.size > 0) {
+                triplesToRemove.forEach((source) => {
+                    if (this.tripleNodes.has(source)) {
+                        this.tripleNodes.delete(source);
+                        this.links = _.reject(this.links, function (l) {
+                            let sourceSplit = source.split('>');
+                            let lSource = convertTripleToLinkId(l.source.iri);
+                            let lTarget = convertTripleToLinkId(l.target.iri);
+                            // Handle triple targets
+                            if (lSource === source && graph.tripleNodes.delete(lTarget)) {
+                                let targetSplit = lTarget.split('>');
+                                targetTriples.push({
+                                    source: targetSplit[0],
+                                    target: targetSplit[1]
+                                });
+                            }
+                            let isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
+                            if (isRejected) {
+                                graph.tripleLinksCopy.delete(`${lSource}>${lTarget}`);
+                                graph.tripleLinksCopy.delete(`${lTarget}>${lSource}`);
+                            }
+                            return isRejected;
+                        });
+                    }
+                });
+            }
+
+            // This step is needed for removing artificially created links representing triples
+            targetTriples.forEach((target) => {
+                this.links = _.reject(this.links, function (l) {
+                    return l.source.iri === target.source && l.target.iri === target.target;
+                });
             });
+        }
+
+        this.removeNode = function (d) {
+            let triplesToRemove = [];
+            this.links = _.reject(this.links, function (l) {
+                let isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
+                if (isRejected) {
+                    if (l.target.isTriple) {
+                        triplesToRemove.push(convertTripleToLinkId(l.target.iri));
+                    }
+                    if (!l.source.isTriple && !l.target.isTriple) {
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                    }
+                }
+                return isRejected;
+            });
+
+            this.removeTriples(triplesToRemove);
+
             const links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
                 return countLinks(n, links) === 0;
@@ -504,26 +647,37 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         };
 
         this.removeNodeLeafLinks = function (d) {
+            let triplesToRemove = [];
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
-                if ((l.source.iri === d.iri && countLinks(l.target, links) === 1) ||
-                    (l.target.iri === d.iri && countLinks(l.source, links) === 1)) {
-                    return true;
+                let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
+                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
+                if (!isRejected) {
+                    let targetLinks;
+                    if (l.source.iri === d.iri && countLinks(l.target, links) === 2 && !l.target.isTriple) {
+                        targetLinks = findLinksForNode(l.target, links);
+                    } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2 && !l.source.isTriple) {
+                        targetLinks = findLinksForNode(l.source, links);
+                    }
+                    if (!targetLinks) {
+                        return false;
+                    }
+                    // the node to which (or from which) d has link to has only two links, check if the second one is to d also
+                    isRejected = (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
+                        (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
                 }
-                let targetLinks;
-                if (l.source.iri === d.iri && countLinks(l.target, links) === 2) {
-                    targetLinks = findLinksForNode(l.target, links);
-                } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2) {
-                    targetLinks = findLinksForNode(l.source, links);
+                if (isRejected) {
+                    if (l.target.isTriple) {
+                        triplesToRemove.push(convertTripleToLinkId(l.target.iri));
+                    }
+                    if (!l.source.isTriple && !l.target.isTriple) {
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                    }
                 }
-                if (!targetLinks) {
-                    return;
-                }
-
-                // the node to which (or from which) d has link to has only two links, check if the second one is to d also
-                return (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
-                    (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
+                return isRejected;
             });
+
+            this.removeTriples(triplesToRemove);
 
             links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
@@ -533,17 +687,60 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             this.computeConnectedness();
         };
 
+        this.addTriple = function (triple, x, y) {
+            triple.x = x;
+            triple.y = y;
+            triple.weight = 0;
+            let key = convertTripleToLinkId(triple.iri);
+            if (!this.tripleNodes.has(key)) {
+                triple.weight = 10;
+                this.tripleNodes.set(key, [triple]);
+            } else {
+                let value = this.tripleNodes.get(key);
+                value.push(triple);
+                this.tripleNodes.set(key, value);
+            }
+        }
+
         function matchLinksToNodes(newLinks, nodes) {
             return _.map(newLinks, function (link) {
-                return {
-                    "source": _.find(nodes, function (o) {
+                let source;
+                let target;
+                if (link.isTripleSource) {
+                    source = getTripleNode(link.source);
+                } else {
+                    source = _.find(nodes, function (o) {
                         return o.iri === link.source;
-                    }),
-                    "target": _.find(nodes, function (o) {
+                    })
+                }
+                if (link.isTripleTarget) {
+                    target = getTripleNode(link.target);
+                } else {
+                    target = _.find(nodes, function (o) {
                         return o.iri === link.target;
-                    }),
+                    })
+                }
+                let matchedLink = {
+                    "source": source,
+                    "target": target,
                     "predicates": link.predicates
                 };
+                // make copy of links with triples in them
+                if (link.isTripleSource || link.isTripleTarget) {
+                    let sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
+                    let targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
+                    let linkId = `${sourceId}>${targetId}`;
+                    if (graph.tripleLinksCopy.has(linkId)) {
+                        let value = graph.tripleLinksCopy.get(linkId);
+                        value[0].predicates.push(...matchedLink.predicates);
+                        value.push(matchedLink);
+                        graph.tripleLinksCopy.set(linkId, value);
+                        return null;
+                    } else {
+                        graph.tripleLinksCopy.set(linkId, [matchedLink]);
+                    }
+                }
+                return matchedLink;
             });
         }
 
@@ -551,6 +748,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             const nodesCopy = _.map(this.nodes, function (node) {
                 return {
                     iri: node.iri,
+                    isTriple: node.isTriple,
                     size: node.size,
                     labels: angular.copy(node.labels),
                     types: angular.copy(node.types),
@@ -560,10 +758,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     fixed: node.fixed
                 };
             });
+
+            const triplesCopy = JSON.stringify(Array.from(this.tripleNodes.entries()));
+            const tripleLinksCopy = JSON.stringify(Array.from(this.tripleLinksCopy.entries()));
+
             const linksCopy = _.map(this.links, function (link) {
                 return {
                     source: link.source.iri,
+                    isTripleSource: link.source.isTriple,
                     target: link.target.iri,
+                    isTripleTarget: link.target.isTriple,
                     predicates: link.predicates
                 };
             });
@@ -571,6 +775,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             return {
                 nodes: nodesCopy,
                 links: linksCopy,
+                tripleNodes: triplesCopy,
+                tripleLinksCopy: tripleLinksCopy,
                 colorIndex: colorIndex,
                 type2color: type2color,
                 scale: panAndZoom.scale(),
@@ -583,8 +789,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             $scope.searchVisible = false;
 
             this.nodes = angular.copy(state.nodes);
+            // check if triples exists is needed for old configs
+            this.tripleNodes = state.tripleNodes ? new Map(JSON.parse(state.tripleNodes)) : new Map();
             this.links = [];
             this.addAndMatchLinks(state.links);
+            this.tripleLinksCopy = state.tripleLinksCopy ? new Map(JSON.parse(state.tripleLinksCopy)) : new Map();
 
             _.each(this.nodes, function (d) {
                 if (d.fixed) {
@@ -1153,10 +1362,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         force.nodes(graph.nodes).charge(-3000);
 
-        force.links(graph.links).linkDistance(function (link) {
+        force.links(graph.links).linkDistance(function (l) {
+            if (l.source.isTriple || l.target.isTriple) {
+                return 0;
+            }
             // link distance depends on length of text with an added bonus for strongly connected nodes,
             // i.e. they will be pushed further from each other so that their common nodes can cluster up
-            return getPredicateTextLength(link) + 30 * link.connectedness;
+            return getPredicateTextLength(l) + 30 * l.connectedness;
         });
 
         // arrow markers
@@ -1165,11 +1377,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .enter().append("marker")
             .attr("class", "arrow-marker")
             .attr("id", function (d) {
-                return d.target.size;
+                return createArrowMarkerUniqueID(d);
             })
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", function (d) {
-                return d.target.size + 11;
+                // The positioning of the arrow for triple target nodes differ from normal ones
+                return d.target.isTriple ? 11 : d.target.size + 11;
             })
             .attr("refY", 0)
             .attr("markerWidth", 10)
@@ -1184,14 +1397,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .enter().append("g")
             .attr("class", "link-wrapper")
             .attr("id", function (d) {
-                return d.source.iri + '>' + d.target.iri;
+                return convertLinkDataToLinkId(d);
             })
             .append("line")
             .attr("class", "link")
             .style("stroke-width", 1)
             .style("fill", "transparent")
             .style("marker-end", function (d) {
-                return "url(" + $location.absUrl() + "#" + d.target.size + ")";
+                let targetArrowId = createArrowMarkerUniqueID(d);
+                return `url(${$location.absUrl()}#${targetArrowId})`;
             });
 
         const predicate = container.selectAll(".link-wrapper")
@@ -1200,7 +1414,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 return getPredicate(d);
             })
             .attr("class", function (d) {
-                if (d.predicates.length > 1) {
+                if (d.predicates.length > 1 || graph.tripleNodes.has(convertLinkDataToLinkId(d))) {
                     return "predicates";
                 }
                 return "predicate";
@@ -1215,7 +1429,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .on('mouseout', hidePredicateToolTip)
             .on("click", function (d) {
                 d3.event.stopPropagation();
-                openPredicates(d);
+                linkActions(d);
             });
 
         // node events and variables
@@ -1506,20 +1720,24 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             // recalculate links attributes
             link.attr("x1", function (d) {
-                return d.source.x;
+                return getNodeX(d.source);
             }).attr("y1", function (d) {
-                return d.source.y;
+                return getNodeY(d.source);
             }).attr("x2", function (d) {
-                return d.target.x;
+                return getNodeX(d.target);
             }).attr("y2", function (d) {
-                return d.target.y;
+                return getNodeY(d.target);
             });
 
             // recalculate predicates attributes
             predicate.attr("x", function (d) {
-                return d.x = (d.source.x + d.target.x) * 0.5;
+                let sourceX = getNodeX(d.source);
+                let targetX = getNodeX(d.target);
+                return d.x = (sourceX + targetX) * 0.5;
             }).attr("y", function (d) {
-                return d.y = (d.source.y + d.target.y) * 0.5;
+                let sourceY = getNodeY(d.source);
+                let targetY = getNodeY(d.target);
+                return d.y = (sourceY + targetY) * 0.5;
             }).attr("transform", function (d) {
                 const angle = findAngleBetweenNodes(d, d.direction);
                 return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
@@ -1620,17 +1838,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     // find angle between pair of nodes so we can position predicates
     function findAngleBetweenNodes(linkedNodes, direction) {
-        const sourceNode = linkedNodes.source;
-        const targetNode = linkedNodes.target;
-
         const p1 = {
-            x: sourceNode.x,
-            y: sourceNode.y
+            x: getNodeX(linkedNodes.source),
+            y: getNodeY(linkedNodes.source)
         };
 
         const p2 = {
-            x: targetNode.x,
-            y: targetNode.y
+            x: getNodeX(linkedNodes.target),
+            y: getNodeY(linkedNodes.target)
         };
         if (direction) {
             return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
@@ -1654,13 +1869,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         // shift + ctrl/cmd + click focuses node
         if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
             $rootScope.$broadcast("onRootNodeChange", d.iri);
-            return;
+            return false;
         }
 
         // ctrl/cmd + click hides the node
         if (event.ctrlKey || event.metaKey) {
             hideNode(d);
-            return;
+            return false;
         }
 
         // If value of openedNodeInfoPanel is different than "undefined"
@@ -1668,10 +1883,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         if (typeof $scope.openedNodeInfoPanel !== "undefined" && $scope.openedNodeInfoPanel === d) {
             $scope.pageslideExpanded = false;
             $scope.openedNodeInfoPanel = undefined;
-            return;
+            return false;
         }
 
         showNodeInfo(d);
+        return true;
     }
 
     function expandNodeIcons(d, element) {
@@ -1731,18 +1947,51 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
+        let linksCopy = [];
+        const tripleLinksIt = graph.tripleLinksCopy.values();
+        for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
+            let linkCopy = tripleLinksIt.next().value;
+            linkCopy.forEach(link => {
+                linksCopy.push(link);
+            });
+        }
+        // filter existing shadow links
+        linksFound = _.filter(linksFound, function (newLink) {
+            return _.findIndex(linksCopy,
+                function (existingLink) {
+                    return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
+                }) === -1;
+        });
         // filter reflexive links until we find a way to render them  GDB-1853
         linksFound = _.filter(linksFound, function (newLink) {
             return newLink.source !== newLink.target;
         });
-        const nodesFromLinks = _.union(_.flatten(_.map(response.data, function (d) {
-            return [d.source, d.target];
-        })));
+        const nodesFromLinks = distinctBy('iri',_.union(_.flatten(_.map(response.data, function (link) {
+            return [
+                { iri: link.source,
+                  isTriple: link.isTripleSource },
+                {
+                  iri: link.target,
+                  isTriple: link.isTripleTarget }];
+        }))));
         const existingNodes = _.map(graph.nodes, function (n) {
-            return n.iri;
+            return {
+                iri: n.iri,
+                isTriple: Boolean(n.isTriple)
+            };
         });
+        const tripleNodesIt = graph.tripleNodes.values();
+        for (let i = 0; i < graph.tripleNodes.size; i++) {
+            let nodes = tripleNodesIt.next().value;
+            nodes.forEach(node => {
+                existingNodes.push({
+                    iri: node.iri,
+                    isTriple: node.isTriple
+                });
+            });
+        }
         const newNodes = _.reject(nodesFromLinks, function (n) {
-            return _.includes(existingNodes, n);
+            return _.some(existingNodes, n);
         });
 
         if (newNodes.length === 0) {
@@ -1763,15 +2012,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     url: 'rest/explore-graph/node',
                     method: 'GET',
                     params: {
-                        iri: newNode,
+                        iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
                         config: $scope.configLoaded.id,
                         languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                         includeInferred: $scope.saveSettings['includeInferred'],
                         sameAsState: $scope.saveSettings['sameAsState']
                     }
-                }).then(function (response) {
+                }).then(function (res) {
                     // Save the data for later
-                    newNodesData[index] = response.data;
+                    newNodesData[index] = res.data;
                 }));
             });
 
@@ -1785,7 +2034,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     const theta = 2 * Math.PI * index / newNodesData.length;
                     const x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
                     const y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
-                    graph.addNode(newNodeData, x, y);
+                    if (newNodeData.isTriple) {
+                        graph.addTriple(newNodeData, x, y);
+                    } else {
+                        graph.addNode(newNodeData, x, y);
+                    }
                 });
 
                 graph.addAndMatchLinks(linksFound);
@@ -2163,7 +2416,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.nodeTypes = d.types;
         $scope.rdfRank = d.rdfRank;
         $scope.nodeIri = d.iri;
-        $scope.encodedIri = encodeURI(d.iri);
+        $scope.resourceType = d.isTriple ? 'triple' : 'uri';
+        $scope.encodedIri = d.isTriple ? encodeURI(createTriple(d.iri)) : encodeURI(d.iri);
         $scope.showInfoPanel = true;
 
         $scope.rdfsLabel = d.labels[0].label;
@@ -2174,7 +2428,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.dataNodeKeysQuery = '';
         $http.get('rest/explore-graph/properties', {
             params: {
-                iri: d.iri,
+                iri: d.isTriple ? createTriple(d.iri) : d.iri,
                 config: $scope.configLoaded.id,
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                 includeInferred: $scope.saveSettings['includeInferred'],
@@ -2216,23 +2470,218 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.closeInfoPanel = function () {
         $scope.pageslideExpanded = false;
         $scope.openedNodeInfoPanel = undefined;
+        $scope.predicates = [];
+        openedLink = null;
         // o, angular, o, miracle
         $timeout(function () {
             $scope.showInfoPanel = false;
         });
     };
 
-    // open predicates sidebar if they are more than one
+    function applyElementsStyleChanges(tripleNode) {
+        updatePredicatesColor('predicate', '#d54a33', tripleNode);
+        updatePredicatesColor('predicates', '#d54a33', tripleNode);
+
+        let links = document.getElementsByClassName('link');
+        if (links) {
+            _.each(links, function (link) {
+                let linkLink = link.__data__;
+                if (linkLink.source.iri.indexOf(tripleNode.iri) >= 0 || linkLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                    link.style.stroke = '#d54a33';
+                    link.style.strokeWidth = 4;
+                }
+            })
+        }
+
+        let markers = document.getElementsByClassName('arrow-marker');
+        if (markers) {
+            _.each(markers, function (marker) {
+                let markerLink = marker.__data__;
+                if (markerLink.source.iri.indexOf(tripleNode.iri) >= 0 || markerLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                    marker.style.stroke = '#d54a33';
+                    if (!marker.__data__.target.isTriple) {
+                        marker.setAttribute("refX", "23");
+                    }
+                }
+            });
+        }
+    }
+
+    $scope.clickLink = function (predData) {
+        if (graph.tripleNodes.has(predData.linkId)) {
+            revertElementsStyleToDefault();
+            let tripleNode = graph.tripleNodes.get(predData.linkId)[predData.nodeIndex];
+            // Shows selected triple and its properties
+            showNodeInfo(tripleNode);
+            $scope.showPredicates = true;
+
+            let clickedEl = document.getElementById(predData.linkId + predData.nodeIndex);
+            if (clickedEl) {
+                clickedEl.style.fontWeight = "bold";
+            }
+
+            let nodeCopy = {};
+            const tripleLinksIt = graph.tripleLinksCopy.values();
+            for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
+                let links = tripleLinksIt.next().value;
+                if (links.length > 1) {
+                    links.every(link => {
+                        if (link.source.iri === tripleNode.iri) {
+                            nodeCopy.iri = links[0].source.iri;
+                            if (link.target.isTriple) {
+                                nodeCopy.oppLinkIRI = convertTripleToLinkId(link.target.iri);
+                                nodeCopy.oppTriplePred = getShortPredicate(link.target.iri.split(' ')[1]);
+                            }
+                            nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                            if (link.predicates.length === 1) {
+                                nodeCopy.linkPred = link.predicates[0];
+                            }
+                            return false;
+                        }
+                        if (link.target.iri === tripleNode.iri) {
+                            nodeCopy.iri = links[0].target.iri;
+                            if (link.source.isTriple) {
+                                nodeCopy.oppLinkIRI = convertTripleToLinkId(link.source.iri);
+                                nodeCopy.oppTriplePred = getShortPredicate(link.source.iri.split(' ')[1]);
+                            }
+                            nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                            if (link.predicates.length === 1) {
+                                nodeCopy.linkPred = link.predicates[0];
+                            }
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+            }
+
+            if (!nodeCopy.iri) {
+                nodeCopy.iri = tripleNode.iri;
+                nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+            }
+
+            applyElementsStyleChanges(nodeCopy);
+        }
+    }
+
+    function updatePredicatesColor(className, color, tripleNode) {
+        let preds = document.getElementsByClassName(className);
+
+        if (preds) {
+            _.each(preds, function (pred) {
+                let predLink = pred.__data__;
+                if (tripleNode) {
+                    if (predLink.source.iri.indexOf(tripleNode.iri) >= 0 || predLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                        pred.style.fill = color;
+                    }
+                    if (convertTripleToLinkId(tripleNode.iri) === convertLinkDataToLinkId(predLink)) {
+                        pred.textContent = tripleNode.pred;
+                        pred.style.fill = color;
+                    }
+                    if (tripleNode.oppLinkIRI && tripleNode.oppLinkIRI === convertLinkDataToLinkId(predLink)) {
+                        pred.textContent = tripleNode.oppTriplePred;
+                        pred.style.fill = color;
+                    }
+                } else {
+                    pred.style.fill = color;
+                    pred.textContent = getPredicate(predLink);
+                }
+            })
+        }
+    }
+
+    function revertElementsStyleToDefault() {
+        _.each($scope.predicates, function (pred) {
+            let currEl = document.getElementById(pred.linkId + pred.nodeIndex);
+            if (currEl) {
+                currEl.style.fontWeight = "normal";
+            }
+        });
+        let links = document.getElementsByClassName('link');
+        if (links) {
+            _.each(links, function (link) {
+                link.style.stroke = '#999';
+                link.style.strokeWidth = 1;
+            })
+        }
+        updatePredicatesColor('predicate', '');
+        updatePredicatesColor('predicates', '');
+
+        let markers = document.getElementsByClassName('arrow-marker');
+
+        if (markers) {
+            _.each(markers, function (marker) {
+                marker.style.stroke = '#999';
+                // RefX for triple targets isn't changed, because they are not affected by increasing of stroke-width
+                if (!marker.__data__.target.isTriple) {
+                    marker.setAttribute("refX", "59");
+                }
+            });
+        }
+    }
+
+    function linkActions(d) {
+        revertElementsStyleToDefault();
+        let linkId = convertLinkDataToLinkId(d);
+        if (d.predicates.length === 1 && graph.tripleNodes.has(linkId)) {
+            openedLink = null;
+            let tripleNode = graph.tripleNodes.get(linkId)[0];
+            // If there is a triple in this link, show its properties
+            if (clickedNode(tripleNode, this, d3.event.button)) {
+                let nodeCopy = {};
+                nodeCopy.iri = tripleNode.iri;
+                nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                applyElementsStyleChanges(nodeCopy);
+            }
+            return;
+        }
+        openPredicates(d);
+    }
+
     function openPredicates(d) {
         $scope.showNodeInfo = false;
-        $scope.showPredicates = true;
+        // open predicates sidebar if they are more than one
+        $scope.showPredicates = d.predicates.length > 1;
         $scope.showFilter = false;
+        $scope.showInfoPanel = false;
 
-        if (d.predicates.length > 1) {
+        if (openedLink === d) {
+            $scope.showNodeInfo = false;
+            $scope.showInfoPanel = false;
+            openedLink = null;
+            return;
+        }
+
+        openedLink = d;
+
+        if ($scope.showPredicates) {
             $scope.predicates = _.map(d.predicates, function (p) {
-                return getShortPredicate(p);
+                let foundNodeIndex = getTripleNodeIndex(p, d);
+                let isPartOfTriple = foundNodeIndex > -1;
+                return {
+                    value: getShortPredicate(p),
+                    partOfTriple: isPartOfTriple,
+                    linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
+                    nodeIndex: foundNodeIndex
+                };
             });
             $scope.showInfoPanel = true;
+        }
+    }
+
+    function getTripleNode(triple) {
+        let linkId = convertTripleToLinkId(triple);
+        if (graph.tripleNodes.has(linkId)) {
+            return graph.tripleNodes.get(linkId).find(el => el.iri === triple);
+        }
+    }
+
+    function getTripleNodeIndex(pred, d) {
+        let linkId = convertLinkDataToLinkId(d);
+        if (graph.tripleNodes.has(linkId)) {
+            return graph.tripleNodes.get(linkId).findIndex(el => el.iri.indexOf(pred) >= 0);
+        } else {
+            return -1;
         }
     }
 
