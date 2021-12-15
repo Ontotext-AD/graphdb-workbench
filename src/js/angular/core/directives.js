@@ -12,7 +12,8 @@ angular
     .directive('eatClick', eatClick)
     .directive('multiRequired', multiRequired)
     .directive('searchResourceInput', searchResourceInput)
-    .directive('keyboardShortcuts', keyboardShortcutsDirective);
+    .directive('keyboardShortcuts', keyboardShortcutsDirective)
+    .directive('inactivePluginDirective', inactivePluginDirective);
 
 ontoLoader.$inject = [];
 
@@ -293,6 +294,13 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
+            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+                if (!$scope.searchInput && args.startIRI) {
+                    $scope.visualCallback({uri: args.startIRI, label: ''});
+                    return;
+                }
+                $scope.checkIfValidAndSearchText();
+            });
 
             $scope.clearInput = function() {
                 $scope.searchInput = '';
@@ -367,7 +375,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             const openInNewWindowTab = function (visual, params) {
                 const view = visual ? 'graphs-visualizations' : 'resource';
-                window.open(`/${view}?uri=${encodeURIComponent(params.uri)}`);
+                window.open(`${view}?uri=${encodeURIComponent(params.uri)}`);
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
@@ -457,7 +465,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const checkIfValidAndSearch = function (callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
-                    toastr.error('Please fill input field!');
+                    toastr.error('Please fill the input field!');
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {
@@ -708,7 +716,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         .then(function (results) {
                             canceler = null;
                             // if (showDropDown) {
-                                $scope.autoCompleteUriResults = results.data.suggestions;
+                            $scope.autoCompleteUriResults = results.data.suggestions;
                             // }
                             $scope.activeSearchElm = 0;
                         });
@@ -750,5 +758,68 @@ function keyboardShortcutsDirective($document) {
                 $document.off('keydown', escapeEvent);
             }
         }
+    }
+}
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+    return {
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            loadSaved: '&',
+            setPluginActive: '&',
+            pluginName: '@',
+            humanReadablePluginName: '@'
+        },
+        templateUrl: 'js/angular/core/templates/inactive-plugin-warning-page.html',
+
+        link: linkFunc
+    };
+    function linkFunc($scope) {
+        $scope.pluginIsActive = true;
+        function checkPluginIsActive() {
+            return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
+                .done(function (data) {
+                    $scope.pluginIsActive = data.indexOf('true') > 0;
+                    $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
+                })
+                .fail(function (data) {
+                    toastr.error(getError(data), 'Could not check if plugin is active!');
+                });
+        }
+
+        $scope.activatePlugin = function () {
+            ModalService.openSimpleModal({
+                title: 'Confirm plugin activation',
+                message: `<p>Are you sure you want to activate <strong>${$scope.humanReadablePluginName}</strong>?</p>`,
+                warning: true
+            }).result
+                .then(function () {
+                    RDF4JRepositoriesRestService.activatePlugin($scope.pluginName)
+                        .done(function () {
+                            $scope.pluginIsActive = true;
+                            $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
+                            $scope.loadSaved();
+                        })
+                        .fail(function (data) {
+                            toastr.error(getError(data), 'Could not activate plugin!');
+                        });
+                });
+        };
+
+        const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+            checkPluginIsActive();
+        });
+
+        window.addEventListener('beforeunload', removeRepoIsSetListener);
+
+        function removeRepoIsSetListener() {
+            repoIsSetListener();
+            window.removeEventListener('beforeunload', removeRepoIsSetListener);
+        }
+
+        $scope.$on('checkIsActive', checkPluginIsActive);
+
+        checkPluginIsActive();
     }
 }

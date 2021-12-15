@@ -4,14 +4,20 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
     const PREFIX_INSTANCE = PREFIX + 'instance/';
     const ANY_PREDICATE = PREFIX_PREDICATION + 'any';
+    $scope.pluginName = 'similarity';
+    $scope.pluginIsActive = true;
+
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
+    }
 
     const literalForQuery = function (literal) {
         return '"' + literal + '"';
@@ -27,34 +33,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     $scope.info = productInfo;
-    $scope.pluginDisabled = false;
 
     $scope.getActiveRepository = function () {
         return $repositories.getActiveRepository();
-    };
-
-    $scope.checkPluginEnabled = function () {
-        if (shouldSkipCall()) {
-            return;
-        }
-        RDF4JRepositoriesRestService.checkSimilarityPluginEnabled()
-            .done(function (data) {
-                $scope.pluginDisabled = data.indexOf('false') > 0;
-            })
-            .fail(function (data) {
-                toastr.error(getError(data), 'Could not check plugin enabled!');
-            });
-    };
-
-    $scope.enabledSimilarityPlugin = function () {
-        RDF4JRepositoriesRestService.enableSimilarityPlugin()
-            .done(function () {
-                $scope.pluginDisabled = false;
-                $scope.getSimilarityIndexes();
-            })
-            .fail(function (data) {
-                toastr.error(getError(data), 'Could not enable plugin!');
-            });
     };
 
     // Don't call functions if one of the following conditions are met
@@ -79,7 +60,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
 
     // get similarity indexes
     $scope.getSimilarityIndexes = function () {
-        if (shouldSkipCall() || $scope.pluginDisabled) {
+        if (shouldSkipCall() || !$scope.pluginIsActive) {
             return;
         }
         SimilarityRestService.getIndexes()
@@ -93,11 +74,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     };
 
     $scope.pullList = function () {
-        if (shouldSkipCall() || $scope.pluginDisabled) {
-            return;
-        }
         $scope.getSimilarityIndexes();
         const timer = $interval(function () {
+            $scope.$broadcast('checkIsActive');
             if ($('#indexes-table').attr('aria-expanded') !== 'false') {
                 $scope.getSimilarityIndexes();
             }
@@ -107,14 +86,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
         });
     };
 
-    // Check if warning message should be shown or removed on repository change
-    const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
-        $scope.checkPluginEnabled();
-        $scope.pullList();
-    });
     if ($scope.getActiveRepository()) {
-        $scope.checkPluginEnabled();
-        $scope.pullList();
+        if ($licenseService.isLicenseValid()) {
+            $scope.pullList();
+        }
     }
 
     let yasr;
@@ -144,7 +119,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     });
 
     function checkAutocompleteStatus() {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
     }
 
     $scope.$on('autocompleteStatus', function() {
@@ -355,11 +332,4 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
     $scope.trimIRI = function (iri) {
         return _.trim(iri, "<>");
     };
-
-    window.addEventListener('beforeunload', removeRepoIsSetListener);
-
-    function removeRepoIsSetListener() {
-        repoIsSetListener();
-        window.removeEventListener('beforeunload', removeRepoIsSetListener);
-    }
 }

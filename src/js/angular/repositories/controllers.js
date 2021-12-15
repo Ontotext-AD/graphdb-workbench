@@ -521,16 +521,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     };
 
     function isValidEERepository(repositoryType) {
-        return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.eeMaster
-            || repositoryType === REPOSITORY_TYPES.eeWorker);
+        return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
     }
 
     function isValidSERepository(repositoryType) {
-        return !$scope.isFreeEdition() && !$scope.isEnterprise() && repositoryType === REPOSITORY_TYPES.se;
+        return !$scope.isFreeEdition() && !$scope.isEnterprise() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
     }
 
     function isValidFRRepository(repositoryType) {
-        return $scope.isFreeEdition() && repositoryType === REPOSITORY_TYPES.free;
+        return $scope.isFreeEdition() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
     }
     function isValidOntopRepository(repositoryType) {
         return repositoryType === REPOSITORY_TYPES.ontop;
@@ -548,19 +547,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     function setPageTitle(repositoryType) {
         switch (repositoryType) {
-            case REPOSITORY_TYPES.free:
-                $scope.pageTitle = 'Create GraphDB Free repository';
+            case REPOSITORY_TYPES.graphdbRepo:
+                $scope.pageTitle = 'Create GraphDB repository';
                 break;
-            case REPOSITORY_TYPES.eeWorker:
-                $scope.pageTitle = 'Create GraphDB EE Worker repository';
-                break;
-            case REPOSITORY_TYPES.eeMaster:
-                $scope.pageTitle = 'Create GraphDB EE Master repository';
-                break;
-            case REPOSITORY_TYPES.se:
-                $scope.pageTitle = 'Create GraphDB SE repository';
-                break;
-            case REPOSITORY_TYPES.ontop:
+           case REPOSITORY_TYPES.ontop:
                 $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
                 break;
             case REPOSITORY_TYPES.fedx:

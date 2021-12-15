@@ -9,60 +9,60 @@
 		popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
-<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
+<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loadingLicense()"></div>
 
-<div class="license-container" ng-show="!loader">
+<div class="license-container" ng-show="!loadingLicense()">
 
-	<div class="alert alert-warning" ng-if="!license.valid">
+	<div class="alert alert-warning" ng-if="!getLicense().valid">
 		<p>
-			<strong>{{license.message}}</strong><br>
+			<strong>{{getLicense().message}}</strong><br>
 			Please supply a valid license or contact the Ontotext AD sales department to acquire one!
 		</p>
 	</div>
 
 	<div class="card">
-		<h3 class="card-header">GraphDB {{productTypeHuman}} Edition</h3>
+		<h3 class="card-header">GraphDB {{getProductTypeHuman()}} Edition</h3>
 		<div class="card-block">
 			<div>
 				<div class="d-inline-block mr-2 mb-1">
 					Licensed to
-					<span class="data-value big">{{license.licensee}}</span>
+					<span class="data-value big">{{getLicense().licensee}}</span>
 				</div>
 				<div class="d-inline-block mr-2 mb-1">
 					Valid until
-					<span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+					<span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
 				</div>
 				<div class="d-inline-block mr-2 mb-1">
 					Number of cores
-					<span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'Unlimited'}}</span>
+					<span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'Unlimited'}}</span>
 				</div>
 				<div class="d-inline-block mb-1">
 					Maintenance date
-					<span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+					<span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
 				</div>
 			</div>
 			<p class="text-muted">{{license.typeOfUse}}</p>
 			<div>
-				<a href="license/register" ng-hide="isLicenseHardcoded || !isAdmin()" class="btn btn-primary">
+				<a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
 					Set new license
 				</a>
-                <button ng-click="revertToFree()" ng-hide="isLicenseHardcoded || !hasRole('ROLE_ADMIN')" class="btn btn-secondary">
+                <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded() && !isFreeEdition() && isAdmin()" class="btn btn-secondary">
                     Revert to Free license
                 </button>
 			</div>
 
-            <div class="mt-2" ng-show="isFreeEdition() || !license.valid">
+            <div class="mt-2" ng-if="isFreeEdition() || !getLicense().valid">
                 You do not have a valid license for GraphDB SE/EE and GraphDB works in Free mode. Set a valid SE/EE license
                 to get access to all SE/EE features.
             </div>
 		</div>
 	</div>
 
-	<div class="alert alert-warning" ng-show="isLicenseHardcoded && isAdmin() && productType !== 'free'">
+	<div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
 		License cannot be changed from the Workbench as it was set through a file or config parameter.
 	</div>
 
-	<div class="alert alert-warning" ng-show="!isAdmin() && productType !== 'free'">
+	<div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
 		License can be changed by Admins only.
 	</div>
 </div>

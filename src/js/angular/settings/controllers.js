@@ -58,38 +58,15 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
     };
 }
 
-LicenseCtrl.$inject = ['$scope', 'LicenseRestService', 'toastr', '$rootScope', 'ModalService'];
+LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService'];
 
-function LicenseCtrl($scope, LicenseRestService, toastr, $rootScope, ModalService) {
-    $scope.loader = true;
-    function init() {
-        LicenseRestService.checkLicenseHardcoded()
-            .success(function (res) {
-                $rootScope.isLicenseHardcoded = (res === 'true');
-            })
-            .error(function () {
-                $rootScope.isLicenseHardcoded = false;
-                toastr.error('Error checking license availability');
-            })
-            .then(function () {
-                LicenseRestService.getLicenseInfo()
-                    .success(function (res) {
-                        $scope.loader = false;
-                        $scope.license = res;
-                        $scope.updateProductType($scope.license);
-                        // check if you have a hardcoded license that is not activated through the workbench and if
-                        // you do disable ability to update license
-                    })
-                    .error(function () {
-                        // no license but we need to check for 417
-                        $scope.loader = false;
-                        $scope.license = {message: 'No license was set.', valid: false};
-                        $scope.updateProductType($scope.license);
-                    });
-            });
+function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService) {
+
+    $scope.loadingLicense = function() {
+        return $licenseService.loadingLicense;
     }
 
-    init();
+    $licenseService.checkLicenseStatus();
 
     $scope.revertToFree = function () {
         ModalService.openSimpleModal({
@@ -100,7 +77,7 @@ function LicenseCtrl($scope, LicenseRestService, toastr, $rootScope, ModalServic
             .then(function () {
                 LicenseRestService.unregisterLicense()
                     .success(function () {
-                        init();
+                        $licenseService.checkLicenseStatus();
                     })
             });
     };

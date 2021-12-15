@@ -11,8 +11,8 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'graphdb.framework.rest.rdfrank.service'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
-    function ($scope, $interval, toastr, $repositories, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
+    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
 
         let timer;
 
@@ -20,6 +20,12 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             if (timer) {
                 $interval.cancel(timer);
             }
+        }
+
+        $scope.pluginName = 'rdfrank';
+
+        $scope.setPluginIsActive = function (isPluginActive) {
+            $scope.pluginIsActive = isPluginActive;
         }
 
         const refreshStatus = function () {
@@ -51,7 +57,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             refreshFilteringConfig();
         };
 
-        const checkForPlugin = function () {
+        $scope.checkForPlugin = function () {
             $scope.pluginFound = false;
 
             $scope.setLoader(true);
@@ -183,12 +189,13 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
 
         $scope.$on('repositoryIsSet', function () {
             cancelTimer();
-            if (!$repositories.getActiveRepository() ||
+            if (!$licenseService.isLicenseValid() ||
+                !$repositories.getActiveRepository() ||
                     $repositories.isActiveRepoOntopType() ||
                         $repositories.isActiveRepoFedXType()) {
                 return;
             }
-            checkForPlugin();
+            $scope.checkForPlugin();
             pullStatus();
         });
 
@@ -268,6 +275,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
 
         const pullStatus = function () {
             timer = $interval(function () {
+                $scope.$broadcast('checkIsActive');
                 if ($scope.pluginFound) {
                     refreshStatus();
                 }
@@ -303,12 +311,13 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         }
 
         const init = function () {
-            if (!$repositories.getActiveRepository() ||
+            if (!$licenseService.isLicenseValid() ||
+                !$repositories.getActiveRepository() ||
                     $repositories.isActiveRepoOntopType() ||
                         $repositories.isActiveRepoFedXType()) {
                 return;
             }
-            checkForPlugin();
+            $scope.checkForPlugin();
             pullStatus();
         };
 

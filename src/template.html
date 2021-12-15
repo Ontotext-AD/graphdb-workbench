@@ -21,10 +21,10 @@
 
 <div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
-        <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
-             tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+        <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
+             tooltip="{{getLicense().message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
             <span class="icon-warning"></span> No valid license
-            <a ng-show="!isLicenseHardcoded" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
+            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
         </div>
         <div class="btn btn-info imports-queries"
                 ng-if="queryCount > 0 || numberOfActiveImports > 0">
