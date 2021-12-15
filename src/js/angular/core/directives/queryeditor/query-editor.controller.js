@@ -876,7 +876,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     /**
      * In case of Ontop repository, sameAs, inference and nocount are
-     * overridden to true and #sameAs and #inference buttons is disabled, In case of FedX repo nocount is overriden
+     * overridden to true and #sameAs and #inference buttons are disabled, In case of FedX repo nocount is overridden
      */
     function overrideSameAsInferenceAndNoCountIfNeeded() {
         const isOntop = $repositories.isActiveRepoOntopType();
@@ -884,8 +884,10 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         handleSameAsAndInferenceBtns(isOntop);
 
         $scope.nocount = (isOntop || isFedX) ? true : !principal.appSettings.EXECUTE_COUNT;
-        $scope.currentQuery.inference = isOntop ? true : principal.appSettings.DEFAULT_INFERENCE;
-        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+        if (isOntop) {
+            $scope.currentQuery.inference = true;
+            $scope.currentQuery.sameAs = true;
+        }
     }
 
     function handleSameAsAndInferenceBtns(isOntop) {
@@ -895,6 +897,21 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         sameAsBtn.disabled = !!(sameAsBtn && isOntop);
         inferenceBtn.disabled = !!(inferenceBtn && isOntop);
     }
+
+    // The sameAs is meaningless without inference.
+    // Set its value to false and disable button
+    $scope.shouldDisableSameAs = function () {
+        const sameAsBtn = document.getElementById('sameAs');
+        if (sameAsBtn && !$scope.currentQuery.inference && !sameAsBtn.disabled) {
+            sameAsBtn.disabled = true;
+            $scope.currentQuery.sameAs = false;
+        } else if ($scope.currentQuery.inference && sameAsBtn.disabled) {
+            sameAsBtn.disabled = false;
+            $scope.currentQuery.sameAs = principal.appSettings.DEFAULT_SAMEAS;
+        }
+
+        return !$scope.currentQuery.inference;
+    };
 }
 
 QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
