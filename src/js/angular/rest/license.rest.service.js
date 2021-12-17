@@ -17,6 +17,7 @@ function LicenseRestService($http, Upload) {
         extractFromLicenseFile,
         checkLicenseHardcoded,
         registerLicense,
+        unregisterLicense,
         getInfo,
         getVersion,
         getStatistics,
@@ -69,6 +70,14 @@ function LicenseRestService($http, Upload) {
             },
             data: array,
             transformRequest: []
+        };
+        return $http(request);
+    }
+
+    function unregisterLicense() {
+        var request = {
+            method: 'DELETE',
+            url: 'rest/graphdb-settings/license'
         };
         return $http(request);
     }

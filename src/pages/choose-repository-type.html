@@ -3,46 +3,15 @@
 <div>
     <h1 class="mb-3">{{pageTitle}}</h1>
     <div class="create-buttons">
-        <div class="mr-1 mb-1" ng-if="!isEnterprise && !isFreeEdition">
-            <button id="repository-type-se-btn" class="btn btn-outline-primary d-block create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.se)">
+        <div class="mr-1 mb-1">
+            <button id="repository-type-gdb-btn" class="btn btn-outline-primary create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.graphdbRepo)">
                 <span class="repository-heading">
-                    <em class="icon-repo-se icon-2-5x"></em>
-                    <span class="h3 repo-type">GraphDB SE</span>
+                    <em class="icon-repo-graphdb icon-2-5x"></em>
+                    <span class="h3 repo-type">GraphDB Repository</span>
                 </span>
-                <small class="text-muted repo-description">GraphDB SE repositories store data, answer queries and execute updates.</small>
+                <small class="text-muted repo-description">GraphDB repositories store data, answer queries and execute updates.</small>
             </button>
         </div>
-
-        <div class="mr-1 mb-1" ng-if="isFreeEdition">
-            <button id="repository-type-free-btn" class="btn btn-outline-primary create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.free)">
-                <span class="repository-heading">
-                    <em class="icon-repo-free icon-2-5x"></em>
-                    <span class="h3 repo-type">GraphDB Free</span>
-                </span>
-                <small class="text-muted repo-description">GraphDB Free repositories store data, answer queries and execute updates.</small>
-            </button>
-        </div>
-
-        <div class="mr-1 mb-1" ng-if="isEnterprise">
-            <button id="repository-type-worker-btn" class="btn btn-outline-primary btn-lg create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.eeWorker)">
-                <span class="repository-heading">
-                    <i class="icon-repo-worker icon-2-5x" aria-hidden="true"></i>
-                    <span class="h3 repo-type">GraphDB EE Worker</span>
-                </span>
-                <small class=" text-muted repo-description">Worker repositories store data, answer queries and execute updates.</small>
-            </button>
-        </div>
-
-        <div class="mr-1  mb-1" ng-if="isEnterprise">
-            <button id="repository-type-master-btn" class="btn btn-outline-primary btn-lg create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.eeMaster)">
-                <span class="repository-heading">
-                    <i class="icon-repo-master icon-2-5x" aria-hidden="true"></i>
-                    <span class="h3 repo-type">GraphDB EE Master</span>
-                </span>
-                <small class="text-muted repo-description">Master repositories accept queries and updates from clients and forward them to workers.</small>
-            </button>
-        </div>
-
         <div class="mr-1 mb-1">
             <button id="repository-type-ontop-btn" class="btn btn-outline-primary btn-lg d-block create-repo-btn" ng-click="chooseRepositoryType(repositoryTypes.ontop)">
                 <span class="repository-heading">

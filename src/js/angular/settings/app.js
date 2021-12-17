@@ -24,11 +24,11 @@ function config($httpProvider) {
     $httpProvider.interceptors.push('$unauthorizedInterceptor');
 }
 
-run.$inject = ['$rootScope', '$location'];
+run.$inject = ['$rootScope', '$location', '$licenseService'];
 
-function run($rootScope, $location) {
+function run($rootScope, $location, $licenseService) {
     $rootScope.$on('$locationChangeStart', function () {
-        if ($rootScope.isLicenseHardcoded && $location.url() === '/license/register') {
+        if ($licenseService.isLicenseHardcoded && $location.url() === '/license/register') {
             $location.path('license');
         }
     });

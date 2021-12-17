@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
 
     let timer;
 
@@ -20,6 +20,12 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
         if (timer) {
             $interval.cancel(timer);
         }
+    }
+
+    $scope.pluginName = 'autocomplete';
+
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
     }
 
     const refreshEnabledStatus = function () {
@@ -88,7 +94,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
             });
     };
 
-    const checkForPlugin = function () {
+    $scope.checkForPlugin = function () {
         $scope.pluginFound = false;
 
         $scope.setLoader(true);
@@ -114,6 +120,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     const pullStatus = function () {
         timer = $interval(function () {
+            $scope.$broadcast('checkIsActive');
             if ($scope.autocompleteEnabled) {
                 refreshIndexStatus();
             }
@@ -125,12 +132,13 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     });
 
     const init = function() {
-        if (!$repositories.getActiveRepository() ||
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
         pullStatus();
     };
 
@@ -238,12 +246,13 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
-        if (!$repositories.getActiveRepository() ||
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                     $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
         pullStatus();
     });
 
