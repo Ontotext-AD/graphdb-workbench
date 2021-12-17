@@ -10,26 +10,31 @@
 			  popover-placement="bottom-right"
 			  popover-append-to-body="true"><span class="icon-info"></span></span>
 	</h1>
-	<div core-errors ontop fedx></div>
+	<div core-errors ontop fedx license></div>
 	<div system-repo-warning></div>
 	<div class="alert alert-danger" ng-show="repositoryError">
 		<p>The currently selected repository cannot be used for queries due to an error:</p>
 		<p>{{repositoryError}}</p>
 	</div>
-	<div class="alert alert-danger plugin-disabled-warning" ng-show="pluginDisabled">
-		<p>Similarity Plugin is disabled for this repository. <a href="#" class="enable-plugin-link" ng-click="enabledSimilarityPlugin()">Enable plugin</a></p>
-	</div>
 
-	<div class="card mb-2 existing-indexes" ng-if="getActiveRepository() && !pluginDisabled && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
+    <inactive-plugin-directive
+        plugin-name="{{pluginName}}"
+        human-readable-plugin-name="Similarity Plugin"
+        load-saved="pullList()"
+        set-plugin-active="setPluginIsActive(isPluginActive)"
+        ng-if="isLicenseValid()">
+    </inactive-plugin-directive>
+
+	<div class="card mb-2 existing-indexes" ng-if="isLicenseValid() && getActiveRepository() && pluginIsActive && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
 		<div class="card-block" ng-init="getSimilarityIndexes();">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
 					<span class="icon-plus create-similarity-index"></span> Create similarity index
 				</a>
 				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> Existing Indexes</span></h3>
-				<div class="mt-1" ng-show="selected === undefined">Select one of your existing indexes to search in it</div>
+				<div class="mt-1" ng-if="selected === undefined">Select one of your existing indexes to search in it</div>
 			</div>
-			<div class="no-indexes" ng-show="similarityIndexes.length == 0"><em>No Indexes</em></div>
+			<div class="no-indexes" ng-if="similarityIndexes.length == 0"><em>No Indexes</em></div>
 
 			<div class="collapse in mt-1" id="indexes-table">
 				<table class="table table-hover mb-0" aria-describedby="Similarity index table">
