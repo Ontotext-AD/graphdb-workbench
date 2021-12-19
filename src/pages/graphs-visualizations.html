@@ -13,7 +13,7 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors license></div>
+    <div core-errors></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
         <p>The currently selected repository cannot be used for queries due to an error:</p>
@@ -21,7 +21,7 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
+    <div class="toolbar-holder" ng-show="configLoaded && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 tooltip="Back to visual graph home"
                 tooltip-placement="bottom"
@@ -81,7 +81,7 @@
         </button>
     </div>
 
-    <div class="search-bar" ng-show="getActiveRepository() && isLicenseValid() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
+    <div class="search-bar" ng-show="getActiveRepository() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
 
         <div class="row slider mb-2"
              ng-show="configLoaded.startMode == 'search' && (searchVisible || !nodeSelected)" ng-cloak>
@@ -230,11 +230,7 @@
 
         <ul class="rdf-list tab-content" ng-if="showPredicates">
             <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
-                <div role="{{predicate.partOfTriple ? 'button' : ''}}"
-                     ng-click="clickLink(predicate)">
-                    <em class="{{predicate.partOfTriple ? 'fa fa-long-arrow-right triple-pred' : ''}}"></em>
-                    <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
-                </div>
+                <span>{{splitPredicate(predicate)}}</span>
             </li>
         </ul>
 
@@ -395,7 +391,7 @@
 
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
-                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
+                <a class="uri" rel="noopener" target="_blank" href="resource?uri={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"

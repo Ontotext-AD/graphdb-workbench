@@ -11,15 +11,19 @@
 
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loader"></div>
 
-<div class="alert alert-warning lead" ng-show="isLicenseHardcoded()">
+<div class="alert alert-info lead" ng-show="productType === 'free'">
+	GraphDB Free does not need a license file.
+</div>
+
+<div class="alert alert-warning lead" ng-show="productType !== 'free' && isLicenseHardcoded">
 	License cannot be changed from the Workbench as it was set through a file or config parameter.
 </div>
 
-<div class="alert alert-warning lead" ng-show="!isLicenseHardcoded() && !isAdmin()">
+<div class="alert alert-warning lead" ng-show="productType !== 'free' && !isLicenseHardcoded && !isAdmin()">
 	License can be changed by Admins only.
 </div>
 
-<div class="register-license-container" ng-show="!isLicenseHardcoded() && isAdmin()">
+<div class="register-license-container" ng-show="productType !== 'free' && !isLicenseHardcoded && isAdmin()">
 
 
 	<button ngf-select

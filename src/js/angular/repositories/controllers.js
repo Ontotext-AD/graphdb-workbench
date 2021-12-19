@@ -481,18 +481,20 @@ function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
     };
 }
 
-ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
-function ChooseRepositoryCtrl($scope, $location) {
+ChooseRepositoryCtrl.$inject = ['$scope', '$location', 'isEnterprise', 'isFreeEdition'];
+function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
     $scope.pageTitle = 'Select repository type';
     $scope.repositoryTypes = REPOSITORY_TYPES;
+    $scope.isEnterprise = isEnterprise;
+    $scope.isFreeEdition = isFreeEdition;
     $scope.chooseRepositoryType = function (repoType) {
         $location.path(`${$location.path()}/${repoType}`);
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', '$routeParams', 'RepositoriesRestService'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.repoTooltips = REPO_TOOLTIPS;
@@ -509,6 +511,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         type: ''
     };
 
+    $scope.isEnterprise = isEnterprise;
+    $scope.isFreeEdition = isFreeEdition;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
         isInvalidQueryLimit: false,
@@ -521,15 +525,16 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     };
 
     function isValidEERepository(repositoryType) {
-        return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
+        return $scope.isEnterprise && (repositoryType === REPOSITORY_TYPES.eeMaster
+            || repositoryType === REPOSITORY_TYPES.eeWorker);
     }
 
     function isValidSERepository(repositoryType) {
-        return !$scope.isFreeEdition() && !$scope.isEnterprise() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
+        return !$scope.isFreeEdition && !$scope.isEnterprise && repositoryType === REPOSITORY_TYPES.se;
     }
 
     function isValidFRRepository(repositoryType) {
-        return $scope.isFreeEdition() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
+        return $scope.isFreeEdition && repositoryType === REPOSITORY_TYPES.free;
     }
     function isValidOntopRepository(repositoryType) {
         return repositoryType === REPOSITORY_TYPES.ontop;
@@ -547,10 +552,19 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     function setPageTitle(repositoryType) {
         switch (repositoryType) {
-            case REPOSITORY_TYPES.graphdbRepo:
-                $scope.pageTitle = 'Create GraphDB repository';
+            case REPOSITORY_TYPES.free:
+                $scope.pageTitle = 'Create GraphDB Free repository';
                 break;
-           case REPOSITORY_TYPES.ontop:
+            case REPOSITORY_TYPES.eeWorker:
+                $scope.pageTitle = 'Create GraphDB EE Worker repository';
+                break;
+            case REPOSITORY_TYPES.eeMaster:
+                $scope.pageTitle = 'Create GraphDB EE Master repository';
+                break;
+            case REPOSITORY_TYPES.se:
+                $scope.pageTitle = 'Create GraphDB SE repository';
+                break;
+            case REPOSITORY_TYPES.ontop:
                 $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
                 break;
             case REPOSITORY_TYPES.fedx:
@@ -738,9 +752,9 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
 
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
@@ -751,6 +765,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.canEditRepoId = false;
     $scope.params = $routeParams;
     $scope.loader = true;
+    $scope.isEnterprise = isEnterprise;
+    $scope.isFreeEdition = isFreeEdition;
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
     $scope.repositoryInfo.restartRequested = false;
@@ -870,7 +886,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.editRepositoryId = function () {
         let msg = '<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>';
-        if ($scope.isEnterprise()) {
+        if ($scope.isEnterprise) {
             msg += '<p>If your repository is in a cluster, it is your responsibility to update the cluster after renaming.</p>';
         }
         ModalService.openSimpleModal({
