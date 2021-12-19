@@ -21,10 +21,10 @@
 
 <div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
-        <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
-             tooltip="{{getLicense().message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+        <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
+             tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
             <span class="icon-warning"></span> No valid license
-            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
+            <a ng-show="!isLicenseHardcoded" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
         </div>
         <div class="btn btn-info imports-queries"
                 ng-if="queryCount > 0 || numberOfActiveImports > 0">
@@ -106,6 +106,7 @@
             <img class="big-logo" src="img/graphdb-logo.svg" alt="GraphDB logo" width="181" height="45">
             <img class="small-logo" src="img/graphdb-logo-sq.svg" alt="GraphDB logo" ng-href="./" href="./" width="58"
                  height="58">
+            <span class="product-version" title="GraphDB {{mainTitle}}">{{mainTitle}}</span>
         </a>
     </li>
     <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
@@ -125,7 +126,7 @@
             <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
-                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository()) && checkEdition(submenu.editions)">
+                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
                 <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
                 </a>

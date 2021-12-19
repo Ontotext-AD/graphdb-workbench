@@ -4,10 +4,10 @@ angular
 
 RDF4JRepositoriesRestService.$inject = ['$http', '$repositories'];
 
-const ACTIVATE_PLUGIN_QUERY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'{{pluginName}}\' .}';
-const CHECK_PLUGIN_ACTIVE_QUERY = 'select ?o where {\n' +
+const ENABLE_SIMILARITY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'similarity\' .}';
+const SIMILARITY_ENABLED = 'select ?o where {\n' +
     '?s <http://www.ontotext.com/owlim/system#listplugins> ?o .\n' +
-    'filter(str(?s) = \'{{pluginName}}\')\n' +
+    'filter(str(?s) = \'similarity\')\n' +
     '} ';
 
 const REPOSITORIES_ENDPOINT = 'repositories';
@@ -19,8 +19,8 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         updateNamespacePrefix,
         deleteNamespacePrefix,
         addStatements,
-        activatePlugin,
-        checkPluginIsActive,
+        enableSimilarityPlugin,
+        checkSimilarityPluginEnabled,
         getRepositorySize,
         getGraphs,
         resolveGraphs
@@ -58,22 +58,22 @@ function RDF4JRepositoriesRestService($http, $repositories) {
         });
     }
 
-    function activatePlugin(pluginName) {
+    function enableSimilarityPlugin() {
         return $.ajax({
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/statements`,
             data: {
-                update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName)
+                update: ENABLE_SIMILARITY
             }
         });
     }
 
-    function checkPluginIsActive(pluginName) {
+    function checkSimilarityPluginEnabled() {
         return $.ajax({
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}`,
             data: {
-                query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
+                query: SIMILARITY_ENABLED
             }
         });
     }

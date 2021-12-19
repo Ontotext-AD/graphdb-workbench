@@ -216,21 +216,15 @@ describe('Similarity screen validation', () => {
         cy.window();
 
         // Then I expect a message to be displayed informing me that the plugin is disabled.
-        cy.get('.plugin-not-active-warning').should('be.visible').and('contain', 'Similarity Plugin is not active for this repository.');
+        cy.get('.plugin-disabled-warning').should('be.visible').and('contain', 'Similarity Plugin is disabled for this repository.');
 
         // When I enable the plugin
-        cy.get('.confirm-btn')
+        cy.get('.enable-plugin-link')
             .should('be.visible')
-            .and('contain', 'Activate')
+            .and('contain', 'Enable plugin')
             .click().then(() => {
-                // Should confirm that want to activate plugin
-                cy.get('.modal-footer > .btn-primary')
-                    .should('be.visible')
-                    .click()
-                    .then(() => {
-                        // Then I expect default similarity view with no indexes available
-                        checkSimilarityPageDefaultState();
-                    });
+            // Then I expect default similarity view with no indexes available
+            checkSimilarityPageDefaultState();
         });
     });
 

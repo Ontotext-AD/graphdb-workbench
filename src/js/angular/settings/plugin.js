@@ -20,13 +20,3 @@ PluginRegistry.add('route', [
         'helpInfo': 'The GraphDB License Information view allows you to check the details of your current license. '
     }
 ]);
-
-PluginRegistry.add('main.menu', {
-    'items': [{
-        label: 'License',
-        href: 'license',
-        order: 100,
-        role: 'ROLE_ADMIN',
-        parent: 'Setup'
-    }]
-});

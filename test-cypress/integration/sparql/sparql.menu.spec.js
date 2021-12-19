@@ -436,8 +436,6 @@ describe('SPARQL screen validation', () => {
 
             // Uncheck ‘Include inferred’
             getInferenceButton()
-                .should('be.visible')
-                .and('not.be.disabled')
                 .click()
                 .find('.icon-inferred-off')
                 .should('be.visible');

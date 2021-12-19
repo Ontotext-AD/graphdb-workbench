@@ -20,9 +20,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -542,6 +542,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 }
             }
             this.links = this.links.filter(link => link !== null);
+
             this.computeConnectedness();
         };
 
@@ -651,7 +652,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
                 let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
-                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
+                    (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
                 if (!isRejected) {
                     let targetLinks;
                     if (l.source.iri === d.iri && countLinks(l.target, links) === 2 && !l.target.isTriple) {
@@ -1066,10 +1067,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         return $repositories.getActiveRepository();
     };
 
-    $scope.isLicenseValid = function() {
-        return $licenseService.isLicenseValid();
-    }
-
     // Flag to avoid calling repo init logic twice
     $scope.hasInitedRepository = false;
 
@@ -1106,9 +1103,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 
     function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
     }
 
     $scope.$on('autocompleteStatus', function() {
@@ -1838,6 +1833,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     // find angle between pair of nodes so we can position predicates
     function findAngleBetweenNodes(linkedNodes, direction) {
+        const sourceNode = linkedNodes.source;
+        const targetNode = linkedNodes.target;
+
         const p1 = {
             x: getNodeX(linkedNodes.source),
             y: getNodeY(linkedNodes.source)
@@ -1969,10 +1967,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         const nodesFromLinks = distinctBy('iri',_.union(_.flatten(_.map(response.data, function (link) {
             return [
                 { iri: link.source,
-                  isTriple: link.isTripleSource },
+                    isTriple: link.isTripleSource },
                 {
-                  iri: link.target,
-                  isTriple: link.isTripleTarget }];
+                    iri: link.target,
+                    isTriple: link.isTripleTarget }];
         }))));
         const existingNodes = _.map(graph.nodes, function (n) {
             return {

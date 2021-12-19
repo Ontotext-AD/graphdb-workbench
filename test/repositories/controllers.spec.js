@@ -251,13 +251,15 @@ describe('==> Repository module controllers tests', function () {
     });
 
     describe('=> AddRepositoryCtrl tests', function () {
-        describe('isEnterprise() == true', function () {
+        describe('isEnterprice == true', function () {
             let $repositories;
             let $httpBackend;
             let $controller;
             let $scope;
             let locationMock;
             let routeParamsMock;
+            let isEnterprise;
+            let isFreeEdition;
             let httpDefaultUser;
             let httpSecurity;
             let toastr;
@@ -269,23 +271,20 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
+                isEnterprise = true;
+                isFreeEdition = false;
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
-                routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'worker'};
 
                 $scope = $rootScope.$new();
-
-                $scope.isEnterprise = function () {
-                    return true;
-                };
-                $scope.isFreeEdition = function () {
-                    return false;
-                };
 
                 createController = () => {
                     $controller('AddRepositoryCtrl', {
                         $scope: $scope,
                         $location: locationMock,
-                        $routeParams: routeParamsMock
+                        $routeParams: routeParamsMock,
+                        isEnterprise: isEnterprise,
+                        isFreeEdition: isFreeEdition
                     });
                 };
 
@@ -308,11 +307,11 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.verifyNoOutstandingRequest();
             });
 
-            it('should call $scope.getConfig with "graphdb" when isEnterprise()', function () {
+            it('should call $scope.getConfig with "worker" when isEnterprise', function () {
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/graphdb').respond(200, {
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(200, {
                     params: { param1: 'param1'},
-                    type: 'graphdb'
+                    type: 'worker'
                 });
 
                 $httpBackend.expectGET('rest/security/all');
@@ -326,14 +325,14 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.flush();
 
                 expect($scope.repositoryInfo.params).toEqual({ param1: 'param1'});
-                expect($scope.repositoryInfo.type).toEqual('graphdb');
+                expect($scope.repositoryInfo.type).toEqual('worker');
                 expect($scope.loader).toEqual(false);
             });
 
             it('should show notification if getting configuration fails', () => {
                 spyOn(toastr, 'error');
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/graphdb').respond(500, {
+                $httpBackend.when('GET', 'rest/repositories/defaultConfig/worker').respond(500, {
                     error: {
                         message: 'Get repo config error!'
                     }
@@ -347,7 +346,7 @@ describe('==> Repository module controllers tests', function () {
 
             it('$scope.createRepoHttp() should call $repositories.init() and change location to /repository', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/graphdb').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/defaultConfig/worker').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 $httpBackend.flush();
                 $scope.repositoryInfo = {};
@@ -366,11 +365,13 @@ describe('==> Repository module controllers tests', function () {
             });
         });
 
-        describe('isEnterprise() == false', function () {
+        describe('isEnterprise == false', function () {
             var $httpBackend,
                 $controller,
                 $scope,
                 routeParamsMock,
+                isEnterprise,
+                isFreeEdition,
                 httpDefaultUser,
                 httpSecurity;
 
@@ -378,18 +379,16 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
-                routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
+                routeParamsMock = {repositoryId: 'repo', repositoryType: 'se'};
+                isEnterprise = false;
+                isFreeEdition = false;
 
                 $scope = $rootScope.$new();
-                $scope.isEnterprise = function () {
-                    return false;
-                };
-                $scope.isFreeEdition = function () {
-                    return false;
-                };
                 var controller = $controller('AddRepositoryCtrl', {
                     $scope: $scope,
-                    $routeParams: routeParamsMock
+                    $routeParams: routeParamsMock,
+                    isEnterprise: isEnterprise,
+                    isFreeEdition: isFreeEdition
                 });
                 httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
                     username: 'admin',
@@ -409,9 +408,9 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.verifyNoOutstandingRequest();
             });
 
-            it('should call $scope.getConfig with "graphdb" when !isEnterprise()', function () {
+            it('should call $scope.getConfig with "se" when !isEnterprise', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/graphdb').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/defaultConfig/se').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 expect($httpBackend.flush).not.toThrow();
             });
@@ -424,6 +423,7 @@ describe('==> Repository module controllers tests', function () {
             $controller,
             $scope,
             locationMock,
+            isEnterprise,
             routeParamsMock,
             isFreeEdition,
             init = false;
@@ -440,18 +440,16 @@ describe('==> Repository module controllers tests', function () {
                 }
             };
             routeParamsMock = {repositoryId: 'repo'};
+            isEnterprise = true;
+            isFreeEdition = false;
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 
             $scope = $rootScope.$new();
-            $scope.isEnterprise = function () {
-                return true;
-            };
-            $scope.isFreeEdition = function () {
-                return false;
-            };
             var controller = $controller('EditRepositoryCtrl', {
                 $scope: $scope,
                 $location: locationMock,
+                isEnterprise: isEnterprise,
+                isFreeEdition: isFreeEdition,
                 $routeParams: routeParamsMock,
                 $repositories: repositoriesMock,
                 ModalService: {

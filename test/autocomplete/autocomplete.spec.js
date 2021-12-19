@@ -22,11 +22,7 @@ mocks.service('$autocompleteStatus', function () {
             return;
         };
     });
-mocks.service('$licenseService', function() {
-    this.isLicenseValid = function() {
-        return true;
-    }
-});
+
 describe('Autocomplete', function () {
 
     beforeEach(angular.mock.module('graphdb.framework.autocomplete.controllers'));
@@ -37,7 +33,6 @@ describe('Autocomplete', function () {
         let $interval;
         let toastr;
         let $repositories;
-        let $licenseService;
         let $modal;
         let $timeout;
         let $controller;
@@ -49,13 +44,12 @@ describe('Autocomplete', function () {
 
         beforeEach(angular.mock.module('Mocks'));
 
-        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_) {
+        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_) {
             $scope = _$rootScope_.$new();
             $http = _$http_;
             $interval = _$interval_;
             toastr = _toastr_;
             $repositories = _$repositories_;
-            $licenseService = _$licenseService_;
             $modal = new FakeModal($q, _$rootScope_);
             modalInstance = $modal;
             $timeout = _$timeout_;
@@ -70,7 +64,6 @@ describe('Autocomplete', function () {
                 $interval: $interval,
                 toastr: toastr,
                 $repositories: $repositories,
-                $licenseService: $licenseService,
                 $modal: $modal,
                 $timeout: $timeout,
                 AutocompleteRestService,

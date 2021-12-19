@@ -18,17 +18,9 @@
 		 size="75">
 	</div>
 
-    <div core-errors write ontop fedx license></div>
+    <div core-errors write ontop fedx></div>
 
-    <inactive-plugin-directive
-        plugin-name="{{pluginName}}"
-        human-readable-plugin-name="RDF Rank Plugin"
-        load-saved="checkForPlugin()"
-        set-plugin-active="setPluginIsActive(isPluginActive)"
-        ng-if="isLicenseValid()">
-    </inactive-plugin-directive>
-
-    <div ng-show="isLicenseValid() && canWriteActiveRepo() && !loading && pluginIsActive">
+    <div ng-show="canWriteActiveRepo() && !loading">
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
