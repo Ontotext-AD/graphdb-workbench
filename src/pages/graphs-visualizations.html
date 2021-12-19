@@ -230,7 +230,11 @@
 
         <ul class="rdf-list tab-content" ng-if="showPredicates">
             <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
-                <span>{{splitPredicate(predicate)}}</span>
+                <div role="{{predicate.partOfTriple ? 'button' : ''}}"
+                     ng-click="clickLink(predicate)">
+                    <em class="{{predicate.partOfTriple ? 'fa fa-long-arrow-right triple-pred' : ''}}"></em>
+                    <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
+                </div>
             </li>
         </ul>
 
@@ -391,7 +395,7 @@
 
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
-                <a class="uri" rel="noopener" target="_blank" href="resource?uri={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
+                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
