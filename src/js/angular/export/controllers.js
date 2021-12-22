@@ -293,8 +293,8 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
-                                    if (err.data.includes("Clearing all statements in the repository is incompatible" +
-                                        " with collecting history.")) {
+                                    if (err.data && err.data.includes("Clearing all statements in the repository is" +
+                                        " incompatible with collecting history.")) {
                                         toastr.error(err.data);
                                     } else {
                                         toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
@@ -326,8 +326,8 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.changePageSize($scope.pageSize);
                                 }, function (err) {
                                     $scope.deleting[ctx] = false;
-                                    if (err.data.includes("Clearing all statements in the repository is incompatible" +
-                                        " with collecting history.")) {
+                                    if (err.data && err.data.includes("Clearing all statements in the repository is" +
+                                        " incompatible with collecting history.")) {
                                         toastr.error(err.data);
                                     } else {
                                         toastr.error('Failed to clear the ' + longName, getError(err, err.status));
@@ -376,8 +376,8 @@ exportCtrl.controller('ExportCtrl',
                                         }
                                     }, function (err) {
                                         const longName = $scope.graphsByValue[contextID].longName;
-                                        if (err.data.includes("Clearing all statements in the repository is incompatible" +
-                                            " with collecting history.")) {
+                                        if (err.data && err.data.includes("Clearing all statements in the repository" +
+                                            " is incompatible with collecting history.")) {
                                             toastr.error(err.data);
                                         } else {
                                             toastr.error('Failed to clear the ' + longName, getError(err, err.status));
