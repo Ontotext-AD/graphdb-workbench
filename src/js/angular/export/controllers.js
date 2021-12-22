@@ -293,7 +293,12 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
-                                    toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
+                                    if (err.data.includes("Clearing all statements in the repository is incompatible" +
+                                        " with collecting history.")) {
+                                        toastr.error(err.data);
+                                    } else {
+                                        toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
+                                    }
                                 });
                         }, 100);
                     });
@@ -321,7 +326,12 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.changePageSize($scope.pageSize);
                                 }, function (err) {
                                     $scope.deleting[ctx] = false;
-                                    toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                    if (err.data.includes("Clearing all statements in the repository is incompatible" +
+                                        " with collecting history.")) {
+                                        toastr.error(err.data);
+                                    } else {
+                                        toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                    }
                                 });
                         }, 100);
                     }, function () {
@@ -366,7 +376,12 @@ exportCtrl.controller('ExportCtrl',
                                         }
                                     }, function (err) {
                                         const longName = $scope.graphsByValue[contextID].longName;
-                                        toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                        if (err.data.includes("Clearing all statements in the repository is incompatible" +
+                                            " with collecting history.")) {
+                                            toastr.error(err.data);
+                                        } else {
+                                            toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                        }
                                         $scope.selectedAll = false;
                                     });
                             });
