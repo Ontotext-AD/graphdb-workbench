@@ -293,7 +293,12 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
-                                    toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
+                                    if (err.data && err.data.includes("Clearing all statements in the repository is" +
+                                        " incompatible with collecting history.")) {
+                                        toastr.error(err.data);
+                                    } else {
+                                        toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
+                                    }
                                 });
                         }, 100);
                     });
