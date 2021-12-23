@@ -293,8 +293,8 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
-                                    if (err.data && err.data.includes("Clearing all statements in the repository is" +
-                                        " incompatible with collecting history.")) {
+                                    if (typeof err.data == "string" && err.data.indexOf("Clearing all statements in the " +
+                                        "repository is incompatible with collecting history") > -1) {
                                         toastr.error(err.data);
                                     } else {
                                         toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
