@@ -722,6 +722,9 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     dataOrJqXhr.responseText = undefined;
                 }
                 yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
+                if (scope.currentQuery.query.includes('onto:explain')) {
+                    highlightLiteralCellResult();
+                }
             };
 
             // Track changes in the output type (tab in yasr) so that we can save this together with
@@ -757,6 +760,15 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
         function changePagination() {
             scope.runQuery(true, scope.explainRequested);
+        }
+
+        function highlightLiteralCellResult() {
+            var queryResultElement = document.getElementsByClassName('nonUri')[0];
+            queryResultElement.classList.add("cm-s-default");
+            queryResultElement.setAttribute("id", "highlighted_output");
+            var queryResultValue = queryResultElement.innerText.substring(1, queryResultElement.innerText.length - 1);
+            queryResultElement.innerHTML = "";
+            YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
         }
 
         // Hide the sample queries when the user clicks somewhere else in the UI.
