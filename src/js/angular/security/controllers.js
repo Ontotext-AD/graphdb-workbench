@@ -661,8 +661,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -731,8 +731,19 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
 
         $scope.submit = function () {
-            $scope.updateUser();
-        };
+            if ($scope.noPassword) {
+                ModalService.openSimpleModal({
+                    title: 'Save user settings',
+                    message: 'If you unset the password and then enable security, that user will not be ' +
+                        'able to log into GraphDB through the workbench.',
+                    warning: true
+                }).result.then(function () {
+                    $scope.updateUser();
+                });
+            } else {
+                $scope.updateUser();
+            }
+        }
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
