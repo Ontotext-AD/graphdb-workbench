@@ -721,10 +721,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     dataOrJqXhr.response = dataOrJqXhr.responseJSON;
                     dataOrJqXhr.responseText = undefined;
                 }
-                yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
                 if (scope.currentQuery.query.includes('onto:explain')) {
-                    highlightLiteralCellResult();
+                    window.yasr.plugins.table.options.highlightLiteralCellResult = highlightExplainPlan;
                 }
+                yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
             };
 
             // Track changes in the output type (tab in yasr) so that we can save this together with
@@ -762,7 +762,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             scope.runQuery(true, scope.explainRequested);
         }
 
-        function highlightLiteralCellResult() {
+        function highlightExplainPlan() {
             var queryResultElement = document.getElementsByClassName('nonUri')[0];
             queryResultElement.classList.add("cm-s-default");
             queryResultElement.setAttribute("id", "highlighted_output");
