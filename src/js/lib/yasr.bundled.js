@@ -55640,7 +55640,9 @@ var root = module.exports = function(parent, options, queryResults) {
 		}
 	}
 
-
+    yasr.isExplainPlan = function() {
+        return window.editor.getValue().includes('onto:explain') || window.editor.getValue().includes('http://www.ontotext.com/explain');
+    }
 
 	yasr.setResponse = function(dataOrJqXhr, textStatus, jqXhrOrErrorString) {
 		try {
@@ -56984,7 +56986,7 @@ var root = module.exports = function(yasr) {
 		$(searchFilter.contents().get(0)).remove();
 		searchFilter.find('input[type=search]').attr('placeholder', 'Filter query results').addClass('form-control');
 
-        if (window.editor.getValue().includes('onto:explain')) {
+        if (yasr.isExplainPlan()) {
             options.highlightLiteralCellResult();
         }
 	};

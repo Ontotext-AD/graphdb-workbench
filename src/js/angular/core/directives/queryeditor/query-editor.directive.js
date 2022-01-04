@@ -721,7 +721,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     dataOrJqXhr.response = dataOrJqXhr.responseJSON;
                     dataOrJqXhr.responseText = undefined;
                 }
-                if (scope.currentQuery.query.includes('onto:explain')) {
+                if (yasr.isExplainPlan()) {
                     window.yasr.plugins.table.options.highlightLiteralCellResult = highlightExplainPlan;
                 }
                 yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
