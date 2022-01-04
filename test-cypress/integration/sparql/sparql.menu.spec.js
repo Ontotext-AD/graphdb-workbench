@@ -435,12 +435,11 @@ describe('SPARQL screen validation', () => {
             verifyResultsPageLength(74);
 
             // Uncheck ‘Include inferred’
-            getInferenceButton()
-                .should('be.visible')
-                .and('not.be.disabled')
-                .click()
-                .find('.icon-inferred-off')
-                .should('be.visible');
+            cy.waitUntil(() =>
+                getInferenceButton()
+                    .then(infBtn => infBtn && !infBtn.attr('disabled') && cy.wrap(infBtn).click()))
+                .then(() =>
+                    cy.get('.icon-inferred-off').should('be.visible'));
 
             // Confirm that only inferred statements (only 2) are available
             executeQuery();
