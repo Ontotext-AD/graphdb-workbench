@@ -119,10 +119,9 @@
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
                                 tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
-                                tooltip-append-to-body="true"
-                                ng-disabled="{{shouldDisableSameAs()}}">
+                                tooltip-append-to-body="true">
                             <span class="icon-2-5x"
-                                  tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}"
+                                  tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"
                                   ng-class="{'icon-sameas-on':currentQuery.sameAs, 'icon-sameas-off':!currentQuery.sameAs}"></span>
                         </button>
                     </div>

@@ -139,6 +139,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                 $scope.tabs[index].sameAs = currentQueryTab.sameAs;
             }
         });
+        shouldDisableSameAs();
         LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
     }
 
@@ -482,8 +483,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                     .success(function () {
                         $scope.deleteQueryHttp(query.name, true);
                     })
-                    .error(function (data) {
-                        const msg = getError(data);
+                    .error(function (error) {
+                        const msg = getError(error);
                         toastr.error(msg, 'Error! Cannot edit saved query');
                     });
             } else {
@@ -493,8 +494,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                         $scope.toggleSampleQueries();
                         toastr.success('Saved query ' + query.name + ' was edited.');
                     })
-                    .error(function (data) {
-                        const msg = getError(data);
+                    .error(function (error) {
+                        const msg = getError(error);
                         toastr.error(msg, 'Error! Cannot edit Saved query');
                     });
             }
@@ -913,18 +914,20 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     // The sameAs is meaningless without inference.
     // Set its value to false and disable button
-    $scope.shouldDisableSameAs = function () {
+    function shouldDisableSameAs() {
+        // don't try to override sameAs if repository is Ontop type
+        if ($repositories.isActiveRepoOntopType()) {
+            return;
+        }
         const sameAsBtn = document.getElementById('sameAs');
         if (sameAsBtn && !$scope.currentQuery.inference && !sameAsBtn.disabled) {
             sameAsBtn.disabled = true;
             $scope.currentQuery.sameAs = false;
         } else if ($scope.currentQuery.inference && sameAsBtn.disabled) {
-            sameAsBtn.disabled = false;
-            $scope.currentQuery.sameAs = $scope.currentTabConfig.sameAs;
+            sameAsBtn.removeAttribute('disabled');
+            $scope.currentQuery.sameAs = principal.appSettings.DEFAULT_SAMEAS;
         }
-
-        return !$scope.currentQuery.inference;
-    };
+    }
 }
 
 QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
