@@ -731,11 +731,13 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
 
         $scope.submit = function () {
-            if ($scope.noPassword) {
+            const pa = parseAuthorities($scope.userData.authorities);
+            $scope.userType = pa.userType;
+            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
                     title: 'Save user settings',
                     message: 'If you unset the password and then enable security, that user will not be ' +
-                        'able to log into GraphDB through the workbench.',
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
                     warning: true
                 }).result.then(function () {
                     $scope.updateUser();
