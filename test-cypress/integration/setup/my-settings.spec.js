@@ -224,6 +224,7 @@ describe('My Settings', () => {
 
     it('Saving user credentials with checked unset password should show modal window to warn user about unsetting the' +
         ' password', () => {
+        // User role is administrator
         cy.get('#noPassword:checkbox').check()
             .then(() => {
                 cy.get('#noPassword:checkbox')
