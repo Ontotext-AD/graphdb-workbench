@@ -721,6 +721,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     dataOrJqXhr.response = dataOrJqXhr.responseJSON;
                     dataOrJqXhr.responseText = undefined;
                 }
+                window.yasr.plugins.table.options.highlightLiteralCellResult = highlightExplainPlan;
                 yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
             };
 
@@ -757,6 +758,17 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
         function changePagination() {
             scope.runQuery(true, scope.explainRequested);
+        }
+
+        function highlightExplainPlan() {
+            if (window.editor.getValue().includes('onto:explain') || window.editor.getValue().includes('http://www.ontotext.com/explain')) {
+                var queryResultElement = document.getElementsByClassName('nonUri')[0];
+                queryResultElement.classList.add("cm-s-default");
+                queryResultElement.setAttribute("id", "highlighted_output");
+                var queryResultValue = queryResultElement.innerText.substring(1, queryResultElement.innerText.length - 1);
+                queryResultElement.innerHTML = "";
+                YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
+            }
         }
 
         // Hide the sample queries when the user clicks somewhere else in the UI.
