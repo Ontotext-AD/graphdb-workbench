@@ -132,14 +132,18 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     };
 
     function saveQueryToLocal(currentQueryTab) {
+        shouldDisableSameAs();
         $scope.tabs.forEach(function (tab, index) {
             if (tab.id === currentQueryTab.id) {
                 $scope.tabs[index].query = currentQueryTab.query;
-                $scope.tabs[index].inference = currentQueryTab.inference;
-                $scope.tabs[index].sameAs = currentQueryTab.sameAs;
+                // Don't store inference and sameAs values for Ontop repository,
+                // because they are overridden afterwards to true
+                if (!$repositories.isActiveRepoOntopType()) {
+                    $scope.tabs[index].inference = currentQueryTab.inference;
+                    $scope.tabs[index].sameAs = currentQueryTab.sameAs;
+                }
             }
         });
-        shouldDisableSameAs();
         LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
     }
 
