@@ -61,6 +61,11 @@ describe('QueryEditor', function () {
                 LSKeys
             });
 
+            // Should mock this method, because of special implementation in repositories.service.js
+            $repositories.isActiveRepoOntopType = function () {
+                return false;
+            }
+
             // Clear the local storage because it makes the test dependent on each other.
             spyOn(LocalStorageAdapter, 'set').and.callFake(() => {});
             LocalStorageAdapter.clearAll();

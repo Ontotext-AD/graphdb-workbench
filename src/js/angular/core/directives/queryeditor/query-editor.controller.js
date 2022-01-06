@@ -132,11 +132,16 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     };
 
     function saveQueryToLocal(currentQueryTab) {
+        shouldDisableSameAs();
         $scope.tabs.forEach(function (tab, index) {
             if (tab.id === currentQueryTab.id) {
                 $scope.tabs[index].query = currentQueryTab.query;
-                $scope.tabs[index].inference = currentQueryTab.inference;
-                $scope.tabs[index].sameAs = currentQueryTab.sameAs;
+                // Don't store inference and sameAs values for Ontop repository,
+                // because they are overridden afterwards to true
+                if (!$repositories.isActiveRepoOntopType()) {
+                    $scope.tabs[index].inference = currentQueryTab.inference;
+                    $scope.tabs[index].sameAs = currentQueryTab.sameAs;
+                }
             }
         });
         LocalStorageAdapter.set(LSKeys.TABS_STATE, $scope.tabs);
@@ -482,8 +487,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                     .success(function () {
                         $scope.deleteQueryHttp(query.name, true);
                     })
-                    .error(function (data) {
-                        const msg = getError(data);
+                    .error(function (error) {
+                        const msg = getError(error);
                         toastr.error(msg, 'Error! Cannot edit saved query');
                     });
             } else {
@@ -493,8 +498,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                         $scope.toggleSampleQueries();
                         toastr.success('Saved query ' + query.name + ' was edited.');
                     })
-                    .error(function (data) {
-                        const msg = getError(data);
+                    .error(function (error) {
+                        const msg = getError(error);
                         toastr.error(msg, 'Error! Cannot edit Saved query');
                     });
             }
@@ -876,7 +881,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     /**
      * In case of Ontop repository, sameAs, inference and nocount are
-     * overridden to true and #sameAs and #inference buttons is disabled, In case of FedX repo nocount is overriden
+     * overridden to true and #sameAs and #inference buttons are disabled, In case of FedX repo nocount is overridden
      */
     function overrideSameAsInferenceAndNoCountIfNeeded() {
         const isOntop = $repositories.isActiveRepoOntopType();
@@ -884,16 +889,40 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         handleSameAsAndInferenceBtns(isOntop);
 
         $scope.nocount = (isOntop || isFedX) ? true : !principal.appSettings.EXECUTE_COUNT;
-        $scope.currentQuery.inference = isOntop ? true : principal.appSettings.DEFAULT_INFERENCE;
-        $scope.currentQuery.sameAs = isOntop ? true : principal.appSettings.DEFAULT_SAMEAS;
+        if (isOntop) {
+            $scope.currentQuery.inference = true;
+            $scope.currentQuery.sameAs = true;
+        }
     }
 
     function handleSameAsAndInferenceBtns(isOntop) {
         const sameAsBtn = document.getElementById('sameAs');
         const inferenceBtn = document.getElementById('inference');
 
-        sameAsBtn.disabled = !!(sameAsBtn && isOntop);
-        inferenceBtn.disabled = !!(inferenceBtn && isOntop);
+        if (sameAsBtn) {
+            sameAsBtn.disabled = !!isOntop;
+        }
+
+        if (inferenceBtn) {
+            inferenceBtn.disabled = !!isOntop;
+        }
+    }
+
+    // The sameAs is meaningless without inference.
+    // Set its value to false and disable button
+    function shouldDisableSameAs() {
+        // don't try to override sameAs if repository is Ontop type
+        if ($repositories.isActiveRepoOntopType()) {
+            return;
+        }
+        const sameAsBtn = document.getElementById('sameAs');
+        if (sameAsBtn && !$scope.currentQuery.inference && !sameAsBtn.disabled) {
+            sameAsBtn.disabled = true;
+            $scope.currentQuery.sameAs = false;
+        } else if ($scope.currentQuery.inference && sameAsBtn.disabled) {
+            sameAsBtn.removeAttribute('disabled');
+            $scope.currentQuery.sameAs = principal.appSettings.DEFAULT_SAMEAS;
+        }
     }
 }
 
