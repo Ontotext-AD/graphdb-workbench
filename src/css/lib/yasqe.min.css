@@ -568,3 +568,12 @@ li.CodeMirror-hint-active {
 
 .CodeMirror-hint {
   max-width: 100em; }
+
+#cm-comment-explain-optimization-gr {
+    color: #797474;
+    font-weight: 500;
+}
+
+#cm-comment-explain-statistics {
+    color: rgb(47 40 40);
+}
