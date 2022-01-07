@@ -42,7 +42,6 @@ homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth'
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
     $scope.doClear = false;
-    $licenseService.checkLicenseStatus();
 
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
@@ -63,15 +62,14 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
                 .success(function () {
                     checkAutocompleteStatus();
                 });
+            // Getting the repository size should not be related to license
+            $scope.getActiveRepositorySize();
         }
     }
 
     function checkAutocompleteStatus() {
         if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                .success(function () {
-                    $scope.getActiveRepositorySize();
-                });
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
     }
 
