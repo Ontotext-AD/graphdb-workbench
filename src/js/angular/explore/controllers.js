@@ -20,10 +20,12 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth) {
 
+    // We need to get sameAs and inference for the current user
+    const principal = $jwtAuth.getPrincipal();
     $scope.loading = false;
 
     $scope.getActiveRepository = function () {
@@ -50,7 +52,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
     // Defaults
     $scope.role = $location.search().role ? $location.search().role : 'subject';
-    $scope.inference = 'explicit';
     // Fixed inference when we're showing the context tab and a named graph
     $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
@@ -65,7 +66,10 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.blanks = true;
-    $scope.sameAs = true;
+
+    // Get the predefined settings for sameAs and inference per user
+    $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] ? 'all' : 'explicit';
+    $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
 
     $scope.formats = FileTypes;
 
