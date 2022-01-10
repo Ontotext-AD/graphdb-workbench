@@ -769,7 +769,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 queryResultElement.innerHTML = "";
                 YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
 
-                var explainPlanMetrics = document.getElementsByClassName("cm-comment");
+                const explainPlanMetrics = $(".yasr .cm-comment");
                 for (const line of explainPlanMetrics) {
                     if (line.innerHTML.includes("Begin optimization group") || line.innerHTML.includes("End optimization group")) {
                         line.setAttribute("id", "cm-comment-explain-optimization-gr");
