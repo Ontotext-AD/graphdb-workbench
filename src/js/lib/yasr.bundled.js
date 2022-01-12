@@ -56983,6 +56983,8 @@ var root = module.exports = function(yasr) {
 		var searchFilter = yasr.resultsContainer.find('.dataTables_filter label');
 		$(searchFilter.contents().get(0)).remove();
 		searchFilter.find('input[type=search]').attr('placeholder', 'Filter query results').addClass('form-control');
+
+        options.highlightLiteralCellResult();
 	};
 	
 	var drawSvgIcons = function() {
@@ -57241,7 +57243,9 @@ root.defaults = {
 	persistency: {
 		tableLength: "tableLength",
 	},
-	
+
+    highlightLiteralCellResult: function () {},
+
 	getColumns: function(yasr, plugin) {
 		var includeVariable = function(variableToCheck) {
 			if (!plugin.options.mergeLabelsWithUris) return true;
