@@ -768,6 +768,15 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 var queryResultValue = queryResultElement.innerText.substring(1, queryResultElement.innerText.length - 1);
                 queryResultElement.innerHTML = "";
                 YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
+
+                const explainPlanMetrics = $(".yasr .cm-comment");
+                for (const line of explainPlanMetrics) {
+                    if (line.innerHTML.includes("Begin optimization group") || line.innerHTML.includes("End optimization group")) {
+                        line.setAttribute("id", "cm-comment-explain-optimization-gr");
+                    } else {
+                        line.setAttribute("id", "cm-comment-explain-statistics");
+                    }
+                }
             }
         }
 
