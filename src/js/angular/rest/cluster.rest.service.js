@@ -8,6 +8,7 @@ const CLUSTER_MASTERS_ENDPOINT = 'rest/cluster/masters';
 
 function ClusterRestService($http) {
     return {
+        getClusterConfig,
         getMaster,
         configureMaster,
         cloneRepository,
@@ -16,6 +17,10 @@ function ClusterRestService($http) {
         disconnectNodes,
         connectNodes
     };
+
+    function getClusterConfig() {
+        return $http.get('rest/raft/status/cluster');
+    }
 
     function getMaster(masterRepositoryID, data = {}) {
         return $http.get(`${CLUSTER_MASTERS_ENDPOINT}/${masterRepositoryID}`, data);

@@ -39,15 +39,15 @@ path.OUT_OF_SYNC {
 }
 
 path.OUT_OF_SYNC_FORCED {
-    stroke: #ccbb00;
+    stroke: #007700;
     stroke-dasharray: 5,3;
 }
 
 .legend-outofsync-forced {
     background: repeating-linear-gradient(
         to right,
-        #ccbb00 0px,
-        #ccbb00 5px,
+        #007700 0px,
+        #007700 5px,
         #ffffff 0px,
         #ffffff 8px
     );
@@ -216,11 +216,13 @@ line.link {
 }
 
 .node circle {
-  fill-opacity: 0;
+    fill-opacity: 1;
+    fill: #0CB0A0;
 }
 
 .node.dragged circle {
-  fill-opacity: 1;
+    fill-opacity: 3;
+    fill: #0a6d63;
 }
 
 .node.reflexive {
@@ -239,8 +241,8 @@ text.id {
   font-weight: 500;
 }
 
-text.id-host {
-    font-weight: 400;
+text.id-secondary {
+    font-weight: 300;
 }
 
 text.icon-any {
