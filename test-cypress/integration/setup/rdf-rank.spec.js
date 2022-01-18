@@ -17,7 +17,7 @@ describe('Setup / RDF Rank', () => {
 
         getRdfRankPage().find('.alert-warning').should('not.be.visible');
 
-        getFilteringSwitch().should('be.visible');
+        getFilteringSwitch().scrollIntoView().should('be.visible');
     }
 
     beforeEach(() => {

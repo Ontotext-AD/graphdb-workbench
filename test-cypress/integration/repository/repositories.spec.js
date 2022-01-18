@@ -36,6 +36,9 @@ describe('Repositories', () => {
         "  ex:age 12.1 ;\n" +
         ".";
 
+    const GDB_REPOSITORY_TYPE = 'gdb';
+    const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
+
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
 
@@ -57,6 +60,21 @@ describe('Repositories', () => {
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
+    it('create repository page should list available repository types options', () => {
+        let expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
+        createRepository();
+        cy.url().should('include', '/repository/create');
+
+        cy.get('.create-buttons')
+            .find('.h3.repo-type')
+            .should('have.length', 3)
+            .then((repoTypes) => {
+                repoTypes.each(($index, $repoType) => {
+                    expect($repoType.innerText).to.equal(expectedRepoTypes[$index]);
+                });
+            });
+    });
+
     it('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
         getLocationsList()
@@ -66,7 +84,7 @@ describe('Repositories', () => {
         createRepository();
         cy.url().should('include', '/repository/create');
 
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         // Create a repository by supplying only an identifier
@@ -136,7 +154,7 @@ describe('Repositories', () => {
 
     it('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         saveRepository();
@@ -154,7 +172,7 @@ describe('Repositories', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
 
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         getRepositoryIdField().type(repositoryId);
@@ -201,14 +219,14 @@ describe('Repositories', () => {
     it('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
         saveRepository();
 
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(secondRepoId);
@@ -274,7 +292,7 @@ describe('Repositories', () => {
         const newTitle = 'Title edit';
 
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
@@ -290,9 +308,12 @@ describe('Repositories', () => {
         typeRepositoryTitle(newTitle);
         getRepositoryContextIndexCheckbox().check();
 
-        getSaveRepositoryButton().click();
-        confirmModal();
-        waitLoader();
+        getSaveRepositoryButton()
+            .click()
+            .then(() => {
+                confirmModal();
+                waitLoader();
+            });
 
         // See the title is rendered in the repositories list
         getRepositoryFromList(repositoryId).should('contain', newTitle);
@@ -306,7 +327,7 @@ describe('Repositories', () => {
 
     it('should allow to delete existing repository', () => {
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
@@ -593,7 +614,7 @@ describe('Repositories', () => {
     it('should restart an existing repository', () => {
 
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
 
         cy.url().should('include', '/repository/create');
 
@@ -659,7 +680,7 @@ describe('Repositories', () => {
     it('should create SHACL repo and test shapes validation', () => {
         //Prepare repository by enabling SHACL
         createRepository();
-        chooseRepositoryType();
+        chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
         typeRepositoryId(repositoryId);
         getSHACLRepositoryCheckbox().check();
@@ -701,8 +722,6 @@ describe('Repositories', () => {
                 .then($el => $el)
                 .then($el => $el && $el.text() === status));
     }
-
-    const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     function getRepositoriesList() {
         return cy.get(REPO_LIST_ID);
