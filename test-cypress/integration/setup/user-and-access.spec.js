@@ -16,6 +16,7 @@ describe('User and Access', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/users');
+        cy.window();
         // Users table should be visible
         getUsersTable().should('be.visible');
     });

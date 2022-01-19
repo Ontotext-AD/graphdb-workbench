@@ -10,7 +10,7 @@
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
     <div core-errors write ontop></div>
-    <div ng-controller="TabCtrl" ng-show="canWriteActiveRepo()">
+    <div ng-controller="TabCtrl" ng-show="!isRestricted && canWriteActiveRepo()">
 
         <button type="button" ng-click="isCollapsed = !isCollapsed" class="btn btn-link pull-right"><span
                 class="icon-help"></span> Help

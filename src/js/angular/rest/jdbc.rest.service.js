@@ -31,7 +31,7 @@ function JdbcRestService($http) {
     function createConfiguration(method, table, configuration) {
         return $http({
                 method,
-                url: `/${JDBC_ENDPOINT}/tables/${table}`,
+                url: `${JDBC_ENDPOINT}/tables/${table}`,
                 noCancelOnRouteChange: true,
                 data: {
                     name: configuration.name,
@@ -72,7 +72,7 @@ function JdbcRestService($http) {
 
         return $http({
                 method: 'POST',
-                url: `/${JDBC_ENDPOINT}/types`,
+                url: `${JDBC_ENDPOINT}/types`,
                 data: {
                     query: query,
                     column_names: columns
@@ -84,7 +84,7 @@ function JdbcRestService($http) {
         // Limit in preview is optional. On backend default value is set to 100
         return $.ajax({
             method: 'GET',
-            url: `/rest/sql-views/preview/${name}`,
+            url: `rest/sql-views/preview/${name}`,
             params: {
                 limit
             }
@@ -95,7 +95,7 @@ function JdbcRestService($http) {
         // Limit in preview is optional. On backend default value is set to 100
         return $.ajax({
             method: 'POST',
-            url: "/rest/sql-views/preview",
+            url: "rest/sql-views/preview",
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
             data: sqlView,

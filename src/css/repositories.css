@@ -112,6 +112,11 @@ form div label.error {
 #fedx-members {
     overflow: auto;
 }
+
+.fedXMember:hover {
+    background-color: rgba(0,0,0,.05)
+}
+
 #fedx-options {
     overflow: hidden;
 }
@@ -397,14 +402,18 @@ span.label {
 }
 .checkbox-param-include-inferred {
     position: relative;
-    margin-right: 15.15em;
+    padding-right: 15.15em;
     padding-left: 15px;
     float:left
 }
 
 .checkbox-param-padded {
     position: relative;
-    margin-right: 19.75em;
+    padding-right: 20.4em;
     padding-left: 15px;
     float:left
+}
+
+.multilined {
+    word-break: break-all;
 }

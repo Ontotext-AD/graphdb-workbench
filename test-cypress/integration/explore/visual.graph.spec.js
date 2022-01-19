@@ -25,8 +25,8 @@ describe('Visual graph screen validation', () => {
 
     context('When autocomplete is disabled', () => {
         it('Test notification when autocomplete is disabled', () => {
-            cy.visit('/graphs-visualizations');
-
+            cy.visit('graphs-visualizations');
+            cy.window();
             getSearchField().should('be.visible').type('http://');
 
             // Verify that a message with a redirection to the autocomplete section is displayed.
@@ -42,7 +42,7 @@ describe('Visual graph screen validation', () => {
             cy.enableAutocomplete(repositoryId);
         });
         beforeEach(() => {
-            cy.visit('/graphs-visualizations');
+            cy.visit('graphs-visualizations');
             cy.window();
         });
 
@@ -472,7 +472,7 @@ describe('Visual graph screen validation', () => {
     });
 
     it('Test can create custom visual graph', () => {
-        cy.visit('/graphs-visualizations');
+        cy.visit('graphs-visualizations');
         getCreateCustomGraphLink().click();
         cy.url().should('include', '/config/save');
         getGraphConfigName().type('configName');
@@ -507,14 +507,18 @@ describe('Visual graph screen validation', () => {
     }
 
     function searchForResource(resource) {
-        cy.searchEasyVisualGraph(resource);
-        // Verify redirection to existing visual graph
-        cy.waitUntil(() =>
-            cy.get('.graph-visualization')
-                .find('.nodes-container')
-                .then(nodesContainer => nodesContainer))
+        // verify that the easy graph search has occured and a valid resource was input and only
+        // after that execute the next operation
+        cy.searchEasyVisualGraph(resource)
             .then(() => {
-                getNodes();
+                // Verify redirection to existing visual graph
+                cy.waitUntil(() =>
+                    cy.get('.graph-visualization')
+                        .find('.nodes-container')
+                        .then(nodesContainer => nodesContainer))
+                    .then(() => {
+                        getNodes();
+                    });
             });
     }
 

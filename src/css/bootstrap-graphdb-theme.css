@@ -408,6 +408,14 @@
     content: "\e958";
 }
 
+.icon-repo-fedx:before {
+    content: "\e959";
+}
+
+.icon-repo-graphdb:before {
+    content: "\e95a";
+}
+
 /*
 [class^="icon-"]:before, [class*=" icon-"]:before {
 	display: inline-block;

@@ -23,7 +23,8 @@ function RepositoriesRestService($http) {
         restartRepository,
         getSupportedDriversData,
         updatePropertiesFile,
-        loadPropertiesFile
+        loadPropertiesFile,
+        getRepositoriesFromKnownLocation
     };
 
     function getRepository(repositoryid) {
@@ -32,6 +33,10 @@ function RepositoriesRestService($http) {
 
     function getRepositories() {
         return $http.get(REPOSITORIES_ENDPOINT);
+    }
+
+    function getRepositoriesFromKnownLocation(location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}?location=${location}`);
     }
 
     function deleteRepository(repositoryId) {

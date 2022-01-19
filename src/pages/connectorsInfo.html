@@ -7,14 +7,14 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors write ontop></div>
+    <div core-errors write ontop fedx license></div>
     <div onto-loader-new
          ng-show="loader"
          style="height: 60vh;"
          size="75"
          message="getLoaderMessage"
          timeout="[1]"></div>
-    <div ng-show="canWriteActiveRepo() && !loader">
+    <div ng-show="canWriteActiveRepo() && !loader && !isRestricted">
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
@@ -23,7 +23,7 @@
             </button>
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
-        <div ng-show="connectors.length">
+        <div ng-show="!isActiveRepoFedXType() && connectors.length">
             <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors">
                 <h3>{{connector.key}}</h3>
                 <section class="mb-1">
@@ -172,7 +172,7 @@
             </div>
         </div>
 
-        <div class="alert alert-info" ng-if="!connectors.length">
+        <div class="alert alert-info" ng-if="isActiveRepoFedXType() || !connectors.length">
             <h4>No connectors available</h4>
             <p>The current repository does not support any connectors. Please check the type of the repository or select
                 another one.</p>

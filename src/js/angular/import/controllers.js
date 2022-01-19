@@ -135,6 +135,11 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         };
 
         $scope.init = function () {
+            // Update restricted on repositoryIsSet
+            $scope.setRestricted();
+            if ($scope.isRestricted) {
+                return;
+            }
             $scope.updateList(true);
             $scope.getSettings();
         };

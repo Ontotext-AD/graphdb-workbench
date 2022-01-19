@@ -7,8 +7,8 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors ontop></div>
-    <div class="jdbc-list-configurations card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType()">
+    <div core-errors ontop fedx></div>
+    <div class="jdbc-list-configurations card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
         <div class="card-block" ng-init="getSqlConfigurations();">
             <div class="clearfix">
                 <a ng-href="jdbc/configuration/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">

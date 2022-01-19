@@ -32,6 +32,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         const that = this;
         const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
+        const FEDX_REPOSITORY_LABEL = 'graphdb:FedXRepository';
+
 
         const loadingDone = function (err, locationError) {
             that.loading = false;
@@ -84,8 +86,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                         // New style, check version and product
                         if (res.productVersion !== productInfo.productVersion) {
                             that.degradedReason = 'The remote location is running a different GraphDB version.';
-                        } else if (res.productType !== productInfo.productType) {
-                            that.degradedReason = 'The remote location is running a different GraphDB edition.';
                         }
                     } else {
                         // Pre 7.1 style
@@ -217,7 +217,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isOntopRepo(repo.id)
+                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isActiveRepoOntopType(repo.id);
             });
         };
 
@@ -229,22 +229,33 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.repository === 'SYSTEM';
         };
 
-        this.isActiveRepoOntopType = function () {
-            let activeRepo = this.repositories.find(current => current.id === this.getActiveRepository());
+        this.isActiveRepoOntopType = function (repoId) {
+            const that = this;
+            if (!repoId) {
+                repoId = that.getActiveRepository();
+            }
+            let activeRepo = that.repositories.find(current => current.id === repoId);
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
 
-            return false;
+            // On F5 or refresh of page active repo first is undefined,
+            // so return the following check to ensure that repositories will
+            // be loaded first repo type will be evaluated properly afterwards
+            return typeof activeRepo === "undefined";
         }
 
-        this.isOntopRepo = function (repoId) {
-            let activeRepo = this.repositories.find(current => current.id === repoId);
+        this.isActiveRepoFedXType = function() {
+            const that = this;
+            let activeRepo = that.repositories.find(current => current.id === that.getActiveRepository());
             if (activeRepo) {
-                return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+                return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
             }
 
-            return false;
+            // On F5 or refresh of page active repo first is undefined,
+            // so return the following check to ensure that repositories will
+            // be loaded first repo type will be evaluated properly afterwards
+            return typeof activeRepo === "undefined";
         }
 
         this.setRepositoryHeaders = function () {
@@ -253,6 +264,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repo;
         };
+
         this.setRepositoryHeaders();
 
         this.setRepository = function (id) {

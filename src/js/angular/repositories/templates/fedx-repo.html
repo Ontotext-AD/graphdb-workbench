@@ -6,9 +6,9 @@
             <table id="fedx-members-table" class="table table-hover table-striped" aria-describedby="Repositories table">
                 <tbody class="tbody-fedx">
                     <tr class="repository" style="display: flex"
-                        ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'id']">
+                        ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'endpoint', 'repositoryServer', 'repositoryName'] : true ">
                         <td style="display: inline-block; flex: 1">
-                            <span class="multiline-text">
+                            <span class="multiline-text multilined">
                                 <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                                 {{resolveName(member)}}
                             </span>
@@ -37,15 +37,17 @@
                 </tbody>
             </table>
         </form>
-        <h8 class = "indented-div"> Local repositories </h8>
+        <h8 class = "indented-div"> Local repositories and attached locations </h8>
         <div class = "form-group2">
             <form class="form-local-repos pre-scrollable">
-                <div ng-repeat="repository in localRepos | orderBy: ['type === \'system\'', 'id']" ng-if="repository.type !== 'fedx'" style="display:block" id="{{repository.id}}-local-repo" class = "fedXMember">
-                    <a ng-click="addLocalMember(repository)" id="{{repository.id}}-a" tooltip="{{repoTooltips.fedx.localReposInstructions}}">
+                <div ng-repeat="repository in knownRepos | orderBy: ['type === \'system\'', 'location', 'id']" ng-if="repository.type !== 'fedx'" style="display:block" id="{{repository.id}}-local-repo" class = "fedXMember">
+                    <a ng-click="addMember(repository)" id="{{repository.id}}-a" tooltip="{{repoTooltips.fedx.localReposInstructions}}">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type" class="fedx-repo-member-icon"></em>
                             {{repository.id}}
                         </span>
+<!--                        <small> " . " <span> </span> </small>-->
+                        <span class="small"><small> &middot; {{getRepositoryServer(repository)}}</small></span>
                     </a>
                 </div>
             </form>
@@ -56,8 +58,8 @@
         <h4>FedX options</h4>
         <div class="pb-1">
             <div class="form-group row">
-                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
-                    <label class="checkbox-param-include-inferred"
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-include-inferred">
+                    <label
                            tooltip="{{repoTooltips.fedx.withIncludeInferredDefault}}">
                         <input id="includeInferredDefault" name="includeInferredDefault" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -76,8 +78,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
-                    <label class = "checkbox-param-padded"
+                <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-padded">
+                    <label
                            tooltip="{{repoTooltips.fedx.withLogQueries}}">
                         <input id="isLogQueries" name="isLogQueries" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -95,30 +97,20 @@
                     </label>
                 </div>
             </div>
-            <div class="form-group row">
-                <div class="checkbox offset-xs-1 offset-md-4 indented-div">
-                    <label class = "checkbox-param-padded"
-                           tooltip="{{repoTooltips.fedx.withLogQueryPlan}}">
-                        <input id="isLogQueryPlan" name="isLogQueryPlan" type="checkbox"
-                               ng-true-value="'true'" ng-false-value="'false'"
-                               ng-model="repositoryInfo.params.isLogQueryPlan.value"/>
-                        {{repositoryInfo.params.isLogQueryPlan.label}}
-                    </label>
-                </div>
-            </div>
         </div>
         <div class="pb-1">
             <div class="form-group row">
                 <div class="offset-xs-1 offset-md-4 indented-div">
                     <label class="col-lg-3">
-                        {{repositoryInfo.params.enforceMaxQueryTime.label}}
+                        {{repositoryInfo.params.queryTimeout.label}}
                     </label>
                     <div class="col-lg-2">
                         <input id="enforceMaxQueryTime"
                                name="enforceMaxQueryTime"
                                type="number" step="1"
-                               ng-model="repositoryInfo.params.enforceMaxQueryTime.value"
+                               ng-model="repositoryInfo.params.queryTimeout.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.enforceMaxQueryTime}}"/>
                     </div>
                 </div>
@@ -128,11 +120,12 @@
                     </label>
                     <div class="col-lg-2">
                         <input id="boundJoinBlockSize"
-                                   name="boundJoinBlockSize"
-                                   type="number" step="1"
-                                   ng-model="repositoryInfo.params.boundJoinBlockSize.value"
-                                   class="form-control"
-                                   tooltip="{{repoTooltips.fedx.withBoundJoinBlockSize}}"/>
+                               name="boundJoinBlockSize"
+                               type="number" step="1"
+                               ng-model="repositoryInfo.params.boundJoinBlockSize.value"
+                               class="form-control"
+                               required
+                               tooltip="{{repoTooltips.fedx.withBoundJoinBlockSize}}"/>
                     </div>
                 </div>
             </div>
@@ -147,6 +140,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.joinWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.withJoinWorkerThreads}}"/>
                     </div>
                 </div>
@@ -160,6 +154,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.leftJoinWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.withLeftJoinWorkerThreads}}"/>
                     </div>
                 </div>
@@ -181,6 +176,7 @@
                                type="number" step="1"
                                ng-model="repositoryInfo.params.unionWorkerThreads.value"
                                class="form-control"
+                               required
                                tooltip="{{repoTooltips.fedx.unionWorkerThreads}}"/>
                     </div>
                 </div>

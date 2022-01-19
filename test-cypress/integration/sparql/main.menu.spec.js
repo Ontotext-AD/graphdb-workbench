@@ -1,7 +1,12 @@
 describe('Main menu tests', function () {
 
+    before(function () {
+        cy.clearLocalStorage();
+    });
+
     beforeEach(function () {
         cy.visit('/');
+        cy.window();
 
         cy.get('.card-title').should('contain', 'Welcome to GraphDB');
     });
@@ -99,6 +104,11 @@ describe('Main menu tests', function () {
                         name: 'Connectors',
                         visible: false,
                         redirect: '/connectors'
+                    },
+                    {
+                        name: 'Cluster',
+                        visible: false,
+                        redirect: '/cluster'
                     },
                     {
                         name: 'Namespaces',

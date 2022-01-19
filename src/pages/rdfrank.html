@@ -18,19 +18,22 @@
 		 size="75">
 	</div>
 
-    <div core-errors write ontop></div>
+    <div core-errors write ontop fedx license></div>
 
-    <div ng-show="canWriteActiveRepo() && !loading">
-		<div class="alert alert-info" ng-if="!loader && !pluginFound">
-			<h4>RDFRank not supported</h4>
-			<p>The current repository does not support the RDFRank plugin. Please check the type of the repository or select
-				another one.</p>
-		</div>
+    <inactive-plugin-directive
+        plugin-name="{{pluginName}}"
+        human-readable-plugin-name="RDF Rank Plugin"
+        load-saved="checkForPlugin()"
+        set-plugin-active="setPluginIsActive(isPluginActive)"
+        ng-if="isLicenseValid()">
+    </inactive-plugin-directive>
+
+    <div ng-show="isLicenseValid() && canWriteActiveRepo() && !loading && pluginIsActive">
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>RDFRank not fully supported</h4>
 			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
 		</div>
-		<div ng-show="pluginFound && !getDegradedReason()">
+		<div ng-show="!isRestricted && pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="rdf-rank-status">RDFRank for repository <strong>{{getActiveRepository()}}</strong> is with status</span>
                 <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> Computed</span>

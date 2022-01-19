@@ -140,7 +140,7 @@ describe('SPARQL screen validation', () => {
             verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
             // Verify pasting also works
-            pasteQuery(DEFAULT_QUERY_MODIFIED);
+            cy.pasteQuery(DEFAULT_QUERY_MODIFIED);
 
             executeQuery();
 
@@ -272,14 +272,13 @@ describe('SPARQL screen validation', () => {
 
             let describeQuery = 'describe ?t {bind (<<?s ?p ?o>> as ?t) .}';
 
-            pasteQuery(describeQuery);
+            cy.pasteQuery(describeQuery);
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', 'Showing results')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results');
+            cy.verifyResultsMessage('Query took');
+
             getResultsWrapper()
                 .should('be.visible');
 
@@ -345,8 +344,7 @@ describe('SPARQL screen validation', () => {
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible');
+            cy.getResultsMessage();
             getResultsWrapper()
                 .should('be.visible');
         });
@@ -354,14 +352,12 @@ describe('SPARQL screen validation', () => {
         it('Test execute (Describe) query', () => {
             let describeQuery = 'DESCRIBE <http://www.ontotext.com/SYSINFO> FROM <http://www.ontotext.com/SYSINFO>';
 
-            pasteQuery(describeQuery);
+            cy.pasteQuery(describeQuery);
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', 'Showing results')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results')
+            cy.verifyResultsMessage('Query took');
             getResultsWrapper()
                 .should('be.visible');
 
@@ -383,7 +379,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute (ASK) query', () => {
             let askQuery = 'ASK WHERE { ?s ?p ?o .FILTER (regex(?o, "ontotext.com")) }';
 
-            pasteQuery(askQuery);
+            cy.pasteQuery(askQuery);
             executeQuery();
 
             // Confirm that all tabs (Table, Pivot Table, Google chart) are disabled
@@ -397,13 +393,12 @@ describe('SPARQL screen validation', () => {
 
         it('Test execute (CONSTRUCT) query', () => {
             cy.fixture('queries/construct-query.sparql').then(constructQuery => {
-                pasteQuery(constructQuery);
+                cy.pasteQuery(constructQuery);
             });
 
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible');
+            cy.getResultsMessage();
             getResultsWrapper()
                 .should('be.visible');
 
@@ -420,7 +415,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute query with and without "Including inferred" selected', () => {
             let insertQuery = 'INSERT DATA { <urn:a> <http://a/b> <urn:b> . <urn:b> <http://a/b> <urn:c> . }';
 
-            pasteQuery(insertQuery);
+            cy.pasteQuery(insertQuery);
             executeQuery();
 
             getUpdateMessage().should('be.visible');
@@ -431,7 +426,7 @@ describe('SPARQL screen validation', () => {
                 .find('.icon-inferred-on')
                 .should('be.visible');
 
-            pasteQuery(DEFAULT_QUERY);
+            cy.pasteQuery(DEFAULT_QUERY);
             executeQuery();
 
             // Confirm that all statements are available (70 from ruleset, 2 explicit and 2 inferred)
@@ -440,10 +435,11 @@ describe('SPARQL screen validation', () => {
             verifyResultsPageLength(74);
 
             // Uncheck ‘Include inferred’
-            getInferenceButton()
-                .click()
-                .find('.icon-inferred-off')
-                .should('be.visible');
+            cy.waitUntil(() =>
+                getInferenceButton()
+                    .then(infBtn => infBtn && !infBtn.attr('disabled') && cy.wrap(infBtn).click()))
+                .then(() =>
+                    cy.get('.icon-inferred-off').should('be.visible'));
 
             // Confirm that only inferred statements (only 2) are available
             executeQuery();
@@ -493,12 +489,10 @@ describe('SPARQL screen validation', () => {
                 '\t?s ?p ?o .\n' +
                 '}';
 
-            pasteQuery(defaultQueryWithoutLimit);
+            cy.pasteQuery(defaultQueryWithoutLimit);
             executeQuery();
 
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', '1,000 of 7,065');
+            cy.verifyResultsMessage('1,000 of 7,065');
             getResultsWrapper()
                 .should('be.visible');
             verifyResultsPageLength(1000);
@@ -511,9 +505,7 @@ describe('SPARQL screen validation', () => {
             executeQuery();
 
             // Verify that there are 1,839 results
-            getResultsMessage()
-                .should('be.visible')
-                .and('contain', '1,000 of 1,839');
+            cy.verifyResultsMessage('1,000 of 1,839');
         });
 
         it('Test execute query including inferred with ruleset "OWL-Horst (Optimized)" enabled sameAs functionality', () => {
@@ -530,7 +522,7 @@ describe('SPARQL screen validation', () => {
                 '  :a ?p ?o .\n' +
                 '}';
 
-            pasteQuery(updateToExecute);
+            cy.pasteQuery(updateToExecute);
             executeQuery();
             getUpdateMessage()
                 .should('be.visible')
@@ -541,7 +533,7 @@ describe('SPARQL screen validation', () => {
                 .find('.icon-sameas-on')
                 .should('be.visible');
 
-            pasteQuery(selectQuery);
+            cy.pasteQuery(selectQuery);
             executeQuery();
             verifyResultsPageLength(2);
 
@@ -765,7 +757,7 @@ describe('SPARQL screen validation', () => {
         it('Test create, edit and delete saved query', () => {
             let savedQueryName = 'Saved query - ' + Date.now();
 
-            pasteQuery(QUERY_FOR_SAVING);
+            cy.pasteQuery(QUERY_FOR_SAVING);
 
             saveQuery();
             waitUntilSavedQueryModalIsVisible();
@@ -924,9 +916,8 @@ describe('SPARQL screen validation', () => {
             getQueryArea().should('contain', 'SELECT');
             executeQuery();
             getUpdateMessage().should('not.be.visible');
-            getResultsMessage()
-                .should('contain', 'Showing results from 1 to 74 of 74')
-                .and('contain', 'Query took');
+            cy.verifyResultsMessage('Showing results from 1 to 74 of 74');
+            cy.verifyResultsMessage('Query took');
 
             verifyResultsPageLength(74);
         });
@@ -964,7 +955,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test URL to current query', () => {
             const query = 'SELECT ?sub ?pred ?obj WHERE {?sub ?pred ?obj .} LIMIT 100';
-            pasteQuery(query);
+            cy.pasteQuery(query);
 
             // Press the link icon to generate a link for a query
             getQueryLinkBtn().click();
@@ -1198,13 +1189,6 @@ describe('SPARQL screen validation', () => {
         getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
     }
 
-    function pasteQuery(query) {
-        clearQuery();
-        // Using force because the textarea is not visible
-        getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        verifyQueryAreaEquals(query);
-    }
-
     function goToPage(page) {
         getResultPages().contains(page).click();
         getLoader().should('not.exist');
@@ -1345,10 +1329,6 @@ describe('SPARQL screen validation', () => {
         return cy.get('#yasr-inner .alert-info.update-info');
     }
 
-    function getResultsMessage() {
-        return cy.get('#yasr-inner .alert-info.results-info', {timeout: 40000});
-    }
-
     function getQueryLinkBtn() {
         return cy.get('#wb-sparql-copyToClipboardQuery');
     }
@@ -1395,11 +1375,11 @@ describe('SPARQL screen validation', () => {
     }
 
     function getInferenceButton() {
-        return cy.get('#inference');
+        return cy.get('#inference').scrollIntoView();
     }
 
     function getSameAsButton() {
-        return cy.get('#sameAs');
+        return cy.get('#sameAs').scrollIntoView();
     }
 
     function getAutoSuggestHints() {

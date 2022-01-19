@@ -20,18 +20,26 @@ export const getFileName = function(path) {
 
 const parseNumberParamsIfNeeded = function (params) {
     if (params) {
-        if (params.queryTimeout && params.queryLimitResults) {
-            // Parse both parameters properly to number
+        if (params.queryTimeout) {
             params.queryTimeout.value = parseInt(params.queryTimeout.value);
+        }
+        if (params.queryLimitResults && params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint) {
+            // Parse parameters properly to number
             params.queryLimitResults.value = parseInt(params.queryLimitResults.value);
-        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
-            && params.enforceMaxQueryTime && params.unionWorkerThreads) {
+            params.validationResultsLimitTotal.value = parseInt(params.validationResultsLimitTotal.value);
+            params.validationResultsLimitPerConstraint.value = parseInt(params.validationResultsLimitPerConstraint.value);
+        } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads && params.unionWorkerThreads) {
             params.leftJoinWorkerThreads.value = parseInt(params.leftJoinWorkerThreads.value);
             params.boundJoinBlockSize.value = parseInt(params.boundJoinBlockSize.value);
             params.joinWorkerThreads.value = parseInt(params.joinWorkerThreads.value);
-            params.enforceMaxQueryTime.value = parseInt(params.enforceMaxQueryTime.value);
             params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
         }
+    }
+}
+
+const parseMemberParamIfNeeded = function(param) {
+    if (param && param.member) {
+        param.member.value = [];
     }
 }
 
@@ -48,10 +56,53 @@ const getShaclOptionsClass = function () {
 }
 
 const validateNumberFields = function (params, invalidValues) {
-    if (params.queryTimeout && params.queryLimitResults) {
+    if (params.queryTimeout) {
         invalidValues.isInvalidQueryTimeout = !NUMBER_PATTERN.test(params.queryTimeout.value);
+    }
+    if (params.validationResultsLimitTotal && params.validationResultsLimitPerConstraint && params.queryLimitResults) {
+        invalidValues.isInvalidValidationResultsLimitTotal = !NUMBER_PATTERN.test(params.validationResultsLimitTotal.value);
+        invalidValues.isInvalidValidationResultsLimitPerConstraint = !NUMBER_PATTERN.test(params.validationResultsLimitPerConstraint.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
     }
+    else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+        && params.unionWorkerThreads) {
+        invalidValues.isInvalidLeftJoinWorkerThreads = !NUMBER_PATTERN.test(params.leftJoinWorkerThreads.value);
+        invalidValues.isInvalidBoundJoinBlockSize = !NUMBER_PATTERN.test(params.boundJoinBlockSize.value);
+        invalidValues.isInvalidJoinWorkerThreads = !NUMBER_PATTERN.test(params.joinWorkerThreads.value);
+        invalidValues.isInvalidUnionWorkerThreads = !NUMBER_PATTERN.test(params.unionWorkerThreads.value);
+    }
+}
+
+const getInvalidParameterErrorMessage = function(param) {
+    if(param === "isInvalidQueryLimit") {
+        return 'Invalid parameter query limit';
+    } else if (param === "isInvalidQueryTimeout") {
+        return 'Invalid parameter query timeout';
+    } else if (param === "isInvalidValidationResultsLimitTotal") {
+        return 'Invalid parameter validation results limit total';
+    } else if (param === "isInvalidValidationResultsLimitPerConstraint") {
+        return 'Invalid parameter validation results limit per constraint';
+    } else if (param === "isInvalidJoinWorkerThreads") {
+        return 'Invalid parameter join worker threads';
+    } else if (param === "isInvalidLeftJoinWorkerThreads") {
+        return 'Invalid parameter left join worker threads';
+    } else if (param === "isInvalidUnionWorkerThreads") {
+        return 'Invalid parameter union worker threads';
+    } else if (param === "isInvalidBoundJoinBlockSize") {
+        return 'Invalid parameter bound join block size';
+    }
+}
+
+const checkInvalidValues = function(invalidValues) {
+    let invalidValuesKeys = Object.keys(invalidValues);
+    let invalidValuesVal = Object.values(invalidValues);
+
+    for (let i = 0; i < invalidValuesKeys.length; i++) {
+        if (invalidValuesVal[i]) {
+            return getInvalidParameterErrorMessage(invalidValuesKeys[i]);
+        }
+    }
+    return '';
 }
 
 const getDocBase = function (productInfo) {
@@ -430,20 +481,18 @@ function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
     };
 }
 
-ChooseRepositoryCtrl.$inject = ['$scope', '$location', 'isEnterprise', 'isFreeEdition'];
-function ChooseRepositoryCtrl($scope, $location, isEnterprise, isFreeEdition) {
+ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
+function ChooseRepositoryCtrl($scope, $location) {
     $scope.pageTitle = 'Select repository type';
     $scope.repositoryTypes = REPOSITORY_TYPES;
-    $scope.isEnterprise = isEnterprise;
-    $scope.isFreeEdition = isFreeEdition;
     $scope.chooseRepositoryType = function (repoType) {
         $location.path(`${$location.path()}/${repoType}`);
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', 'isEnterprise', 'isFreeEdition', '$routeParams', 'RepositoriesRestService'];
+AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', '$routeParams', 'RepositoriesRestService'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, isEnterprise, isFreeEdition, $routeParams, RepositoriesRestService) {
+function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService) {
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.repoTooltips = REPO_TOOLTIPS;
@@ -460,24 +509,27 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         type: ''
     };
 
-    $scope.isEnterprise = isEnterprise;
-    $scope.isFreeEdition = isFreeEdition;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
 
     function isValidEERepository(repositoryType) {
-        return $scope.isEnterprise && (repositoryType === REPOSITORY_TYPES.eeMaster
-            || repositoryType === REPOSITORY_TYPES.eeWorker);
+        return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
     }
 
     function isValidSERepository(repositoryType) {
-        return !$scope.isFreeEdition && !$scope.isEnterprise && repositoryType === REPOSITORY_TYPES.se;
+        return !$scope.isFreeEdition() && !$scope.isEnterprise() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
     }
 
     function isValidFRRepository(repositoryType) {
-        return $scope.isFreeEdition && repositoryType === REPOSITORY_TYPES.free;
+        return $scope.isFreeEdition() && repositoryType === REPOSITORY_TYPES.graphdbRepo;
     }
     function isValidOntopRepository(repositoryType) {
         return repositoryType === REPOSITORY_TYPES.ontop;
@@ -495,19 +547,10 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     function setPageTitle(repositoryType) {
         switch (repositoryType) {
-            case REPOSITORY_TYPES.free:
-                $scope.pageTitle = 'Create GraphDB Free repository';
+            case REPOSITORY_TYPES.graphdbRepo:
+                $scope.pageTitle = 'Create GraphDB repository';
                 break;
-            case REPOSITORY_TYPES.eeWorker:
-                $scope.pageTitle = 'Create GraphDB EE Worker repository';
-                break;
-            case REPOSITORY_TYPES.eeMaster:
-                $scope.pageTitle = 'Create GraphDB EE Master repository';
-                break;
-            case REPOSITORY_TYPES.se:
-                $scope.pageTitle = 'Create GraphDB SE repository';
-                break;
-            case REPOSITORY_TYPES.ontop:
+           case REPOSITORY_TYPES.ontop:
                 $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
                 break;
             case REPOSITORY_TYPES.fedx:
@@ -521,6 +564,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
+            parseMemberParamIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
@@ -591,8 +635,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         }
     };
 
-    $scope.formError = function () {
-        toastr.error('There is an error in the form!');
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
     };
 
     $scope.goBackToPreviousLocation = function () {
@@ -624,13 +668,18 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
         $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+        const invalidValues = checkInvalidValues($scope.invalidValues);
 
         if (isInvalidPieFile) {
             toastr.error('Invalid rule-set file. Please upload a valid one.');
-        } else if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryLimit && !$scope.isInvalidQueryTimeout) {
-            $scope.createRepoHttp();
+        } else if ($scope.isInvalidRepoName) {
+            toastr.error('Wrong repo name');
+        } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+            $scope.noMembersError();
+        } else if (invalidValues) {
+            toastr.error(invalidValues);
         } else {
-            $scope.formError();
+            $scope.createRepoHttp();
         }
     };
 
@@ -689,9 +738,9 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'isEnterprise', 'isFreeEdition', 'RepositoriesRestService'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, isEnterprise, isFreeEdition, RepositoriesRestService) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService) {
 
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
@@ -702,8 +751,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.canEditRepoId = false;
     $scope.params = $routeParams;
     $scope.loader = true;
-    $scope.isEnterprise = isEnterprise;
-    $scope.isFreeEdition = isFreeEdition;
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
     $scope.repositoryInfo.restartRequested = false;
@@ -712,7 +759,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
-        isInvalidQueryLimit: false
+        isInvalidQueryLimit: false,
+        isInvalidLeftJoinWorkerThreads: false,
+        isInvalidBoundJoinBlockSize: false,
+        isInvalidJoinWorkerThreads : false,
+        isInvalidUnionWorkerThreads : false,
+        isInvalidValidationResultsLimitPerConstraint : false,
+        isInvalidValidationResultsLimitTotal : false
     };
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -762,8 +815,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         $scope.repositoryType = type;
     };
 
-    $scope.formError = function () {
-        toastr.error('There is an error in the form!');
+    $scope.noMembersError = function () {
+        toastr.error('FedX repository should be created with at least one member!');
     };
 
     $scope.editRepoHttp = function () {
@@ -785,6 +838,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.editRepository = function () {
         $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
+        const invalidValues = checkInvalidValues($scope.invalidValues);
         let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
@@ -796,7 +850,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
                         Repository restart required for changes to take effect.`;
         }
-        if (!$scope.isInvalidRepoName && !$scope.isInvalidQueryTimeout && !$scope.isInvalidQueryLimit) {
+        if ($scope.isInvalidRepoName) {
+            toastr.error('Wrong repo name');
+        } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
+            $scope.noMembersError();
+        } else if(invalidValues) {
+            toastr.error(invalidValues);
+        } else {
             ModalService.openSimpleModal({
                 title: 'Confirm save',
                 message: modalMsg,
@@ -805,14 +865,12 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 .then(function () {
                     $scope.editRepoHttp();
                 });
-        } else {
-            $scope.formError();
         }
     }
 
     $scope.editRepositoryId = function () {
         let msg = '<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>';
-        if ($scope.isEnterprise) {
+        if ($scope.isEnterprise()) {
             msg += '<p>If your repository is in a cluster, it is your responsibility to update the cluster after renaming.</p>';
         }
         ModalService.openSimpleModal({

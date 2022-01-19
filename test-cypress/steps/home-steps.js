@@ -11,6 +11,8 @@ class HomeSteps {
             cy.visit('/');
         }
 
+        cy.window();
+
         cy.get('.ot-splash').should('not.be.visible');
         return cy.get('.ot-loader-new-content').should('not.exist');
     }
@@ -61,7 +63,7 @@ class HomeSteps {
 
     static verifyRepositoryIsSelected(repositoryId) {
         cy.get('ul.repos')
-            .contains(repositoryId).should('be.hidden');
+            .contains(repositoryId).should('not.exist');
         cy.get('#btnReposGroup')
             .should('contain', repositoryId);
     }

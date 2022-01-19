@@ -10,9 +10,23 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+
+    let timer;
+
+    function cancelTimer() {
+        if (timer) {
+            $interval.cancel(timer);
+        }
+    }
+
+    $scope.pluginName = 'autocomplete';
+
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
+    }
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
@@ -80,7 +94,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
             });
     };
 
-    const checkForPlugin = function () {
+    $scope.checkForPlugin = function () {
         $scope.pluginFound = false;
 
         $scope.setLoader(true);
@@ -105,22 +119,26 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     const pullStatus = function () {
-        const timer = $interval(function () {
+        timer = $interval(function () {
+            $scope.$broadcast('checkIsActive');
             if ($scope.autocompleteEnabled) {
                 refreshIndexStatus();
             }
         }, 5000);
-
-        $scope.$on("$destroy", function () {
-            $interval.cancel(timer);
-        });
     };
 
+    $scope.$on("$destroy", function () {
+        cancelTimer();
+    });
+
     const init = function() {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
         pullStatus();
     };
 
@@ -227,10 +245,15 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.$on('repositoryIsSet', function () {
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoOntopType()) {
+        cancelTimer();
+        if (!$licenseService.isLicenseValid() ||
+            !$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                    $repositories.isActiveRepoFedXType()) {
             return;
         }
-        checkForPlugin();
+        $scope.checkForPlugin();
+        pullStatus();
     });
 
     init();

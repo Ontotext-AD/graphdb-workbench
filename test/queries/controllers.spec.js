@@ -29,6 +29,11 @@ describe('=> QueriesCtrl tests', function () {
             return 'activeRepository';
         }
 
+        // Should mock this method, because of special implementation in repositories.service.js
+        $repositories.isActiveRepoOntopType = function () {
+            return false;
+        }
+
         function FakeModal() {
             this.resultDeferred = $q.defer();
             this.result = this.resultDeferred.promise;

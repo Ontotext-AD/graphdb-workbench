@@ -16,19 +16,22 @@
 		 size="75">
 	</div>
 
-    <div core-errors write ontop></div>
+    <div core-errors write ontop fedx license></div>
 
-    <div ng-show="canWriteActiveRepo() && !loading">
-		<div class="alert alert-info autocomplete-not-supported-alert" ng-if="!loader && !pluginFound">
-			<h4>Autocomplete not supported</h4>
-			<p>The current repository does not support the Autocomplete plugin. Please check the type of the repository or select
-				another one.</p>
-		</div>
+    <inactive-plugin-directive
+        plugin-name="{{pluginName}}"
+        human-readable-plugin-name="Autocomplete Plugin"
+        load-saved="checkForPlugin()"
+        set-plugin-active="setPluginIsActive(isPluginActive)"
+        ng-if="isLicenseValid()">
+    </inactive-plugin-directive>
+
+    <div ng-if="isLicenseValid() && canWriteActiveRepo() && !loading && !isRestricted && pluginIsActive">
 		<div class="alert alert-info autocomplete-configuring-not-supported-alert" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>Autocomplete not fully supported</h4>
 			<p>Configuring autocomplete is not supported. {{getDegradedReason()}}</p>
 		</div>
-		<div ng-show="pluginFound && !getDegradedReason()">
+		<div ng-if="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="autocomplete-header">Autocomplete for repository <strong>{{getActiveRepository()}}</strong> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
 				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch enable-autocomplete-switch">
