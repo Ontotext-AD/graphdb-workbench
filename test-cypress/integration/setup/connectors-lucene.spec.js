@@ -29,17 +29,21 @@ describe('Setup / Connectors - Lucene', () => {
     it('Create, copy and delete a lucene connector', () => {
         getNewLuceneConnectorButton()
             .click();
+
         getCreateLuceneConnectorPage()
-            .should('contain', 'Create new Lucene Connector');
-        getConnectorNameField()
-            .type(luceneConnectorName);
-        getFieldNameField()
-            .type(fieldName, {force:true});
-        getPropertyChainField()
-            .type(connectorPropertyChain, {force:true});
-        getUriTypes()
-            .type(uriType);
-        confirmCreateConnector();
+            .should('contain', 'Create new Lucene Connector')
+            .within(() => {
+                getConnectorNameField()
+                    .type(luceneConnectorName);
+                getFieldNameField()
+                    .type(fieldName, {force: true});
+                getPropertyChainField()
+                    .type(connectorPropertyChain, {force: true});
+                getUriTypes()
+                    .type(uriType);
+                confirmCreateConnector();
+            });
+
         verifyStatusToastMessage(connectorCreateToastMessage);
         verifyConnectorExists(luceneConnectorName);
         //copy connector
@@ -48,7 +52,10 @@ describe('Setup / Connectors - Lucene', () => {
             .should('be.visible')
             .click()
             .then(() => {
-                confirmCreateConnector();
+                getCreateLuceneConnectorPage()
+                    .within(() => {
+                        confirmCreateConnector();
+                    });
                 verifyStatusToastMessage(connectorCreateToastMessage + '-copy');
                 verifyConnectorExists(luceneConnectorName + '-copy');
                 //delete connector copy
@@ -60,7 +67,7 @@ describe('Setup / Connectors - Lucene', () => {
                     .should('be.visible')
                     .click();
                 verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
-        });
+            });
     });
 
     function getConnectorsPage() {
@@ -76,31 +83,28 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getConnectorNameField() {
-        return getCreateLuceneConnectorPage().find('.connector-name-field input');
+        return cy.get('.connector-name-field input');
     }
 
     function getFieldNameField() {
-        return getCreateLuceneConnectorPage().find('.child-property-fieldName input');
+        return cy.get('.child-property-fieldName input');
     }
 
     function getPropertyChainField() {
-        return getCreateLuceneConnectorPage().find('.child-property-propertyChain input');
+        return cy.get('.child-property-propertyChain input');
     }
 
     function getUriTypes() {
-        return getCreateLuceneConnectorPage().find('.property-types input');
+        return cy.get('.property-types input');
     }
 
     function confirmCreateConnector() {
-        getCreateLuceneConnectorPage()
-            .within(() => {
-                cy.get('.create-connector-btn')
-                    .scrollIntoView()
-                    .should('be.visible')
-                    .then((btn) => {
-                        cy.wrap(btn).click();
-                    });
-        });
+        cy.get('.create-connector-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .then((btn) => {
+                cy.wrap(btn).click();
+            });
     }
 
     function verifyConnectorExists(connectorName) {
