@@ -411,6 +411,19 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.showInfoPanel = false;
 
     /**
+     *  Removes brackets and serial commas from IRIs
+     *  when used to create ids for links and markers,
+     *  because elements with ids that contain such
+     *  are not valid XHTML and cause a host problems
+     *  when trying to style individual elements
+     * @param string
+     * @returns {*}
+     */
+    function removeSpecialChars(string) {
+        return string.replace(/[()']/g, "");
+    }
+
+    /**
      *  Converts triple to link id or generates unique id (needed for arrows)
      * @param triple
      * @param tripleLike
@@ -438,7 +451,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
      */
     function getNodeX(node) {
         if (node.isTriple) {
-            let el = document.getElementById(convertTripleToLinkId(node.iri));
+            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
             if (el && typeof el.__data__.x !== "undefined") {
                 return el.__data__.x;
             }
@@ -456,7 +469,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
      */
     function getNodeY(node) {
         if (node.isTriple) {
-            let el = document.getElementById(convertTripleToLinkId(node.iri));
+            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
             if (el && typeof el.__data__.y !== "undefined") {
                 return el.__data__.y;
             }
@@ -477,7 +490,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     function createArrowMarkerUniqueID(d) {
         let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
         let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
-        return `${source}>${target}>marker`;
+        return removeSpecialChars(`${source}>${target}>marker`);
     }
 
     /**
@@ -1397,7 +1410,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .enter().append("g")
             .attr("class", "link-wrapper")
             .attr("id", function (d) {
-                return convertLinkDataToLinkId(d);
+                return removeSpecialChars(convertLinkDataToLinkId(d));
             })
             .append("line")
             .attr("class", "link")
@@ -1405,7 +1418,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .style("fill", "transparent")
             .style("marker-end", function (d) {
                 let targetArrowId = createArrowMarkerUniqueID(d);
-                return `url(${$location.absUrl()}#${targetArrowId})`;
+                return `url(#${targetArrowId})`;
             });
 
         const predicate = container.selectAll(".link-wrapper")
@@ -1796,10 +1809,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             const source = $(this).attr("id").split(">")[0];
             const target = $(this).attr("id").split(">")[1];
             d3.selectAll('.link').each(function (link) {
-                if (link.source.iri === target && link.target.iri === source) {
-                    let twoWayLinkID = link.source.iri;
+                let sourceId = removeSpecialChars(link.source.iri);
+                let targetId = removeSpecialChars(link.target.iri);
+                if (sourceId === target && targetId === source) {
+                    let twoWayLinkID = sourceId;
                     twoWayLinkID += ">";
-                    twoWayLinkID += link.target.iri;
+                    twoWayLinkID += targetId;
                     const textNode = document.createTextNode('  \u27F6');
                     document.getElementById(twoWayLinkID).lastChild.appendChild(textNode);
                     link.direction = "double";
