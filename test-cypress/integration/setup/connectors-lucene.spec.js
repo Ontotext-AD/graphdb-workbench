@@ -30,8 +30,7 @@ describe('Setup / Connectors - Lucene', () => {
         getNewLuceneConnectorButton()
             .click();
         getCreateLuceneConnectorPage()
-            .should('be.visible')
-            .and('contain', 'Create new Lucene Connector');
+            .should('contain', 'Create new Lucene Connector');
         getConnectorNameField()
             .type(luceneConnectorName);
         getFieldNameField()
@@ -73,7 +72,7 @@ describe('Setup / Connectors - Lucene', () => {
     }
 
     function getCreateLuceneConnectorPage() {
-        return cy.get('.modal-content').should('be.visible');
+        return cy.get('.modal-content').scrollIntoView().should('be.visible');
     }
 
     function getConnectorNameField() {
