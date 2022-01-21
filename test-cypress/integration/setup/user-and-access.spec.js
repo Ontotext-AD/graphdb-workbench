@@ -93,7 +93,12 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete custom admin
+
+        editUser("second-admin");
+        getUsersTable().should('be.visible');
         deleteUser("second-admin");
+        createUser("adminWithNoPassword", PASSWORD, ROLE_REPO_MANAGER);
+        deleteUser("adminWithNoPassword");
         //disable security
         getToggleSecuritySwitch().click();
     });
@@ -145,25 +150,57 @@ describe('User and Access', () => {
         getPasswordField().type(password);
         getConfirmPasswordField().type(password);
         getRoleRadioButton(role).click();
-        if(role === "#roleUser") {
+        if (role === "#roleUser") {
             getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').within(() => {
                 cy.get('.write').click();
             });
+            getConfirmUserCreateButton().click();
+        } else if (role === "#roleAdmin" && username === "adminWithNoPassword") {
+            cy.get('#noPassword:checkbox').check()
+                .then(() => {
+                    cy.get('#noPassword:checkbox')
+                        .should('be.checked');
+                });
+            getConfirmUserCreateButton().click()
+                .then(() => {
+                    cy.get('.modal-dialog').find('.lead').contains('If the password is unset and security is enabled, this administrator will not be ' +
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
+                    cy.get('.modal-dialog').find('.confirm-btn').click();
+                });
+        } else {
+            getConfirmUserCreateButton().click();
         }
-        getConfirmUserCreateButton().click();
         cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('contain',username);
+        getUsersTable().should('contain', username);
     }
 
     function deleteUser(username) {
         cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
             cy.get('.icon-trash').click();
-        })
+        });
         cy.get('.confirm-btn').click();
     }
 
+    function editUser(username) {
+        cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
+            cy.get('.icon-edit').click();
+        });
+        cy.get('#noPassword:checkbox').check()
+            .then(() => {
+                cy.get('#noPassword:checkbox')
+                    .should('be.checked');
+            });
+        cy.get('#wb-user-submit').scrollIntoView().should('be.visible').click()
+            .then(() => {
+                    cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
+                    cy.get('.modal-dialog').find('.confirm-btn').click();
+                }
+            );
+    }
+
     function loginWithUser(username, password) {
-        cy.get('#wb-login-username').type(username)
+        cy.get('#wb-login-username').type(username);
         cy.get('#wb-login-password').type(password);
         cy.get('#wb-login-submitLogin').click();
     }
