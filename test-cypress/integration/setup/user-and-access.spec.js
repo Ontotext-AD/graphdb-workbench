@@ -184,19 +184,21 @@ describe('User and Access', () => {
     function editUser(username) {
         cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
             cy.get('.icon-edit').click();
-        });
-        cy.get('#noPassword:checkbox').check()
-            .then(() => {
-                cy.get('#noPassword:checkbox')
-                    .should('be.checked');
-            });
-        cy.get('#wb-user-submit').scrollIntoView().should('be.visible').click()
-            .then(() => {
+        }).then(() => {
+            cy.get('#noPassword:checkbox').check()
+                .then(() => {
+                    cy.get('#noPassword:checkbox')
+                        .should('be.checked');
+                });
+            getConfirmUserCreateButton().click()
+                .then(() => {
                     cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
                     cy.get('.modal-dialog').find('.confirm-btn').click();
                 }
             );
+        });
+
     }
 
     function loginWithUser(username, password) {
