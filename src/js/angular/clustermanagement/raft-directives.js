@@ -23,13 +23,6 @@ function containsIPV4(ip) {
     return false;
 }
 
-function workerIsConnected(n) {
-    return n.weight > 0;
-}
-
-function masterIsConnected(n) {
-    return n.weight > 0;
-}
 
 var clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.raftDirectives', [
     'graphdb.framework.utils.localstorageadapter'
@@ -55,10 +48,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
             }
 
             var width = getWindowWidth(),
-                height = getWindowHeight(),
-                colors = function (i) {
-                    return clusterColors[i % clusterColors.length];
-                };
+                height = getWindowHeight();
 
             scope.width = function () {
                 return width;
@@ -137,11 +127,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                 .on('mousemove', mousemove)
                 .on('mouseup', mouseup);
 
-            var maxScreenWidthForReposition = 1200;
-
             function repositionNodes() {
-                // repositionUnconnectedWorkers();
-                // repositionUnconnectedMasters();
                 repositionConnectedNodes();
             }
 
@@ -158,53 +144,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                         node.py = node.y = (height / 2) - Math.sin(theta) * height / 3;
                         node.fixed = false;
                     });
-                }
-            }
-
-            function repositionUnconnectedWorkers() {
-                let notConnectedNodes = _.filter(scope.nodes, function (n) {
-                    return !workerIsConnected(n);
-                });
-
-                // Between 3 and 6 rows, depending on window height
-                console.log(Math.floor((height - 50) / 110));
-                let nodeRows = Math.max(Math.min(Math.floor(height / 110), 6), 3);
-                let nodeColumns = Math.ceil(notConnectedNodes.length / nodeRows);
-
-                for (let i = 0; i < notConnectedNodes.length; i++) {
-                    let nodeRow = i % nodeRows;
-                    let nodeCol = nodeColumns - Math.floor(i / nodeRows) - 1;
-
-                    let usableWidth = Math.min(maxScreenWidthForReposition, scope.width());
-                    let widthDelta = scope.width() - usableWidth;
-                    let divider = i % 2 === 0 ? (2 - nodeCol * 64 - 35) : (2 + nodeCol * 64 + 35);
-                    let numerator = i % 2 === 0 ? widthDelta : (scope.width() - widthDelta);
-                    notConnectedNodes[i].px = notConnectedNodes[i].x = numerator / divider;
-                    notConnectedNodes[i].py = notConnectedNodes[i].y = nodeRow * 110 + 50;
-
-                    notConnectedNodes[i].fixed = true;
-                }
-            }
-
-            function repositionUnconnectedMasters() {
-                var masters = _.filter(scope.nodes, function (n) {
-                    return !masterIsConnected(n);
-                });
-
-                // Between 3 and 6 rows, depending on window height
-                var masterRows = Math.max(Math.min(Math.floor((height - 200) / 110), 6), 3);
-                var masterColumns = Math.ceil(masters.length / masterRows);
-
-                for (var i = 0; i < masters.length; i++) {
-                    var mRow = i % masterRows;
-                    var mCol = masterColumns - Math.floor(i / masterRows) - 1;
-
-                    var usableWidth = Math.min(maxScreenWidthForReposition, scope.width());
-                    var widthDelta = scope.width() - usableWidth;
-                    masters[i].px = masters[i].x = widthDelta / 2 + mCol * 64 + 35;
-                    masters[i].py = masters[i].y = mRow * 110 + 50;
-
-                    masters[i].fixed = true;
                 }
             }
 
@@ -232,9 +171,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                     .size([width, height])
                     .linkStrength(0.05)
                     .linkDistance(function (link) {
-                        // if (link.source.repositoryType === "master" && link.target.repositoryType === "master") {
-                        //     return Math.min(width, 1200) * 0.208;
-                        // }
                         return Math.min(width, 1200) * 0.375;
                     })
                     .on('tick', tick);
@@ -298,21 +234,17 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                 }
 
                 function nodeColors(d) {
-                    if (d.cluster === undefined || d.cluster.length === 0) {
-                        return "#888";
+                    switch (d.syncStatus) {
+                        case 'IN_SYNC':
+                            return '#0CB0A0';
+                        case 'OUT_OF_SYNC':
+                            return '#ccbb00';
+                        case 'NO_CONNECTION':
+                            return "#888";
                     }
-                    // if (d.repositoryType === "worker") {
-                    //     if (d.cluster.indexOf(currentCluster) >= 0) {
-                    //         return colors(currentCluster);
-                    //     } else {
-                    //         return colors(d.cluster[0]);
-                    //     }
-                    // } else {
-                        return colors(d.cluster);
-                    // }
                 }
 
-                function iconText(d) {
+                function nodeText(d) {
                     switch (d.nodeState) {
                         case 'LEADER':
                             return 'L';
@@ -323,13 +255,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                         default:
                             return '';
                     }
-                }
-
-                // Updates the status of existing links
-                function updateStatuses() {
-                    path.select('.link').attr('class', function (link) {
-                        return link.status + ' link';
-                    });
                 }
 
                 // update graph (called when needed)
@@ -376,8 +301,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                         });
 
                     pathGroupWarnings.append('svg:polygon')
-                    //.attr('points', '0 -13.333, 11.547 6.666, -11.547 6.666')
-                    //.attr('points', '0 -14.6666, 12.7017 7.3333, -12.7017 7.3333')
                         .attr('points', '0 -16.6666, 14.4337 8.3333, -14.4337 8.3333')
                         .attr('fill', 'white');
                     pathGroupWarnings.append('svg:text')
@@ -394,14 +317,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
 
                     // circle (node) group
                     circle = circle.data(scope.nodes);
-
-                    // update existing nodes (reflexive & selected visual states)
-
-                    circle.selectAll('.repo')
-                        .style('fill', nodeColors)
-                        .classed('reflexive', function (d) {
-                            return d.reflexive;
-                        });
 
                     // add new nodes
                     var g = circle.enter().append('svg:g');
@@ -489,9 +404,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                             scope.selectNode(null);
                         });
 
-                    // The icons for workers and masters consist of several elements:
-                    // 1) Outer bigger circle, normally kept transparent and used for better mouse aim
-                    //    as well as for highlighting nodes when it becomes visible.
                     circleGroup.append('svg:circle')
                         .attr('r', radius + 10)
                         .style('stroke', function (d) {
@@ -503,6 +415,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                                     return 'none';
                             }
                         })
+                        .style('fill', nodeColors)
                         .attr("stroke-width", 3)
                         .attr('stroke-dasharray', function (d) {
                             if (d.nodeState === 'CANDIDATE') {
@@ -514,13 +427,13 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                     // Create a dummy anchor node
                     let parser = document.createElement('a');
 
-                    // 3) Actual master or worker icon.
+                    // 3) Actual repo icon.
                     g.append('svg:text')
                         .attr('y', 20)
                         .attr('text-anchor', 'middle')
                         .attr('class', 'icon-any repo')
                         .attr('fill', '#cbeeea')
-                        .text(iconText);
+                        .text(nodeText);
 
 
                     let addressTextOffset = 50;
@@ -583,6 +496,28 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                         })
                         .each(function (d) {
                             d.termLabel = this;
+                        });
+
+                    let gStatusLabel = g.append('svg:g');
+
+                    let gStatusLabelRect = gTermLabel.append('svg:rect');
+
+                    // show node sync status
+                    gStatusLabel.append('svg:text')
+                        .attr('x', 0)
+                        .attr('y', function (d) {
+                            if (typeof d.matchIndex === "undefined" && typeof d.term === "undefined") {
+                                return addressTextOffset + nextTextDelta;
+                            } else {
+                                return addressTextOffset + 3 * nextTextDelta;
+                            }
+                        })
+                        .attr('class', 'id id-secondary')
+                        .text(function (d) {
+                            return d.syncStatus;
+                        })
+                        .each(function (d) {
+                            d.statusLabel = this;
                         });
 
 
@@ -655,6 +590,16 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                         }).attr('y', function (d) {
                             return getBBox(d.termLabel)['y'];
                         }).attr('fill', '#EEEEEE');
+
+                        gStatusLabelRect.attr('width', function (d) {
+                            return getBBox(d.statusLabel)['width'] + 4;
+                        }).attr('height', function (d) {
+                            return getBBox(d.statusLabel)['height'];
+                        }).attr('x', function (d) {
+                            return getBBox(d.statusLabel)['x'] - 2;
+                        }).attr('y', function (d) {
+                            return getBBox(d.statusLabel)['y'];
+                        }).attr('fill', '#EEEEEE');
                     }, 100);
 
                     // updating done
@@ -662,43 +607,16 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', '$time
                     scope.updating = false;
                 }
 
-                scope.updateStatuses = updateStatuses;
                 scope.restart = restart;
 
-                function updateWarnings() {
-                    path.select('g')
-                        .classed('link-warning-visible', function (d) {
-                            return d.reversePeerMissing && !('disabledReason' in d.target);
-                        });
-                }
-
-                scope.updateWarnings = updateWarnings;
-
                 function updateColors() {
-                    currentCluster++;
-                    if (currentCluster >= scope.clusters.length) {
-                        currentCluster = 0;
-                    }
-
-                    // try to find the next cluster with workers
-                    var start = currentCluster;
-                    while (!scope.clusters[currentCluster].hasWorkers) {
-                        currentCluster++;
-                        if (currentCluster >= scope.clusters.length) {
-                            currentCluster = 0;
-                        }
-                        if (currentCluster === start) {
-                            // didn't find any clusters with workers, no need to update colors
-                            return;
-                        }
-                    }
                     circle.selectAll('.repo').style('fill', nodeColors);
                 }
 
                 scope.updateColors = updateColors;
 
                 function refreshMastersIcons() {
-                    d3.selectAll('.repo').text(iconText);
+                    d3.selectAll('.repo').text(nodeText);
                 }
 
                 scope.refreshMastersIcons = refreshMastersIcons;
