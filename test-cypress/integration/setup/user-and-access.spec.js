@@ -22,6 +22,12 @@ describe('User and Access', () => {
     });
 
     after(() => {
+       cy.get('#toggle-security').find('.security-switch-label').find('.tag')
+            .then((val) => {
+                if ( val.text() === "ON") {
+                    getToggleSecuritySwitch().click();
+                }
+            })
         cy.deleteRepository(repositoryId);
     });
 
