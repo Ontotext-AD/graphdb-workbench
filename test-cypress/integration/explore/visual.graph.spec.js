@@ -108,6 +108,36 @@ describe('Visual graph screen validation', () => {
             });
         });
 
+        it('Test invalid links limit should show error to user ', () => {
+            searchForResource(VALID_RESOURCE);
+            openVisualGraphSettings();
+
+            cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
+                // Verify that the default settings are as follows:
+                // Maximum links to show: 20
+                getLinksNumberField().and('have.value', '20');
+               // Update default 20
+                updateLinksLimitField('1001')
+                    .then(() => {
+                        // Try to put invalid value such as 1001
+                        cy.get('.idError')
+                            .should('be.visible')
+                            .and('contain.text', 'Invalid links limit');
+                    });
+                // Try to save the invalid value
+                getSaveSettingsButton().and('not.be.disabled')
+                    .click();
+                // Then reset to default settings
+                getResetSettingsButton().and('not.be.disabled')
+                    .click()
+                    .then(() => {
+                        getLinksNumberField().and('have.value', '20');
+                        cy.get('.idError')
+                            .should('not.exist');
+                    });
+            });
+        });
+
         it('Test search for a valid resource with links', () => {
             searchForResource(VALID_RESOURCE);
             // Check include inferred
@@ -269,14 +299,14 @@ describe('Visual graph screen validation', () => {
 
             openVisualGraphSettings();
             // Set maximum links to 2
-            getLinksNumberField().clear().type('2');
+            updateLinksLimitField('2');
             saveSettings();
             // Verify that the diagram is updated
             getPredicates().should('have.length', 2);
 
             openVisualGraphSettings();
             // Set maximum links to 100
-            getLinksNumberField().clear().type('100');
+            updateLinksLimitField('100');
             saveSettings();
             // Verify that the diagram is updated
             getPredicates().should('have.length', 36);
@@ -333,11 +363,10 @@ describe('Visual graph screen validation', () => {
             getNodes().and('contain', 'Zinfandel');
 
             openVisualGraphSettings();
-            // Go to Settings and set "vin:Zinfandel" as an ignored type
-            getIgnoredTypesField().clear().type('vin:Zinfandel');
-
             // Set the connections limit to 10
-            getLinksNumberField().clear().type('10');
+            updateLinksLimitField('10');
+            // Go to Settings and set "vin:Zinfandel" as an ignored type
+            getIgnoredTypesField().clear().type('vin:Zinfandel').type('{enter}');
 
             saveSettings();
             // Verify that "vin:Zinfandel" has been removed from the diagram
@@ -370,11 +399,12 @@ describe('Visual graph screen validation', () => {
             openVisualGraphSettings();
             // Go to predicates tab
             openPredicatesTab();
-            // Set "vin:hasSugar" as an ignored predicate
-            getIgnoredPredicatesField().clear().type('vin:hasSugar');
 
             // Set the connections limit to 10
-            getLinksNumberField().clear().type('10');
+            updateLinksLimitField('10');
+            // Set "vin:hasSugar" as an ignored predicate
+            getIgnoredPredicatesField().clear().type('vin:hasSugar').type('{enter}');
+
             saveSettings();
 
             // Verify that "vin:hasSugar" has been removed from the diagram
@@ -388,7 +418,7 @@ describe('Visual graph screen validation', () => {
             openVisualGraphSettings();
             // Verify that the default settings are as follows:
             // Maximum links to show: 20
-            getLinksNumberField().clear().type('10')
+            updateLinksLimitField('10')
                 .should('have.value', '10');
             // Preferred lang: en
             cy.get('.preferred-languages .tag-item').should('have.length', 1)
@@ -672,5 +702,9 @@ describe('Visual graph screen validation', () => {
     function confirmDelete() {
         cy.get('.modal-footer .confirm-btn').click();
         cy.get('.modal').should('not.exist');
+    }
+
+    function updateLinksLimitField(value) {
+        return getLinksNumberField().invoke('val', value).trigger('change', {force: true});
     }
 });

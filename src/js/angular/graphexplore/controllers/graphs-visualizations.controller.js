@@ -2,6 +2,7 @@ import 'angular/core/services';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
+import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -35,6 +36,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     $scope.queryResultsMode = false;
     $scope.embedded = $location.search().embedded;
     $scope.openedNodeInfoPanel = undefined;
+
+    $scope.invalidLimit = false;
+    $scope.INVALID_LINKS_MSG = 'Invalid links limit';
+    $scope.INVALID_LINKS_TOOLTIP = 'The valid limit range is from 1 - 1000';
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
@@ -309,6 +314,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.resetSettings = function () {
         $scope.settings = angular.copy($scope.defaultSettings);
+        $scope.validateLinksLimit();
         renderSettings();
     };
 
@@ -322,6 +328,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
         $scope.settings.linksLimit = linksLimit;
     };
+
+    $scope.validateLinksLimit = function () {
+        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.settings.linksLimit);
+    }
 
     $scope.showSettings = function () {
         $scope.showInfoPanel = true;
@@ -369,6 +379,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.updateSettings = function () {
+        if ($scope.invalidLimit) {
+            toastr.error($scope.INVALID_LINKS_TOOLTIP, $scope.INVALID_LINKS_MSG);
+            return;
+        }
         $scope.saveSettings = $scope.settings;
         $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
             return s['text'];
