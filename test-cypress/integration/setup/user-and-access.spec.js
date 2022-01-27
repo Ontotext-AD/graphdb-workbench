@@ -205,6 +205,8 @@ describe('User and Access', () => {
         cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
             cy.get('.icon-edit').click();
         }).then(() => {
+            cy.url().should('contain', `${Cypress.config('baseUrl')}/user/${username}`);
+            cy.window();
             cy.get('#noPassword:checkbox').check()
                 .then(() => {
                     cy.get('#noPassword:checkbox')
