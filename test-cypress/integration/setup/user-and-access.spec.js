@@ -22,6 +22,7 @@ describe('User and Access', () => {
     });
 
     after(() => {
+        cy.visit('/users');
        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
             .then((val) => {
                 if ( val.text() === "ON") {
@@ -99,12 +100,7 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete custom admin
-        //
-        // editUser("second-admin");
-        // getUsersTable().should('be.visible');
         deleteUser("second-admin");
-        // createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
-        // deleteUser("adminWithNoPassword");
         //disable security
         getToggleSecuritySwitch().click();
     });
@@ -113,9 +109,13 @@ describe('User and Access', () => {
         getToggleSecuritySwitch().click();
         //login with the user
         loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
+        cy.url().should('include', '/users');
         getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
+        logout();
+        //login with admin
+        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         editUser("adminWithNoPassword");
         getUsersTable().should('be.visible');
@@ -205,8 +205,6 @@ describe('User and Access', () => {
         cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
             cy.get('.icon-edit').click();
         }).then(() => {
-            cy.url().should('contain', `${Cypress.config('baseUrl')}/user/${username}`);
-            cy.window();
             cy.get('#noPassword:checkbox').check()
                 .then(() => {
                     cy.get('#noPassword:checkbox')
