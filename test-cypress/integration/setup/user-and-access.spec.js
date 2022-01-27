@@ -211,12 +211,12 @@ describe('User and Access', () => {
                         .should('be.checked');
                 });
             getConfirmUserCreateButton().click()
-                .then(() => {
+               // .then(() => {
                     cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
                     cy.get('.modal-dialog').find('.confirm-btn').click();
-                }
-            );
+             //   }
+            //);
         });
 
     }
