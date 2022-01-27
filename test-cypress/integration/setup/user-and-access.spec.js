@@ -104,25 +104,25 @@ describe('User and Access', () => {
         //disable security
         getToggleSecuritySwitch().click();
     });
-    it('Warn users when setting no password', () => {
+    it.only('Warn users when setting no password', () => {
         //create a normal read/write user
-        getToggleSecuritySwitch().click();
+        // getToggleSecuritySwitch().click();
         //login with the user
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.url().should('include', '/users');
+     //   loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+    //    cy.url().should('include', '/users');
         getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
-        logout();
-        //login with admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
+        // logout();
+        // //login with admin
+        // loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        // cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         editUser("adminWithNoPassword");
         cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
+        // getUsersTable().should('be.visible');
         deleteUser("adminWithNoPassword");
         //enable security
-        getToggleSecuritySwitch().click();
+        // getToggleSecuritySwitch().click();
     });
     function getCreateNewUserButton() {
         return cy.get('#wb-users-userCreateLink');
