@@ -29,6 +29,16 @@ describe('User and Access', () => {
                     getToggleSecuritySwitch().click();
                 }
             });
+        getUsersTable().should('be.visible');
+        cy.get('#wb-users-userInUsers tr').then((table) => {
+            cy.get('table > tbody  > tr').each(($el, index, $list) => {
+                getUsersTable().should('be.visible');
+                const username = $el.find('.username').text();
+                if (username !=='admin') {
+                    deleteUser(username);
+                }
+            });
+        });
         cy.deleteRepository(repositoryId);
     });
 
@@ -100,30 +110,23 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete custom admin
-        deleteUser("second-admin");
+      //  deleteUser("second-admin");
         //disable security
         getToggleSecuritySwitch().click();
     });
-    it.only('Warn users when setting no password', () => {
-        //create a normal read/write user
-        // getToggleSecuritySwitch().click();
-        //login with the user
-     //   loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-    //    cy.url().should('include', '/users');
+    it('Warn users when setting no password', () => {
         getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
-        // logout();
-        // //login with admin
-        // loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        // cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
-        editUser("adminWithNoPassword");
         cy.get('.ot-splash').should('not.be.visible');
-        // getUsersTable().should('be.visible');
-        deleteUser("adminWithNoPassword");
-        //enable security
-        // getToggleSecuritySwitch().click();
+       // deleteUser("adminWithNoPassword");
     });
+
+    it('Warn users when editing and setting no password', () => {
+        getUsersTable().should('be.visible');
+        editUser("admin");
+    });
+
     function getCreateNewUserButton() {
         return cy.get('#wb-users-userCreateLink');
     }
@@ -204,7 +207,7 @@ describe('User and Access', () => {
 
     function editUser(username) {
         cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
-            cy.get('.icon-edit').click();
+            cy.get('.icon-edit').scrollIntoView().click({force:true});
         }).then(() => {
             cy.get('#noPassword:checkbox').check()
                 .then(() => {
@@ -215,7 +218,7 @@ describe('User and Access', () => {
                 .then(() => {
                     cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
-                    cy.get('.modal-dialog').find('.confirm-btn').click();
+                    cy.get('.modal-dialog').find('.btn-secondary').click();
                 }
             );
         });
