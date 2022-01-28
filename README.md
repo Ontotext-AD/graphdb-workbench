@@ -37,7 +37,12 @@ changes and continuously re-executing the tests.
 Cypress is used as a framework for writing functional tests which cover concrete UI components as
 well as whole acceptance scenarios. The tests are executed against a GraphDB version as defined in
 `package.json#versions.graphdb` which is run in a docker container.
- 
+
+> Some tests may require a GraphDB Enterprise Edition license file. The file must be named graphdb.license
+and put in the `test-cypress/fixtures` folder. In case you don't have such license, you can ignore the
+failing tests.
+
+
 There are two options for running the tests. One is a headless execution and the second is through
 the Cypress's dashboard application. Follow the steps described below: 
 * Ensure a GraphDB instance is running on `localhost:7200`. One can be run by executing 
