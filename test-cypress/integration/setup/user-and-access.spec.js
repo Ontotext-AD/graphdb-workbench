@@ -122,7 +122,7 @@ describe('User and Access', () => {
        // deleteUser("adminWithNoPassword");
     });
 
-    it('Warn users when editing and setting no password', () => {
+    it.only('Warn users when editing and setting no password', () => {
         getUsersTable().should('be.visible');
         editUser("admin");
     });
@@ -214,9 +214,12 @@ describe('User and Access', () => {
                     cy.get('#noPassword:checkbox')
                         .should('be.checked');
                 });
-            getConfirmUserCreateButton().click()
+            getConfirmUserCreateButton().click({force:true})
                 .then(() => {
-                    cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
+                    cy.get('.modal-open').find('.modal-dialog').find('.lead').contains('If you unset the password and' +
+                        ' then' +
+                        ' enable' +
+                        ' security, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
                     cy.get('.modal-dialog').find('.btn-secondary').click();
                 }
