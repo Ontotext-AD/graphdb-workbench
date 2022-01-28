@@ -22,6 +22,7 @@ describe('User and Access', () => {
     });
 
     after(() => {
+        cy.deleteRepository(repositoryId);
         cy.visit('/users');
         cy.get('#toggle-security').find('.security-switch-label').find('.tag')
             .then((val) => {
@@ -39,7 +40,7 @@ describe('User and Access', () => {
                 }
             });
         });
-        cy.deleteRepository(repositoryId);
+
     });
 
     it('Initial state', () => {
