@@ -22,6 +22,23 @@ describe('User and Access', () => {
     });
 
     after(() => {
+        cy.visit('/users');
+        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
+            .then((val) => {
+                if (val.text() === "ON") {
+                    getToggleSecuritySwitch().click();
+                }
+            });
+        getUsersTable().should('be.visible');
+        cy.get('#wb-users-userInUsers tr').then((table) => {
+            cy.get('table > tbody  > tr').each(($el, index, $list) => {
+                getUsersTable().should('be.visible');
+                const username = $el.find('.username').text();
+                if (username !=='admin') {
+                    deleteUser(username);
+                }
+            });
+        });
         cy.deleteRepository(repositoryId);
     });
 
@@ -93,14 +110,16 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete custom admin
-
-        editUser("second-admin");
-        getUsersTable().should('be.visible');
-        deleteUser("second-admin");
-        createUser("adminWithNoPassword", PASSWORD, ROLE_REPO_MANAGER);
-        deleteUser("adminWithNoPassword");
+         deleteUser("second-admin");
         //disable security
         getToggleSecuritySwitch().click();
+    });
+    it('Warn users when setting no password when creating new user admin', () => {
+        getUsersTable().should('be.visible');
+        createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
+        getUsersTable().should('be.visible');
+        cy.get('.ot-splash').should('not.be.visible');
+        deleteUser("adminWithNoPassword");
     });
 
     function getCreateNewUserButton() {
@@ -179,24 +198,6 @@ describe('User and Access', () => {
             cy.get('.icon-trash').click();
         });
         cy.get('.confirm-btn').click();
-    }
-
-    function editUser(username) {
-        cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
-            cy.get('.icon-edit').click();
-        });
-        cy.get('#noPassword:checkbox').check()
-            .then(() => {
-                cy.get('#noPassword:checkbox')
-                    .should('be.checked');
-            });
-        cy.get('#wb-user-submit').scrollIntoView().should('be.visible').click()
-            .then(() => {
-                    cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security, this administrator will not be ' +
-                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
-                    cy.get('.modal-dialog').find('.confirm-btn').click();
-                }
-            );
     }
 
     function loginWithUser(username, password) {
