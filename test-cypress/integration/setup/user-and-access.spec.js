@@ -122,7 +122,7 @@ describe('User and Access', () => {
        // deleteUser("adminWithNoPassword");
     });
 
-    it.only('Warn users when editing and setting no password', () => {
+    it('Warn users when editing and setting no password', () => {
         getUsersTable().should('be.visible');
         editUser("admin");
     });
