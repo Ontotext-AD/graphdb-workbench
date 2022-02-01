@@ -22,11 +22,6 @@ describe('User and Access', () => {
     });
 
     after(() => {
-        cy.visit('/users');
-        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
-            .then((val) => {
-                console.log(`Security in after all is: ${val.text()}`)
-            });
         cy.deleteRepository(repositoryId);
         cy.visit('/users');
         cy.get('#toggle-security').find('.security-switch-label').find('.tag')
@@ -124,10 +119,6 @@ describe('User and Access', () => {
         getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
         getUsersTable().should('be.visible');
-        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
-            .then((val) => {
-                console.log(`Security is: ${val.text()}`)
-            });
         cy.get('.ot-splash').should('not.be.visible');
         deleteUser("adminWithNoPassword");
     });
