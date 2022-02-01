@@ -41,6 +41,11 @@ pipeline {
 
     stage('Acceptance') {
       steps {
+        configFileProvider(
+                [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
+          sh 'cp graphdb.license ./test-cypress/fixtures/'
+        }
+          sh "ls ./test-cypress/fixtures/"
           sh "docker-compose build --force-rm --no-cache --parallel"
           sh "docker-compose up --abort-on-container-exit --exit-code-from cypress-tests"
 
@@ -54,6 +59,14 @@ pipeline {
 //           // Update relative paths to absolute path
 //           sh "sed -i.backup \"s@^SF:..@SF:\$(pwd)@\" cypress-coverage/lcov.info"
       }
+    }
+  }
+
+  post {
+    always {
+        sh "docker-compose down -v --remove-orphans --rmi=local || true"
+      // clean root owned resources from docker volumes, just in case
+      sh "sudo rm -rf ./test-cypress/coverage"
     }
   }
 }

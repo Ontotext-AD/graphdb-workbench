@@ -437,8 +437,8 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         }
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
+securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -470,8 +470,19 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
 
         $scope.submit = function () {
-            $scope.createUser();
-        };
+                if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                    ModalService.openSimpleModal({
+                        title: 'Create administrator',
+                        message: 'If the password is unset and security is enabled, this administrator will not be ' +
+                            'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                        warning: true
+                    }).result.then(function () {
+                        $scope.createUser();
+                    });
+                } else {
+                    $scope.createUser();
+                }
+            };
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
@@ -536,8 +547,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
+securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -587,7 +598,18 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.getUserData();
 
         $scope.submit = function () {
-            $scope.updateUser();
+            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                ModalService.openSimpleModal({
+                    title: 'Save administrator settings',
+                    message: 'If you unset the password and then enable security, this administrator will not be ' +
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                    warning: true
+                }).result.then(function () {
+                    $scope.updateUser();
+                });
+            } else {
+                $scope.updateUser();
+            }
         };
 
         $scope.updateUserHttp = function () {
@@ -731,12 +753,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
 
         $scope.submit = function () {
-            const pa = parseAuthorities($scope.userData.authorities);
-            $scope.userType = pa.userType;
             if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
-                    title: 'Save user settings',
-                    message: 'If you unset the password and then enable security, that user will not be ' +
+                    title: 'Save administrator settings',
+                    message: 'If you unset the password and then enable security, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
                     warning: true
                 }).result.then(function () {
