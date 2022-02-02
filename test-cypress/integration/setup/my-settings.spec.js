@@ -222,7 +222,8 @@ describe('My Settings', () => {
             });
     });
 
-    it('Saving user credentials with checked unset password should show modal window to warn user about unsetting the' +
+    it('Saving administrator credentials with checked unset password should show modal window to warn user about' +
+        ' unsetting the' +
         ' password', () => {
         // User role is administrator
         cy.get('#noPassword:checkbox').check()
@@ -233,7 +234,7 @@ describe('My Settings', () => {
         getSaveButton().click()
             .then(() => {
                 cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security,' +
-                    ' that user will not be able to log into GraphDB through the workbench.');
+                    ' this administrator will not be able to log into GraphDB through the workbench.');
     }
     )
 });
