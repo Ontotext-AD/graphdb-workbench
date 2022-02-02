@@ -27,20 +27,28 @@ function RepositoriesRestService($http) {
         getRepositoriesFromKnownLocation
     };
 
-    function getRepository(repositoryid) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryid}`);
+    function getRepository(repoInfo) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repoInfo.id}`, {
+            params: {
+                location: repoInfo.location
+            }
+        });
     }
 
     function getRepositories() {
-        return $http.get(REPOSITORIES_ENDPOINT);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/workbench`);
     }
 
     function getRepositoriesFromKnownLocation(location) {
         return $http.get(`${REPOSITORIES_ENDPOINT}?location=${location}`);
     }
 
-    function deleteRepository(repositoryId) {
-        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}`);
+    function deleteRepository(repo) {
+        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repo.id}`, {
+            params: {
+                location: repo.location
+            }
+        });
     }
 
     function createRepository(config) {
@@ -51,16 +59,24 @@ function RepositoriesRestService($http) {
         return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, config);
     }
 
-    function restartRepository(repositoryId) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/restart`);
+    function restartRepository(repo) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repo.id}/restart`, null, {
+            params: {
+                location: repo.location
+            }
+        });
     }
 
     function getRepositoryConfiguration(repositoryType) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/defaultConfig/${repositoryType}`);
     }
 
-    function getSize(repositoryId) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/size`);
+    function getSize(repository) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repository.id}/size`, {
+            params: {
+                location: repository.location
+            }
+        });
     }
 
     function getPrefix(repositoryId, params) {

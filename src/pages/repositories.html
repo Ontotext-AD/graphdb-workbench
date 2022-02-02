@@ -18,7 +18,7 @@
 				<div class="pull-left">
 					<strong>Repositories from: </strong>
 					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></em>
-					<span class="mr-1">{{getActiveLocation().label}}</span>
+					<span class="mr-1">{{getLocationsLabels()}}</span>
 				</div>
 				<div class="actions-bar-inline pull-right">
 					<button
@@ -51,16 +51,16 @@
 					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped" aria-describedby="Repositories table">
 						<tbody>
 							<tr class="repository"
-								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
-								ng-class="{'table-info text-secondary': getActiveRepository() == repository.id}">
+								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id', 'location']"
+								ng-class="{'table-info text-secondary': isRepoActive(repository)}">
 								<td width="25">
 									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
-										  ng-click="setRepository(repository.id)"
-										  ng-if="getActiveRepository() !== repository.id"
-										  data-repository-id="{{repository.id}}"></span>
+										  ng-click="setRepository(repository)"
+										  ng-if="!isRepoActive(repository)"
+										  data-repository-id="{{repository}}"></span>
 									<span role="button" class="icon-connection-on icon-lg text-tertiary"
 										  tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
-										  ng-if="getActiveRepository() === repository.id"></span>
+										  ng-if="isRepoActive(repository)"></span>
 								</td>
 								<td>
 									<div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
@@ -71,6 +71,7 @@
 											<strong class="repository-id">{{repository.id}}</strong></span>
                                             <span class="repository-status" class="small"><small> &middot; <span class="text-secondary">{{repository.state}}</span></small></span>
                                             <span class="small" ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+                                            <span class="small"><small> &middot; Location: {{repository.location ? repository.location : 'Local'}}</small></span>
 									</div>
 								</td>
 								<td width="150" class="text-nowrap repository-actions">
@@ -86,7 +87,7 @@
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
 										<a class="btn btn-link p-0 edit-repository-btn"
-											href="repository/edit/{{repository.id}}"
+											href="repository/edit/{{repository.id}}?location={{repository.location}}"
 											tooltip="Edit repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter">
@@ -104,21 +105,21 @@
                                            tooltip="Restart repository {{repository.id}}"
                                            tooltip-placement="top"
                                            tooltip-trigger="mouseenter"
-                                           ng-click="restartRepository(repository.id)">
+                                           ng-click="restartRepository(repository)">
 												<span class="icon-reload"></span>
 										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
 											tooltip="Delete repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter"
-											ng-click="deleteRepository(repository.id)">
+											ng-click="deleteRepository(repository)">
 											<em class="icon-trash"></em>
 										</button>
 									</span>
 								</td>
 								<td width="50">
 									<button class="btn btn-link p-0 pin-repository-btn" ng-hide="repository.type === 'system'"
-										ng-click="toggleDefaultRepository(repository.id)"
+										ng-click="toggleDefaultRepository(repository)"
 										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
 										tooltip="Set as default repository">
 										<em class="icon-pin"></em>

@@ -72,7 +72,7 @@
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>
 						    {{repository.id}} <br/>
-						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn())">{{getActiveLocation().label}}</small>
+						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn())">{{repository.location ? repository.location : 'Local'}}</small>
 					    </span>
                     </a>
                 </li>

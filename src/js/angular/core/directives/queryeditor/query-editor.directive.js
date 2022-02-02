@@ -261,6 +261,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             cm.options.sparql.headers['X-GraphDB-Catch'] = scope.currentTabConfig.pageSize + '; throw';
             scope.currentTrackAlias = newTrackAlias();
             cm.options.sparql.headers['X-GraphDB-Track-Alias'] = scope.currentTrackAlias;
+            cm.options.sparql.headers['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
             scope.countTimeouted = false;
             if (cm.getQueryMode() === 'query') {
                 cm.options.sparql.endpoint = 'repositories/' + $repositories.getActiveRepository();

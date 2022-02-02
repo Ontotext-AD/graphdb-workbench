@@ -161,6 +161,18 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         return $repositories.getRepositories();
     };
 
+    $scope.getLocationsLabels = function () {
+        let locationsLabels = '';
+        $repositories.getLocations().forEach(location => {
+            locationsLabels += `${location.label}, `;
+        })
+        return locationsLabels;
+    };
+
+    $scope.isRepoActive = function (repo) {
+        return $repositories.isRepoActive(repo);
+    }
+
     //Delete location
     $scope.deleteLocation = function (uri) {
         ModalService.openSimpleModal({
@@ -275,30 +287,30 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     };
 
     //Change repository
-    $scope.setRepository = function (id) {
-        $repositories.setRepository(id);
+    $scope.setRepository = function (repo) {
+        $repositories.setRepository(repo);
     };
 
     //Delete repository
-    $scope.deleteRepository = function (repositoryId) {
+    $scope.deleteRepository = function (repository) {
         ModalService.openSimpleModal({
             title: 'Confirm delete',
-            message: `<p>Are you sure you want to delete the repository <strong>${repositoryId}</strong>?</p>
+            message: `<p>Are you sure you want to delete the repository <strong>${repository.id}</strong>?</p>
                       <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
                             All data in the repository will be lost.</p>`,
             warning: true
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteRepository(repositoryId);
-                removeCachedGraphsOnDelete(repositoryId);
+                $repositories.deleteRepository(repository);
+                removeCachedGraphsOnDelete(repository);
             });
     };
 
-    $scope.restartRepository = function (repositoryId) {
+    $scope.restartRepository = function (repository) {
         ModalService.openSimpleModal({
             title: 'Confirm restart',
-            message: `<p>Are you sure you want to restart the repository <strong>${repositoryId}</strong>?</p>
+            message: `<p>Are you sure you want to restart the repository <strong>${repository.id}</strong>?</p>
                         <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
                             The repository will be shut down immediately and all running queries
                             and updates will be cancelled.</p>`,
@@ -306,17 +318,17 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.restartRepository(repositoryId);
+                $repositories.restartRepository(repository);
             });
     }
 
-    $scope.toggleDefaultRepository = function (repositoryId) {
-        if ($scope.getDefaultRepository() === repositoryId) {
+    $scope.toggleDefaultRepository = function (repository) {
+        if ($scope.getDefaultRepository() === repository) {
             // unset
             $repositories.setDefaultRepository(null);
         } else {
             // set
-            $repositories.setDefaultRepository(repositoryId);
+            $repositories.setDefaultRepository(repository);
         }
     };
 
@@ -388,9 +400,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         $interval.cancel(timer);
     });
 
-    function removeCachedGraphsOnDelete(repoId) {
-        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
-        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repoId}`;
+    function removeCachedGraphsOnDelete(repo) {
+        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repo.id}`;
+        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repo.id}`;
         angular.forEach(LocalStorageAdapter.keys(), function (key) {
             // remove everything but the hide prefixes setting, it should always persist
             if (key.startsWith(cashedClassHierarchyGraphPrefix) || key.startsWith(cashedDependenciesGraphPrefix)) {
@@ -506,7 +518,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         id: '',
         params: {},
         title: '',
-        type: ''
+        type: '',
+        location: ''
     };
 
     $scope.invalidValues = {
@@ -518,6 +531,21 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidUnionWorkerThreads : false,
         isInvalidValidationResultsLimitPerConstraint : false,
         isInvalidValidationResultsLimitTotal : false
+    };
+
+    $scope.locations = [];
+
+    $scope.$watch($scope.hasActiveLocation, function () {
+        if ($scope.hasActiveLocation) {
+            $scope.locations = $repositories.getLocations();
+        }
+    });
+
+    $scope.selectLocationByLabel = function (locationUri) {
+        let foundLocation = $scope.locations.find((location) => location.uri === locationUri);
+        if (foundLocation) {
+            $scope.repositoryInfo.location = locationUri;
+        }
     };
 
     function isValidEERepository(repositoryType) {
@@ -753,6 +781,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.loader = true;
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
+    $scope.repositoryInfo.location = $scope.params.location;
     $scope.repositoryInfo.restartRequested = false;
     $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
@@ -773,7 +802,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            RepositoriesRestService.getRepository($scope.repositoryInfo.id)
+            RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;
@@ -791,6 +820,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.setRepositoryType(data.type);
                     parseNumberParamsIfNeeded($scope.repositoryInfo.params);
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
+                    $scope.locations = $repositories.getLocations();
                     $scope.loader = false;
                 })
                 .error(function (data, status) {

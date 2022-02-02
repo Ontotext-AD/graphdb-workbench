@@ -46,6 +46,22 @@
                         </div>
                     </div>
 
+                    <div ng-if="locations.length > 1">
+                        <h5>Available locations</h5>
+                        <div class="form-group row indented-div">
+                            <label for="locations" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+                                Location
+                            </label>
+                            <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" tooltip="Location where to create repository. Default to local" tooltip-trigger="mouseenter">
+                                <select ng-disabled="editRepoPage" class="form-control" id="locations"
+                                        ng-model="repositoryInfo.location"
+                                        ng-change="selectLocationByLabel(repositoryInfo.location)"
+                                        ng-options="location.uri as location.label for location in locations">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Ontop repository related directive -->
                     <ontop-repo ng-if="repositoryInfo.type === 'ontop'"></ontop-repo>
 

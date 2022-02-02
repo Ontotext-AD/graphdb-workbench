@@ -313,9 +313,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.getActiveRepositoryObject = function () {
-        return _.find($scope.getRepositories(), function (repo) {
-            return repo.id === $scope.getActiveRepository();
-        });
+        return $repositories.getActiveRepositoryObject();
     };
 
     $scope.isActiveRepoOntopType = function () {
@@ -430,7 +428,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo.id).then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo).then(function (res) {
                 $scope.repositorySize = res.data;
             });
         }

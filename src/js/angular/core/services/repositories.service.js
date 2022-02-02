@@ -20,11 +20,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
               RepositoriesRestService, LocationsRestService, LicenseRestService) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
+        this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
         this.location = '';
         this.locationError = '';
         this.loading = true;
-        this.repository = localStorage.getItem(this.repositoryStorageName);
+        this.repository = {};
+        this.repository.id = localStorage.getItem(this.repositoryStorageName);
+        this.repository.location = localStorage.getItem(this.repositoryStorageLocationName);
         this.locations = [];
         this.repositories = [];
         this.locationsShouldReload = false;
@@ -57,13 +60,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             let existsActiveRepo = false;
             for (let i = 0; i < this.repositories.length; i++) {
                 const repo = this.repositories[i];
-                if (repo.id === this.repository) {
+                if (this.repository && repo.id === this.repository.id && repo.location === this.repository.location) {
                     existsActiveRepo = true;
                     break;
                 }
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(this.location, this.repository)) {
+                if (!$jwtAuth.canReadRepo(this.getLocationFromUri(this.repository.location), this.repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -222,11 +225,15 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getActiveRepository = function () {
+            return this.repository.id;
+        };
+
+        this.getActiveRepositoryObject = function () {
             return this.repository;
         };
 
         this.isSystemRepository = function () {
-            return this.repository === 'SYSTEM';
+            return this.repository.id === 'SYSTEM';
         };
 
         this.isActiveRepoOntopType = function (repoId) {
@@ -258,28 +265,39 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return typeof activeRepo === "undefined";
         }
 
+        this.getLocationFromUri = function (locationUri) {
+            const that = this;
+            return that.locations.find((location) => location.uri === locationUri);
+        }
+
         this.setRepositoryHeaders = function () {
-            const repo = this.repository ? this.repository : undefined;
-            $http.defaults.headers.common['X-GraphDB-Repository'] = repo;
+            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository.id ? this.repository.id : undefined;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repo;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository.id ? this.repository.id : undefined;
+
+            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
+            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
+            $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
         };
 
         this.setRepositoryHeaders();
 
-        this.setRepository = function (id) {
-            this.repository = id;
-            if (id) {
-                localStorage.setItem(this.repositoryStorageName, this.repository);
+        this.setRepository = function (repo) {
+            this.repository = repo;
+            if (repo) {
+                localStorage.setItem(this.repositoryStorageName, this.repository.id);
+                localStorage.setItem(this.repositoryStorageLocationName, this.repository.location);
             } else {
                 localStorage.removeItem(this.repositoryStorageName);
+                localStorage.removeItem(this.repositoryStorageLocationName);
             }
-            this.setRepositoryHeaders(id);
+            this.setRepositoryHeaders(repo);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
             // we unset the repository
-            if (id && !$jwtAuth.canReadRepo(this.location, id)) {
+            if (repo && !$jwtAuth.canReadRepo(this.getLocationFromUri(repo.location), repo.id)) {
                 this.setRepository('');
             }
             // reset denied permissions (different repo, different rights)
@@ -290,16 +308,16 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.hasActiveLocation() ? this.location.defaultRepository : '';
         };
 
-        this.setDefaultRepository = function (id) {
+        this.setDefaultRepository = function (repo) {
             if (!this.hasActiveLocation()) {
                 toastr.error('No active location', 'Error');
                 return;
             }
             const that = this;
-            LocationsRestService.setDefaultRepository(id)
+            LocationsRestService.setDefaultRepository(repo)
                 .success(function () {
                     // XXX maybe we should reload the active location but oh well
-                    that.location.defaultRepository = id;
+                    that.location.defaultRepository = repo;
                 })
                 .error(function (data) {
                     const msg = getError(data);
@@ -323,23 +341,23 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             });
         };
 
-        this.deleteRepository = function (repositoryId) {
-            RepositoriesRestService.deleteRepository(repositoryId)
+        this.deleteRepository = function (repo) {
+            RepositoriesRestService.deleteRepository(repo)
                 .success(function () {
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, 'Error');
             });
-            if (that.getActiveRepository() === repositoryId) {
+            if (that.getActiveRepository() === repo.id) {
                 that.setRepository('');
             }
         };
 
-        this.restartRepository = function (repositoryId) {
-            RepositoriesRestService.restartRepository(repositoryId)
+        this.restartRepository = function (repository) {
+            RepositoriesRestService.restartRepository(repository)
                 .success(function () {
-                    toastr.success(`Restarting repository ${repositoryId}`);
+                    toastr.success(`Restarting repository ${repository.id}`);
                     // This provides immediate visual feedback by updating the status
                     that.initQuick();
                 }).error(function (data) {
@@ -355,6 +373,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 }
             });
         };
+
+        this.isRepoActive = function (repo) {
+            if (this.repository) {
+                return repo.id === this.repository.id && repo.location === this.repository.location;
+            }
+            return false;
+        }
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             if (!securityEnabled || userLoggedIn || freeAccess) {
