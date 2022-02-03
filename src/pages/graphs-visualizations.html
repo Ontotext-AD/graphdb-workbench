@@ -251,11 +251,17 @@
                         </button>
                         <input type="number" class="form-control input-number" size="20"
                                ng-model="settings['linksLimit']"
-                               min="0" max="1000" class="ng-pristine ng-valid ng-valid-number">
+                               min="0" max="1000" class="ng-pristine ng-valid ng-valid-number"
+                               ng-change="validateLinksLimit()">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] > 999"
                                 ng-click="changeLimit(1)">
                             <span class="icon-plus"></span>
                         </button>
+                        <span style="margin-top: 5px" ng-if="invalidLimit"
+                              class="idError alert alert-danger"
+                              tooltip="{{INVALID_LINKS_TOOLTIP}}">
+                            {{INVALID_LINKS_MSG}}
+                        </span>
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
