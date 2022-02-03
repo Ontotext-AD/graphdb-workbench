@@ -43,6 +43,9 @@ function LocationsRestService($http) {
         return $http({
             method: 'GET',
             url: `${ACTIVE_LOCATION_ENDPOINT}`,
+            headers: {
+                'X-GraphDB-Repository-Location': undefined
+            },
             noCancelOnRouteChange: true
         });
     }

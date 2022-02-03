@@ -63,12 +63,12 @@
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id']"
-                    ng-if="repository.id !== getActiveRepository()"
+                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id', 'location']"
+                    ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
                     popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository.id)">
+                    <a class="dropdown-item" ng-click="setRepository(repository)">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>
 						    {{repository.id}} <br/>

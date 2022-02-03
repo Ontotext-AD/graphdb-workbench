@@ -760,8 +760,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories) {
     return {
         restrict: 'E',
         transclude: true,
@@ -778,14 +778,16 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
     function linkFunc($scope) {
         $scope.pluginIsActive = true;
         function checkPluginIsActive() {
-            return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
-                .done(function (data) {
-                    $scope.pluginIsActive = data.indexOf('true') > 0;
-                    $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
-                })
-                .fail(function (data) {
-                    toastr.error(getError(data), 'Could not check if plugin is active!');
-                });
+            if ($repositories.getActiveRepository()) {
+                return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
+                    .done(function (data) {
+                        $scope.pluginIsActive = data.indexOf('true') > 0;
+                        $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
+                    })
+                    .fail(function (data) {
+                        toastr.error(getError(data), 'Could not check if plugin is active!');
+                    });
+            }
         }
 
         $scope.activatePlugin = function () {

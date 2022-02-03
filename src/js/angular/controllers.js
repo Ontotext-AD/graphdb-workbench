@@ -44,7 +44,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     $scope.doClear = false;
 
     $scope.getActiveRepositorySize = function () {
-        const repo = $repositories.getActiveRepository();
+        const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
         }
@@ -368,8 +368,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.setRepository = function (id) {
-        $repositories.setRepository(id);
+    $scope.setRepository = function (repository) {
+        $repositories.setRepository(repository);
     };
 
     $scope.principal = function () {
@@ -423,6 +423,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.setPopoverRepo = function (repository) {
         $scope.popoverRepo = repository;
     };
+
+    $scope.isRepoActive = function (repository) {
+        return $repositories.isRepoActive(repository);
+    }
 
     $scope.getRepositorySize = function () {
         $scope.repositorySize = {};

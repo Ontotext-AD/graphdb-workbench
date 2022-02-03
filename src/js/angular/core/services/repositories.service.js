@@ -66,7 +66,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 }
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(this.getLocationFromUri(this.repository.location), this.repository)) {
+                if (!$jwtAuth.canReadRepo(that.getLocationFromUri(this.repository.location), this.repository.id)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -266,8 +266,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         }
 
         this.getLocationFromUri = function (locationUri) {
-            const that = this;
-            return that.locations.find((location) => location.uri === locationUri);
+            return this.getLocations().find((location) => location.uri === locationUri);
         }
 
         this.setRepositoryHeaders = function () {
@@ -275,7 +274,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository.id ? this.repository.id : undefined;
 
-            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
             $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
@@ -297,7 +295,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
             // we unset the repository
-            if (repo && !$jwtAuth.canReadRepo(this.getLocationFromUri(repo.location), repo.id)) {
+            if (repo && !$jwtAuth.canReadRepo(that.getLocationFromUri(repo.location), repo.id)) {
                 this.setRepository('');
             }
             // reset denied permissions (different repo, different rights)

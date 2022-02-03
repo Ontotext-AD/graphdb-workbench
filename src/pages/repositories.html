@@ -149,17 +149,17 @@
 					<tbody>
 						<tr
 							ng-repeat="location in getLocations() | orderBy: 'uri'"
-							ng-class="{'table-info text-secondary':location.active}">
+							ng-class="{'table-info text-secondary':location.uri === ''}">
 							<td width="25">
 
-								<span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-									  tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"
-									  ng-click="activateLocation(location)"
-									  ng-if="!location.active"></span>
+<!--								<span role="button" class="icon-connection-off icon-lg text-secondary m-0"-->
+<!--									  tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"-->
+<!--									  ng-click="activateLocation(location)"-->
+<!--									  ng-if="!location.active"></span>-->
 
 								<span class="icon-connection-on icon-lg text-tertiary"
 									tooltip="Activated" tooltip-placement="top" tooltip-trigger="mouseenter"
-									ng-if="location.active"></span>
+									ng-if="location.uri === ''"></span>
 
 							</td>
 							<td>

@@ -26,11 +26,19 @@ function LicenseRestService($http, Upload) {
 
     // get activated license details
     function getLicenseInfo() {
-        return $http.get(LICENSE_ENDPOINT);
+        return $http.get(LICENSE_ENDPOINT, {
+            headers: {
+                'X-GraphDB-Repository-Location': undefined
+            }
+        });
     }
 
     function getHardcodedLicense() {
-        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
+        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`, {
+            headers: {
+                'X-GraphDB-Repository-Location': undefined
+            }
+        });
     }
 
     // send license to be validated and parsed before activation
@@ -38,7 +46,8 @@ function LicenseRestService($http, Upload) {
         const headers = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/plain',
+                'X-GraphDB-Repository-Location': undefined
             }
         };
         return $http.post(`${LICENSE_INFO_ENDPOINT}validate`, licenseCode, headers);
@@ -50,7 +59,8 @@ function LicenseRestService($http, Upload) {
             url: `${LICENSE_INFO_ENDPOINT}toBase64`,
             file,
             headers: {
-                'Accept': 'text/plain'
+                'Accept': 'text/plain',
+                'X-GraphDB-Repository-Location': undefined
             }
         });
     }
@@ -66,7 +76,8 @@ function LicenseRestService($http, Upload) {
             method: 'POST',
             url: LICENSE_ENDPOINT,
             headers: {
-                'Content-Type': 'application/octet-stream'
+                'Content-Type': 'application/octet-stream',
+                'X-GraphDB-Repository-Location': undefined
             },
             data: array,
             transformRequest: []
@@ -77,14 +88,21 @@ function LicenseRestService($http, Upload) {
     function unregisterLicense() {
         var request = {
             method: 'DELETE',
-            url: 'rest/graphdb-settings/license'
+            url: 'rest/graphdb-settings/license',
+            headers: {
+                'X-GraphDB-Repository-Location': undefined
+            }
         };
         return $http(request);
     }
 
     // check if distribution has an already activated license
     function checkLicenseHardcoded() {
-        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`);
+        return $http.get(`${LICENSE_ENDPOINT}/hardcoded`, {
+            headers: {
+                'X-GraphDB-Repository-Location': undefined
+            }
+        });
     }
 
     function getInfo() {
