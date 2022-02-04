@@ -1,0 +1,43 @@
+<link href="css/plugins.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<div id="plugins" class="page">
+    <h1>
+        {{title}} for repository {{getActiveRepository()}}
+        <em class="btn btn-link"
+            popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+            popover-trigger="mouseenter"
+            popover-placement="bottom-right"
+            popover-append-to-body="true"><span class="icon-info"></span></em>
+    </h1>
+
+    <div onto-loader-new
+         ng-show="loader"
+         class="plugins-loader"
+         message="getLoaderMessage"
+         size="75">
+    </div>
+
+    <div core-errors write ontop fedx license></div>
+
+    <!--    the user must have write permissions to enable and disable plugins-->
+    <div ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted">
+        <ul ng-class="{cursor: loader}">
+            <li ng-repeat="(key, plugin) in plugins">
+                <div class="lead mb-1" id="toggleIndex">
+                    <span class="plugins-header">{{plugin.name}}</span>
+                    <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'ON' :
+                        'OFF'}}</span>
+                    <span tooltip="Click to {{plugin.enabled ? 'disable' : 'enable'}} {{plugin.name}}"
+                          tooltip-placement="top" tooltip-trigger="mouseenter"
+                          ng-click="!loader ? togglePlugin(plugin.name, plugin.enabled) : undefined"
+                          class="switch enable-plugins-switch plugins-switch">
+                    <input type="checkbox" class="switch"
+                           ng-checked="plugin.enabled"/>
+                    <label for="toggleIndex"></label>
+                    </span>
+                </div>
+
+            </li>
+        </ul>
+    </div>
+
+</div>

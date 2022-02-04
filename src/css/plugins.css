@@ -1,0 +1,13 @@
+.templates .tag {
+    cursor: pointer;
+    font-size: 100%;
+}
+
+.plugins-header {
+    display: inline-block;
+    width: 300px;
+}
+
+.cursor {
+    pointer-events: none;
+}
