@@ -64,7 +64,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense;
-    };
+    }
 
     $licenseService.checkLicenseStatus();
 
@@ -78,7 +78,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
                 LicenseRestService.unregisterLicense()
                     .success(function () {
                         $licenseService.checkLicenseStatus();
-                    });
+                    })
             });
     };
 }
