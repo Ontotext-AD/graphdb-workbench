@@ -64,7 +64,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense;
-    }
+    };
 
     $licenseService.checkLicenseStatus();
 
