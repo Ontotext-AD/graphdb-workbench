@@ -78,7 +78,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
                 LicenseRestService.unregisterLicense()
                     .success(function () {
                         $licenseService.checkLicenseStatus();
-                    })
+                    });
             });
     };
 }
