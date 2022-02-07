@@ -54,14 +54,14 @@
         <div class="col-lg-6">
             <h3><span tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
             <div class="card active-repo-card"
-                 ng-show="canReadRepo(getActiveLocation(), getActiveRepository())">
+                 ng-show="canReadRepo(getLocationFromUri(getActiveRepositoryObject().location), getActiveRepository())">
                 <div class="card-block">
-                    <h6>{{getActiveLocation().label}}</h6>
+                    <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" tooltip="Copy repository URL to clipboard" class="btn btn-link"
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
-                        <button type="button" ng-click="goToEditRepo(getActiveRepository())" class="btn btn-link" tooltip="Edit repository"
+                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" tooltip="Edit repository"
                            ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>

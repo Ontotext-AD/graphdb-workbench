@@ -153,9 +153,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $location.path('/repository/create').search({previous: 'home'});
     };
 
-    $scope.goToEditRepo = function (repoName) {
-        $location.path('repository/edit/' + repoName).search({previous: 'home'});
+    $scope.goToEditRepo = function (repository) {
+        $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
     };
+
+    $scope.getLocationFromUri = function (location) {
+        return $repositories.getLocationFromUri(location);
+    }
 
     $scope.$on("$locationChangeSuccess", function () {
         $scope.showFooter = $location.url() === '/';

@@ -417,3 +417,13 @@ span.label {
 .multilined {
     word-break: break-all;
 }
+
+.table {
+    border-bottom:0px !important;
+}
+.table th, .table td {
+    border: 1px !important;
+}
+.fixed-table-container {
+    border:0px !important;
+}

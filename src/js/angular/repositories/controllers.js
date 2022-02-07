@@ -322,13 +322,13 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             });
     }
 
-    $scope.toggleDefaultRepository = function (repository) {
-        if ($scope.getDefaultRepository() === repository) {
+    $scope.toggleDefaultRepository = function (repositoryId) {
+        if ($scope.getDefaultRepository() === repositoryId) {
             // unset
             $repositories.setDefaultRepository(null);
         } else {
             // set
-            $repositories.setDefaultRepository(repository);
+            $repositories.setDefaultRepository(repositoryId);
         }
     };
 
@@ -411,6 +411,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     }
 
+    $scope.getRepositoriesFromLocation = function (locationId) {
+        return $repositories.getRepositoriesFromLocation(locationId);
+    }
 }
 
 UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toastr'];
