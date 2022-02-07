@@ -111,6 +111,11 @@ describe('Main menu tests', function () {
                         redirect: '/cluster'
                     },
                     {
+                        name: 'Plugins',
+                        visible: false,
+                        redirect: '/plugins'
+                    },
+                    {
                         name: 'Namespaces',
                         visible: false,
                         redirect: '/namespaces'

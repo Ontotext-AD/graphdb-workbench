@@ -50,6 +50,8 @@ describe('Plugins', () => {
             cy.get('.switch').should('be.checked');
             getPluginsSwitch().click();
         });
+        cy.visit('/plugins');
+        cy.window();
 
         getPluginsHeader()
             .should('be.visible').parent().within(() => {
