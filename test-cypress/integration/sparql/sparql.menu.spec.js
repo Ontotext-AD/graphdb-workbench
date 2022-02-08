@@ -436,7 +436,7 @@ describe('SPARQL screen validation', () => {
 
             // Uncheck ‘Include inferred’
             cy.waitUntil(() =>
-                getInferenceButton()
+                getInferenceButton().find('.icon-inferred-on')
                     .then(infBtn => infBtn && cy.wrap(infBtn).click()))
                 .then(() =>
                     cy.get('.icon-inferred-off').should('be.visible'));

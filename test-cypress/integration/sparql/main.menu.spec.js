@@ -169,7 +169,8 @@ describe('Main menu tests', function () {
             let menuVisibilityCheck = menu.visible ? 'be.visible' : 'not.be.visible';
             // Verify that main menu items are present and their visibility
             cy.get('.main-menu .menu-element-root').eq(menuIndex + 1).as('menu')
-                .should(menuVisibilityCheck).and('contain', menu.name);
+                .should(menuVisibilityCheck).within(() =>
+                cy.get('.menu-item').contains(menu.name));
 
             // Verify submenu items and their visibility when the main menu is not opened
             (menu.submenu || []).forEach((submenu, submenuIndex) => {
