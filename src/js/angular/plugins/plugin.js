@@ -6,7 +6,7 @@ PluginRegistry.add('route', {
     'controller': 'PluginsCtrl',
     'templateUrl': 'pages/plugins.html',
     'title': 'Plugins',
-    'helpInfo': 'Enable or disable plugins.'
+    'helpInfo': 'Activate or deactivate plugins.'
 });
 
 PluginRegistry.add('main.menu', {
