@@ -20,6 +20,10 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
             .success(function (data) {
                 $scope.plugins = $scope.buildPluginsArray(data.results.bindings);
                 $scope.setLoader(false);
+                if (angular.isDefined($scope.plugins)) {
+                    $scope.displayedPlugins = $scope.plugins;
+                }
+                $scope.matchedElements=$scope.plugins;
             }).error(function (data) {
             toastr.error(getError(data));
         });
@@ -32,6 +36,7 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
             $repositories.isActiveRepoFedXType()) {
             return;
         }
+        $scope.searchPlugins = '';
         getPlugins();
     };
 
@@ -81,6 +86,26 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
             $scope.loader = false;
         }
     };
+
+    $scope.filterResults = function() {
+        angular.forEach($scope.plugins, function (item) {
+            if (item.name.indexOf($scope.searchPlugins) !== -1) {
+                $scope.matchedElements.push(item);
+            }
+        });
+    };
+
+    $scope.onPluginsSearch = function () {
+        $scope.matchedElements = [];
+        $scope.filterResults();
+    };
+
+    //for searchbox
+    $scope.$watch('matchedElements', function () {
+        if (angular.isDefined($scope.matchedElements)) {
+            $scope.displayedPlugins= $scope.matchedElements;
+        }
+    });
 
     init();
 }
