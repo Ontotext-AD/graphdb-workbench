@@ -68,6 +68,7 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
             $repositories.isActiveRepoFedXType()) {
             return;
         }
+        $scope.searchPlugins = '';
         getPlugins();
     });
 
