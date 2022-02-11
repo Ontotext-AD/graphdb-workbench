@@ -35,7 +35,8 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         $scope.ontopRepoFileNames = {};
         $scope.supportedDriversData = [];
         $scope.ontopRepoFileLabels =
-            {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file', constraintFile: 'constraint file'};
+            {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file',
+                constraintFile: 'constraint file', dbMetadataFile: 'DB metadata file'};
         $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
         $scope.ontopRepoFiles.forEach(function(key) {
             if ($scope.repositoryInfo.params[key]) {
