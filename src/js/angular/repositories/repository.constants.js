@@ -84,6 +84,7 @@ export const REPO_TOOLTIPS = {
         owlFile: "Specifies relations between the classes and properties in the cosntructed RDF graph. " +
             "It can be in any supported RDF format.",
         constraintFile: "Specifies override of SQL primary and foreign keys.",
+        dbMetadataFile: "Specifies metadata for the SQL database.",
         testConn: "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct."
     },
     fedx: {
