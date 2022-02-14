@@ -195,11 +195,6 @@
     display: none !important;
 }
 
-#cm-comment-explain-optimization-gr {
-    color: #797474;
-    font-weight: 500;
-}
-
-#cm-comment-explain-statistics {
-    color: rgb(47 40 40);
+#highlighted_output {
+    font-family: Menlo, Consolas, "Ubuntu Mono", monospace;
 }
