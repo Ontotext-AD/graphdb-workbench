@@ -34,11 +34,11 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
         };
         $scope.firstLoad = true;
         $scope.activeTab = 'memory';
-        $scope.jolokiaError = '';
+        $scope.error = '';
         $scope.loader = true;
         $scope.garbadgeCollectorLoader = false;
         $scope.getResourcesData = function () {
-            if ($scope.jolokiaError) {
+            if ($scope.error) {
                 return;
             }
             MonitoringRestService.monitorResources().success(function (data) {
@@ -88,7 +88,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
                 }
 
             }).error(function (data) {
-                $scope.jolokiaError = getError(data);
+                $scope.error = getError(data);
                 $scope.loader = false;
             });
         };

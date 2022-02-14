@@ -20,15 +20,15 @@
 		<div ng-show="getActiveRepository()">
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 
-			<div class="ng-scope" ng-show="!loader && jolokiaError">
+			<div class="ng-scope" ng-show="!loader && error">
 				<p class="alert alert-danger">
-					Jolokia error: {{jolokiaError}}.
+					Error: {{error}}.
 					<br/>
 					Refresh the page to retry.
 				</p>
 			</div>
 
-			<div ng-hide="loader || jolokiaError">
+			<div ng-hide="loader || error">
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							btn-checkbox
