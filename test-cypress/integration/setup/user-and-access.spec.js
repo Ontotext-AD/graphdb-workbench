@@ -23,14 +23,6 @@ describe('User and Access', () => {
 
     after(() => {
         cy.visit('/users');
-        cy.deleteRepository(repositoryId);
-        cy.visit('/users');
-        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
-            .then((val) => {
-                if (val.text() === "ON") {
-                    getToggleSecuritySwitch().click();
-                }
-            });
         getUsersTable().should('be.visible');
         cy.get('#wb-users-userInUsers tr').then((table) => {
             cy.get('table > tbody  > tr').each(($el, index, $list) => {
@@ -41,7 +33,7 @@ describe('User and Access', () => {
                 }
             });
         });
-
+        cy.deleteRepository(repositoryId);
     });
 
     it('Initial state', () => {
