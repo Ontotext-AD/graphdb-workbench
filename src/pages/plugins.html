@@ -18,8 +18,8 @@
 
     <div core-errors write ontop fedx license></div>
 
-<!--search box-->
-    <div class="search-bar" ng-show="plugins.length > 0 && !loader" >
+    <!--search box-->
+    <div class="search-bar" ng-show="plugins.length > 0 && !loader">
             <span class="pull-left" id="searchbox-plugins">
                 <input type="text" class="form-control plugins-filter" placeholder="Search plugins"
                        ng-model="searchPlugins" tooltip-trigger="mouseenter" tooltip="Search"
@@ -32,11 +32,12 @@
            id="wb-plugins-pluginInPlugins"
            class="table table-striped table-hover" aria-describedby="Plugins table">
         <tbody>
-        <tr ng-repeat="(key, plugin) in displayedPlugins"  class="wb-plugins-row plugin"
+        <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin"
             loader-post-repeat-directive>
             <td id="wb-plugins-td" ng-show="!loader">
                 <div class="lead" id="toggleIndex">
                     <span class="plugins-header">{{plugin.name}}</span>
+                    <span id="toggleAndTag">
                     <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'ON' :
                         'OFF'}}</span>
                     <span tooltip="Click to {{plugin.enabled ? 'disable' : 'enable'}} {{plugin.name}}"
@@ -47,6 +48,8 @@
                            ng-checked="plugin.enabled"/>
                     <label for="toggleIndex"></label>
                     </span>
+                    </span>
+                </div>
             </td>
         </tr>
         </tbody>
