@@ -1,23 +1,56 @@
-.templates .tag {
-    cursor: pointer;
-    font-size: 100%;
+.wb-plugins-td {
+    width: 50%;
+    float: left;
+    padding: 0;
 }
+
+.wb-plugins-row {
+    height: 80%;
+}
+
 
 .plugins-header {
-    display: inline-block;
-    width: 400px;
+    float: left;
+    width: 250px;
 }
 
-#wb-plugins-td {
-  padding: 0.5rem;
+@media only screen and (min-width: 600px) {
+    #toggleIndex {
+        display: inline-block;
+        width: 600px;
+    }
+
+    #toggleAndTag {
+        float: right;
+    }
 }
 
 #searchbox-plugins {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 .search-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+table {
+    width: 100%;
+}
+
+tr {
+    display: inline-flex;
+}
+
+@media all and (max-width: 800px) {
+
+    tr {
+        display: table-row;
+    }
+
+    td {
+        float: left;
+        min-width: 50%;
+    }
 }
