@@ -55,7 +55,7 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
 
     $scope.togglePlugin = function (pluginName, enabled) {
         const repoId = $scope.getActiveRepository();
-        $scope.setLoader(true, enabled ? `Enabling ${pluginName}` : `Disabling ${pluginName}`);
+        $scope.setLoader(true, enabled ? `Deactivating ${pluginName}` : `Activating ${pluginName}`);
         PluginsRestService.togglePlugin(repoId, enabled, pluginName).success(function () {
             getPlugins();
         });
