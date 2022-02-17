@@ -381,7 +381,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if (_.isEmpty(location) || _.isEmpty(repo)) {
                     return false;
                 }
-                if (this.securityEnabled || this.hasOverrideAuth) {
+                if (location.local && (this.securityEnabled || this.hasOverrideAuth)) {
                     if (_.isEmpty(this.principal)) {
                         return false;
                     } else if (this.hasAdminRole()) {

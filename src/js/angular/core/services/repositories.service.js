@@ -22,16 +22,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {
-            uri: ''
-        };
+        this.location = {};
         this.locationError = '';
         this.loading = true;
         this.repository = {
             id: localStorage.getItem(this.repositoryStorageName),
             location: localStorage.getItem(this.repositoryStorageLocationName)
         };
-        this.locations = [this.location];
+        this.locations = [];
         this.repositories = new Map();
         this.locationsShouldReload = false;
         this.degradedReason = '';
@@ -47,7 +45,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 // reset location data
                 that.location = {};
                 that.locationError = locationError;
-                that.repositories = [];
+                that.repositories = new Map();
                 that.setRepository('');
 
                 // notify user
@@ -76,29 +74,34 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
-        this.checkActiveLocationDegraded = function () {
+        this.checkLocationsDegraded = function () {
             this.degradedReason = '';
-            // local locations are always fully supported
-            if (this.location.local) {
-                return;
-            }
             const that = this;
-            LicenseRestService.getVersion()
-                .success(function (res) {
-                    if (typeof res === 'object') {
-                        // New style, check version and product
-                        if (res.productVersion !== productInfo.productVersion) {
-                            that.degradedReason = 'The remote location is running a different GraphDB version.';
+            this.locations.forEach(currentLocation => {
+                // local locations are always fully supported
+                if (currentLocation.local) {
+                    return;
+                }
+
+                LicenseRestService.getVersion(currentLocation.uri)
+                    .success(function (res) {
+                        if (typeof res === 'object') {
+                            // New style, check version and product
+                            if (res.productVersion !== productInfo.productVersion) {
+                                currentLocation.degradedReason = `The remote location ${currentLocation.name} is running a different GraphDB version.\n`;
+                                that.degradedReason += currentLocation.degradedReason;
+                            }
+                        } else {
+                            // Pre 7.1 style
+                            currentLocation.degradedReason = `The remote location ${currentLocation.name} is running a different GraphDB version.\n`;
+                            that.degradedReason += currentLocation.degradedReason;
                         }
-                    } else {
-                        // Pre 7.1 style
-                        that.degradedReason = 'The remote location is running a different GraphDB version.';
-                    }
-                })
-                .error(function () {
-                    // Even older style, endpoint missing
-                    that.degradedReason = 'The remote location is running a different GraphDB version.';
-                });
+                    })
+                    .error(function () {
+                        // Even older style, endpoint missing
+                        that.degradedReason += 'The remote location is running a different GraphDB version.';
+                    });
+            });
         };
 
         this.getDegradedReason = function () {
@@ -113,83 +116,71 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.init = function (successCallback, errorCallback, quick) {
+            this.loading = true;
             if (!quick) {
                 this.locationsShouldReload = true;
-                that.getLocations();
+                // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
+                that.getLocations()
+                    .then(function () {
+                        that.getRepos(successCallback, errorCallback);
+                    });
+            } else {
+                that.getRepos(successCallback, errorCallback, quick);
             }
-            this.loading = true;
-            // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
-            LocationsRestService.getActiveLocation().then(
-                function (res) {
-                    if (res.data) {
-                        const location = res.data;
-                        if (location.active) {
-                            const promises = [];
-                            _.forEach(that.locations, function (loc) {
-                                promises.push(
-                                    RepositoriesRestService.getRepositoriesFromKnownLocation(loc.uri)
-                                        .then(function (res1) {
-                                                that.repositories.set(loc.uri, res1.data);
-                                            },
-                                            function (err) {
-                                                loadingDone(err, location.errorMsg);
-                                                if (errorCallback) {
-                                                    errorCallback();
-                                                }
-                                            }));
-                            });
-                            $q.all(promises).then(function () {
-                                // RepositoriesRestService.getRepositories().then(function (res) {
-                                        that.location = location;
-                                        that.resetActiveRepository();
-                                        loadingDone();
-                                        that.checkActiveLocationDegraded();
-                                        // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
-                                        $rootScope.globalLocation = that.location;
-                                        $rootScope.globalRepositories = that.repositories;
-                                        if (successCallback) {
-                                            successCallback();
-                                        }
-                                    // },
-                                    // function (err) {
-                                    //     loadingDone(err, location.errorMsg);
-                                    //     if (errorCallback) {
-                                    //         errorCallback();
-                                    //     }
-                                    // });
-                            });
-                        }
-                    } else {
-                        loadingDone();
-                        // no active location
-                        if (quick) {
-                            that.locationsShouldReload = true;
-                        }
-                        that.location = {};
-                        that.locationError = '';
-                        that.repositories = new Map();
-                        that.setRepository('');
-                    }
+        };
+
+        this.getRepos = function (successCallback, errorCallback, quick) {
+            if (that.location && that.location.active) {
+                const promises = [];
+                that.getLocations().forEach(currLocation => {
+                    promises.push(RepositoriesRestService.getRepositoriesFromKnownLocation(currLocation.uri)
+                        .success(function (res) {
+                                that.repositories.set(currLocation.uri, res.data);
+                            },
+                            function (err) {
+                                currLocation.errorMsg = getError(err);
+                            }));
+                });
+                $q.all(promises).then(function () {
+                    that.resetActiveRepository();
+                    that.checkLocationsDegraded();
+                    loadingDone();
+                    // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
                     $rootScope.globalLocation = that.location;
                     $rootScope.globalRepositories = that.repositories;
+                    if (successCallback) {
+                        successCallback();
+                    }
                 },
                 function (err) {
                     loadingDone(err);
                     if (errorCallback) {
                         errorCallback();
                     }
+                });
+            } else {
+                loadingDone();
+                // no active location
+                if (quick) {
+                    that.locationsShouldReload = true;
                 }
-            );
-        };
+                that.location = '';
+                that.locationError = '';
+                that.repositories = [];
+                that.setRepository('');
+            }
+            $rootScope.globalLocation = that.location;
+            $rootScope.globalRepositories = that.repositories;
+        }
 
         this.getLocations = function () {
             if (this.locationsShouldReload) {
                 this.locationsShouldReload = false;
-                this.locations = [this.location];
                 const that = this;
-                LocationsRestService.getLocations()
+                return LocationsRestService.getLocations()
                     .success(function (data) {
                         that.locations = data;
+                        that.location = that.locations.find(location => location.active);
                     })
                     .error(function () {
                         // if there is an error clear the flag after some time to trigger another attempt
@@ -247,7 +238,12 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getActiveRepositoryObject = function () {
-            return this.repository;
+            const copyThis = this;
+            let repositoriesFromLocation = copyThis.repositories.get(copyThis.repository.location);
+            if (repositoriesFromLocation) {
+                return repositoriesFromLocation.find(repo => repo.id === copyThis.repository.id);
+            }
+            return null;
         };
 
         this.isSystemRepository = function () {
@@ -352,11 +348,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
                     //Reload locations and repositories
-                    if (that.getActiveLocation().uri === uri) {
-                        that.location = {};
-                        that.locationError = '';
-                        that.setRepository('');
-                    }
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);

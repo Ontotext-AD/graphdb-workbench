@@ -305,8 +305,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getActiveRepository();
     };
 
-    $scope.canWriteRepoInActiveLocation = function (repository) {
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), repository);
+    $scope.canWriteRepoInLocation = function (repository) {
+        return $jwtAuth.canWriteRepo($scope.getLocationFromUri(repository.location), repository.id);
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {

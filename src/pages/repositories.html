@@ -22,8 +22,8 @@
                     <div ng-show="hasActiveLocation()">
                         <div class="pull-left">
                             <strong>Repositories from: </strong>
-                            <em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning"
-                                tooltip="{{getDegradedReason()}} Some operations may not be performed."
+                            <em ng-show="location.degradedReason" class="icon-warning icon-lg text-warning"
+                                tooltip="{{location.degradedReason}} Some operations may not be performed."
                                 tooltip-placement="right"></em>
                             <span class="mr-1">{{location.label}}</span>
                         </div>
@@ -54,17 +54,17 @@
                             </button>
                         </div>
                     </div>
-                    <div class="alert alert-danger" ng-show="getActiveLocation().errorMsg">
-                        {{getActiveLocation().errorMsg}} Refresh the page to retry.
+                    <div class="alert alert-danger" ng-show="location.errorMsg">
+                        {{location.errorMsg.trim()}} Refresh the page to retry.
                     </div>
 
                     <div class="alert alert-warning" ng-hide="!getLocations().length || hasActiveLocation()">
-                        {{ getLocationError() }}
+                        {{ getLocationError(location) }}
                     </div>
 
                     <div ng-show="hasActiveLocation()" class="pt-2 mb-3">
                         <div class="alert alert-warning no-repositories-alert"
-                             ng-hide="getRepositoriesFromLocation(location.uri).length || getActiveLocation().errorMsg">
+                             ng-hide="getRepositoriesFromLocation(location.uri).length || location.errorMsg">
                             There are no repositories in the current location
                         </div>
                         <div ng-show="getRepositoriesFromLocation(location.uri).length" class="mb-1">
@@ -106,12 +106,12 @@
                                                 tooltip="Copy repository URL to clipboard">
                                             <span class="icon-link"></span>
                                         </button>
-                                        <span ng-show="getDegradedReason()">
+                                        <span ng-show="location.degradedReason">
                                             <em class="icon-warning icon-lg text-warning"
-                                                tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
+                                                tooltip="{{location.degradedReason}} Editing or deleting this repository is not supported."
                                                 tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                                         </span>
-                                        <span ng-hide="repository.type === 'system' || getDegradedReason()">
+                                        <span ng-hide="repository.type === 'system' || location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                tooltip="Edit repository"

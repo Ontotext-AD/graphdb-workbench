@@ -8,7 +8,7 @@
 	<div class="row mb-1">
 		<label style="margin-right: 10px">Access:</label>
 		<span class="text-right pull-right">
-			{{(popoverRepo.writable && canWriteRepoInActiveLocation(popoverRepo.id) && popoverRepo.type !== 'ontop') ? 'Read/write' : 'Read-only'}}
+			{{(popoverRepo.writable && canWriteRepoInLocation(popoverRepo) && popoverRepo.type !== 'ontop') ? 'Read/write' : 'Read-only'}}
 		</span>
 	</div>
 	<div ng-show="repositorySize.total >= 0">

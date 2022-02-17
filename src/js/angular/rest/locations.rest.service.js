@@ -14,8 +14,6 @@ function LocationsRestService($http) {
         addLocation,
         editLocation,
         deleteLocation,
-        enableLocation,
-        getActiveLocation,
         setDefaultRepository
     };
 
@@ -33,18 +31,6 @@ function LocationsRestService($http) {
 
     function deleteLocation(uri) {
         return $http.delete(`${LOCATIONS_ENDPOINT}?uri=${uri}`);
-    }
-
-    function enableLocation(data) {
-        return $http.post(`${LOCATIONS_ENDPOINT}/activate`, data);
-    }
-
-    function getActiveLocation() {
-        return $http({
-            method: 'GET',
-            url: `${ACTIVE_LOCATION_ENDPOINT}`,
-            noCancelOnRouteChange: true
-        });
     }
 
     function setDefaultRepository(repositoryId) {

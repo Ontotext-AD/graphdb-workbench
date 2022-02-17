@@ -36,7 +36,7 @@ function RepositoriesRestService($http) {
     }
 
     function getRepositories() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/workbench`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}`);
     }
 
     function getRepositoriesFromKnownLocation(location) {
