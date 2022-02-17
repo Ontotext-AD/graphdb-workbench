@@ -20,18 +20,18 @@
 	</h1>
 
 	<div id="wb-monitoringResources" class="ot-owlim-resources">
-		<div class="row ng-scope" ng-show="!loader && jolokiaError">
+		<div class="row ng-scope" ng-show="!loader && error">
 			<p class="alert alert-danger">
-				Jolokia error: {{jolokiaError}}.
+				Error: {{error}}.
 				<br/>
 				Refresh the page to retry.
 			</p>
-		</div>
+		</div>e
 
 		<div>
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 
-			<div ng-hide="loader || jolokiaError">
+			<div ng-hide="loader || error">
 				<div class="container graphics row">
 					<div class="tabbable">
 					   <ul class="nav nav-tabs">
