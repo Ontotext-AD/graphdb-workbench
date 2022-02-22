@@ -156,10 +156,14 @@ describe('User and Access', () => {
     }
 
     function deleteUser(username) {
-        cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
-            cy.get('.icon-trash').click();
-        })
-        cy.get('.confirm-btn').click();
+        cy.get('#wb-users-userInUsers tr').contains(username)
+            .parent()
+            .parent()
+            .find('.icon-trash')
+            .click()
+            .then(() => {
+                cy.get('.confirm-btn').click();
+            });
     }
 
     function loginWithUser(username, password) {

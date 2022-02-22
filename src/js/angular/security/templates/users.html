@@ -13,14 +13,14 @@
 				<span class="security-switch-label">Security is <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
 				<span tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
-					<label for="toggleSecurity"></label>
+					<label for="toggle-Security"></label>
 				</span>
 			</span>
 			<span ng-show="securityEnabled()" id="toggle-freeaccess">
 				<span>Free Access is <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'ON' : 'OFF'}}</span></span>
 				<span tooltip="Click to {{freeAccessEnabled() ? 'disable' : 'enable'}} free access to non-admin functionality" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
-					<label for="toggleFreeAccess"></label>
+					<label for="toggle-freeaccess"></label>
 				</span>
 				<span ng-show="freeAccessEnabled()">
 					Free Access Settings
