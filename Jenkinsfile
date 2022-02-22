@@ -56,5 +56,12 @@ pipeline {
       }
     }
   }
+    post {
+      always {
+          sh "docker-compose down -v --remove-orphans --rmi=local || true"
+        // clean root owned resources from docker volumes, just in case
+        sh "sudo rm -rf ./test-cypress/coverage"
+      }
+    }
 }
 
