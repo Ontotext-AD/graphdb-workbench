@@ -165,7 +165,6 @@ describe('User and Access', () => {
             .within(() => {
                 cy.waitUntil(() =>
                     cy.get('.delete-user-btn')
-                        .find('.icon-trash')
                         .as('deleteBtn')
                         .then(deleteBtn => Cypress.dom.isAttached(deleteBtn)))
                         .get('@deleteBtn')
