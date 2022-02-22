@@ -160,21 +160,19 @@ describe('User and Access', () => {
     }
 
     function deleteUser(username) {
-        cy.get('#wb-users-userInUsers tr')
-            .find('.ng-binding')
-            .contains(username)
-            .parent()
-            .parent().as('row');
-
-        return cy.get('@row')
-                .within(() => {
+        findUserInTable(username);
+        return cy.get('@user')
+            .within(() => {
+                cy.waitUntil(() =>
                     cy.get('.delete-user-btn')
                         .find('.icon-trash')
-                        .should('be.visible')
+                        .as('deleteBtn')
+                        .then(deleteBtn => Cypress.dom.isAttached(deleteBtn)))
+                        .get('@deleteBtn')
                         .click();
-                    }).then(() => {
-                    return cy.get('.confirm-btn').click();
-                });
+            }).then(() => {
+                cy.get('.confirm-btn').click();
+            });
     }
 
     function loginWithUser(username, password) {
