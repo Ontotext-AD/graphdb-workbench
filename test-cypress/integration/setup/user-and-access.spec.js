@@ -80,22 +80,26 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete repository manager
-        deleteUser("repo-manager");
-        //create a custom admin
-        createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
-        logout();
-        //login with custom admin
-        loginWithUser("second-admin", PASSWORD);
-        cy.url().should('include', '/users');
-        logout();
-        //login with admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
-        //delete custom admin
-        deleteUser("second-admin");
-        //disable security
-        getToggleSecuritySwitch().click();
+        deleteUser("repo-manager")
+            .then(() => {
+                //create a custom admin
+                createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
+                logout();
+                //login with custom admin
+                loginWithUser("second-admin", PASSWORD);
+                cy.url().should('include', '/users');
+                logout();
+                //login with admin
+                loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+                cy.get('.ot-splash').should('not.be.visible');
+                getUsersTable().should('be.visible');
+                //delete custom admin
+                deleteUser("second-admin")
+                    .then(() => {
+                        //disable security
+                        getToggleSecuritySwitch().click();
+                    });
+            });
     });
 
     function getCreateNewUserButton() {
@@ -156,13 +160,16 @@ describe('User and Access', () => {
     }
 
     function deleteUser(username) {
-        cy.get('#wb-users-userInUsers tr').contains(username)
+        return cy.get('#wb-users-userInUsers tr').contains(username)
             .parent()
             .parent()
-            .find('.icon-trash')
-            .click()
-            .then(() => {
-                cy.get('.confirm-btn').click();
+            .within(() => {
+                cy.get('.delete-user-btn')
+                    .find('.icon-trash')
+                    .should('be.visible')
+                    .click();
+            }).then(() => {
+                return cy.get('.confirm-btn').click();
             });
     }
 
