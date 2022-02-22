@@ -68,7 +68,7 @@
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
                             <em class="icon-edit" tooltip="Edit user"></em>
                         </a>
-						<a class="btn btn-link secondary delete-user-btn" ng-show="user.username != 'admin'" href ng-click="removeUser(user.username)">
+						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" href ng-click="removeUser(user.username)">
                             <em class="icon-trash" tooltip="Delete user"></em>
                         </a>
 					</span>

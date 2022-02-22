@@ -44,7 +44,7 @@ describe('User and Access', () => {
         cy.get('@user').find('.edit-user-btn').should('be.visible')
             .and('not.be.disabled');
         // And cannot be deleted
-        cy.get('@user').find('.delete-user-btn').should('not.be.visible');
+        cy.get('@user').find('.delete-user-btn').should('not.exist');
         // Date created should be visible
         cy.get('@user').find('.date-created').should('be.visible');
     });
@@ -160,17 +160,21 @@ describe('User and Access', () => {
     }
 
     function deleteUser(username) {
-        return cy.get('#wb-users-userInUsers tr').contains(username)
+        cy.get('#wb-users-userInUsers tr')
+            .find('.ng-binding')
+            .contains(username)
             .parent()
-            .parent()
-            .within(() => {
-                cy.get('.delete-user-btn')
-                    .find('.icon-trash')
-                    .should('be.visible')
-                    .click();
-            }).then(() => {
-                return cy.get('.confirm-btn').click();
-            });
+            .parent().as('row');
+
+        return cy.get('@row')
+                .within(() => {
+                    cy.get('.delete-user-btn')
+                        .find('.icon-trash')
+                        .should('be.visible')
+                        .click();
+                    }).then(() => {
+                    return cy.get('.confirm-btn').click();
+                });
     }
 
     function loginWithUser(username, password) {
