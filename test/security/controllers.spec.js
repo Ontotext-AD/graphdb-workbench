@@ -56,9 +56,10 @@ describe('==> Controllers tests', function () {
 
             $scope.login();
             $httpBackend.flush();
-            $timeout.flush();
-
-            expect($location.url()).toEqual('/');
+            // Should wait for redirection to happen
+            $timeout(function () {
+                expect($location.url()).toEqual('/');
+            }, 2000);
         });
 
         it('should redirect to saved page on login', function () {
@@ -70,9 +71,11 @@ describe('==> Controllers tests', function () {
 
             $scope.login();
             $httpBackend.flush();
-            $timeout.flush();
 
-            expect($location.url()).toEqual('/sparql');
+            // Should wait for redirection to happen
+            $timeout(function () {
+                expect($location.url()).toEqual('/sparql');
+            }, 2000);
         });
 
         it('should clear login data on wrong credentials', function () {
