@@ -1,7 +1,7 @@
 Cypress.Commands.add('pasteQuery', (query) => {
     clearQuery();
     // Using force because the textarea is not visible
-    getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+    getQueryTextArea().invoke('val', query).trigger('change', {force: true}).should('have.value', query);
     waitUntilQueryIsVisible();
 });
 
