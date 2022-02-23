@@ -96,8 +96,8 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$timeout', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $timeout, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
 
@@ -120,26 +120,23 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
 
         $scope.login = function () {
-            $http({
+            return $http({
                 method: 'POST',
                 url: 'rest/login/' + encodeURIComponent($scope.username),
                 headers: {
                     'X-GraphDB-Password': $scope.password
                 }
             }).success(function (data, status, headers) {
-                $jwtAuth.authenticate(data, headers('Authorization'));
-                const timer = $timeout(function () {
-                    if ($rootScope.returnToUrl) {
-                        // go back to remembered url
-                        $location.url($rootScope.returnToUrl);
-                    } else {
-                        // no remembered url, go to home
-                        $location.path('/');
-                    }
-                }, 500);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
-                });
+                $jwtAuth.authenticate(data, headers('Authorization'))
+                    .then(() => {
+                        if ($rootScope.returnToUrl) {
+                            // go back to remembered url
+                            $location.url($rootScope.returnToUrl);
+                        } else {
+                            // no remembered url, go to home
+                            $location.path('/');
+                        }
+                    });
             }).error(function (data, status) {
                 if (status === 401) {
                     toastr.error('Wrong credentials!', 'Error');
@@ -150,7 +147,6 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     const msg = getError(data);
                     toastr.error(msg, status);
                 }
-
             });
         };
     }]);
