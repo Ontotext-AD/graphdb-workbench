@@ -193,15 +193,16 @@ describe('User and Access', () => {
 
     function deleteUser(username) {
         findUserInTable(username);
-        return cy.get('@user')
+        cy.get('@user')
+            .should('have.length', 1)
             .within(() => {
-                cy.waitUntil(() =>
-                    cy.get('.delete-user-btn')
-                        .as('deleteBtn')
-                            .then(deleteBtn => Cypress.dom.isAttached(deleteBtn)))
-                        .get('@deleteBtn')
-                        .click();
-            }).then(() => {
+                cy.get('.delete-user-btn')
+                    .as('deleteBtn');
+            });
+        return cy.waitUntil(() =>
+            cy.get('@deleteBtn')
+                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
+            .then(() => {
                 cy.get('.confirm-btn').click();
             });
     }
