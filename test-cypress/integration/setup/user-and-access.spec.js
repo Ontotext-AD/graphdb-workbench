@@ -23,14 +23,6 @@ describe('User and Access', () => {
 
     after(() => {
         cy.visit('/users');
-        cy.deleteRepository(repositoryId);
-        cy.visit('/users');
-        cy.get('#toggle-security').find('.security-switch-label').find('.tag')
-            .then((val) => {
-                if (val.text() === "ON") {
-                    getToggleSecuritySwitch().click();
-                }
-            });
         getUsersTable().should('be.visible');
         cy.get('#wb-users-userInUsers tr').then((table) => {
             cy.get('table > tbody  > tr').each(($el, index, $list) => {
@@ -41,7 +33,7 @@ describe('User and Access', () => {
                 }
             });
         });
-
+        cy.deleteRepository(repositoryId);
     });
 
     it('Initial state', () => {
@@ -63,7 +55,7 @@ describe('User and Access', () => {
         cy.get('@user').find('.edit-user-btn').should('be.visible')
             .and('not.be.disabled');
         // And cannot be deleted
-        cy.get('@user').find('.delete-user-btn').should('not.be.visible');
+        cy.get('@user').find('.delete-user-btn').should('not.exist');
         // Date created should be visible
         cy.get('@user').find('.date-created').should('be.visible');
     });
@@ -99,22 +91,26 @@ describe('User and Access', () => {
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
         //delete repository manager
-        deleteUser("repo-manager");
-        //create a custom admin
-        createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
-        logout();
-        //login with custom admin
-        loginWithUser("second-admin", PASSWORD);
-        cy.url().should('include', '/users');
-        logout();
-        //login with admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
-        //delete custom admin
-         deleteUser("second-admin");
-        //disable security
-        getToggleSecuritySwitch().click();
+        deleteUser("repo-manager")
+            .then(() => {
+                //create a custom admin
+                createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
+                logout();
+                //login with custom admin
+                loginWithUser("second-admin", PASSWORD);
+                cy.url().should('include', '/users');
+                logout();
+                //login with admin
+                loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+                cy.get('.ot-splash').should('not.be.visible');
+                getUsersTable().should('be.visible');
+                //delete custom admin
+                deleteUser("second-admin")
+                    .then(() => {
+                        //disable security
+                        getToggleSecuritySwitch().click();
+                    });
+            });
     });
     it('Warn users when setting no password when creating new user admin', () => {
         getUsersTable().should('be.visible');
@@ -196,10 +192,19 @@ describe('User and Access', () => {
     }
 
     function deleteUser(username) {
-        cy.get('#wb-users-userInUsers tr').contains(username).parent().parent().within(() => {
-            cy.get('.icon-trash').click();
-        });
-        cy.get('.confirm-btn').click();
+        findUserInTable(username);
+        cy.get('@user')
+            .should('have.length', 1)
+            .within(() => {
+                cy.get('.delete-user-btn')
+                    .as('deleteBtn');
+            });
+        return cy.waitUntil(() =>
+            cy.get('@deleteBtn')
+                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
+            .then(() => {
+                cy.get('.confirm-btn').click();
+            });
     }
 
     function loginWithUser(username, password) {

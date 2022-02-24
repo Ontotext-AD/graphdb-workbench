@@ -141,7 +141,7 @@ describe('=> QueriesCtrl tests', function () {
                     "running": true
                 }
             })
-            expect($scope.jolokiaError).toEqual('')
+            expect($scope.error).toEqual('')
             expect($scope.noQueries).toBeFalsy();
         })
 
@@ -151,21 +151,21 @@ describe('=> QueriesCtrl tests', function () {
             $interval.flush(1001);
             $httpBackend.flush();
             expect($scope.queries).toEqual({})
-            expect($scope.jolokiaError).toEqual('')
+            expect($scope.error).toEqual('')
             expect($scope.noQueries).toBeTruthy();
         })
 
-        it('should set jolokiaError on error', function () {
-            $scope.jolokiaError = ''
+        it('should set error', function () {
+            $scope.error = ''
             $httpBackend.expectGET('rest/monitor/query');
             httpGetQueriesData.respond(400, '');
             $interval.flush(1001);
             $httpBackend.flush();
-            expect($scope.jolokiaError).toBeTruthy();
+            expect($scope.error).toBeTruthy();
 
             $interval.flush(1001);
             $httpBackend.verifyNoOutstandingRequest();
-            expect($scope.jolokiaError).toBeTruthy();
+            expect($scope.error).toBeTruthy();
         })
     })
 
