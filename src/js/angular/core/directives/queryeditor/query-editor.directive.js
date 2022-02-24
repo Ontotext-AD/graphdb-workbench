@@ -762,22 +762,17 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         }
 
         function highlightExplainPlan() {
-            if (window.editor.getValue().includes('onto:explain') || window.editor.getValue().includes('http://www.ontotext.com/explain')) {
+            var bindings = yasr.results.getBindings();
+            var vars = yasr.results.getVariables();
+            var singleBinding = bindings[0];
+            var planVar = vars[0];
+            if (vars.length === 1 && bindings.length === 1 && planVar === "plan" && singleBinding[planVar].value.includes("# NOTE: Optimization groups")) {
                 var queryResultElement = document.getElementsByClassName('nonUri')[0];
                 queryResultElement.classList.add("cm-s-default");
                 queryResultElement.setAttribute("id", "highlighted_output");
                 var queryResultValue = queryResultElement.innerText.substring(1, queryResultElement.innerText.length - 1);
                 queryResultElement.innerHTML = "";
                 YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
-
-                const explainPlanMetrics = $(".yasr .cm-comment");
-                for (const line of explainPlanMetrics) {
-                    if (line.innerHTML.includes("Begin optimization group") || line.innerHTML.includes("End optimization group")) {
-                        line.setAttribute("id", "cm-comment-explain-optimization-gr");
-                    } else {
-                        line.setAttribute("id", "cm-comment-explain-statistics");
-                    }
-                }
             }
         }
 

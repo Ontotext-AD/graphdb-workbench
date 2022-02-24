@@ -13,7 +13,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         $scope.loader = true;
         $scope.stringLimit = 500;
         $scope.expanded = {};
-        $scope.jolokiaError = '';
+        $scope.error = '';
 
         function containsIPV4(ip) {
             const blocks = ip.split('.');
@@ -56,7 +56,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         $scope.getQueries = function () {
             // Skip execution if already getting from previous call, if paused, if jolokia returned an error,
             // or if no repository is available
-            if ($scope.getQueriesRunning || $scope.paused || $scope.jolokiaError || !$repositories.getActiveRepository()) {
+            if ($scope.getQueriesRunning || $scope.paused || $scope.error || !$repositories.getActiveRepository()) {
                 return;
             }
 
@@ -77,7 +77,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
             }).error(function (data) {
-                $scope.jolokiaError = getError(data);
+                $scope.error = getError(data);
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
             });

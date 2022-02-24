@@ -64,21 +64,21 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense;
-    }
+    };
 
     $licenseService.checkLicenseStatus();
 
     $scope.revertToFree = function () {
         ModalService.openSimpleModal({
             title: 'Confirm operation',
-            message: "Reverting to a GraphDB Free license will make SE and EE repositories unusable. Are you sure?",
+            message: "Reverting to a GraphDB Free license will make SE and EE features unusable. Are you sure?",
             warning: true
         }).result
             .then(function () {
                 LicenseRestService.unregisterLicense()
                     .success(function () {
                         $licenseService.checkLicenseStatus();
-                    })
+                    });
             });
     };
 }

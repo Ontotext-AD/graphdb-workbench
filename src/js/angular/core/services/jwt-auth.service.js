@@ -274,32 +274,47 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.setAuthHeaders = function () {
-                const auth = this.auth ? this.auth : undefined;
-                $http.defaults.headers.common['Authorization'] = auth;
-                // Angular doesn't send this header by default and we need it to detect XHR requests
-                // so that we don't advertise Basic auth with them.
-                $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-                $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-                $.ajaxSetup()['headers']['Authorization'] = auth;
-                // jQuery seems to send the header by default but it doesn't hurt to be explicit
-                $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
+                return new Promise(resolve => {
+                    const auth = this.auth ? this.auth : undefined;
+                    $http.defaults.headers.common['Authorization'] = auth;
+                    // Angular doesn't send this header by default and we need it to detect XHR requests
+                    // so that we don't advertise Basic auth with them.
+                    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+                    $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+                    $.ajaxSetup()['headers']['Authorization'] = auth;
+                    // jQuery seems to send the header by default but it doesn't hurt to be explicit
+                    $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
+                    setTimeout(() => {
+                        resolve(true);
+                    })
+                });
             };
             this.setAuthHeaders();
 
             this.authenticate = function (data, authHeaderValue) {
-                this.clearStorage();
-                if (authHeaderValue) {
-                    this.auth = authHeaderValue;
-                    localStorage.setItem(this.authStorageName, this.auth);
-                    this.externalAuthUser = false;
-                }
+                return new Promise(resolve => {
+                    that.clearStorage();
+                    if (authHeaderValue) {
+                        this.auth = authHeaderValue;
+                        localStorage.setItem(that.authStorageName, this.auth);
+                        this.externalAuthUser = false;
+                    }
 
-                this.principal = data;
+                    this.principal = data;
+                    $rootScope.deniedPermissions = {};
+                    this.securityInitialized = true;
 
-                this.setAuthHeaders();
-                $rootScope.deniedPermissions = {};
-                this.securityInitialized = true;
-                $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
+                    // Should guarantee that the authentication headers are set before broadcasting 'securityInit',
+                    // to avoid race conditions, because on 'securityInit' in repositories.service is called getRepositories,
+                    // which has access="IS_AUTHENTICATED_FULLY" in GDB security-config.xml
+                    that.setAuthHeaders()
+                        .then(() => {
+                            $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
+                        });
+                    setTimeout(() => {
+                        resolve(true);
+                    })
+                });
             };
 
             this.authenticateOpenID = function(authHeader) {

@@ -16,7 +16,7 @@ export const STATIC_RULESETS = [
 
 export const REPOSITORY_TYPES = {graphdbRepo: 'graphdb', free: 'free', eeWorker: 'worker', eeMaster: 'master', ontop: 'ontop', se: 'se', fedx: 'fedx'};
 export const FILENAME_PATTERN = new RegExp('^[a-zA-Z0-9-_]+$');
-export const NUMBER_PATTERN = new RegExp('[0-9]');
+export const NUMBER_PATTERN = new RegExp('^[0-9]+$');
 
 export const REPO_TOOLTIPS = {
     id: "Unique identifier for the repository. The ID must contain only letters (a-z, A-Z), numbers (0-9), '-' and '_'.",
@@ -84,6 +84,7 @@ export const REPO_TOOLTIPS = {
         owlFile: "Specifies relations between the classes and properties in the cosntructed RDF graph. " +
             "It can be in any supported RDF format.",
         constraintFile: "Specifies override of SQL primary and foreign keys.",
+        dbMetadataFile: "Specifies metadata for the SQL database.",
         testConn: "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct."
     },
     fedx: {
