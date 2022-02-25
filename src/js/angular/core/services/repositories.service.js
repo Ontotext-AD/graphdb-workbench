@@ -131,33 +131,24 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.getRepos = function (successCallback, errorCallback, quick) {
             if (that.location && that.location.active) {
-                const promises = [];
-                that.getLocations().forEach(currLocation => {
-                    promises.push(RepositoriesRestService.getRepositoriesFromKnownLocation(currLocation.uri)
-                        .success(function (res) {
-                                that.repositories.set(currLocation.uri, res.data);
-                            },
-                            function (err) {
-                                currLocation.errorMsg = getError(err);
-                            }));
-                });
-                $q.all(promises).then(function () {
-                    that.resetActiveRepository();
-                    that.checkLocationsDegraded();
-                    loadingDone();
-                    // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
-                    $rootScope.globalLocation = that.location;
-                    $rootScope.globalRepositories = that.repositories;
-                    if (successCallback) {
-                        successCallback();
-                    }
-                },
-                function (err) {
-                    loadingDone(err);
-                    if (errorCallback) {
-                        errorCallback();
-                    }
-                });
+                RepositoriesRestService.getRepositories().then(function (res) {
+                        that.repositories = new Map(JSON.parse(res.data));
+                        that.resetActiveRepository();
+                        loadingDone();
+                        that.checkLocationsDegraded();
+                        // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
+                        $rootScope.globalLocation = that.location;
+                        $rootScope.globalRepositories = that.repositories;
+                        if (successCallback) {
+                            successCallback();
+                        }
+                    },
+                    function (err) {
+                        loadingDone(err, that.location.errorMsg);
+                        if (errorCallback) {
+                            errorCallback();
+                        }
+                    });
             } else {
                 loadingDone();
                 // no active location
@@ -256,8 +247,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 repo = that.getActiveRepositoryObject();
             }
             let repositoriesFromLocation = that.repositories.get(repo.location);
+            let activeRepo;
             if (repo && repositoriesFromLocation) {
-                let activeRepo = repositoriesFromLocation.find(current => current.id === repo.id);
+                activeRepo = repositoriesFromLocation.find(current => current.id === repo.id);
                 if (activeRepo) {
                     return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
                 }
@@ -273,8 +265,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             const that = this;
             let repo = that.getActiveRepositoryObject();
             let repositoriesFromLocation = that.repositories.get(repo.location);
+            let activeRepo;
             if (repo && repositoriesFromLocation) {
-                let activeRepo = repositoriesFromLocation.find(current => current.id === repo.id);
+                activeRepo = repositoriesFromLocation.find(current => current.id === repo.id);
                 if (activeRepo) {
                     return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
                 }

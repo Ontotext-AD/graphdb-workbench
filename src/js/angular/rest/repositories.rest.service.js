@@ -36,7 +36,7 @@ function RepositoriesRestService($http) {
     }
 
     function getRepositories() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/all`);
     }
 
     function getRepositoriesFromKnownLocation(location) {
