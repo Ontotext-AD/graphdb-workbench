@@ -143,7 +143,8 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
 
         $scope.editPrefix = function (oldPrefix, newPrefix) {
             $scope.loader = true;
-            RepositoriesRestService.getPrefix($repositories.getActiveRepository(), {from: oldPrefix, to: newPrefix})
+            RepositoriesRestService.getPrefix($repositories.getActiveRepository(), {
+                from: oldPrefix, to: newPrefix, location: $repositories.getActiveRepositoryObject().location})
                 .success(function () {
                     $scope.getNamespaces();
                     $scope.loader = false;

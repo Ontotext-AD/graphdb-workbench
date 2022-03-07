@@ -54,7 +54,7 @@
         <div class="col-lg-6">
             <h3><span tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
             <div class="card active-repo-card"
-                 ng-show="canReadRepo(getLocationFromUri(getActiveRepositoryObject().location), getActiveRepository())">
+                 ng-show="canReadRepo(getActiveRepositoryObject())">
                 <div class="card-block">
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">

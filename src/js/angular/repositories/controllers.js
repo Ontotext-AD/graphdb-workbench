@@ -248,44 +248,6 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     };
 
-    $scope.activateLocationRequest = function (location) {
-        $scope.loader = true;
-        const data = {
-            'uri': location.uri
-        };
-        LocationsRestService.enableLocation(data)
-            .success(function () {
-                $repositories.setRepository('');
-                $repositories.init();
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, 'Error');
-                document.getElementById('switch-' + location.$$hashKey).checked = false;
-            });
-    };
-
-    //Activate location
-    $scope.activateLocation = function (location) {
-        //This has to be fixed
-        // if (document.getElementById('switch-' + location.$$hashKey).checked == true) {
-        //     return;
-        // }
-        if ($scope.hasActiveLocation()) {
-            ModalService.openSimpleModal({
-                title: 'Confirm location change',
-                message: 'Are you sure you want to change the location?',
-                warning: true
-            }).result
-                .then(function () {
-                    $scope.activateLocationRequest(location);
-                }, function () {
-                    document.getElementById('switch-' + location.$$hashKey).checked = false;
-                });
-        } else {
-            $scope.activateLocationRequest(location);
-        }
-    };
-
     //Change repository
     $scope.setRepository = function (repo) {
         $repositories.setRepository(repo);
@@ -540,16 +502,14 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            $scope.locations = $repositories.getLocations();
+            // Don't allow the user to create repository on location with error or degradeded reason
+            $scope.locations = $repositories.getLocations().filter(location => !location.errorMsg && !location.degradedReason);
         }
     });
 
-    $scope.selectLocationByLabel = function (locationUri) {
-        let foundLocation = $scope.locations.find((location) => location.uri === locationUri);
-        if (foundLocation) {
-            $scope.repositoryInfo.location = locationUri;
-        }
-    };
+    $scope.changedLocation = function () {
+        $scope.$broadcast('changedLocation');
+    }
 
     function isValidEERepository(repositoryType) {
         return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
@@ -634,7 +594,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.uploadFileLoader = true;
             Upload.upload({
                 url: 'rest/repositories/uploadRuleSet',
-                data: {ruleset: $scope.uploadFile}
+                data: {ruleset: $scope.uploadFile, location: $scope.repositoryInfo.location}
             }).progress(function (evt) {
                 /*						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                  console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);*/

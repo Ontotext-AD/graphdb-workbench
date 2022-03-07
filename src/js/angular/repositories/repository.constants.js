@@ -88,7 +88,7 @@ export const REPO_TOOLTIPS = {
         testConn: "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct."
     },
     fedx: {
-        repositoryNotExistWarning: 'The repository member has been removed from the local repositories',
+        repositoryNotExistWarning: 'The repository member has been removed from the attached repositories',
         localReposInstructions: 'Click on a repo to add a local repository as a member',
         withLogQueries: 'Set whether to log queries',
         withDebugQueryPlan: 'Whether to print the optimized query execution plan to stdout',

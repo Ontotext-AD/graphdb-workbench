@@ -35,8 +35,12 @@ function RepositoriesRestService($http) {
         });
     }
 
-    function getRepositories() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/all`);
+    function getRepositories(location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/all`, {
+            params: {
+                location: location
+            }
+        });
     }
 
     function getRepositoriesFromKnownLocation(location) {
@@ -91,24 +95,48 @@ function RepositoriesRestService($http) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/getFileContent`, {params: {fileLocation: file}});
     }
 
-    function updateRepositoryFileContent(fileLocation, content) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/updateFile`, JSON.stringify(content), {params: {fileLocation: fileLocation}});
+    function updateRepositoryFileContent(fileLocation, content, location) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/updateFile`, JSON.stringify(content), {
+            params: {
+                fileLocation: fileLocation,
+                location: location
+            }
+        });
     }
 
-    function validateOntopPropertiesConnection(ontopProperties) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/test-connection`, ontopProperties);
+    function validateOntopPropertiesConnection(repositoryInfo) {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/test-connection`, repositoryInfo.params.propertiesFile, {
+            params: {
+                location: repositoryInfo.location
+            }
+        });
     }
 
-    function getSupportedDriversData() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/drivers`);
+    function getSupportedDriversData(repositoryInfo) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/drivers`, {
+            params: {
+                location: repositoryInfo.location
+            }
+        });
     }
 
-    function updatePropertiesFile(fileLocation, content) {
+    function updatePropertiesFile(fileLocation, content, location) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`,
-            JSON.stringify(content), {params: {fileLocation: fileLocation}});
+            JSON.stringify(content),
+            {
+                params: {
+                    fileLocation: fileLocation,
+                    location: location
+                }
+            });
     }
 
-    function loadPropertiesFile(file) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`, {params: {fileLocation: file}});
+    function loadPropertiesFile(file, location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`, {
+            params: {
+                fileLocation: file,
+                location: location
+            }
+        });
     }
 }

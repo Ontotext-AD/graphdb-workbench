@@ -12,7 +12,7 @@
 </h1>
 
 <div class="alert alert-warning" ng-if="getLocations().length && !hasActiveLocation()">
-    {{ getLocationError() }}
+    {{getLocationError()}}
 </div>
 
 <div id="wb-repositories" class="ot-owlim-ctrl mb-2">
@@ -26,7 +26,7 @@
                     <div>
                         <div class="pull-left">
                             <strong>Repositories from: </strong>
-                            <em ng-show="location.degradedReason" class="icon-warning icon-lg text-warning"
+                            <em ng-if="location.degradedReason" class="icon-warning icon-lg text-warning"
                                 tooltip="{{location.degradedReason}} Some operations may not be performed."
                                 tooltip-placement="right"></em>
                             <span class="mr-1">{{location.label}}</span>
@@ -58,16 +58,15 @@
                             </button>
                         </div>
                     </div>
-                    <div class="alert alert-danger" ng-show="location.errorMsg">
-                        {{location.errorMsg.trim()}} Refresh the page to retry.
-                    </div>
-
-                    <div ng-show="hasActiveLocation()" class="pt-2 mb-3">
+                    <div ng-if="hasActiveLocation()" class="pt-2 mb-3">
                         <div class="alert alert-warning no-repositories-alert"
-                             ng-hide="getRepositoriesFromLocation(location.uri).length || location.errorMsg">
+                             ng-if="!getRepositoriesFromLocation(location.uri).length && !location.errorMsg">
                             There are no repositories in the current location
                         </div>
-                        <div ng-show="getRepositoriesFromLocation(location.uri).length" class="mb-1">
+                        <div class="alert alert-danger" ng-if="location.errorMsg">
+                            {{location.errorMsg}} Refresh the page to retry.
+                        </div>
+                        <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                             <table id="wb-repositories-repositoryInGetRepositories"
                                    class="table table-hover table-striped" aria-describedby="Repositories table">
                                 <tbody>
@@ -106,12 +105,12 @@
                                                 tooltip="Copy repository URL to clipboard">
                                             <span class="icon-link"></span>
                                         </button>
-                                        <span ng-show="location.degradedReason">
+                                        <span ng-if="location.degradedReason">
                                             <em class="icon-warning icon-lg text-warning"
                                                 tooltip="{{location.degradedReason}} Editing or deleting this repository is not supported."
                                                 tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                                         </span>
-                                        <span ng-hide="repository.type === 'system' || location.degradedReason">
+                                        <span ng-if="repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                tooltip="Edit repository"
@@ -164,8 +163,8 @@
             </tbody>
         </table>
     </div>
-    <div class="mb-1">
-        <div ng-hide="getDegradedReason()" class="btn-group" dropdown>
+    <div class="btns-all" ng-if="getLocationError()">
+        <div class="btn-group" dropdown>
             <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span
                 class="icon-plus"></span> Create new repository</a>
             <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>

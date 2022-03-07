@@ -274,16 +274,16 @@ describe('$jwtAuth tests', function () {
     describe('$jwtAuth.canReadRepo', function () {
         it('return correct value', function () {
             $httpBackend.flush();
-            var location = {uri: 'someLocation'};
-            expect($jwtAuth.canReadRepo(undefined, 'someRepo')).toEqual(false);
+            let repo = {id: 'someRepo', location: ''};
+            expect($jwtAuth.canReadRepo()).toEqual(false);
 
             $jwtAuth.securityEnabled = false;
             $jwtAuth.freeAccess = true;
-            expect($jwtAuth.canReadRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(true);
 
             $jwtAuth.securityEnabled = false;
             $jwtAuth.freeAccess = false;
-            expect($jwtAuth.canReadRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(true);
 
             //NOTE:
             //Is it that OK as a case ?!? Or we need to have some statements
@@ -295,17 +295,17 @@ describe('$jwtAuth tests', function () {
 
             $jwtAuth.securityEnabled = true;
             $jwtAuth.freeAccess = false;
-            expect($jwtAuth.canReadRepo(location, 'someRepo')).toEqual(false);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(false);
 
             $jwtAuth.principal = '';
-            expect($jwtAuth.canReadRepo(location, 'someRepo')).toEqual(false);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(false);
 
 
             $jwtAuth.principal = 'is defined';
             $jwtAuth.hasRole = function () {
                 return true;
             }
-            expect($jwtAuth.canReadRepo('someLocation', 'someRepo')).toEqual(true);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(true);
 
             $jwtAuth.hasRole = function () {
                 return false;
@@ -313,11 +313,11 @@ describe('$jwtAuth tests', function () {
             $jwtAuth.checkRights = function () {
                 return true;
             }
-            expect($jwtAuth.canReadRepo('someLocation', 'someRepo')).toEqual(true);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(true);
             $jwtAuth.checkRights = function () {
                 return false;
             }
-            expect($jwtAuth.canReadRepo('someLocation', 'someRepo')).toEqual(false);
+            expect($jwtAuth.canReadRepo(repo)).toEqual(false);
         });
     });
 
@@ -325,37 +325,35 @@ describe('$jwtAuth tests', function () {
         it('return correct value', function () {
             $httpBackend.flush();
 
-            var location = {uri: 'someLocation'};
+            let repo = {id: 'someRepo', location: ''};
             expect($jwtAuth.canWriteRepo()).toEqual(false);
 
             $jwtAuth.securityEnabled = false;
             $jwtAuth.freeAccess = false;
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(true);
 
             $jwtAuth.securityEnabled = false;
             $jwtAuth.freeAccess = true;
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(true);
 
             $jwtAuth.securityEnabled = true;
             $jwtAuth.freeAccess = false;
             $jwtAuth.principal = [];
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(false);
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(false);
 
 
             $jwtAuth.principal = {authorities: ['ROLE_ADMIN']};
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(true);
 
             $jwtAuth.principal = {authorities: []};
             $jwtAuth.checkRights = function () {
                 return true
             }
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(true);
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(true);
             $jwtAuth.checkRights = function () {
                 return false
             }
-            expect($jwtAuth.canWriteRepo(location, 'someRepo')).toEqual(false);
-
-
+            expect($jwtAuth.canWriteRepo(repo)).toEqual(false);
         });
     });
 

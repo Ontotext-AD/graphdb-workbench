@@ -381,9 +381,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasRole(UserRole.ROLE_ADMIN);
             };
 
-            this.checkForWrite = function (menuRole, location, repo) {
+            this.checkForWrite = function (menuRole, repo) {
                 if ('WRITE_REPO' === menuRole) {
-                    return this.canWriteRepo(location, repo);
+                    return this.canWriteRepo(repo);
                 }
                 return this.hasRole(menuRole);
             };
@@ -392,11 +392,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.isAdmin() || this.hasRole(UserRole.ROLE_REPO_MANAGER);
             };
 
-            this.canWriteRepo = function (location, repo) {
-                if (_.isEmpty(location) || _.isEmpty(repo)) {
+            this.canWriteRepo = function (repo) {
+                if (!repo) {
                     return false;
                 }
-                if (location.local && (this.securityEnabled || this.hasOverrideAuth)) {
+                // Adding remote secured location could be done only with admin credentials,
+                // that's why we do no check for rights
+                if (this.securityEnabled || this.hasOverrideAuth) {
                     if (_.isEmpty(this.principal)) {
                         return false;
                     } else if (this.hasAdminRole()) {
@@ -408,28 +410,31 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.canReadRepo = function (location, repo) {
-                if (_.isEmpty(location) || _.isEmpty(repo)) {
+            this.canReadRepo = function (repo) {
+                if (!repo) {
                     return false;
                 }
+                // Adding remote secured location could be done only with admin credentials,
+                // that's why we do no check for rights
                 if (this.securityEnabled) {
                     if (_.isEmpty(this.principal)) {
                         return false;
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(location, repo, 'READ');
+                    return this.checkRights(repo, 'READ');
                 } else {
                     return true;
                 }
             };
 
-            this.checkRights = function (location, repo, action) {
+            this.checkRights = function (repo, action) {
                 for (let i = 0; i < this.principal.authorities.length; i++) {
                     const authRole = this.principal.authorities[i];
                     const parts = authRole.split('_', 2);
                     const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-                    if (parts[0] === action && (repoPart === repo || repo !== 'SYSTEM' && repoPart === '*')) {
+                    const repoOnLocation = repo.location ? `${repo.id}_${repo.location}` : repo.id;
+                    if (parts[0] === action && (repoPart === repo.id || repoOnLocation === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
                         return true;
                     }
                 }

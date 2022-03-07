@@ -19,6 +19,13 @@ const modules = [
     'toastr'
 ];
 
+const createUniqueKey = function (repository) {
+    if (repository.location) {
+        return `${repository.id}_${repository.location}`;
+    }
+    return repository.id;
+}
+
 const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
 
 const setGrantedAuthorities = function ($scope) {
@@ -227,7 +234,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                                         };
                                         // We might have old (no longer existing) repositories so we have to check that
                                         const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
-                                            return r.id;
+                                            return createUniqueKey(r);
                                         });
                                         _.each(authorities, function (a) {
                                             // indexOf works in IE 11, startsWith doesn't
@@ -327,6 +334,10 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+
+        $scope.createUniqueKey = function (repository) {
+            return createUniqueKey(repository);
+        }
     }]);
 
 securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth',
@@ -351,31 +362,37 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             setGrantedAuthorities($scope);
         };
 
-        $scope.hasReadPermission = function (repositoryId) {
+        $scope.hasReadPermission = function (repository) {
+            let uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || $scope.grantedAuthorities.READ_REPO[repositoryId]
-                || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== SYSTEM_REPO
-                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*']);
+                || repository.id !== SYSTEM_REPO
+                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'])
+                || $scope.grantedAuthorities.READ_REPO[uniqueKey]
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.hasWritePermission = function (repositoryId) {
+        $scope.hasWritePermission = function (repository) {
+            let uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*'];
+                || repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.readCheckDisabled = function (repositoryId) {
-            return $scope.hasWritePermission(repositoryId)
-                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.READ_REPO['*']
+        $scope.readCheckDisabled = function (repository) {
+            return $scope.hasWritePermission(repository)
+                || repository.id !== SYSTEM_REPO && repository !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.writeCheckDisabled = function (repositoryId) {
+        $scope.writeCheckDisabled = function (repository) {
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
+                || repository.id !== SYSTEM_REPO && repository !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
+
+        $scope.createUniqueKey = function (repository) {
+            return createUniqueKey(repository);
+        }
 
         $scope.userType = UserType.USER;
         $scope.grantedAuthorities = {

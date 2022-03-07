@@ -306,14 +306,17 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.canWriteRepoInLocation = function (repository) {
-        return $jwtAuth.canWriteRepo($scope.getLocationFromUri(repository.location), repository.id);
+        return $jwtAuth.canWriteRepo(repository);
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {
-        const activeRepository = $repositories.getActiveRepository();
-        // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem);
+        const activeRepository = $repositories.getActiveRepositoryObject();
+        if (activeRepository) {
+            // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
+            return $jwtAuth.canWriteRepo(activeRepository)
+                && (activeRepository.id !== 'SYSTEM' || !noSystem);
+        }
+        return false;
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -416,12 +419,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $rootScope.hasPermission();
     };
 
-    $scope.canReadRepo = function (location, repo) {
-        return $jwtAuth.canReadRepo(location, repo);
+    $scope.canReadRepo = function (repo) {
+        return $jwtAuth.canReadRepo(repo);
     };
 
-    $scope.checkForWrite = function (role, location, repo) {
-        return $jwtAuth.checkForWrite(role, location, repo);
+    $scope.checkForWrite = function (role, repo) {
+        return $jwtAuth.checkForWrite(role, repo);
     };
 
     $scope.setPopoverRepo = function (repository) {

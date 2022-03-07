@@ -194,16 +194,15 @@
                                         <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()">
                                     </td>
 								</tr>
-								<tr ng-repeat="repository in getReadableRepositories() | orderBy: 'id'">
-									<td class="repository-name">{{repository.id}}</td>
-									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[repository.id]"  ng-checked="hasReadPermission(repository.id)" ng-disabled="readCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
-									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[repository.id]" ng-checked="hasWritePermission(repository.id)" ng-disabled="writeCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+								<tr ng-repeat="repository in getReadableRepositories() | orderBy: ['id', 'location']">
+									<td class="repository-name">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></td>
+									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
-			</div>
 		</div>
 
 		<div class="mb-3">
@@ -211,6 +210,7 @@
 			<button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">Cancel</button>
 		</div>
 	</form>
+</div>
 </div>
 <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 

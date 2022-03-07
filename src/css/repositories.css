@@ -427,3 +427,7 @@ span.label {
 .fixed-table-container {
     border:0px !important;
 }
+
+.btns-all {
+    padding: 0 13px;
+}
