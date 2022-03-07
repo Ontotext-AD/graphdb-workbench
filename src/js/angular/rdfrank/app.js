@@ -11,8 +11,22 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'graphdb.framework.rest.rdfrank.service'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
-    function ($scope, $interval, toastr, $repositories, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
+    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
+
+        let timer;
+
+        function cancelTimer() {
+            if (timer) {
+                $interval.cancel(timer);
+            }
+        }
+
+        $scope.pluginName = 'rdfrank';
+
+        $scope.setPluginIsActive = function (isPluginActive) {
+            $scope.pluginIsActive = isPluginActive;
+        }
 
         const refreshStatus = function () {
             RdfRankRestService.getStatus()
@@ -43,12 +57,8 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             refreshFilteringConfig();
         };
 
-        const checkForPlugin = function () {
+        $scope.checkForPlugin = function () {
             $scope.pluginFound = false;
-
-            if (!$repositories.getActiveRepository()) {
-                return;
-            }
 
             $scope.setLoader(true);
             RdfRankRestService.checkRdfRankPluginEnabled()
@@ -178,10 +188,15 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.$on('repositoryIsSet', function () {
-            if (!$repositories.getActiveRepository()) {
+            cancelTimer();
+            if (!$licenseService.isLicenseValid() ||
+                !$repositories.getActiveRepository() ||
+                    $repositories.isActiveRepoOntopType() ||
+                        $repositories.isActiveRepoFedXType()) {
                 return;
             }
-            checkForPlugin();
+            $scope.checkForPlugin();
+            pullStatus();
         });
 
         $scope.toggleFiltering = function () {
@@ -259,16 +274,17 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         const pullStatus = function () {
-            const timer = $interval(function () {
+            timer = $interval(function () {
+                $scope.$broadcast('checkIsActive');
                 if ($scope.pluginFound) {
                     refreshStatus();
                 }
             }, 5000);
-
-            $scope.$on('$destroy', function () {
-                $interval.cancel(timer);
-            });
         };
+
+        $scope.$on('$destroy', function () {
+            cancelTimer();
+        });
 
         function expandPrefix(str, namespaces) {
             const ABS_URI_REGEX = /^<?(http|urn).*>?/;
@@ -294,17 +310,16 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             return folded === '' ? iri : folded + ':' + localPart;
         }
 
-        if ($repositories.getActiveRepository()) {
-            checkForPlugin();
-        }
-
-        $scope.$on('repositoryIsSet', function () {
-            if (!$repositories.getActiveRepository()) {
+        const init = function () {
+            if (!$licenseService.isLicenseValid() ||
+                !$repositories.getActiveRepository() ||
+                    $repositories.isActiveRepoOntopType() ||
+                        $repositories.isActiveRepoFedXType()) {
                 return;
             }
-            checkForPlugin();
-        });
+            $scope.checkForPlugin();
+            pullStatus();
+        };
 
-        pullStatus();
-
+        init();
     }]);

@@ -207,7 +207,8 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     });
 
     $scope.$watch('direction', function () {
-        if (!$repositories.getActiveRepository() || $scope.isSystemRepository()) {
+        if (!$repositories.getActiveRepository() ||
+                $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
             return;
         }
         initView();
@@ -294,15 +295,23 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         // clear class search on changing the repository
         $scope.classQuery = {};
         $scope.classQuery.query = '';
-        if (!$repositories.getActiveRepository()) {
+        $scope.repositoryError = null;
+        selectedGraph = allGraphs;
+        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoFedXType()) {
             $scope.status = STATUS.NO_REPO;
             return;
         }
-        selectedGraph = allGraphs;
         initView();
     }
 
-    $scope.$on('repositoryIsSet', onRepositoryIsSet);
+    const repoIsSetListener = $scope.$on('repositoryIsSet', onRepositoryIsSet);
+
+    window.addEventListener('beforeunload', removeRepoIsSetListener);
+
+    function removeRepoIsSetListener() {
+        repoIsSetListener();
+        window.removeEventListener('beforeunload', removeRepoIsSetListener);
+    }
 
     $scope.selectGraph = function (graph) {
         selectedGraph = graph;

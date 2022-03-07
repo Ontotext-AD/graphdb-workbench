@@ -53,7 +53,7 @@ class ClassViewsSteps {
 
     static confirmReload() {
         cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
     }
 
     static reloadDiagram() {

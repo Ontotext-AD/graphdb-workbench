@@ -11,6 +11,7 @@ describe('Monitor Queries', () => {
         cy.presetRepository(repositoryId);
 
         cy.visit('/monitor/queries');
+        cy.window();
 
         // Wait for loaders to disappear
         cy.get('.ot-splash').should('not.be.visible');

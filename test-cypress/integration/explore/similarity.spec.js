@@ -130,8 +130,13 @@ describe('Similarity screen validation', () => {
             changeAnalogicalQuery();
             getSaveEditedQueryButton().click();
             openEditQueryView(true);
-            getAnalogicalQueryTab().click();
-            verifyQueryIsChanged();
+            getAnalogicalQueryTab()
+                .scrollIntoView()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    verifyQueryIsChanged();
+                });
         });
 
         it('Clone existing similarity index', () => {
@@ -154,7 +159,7 @@ describe('Similarity screen validation', () => {
             initRepositoryAndVisitSimilarityView()
         });
 
-        it('Search for entiry in index', () => {
+        it('Search for entity in index', () => {
             // I have created similarity index
             openCreateNewIndexForm();
             setIndexName();
@@ -186,7 +191,12 @@ describe('Similarity screen validation', () => {
     it('Disable and enable similarity plugin', () => {
         initRepository();
 
-        cy.visit('/sparql');
+        cy.visit('/sparql', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
+        cy.window();
         waitUntilSparqlPageIsLoaded();
 
         // When I disable the plugin.
@@ -203,27 +213,42 @@ describe('Similarity screen validation', () => {
 
         // When I visit similarity view while the plugin is disabled.
         cy.visit('/similarity');
+        cy.window();
 
         // Then I expect a message to be displayed informing me that the plugin is disabled.
-        cy.get('.plugin-disabled-warning').should('be.visible').and('contain', 'Similarity Plugin is disabled for this repository.');
+        cy.get('.plugin-not-active-warning').should('be.visible').and('contain', 'Similarity Plugin is not active for this repository.');
 
         // When I enable the plugin
-        cy.get('.enable-plugin-link').click();
-
-        // Then I expect default similarity view with no indexes available
-        checkSimilarityPageDefaultState();
+        cy.get('.confirm-btn')
+            .should('be.visible')
+            .and('contain', 'Activate')
+            .click().then(() => {
+                // Should confirm that want to activate plugin
+                cy.get('.modal-footer > .btn-primary')
+                    .should('be.visible')
+                    .click()
+                    .then(() => {
+                        // Then I expect default similarity view with no indexes available
+                        checkSimilarityPageDefaultState();
+                    });
+        });
     });
 
     function initRepository() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     }
 
     function initRepositoryAndVisitSimilarityView() {
         initRepository();
-        cy.visit('/similarity');
+        cy.visit('/similarity', {
+            onBeforeLoad: (win) => {
+                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+            }
+        });
+        cy.window()
+            .then(() => getExistingIndexesPanel());
     }
 
     function openIndex(index) {
@@ -252,23 +277,24 @@ describe('Similarity screen validation', () => {
         // Workbench loading screen should not be visible
         cy.get('.ot-splash').should('not.be.visible');
 
-        cy.get('#queryEditor .CodeMirror').should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim().length > 0).to.be.true;
-        });
+        cy.waitUntilQueryIsVisible();
 
         // No active loader
-        cy.get('.ot-loader-new-content').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     function checkSimilarityPageDefaultState() {
         //TODO: Should change the 'contain' method to 'eq' once GDB-3699 is fixed.
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
-        getExistingIndexesPanel().should('be.visible').and('contain', 'No Indexes');
+        getExistingIndexesPanel()
+            .find('.no-indexes')
+            .should('be.visible')
+            .and('contain', 'No Indexes');
     }
 
     function openCreateNewIndexForm() {
         cy.get('.create-similarity-index').click();
+        cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`);
         // Wait for query editor to become ready because consecutive command for index creation might
         // fail because the query may not be submitted with the request.
         cy.waitUntilQueryIsVisible();
@@ -276,8 +302,8 @@ describe('Similarity screen validation', () => {
 
     function setIndexName() {
         cy.url().should('eq', Cypress.config('baseUrl') + INDEX_CREATE_URL);
-        getSimilarity().type(INDEX_NAME);
-        getSimilarity().invoke('val').then(value => expect(value).to.equal(INDEX_NAME));
+        getSimilarity().invoke('val', INDEX_NAME).trigger('change')
+            .then(() => getSimilarity().should('have.value', INDEX_NAME));
     }
 
     function clickMoreOptionsMenu() {
@@ -302,16 +328,22 @@ describe('Similarity screen validation', () => {
     }
 
     function createSimilarityIndex() {
-        getCreateIndexButton().click();
-        getExistingIndexesPanel().should('be.visible');
-        cy.get('#indexes-table table').should('be.visible')
-            .find('.index-row').should('have.length', 1);
-        // Just wait for the row in the table to appear and the cell with the index name to be
-        // visible. Waiting for the loading indicator to disappear is just too brittle.
-        // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
-        // fails often because during completing the index name on a previous step the WB seems to
-        // cut off part of the name on the leading side.
-        getIndexLinks().should('be.visible');
+        getCreateIndexButton().click()
+            .then(() => {
+                cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
+                getExistingIndexesPanel();
+                cy.get('#indexes-table table').should('be.visible')
+                    .find('.index-row').should('have.length', 1);
+                // Just wait for the row in the table to appear and the cell with the index name to be
+                // visible. Waiting for the loading indicator to disappear is just too brittle.
+                // Also trying to check for the index name in the cell with `.and('contain', INDEX_NAME);`
+                // fails often because during completing the index name on a previous step the WB seems to
+                // cut off part of the name on the leading side.
+                getIndexLinks().should('be.visible');
+                cy.waitUntil(() =>
+                    cy.get('.edit-query-btn')
+                            .then(editBtn => editBtn));
+            });
     }
 
     function deleteSimilarityIndex() {
@@ -331,16 +363,22 @@ describe('Similarity screen validation', () => {
 
     function cloneExistingIndex() {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
-        cy.get('.clone-index-btn').click();
-
+        cy.get('.clone-index-btn').click()
+            .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
+        cy.window();
         // This is just an implicit wait in order to allow the view to catch up with the rendering
         // before trying to click the button. Its needed because the button doesn't always accept
         // the click most likely due to some async behavior
         cy.contains('Sample queries:').next('.list-group').should('be.visible');
+
         getCreateIndexButton().should('be.visible').click();
-        getExistingIndexesPanel().should('be.visible');
+
+        getExistingIndexesPanel();
         waitForIndexBuildingIndicatorToHide();
-        getIndexLinks().should('have.length', 2);
+        cy.waitUntil(() =>
+            cy.get('#indexes-table')
+                .find('.index-row')
+                .then(indexes => indexes.length === 2))
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
@@ -362,19 +400,22 @@ describe('Similarity screen validation', () => {
         cy.get('.modal-title').should('be.visible').and('contain', 'View SPARQL Query');
         cy.get('.btn-primary').should('be.visible').and('contain', 'Copy to clipboard');
         cy.get('.close').click();
-        cy.get('.modal').should('not.be.visible');
-        cy.get('.modal-backdrop').should('not.be.visible');
+        cy.get('.modal').should('not.exist');
+        cy.get('.modal-backdrop').should('not.exist');
     }
 
     function openEditQueryView(isPredication) {
-        cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
+        cy.url().should('contain', Cypress.config('baseUrl') + '/similarity');
         // Open "Edit search query" view
-        cy.get('.edit-query-btn').click();
+        cy.get('.edit-query-btn').should('be.visible').click();
         // Verify that 'similarity-index-name' input field is disabled
         getSimilarity().should('be.disabled');
         getSearchQueryTab().should('be.visible');
         let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
+        if (isPredication) {
+            cy.verifyQueryAreaContains('SELECT ?entity ?score {');
+        }
     }
 
     function changeDataQuery() {
@@ -385,19 +426,23 @@ describe('Similarity screen validation', () => {
 
         cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
-        cy.get('.sparql-loader').should('not.be.visible');
+        cy.get('.sparql-loader').should('not.exist');
         cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
         cy.get('.uri-cell').eq(0).should('contain', 'http://dbpedia.org/resource/Aaron_Jay_Kernis');
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().click();
+        getSearchQueryTab().scrollIntoView().should('be.visible').click();
         cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
-        getAnalogicalQueryTab().click();
-        cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+        getAnalogicalQueryTab()
+            .scrollIntoView()
+            .should('be.visible').click()
+            .then(() => {
+                cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+            });
     }
 
     function getDeleteIndexButton() {
@@ -417,7 +462,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getSaveEditedQueryButton() {
-        return cy.get('.save-query-btn');
+        return cy.get('.save-query-btn').scrollIntoView().should('be.visible');
     }
 
     function getSimilarity() {
@@ -425,7 +470,7 @@ describe('Similarity screen validation', () => {
     }
 
     function getExistingIndexesPanel() {
-        return cy.get('.existing-indexes');
+        return cy.get('.existing-indexes').should('be.visible');
     }
 
     function waitForIndexBuildingIndicatorToHide() {
@@ -435,9 +480,5 @@ describe('Similarity screen validation', () => {
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
         cy.verifyQueryAreaContains(query);
-    }
-
-    function getToast() {
-        return cy.get('#toast-container');
     }
 });

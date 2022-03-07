@@ -13,7 +13,7 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors></div>
+    <div core-errors license></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
         <p>The currently selected repository cannot be used for queries due to an error:</p>
@@ -21,7 +21,7 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="toolbar-holder" ng-show="configLoaded && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
+    <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 tooltip="Back to visual graph home"
                 tooltip-placement="bottom"
@@ -81,7 +81,7 @@
         </button>
     </div>
 
-    <div class="search-bar" ng-show="getActiveRepository() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
+    <div class="search-bar" ng-show="getActiveRepository() && isLicenseValid() && !isLoadingLocation() && hasActiveLocation() && 'SYSTEM' !== getActiveRepository()">
 
         <div class="row slider mb-2"
              ng-show="configLoaded.startMode == 'search' && (searchVisible || !nodeSelected)" ng-cloak>
@@ -89,7 +89,10 @@
                 <div class="card">
                     <div class="card-block">
                         <h3>{{configLoaded.name}}</h3>
-                        <p>Search for an IRI to view it. <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span></p>
+                        <p>Search for an IRI to view it.
+                            <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span>
+                            <p ng-if="configLoaded.hint">Hint: {{configLoaded.hint}}</p>
+                        </p>
                         <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
@@ -141,7 +144,7 @@
                                 </td>
                                 <td>
                                     <h5>
-                                        <a href ng-click="goToGraphConfig(config)">{{config.name}}</a>
+                                        <a href ng-click="goToGraphConfig(config)" popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
                                     </h5>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
@@ -194,11 +197,8 @@
                         </table>
                     </div>
                 </div>
+            </div>
         </div>
-
-
-        </div>
-
     </div>
 </div>
 
@@ -230,16 +230,20 @@
 
         <ul class="rdf-list tab-content" ng-if="showPredicates">
             <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
-                <span>{{splitPredicate(predicate)}}</span>
+                <div role="{{predicate.partOfTriple ? 'button' : ''}}"
+                     ng-click="clickLink(predicate)">
+                    <em class="{{predicate.partOfTriple ? 'fa fa-long-arrow-right triple-pred' : ''}}"></em>
+                    <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
+                </div>
             </li>
         </ul>
 
         <div ng-if="showFilter" class="filter-sidepanel tab-content">
-            <h4>Graph Settings</h4>
+            <h4>Graph settings</h4>
 
             <div>
                 <div class="form-group mb-2">
-                    <label>Maximum Links to Show</label>
+                    <label tooltip="Limit the number of links when often they are too many">Maximum links to show</label>
                     <div class="form-inline">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
                                 ng-click="changeLimit(-1)">
@@ -247,25 +251,39 @@
                         </button>
                         <input type="number" class="form-control input-number" size="20"
                                ng-model="settings['linksLimit']"
-                               min="0" max="1000" class="ng-pristine ng-valid ng-valid-number">
+                               min="0" max="1000" class="ng-pristine ng-valid ng-valid-number"
+                               ng-change="validateLinksLimit()">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] > 999"
                                 ng-click="changeLimit(1)">
                             <span class="icon-plus"></span>
                         </button>
+                        <span style="margin-top: 5px" ng-if="invalidLimit"
+                              class="idError alert alert-danger"
+                              tooltip="{{INVALID_LINKS_TOOLTIP}}">
+                            {{INVALID_LINKS_MSG}}
+                        </span>
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label>Preferred languages</label>
+                    <label tooltip="Preferred languages for node and predicates labels">Preferred languages</label>
                     <div class="input-group preferred-languages">
-                        <tags-input ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
+                        <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="Add a language tag"></tags-input>
                     </div>
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label>
+                        <label tooltip="Include/Exclude predicates from owl: rdf: rdfs: sesame: dul: prov: fibo: wd:">
+                        <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
+                            Include schema statements
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group mb-2">
+                    <div class="checkbox">
+                        <label tooltip="Include/exclude inferred statements">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
-                            Include Inferred Statements
+                            Include inferred statements
                         </label>
                     </div>
                 </div>
@@ -274,7 +292,7 @@
 
                 <div class="form-group mb-2">
                     <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}">
-                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}">
+                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
                             Expand results over owl:sameAs
@@ -286,9 +304,9 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label>
+                        <label tooltip="Show predicate labels as links titles">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
-                            Show Predicate Labels
+                            Show predicate labels
                         </label>
                     </div>
                 </div>
@@ -299,28 +317,30 @@
                                      tooltip-placement="bottom"
                                      tooltip-trigger="mouseenter"><span class="nav-link">Types</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label>Preferred types</label>
+                            <label tooltip="Types of nodes to show with preference when there are too many nodes">Preferred types</label>
                             <div>
-                                <tags-input class="preferred-types" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Preferred types', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label>
+                                <label tooltip="Show only nodes of the preferred types">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
-                                    Show Preferred Types Only
+                                    Show preferred types only
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Ignored types</label>
+                            <label tooltip="Types of nodes to exclude from the visual graph">Ignored types</label>
                             <div>
-                                <tags-input class="ignored-types" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
+                                <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Ignored types', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                     </tab>
@@ -329,30 +349,35 @@
                                      tooltip-placement="bottom"
                                      tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label>Preferred predicates</label>
                             <div>
-                                <tags-input class="preferred-predicates" ng-model="settings['preferredPredicatesMap']" min-length="3"
+                                <label tooltip="Predicates to show with preference when there are too many links">Preferred predicates</label>
+
+                                <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred predicate"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Preferred predicates', false)"
+                                            on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label>
+                                <label tooltip="Show only links of the preferred predicates">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
-                                    Show Preferred Predicates Only
+                                    Show preferred predicates only
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group ">
-                            <label>Ignored predicates</label>
+                            <label tooltip="Ignored predicates will not appear as links in the visual graph but will be listed as instance properties when you click on a node">Ignored predicates</label>
                             <div>
-                                <tags-input class="ignored-predicates" ng-model="settings['rejectedPredicatesMap']" min-length="3"
+                                <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored predicate"
-                                            on-tag-added="addingTag($tag)"></tags-input>
+                                            on-tag-adding="validateTag($tag, 'Ignored predicates', true)"
+                                            on-tag-added="addedTag($tag)"
+                                            template="ignored-predicates-template"
+                                            tag-class="getTagClass($tag.text)"></tags-input>
                             </div>
                         </div>
                     </tab>
@@ -362,12 +387,21 @@
                     <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">Reset</button>
                     <button type="submit" class="btn btn-primary btn-lg save-settings-btn" ng-click="updateSettings()">Save</button>
                 </div>
+
+                <script type="text/ng-template" id="ignored-predicates-template">
+                    <div class="tag-template">
+                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *' : ''}}">
+                            <span>{{$getDisplayText()}}</span>
+                            <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
+                        </div>
+                    </div>
+                </script>
             </div>
         </div>
 
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
-                <a class="uri" target="_blank" href="resource?uri={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
+                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
@@ -440,6 +474,7 @@
                         <div class="data-value">
                             <a ng-if="item.value[0].t === 'i'" href="#" ng-click="openIRI(item.value[0].v, $event)" ng-bind="item.value[0].v"></a>
                             <span ng-if="item.value[0].t !== 'i'" ng-bind="item.value[0].v"></span>
+                            <span class="language-tag" ng-if="item.value[0].t !== 'lt:http://www.w3.org/2001/XMLSchema#string'" ng-bind="replaceIRIWithPrefix(getLiteralFromPropValue(item.value[0].t))"></span>
                             <button class="btn btn-link btn-sm" type="button"
                                     ng-if="item.value.length > 1"
                                     ng-click="toggleMoreInfo($event, this)">
@@ -453,13 +488,12 @@
                                   ng-hide="$index == 0">
                                 <a ng-if="value.t === 'i'" href="#" ng-click="openIRI(value.v, $event)" ng-bind="value.v"></a>
                                 <span ng-if="value.t !== 'i'" ng-bind="value.v"></span>
+                                <span class="language-tag" ng-if="value.t !== 'lt:http://www.w3.org/2001/XMLSchema#string'" ng-bind="replaceIRIWithPrefix(getLiteralFromPropValue(value.t))"></span>
 							</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 </pageslide>

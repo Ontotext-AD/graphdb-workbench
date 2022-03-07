@@ -17167,6 +17167,10 @@
                     for (attrname in allHeaders) {
                         headers[attrname] = allHeaders[attrname];
                     }
+                    var authToken = window.localStorage.getItem('com.ontotext.graphdb.auth');
+                    if (authToken !== null) {
+                        headers['Authorization'] = authToken;
+                    }
                     for (attrname in contentTypeHeaders) {
                         headers[attrname] = contentTypeHeaders[attrname];
                     }

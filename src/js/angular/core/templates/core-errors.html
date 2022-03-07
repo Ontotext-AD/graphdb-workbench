@@ -1,13 +1,20 @@
-<div class="mb-2 row" ng-hide="getActiveRepository() && (!isRestricted || canWriteActiveRepo())">
+<div class="mb-2 row" ng-hide="getActiveRepository() && !isRestricted">
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
                     <div ng-if="!getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
-                    <div ng-if="getActiveRepository() && isRestricted && !canWriteActiveRepo()">Some functionalities are not available because <span ng-if="!isActiveRepoOntopType()">you have no write permission to repository </span>
-                        <strong>{{getActiveRepository()}}</strong><span ng-if="isActiveRepoOntopType()"> is read-only Virtual Repository</span>.</div>
+                    <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">Some functionalities are not available because
+                        <span ng-if="!isLicenseValid()">your license is not valid.
+                            <p></p>
+                            <div><a href="license" class="btn btn-primary confirm-btn">Set new license</a></div>
+                        </span>
+                        <span ng-if="isSecurityEnabled() && !canWriteActiveRepo()">you have no write permission to repository </span>
+                        <strong ng-if="isActiveRepoOntopType()">{{getActiveRepository()}}</strong>
+                        <span ng-if="canWriteActiveRepo() && isActiveRepoOntopType()"> is read-only Virtual Repository.</span>
+                        <span ng-if="canWriteActiveRepo() && isActiveRepoFedXType()"> <b>{{title}}</b> view is not supported by FedX Repository.</span></div>
                     <small>
-                        <span ng-if="getAccessibleRepositories().length">
+                        <span ng-if="getAccessibleRepositories().length && isLicenseValid()">
                             Click one of the repositories below to connect to it<span ng-if="canManageRepositories()"> or create a new repository</span>.
                         </span>
 
@@ -19,6 +26,7 @@
 
                 <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
                     <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'id']"
+                        ng-if="repository.id !== getActiveRepository()"
                         class="list-group-item list-group-item-action repository"
                         ng-mouseenter="showPopoverForRepo($event, repository)" ngx-mouseleave="setPopoverForRepo($event, repository, false)">
                         <div class="lead ellipsis-block" ng-click="setRepository(repository.id)">
@@ -32,7 +40,7 @@
                     </li>
                 </ul>
 
-                <div class="pull-right" ng-if="canManageRepositories()">
+                <div class="pull-right" ng-if="isLicenseValid() && canManageRepositories()">
                     <button class="btn btn-link px-0 create-repository-btn" ng-click="goToAddRepo()">
                         <span class="icon-plus"></span> {{ 'menu.repository.create' | translate }}
                     </button>

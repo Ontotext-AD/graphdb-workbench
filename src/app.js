@@ -148,8 +148,6 @@ const moduleDefinition = function (productInfo) {
             }
         }]);
 
-    workbench.constant('isEnterprise', productInfo.productType === 'enterprise');
-    workbench.constant('isFreeEdition', productInfo.productType === 'free');
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
@@ -167,6 +165,13 @@ const moduleDefinition = function (productInfo) {
         });
     }]);
 
+    workbench.filter('titlecase', function() {
+        return function (input) {
+            var s = "" + input;
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        };
+    });
+
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 
@@ -178,13 +183,6 @@ $.get('rest/info/version?local=1', function (data) {
         data.productShortVersion = data.productVersion;
     }
 
-    // TODO: TEST
-    if (data.productType === 'enterprise') {
-        modules.push('graphdb.framework.clustermanagement');
-        require(['angular/clustermanagement/app'], function () {
-            moduleDefinition(data);
-        });
-    } else {
-        moduleDefinition(data);
-    }
+
+    moduleDefinition(data);
 });

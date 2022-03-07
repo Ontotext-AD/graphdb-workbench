@@ -2,6 +2,7 @@ import 'angular/core/services';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
+import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -20,9 +21,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -35,6 +36,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     $scope.queryResultsMode = false;
     $scope.embedded = $location.search().embedded;
     $scope.openedNodeInfoPanel = undefined;
+
+    $scope.invalidLimit = false;
+    $scope.INVALID_LINKS_MSG = 'Invalid links limit';
+    $scope.INVALID_LINKS_TOOLTIP = 'The valid limit range is 1-1000';
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
@@ -64,6 +69,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     const width = 1000;
     const height = 1000;
     let tipElement;
+    let openedLink;
 
     $rootScope.key = "";
 
@@ -220,55 +226,71 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.defaultSettings = {
         linksLimit: 20,
-        includeInferred: false,
-        sameAsState: false,
+        includeInferred: true,
+        sameAsState: true,
         languages: ['en'],
         showLinksText: true,
         preferredTypes: [],
         rejectedTypes: [],
         preferredPredicates: [],
-        rejectedPredicates: [],
+        rejectedPredicates: ["http://dbpedia.org/property/logo",
+                             "http://dbpedia.org/property/hasPhotoCollection",
+                             "http://dbpedia.org/property/website",
+                             "http://dbpedia.org/property/homepage",
+                             "http://dbpedia.org/ontology/thumbnail",
+                             "http://xmlns.com/foaf/0.1/depiction",
+                             "http://xmlns.com/foaf/0.1/homepage",
+                             "http://xmlns.com/foaf/0.1/mbox",
+                             "http://dbpedia.org/ontology/wikiPage*",
+                             "http://dbpedia.org/property/wikiPage*",
+                             "http://factforge.net/*"],
         preferredTypesOnly: false,
-        preferredPredicatesOnly: false
+        preferredPredicatesOnly: false,
+        includeSchema: true
     };
-
+    // Static defaults before we do the actual dynamic default settings in initSettings
     $scope.saveSettings = angular.copy($scope.defaultSettings);
 
-    const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
-    if (localStorageSettings && typeof localStorageSettings === 'object') {
-        try {
-            $scope.saveSettings = localStorageSettings;
-        } catch (e) {
+    function initSettings(principal) {
+        const settingsFromPrincipal = principal.appSettings;
+
+        // New style settings from principal
+        $scope.defaultSettings.includeInferred = settingsFromPrincipal['DEFAULT_INFERENCE'];
+        $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
+            $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
+
+        const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
+        if (localStorageSettings && typeof localStorageSettings === 'object') {
+            // Patch existing settings
+            try {
+                $scope.saveSettings = localStorageSettings;
+                if ($scope.saveSettings['includeSchema'] === undefined) {
+                    // Add the new defaults when migrating from an old GDB
+                    $scope.saveSettings['includeSchema'] = $scope.defaultSettings['includeSchema'];
+                    $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
+                }
+            } catch (e) {
+                $scope.saveSettings = angular.copy($scope.defaultSettings);
+                LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
+            }
+        } else {
             $scope.saveSettings = angular.copy($scope.defaultSettings);
-            LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
         }
     }
 
-    $scope.resetSettings = function () {
-        $scope.settings = angular.copy($scope.defaultSettings);
-    };
+    // Resolves race condition with security init if this is the first loaded page
+    const principal = $jwtAuth.getPrincipal();
+    if (principal) {
+        // We already got a principal, safe to call initSettings
+        initSettings(principal);
+    } else {
+        // No principal yet, delegate to the securityInit event to do call initSettings for us
+        $scope.$on('securityInit', function () {
+            initSettings($jwtAuth.getPrincipal());
+        });
+    }
 
-    $scope.changeLimit = function (delta) {
-        let linksLimit = $scope.settings.linksLimit + delta;
-        if (linksLimit < 1) {
-            linksLimit = 1;
-        }
-        if (linksLimit > 1000) {
-            linksLimit = 1000;
-        }
-        $scope.settings.linksLimit = linksLimit;
-    };
-
-    $scope.showSettings = function () {
-        $scope.showInfoPanel = true;
-        $scope.showFilter = true;
-        $scope.showNodeInfo = false;
-        $scope.showPredicates = false;
-        if (!$scope.saveSettings) {
-            $scope.settings = angular.copy($scope.defaultSettings);
-        } else {
-            $scope.settings = angular.copy($scope.saveSettings);
-        }
+    function renderSettings() {
         $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
             return {'text': v};
         });
@@ -288,6 +310,40 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
             return {'text': v};
         });
+    }
+
+    $scope.resetSettings = function () {
+        $scope.settings = angular.copy($scope.defaultSettings);
+        $scope.validateLinksLimit();
+        renderSettings();
+    };
+
+    $scope.changeLimit = function (delta) {
+        let linksLimit = $scope.settings.linksLimit + delta;
+        if (linksLimit < 1) {
+            linksLimit = 1;
+        }
+        if (linksLimit > 1000) {
+            linksLimit = 1000;
+        }
+        $scope.settings.linksLimit = linksLimit;
+    };
+
+    $scope.validateLinksLimit = function () {
+        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.settings.linksLimit);
+    }
+
+    $scope.showSettings = function () {
+        $scope.showInfoPanel = true;
+        $scope.showFilter = true;
+        $scope.showNodeInfo = false;
+        $scope.showPredicates = false;
+        if (!$scope.saveSettings) {
+            $scope.settings = angular.copy($scope.defaultSettings);
+        } else {
+            $scope.settings = angular.copy($scope.saveSettings);
+        }
+        renderSettings();
     };
 
     $scope.reExpandNode = function () {
@@ -299,12 +355,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     const loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
         const sendSameAs = (sameAsParam === undefined) ? ($scope.saveSettings['sameAsState']) : sameAsParam === true;
         const sendInferred = (inferredParam === undefined) ? ($scope.saveSettings['includeInferred']) : inferredParam === true;
-
         $scope.loading = true;
         $http({
             url: 'rest/explore-graph/graph',
-            method: 'GET',
-            params: {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            data: {
                 query: queryString,
                 linksLimit: $scope.saveSettings['linksLimit'],
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
@@ -321,6 +379,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.updateSettings = function () {
+        if ($scope.invalidLimit) {
+            toastr.error($scope.INVALID_LINKS_TOOLTIP, $scope.INVALID_LINKS_MSG);
+            return;
+        }
         $scope.saveSettings = $scope.settings;
         $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
             return s['text'];
@@ -362,9 +424,105 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     $scope.showInfoPanel = false;
 
+    /**
+     *  Removes brackets and serial commas from IRIs
+     *  when used to create ids for links and markers,
+     *  because elements with ids that contain such
+     *  are not valid XHTML and cause a host problems
+     *  when trying to style individual elements
+     * @param string
+     * @returns {*}
+     */
+    function removeSpecialChars(string) {
+        return string.replace(/[()']/g, "");
+    }
+
+    /**
+     *  Converts triple to link id or generates unique id (needed for arrows)
+     * @param triple
+     * @param tripleLike
+     * @returns {string}
+     */
+    function convertTripleToLinkId(triple, tripleLike) {
+        let tripleParts = triple.split(' ');
+        if (tripleLike) {
+            return [tripleParts[0], tripleParts[1], tripleParts[2]].join('>');
+        }
+        return [tripleParts[0], tripleParts[2]].join('>');
+    }
+
+    function convertLinkDataToLinkId(link) {
+        return [link.source.iri, link.target.iri].join('>');
+    }
+
+    /**
+     *  If source or target of a link is a triple returns a x
+     *  for the link, otherwise returns this of the node.
+     *  Because tick is called before links are created we return node's x,
+     *  which afterwards will be overridden
+     * @param node
+     * @returns {number|number|*}
+     */
+    function getNodeX(node) {
+        if (node.isTriple) {
+            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
+            if (el && typeof el.__data__.x !== "undefined") {
+                return el.__data__.x;
+            }
+        }
+        return node.x;
+    }
+
+    /**
+     *  If source or target of a link is a triple returns a y
+     *  for the link, otherwise returns this of the node.
+     *  Because tick is called before links are created we return node's y,
+     *  which afterwards will be overridden
+     * @param node
+     * @returns {number|number|*}
+     */
+    function getNodeY(node) {
+        if (node.isTriple) {
+            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
+            if (el && typeof el.__data__.y !== "undefined") {
+                return el.__data__.y;
+            }
+        }
+        return node.y;
+    }
+
+    function createTriple(value) {
+        let tripleParts = value.trim().split(' ');
+        return `<<<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>>>`;
+    }
+
+    /**
+     *  Creates unique arrow-marker id will allow change color and refX for particular one
+     * @param d
+     * @returns {string}
+     */
+    function createArrowMarkerUniqueID(d) {
+        let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
+        let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+        return removeSpecialChars(`${source}>${target}>marker`);
+    }
+
+    /**
+     *  Filters nodes array on a given field
+     * @param iri
+     * @param array
+     * @returns {*}
+     */
+    function distinctBy(iri, array) {
+        let keys = array.map(function (value) { return value[iri]; });
+        return array.filter(function (value, index) { return keys.indexOf(value[iri]) === index; });
+    }
+
     function Graph() {
         this.nodes = [];
         this.links = [];
+        this.tripleNodes = new Map();
+        this.tripleLinksCopy = new Map();
 
         this.addNode = function (node, x, y) {
             node.x = x;
@@ -405,7 +563,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         this.addAndMatchLinks = function (newLinks) {
             const nodes = this.nodes;
             Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
-
+            for (let key of graph.tripleLinksCopy.keys()) {
+                if (graph.tripleLinksCopy.get(key).length === 1) {
+                    graph.tripleLinksCopy.delete(key);
+                }
+            }
+            this.links = this.links.filter(link => link !== null);
             this.computeConnectedness();
         };
 
@@ -441,10 +604,64 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         this.linksPredicates = linksPredicates;
 
-        this.removeNode = function (d) {
-            this.links = _.reject(this.links, function (l) {
-                return l.source.iri === d.iri || l.target.iri === d.iri;
+        /**
+         *  Removes generated triple links and related nodes
+         * @param triplesToRemove
+         */
+        this.removeTriples = function (triplesToRemove) {
+            let targetTriples = [];
+            if (this.tripleNodes.size > 0) {
+                triplesToRemove.forEach((source) => {
+                    if (this.tripleNodes.has(source)) {
+                        this.tripleNodes.delete(source);
+                        this.links = _.reject(this.links, function (l) {
+                            let sourceSplit = source.split('>');
+                            let lSource = convertTripleToLinkId(l.source.iri);
+                            let lTarget = convertTripleToLinkId(l.target.iri);
+                            // Handle triple targets
+                            if (lSource === source && graph.tripleNodes.delete(lTarget)) {
+                                let targetSplit = lTarget.split('>');
+                                targetTriples.push({
+                                    source: targetSplit[0],
+                                    target: targetSplit[1]
+                                });
+                            }
+                            let isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
+                            if (isRejected) {
+                                graph.tripleLinksCopy.delete(`${lSource}>${lTarget}`);
+                                graph.tripleLinksCopy.delete(`${lTarget}>${lSource}`);
+                            }
+                            return isRejected;
+                        });
+                    }
+                });
+            }
+
+            // This step is needed for removing artificially created links representing triples
+            targetTriples.forEach((target) => {
+                this.links = _.reject(this.links, function (l) {
+                    return l.source.iri === target.source && l.target.iri === target.target;
+                });
             });
+        }
+
+        this.removeNode = function (d) {
+            let triplesToRemove = [];
+            this.links = _.reject(this.links, function (l) {
+                let isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
+                if (isRejected) {
+                    if (l.target.isTriple) {
+                        triplesToRemove.push(convertTripleToLinkId(l.target.iri));
+                    }
+                    if (!l.source.isTriple && !l.target.isTriple) {
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                    }
+                }
+                return isRejected;
+            });
+
+            this.removeTriples(triplesToRemove);
+
             const links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
                 return countLinks(n, links) === 0;
@@ -457,26 +674,37 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         };
 
         this.removeNodeLeafLinks = function (d) {
+            let triplesToRemove = [];
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
-                if ((l.source.iri === d.iri && countLinks(l.target, links) === 1) ||
-                    (l.target.iri === d.iri && countLinks(l.source, links) === 1)) {
-                    return true;
+                let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
+                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
+                if (!isRejected) {
+                    let targetLinks;
+                    if (l.source.iri === d.iri && countLinks(l.target, links) === 2 && !l.target.isTriple) {
+                        targetLinks = findLinksForNode(l.target, links);
+                    } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2 && !l.source.isTriple) {
+                        targetLinks = findLinksForNode(l.source, links);
+                    }
+                    if (!targetLinks) {
+                        return false;
+                    }
+                    // the node to which (or from which) d has link to has only two links, check if the second one is to d also
+                    isRejected = (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
+                        (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
                 }
-                let targetLinks;
-                if (l.source.iri === d.iri && countLinks(l.target, links) === 2) {
-                    targetLinks = findLinksForNode(l.target, links);
-                } else if (l.target.iri === d.iri && countLinks(l.source, links) === 2) {
-                    targetLinks = findLinksForNode(l.source, links);
+                if (isRejected) {
+                    if (l.target.isTriple) {
+                        triplesToRemove.push(convertTripleToLinkId(l.target.iri));
+                    }
+                    if (!l.source.isTriple && !l.target.isTriple) {
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                    }
                 }
-                if (!targetLinks) {
-                    return;
-                }
-
-                // the node to which (or from which) d has link to has only two links, check if the second one is to d also
-                return (targetLinks[0].source.iri === d.iri || targetLinks[0].target.iri) &&
-                    (targetLinks[1].source.iri === d.iri || targetLinks[1].target.iri);
+                return isRejected;
             });
+
+            this.removeTriples(triplesToRemove);
 
             links = this.links;
             this.nodes = _.reject(this.nodes, function (n) {
@@ -486,17 +714,60 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             this.computeConnectedness();
         };
 
+        this.addTriple = function (triple, x, y) {
+            triple.x = x;
+            triple.y = y;
+            triple.weight = 0;
+            let key = convertTripleToLinkId(triple.iri);
+            if (!this.tripleNodes.has(key)) {
+                triple.weight = 10;
+                this.tripleNodes.set(key, [triple]);
+            } else {
+                let value = this.tripleNodes.get(key);
+                value.push(triple);
+                this.tripleNodes.set(key, value);
+            }
+        }
+
         function matchLinksToNodes(newLinks, nodes) {
             return _.map(newLinks, function (link) {
-                return {
-                    "source": _.find(nodes, function (o) {
+                let source;
+                let target;
+                if (link.isTripleSource) {
+                    source = getTripleNode(link.source);
+                } else {
+                    source = _.find(nodes, function (o) {
                         return o.iri === link.source;
-                    }),
-                    "target": _.find(nodes, function (o) {
+                    })
+                }
+                if (link.isTripleTarget) {
+                    target = getTripleNode(link.target);
+                } else {
+                    target = _.find(nodes, function (o) {
                         return o.iri === link.target;
-                    }),
+                    })
+                }
+                let matchedLink = {
+                    "source": source,
+                    "target": target,
                     "predicates": link.predicates
                 };
+                // make copy of links with triples in them
+                if (link.isTripleSource || link.isTripleTarget) {
+                    let sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
+                    let targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
+                    let linkId = `${sourceId}>${targetId}`;
+                    if (graph.tripleLinksCopy.has(linkId)) {
+                        let value = graph.tripleLinksCopy.get(linkId);
+                        value[0].predicates.push(...matchedLink.predicates);
+                        value.push(matchedLink);
+                        graph.tripleLinksCopy.set(linkId, value);
+                        return null;
+                    } else {
+                        graph.tripleLinksCopy.set(linkId, [matchedLink]);
+                    }
+                }
+                return matchedLink;
             });
         }
 
@@ -504,6 +775,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             const nodesCopy = _.map(this.nodes, function (node) {
                 return {
                     iri: node.iri,
+                    isTriple: node.isTriple,
                     size: node.size,
                     labels: angular.copy(node.labels),
                     types: angular.copy(node.types),
@@ -513,10 +785,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     fixed: node.fixed
                 };
             });
+
+            const triplesCopy = JSON.stringify(Array.from(this.tripleNodes.entries()));
+            const tripleLinksCopy = JSON.stringify(Array.from(this.tripleLinksCopy.entries()));
+
             const linksCopy = _.map(this.links, function (link) {
                 return {
                     source: link.source.iri,
+                    isTripleSource: link.source.isTriple,
                     target: link.target.iri,
+                    isTripleTarget: link.target.isTriple,
                     predicates: link.predicates
                 };
             });
@@ -524,6 +802,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             return {
                 nodes: nodesCopy,
                 links: linksCopy,
+                tripleNodes: triplesCopy,
+                tripleLinksCopy: tripleLinksCopy,
                 colorIndex: colorIndex,
                 type2color: type2color,
                 scale: panAndZoom.scale(),
@@ -536,8 +816,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.searchVisible = false;
 
             this.nodes = angular.copy(state.nodes);
+            // check if triples exists is needed for old configs
+            this.tripleNodes = state.tripleNodes ? new Map(JSON.parse(state.tripleNodes)) : new Map();
             this.links = [];
             this.addAndMatchLinks(state.links);
+            this.tripleLinksCopy = state.tripleLinksCopy ? new Map(JSON.parse(state.tripleLinksCopy)) : new Map();
 
             _.each(this.nodes, function (d) {
                 if (d.fixed) {
@@ -767,23 +1050,74 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         return str;
     }
 
-    $scope.addingTag = function (tag) {
+    $scope.addedTag = function (tag) {
+        if (tag.text.indexOf(':') < 0) {
+            toastr.warning('Enter an absolute full or prefixed IRI');
+            return null;
+        }
         tag.text = expandPrefix(tag.text, $scope.namespaces);
         $scope.pageslideExpanded = true;
         return tag;
+    };
+
+    $scope.validateTag = function (tag, category, wildcardOK) {
+        if (tag.text.indexOf(':') < 0) {
+            if (wildcardOK) {
+                toastr.warning('Enter an absolute full or prefixed IRI, optionally ending in *', category);
+            } else {
+                toastr.warning('Enter an absolute full or prefixed IRI', category);
+            }
+            return false;
+        }
+        const wildcardPos = tag.text.indexOf('*');
+        if (wildcardPos >= 0) {
+            if (!wildcardOK) {
+                toastr.warning('Wildcards not allowed here', category);
+                return false;
+            } else if (wildcardPos < tag.text.length - 1) {
+                toastr.warning('Wildcard allowed only as the last character', category);
+                return false;
+            }
+        }
+        return true;
+    };
+
+    $scope.getTagClass = function (tagText) {
+        if (tagText.endsWith('*')) {
+            return 'tag-item-wildcard';
+        }
+        return null;
     };
 
     $scope.getActiveRepository = function () {
         return $repositories.getActiveRepository();
     };
 
-    function initForRepository() {
-        if (!$repositories.getActiveRepository()) {
+    $scope.isLicenseValid = function() {
+        return $licenseService.isLicenseValid();
+    }
+
+    // Flag to avoid calling repo init logic twice
+    $scope.hasInitedRepository = false;
+
+    // This method may be called twice - once by us explicitly and once by the repositoryInit event.
+    // In some race conditions getActiveRepository() will be already set when we enter it the first
+    // time but then we'll be called again by the event, so we need the above flag to avoid double
+    // initialization and weirdness.
+    function initForRepository(newRepo) {
+        if (!$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
             return;
         }
 
+        $scope.hasInitedRepository = true;
+
+        if (!newRepo) {
+            // Process params only if this isn't a repo that was just selected from the dropdown menu
+            $scope.getGraphConfigs(loadGraphFromQueryParam);
+        }
+
         // Inits namespaces for repo
-        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
             .success(function (data) {
                 const nss = _.map(data.results.bindings, function (o) {
                     return {"uri": o.namespace.value, "prefix": o.prefix.value};
@@ -792,15 +1126,29 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     return n.uri.length;
                 });
 
-                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
-                $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+                checkAutocompleteStatus();
             }).error(function (data) {
                 toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
             });
     }
 
+    function checkAutocompleteStatus() {
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+    });
+
     $scope.$on('repositoryIsSet', function (event, args) {
-        initForRepository();
+        // New repo set from dropdown, clear init state
+        if (args.newRepo) {
+            $scope.hasInitedRepository = false;
+        }
+
+        initForRepository(args.newRepo);
 
         // New repo set from dropdown, clear state and go to home page
         if (args.newRepo) {
@@ -818,12 +1166,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         }
     });
 
-    $scope.getGraphConfigs(loadGraphFromQueryParam);
-
-    // when the view is initialized without the page refresh
-    if (!$scope.getNamespacesPromise || !$scope.getAutocompletePromise) {
-        initForRepository();
-    }
+    initForRepository();
 
     const multiClickDelay = 500; // max delay between clicks for multiple click events
 
@@ -1046,10 +1389,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
         force.nodes(graph.nodes).charge(-3000);
 
-        force.links(graph.links).linkDistance(function (link) {
+        force.links(graph.links).linkDistance(function (l) {
+            if (l.source.isTriple || l.target.isTriple) {
+                return 0;
+            }
             // link distance depends on length of text with an added bonus for strongly connected nodes,
             // i.e. they will be pushed further from each other so that their common nodes can cluster up
-            return getPredicateTextLength(link) + 30 * link.connectedness;
+            return getPredicateTextLength(l) + 30 * l.connectedness;
         });
 
         // arrow markers
@@ -1058,11 +1404,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .enter().append("marker")
             .attr("class", "arrow-marker")
             .attr("id", function (d) {
-                return d.target.size;
+                return createArrowMarkerUniqueID(d);
             })
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", function (d) {
-                return d.target.size + 11;
+                // The positioning of the arrow for triple target nodes differ from normal ones
+                return d.target.isTriple ? 11 : d.target.size + 11;
             })
             .attr("refY", 0)
             .attr("markerWidth", 10)
@@ -1077,14 +1424,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .enter().append("g")
             .attr("class", "link-wrapper")
             .attr("id", function (d) {
-                return d.source.iri + '>' + d.target.iri;
+                return removeSpecialChars(convertLinkDataToLinkId(d));
             })
             .append("line")
             .attr("class", "link")
             .style("stroke-width", 1)
             .style("fill", "transparent")
             .style("marker-end", function (d) {
-                return "url(" + $location.absUrl() + "#" + d.target.size + ")";
+                let targetArrowId = createArrowMarkerUniqueID(d);
+                return `url(#${targetArrowId})`;
             });
 
         const predicate = container.selectAll(".link-wrapper")
@@ -1093,7 +1441,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 return getPredicate(d);
             })
             .attr("class", function (d) {
-                if (d.predicates.length > 1) {
+                if (d.predicates.length > 1 || graph.tripleNodes.has(convertLinkDataToLinkId(d))) {
                     return "predicates";
                 }
                 return "predicate";
@@ -1108,7 +1456,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             .on('mouseout', hidePredicateToolTip)
             .on("click", function (d) {
                 d3.event.stopPropagation();
-                openPredicates(d);
+                linkActions(d);
             });
 
         // node events and variables
@@ -1189,8 +1537,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 } else if (virtualClickEventTimer === 2) {
                     // expand node
                     const shownLinks = graph.countLinks(d, graph.links);
-                    if (!(shownLinks >= $scope.saveSettings['linksLimit'])) {
+                    if (shownLinks <= $scope.saveSettings['linksLimit']) {
                         expandNode(d, false, element.parentNode);
+                    } else {
+                        toastr.info('Increase limit to see more connections and try again', 'Node already expanded to predefined maximum links to show.');
                     }
                     $scope.closeInfoPanel();
                 }
@@ -1397,20 +1747,24 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
             // recalculate links attributes
             link.attr("x1", function (d) {
-                return d.source.x;
+                return getNodeX(d.source);
             }).attr("y1", function (d) {
-                return d.source.y;
+                return getNodeY(d.source);
             }).attr("x2", function (d) {
-                return d.target.x;
+                return getNodeX(d.target);
             }).attr("y2", function (d) {
-                return d.target.y;
+                return getNodeY(d.target);
             });
 
             // recalculate predicates attributes
             predicate.attr("x", function (d) {
-                return d.x = (d.source.x + d.target.x) * 0.5;
+                let sourceX = getNodeX(d.source);
+                let targetX = getNodeX(d.target);
+                return d.x = (sourceX + targetX) * 0.5;
             }).attr("y", function (d) {
-                return d.y = (d.source.y + d.target.y) * 0.5;
+                let sourceY = getNodeY(d.source);
+                let targetY = getNodeY(d.target);
+                return d.y = (sourceY + targetY) * 0.5;
             }).attr("transform", function (d) {
                 const angle = findAngleBetweenNodes(d, d.direction);
                 return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
@@ -1469,10 +1823,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             const source = $(this).attr("id").split(">")[0];
             const target = $(this).attr("id").split(">")[1];
             d3.selectAll('.link').each(function (link) {
-                if (link.source.iri === target && link.target.iri === source) {
-                    let twoWayLinkID = link.source.iri;
+                let sourceId = removeSpecialChars(link.source.iri);
+                let targetId = removeSpecialChars(link.target.iri);
+                if (sourceId === target && targetId === source) {
+                    let twoWayLinkID = sourceId;
                     twoWayLinkID += ">";
-                    twoWayLinkID += link.target.iri;
+                    twoWayLinkID += targetId;
                     const textNode = document.createTextNode('  \u27F6');
                     document.getElementById(twoWayLinkID).lastChild.appendChild(textNode);
                     link.direction = "double";
@@ -1511,17 +1867,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
 
     // find angle between pair of nodes so we can position predicates
     function findAngleBetweenNodes(linkedNodes, direction) {
-        const sourceNode = linkedNodes.source;
-        const targetNode = linkedNodes.target;
-
         const p1 = {
-            x: sourceNode.x,
-            y: sourceNode.y
+            x: getNodeX(linkedNodes.source),
+            y: getNodeY(linkedNodes.source)
         };
 
         const p2 = {
-            x: targetNode.x,
-            y: targetNode.y
+            x: getNodeX(linkedNodes.target),
+            y: getNodeY(linkedNodes.target)
         };
         if (direction) {
             return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
@@ -1545,13 +1898,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         // shift + ctrl/cmd + click focuses node
         if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
             $rootScope.$broadcast("onRootNodeChange", d.iri);
-            return;
+            return false;
         }
 
         // ctrl/cmd + click hides the node
         if (event.ctrlKey || event.metaKey) {
             hideNode(d);
-            return;
+            return false;
         }
 
         // If value of openedNodeInfoPanel is different than "undefined"
@@ -1559,10 +1912,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         if (typeof $scope.openedNodeInfoPanel !== "undefined" && $scope.openedNodeInfoPanel === d) {
             $scope.pageslideExpanded = false;
             $scope.openedNodeInfoPanel = undefined;
-            return;
+            return false;
         }
 
         showNodeInfo(d);
+        return true;
     }
 
     function expandNodeIcons(d, element) {
@@ -1622,25 +1976,58 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
+        let linksCopy = [];
+        const tripleLinksIt = graph.tripleLinksCopy.values();
+        for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
+            let linkCopy = tripleLinksIt.next().value;
+            linkCopy.forEach(link => {
+                linksCopy.push(link);
+            });
+        }
+        // filter existing shadow links
+        linksFound = _.filter(linksFound, function (newLink) {
+            return _.findIndex(linksCopy,
+                function (existingLink) {
+                    return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
+                }) === -1;
+        });
         // filter reflexive links until we find a way to render them  GDB-1853
         linksFound = _.filter(linksFound, function (newLink) {
             return newLink.source !== newLink.target;
         });
-        const nodesFromLinks = _.union(_.flatten(_.map(response.data, function (d) {
-            return [d.source, d.target];
-        })));
+        const nodesFromLinks = distinctBy('iri',_.union(_.flatten(_.map(response.data, function (link) {
+            return [
+                { iri: link.source,
+                  isTriple: link.isTripleSource },
+                {
+                  iri: link.target,
+                  isTriple: link.isTripleTarget }];
+        }))));
         const existingNodes = _.map(graph.nodes, function (n) {
-            return n.iri;
+            return {
+                iri: n.iri,
+                isTriple: Boolean(n.isTriple)
+            };
         });
+        const tripleNodesIt = graph.tripleNodes.values();
+        for (let i = 0; i < graph.tripleNodes.size; i++) {
+            let nodes = tripleNodesIt.next().value;
+            nodes.forEach(node => {
+                existingNodes.push({
+                    iri: node.iri,
+                    isTriple: node.isTriple
+                });
+            });
+        }
         const newNodes = _.reject(nodesFromLinks, function (n) {
-            return _.includes(existingNodes, n);
+            return _.some(existingNodes, n);
         });
 
         if (newNodes.length === 0) {
             if (isStartNode) {
-                toastr.info('This node has no visible connections.');
+                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
             } else if (linksFound.length === 0) {
-                toastr.info('This node has no other visible connections.');
+                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
             }
 
             graph.addAndMatchLinks(linksFound);
@@ -1654,14 +2041,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     url: 'rest/explore-graph/node',
                     method: 'GET',
                     params: {
-                        iri: newNode,
+                        iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
                         config: $scope.configLoaded.id,
+                        languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                         includeInferred: $scope.saveSettings['includeInferred'],
                         sameAsState: $scope.saveSettings['sameAsState']
                     }
-                }).then(function (response) {
+                }).then(function (res) {
                     // Save the data for later
-                    newNodesData[index] = response.data;
+                    newNodesData[index] = res.data;
                 }));
             });
 
@@ -1675,7 +2063,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                     const theta = 2 * Math.PI * index / newNodesData.length;
                     const x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
                     const y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
-                    graph.addNode(newNodeData, x, y);
+                    if (newNodeData.isTriple) {
+                        graph.addTriple(newNodeData, x, y);
+                    } else {
+                        graph.addNode(newNodeData, x, y);
+                    }
                 });
 
                 graph.addAndMatchLinks(linksFound);
@@ -1708,7 +2100,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
                 preferredTypesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredTypesOnly'],
                 preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredPredicatesOnly'],
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                includeSchema: $scope.saveSettings['includeSchema']
             }
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
@@ -2052,7 +2445,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.nodeTypes = d.types;
         $scope.rdfRank = d.rdfRank;
         $scope.nodeIri = d.iri;
-        $scope.encodedIri = encodeURI(d.iri);
+        $scope.resourceType = d.isTriple ? 'triple' : 'uri';
+        $scope.encodedIri = d.isTriple ? encodeURI(createTriple(d.iri)) : encodeURI(d.iri);
         $scope.showInfoPanel = true;
 
         $scope.rdfsLabel = d.labels[0].label;
@@ -2063,11 +2457,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
         $scope.dataNodeKeysQuery = '';
         $http.get('rest/explore-graph/properties', {
             params: {
-                iri: d.iri,
+                iri: d.isTriple ? createTriple(d.iri) : d.iri,
                 config: $scope.configLoaded.id,
                 languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
                 includeInferred: $scope.saveSettings['includeInferred'],
-                sameAsState: $scope.saveSettings['sameAsState']
+                sameAsState: $scope.saveSettings['sameAsState'],
+                rejectedPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedPredicates']
             }
         }).then(function (response) {
             $scope.data = _.mapKeys(response.data, function (value, key) {
@@ -2104,23 +2499,218 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     $scope.closeInfoPanel = function () {
         $scope.pageslideExpanded = false;
         $scope.openedNodeInfoPanel = undefined;
+        $scope.predicates = [];
+        openedLink = null;
         // o, angular, o, miracle
         $timeout(function () {
             $scope.showInfoPanel = false;
         });
     };
 
-    // open predicates sidebar if they are more than one
+    function applyElementsStyleChanges(tripleNode) {
+        updatePredicatesColor('predicate', '#d54a33', tripleNode);
+        updatePredicatesColor('predicates', '#d54a33', tripleNode);
+
+        let links = document.getElementsByClassName('link');
+        if (links) {
+            _.each(links, function (link) {
+                let linkLink = link.__data__;
+                if (linkLink.source.iri.indexOf(tripleNode.iri) >= 0 || linkLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                    link.style.stroke = '#d54a33';
+                    link.style.strokeWidth = 4;
+                }
+            })
+        }
+
+        let markers = document.getElementsByClassName('arrow-marker');
+        if (markers) {
+            _.each(markers, function (marker) {
+                let markerLink = marker.__data__;
+                if (markerLink.source.iri.indexOf(tripleNode.iri) >= 0 || markerLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                    marker.style.stroke = '#d54a33';
+                    if (!marker.__data__.target.isTriple) {
+                        marker.setAttribute("refX", "23");
+                    }
+                }
+            });
+        }
+    }
+
+    $scope.clickLink = function (predData) {
+        if (graph.tripleNodes.has(predData.linkId)) {
+            revertElementsStyleToDefault();
+            let tripleNode = graph.tripleNodes.get(predData.linkId)[predData.nodeIndex];
+            // Shows selected triple and its properties
+            showNodeInfo(tripleNode);
+            $scope.showPredicates = true;
+
+            let clickedEl = document.getElementById(predData.linkId + predData.nodeIndex);
+            if (clickedEl) {
+                clickedEl.style.fontWeight = "bold";
+            }
+
+            let nodeCopy = {};
+            const tripleLinksIt = graph.tripleLinksCopy.values();
+            for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
+                let links = tripleLinksIt.next().value;
+                if (links.length > 1) {
+                    links.every(link => {
+                        if (link.source.iri === tripleNode.iri) {
+                            nodeCopy.iri = links[0].source.iri;
+                            if (link.target.isTriple) {
+                                nodeCopy.oppLinkIRI = convertTripleToLinkId(link.target.iri);
+                                nodeCopy.oppTriplePred = getShortPredicate(link.target.iri.split(' ')[1]);
+                            }
+                            nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                            if (link.predicates.length === 1) {
+                                nodeCopy.linkPred = link.predicates[0];
+                            }
+                            return false;
+                        }
+                        if (link.target.iri === tripleNode.iri) {
+                            nodeCopy.iri = links[0].target.iri;
+                            if (link.source.isTriple) {
+                                nodeCopy.oppLinkIRI = convertTripleToLinkId(link.source.iri);
+                                nodeCopy.oppTriplePred = getShortPredicate(link.source.iri.split(' ')[1]);
+                            }
+                            nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                            if (link.predicates.length === 1) {
+                                nodeCopy.linkPred = link.predicates[0];
+                            }
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+            }
+
+            if (!nodeCopy.iri) {
+                nodeCopy.iri = tripleNode.iri;
+                nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+            }
+
+            applyElementsStyleChanges(nodeCopy);
+        }
+    }
+
+    function updatePredicatesColor(className, color, tripleNode) {
+        let preds = document.getElementsByClassName(className);
+
+        if (preds) {
+            _.each(preds, function (pred) {
+                let predLink = pred.__data__;
+                if (tripleNode) {
+                    if (predLink.source.iri.indexOf(tripleNode.iri) >= 0 || predLink.target.iri.indexOf(tripleNode.iri) >= 0) {
+                        pred.style.fill = color;
+                    }
+                    if (convertTripleToLinkId(tripleNode.iri) === convertLinkDataToLinkId(predLink)) {
+                        pred.textContent = tripleNode.pred;
+                        pred.style.fill = color;
+                    }
+                    if (tripleNode.oppLinkIRI && tripleNode.oppLinkIRI === convertLinkDataToLinkId(predLink)) {
+                        pred.textContent = tripleNode.oppTriplePred;
+                        pred.style.fill = color;
+                    }
+                } else {
+                    pred.style.fill = color;
+                    pred.textContent = getPredicate(predLink);
+                }
+            })
+        }
+    }
+
+    function revertElementsStyleToDefault() {
+        _.each($scope.predicates, function (pred) {
+            let currEl = document.getElementById(pred.linkId + pred.nodeIndex);
+            if (currEl) {
+                currEl.style.fontWeight = "normal";
+            }
+        });
+        let links = document.getElementsByClassName('link');
+        if (links) {
+            _.each(links, function (link) {
+                link.style.stroke = '#999';
+                link.style.strokeWidth = 1;
+            })
+        }
+        updatePredicatesColor('predicate', '');
+        updatePredicatesColor('predicates', '');
+
+        let markers = document.getElementsByClassName('arrow-marker');
+
+        if (markers) {
+            _.each(markers, function (marker) {
+                marker.style.stroke = '#999';
+                // RefX for triple targets isn't changed, because they are not affected by increasing of stroke-width
+                if (!marker.__data__.target.isTriple) {
+                    marker.setAttribute("refX", "59");
+                }
+            });
+        }
+    }
+
+    function linkActions(d) {
+        revertElementsStyleToDefault();
+        let linkId = convertLinkDataToLinkId(d);
+        if (d.predicates.length === 1 && graph.tripleNodes.has(linkId)) {
+            openedLink = null;
+            let tripleNode = graph.tripleNodes.get(linkId)[0];
+            // If there is a triple in this link, show its properties
+            if (clickedNode(tripleNode, this, d3.event.button)) {
+                let nodeCopy = {};
+                nodeCopy.iri = tripleNode.iri;
+                nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
+                applyElementsStyleChanges(nodeCopy);
+            }
+            return;
+        }
+        openPredicates(d);
+    }
+
     function openPredicates(d) {
         $scope.showNodeInfo = false;
-        $scope.showPredicates = true;
+        // open predicates sidebar if they are more than one
+        $scope.showPredicates = d.predicates.length > 1;
         $scope.showFilter = false;
+        $scope.showInfoPanel = false;
 
-        if (d.predicates.length > 1) {
+        if (openedLink === d) {
+            $scope.showNodeInfo = false;
+            $scope.showInfoPanel = false;
+            openedLink = null;
+            return;
+        }
+
+        openedLink = d;
+
+        if ($scope.showPredicates) {
             $scope.predicates = _.map(d.predicates, function (p) {
-                return getShortPredicate(p);
+                let foundNodeIndex = getTripleNodeIndex(p, d);
+                let isPartOfTriple = foundNodeIndex > -1;
+                return {
+                    value: getShortPredicate(p),
+                    partOfTriple: isPartOfTriple,
+                    linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
+                    nodeIndex: foundNodeIndex
+                };
             });
             $scope.showInfoPanel = true;
+        }
+    }
+
+    function getTripleNode(triple) {
+        let linkId = convertTripleToLinkId(triple);
+        if (graph.tripleNodes.has(linkId)) {
+            return graph.tripleNodes.get(linkId).find(el => el.iri === triple);
+        }
+    }
+
+    function getTripleNodeIndex(pred, d) {
+        let linkId = convertLinkDataToLinkId(d);
+        if (graph.tripleNodes.has(linkId)) {
+            return graph.tripleNodes.get(linkId).findIndex(el => el.iri.indexOf(pred) >= 0);
+        } else {
+            return -1;
         }
     }
 
@@ -2324,6 +2914,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.configLoaded = $scope.defaultGraphConfig;
         }
 
+        $location.url("?saved=" + graphToLoad.id);
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
             $scope.pushHistory({saved: graphToLoad.id}, {savedGraph: graphToLoad});
@@ -2395,6 +2986,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
             $scope.rotate(false);
         }
     });
+
+    $scope.getLiteralFromPropValue = function (value) {
+        return value.substring(value.indexOf(':') + 1);
+    }
 }
 
 SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];

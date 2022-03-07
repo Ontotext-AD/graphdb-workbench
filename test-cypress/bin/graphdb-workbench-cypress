@@ -22,4 +22,8 @@ if (process.env.CYPRESS_BASE_URL) {
     cypressConfig.baseUrl = process.env.CYPRESS_BASE_URL;
 }
 
-cypress.run({config: cypressConfig});
+cypress.run({config: cypressConfig}).then((results) => {
+    process.exit(results.totalFailed);
+}).catch((err) => {
+    process.exit(1);
+});

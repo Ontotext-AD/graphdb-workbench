@@ -69,6 +69,7 @@ function MenuItemsProvider() {
             hrefFun: item.hrefFun,
             order: item.order,
             role: item.role,
+            editions: item.editions,
             icon: item.icon,
             children: children
         };
@@ -102,6 +103,7 @@ function MenuItemsProvider() {
         return items;
     };
 
+    // TODO Remove
     this.setProductInfo = function (pinfo) {
         productInfo = pinfo;
     };

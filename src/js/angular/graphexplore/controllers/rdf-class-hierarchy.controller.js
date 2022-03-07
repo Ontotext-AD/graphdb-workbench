@@ -20,9 +20,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
     .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -54,7 +54,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs()
+        if (!$scope.getActiveRepository()) {
+            return;
+        }
+        return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
@@ -253,7 +256,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
         GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
                 if (status === 204) {
-                    toastr.warning("No domain-range data available for '" + name + "' !");
+                    toastr.warning("No domain-range data available for '" + name + "'");
                 } else {
                     LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS, $location.hash());
                     $location
@@ -425,23 +428,29 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     }
 
     let currentActiveRepository = $repositories.getActiveRepository();
-
     function onRepositoryIsSet() {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
             currentActiveRepository = $repositories.getActiveRepository();
         }
+        $scope.repositoryError = null;
+        if (!currentActiveRepository) {
+            return;
+        }
         selectedGraph = allGraphs;
-        initView();
-        getClassHierarchyData();
+        initView()
+            .then(getClassHierarchyData);
     }
 
     function getClassHierarchyData() {
 
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository()) {
+        if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
@@ -464,6 +473,11 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     $scope.hasClassHierarchy = function () {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
+
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
+
 
     $scope.chosenGraph = function (graph) {
         selectedGraph = graph;

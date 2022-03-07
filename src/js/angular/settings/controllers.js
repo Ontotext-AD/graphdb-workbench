@@ -58,33 +58,29 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
     };
 }
 
-LicenseCtrl.$inject = ['$scope', 'LicenseRestService', 'toastr', '$rootScope'];
+LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService'];
 
-function LicenseCtrl($scope, LicenseRestService, toastr, $rootScope) {
-    $scope.loader = true;
+function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService) {
 
-    LicenseRestService.checkLicenseHardcoded()
-        .success(function (res) {
-            $rootScope.isLicenseHardcoded = (res === 'true');
-        })
-        .error(function () {
-            $rootScope.isLicenseHardcoded = false;
-            toastr.error('Error checking license availability');
-        })
-        .then(function () {
-            LicenseRestService.getLicenseInfo()
-                .success(function (res) {
-                    $scope.loader = false;
-                    $scope.license = res;
-                    // check if you have a hardcoded license that is not activated through the workbench and if
-                    // you do disable ability to update license
-                })
-                .error(function () {
-                    // no license but we need to check for 417
-                    $scope.loader = false;
-                    $scope.license = {message: 'No license was set.', valid: false};
-                });
-        });
+    $scope.loadingLicense = function() {
+        return $licenseService.loadingLicense;
+    };
+
+    $licenseService.checkLicenseStatus();
+
+    $scope.revertToFree = function () {
+        ModalService.openSimpleModal({
+            title: 'Confirm operation',
+            message: "Reverting to a GraphDB Free license will make SE and EE features unusable. Are you sure?",
+            warning: true
+        }).result
+            .then(function () {
+                LicenseRestService.unregisterLicense()
+                    .success(function () {
+                        $licenseService.checkLicenseStatus();
+                    });
+            });
+    };
 }
 
 RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
@@ -145,6 +141,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
         const modalInstance = $modal.open({
             templateUrl: 'js/angular/settings/modal/validate-license.html',
             controller: 'ValidateLicenseModalCtrl',
+            size: 'lg',
             resolve: {
                 license: function () {
                     return license;

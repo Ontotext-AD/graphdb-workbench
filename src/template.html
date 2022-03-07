@@ -13,25 +13,24 @@
 
     <link rel="apple-touch-icon-precomposed" href="icon.png">
 
-    <script src="plugin-registry.js"></script>
-    <script src="plugins.js"></script>
+    <script src="plugin-registry.js?v=<%= version %>"></script>
+    <script src="plugins.js?v=<%= version %>"></script>
 </head>
 
 <body>
 
 <div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
-        <rdf-resource-search class="btn p-0"></rdf-resource-search>
-        <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
-             tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+        <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
+             tooltip="{{getLicense().message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
             <span class="icon-warning"></span> No valid license
-            <a ng-show="!isLicenseHardcoded" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
+            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
         </div>
         <div class="btn btn-info imports-queries"
                 ng-if="queryCount > 0 || numberOfActiveImports > 0">
             <span class="icon-reload text-primary loader"></span>
             <span class="dot-separator" ng-if="queryCount > 0">
-                <a class="btn btn-link" href="./monitor/queries" target="_blank">
+                <a class="btn btn-link" href="./monitor/queries" rel="noopener" target="_blank">
                     <strong>{{queryCount}}</strong>
                     <ng-pluralize count="queryCount"
                                   when="{'one': 'query/update',
@@ -40,7 +39,7 @@
                 </a>
             </span>
             <span class="dot-separator" ng-if="numberOfActiveImports > 0">
-                <a class="btn btn-link" href="./import" target="_blank">
+                <a class="btn btn-link" href="./import" rel="noopener" target="_blank">
                     <strong>{{numberOfActiveImports}}</strong>
                     <ng-pluralize count="numberOfActiveImports"
                                   when="{'one': 'import',
@@ -49,6 +48,7 @@
                 </a>
             </span>
         </div>
+        <rdf-resource-search class="float-xs-left p-0"></rdf-resource-search>
         <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
             <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -106,7 +106,6 @@
             <img class="big-logo" src="img/graphdb-logo.svg" alt="GraphDB logo" width="181" height="45">
             <img class="small-logo" src="img/graphdb-logo-sq.svg" alt="GraphDB logo" ng-href="./" href="./" width="58"
                  height="58">
-            <span class="product-version" title="GraphDB {{mainTitle}}">{{mainTitle}}</span>
         </a>
     </li>
     <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
@@ -126,7 +125,7 @@
             <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
-                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository())">
+                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository()) && checkEdition(submenu.editions)">
                 <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
                 </a>
@@ -154,7 +153,7 @@
             <p>
                 <a href="http://graphdb.ontotext.com" target="_blank" rel="noopener noreferrer">GraphDB</a> {{graphdbVersion}} &bull; <a
                     href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J</a>
-                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>. All
+                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; Workbench {{workbenchVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>. All
                 rights reserved.
             </p>
         </div>

@@ -26537,28 +26537,33 @@ function clearAll() {
 
 },{"../src/util":21}],29:[function(require,module,exports){
 module.exports={
-  "_from": "yasgui-utils@^1.6.0",
+  "_args": [
+    [
+      "yasgui-utils@1.6.7",
+      "/ssd/IntelliJProjects/YASQE-Ontotext"
+    ]
+  ],
+  "_from": "yasgui-utils@1.6.7",
   "_id": "yasgui-utils@1.6.7",
   "_inBundle": false,
   "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
   "_location": "/yasgui-utils",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "yasgui-utils@^1.6.0",
+    "raw": "yasgui-utils@1.6.7",
     "name": "yasgui-utils",
     "escapedName": "yasgui-utils",
-    "rawSpec": "^1.6.0",
+    "rawSpec": "1.6.7",
     "saveSpec": null,
-    "fetchSpec": "^1.6.0"
+    "fetchSpec": "1.6.7"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
-  "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-  "_spec": "yasgui-utils@^1.6.0",
+  "_spec": "1.6.7",
   "_where": "/ssd/IntelliJProjects/YASQE-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
@@ -26566,11 +26571,9 @@ module.exports={
   "bugs": {
     "url": "https://github.com/YASGUI/Utils/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "store": "^2.0.4"
   },
-  "deprecated": false,
   "description": "Utils for YASGUI libs",
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
@@ -27055,14 +27058,20 @@ module.exports = function (YASQE, yasqe) {
 	var getSuggestionsAsHintObject = function (suggestions, completer, token) {
 		var hintList = [];
 		for (var i = 0; i < suggestions.length; i++) {
-			var suggestedString = suggestions[i];
-			if (completer.postProcessToken) {
-				suggestedString = completer.postProcessToken(token, suggestedString);
+			var suggestion = suggestions[i];
+
+			if (!suggestion.value) {
+				continue;
 			}
 
-			var displayTextVar = replaceAll(replaceAll(suggestedString, "<", "&lt;"), ">", "&gt;");
-			displayTextVar = replaceAll(replaceAll(displayTextVar, "&lt;b&gt;", "<span class='CodeMirror-highlight'>"), "&lt;/b&gt;", "</span>");
-			suggestedString = replaceAll(replaceAll(suggestedString, "<b>", ""), "</b>", "");
+			var suggestedString = suggestion.value;
+			var displayTextVar = suggestion.description;
+
+			if (suggestion.type === 'prefix') {
+				suggestedString = suggestedString + ":";
+			} else if (completer.postProcessToken) {
+				suggestedString = completer.postProcessToken(token, suggestedString);
+			}
 
 			if (!(suggestedString.startsWith("<") && suggestedString.endsWith(">")) && suggestedString.indexOf(":") > 0) {
 				var prefixSplit = suggestedString.indexOf(":");
@@ -27118,6 +27127,7 @@ module.exports = function (YASQE, yasqe) {
 				//only draw when the user needs to use a keypress to summon autocompletions
 				if (!completer.autoshow) {
 					if (!completionNotifications[completer.name]) completionNotifications[completer.name] = $("<div class='completionNotification'></div>");
+					$('#keyboardShortcuts').hide();
 					completionNotifications[completer.name]
 						.show()
 						.text("Press Alt+Enter to autocomplete")
@@ -27127,6 +27137,7 @@ module.exports = function (YASQE, yasqe) {
 			hide: function (yasqe, completer) {
 				if (completionNotifications[completer.name]) {
 					completionNotifications[completer.name].hide();
+					$('#keyboardShortcuts').show();
 				}
 			}
 
@@ -27173,6 +27184,7 @@ var selectHint = function (yasqe, data, completion) {
 ////	storeBulkCompletions: storeBulkCompletions,
 //	loadBulkCompletions: loadBulkCompletions,
 //};
+
 },{"../../lib/trie.js":4,"../main.js":46,"../utils.js":52,"jquery":16,"yasgui-utils":30}],35:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
@@ -27282,9 +27294,9 @@ module.exports.fetchAutocomplete = function (yasqe, token, callback) {
             if (204 === jqXHR.status && !yasqe.fromAutoShow) {
                 yasqe.toastBuildIndex();
             } else {
-                callback(data.suggestions.map(function (d) {
-                    return d.value
-                }));
+                if (data) {
+                    callback(data.suggestions);
+                }
             }
         },
         dataType: 'json',
@@ -27317,6 +27329,7 @@ module.exports.preProcessToken = function (yasqe, token) {
 module.exports.postProcessToken = function (yasqe, token, suggestedString) {
     return require('./utils.js').postprocessResourceTokenForCompletion(yasqe, token, suggestedString);
 };
+
 },{"./utils.js":40,"jquery":16}],37:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
@@ -28954,7 +28967,7 @@ module.exports = {
 }
 
 function findFirstPrefix(cm, line, ch, lineText) {
-	if (lineText.charAt(0) === "#" || (lineText.startsWith('"') && lineText.endsWith('"'))) return;
+	if (lineText && (lineText.charAt(0) === "#" || (lineText.startsWith('"') && lineText.endsWith('"')))) return;
 	if (!ch) ch = 0;
 	if (!lineText) lineText = cm.getLine(line);
 	lineText = lineText.toUpperCase();
@@ -28981,7 +28994,7 @@ function findFirstPrefix(cm, line, ch, lineText) {
 		if (found > 0 && lineText.charAt(found - 1) === ":")
 		    // :PREFIX freeze bug, See GDB-2408
 		    return;
-		tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
+		var tokenType = cm.getTokenTypeAt(CodeMirror.Pos(line, found + 1));
 		if (!/^(comment|string)/.test(tokenType))
 			return found + 1;
 		at = found - 1;
@@ -28989,6 +29002,9 @@ function findFirstPrefix(cm, line, ch, lineText) {
 }
 
 CodeMirror.registerHelper("fold", "prefix", function(cm, start) {
+	if (!start) {
+		return;
+	}
 	var line = start.line,
 		lineText = cm.getLine(line);
 
@@ -29434,9 +29450,7 @@ var getCompleteToken = function(yasqe, token, cur) {
 		ch: token.start
 	});
 	// not start of line, and not whitespace
-	if (
-		prevToken.type != null && prevToken.type != "ws" && token.type != null && token.type != "ws"
-	) {
+	if (prevToken.type != null && prevToken.type != "ws" && prevToken.type != "punc" && token.type != null && token.type != "ws") {
 		token.start = prevToken.start;
 		token.string = prevToken.string + token.string;
 		return getCompleteToken(yasqe, token, {

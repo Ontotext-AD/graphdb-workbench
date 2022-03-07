@@ -13,6 +13,7 @@ describe('Setup / Connectors - Lucene', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.visit('/connectors');
+        cy.window();
     });
 
     afterEach(() => {
@@ -28,116 +29,113 @@ describe('Setup / Connectors - Lucene', () => {
     it('Create, copy and delete a lucene connector', () => {
         getNewLuceneConnectorButton()
             .click();
+
         getCreateLuceneConnectorPage()
-            .should('be.visible')
-            .and('contain', 'Create new Lucene Connector');
-        getConnectorNameField()
-            .type(luceneConnectorName);
-        getFieldNameField()
-            .type(fieldName, {force:true});
-        getPropertyChainField()
-            .type(connectorPropertyChain, {force:true});
-        getUriTypes()
-            .type(uriType);
-        getOkButton()
-            .click();
-        getConnectorCreationDialog()
-            .should('be.visible')
-            .and('contain', luceneConnectorName);
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorCreateToastMessage);
+            .should('contain', 'Create new Lucene Connector')
+            .within(() => {
+                getConnectorNameField()
+                    .type(luceneConnectorName);
+                getFieldNameField()
+                    .type(fieldName, {force: true});
+                getPropertyChainField()
+                    .type(connectorPropertyChain, {force: true});
+                getUriTypes()
+                    .type(uriType);
+                confirmCreateConnector();
+            });
+
+        verifyStatusToastMessage(connectorCreateToastMessage);
+        verifyConnectorExists(luceneConnectorName);
         //copy connector
         getConnectorInstance(0)
             .find('.icon-copy')
             .should('be.visible')
-            .click();
-        getOkButton()
-            .click({force:true});
-        getConnectorCreationDialog()
-            .should('be.visible')
-            .and('contain', luceneConnectorName + '-copy');
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorCreateToastMessage + '-copy');
-        //delete connector copy
-        getConnectorInstance(1)
-            .find('.icon-trash')
-            .should('be.visible')
-            .click();
-        getConfirmConnectorDeletebutton()
-            .should('be.visible')
-            .click();
-        getConnectorStatusToastMessage()
-            .should('be.visible')
-            .and('contain', connectorDeleteToastMessage + '-copy');
+            .click()
+            .then(() => {
+                getCreateLuceneConnectorPage()
+                    .within(() => {
+                        confirmCreateConnector();
+                    });
+                verifyStatusToastMessage(connectorCreateToastMessage + '-copy');
+                verifyConnectorExists(luceneConnectorName + '-copy');
+                //delete connector copy
+                getConnectorInstance(1)
+                    .find('.icon-trash')
+                    .should('be.visible')
+                    .click();
+                getConfirmConnectorDeletebutton()
+                    .should('be.visible')
+                    .click();
+                verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
+            });
     });
 
     function getConnectorsPage() {
-        return cy.get('.connectorsPage');
+        return cy.get('.connectorsPage').should('be.visible');
     }
 
     function getNewLuceneConnectorButton() {
-        return getConnectorsPage().find('.new-connector-btn');
+        return getConnectorsPage().find('.new-connector-btn').contains('Lucene');
     }
 
     function getCreateLuceneConnectorPage() {
-        return cy.get('.modal-content');
+        return cy.get('.modal-content').scrollIntoView().should('be.visible');
     }
 
     function getConnectorNameField() {
-        return getCreateLuceneConnectorPage().find('.connector-name-field input');
+        return cy.get('.connector-name-field input');
     }
 
     function getFieldNameField() {
-        return getCreateLuceneConnectorPage().find('.child-property-fieldName input');
+        return cy.get('.child-property-fieldName input');
     }
 
     function getPropertyChainField() {
-        return getCreateLuceneConnectorPage().find('.child-property-propertyChain input');
+        return cy.get('.child-property-propertyChain input');
     }
 
     function getUriTypes() {
-        return getCreateLuceneConnectorPage().find('.property-types input');
+        return cy.get('.property-types input');
     }
 
-    function getOkButton() {
-        return getCreateLuceneConnectorPage().find('.create-connector-btn');
+    function confirmCreateConnector() {
+        cy.get('.create-connector-btn')
+            .scrollIntoView()
+            .should('be.visible')
+            .then((btn) => {
+                cy.wrap(btn).click();
+            });
     }
 
-    function waitUntilConnectorsPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
-        cy.get('.creating-connector-dialog').should('not.be.visible');
-        getConnectorsPage()
-            .should('be.visible');
+    function verifyConnectorExists(connectorName) {
+        cy.waitUntil(() =>
+            cy.get('#accordion-Lucene')
+                .then(connectorTable => connectorTable && cy.wrap(connectorTable).contains(connectorName)));
     }
 
-    function getConnectorCreationDialog() {
-        return cy.get('.modal-content > .modal-header.creating-connector-dialog');
-    }
-
-    function getConnectorStatusToastMessage() {
-        return cy.get('.toast-message');
-    }
-
-    function getIconCopyButton() {
-        return getConnectorsPage().find('.icon-copy');
+    function verifyStatusToastMessage(successMessage) {
+        cy.waitUntil(() =>
+            cy.get('.toast-message')
+                .then(msg => msg && msg.text().indexOf(successMessage) > -1))
+            .then(() => {
+                hideToastContainer();
+            });
     }
 
     function getConnectorInstance(indexNumber) {
         return cy.get('#heading-Lucene' + indexNumber);
     }
 
-    function getIconTrashButton() {
-        return cy.get('.icon-trash');
-    }
-
     function getConfirmConnectorDeletebutton() {
         return cy.get('.delete-connector-btn');
     }
 
+    /**
+     *  Toast success container for some reason
+     *  is overlapping create connector button
+     */
+    function hideToastContainer() {
+        cy.get('.toast-success')
+            .then(toastContainer => toastContainer.hide());
+    }
 });

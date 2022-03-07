@@ -31,11 +31,17 @@
         <div class="col-lg-12 home-rdf-resource-search">
             <h3><span  tooltip="View RDF data as a text table or as a visual graph" tooltip-placement="right">View resource</span></h3>
             <div class="card">
-                <div class="card-block">
+                <div class="card-block" ng-keydown="onKeyDown($event)">
                     <search-resource-input
                             namespacespromise="getNamespacesPromise"
                             autocompletepromisestatus="getAutocompletePromise"
-                            empty="empty">
+                            open-in-new-tab="true"
+                            preserve-search="true"
+                            clear="doClear"
+                            empty="empty"
+                            radio-buttons="true"
+                            clear-input-icon="true"
+                            id="search-resource-input-home">
                     </search-resource-input>
                 </div>
             </div>
@@ -147,18 +153,13 @@
         <div class="col-lg-12">
             <h3><span tooltip="View information about the installed GraphDB license" tooltip-placement="right">License</span></h3>
             <div class="card">
-                <h4 class="card-header">GraphDB {{productTypeHuman}} Edition</h4>
+                <h4 class="card-header">GraphDB {{getProductTypeHuman()}} Edition</h4>
                 <!-- appears only when there is a problem with the license -->
-                <div class="alert alert-warning" role="alert" ng-hide="license.valid">
+                <div class="alert alert-warning" role="alert" ng-hide="getLicense().valid">
                     <p>
-                        <strong>{{license.message}}</strong><br>
+                        <strong>{{getLicense().message}}</strong><br>
                         Please supply a valid license or contact Ontotext AD sales department to acquire one.
                     </p>
-                    <a href="license/register" ng-href="license/register" ng-hide="isLicenseHardcoded">
-                        <button class="btn btn-primary license-button">
-                            Set new license
-                        </button>
-                    </a>
                 </div>
                 <div class="card-block" ng-hide="hasActiveLocation()">
                     <div class="">
@@ -168,27 +169,38 @@
                     </div>
                 </div>
                 <div class="card-block" ng-show="hasActiveLocation()">
-                    <div class="" ng-show="license.product">
+                    <div class="" ng-show="getLicense().product">
                         <div class="d-inline-block mr-2 mb-1">
                             Licensed to
-                            <span class="data-value big">{{license.licensee}}</span>
+                            <span class="data-value big">{{getLicense().licensee}}</span>
                         </div>
                         <div class="d-inline-block mr-2 mb-1">
                             Valid until
-                            <span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+                            <span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
                         </div>
                         <div class="d-inline-block mr-2 mb-1">
                             Number of cores
-                            <span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'Unlimited'}}</span>
+                            <span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'Unlimited'}}</span>
                         </div>
                         <div class="d-inline-block mb-1">
                             Maintenance date
-                            <span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
+                            <span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date : 'yyyy-MM-dd') : 'Perpetual'}}</span>
                         </div>
                     </div>
 
-                    <div class="small text-muted">
-                        {{license.typeOfUse}}
+                    <p class="small text-muted">
+                        {{getLicense().typeOfUse}}
+                    </p>
+
+                    <div>
+                        <a href="license" ng-hide="isLicenseHardcoded() || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
+                            License settings
+                        </a>
+                    </div>
+
+                    <div class="mt-2" ng-show="isFreeEdition() || !getLicense().valid">
+                        You do not have a valid license for GraphDB SE/EE and GraphDB works in Free mode. Set a valid SE/EE license
+                        to get access to all SE/EE features.
                     </div>
                 </div>
             </div>

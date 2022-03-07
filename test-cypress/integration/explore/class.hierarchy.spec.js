@@ -18,11 +18,12 @@ describe('Class hierarchy screen validation', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         cy.visit('/hierarchy');
+        cy.window();
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
-        cy.get('#classChart').should('be.visible').within(() => {
-            cy.get('#main-group').should('be.visible');
+        cy.get('#classChart').scrollIntoView().should('be.visible').within(() => {
+            cy.get('#main-group').scrollIntoView().should('be.visible');
             findClassByName('food:Grape');
-            cy.get('@classInHierarchy').should('be.visible');
+            cy.get('@classInHierarchy').scrollIntoView().should('be.visible');
         });
     });
 
@@ -37,13 +38,30 @@ describe('Class hierarchy screen validation', () => {
     it('Test show/hide prefixes', () => {
         // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
         // prefixes are displayed/hidden
-        verifyPrefixes(($element) => expect($element.text()).to.contain(':'));
+        verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
 
-        // Switch show prefixes to off
-        cy.get('.toolbar-holder .prefix-toggle-btn').click();
-
-        // Verify that prefixes are removed from diagram
-        verifyPrefixes(($element) => expect($element.text()).to.not.contain(':'));
+        // Because some of the labels are truncated and is not guaranteed,
+        // that after calling cy.get labels will be in the same order,
+        // get the initial value of 'Chardonnay' label's text
+        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay').then($initialVal => {
+            // Switch show prefixes to off
+            cy.get('.toolbar-holder')
+                .find('.prefix-toggle-btn')
+                .scrollIntoView()
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    // Because of the timeout of 50 milliseconds after which the redraw of the prefixes happens
+                    // and we would like to validate successful removal, wait until the value of the 'Chardonnay'
+                    // label has changed. If not the test will fail
+                    cy.waitUntil(() =>
+                        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay')
+                            .then($newVal =>
+                                $newVal.text() !== $initialVal.text()));
+                    // Verify that prefixes are removed from diagram
+                    verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
+                });
+        });
     });
 
     it('Test focus on diagram', () => {
@@ -143,16 +161,11 @@ describe('Class hierarchy screen validation', () => {
         let className = ':Region';
         searchForClass(className);
         getDomainRangeGraphButton().click();
-        getDomainRangeGraphHeader().should('contain','Domain-Range graph');
+        getDomainRangeGraphHeader().should('contain', 'Domain-Range graph');
         getLegendContainer().should('be.visible');
-        getLegendContainer().should('contain', 'main class node').
-            and('contain', 'class node').
-            and('contain', 'collapsed property');
+        getLegendContainer().should('contain', 'main class node').and('contain', 'class node').and('contain', 'collapsed property');
         getMainDomainRangeDiagram().should('be.visible');
-        getMainDomainRangeDiagram().should('contain', className).
-            and('contain', 'locatedIn').
-            and('contain', ':adjacentRegion').
-            and('contain', 'owl:Thing');
+        getMainDomainRangeDiagram().should('contain', className).and('contain', 'locatedIn').and('contain', ':adjacentRegion').and('contain', 'owl:Thing');
         getReturnButton().should('be.visible').click();
     });
 

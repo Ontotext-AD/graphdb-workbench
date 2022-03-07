@@ -9,13 +9,16 @@ import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
+import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/autocomplete-status.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
+        'graphdb.framework.core.services.licenseService',
         'ngCookies',
         'ngFileUpload',
         'graphdb.framework.core',
@@ -28,15 +31,18 @@ angular
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.core.services.autocompleteStatus'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+    $scope.doClear = false;
+
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepository();
         if (!repo) {
@@ -54,13 +60,22 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus()
-                        .success(function () {
-                            $scope.getActiveRepositorySize();
-                        });
+                    checkAutocompleteStatus();
                 });
+            // Getting the repository size should not be related to license
+            $scope.getActiveRepositorySize();
         }
     }
+
+    function checkAutocompleteStatus() {
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
+    }
+
+    $scope.$on('autocompleteStatus', function() {
+        checkAutocompleteStatus();
+    });
 
     // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
     // after security was initialized. This way we avoid a race condition when the newly logged in
@@ -80,18 +95,29 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, Autocomple
             }
         }
     });
-}
+
+    $scope.onKeyDown = function (event) {
+        if (event.keyCode === 27) {
+            $scope.doClear = true;
+        }
+    };
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', '$translate', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+}
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, $translate, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.mainTitle = 'GraphDB';
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
+                    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
+                    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
+                  productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
-    $scope.productTypeHuman = '';
     $scope.documentation = '';
     $scope.menu = $menuItems;
     $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
-    $scope.showLicense = false;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
@@ -113,7 +139,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 400);
         if (previous) {
             // Recheck license status on navigation within the workbench (security is already inited)
-            $scope.checkLicenseStatus();
+            $licenseService.checkLicenseStatus();
         }
     });
 
@@ -139,12 +165,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.$on("repositoryIsSet", function () {
+        $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
 
     $scope.graphdbVersion =
-        $scope.engineVersion =
-            $scope.workbenchVersion = productInfo.productVersion;
+        $scope.engineVersion = productInfo.productVersion;
+    $scope.workbenchVersion = productInfo.Workbench;
 
     $scope.connectorsVersion = productInfo.connectors;
 
@@ -259,9 +286,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
     };
-    $scope.isS4 = function () {
-        return $scope.license && $scope.license.version === "S4";
-    };
 
     $scope.isUserLoggedIn = function () {
         return $scope.userLoggedIn;
@@ -307,7 +331,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const activeRepository = $repositories.getActiveRepository();
         // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
         return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem) && !$scope.isActiveRepoOntopType();
+            && (activeRepository !== 'SYSTEM' || !noSystem);
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -320,6 +344,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoOntopType();
     }
 
+    $scope.isActiveRepoFedXType = function () {
+        return $repositories.isActiveRepoFedXType();
+    }
+
+    $scope.isLicenseValid = function() {
+        return $licenseService.isLicenseValid();
+    }
+
     /**
      *  Sets attrs property in the directive
      * @param attrs
@@ -329,30 +361,32 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     /**
+     *  If the license is not valid or
      *  If the attribute "write" is provided and repository other than Ontop one,
      * directive will require a repository with write access.
-     *  If on the other hand attribute "ontop" is found and such repo, proper message about the
-     * restrictions related with repository of type Ontop will be shown to the user
+     *  If on the other hand attribute "ontop" or "fedx" is found and such repo, proper message about the
+     * restrictions related with repository of type Ontop or FedX will be shown to the user
      */
     $scope.setRestricted = function () {
-        $scope.isRestricted = $scope.attrs.hasOwnProperty('write') ||
-            $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType();
+        if ($scope.attrs) {
+            $scope.isRestricted =
+                $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
+                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
+                $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
+                $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
+        }
     };
 
     $scope.toHumanReadableType = function (type) {
         switch (type) {
-            case 'worker':
-                return 'EE Worker';
-            case 'master':
-                return 'EE Master';
-            case 'se':
-                return 'Standard';
-            case 'free':
-                return 'Free';
+            case 'graphdb':
+                return 'Graphdb';
             case 'system':
                 return 'System';
             case 'ontop':
                 return 'Ontop';
+            case 'fedx':
+                return 'FedX';
             default:
                 return 'Unknown';
         }
@@ -478,7 +512,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
                 "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
                 "RDF statements. If you plan to load more check for more information: " +
-                "<a href=\"http://graphdb.ontotext.com/documentation/" + $scope.productType + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
             },
             {
                 "title": "Load a sample dataset",
@@ -761,26 +795,47 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $rootScope.redirectToLogin();
             }
         } else {
-            $scope.checkLicenseStatus();
+            $licenseService.checkLicenseStatus();
             $scope.getSavedQueries();
         }
     });
 
-    $scope.checkLicenseStatus = function () {
-        LicenseRestService.getHardcodedLicense().success(function (res) {
-            $scope.isLicenseHardcoded = (res === 'true');
-        }).error(function () {
-            $scope.isLicenseHardcoded = true;
-        }).then(function () {
-            LicenseRestService.getLicenseInfo().then(function (res) {
-                $scope.license = res.data;
-                $scope.showLicense = true;
-            }, function () {
-                $scope.license = {message: 'No license was set.', valid: false};
-                $scope.showLicense = true;
-            });
-        });
+
+    $scope.isEnterprise = function () {
+        return $scope.getProductType() === "enterprise";
     };
+
+    $scope.isFreeEdition = function () {
+        return $scope.getProductType() === "free";
+    };
+
+    $scope.checkEdition = function (editions) {
+        if (editions == null) {
+            return true;
+        }
+        return _.indexOf(editions, $scope.getProductType()) >= 0;
+    };
+
+    $scope.showLicense = function() {
+        return $licenseService.showLicense;
+    }
+
+    $scope.getLicense = function() {
+        return $licenseService.license;
+    }
+
+    $scope.isLicenseHardcoded = function() {
+        return $licenseService.isLicenseHardcoded;
+    }
+
+    $scope.getProductType = function() {
+        return $licenseService.productType;
+    }
+
+    $scope.getProductTypeHuman = function() {
+        return $licenseService.productTypeHuman;
+    }
+
 
     $scope.getHumanReadableSeconds = function (s, preciseSeconds) {
         const days = Math.floor(s / 86400);

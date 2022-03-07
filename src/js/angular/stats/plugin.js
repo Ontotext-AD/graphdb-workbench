@@ -18,7 +18,7 @@ PluginRegistry.add('route', [
     }
 ]);
 
-const DOCUMENTATION_URL = 'http://graphdb.ontotext.com/documentation/';
+const DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
 
 PluginRegistry.add('main.menu', {
     'items': [

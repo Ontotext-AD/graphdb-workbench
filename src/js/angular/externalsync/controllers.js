@@ -85,7 +85,7 @@ function mapCreateValuesToUiValues(values, options) {
                 values[option.__name] = toArrayMap(values[option.__name]);
             }
         } else if (option.__type === 'JsonString') {
-            if (values[option.__name]) {
+            if (values[option.__name] && !(values[option.__name] instanceof String) && typeof values[option.__name] !== 'string') {
                 values[option.__name] = angular.toJson(values[option.__name], 2);
             }
         } else {
@@ -291,6 +291,9 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.getConnectors = function () {
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
         if (!$scope.canWriteActiveRepo()) {
             return;
         }

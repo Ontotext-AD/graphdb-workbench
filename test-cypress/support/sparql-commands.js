@@ -1,13 +1,13 @@
 Cypress.Commands.add('pasteQuery', (query) => {
     clearQuery();
     // Using force because the textarea is not visible
-    getQueryTextArea().invoke('val', query).trigger('change', {force: true});
+    getQueryTextArea().invoke('val', query).trigger('change', {force: true}).should('have.value', query);
     waitUntilQueryIsVisible();
 });
 
 Cypress.Commands.add('executeQuery', () => {
     getRunQueryButton().click();
-    getLoader().should('not.be.visible');
+    getLoader().should('not.exist');
 });
 
 Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
@@ -17,9 +17,17 @@ Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
 });
 
 Cypress.Commands.add('verifyResultsMessage', (msg) => {
-    getResultsMessage()
-        .should('be.visible')
-        .and('contain', msg);
+    cy.waitUntil(() =>
+        getResultsMessage()
+            .then((resultInfo) => {
+                console.log(resultInfo.text());
+                return resultInfo && resultInfo.text().trim().indexOf(msg) > -1; }));
+});
+
+Cypress.Commands.add('getResultsMessage', () => {
+    cy.waitUntil(() =>
+        getResultsMessage()
+            .then(resultInfo => resultInfo));
 });
 
 Cypress.Commands.add('waitUntilQueryIsVisible', () => {
@@ -29,7 +37,6 @@ Cypress.Commands.add('waitUntilQueryIsVisible', () => {
 Cypress.Commands.add('verifyQueryAreaContains', (query) => {
     verifyQueryAreaContains(query);
 });
-
 // Helper functions
 
 function clearQuery() {
@@ -42,22 +49,21 @@ function getQueryArea() {
 }
 
 function getQueryTextArea() {
-    return getQueryArea().find('textarea');
+    return getQueryArea().find('textarea').scrollIntoView().should('be.visible');
 }
 
 function waitUntilQueryIsVisible() {
-    getQueryArea().should(codeMirrorEl => {
-        const cm = codeMirrorEl[0].CodeMirror;
-        expect(cm.getValue().trim().length > 0).to.be.true;
-    });
+    return cy.waitUntil(() =>
+        getQueryArea()
+            .then(codeMirrorEl =>
+                codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
 }
 
 function verifyQueryAreaContains(query) {
     // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-    getQueryArea().should(codeMirrorEl => {
-        const cm = codeMirrorEl[0].CodeMirror;
-        expect(cm.getValue().includes(query)).to.be.true;
-    });
+    cy.waitUntil(() =>
+        getQueryArea()
+            .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().indexOf(query) > -1));
 }
 
 function getRunQueryButton() {
@@ -77,5 +83,5 @@ function getResultsWrapper() {
 }
 
 function getResultsMessage() {
-    return cy.get('#yasr-inner .alert-info.results-info', { timeout: 30000 });
+    return cy.get('#yasr-inner .alert-info.results-info').scrollIntoView();
 }

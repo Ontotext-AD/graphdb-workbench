@@ -7,9 +7,9 @@
 <form id="addLocationForm" novalidate name="form">
     <div class="modal-body">
         <div class="form-group row">
-            <label for="sesameLocation" class="col-md-4 col-form-label">Location URL</label>
+            <label for="sesameLocation" class="col-md-4 col-form-label">Location URL*</label>
             <div class="col-md-8">
-                <input id="sesameLocation" ng-model="newLocation.uri" name="sesameLocation" class="form-control"
+                <input id="sesameLocation" ng-model="newLocation.uri" required name="sesameLocation" class="form-control"
                        placeholder="http://my-hostname:7200" ng-blur="isValidLocation()"/>
 
                 <span class="form-text text-muted">Enter a URL to a remote GraphDB instance</span>
@@ -19,34 +19,59 @@
 			Note that the location should be a URL that points to a remote GraphDB installation, e.g. http://server.example.com:7200/.
 		</div>
 
-        <div class="text-xs-center">
-			<button ng-click="switchAdvanced()" class="btn btn-link btn-sm">
-				<span ng-hide="advanced">Show security settings<em class="icon-caret-down"></em></span>
-				<span ng-show="advanced">Hide security settings<em class="icon-caret-up"></em></span>
-       		</button>
+        <div class="form-group row">
+            <label class="col-md-4 col-form-label">Authentication type</label>
+            <div class="col-md-8">
+                <label class="col-form-label" tooltip="No authentication used with remote location">
+                    <input type="radio" name="authType" ng-model="newLocation.authType" value="none"/>
+                    None
+                </label>
+                &nbsp;
+                <label class="col-form-label" tooltip="Basic authentication with username/password. User must be an admin">
+                    <input type="radio" name="authType" ng-model="newLocation.authType" value="basic"/>
+                    Basic auth
+                </label>
+                &nbsp;
+                <label class="col-form-label" tooltip="Signature authentication with shared secret">
+                    <input type="radio" name="authType" ng-model="newLocation.authType" value="signature"/>
+                    Signature
+                </label>
+            </div>
         </div>
-        <fieldset ng-show="advanced" class="mb-1">
-            <legend>Optional</legend>
+        <div class="form-group row" ng-if="newLocation.authType === 'none'">
+            <div class="col-md-12">No authentication will be used with this location.</div>
+        </div>
+        <div  ng-if="newLocation.authType === 'basic'">
             <div class="form-group row">
-                <label for="username" class="col-md-4 col-form-label">Username</label>
+                <div class="col-md-12">Basic authentication requires a username and a password.</div>
+            </div>
+            <div class="form-group row">
+                <label for="username" class="col-md-4 col-form-label">Username*</label>
                 <div class="col-md-8">
-                    <input id="username" ng-model="newLocation.username" name="locationUsername" placeholder="JohnDoe"
-                           class="form-control"/>
+                    <input id="username" ng-model="newLocation.username" name="locationUsername" placeholder="my-user"
+                           class="form-control" ng-required="newLocation.authType === 'basic'"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="password" class="col-md-4 col-form-label">Password</label>
+                <label for="password" class="col-md-4 col-form-label">Password*</label>
                 <div class="col-md-8">
-                    <input id="password" ng-model="newLocation.password" name="locationPassword" type="password"
-                           class="form-control"/>
+                    <input id="password" ng-model="newLocation.password" name="locationPassword" placeholder="my-password"
+                           type="password" class="form-control" ng-required="newLocation.authType === 'basic'"/>
                 </div>
             </div>
-        </fieldset>
+        </div>
+        <div class="form-group row" ng-if="newLocation.authType === 'signature'">
+            <div class="col-md-12">
+                Signature authentication uses the token secret, which must be the same on both GraphDB instances.
+                For more information on configuring the token secret, please refer to <a href="{{docBase}}/access-control.html#gdb-authentication"
+                                                                                         rel="noopener" target="_blank">Access Control / GDB authentication</a> in the documentation.
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button type="submit" ng-click="ok();" class="btn btn-primary"
-                ng-disabled="form.$error.multiRequire.length"><span class="icon-plus"></span> Attach
+                ng-disabled="form.$invalid"><span class="icon-plus"></span> Attach
         </button>
     </div>
 

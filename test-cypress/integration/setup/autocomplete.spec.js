@@ -14,7 +14,7 @@ describe('Autocomplete ', () => {
         cy.get('.ot-splash').should('not.be.visible');
 
         // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.ot-loader').should('not.exist');
 
         // No warnings should be present
         getAutocompletePage().find('.alert-warning').should('not.be.visible');
@@ -25,6 +25,7 @@ describe('Autocomplete ', () => {
     beforeEach(() => {
         createRepository();
         cy.visit('/autocomplete');
+        cy.window();
         waitUntilAutocompletePageIsLoaded();
     });
 

@@ -194,3 +194,7 @@
 .yasr .errorResult {
     display: none !important;
 }
+
+#highlighted_output {
+    font-family: Menlo, Consolas, "Ubuntu Mono", monospace;
+}

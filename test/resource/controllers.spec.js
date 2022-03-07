@@ -8,9 +8,10 @@ describe('=> ExploreCtrl tests', function () {
         $controller,
         $timeout,
         $window,
-        $scope;
+        $scope,
+        $jwtAuth;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_) {
         $repositories = _$repositories_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         $httpBackend = _$httpBackend_;
@@ -18,9 +19,21 @@ describe('=> ExploreCtrl tests', function () {
         $controller = _$controller_;
         $window = _$window_;
         $timeout = _$timeout_;
+        $jwtAuth = _$jwtAuth_;
 
         $scope = $rootScope.$new();
-        $controller('ExploreCtrl', {$scope: $scope});
+
+        $jwtAuth.getPrincipal = function () {
+            return {
+                username: "user",
+                password: "",
+                confirmpassword: "",
+                authorities: ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
+                appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
+            }
+        }
+
+        $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth});
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,

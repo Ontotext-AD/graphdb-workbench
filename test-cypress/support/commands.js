@@ -2,6 +2,9 @@ import 'cypress-localstorage-commands';
 import './repository-commands';
 import './sparql-commands';
 import './import-commands';
+import './settings-commands';
+import './visual-graph-commands';
+import 'cypress-wait-until';
 
 
 /**

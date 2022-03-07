@@ -1,7 +1,12 @@
 describe('Main menu tests', function () {
 
+    before(function () {
+        cy.clearLocalStorage();
+    });
+
     beforeEach(function () {
-        cy.visit('');
+        cy.visit('/');
+        cy.window();
 
         cy.get('.card-title').should('contain', 'Welcome to GraphDB');
     });
@@ -101,6 +106,11 @@ describe('Main menu tests', function () {
                         redirect: '/connectors'
                     },
                     {
+                        name: 'Cluster',
+                        visible: false,
+                        redirect: '/cluster'
+                    },
+                    {
                         name: 'Namespaces',
                         visible: false,
                         redirect: '/namespaces'
@@ -129,7 +139,7 @@ describe('Main menu tests', function () {
                     {
                         name: 'Documentation',
                         visible: false,
-                        externalRedirect: 'http://graphdb.ontotext.com/documentation/'
+                        externalRedirect: 'https://graphdb.ontotext.com/documentation/'
                     },
                     {
                         name: 'Developer Hub',
@@ -139,7 +149,7 @@ describe('Main menu tests', function () {
                     {
                         name: 'Support',
                         visible: false,
-                        externalRedirect: 'http://graphdb.ontotext.com/'
+                        externalRedirect: 'https://graphdb.ontotext.com/'
                     },
                     {
                         name: 'System information',

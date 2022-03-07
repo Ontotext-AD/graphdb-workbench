@@ -1,0 +1,419 @@
+#selectedRepositories {
+    float: left;
+    width: 98%;
+    padding: 0 1%
+}
+
+#selectLocation {
+    margin-bottom: 8px
+}
+
+.form fieldset div label {
+    font-weight: 400;
+    line-height: 24px;
+    height: 24px;
+    vertical-align: middle;
+    padding-right: 8px
+}
+
+.form fieldset div input {
+    margin-left: 0
+}
+
+.form fieldset {
+    margin: 8px 16px 16px;
+    padding-bottom: 16px
+}
+
+.form fieldset .checkbox-custom label {
+    clear: left;
+    width: 35%
+}
+
+.form #configuration-fields {
+    float: left;
+    overflow: hidden;
+    padding-top: 16px;
+    clear: both
+}
+
+.form div {
+    display: block
+}
+
+.form div label {
+    float: left;
+    text-align: right;
+    width: 270px;
+    cursor: pointer
+}
+
+.form div input {
+    float: left;
+    font-size: 12px;
+    padding: 2px;
+    width: 316px;
+    margin: 0px 0 20px 0
+}
+
+.form div input[type="checkbox"] {
+    font-size: 12px;
+    margin: 4px 10px 20px 0px;
+    width: 20px
+}
+
+.form div textarea {
+    float: left;
+    font-size: 12px;
+    padding: 4px 2px;
+    width: 250px;
+    margin: 0px 0 20px 10px;
+    height: 100px
+}
+
+.form div select {
+    float: left;
+    font-size: 12px;
+    width: 265px;
+    margin: 2px 0 20px 0
+}
+
+.form .checkbox label {
+    text-align: left;
+    width: auto
+}
+
+.form button {
+    clear: both
+}
+
+.form div.checkbox input[type=checkbox] {
+    margin-left: 265px
+}
+
+span.error {
+    margin: 10px 10px;
+    padding: 5px 10px 5px 10px;
+    color: #D8000C;
+    position: relative;
+    top: 3px
+}
+
+form div label.error {
+    color: #D8000C;
+    text-align: left;
+    text-indent: 8px
+}
+
+#fedx-content {
+    width: 69%;
+}
+
+#fedx-members {
+    overflow: auto;
+}
+
+.fedXMember:hover {
+    background-color: rgba(0,0,0,.05)
+}
+
+#fedx-options {
+    overflow: hidden;
+}
+
+.form-local-repos {
+    border: 1px solid;
+    width:66%;
+    height:8rem;
+    font-size: 1.3em;
+}
+
+.form-repo-members {
+    font-size: 1.3em;
+}
+
+.form-group2 {
+    float: right;
+    width: 49%;
+    margin-bottom:1rem;
+    padding-top: 14px;
+}
+
+.fedx-no-members-message {
+    color: #C4781E;
+    background-color: #FCF8E3;
+    display: block;
+    height: 4rem;
+    border-radius: 1rem;
+    text-align: center;
+    padding: 1em;
+}
+
+.tbody-fedx {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.form-group3 {
+    float: left;
+    width: 49%;
+}
+
+span.required {
+    color: #D8000C
+}
+
+.repositoryFields .row .col-xs-4 span, .repositoryFields .row .col-sm-4 span, .repositoryFields .row .col-md-4 span {
+    vertical-align: sub
+}
+
+.repositoryFields .selectFile:HOVER {
+    text-decoration: none
+}
+
+.locationsContainer .locationsUL {
+    padding-right: 0px;
+    border: 1px solid #dddddd
+}
+
+.locationsContainer .locationsUL li {
+    min-height: 30px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-top: 5px
+}
+
+.locationsContainer .locationsUL li div.firstcol {
+    padding-right: 0px;
+    padding-left: 0px
+}
+
+.locationsContainer .locationsUL li div.thirdcol {
+    text-align: right
+}
+
+.locationsContainer .locationsUL li div.thirdcol i {
+    cursor: pointer
+}
+
+.locationsContainer .locationsUL li:nth-child(even) {
+    background-color: #f0f0f0
+}
+
+.locationsContainer .locationsUL li:nth-child(odd) {
+    margin-top: 0;
+    padding-top: 8px
+}
+
+#sesameRepositories .repositoryMainContainer {
+    padding: 25px 10px 25px 10px
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer {
+    text-align: center
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow, #sesameRepositories .repositoryMainContainer .repositoryContainer .descriptionRow, #sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow, #sesameRepositories .repositoryMainContainer .repositoryContainer .readRow, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow {
+    min-height: 40px;
+    padding-top: 5px;
+    border: 1px solid #E8E8E8
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow {
+    min-height: 40px;
+    padding-top: 5px;
+    font-size: 20px;
+    background-color: #D1D1D1;
+    color: #f04e23
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div {
+    display: inline-block;
+    word-wrap: break-word
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div.iconsContainer div {
+    display: inline
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div.iconsContainer div i {
+    cursor: pointer;
+    font-size: 16px;
+    color: #f04e23;
+    margin-left: 5px
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .descriptionRow {
+    padding-top: 9px;
+    word-wrap: break-word
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow {
+    font-size: 16px;
+    background-color: #E8E8E8
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow .connected {
+    color: #2A8039
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow .disconnected {
+    color: #C53E3E
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow .disconnected div {
+    display: inline-block
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow .disconnected div i {
+    cursor: pointer
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .readRow i, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow i {
+    font-size: 16px
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .readRow i.icon-ok, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow i.icon-ok {
+    color: #27ae60
+}
+
+#sesameRepositories .repositoryMainContainer .repositoryContainer .readRow i.icon-remove, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow i.icon-remove {
+    color: #c53e3e
+}
+
+.ot-edit-input {
+    position: absolute;
+    right: 5px
+}
+
+.ot-inline-block {
+    display: inline-block
+}
+
+.ot-unstyled-button {
+    display: inline-block;
+    padding: 0;
+    border: none;
+    background: none
+}
+
+.ot-owlim-ctrl .fa.fa-exclamation-triangle {
+    color: #f09300
+}
+
+.ot-owlim-ctrl .fa.fa-cog, .ot-owlim-ctrl .fa.fa-cogs {
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s
+}
+
+.ot-owlim-ctrl .fa.fa-cog:hover, .ot-owlim-ctrl .fa.fa-cogs:hover {
+    color: #000
+}
+
+span.label {
+    margin-right: 10px
+}
+
+.spinner-container.ot-loader {
+    display: inline-block;
+    margin-left: -4px;
+    margin-bottom: -3px
+}
+
+.ot-repository-id {
+    max-width: 70% !important;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+    top: 5px
+}
+
+#ot-loader {
+    margin: 200px auto;
+    display: block
+}
+
+.popover {
+    max-width: 290px
+}
+
+.ruleset-warning {
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+}
+
+@media (min-width:768px) {
+    .ruleset-warning {
+        right: 0;
+        top: 2px;
+    }
+
+    .indented-div {
+        margin-left: 20px;
+    }
+}
+
+.text-btn {
+    background: none;
+    border: none;
+    margin: 0;
+    padding-top: .1rem;
+    cursor: pointer;
+}
+
+.text-btn:focus, .text-btn {
+    outline: none !important;
+    box-shadow: none
+}
+
+.padding-label {
+    padding-left: 15px;
+    padding-right: 15px
+}
+
+.wrapper-div {
+    position: relative;
+    display: inline-block;
+}
+
+.wrapper-div button[disabled] {
+    position: relative;
+    z-index: -1;
+}
+
+.wrapper-div select[disabled] {
+    position: relative;
+    z-index: -1;
+}
+
+.fedx-repo-member-icon {
+    color:#04355E
+}
+
+.icon-import.active {
+    color:#11b0a1
+}
+.checkbox-param-include-inferred {
+    position: relative;
+    padding-right: 15.15em;
+    padding-left: 15px;
+    float:left
+}
+
+.checkbox-param-padded {
+    position: relative;
+    padding-right: 20.4em;
+    padding-left: 15px;
+    float:left
+}
+
+.multilined {
+    word-break: break-all;
+}

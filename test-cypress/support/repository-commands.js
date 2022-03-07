@@ -3,7 +3,7 @@ import repoTemplate from '../fixtures/repo-template.json';
 export const REPOSITORIES_URL = '/rest/repositories/';
 const AUTOCOMPLETE_URL = '/rest/autocomplete/';
 
-const POLL_INTERVAL = 200;
+const PRESET_REPO = 'com.ontotext.graphdb.repository';
 
 Cypress.Commands.add('createRepository', (options = {}) => {
     cy.request({
@@ -13,17 +13,25 @@ Cypress.Commands.add('createRepository', (options = {}) => {
         headers: {
             'Content-Type': 'application/json'
         }
-    }).should((response) => expect(response.status).to.equal(201)); // 201 Created
+    }).then((response) => {
+        cy.waitUntil(() => response && response.status === 201); // 201 Created
+    });
 });
 
 Cypress.Commands.add('deleteRepository', (id) => {
     // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + id;
-    cy.request('DELETE', url).should((response) => expect(response.status).to.equal(200));
+    cy.request('DELETE', url)
+        .then((response) => {
+            cy.waitUntil(() => response && response.status === 200);
+        });
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
     cy.setLocalStorage('com.ontotext.graphdb.repository', id);
+    cy.waitUntil(() =>
+        cy.getLocalStorage(PRESET_REPO)
+            .then((preset) => preset && preset === id));
 });
 
 /**
@@ -31,7 +39,10 @@ Cypress.Commands.add('presetRepository', (id) => {
  */
 Cypress.Commands.add('initializeRepository', (id) => {
     const url = REPOSITORIES_URL + id + '/size';
-    cy.request('GET', url).should((response) => expect(response.status).to.equal(200));
+    cy.request('GET', url)
+        .then((response) => {
+            cy.waitUntil(() => response && response.status === 200);
+        });
 });
 
 Cypress.Commands.add('enableAutocomplete', (repositoryId) => {
@@ -42,6 +53,16 @@ Cypress.Commands.add('disableAutocomplete', (repositoryId) => {
     toggleAutocomplete(repositoryId, false);
 });
 
+Cypress.Commands.add('getNamespaces', (id) => {
+    return cy.request({
+        method: 'GET',
+        url: `repositories/${id}/namespaces`,
+        headers: {
+            'Accept': 'application/json'
+        }
+    });
+});
+
 let toggleAutocomplete = (repositoryId, enable) => {
     cy.request({
         method: 'POST',
@@ -49,20 +70,19 @@ let toggleAutocomplete = (repositoryId, enable) => {
         headers: {
             'X-GraphDB-Repository': repositoryId,
         }
-    }).should((response) => expect(response.body).to.equal(`Autocomplete was ${enable ? 'enabled' : 'disabled'}`));
+    }).then((response) => {
+        cy.waitUntil(() => response && response.body === `Autocomplete was ${enable ? 'enabled' : 'disabled'}`);
+    });
     waitAutocomplete(repositoryId);
 };
 
 let waitAutocomplete = function (repositoryId) {
-    cy.request({
-        method: 'GET',
-        url: AUTOCOMPLETE_URL + 'status',
-        headers: {
-            'X-GraphDB-Repository': repositoryId
-        },
-    }).then((response) => {
-        if (response.status === 200 && response.body === 'READY' || response.body === 'NONE') return;
-        cy.wait(POLL_INTERVAL);
-        waitAutocomplete(repositoryId);
-    });
+    cy.waitUntil(() =>
+        cy.request({
+            method: 'GET',
+            url: AUTOCOMPLETE_URL + 'status',
+            headers: {
+                'X-GraphDB-Repository': repositoryId
+            },
+        }).then(response => response.status === 200 && (response.body === 'READY' || response.body === 'NONE')));
 };

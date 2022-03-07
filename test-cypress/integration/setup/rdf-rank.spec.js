@@ -13,16 +13,17 @@ describe('Setup / RDF Rank', () => {
         cy.get('.ot-splash').should('not.be.visible');
 
         // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.ot-loader').should('not.exist');
 
         getRdfRankPage().find('.alert-warning').should('not.be.visible');
 
-        getFilteringSwitch().should('be.visible');
+        getFilteringSwitch().scrollIntoView().should('be.visible');
     }
 
     beforeEach(() => {
         createRepository();
         cy.visit('/rdfrank');
+        cy.window();
         waitUntilRdfRankPageIsLoaded();
     });
 

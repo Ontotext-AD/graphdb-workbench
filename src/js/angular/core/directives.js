@@ -1,6 +1,9 @@
+import 'angular/utils/local-storage-adapter';
+
 angular
     .module('graphdb.framework.core.directives', [
-        'graphdb.framework.core.services.repositories'
+        'graphdb.framework.core.services.repositories',
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -9,7 +12,8 @@ angular
     .directive('eatClick', eatClick)
     .directive('multiRequired', multiRequired)
     .directive('searchResourceInput', searchResourceInput)
-    .directive('keyboardShortcuts', keyboardShortcutsDirective);
+    .directive('keyboardShortcuts', keyboardShortcutsDirective)
+    .directive('inactivePluginDirective', inactivePluginDirective);
 
 ontoLoader.$inject = [];
 
@@ -241,9 +245,11 @@ function multiRequired() {
     };
 }
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce'];
+const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce) {
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories'];
+
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories) {
     return {
         restrict: 'EA',
         scope: {
@@ -257,20 +263,54 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             uriValidation: '@',
             preserveInput: '@',
             empty: '=',
-            openInNewTab: '@'
+            clear: '=?clear',
+            openInNewTab: '@',
+            preserveSearch: '@',
+            radioButtons: '@',
+            clearInputIcon: '@'
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function ($scope, element, attrs) {
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
-            $scope.searchInput = "";
+            $scope.clear = false;
+            $scope.searchDisplayType = SEARCH_DISPLAY_TYPE;
             const MIN_CHAR_LEN = 0;
+            const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
+            const SEARCH_INPUT_FIELD = element.find('.view-res-input');
+            $scope.textButtonLabel = $scope.textButton || 'Table';
+            $scope.visualButtonLabel = $scope.visualButton || 'Visual';
 
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
-
             let canceler;
+
+            $scope.showClearInputIcon = false;
+            $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
+            $scope.searchInput = "";
+
+            $scope.changeSearchType = function(type) {
+                $scope.searchType = type;
+                LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
+            };
+            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+                if (!$scope.searchInput && args.startIRI) {
+                    $scope.visualCallback({uri: args.startIRI, label: ''});
+                    return;
+                }
+                $scope.checkIfValidAndSearchText();
+            });
+
+            $scope.clearInput = function() {
+                $scope.searchInput = '';
+                $scope.selectedElementIndex = -1;
+                $scope.autoCompleteUriResults = [];
+                $scope.showClearInputIcon = false;
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
+                LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_EXPANDED_URI);
+                LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
+            };
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
@@ -289,9 +329,12 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('autocompletepromisestatus', function () {
-                if (angular.isDefined($scope.autocompletepromisestatus)) {
+                if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
                     $scope.autocompletepromisestatus.success(function (response) {
                         element.autoCompleteStatus = !!response;
+                        if ($scope.searchInput !== '') {
+                            $scope.onChange();
+                        }
                     }).error(function () {
                         toastr.error('Error attempting to check autocomplete capability!');
                     });
@@ -299,8 +342,17 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             });
 
             $scope.$watch('empty', function () {
-                $scope.searchInput = '';
-                $scope.empty = false;
+                if (!IS_SEARCH_PRESERVED) {
+                    $scope.searchInput = '';
+                    $scope.empty = false;
+                }
+            });
+
+            $scope.$watch('clear', function () {
+                if ($scope.clear) {
+                    $scope.clearInput();
+                    $scope.clear = false;
+                }
             });
 
             const defaultTextCallback = function (params) {
@@ -323,9 +375,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             const openInNewWindowTab = function (visual, params) {
                 const view = visual ? 'graphs-visualizations' : 'resource';
-                const baseUrl = $location.absUrl().substr(0, $location.absUrl().indexOf($location.url()));
-                const url = baseUrl + '/' + view + '?uri' + '=' + params.uri;
-                window.open(url);
+                window.open(`${view}?uri=${encodeURIComponent(params.uri)}`);
             };
 
             if (angular.isUndefined(attrs.$attr.textCallback)) {
@@ -365,7 +415,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchRdfResource = function (resource, callback) {
                 if (resource.type === 'prefix') {
                     $scope.searchInput = expandPrefix(resource.value + ':');
-                    $scope.autoCompleteUriResults = [];
+                    SEARCH_INPUT_FIELD.focus();
+                    $scope.onChange();
                 } else {
                     let textResource;
                     if (angular.isUndefined(resource)) {
@@ -388,17 +439,23 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
                     callback({uri: textResource, description: resource.description, label: label, type: resource.type});
 
-                    $scope.autoCompleteUriResults = [];
-                    if ($scope.preserveInput === 'true') {
+                    if (IS_SEARCH_PRESERVED) {
+                        $scope.selectedElementIndex = $scope.activeSearchElm;
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
+                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                        LocalStorageAdapter.set(LSKeys.RDF_RESOURCE_DESCRIPTION, resource.description);
+                    } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
+                        $scope.autoCompleteUriResults = [];
                     } else {
                         $scope.searchInput = "";
+                        $scope.autoCompleteUriResults = [];
                     }
                 }
             };
 
             $scope.searchRdfResourceByEvent = function (uri, event) {
-                if (event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
@@ -408,7 +465,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const checkIfValidAndSearch = function (callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
-                    toastr.error('Please fill input field!');
+                    toastr.error('Please fill the input field!');
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {
@@ -440,7 +497,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.checkIfValidAndSearchEvent = function (event) {
-                if (event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     checkIfValidAndSearch($scope.visualCallback);
                 } else {
                     checkIfValidAndSearch($scope.textCallback);
@@ -448,12 +505,17 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.onChange = function () {
+                $scope.showClearInputIcon = $scope.clearInputIcon;
+                if (IS_SEARCH_PRESERVED) {
+                    LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                }
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
                     if (element.autoCompleteStatus) {
-                        checkUriAutocomplete($scope.searchInput);
+                        return checkUriAutocomplete($scope.searchInput);
                     }
                 }
+                return Promise.resolve();
             };
 
             $scope.onKeyDown = function (event) {
@@ -493,18 +555,83 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     scrollContentToTop();
                 }
                 if (event.keyCode === 27) {
+                    if (IS_SEARCH_PRESERVED) {
+                        return;
+                    }
                     $scope.searchInput = '';
                     $scope.autoCompleteUriResults = [];
                 }
+
+                if (!$scope.searchInput) {
+                    $scope.clearInput();
+                }
             };
 
-            $scope.setActiveClassOnHover = function (index) {
+            function isAutocompleteResultsLoaded() {
+                return new Promise(resolve => {
+                    const dropDown = document.getElementById('auto-complete-results-wrapper');
+                    const rect = dropDown.getBoundingClientRect();
+                    setTimeout(() => {
+                        resolve(rect.top >= 0 && rect.left >= 0 &&
+                            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                            rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+                    });
+                })
+            }
+
+            function scrollToPreviouslySelectedEl() {
+                const dropDown = $('#auto-complete-results-wrapper');
+                const automaticScroll = $('#auto_' + $scope.selectedElementIndex);
+                dropDown.animate({
+                    scrollTop: automaticScroll.offset().top - dropDown.offset().top +
+                        dropDown.scrollTop()
+                })
+            }
+
+            function loadStoredSearchData() {
+                if (IS_SEARCH_PRESERVED) {
+                    $scope.preserveInput = 'true';
+                    $scope.searchInput = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_INPUT) || "";
+                    expandedUri = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_EXPANDED_URI);
+                    return $scope.onChange();
+                }
+                // Usually when this function is called search is preserved
+                return Promise.resolve();
+            }
+
+            function findPreviousSearchResultIndex() {
+                let index = -1;
+                const focused = LocalStorageAdapter.get(LSKeys.RDF_RESOURCE_DESCRIPTION);
+                if (focused && $scope.autoCompleteUriResults) {
+                    index = $scope.autoCompleteUriResults.findIndex(el => el.description === focused);
+                    $scope.selectedElementIndex = index;
+
+                    isAutocompleteResultsLoaded()
+                        .then(function () {
+                            scrollToPreviouslySelectedEl();
+                        }).catch(function (err) {
+                        toastr.error(getError(err), 'Could not find previous search element in menu!');
+                    });
+                }
+
+                $scope.activeSearchElm = index === -1 ? 0 : index;
+            }
+
+            function loadAutocompleteData() {
+                loadStoredSearchData()
+                    .then(function () {
+                        findPreviousSearchResultIndex();
+                    })
+            }
+
+            $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
+
+            $scope.setActiveClassOnMouseMove = function (index) {
                 if (!element.autoCompleteStatus) {
                     return;
                 }
                 $scope.activeSearchElm = index;
             };
-
 
             function scrollContentToBottom() {
                 const $autoCompleteWrapper = $("#auto-complete-results-wrapper");
@@ -553,7 +680,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(element.namespaces, uriPart);
                         expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
                         if (expandedUri) {
-                            $(".view-res-input").val(expandedUri);
+                            SEARCH_INPUT_FIELD.val(expandedUri);
                             return expandedUri + localName;
                         }
                     }
@@ -585,13 +712,16 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         canceler.resolve();
                     }
                     canceler = $q.defer();
-                    AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
+                    return AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
                         .then(function (results) {
                             canceler = null;
-                            $scope.activeSearchElm = 0;
+                            // if (showDropDown) {
                             $scope.autoCompleteUriResults = results.data.suggestions;
+                            // }
+                            $scope.activeSearchElm = 0;
                         });
                 }
+                return Promise.resolve();
             }
         }
     };
@@ -628,5 +758,68 @@ function keyboardShortcutsDirective($document) {
                 $document.off('keydown', escapeEvent);
             }
         }
+    }
+}
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+    return {
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            loadSaved: '&',
+            setPluginActive: '&',
+            pluginName: '@',
+            humanReadablePluginName: '@'
+        },
+        templateUrl: 'js/angular/core/templates/inactive-plugin-warning-page.html',
+
+        link: linkFunc
+    };
+    function linkFunc($scope) {
+        $scope.pluginIsActive = true;
+        function checkPluginIsActive() {
+            return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
+                .done(function (data) {
+                    $scope.pluginIsActive = data.indexOf('true') > 0;
+                    $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
+                })
+                .fail(function (data) {
+                    toastr.error(getError(data), 'Could not check if plugin is active!');
+                });
+        }
+
+        $scope.activatePlugin = function () {
+            ModalService.openSimpleModal({
+                title: 'Confirm plugin activation',
+                message: `<p>Are you sure you want to activate <strong>${$scope.humanReadablePluginName}</strong>?</p>`,
+                warning: true
+            }).result
+                .then(function () {
+                    RDF4JRepositoriesRestService.activatePlugin($scope.pluginName)
+                        .done(function () {
+                            $scope.pluginIsActive = true;
+                            $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
+                            $scope.loadSaved();
+                        })
+                        .fail(function (data) {
+                            toastr.error(getError(data), 'Could not activate plugin!');
+                        });
+                });
+        };
+
+        const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+            checkPluginIsActive();
+        });
+
+        window.addEventListener('beforeunload', removeRepoIsSetListener);
+
+        function removeRepoIsSetListener() {
+            repoIsSetListener();
+            window.removeEventListener('beforeunload', removeRepoIsSetListener);
+        }
+
+        $scope.$on('checkIsActive', checkPluginIsActive);
+
+        checkPluginIsActive();
     }
 }

@@ -19,10 +19,6 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// Configures retry count for failed tests TODO: Remove after tests are stabilized
-require('cypress-plugin-retries');
-Cypress.env('RETRIES', 2);
-
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
 Cypress.env('modifierKey', Cypress.platform === 'darwin' ? '{cmd}' : '{ctrl}');

@@ -1,3 +1,4 @@
+const PACKAGE = require('./package.json');
 const path = require('path');
 const merge = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
@@ -29,6 +30,9 @@ module.exports = merge(commonConfig, {
         new HtmlWebpackPlugin({
             template: './src/template.html',
             favicon: 'src/img/icon.png',
+            templateParameters: {
+                version: PACKAGE.version
+            }
             // TODO: enable this once completed with the fixes
             // minify: {
             //     removeAttributeQuotes: true,

@@ -13,9 +13,9 @@ angular
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', '$licenseService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, $licenseService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys) {
     return {
         restrict: 'AE',
         template: '<div id="classChart"></div>',
@@ -642,6 +642,15 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             }
 
             $rootScope.$broadcast("classCount", currentClassCount, currentSliderValue);
+        }
+
+        window.addEventListener('resize', sendSliderData);
+
+        window.addEventListener('beforeunload', removeResizeListener);
+
+        function removeResizeListener() {
+            window.removeEventListener('resize', sendSliderData);
+            window.removeEventListener('beforeunload', removeResizeListener);
         }
 
         var prefixesWatch,

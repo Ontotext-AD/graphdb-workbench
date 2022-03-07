@@ -96,8 +96,8 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$timeout', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $timeout, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope) {
         $scope.username = '';
         $scope.password = '';
 
@@ -120,26 +120,23 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
 
         $scope.login = function () {
-            $http({
+            return $http({
                 method: 'POST',
                 url: 'rest/login/' + encodeURIComponent($scope.username),
                 headers: {
                     'X-GraphDB-Password': $scope.password
                 }
             }).success(function (data, status, headers) {
-                $jwtAuth.authenticate(data, headers('Authorization'));
-                const timer = $timeout(function () {
-                    if ($rootScope.returnToUrl) {
-                        // go back to remembered url
-                        $location.url($rootScope.returnToUrl);
-                    } else {
-                        // no remembered url, go to home
-                        $location.path('/');
-                    }
-                }, 500);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
-                });
+                $jwtAuth.authenticate(data, headers('Authorization'))
+                    .then(() => {
+                        if ($rootScope.returnToUrl) {
+                            // go back to remembered url
+                            $location.url($rootScope.returnToUrl);
+                        } else {
+                            // no remembered url, go to home
+                            $location.path('/');
+                        }
+                    });
             }).error(function (data, status) {
                 if (status === 401) {
                     toastr.error('Wrong credentials!', 'Error');
@@ -150,7 +147,6 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     const msg = getError(data);
                     toastr.error(msg, status);
                 }
-
             });
         };
     }]);
@@ -214,7 +210,8 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,
-                        'IGNORE_SHARED_QUERIES': false
+                        'IGNORE_SHARED_QUERIES': false,
+                        'DEFAULT_VIS_GRAPH_SCHEMA': true
                     };
                     const modalInstance = $modal.open({
                         templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
@@ -436,8 +433,8 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         }
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
+securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -463,13 +460,25 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 'DEFAULT_SAMEAS': true,
                 'DEFAULT_INFERENCE': true,
                 'EXECUTE_COUNT': true,
-                'IGNORE_SHARED_QUERIES': false
+                'IGNORE_SHARED_QUERIES': false,
+                'DEFAULT_VIS_GRAPH_SCHEMA': true
             }
         };
 
         $scope.submit = function () {
-            $scope.createUser();
-        };
+                if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                    ModalService.openSimpleModal({
+                        title: 'Create administrator',
+                        message: 'If the password is unset and security is enabled, this administrator will not be ' +
+                            'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                        warning: true
+                    }).result.then(function () {
+                        $scope.createUser();
+                    });
+                } else {
+                    $scope.createUser();
+                }
+            };
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
@@ -534,8 +543,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService) {
+securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -557,7 +566,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             'DEFAULT_SAMEAS': true,
             'DEFAULT_INFERENCE': true,
             'EXECUTE_COUNT': true,
-            'IGNORE_SHARED_QUERIES': false
+            'IGNORE_SHARED_QUERIES': false,
+            'DEFAULT_VIS_GRAPH_SCHEMA': true
         };
 
         if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
@@ -584,7 +594,18 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.getUserData();
 
         $scope.submit = function () {
-            $scope.updateUser();
+            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                ModalService.openSimpleModal({
+                    title: 'Save administrator settings',
+                    message: 'If you unset the password and then enable security, this administrator will not be ' +
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                    warning: true
+                }).result.then(function () {
+                    $scope.updateUser();
+                });
+            } else {
+                $scope.updateUser();
+            }
         };
 
         $scope.updateUserHttp = function () {
@@ -658,8 +679,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -706,6 +727,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             scope.user.confirmpassword = '';
             scope.user.external = scope.userData.external;
             scope.user.appSettings = scope.userData.appSettings;
+            // For backward compatibility
+            if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
+                scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
+            }
 
             const pa = parseAuthorities(scope.userData.authorities);
             $scope.userType = pa.userType;
@@ -724,8 +749,19 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
 
         $scope.submit = function () {
-            $scope.updateUser();
-        };
+            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                ModalService.openSimpleModal({
+                    title: 'Save administrator settings',
+                    message: 'If you unset the password and then enable security, this administrator will not be ' +
+                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                    warning: true
+                }).result.then(function () {
+                    $scope.updateUser();
+                });
+            } else {
+                $scope.updateUser();
+            }
+        }
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;

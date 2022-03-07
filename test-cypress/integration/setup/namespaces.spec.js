@@ -1,14 +1,24 @@
 describe('Namespaces', () => {
 
     let repositoryId;
+    let DEFAULT_NAMESPACES = {};
 
     beforeEach(() => {
         repositoryId = 'namespaces-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
+        cy.getNamespaces(repositoryId)
+            .then((response) => {
+                response.body.results.bindings.forEach(function (e) {
+                    DEFAULT_NAMESPACES[e.prefix.value] = e.namespace.value;
+                });
+            }).then(() => {
+
+        });
 
         cy.visit('/namespaces');
+        cy.window();
 
         waitUntilPageIsLoaded();
     });
@@ -27,15 +37,6 @@ describe('Namespaces', () => {
         getAddNamespaceForm().should('be.visible');
     }
 
-    const DEFAULT_NAMESPACES = {
-        'gn': 'http://www.geonames.org/ontology#',
-        'owl': 'http://www.w3.org/2002/07/owl#',
-        'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-        'wgs': 'http://www.w3.org/2003/01/geo/wgs84_pos#',
-        'xsd': 'http://www.w3.org/2001/XMLSchema#'
-    };
-
     it('verify initial state', () => {
         getNoNamespacesAlert().should('not.be.visible');
 
@@ -46,7 +47,7 @@ describe('Namespaces', () => {
 
         // Should render a table with some default namespaces
         getNamespacesTable().should('be.visible');
-        getNamespaces().should('have.length', Object.keys(DEFAULT_NAMESPACES).length);
+        getNamespaces().should('have.length', getDefaultNamespacesLength());
 
         // Should provide pagination options
         getNamespacesPerPageMenu().within(() => {
@@ -64,7 +65,7 @@ describe('Namespaces', () => {
         // Should show summary of results
         getNamespacesHeaderPaginationInfo()
             .should('be.visible')
-            .and('contain', 'Showing 1 - 6 of 6 results');
+            .and('contain', `Showing 1 - ${getDefaultNamespacesLength()} of ${getDefaultNamespacesLength()} results`);
 
         // Both header & footer pagination must be the same
         getNamespacesHeaderPagination()
@@ -79,7 +80,17 @@ describe('Namespaces', () => {
             .should('have.length', 3);
 
         // Verify default namespaces are present and interactable
-        const defaultPrefixes = Object.keys(DEFAULT_NAMESPACES);
+        const defaultPrefixes = Object.keys(DEFAULT_NAMESPACES).sort(function (a, b) {
+            const prefixA = a.toUpperCase(); // ignore upper and lowercase
+            const prefixB = b.toUpperCase(); // ignore upper and lowercase
+            if (prefixA < prefixB) {
+                return -1;
+            }
+            if (prefixA > prefixB) {
+                return 1;
+            }
+            return 0;
+        });
         getNamespaces().each(($row, $index) => {
             const expectedPrefix = defaultPrefixes[$index];
             const expectedNamespace = DEFAULT_NAMESPACES[expectedPrefix];
@@ -148,10 +159,11 @@ describe('Namespaces', () => {
             .should('have.value', namespaceUri);
         getAddNamespaceButton().click();
 
+        let updatedCount = getDefaultNamespacesLength() + 1;
         // Verify results table is refreshed
-        getNamespaces().should('have.length', 7);
+        getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
-            .should('contain', 'Showing 1 - 7 of 7 results');
+            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
         getNamespace(namespacePrefix)
             .should('be.visible')
             .find('.namespaceURI')
@@ -175,7 +187,7 @@ describe('Namespaces', () => {
 
         // Should have not created new record, should update the existing
         getNamespaces()
-            .should('have.length', 7)
+            .should('have.length', getDefaultNamespacesLength() + 1)
             // This assert here ensures the table will contain the modified namespace before actually checking it because the table is
             // re-rendered and any following checks would hit detached DOM elements
             .and('contain', namespaceUriModified);
@@ -190,20 +202,22 @@ describe('Namespaces', () => {
         deleteNamespace('xsd');
         confirmModal();
 
+        let updatedCount = getDefaultNamespacesLength() - 1;
         // Verify results table is refreshed
-        getNamespaces().should('have.length', 5);
+        getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
-            .should('contain', 'Showing 1 - 5 of 5 results');
+            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         selectNamespace('rdf');
         selectNamespace('rdfs');
         getDeleteNamespacesButton().click();
         confirmModal();
 
+        updatedCount = updatedCount - 2;
         // Verify results table is refreshed
-        getNamespaces().should('have.length', 3);
+        getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
-            .should('contain', 'Showing 1 - 3 of 3 results');
+            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         getSelectAllNamespacesCheckbox().click();
         getDeleteNamespacesButton().click();
@@ -351,4 +365,7 @@ describe('Namespaces', () => {
         return getNamespacesPage().find('.namespaces-pagination .pagination');
     }
 
+    function getDefaultNamespacesLength() {
+        return Object.keys(DEFAULT_NAMESPACES).length;
+    }
 });

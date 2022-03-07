@@ -115,6 +115,10 @@ module.exports = {
                 to: 'i18n'
             },
             {
+                from: 'src/js/angular/repositories/templates',
+                to: 'js/angular/repositories/templates',
+            },
+            {
                 from: 'src/js/angular/autocomplete/templates',
                 to: 'js/angular/autocomplete/templates'
             },
@@ -191,12 +195,22 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                use: {
+                // Stacking html-loader to replace the image URLs, then extract-loader to extract
+                // the HTML and finally ejs-loader so that variables can be replaced via
+                // HtmlWebpackPlugin's templateParameters.
+                use: [{
+                    loader: 'ejs-loader',
+                    options: {
+                        esModule: false
+                    }
+                }, {
+                    loader: 'extract-loader'
+                }, {
                     loader: 'html-loader',
                     options: {
                         attrs: ['img:src', 'object:data']
                     }
-                }
+                }]
             },
             {
                 test: /\.(svg|png|jpg|gif)$/,
@@ -209,12 +223,12 @@ module.exports = {
                 }
             },
             {
-                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                test: /\.woff(2)?(\?v=\d+\.\d+\.\d+)?$/,
                 use: {
-                    loader: "url-loader?mimetype=application/font-woff",
+                    loader: "file-loader",
                     options: {
-                        name: '[name].[hash].[ext]',
-                        outputPath: 'font'
+                        name: '[name].[ext]',
+                        outputPath: 'res/swagger/fonts'
                     }
                 }
             }, {
@@ -236,7 +250,7 @@ module.exports = {
                     }
                 }
             }, {
-                test: /\.(png|jpg|jpeg|gif|woff|woff2)$/,
+                test: /\.(png|jpg|jpeg|gif)$/,
                 loader: 'url-loader'
             }
         ]
