@@ -1,6 +1,55 @@
 {
-    "menu.repository.create": "Create new repository",
-    "product.type.free": "Free",
+    "core_errors.repository.create.btn": "Create new repository",
+    "core_errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",
+    "core_errors.restricted.warning.msg": "Some functionalities are not available because",
+    "core_errors.not.valid.license.warning.msg": "your license is not valid.",
+    "core_errors.set.new.license.warning.msg": "Set new license",
+    "core_errors.no.permission.to.repository.warning.msg": "you have no write permission to repository ",
+    "core_errors.read.only.repository.warning.msg": " is read-only Virtual Repository.",
+    "core_errors.fedx.repository.warning.msg": " view is not supported by FedX Repository.",
+    "core_errors.select.repository.warning.msg": "Click one of the repositories below to connect to it",
+    "core_errors.or.create.repository.warning.msg": " or create a new repository",
+    "core_errors.no.accessible.warning.msg": "There are no accessible ",
+    "core_errors.writable": "writable ",
+    "core_errors.repositories": "repositories",
+    "core_errors.create.repository.warning.msg": ". You can create a new repository",
+
+    "copy_to_clipboard_modal.paragraph": "Copy URL to clipboard",
+    "copy_to_clipboard_modal.ok.btn": "Copy to clipboard",
+
+    "inactive_plugin.warning": " is not active for this repository.",
+    "inactive_plugin.warning.for.use": "When a plugin is not active it cannot be used or configured.",
+
+    "view_trig_h": "View Statements in TriG",
+
+    "delete_connector.paragraph": "Are you sure you want to delete this connector?",
+    "delete_connector.popover": "Force delete will remove the connector even if part of the operation fails. Use it if normal delete does not work.",
+    "delete_connector.conditional": " Note that you may have to drop the index manually from {{type}}.",
+    "delete_connector.force.checkbox": "Force delete",
+    "delete_connector.delete.btn": "Delete",
+
+    "externalsync.empty.value.key.error": "Key may not be empty with value \"{{value}}\"",
+    "externalsync.duplicate.key.error": "Duplicate key {{key}}",
+    "externalsync.running.operation": "Running operation...{{timeHuman}}",
+    "externalsync.fetching.connectors": "Fetching connectors",
+    "externalsync.extra.message": "Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.",
+    "externalsync.could.not.get.connectors.error": "Could not get connectors",
+    "externalsync.repairing": "Repairing",
+    "externalsync.creating": "Creating",
+    "externalsync.created.connector": "Created connector {{name}}",
+    "externalsync.confirm.repair": "Confirm repair",
+    "externalsync.repair.warning.msg": "Are you sure you want to repair this connector? Note that repair means delete + recreate with the same settings.",
+    "externalsync.repair.success.msg": "Repaired connector {{name}}",
+    "externalsync.delete.progress.msg": "Deleting connector {{name}}",
+    "externalsync.extra.message.warning": "This is usually a fast operation but it might take a while.",
+    "externalsync.delete.force.success.msg": "Deleted (with force) connector {{name}}",
+    "externalsync.delete.success.msg": "Deleted connector {{name}}",
+    "externalsync.delete.remote.warning": "You may have to remove the index manually from {{key}}",
+
+    "common.confirm.delete": "Confirm delete",
+    "common.cancel.btn": "Cancel",
+    "common.yes.btn": "Yes",
+
     "menu.btn.translate.en": "English",
     "menu.btn.translate.de": "German"
 }

@@ -102,18 +102,15 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         }
     };
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$rootScope', 'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService', '$translate', 'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
 }
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, $translate, MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
-    $scope.mainTitle = 'GraphDB';
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
-                    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-                    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate) {
     $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -176,25 +173,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.connectorsVersion = productInfo.connectors;
 
     $scope.sesameVersion = productInfo.sesame;
-
-    $scope.productType = productInfo.productType;
-    if ($scope.productType === "standard") {
-        $scope.productTypeHuman = "Standard";
-        $scope.documentation = "standard/";
-    } else if ($scope.productType === "enterprise") {
-        $scope.productTypeHuman = "Enterprise";
-        $scope.documentation = "enterprise/";
-    } else if ($scope.productType === "free") {
-        // $scope.productTypeHuman = "Free";
-        $scope.productTypeHuman = "product.type.free";
-        $scope.documentation = "free/";
-    }
-
-    $rootScope.$on('$translateChangeSuccess', function () {
-        $translate($scope.productTypeHuman).then((tr) => {
-            $scope.mainTitle = tr;
-        });
-    });
 
     $scope.select = function (index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
@@ -497,44 +475,44 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             {
                 "title": "Welcome to GraphDB",
                 "info": "GraphDB is a graph database compliant with RDF and SPARQL specifications. " +
-                "It supports open APIs based on RDF4J (ex-Sesame) project and enables fast publishing of linked data on the web. " +
-                "The Workbench is used for searching, exploring and managing GraphDB semantic repositories. " +
-                "This quick tutorial will guide you through the basics: <br>" +
-                "<ul>" +
-                "<li>(1) Create a repository</li>" +
-                "<li>(2) Load a sample dataset</li>" +
-                "<li>(3) Run a SPARQL query</li>" +
-                "</ul>" +
-                "You can always come back to this tutorial by pressing the GraphDB icon in the top left corner."
+                    "It supports open APIs based on RDF4J (ex-Sesame) project and enables fast publishing of linked data on the web. " +
+                    "The Workbench is used for searching, exploring and managing GraphDB semantic repositories. " +
+                    "This quick tutorial will guide you through the basics: <br>" +
+                    "<ul>" +
+                    "<li>(1) Create a repository</li>" +
+                    "<li>(2) Load a sample dataset</li>" +
+                    "<li>(3) Run a SPARQL query</li>" +
+                    "</ul>" +
+                    "You can always come back to this tutorial by pressing the GraphDB icon in the top left corner."
             },
             {
                 "title": "Create a repository",
                 "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
-                "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
-                "RDF statements. If you plan to load more check for more information: " +
-                "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                    "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
+                    "RDF statements. If you plan to load more check for more information: " +
+                    "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
             },
             {
                 "title": "Load a sample dataset",
                 "info": "GraphDB includes a sample dataset in the distribution under the directory examples/data/news. " +
-                "The dataset represents new articles semantically enriched with structured information from Wikipedia. " +
-                "To load the data go to Import > RDF and select the local files. "
+                    "The dataset represents new articles semantically enriched with structured information from Wikipedia. " +
+                    "To load the data go to Import > RDF and select the local files. "
             },
             {
                 "title": "Run a SPARQL query",
                 "info": "You can find a list of sample SPARQL queries under examples/data/news/queries.txt demonstrating how to find " +
-                "interesting searches of news articles and the mentioned entities like: <br>" +
-                "<ul>" +
-                "<li>(1) Give me articles about persons born in New York</li>" +
-                "<li>(2) Show me all occupations of every person in the news</li>" +
-                "<li>(3) List me the members of a specific political party</li>" +
-                "</ul>"
+                    "interesting searches of news articles and the mentioned entities like: <br>" +
+                    "<ul>" +
+                    "<li>(1) Give me articles about persons born in New York</li>" +
+                    "<li>(2) Show me all occupations of every person in the news</li>" +
+                    "<li>(3) List me the members of a specific political party</li>" +
+                    "</ul>"
             },
             {
                 "title": "REST API",
                 "info": "GraphDB allows you to perform every operation also via a REST API or by using language specific RDF4J client application. " +
-                "To see the full list of supported functionality go to Help > REST API or check the sample code under examples/developer-getting-started/\n" +
-                "Have fun!"
+                    "To see the full list of supported functionality go to Help > REST API or check the sample code under examples/developer-getting-started/\n" +
+                    "Have fun!"
             }
         ];
         $scope.activePage = 0;

@@ -29,14 +29,14 @@ function toArrayMap(map) {
     });
 }
 
-function fromArrayMap(arrayMap) {
+function fromArrayMap(arrayMap, $translate) {
     return _.reduce(arrayMap, function (acc, value) {
         if (value.key === '' && value.value === '') {
             // empty pair, skip it
         } else if (value.key === '') {
-            throw new Error('Key may not be empty with value "' + value.value + '"');
+            throw new Error($translate.instant('externalsync.empty.value.key.error', {value: value.value}));
         } else if (acc.hasOwnProperty(value.key)) {
-            throw new Error('Duplicate key ' + value.key);
+            throw new Error($translate.instant('externalsync.duplicate.key.error', {key: value.key}));
         } else {
             acc[value.key] = value.value;
         }
@@ -137,7 +137,7 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
     for (let i = 0; i < options.length; i++) {
         try {
             if (options[i].__type === 'Map') {
-                fcopy[options[i].__name] = fromArrayMap(fcopy[options[i].__name]);
+                fcopy[options[i].__name] = fromArrayMap(fcopy[options[i].__name], $translate);
             } else if (options[i].__type === 'JsonString') {
                 fcopy[options[i].__name] = angular.fromJson(fcopy[options[i].__name]);
             }
@@ -237,9 +237,9 @@ function parseFirstBuildingResult(results) {
     return {};
 }
 
-ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
+ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', '$translate'];
 
-function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService) {
+function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService, $translate) {
     $scope.loader = false;
 
     $scope.controllers = [];
@@ -255,7 +255,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         if ($scope.progressMessage) {
             message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = 'Running operation...' + timeHuman;
+            message = $translate.instant('externalsync.running.operation', {timeHuman: timeHuman});
         }
         if ($scope.extraMessage && timeSeconds > 10) {
             message += '\n' + $scope.extraMessage;
@@ -298,7 +298,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             return;
         }
 
-        $scope.setLoader(true, 'Fetching connectors', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        $scope.setLoader(true, $translate.instant('externalsync.fetching.connectors'), $translate.instant('externalsync.extra.message'));
 
         ConnectorsRestService.getConnectors()
             .then(function (res) {
@@ -333,7 +333,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                 });
             }).catch(function (e) {
                 $scope.setLoader(false);
-                toastr.error(getError(e), 'Could not get connectors');
+                toastr.error(getError(e), $translate.instant('externalsync.could.not.get.connectors.error'));
             });
 
         $scope.existing = {};
@@ -372,7 +372,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                 indexedEntities: 0,
                 entitiesPerSecond: 0
             },
-            actionName: repair ? 'Repairing' : 'Creating',
+            actionName: repair ? $translate.instant('externalsync.repairing') : $translate.instant('externalsync.creating'),
             waitOnRepairStartOnce: !!repair,
             eta: '-',
             inline: false,
@@ -425,7 +425,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                         $scope.existing[connector.key] = res.data;
                     });
                 });
-                toastr.success('Created connector ' + obj.name);
+                toastr.success($translate.instant('externalsync.created.connector', {name: obj.name}));
             }, function (err) {
                 toastr.error(getError(err));
                 errorCallback();
@@ -495,8 +495,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
 
     $scope.repair = function (inst, type) {
         ModalService.openSimpleModal({
-            title: 'Confirm repair',
-            message: 'Are you sure you want to repair this connector?<br>Note that repair means delete + recreate with the same settings.',
+            title: $translate.instant('externalsync.confirm.repair'),
+            message: $translate.instant('externalsync.repair.warning.msg'),
             warning: true
         }).result
             .then(function () {
@@ -511,7 +511,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                                 $scope.existing[type.key] = res.data;
                             });
                         });
-                        toastr.success('Repaired connector ' + inst.name);
+                        toastr.success($translate.instant('externalsync.repair.success.msg', {name: inst.name}));
                     }, function (err) {
                         toastr.error(getError(err));
                     }).finally(function () {
@@ -527,16 +527,14 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',
             controller: 'DeleteConnectorCtrl',
             resolve: {
-                type: function () {
-                    return type.key;
-                },
-                isExternal: function () {
-                    return isExternal;
+                popoverMsg: function () {
+                    return isExternal ? $translate.instant('delete_connector.conditional', {type: type.key}) : '';
                 }
             }
         }).result
             .then(function(force) {
-                $scope.setLoader(true, 'Deleting connector ' + inst.name, 'This is usually a fast operation but it might take a while.');
+                $scope.setLoader(true, $translate.instant('externalsync.delete.progress.msg', {name: inst.name}),
+                                                $translate.instant('externalsync.extra.message.warning'));
 
                 const query = deleteConnectorQuery(inst.name, type.value, force);
                 RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), jsonToFormData({update: query}))
@@ -547,12 +545,12 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                             });
                         });
                         if (force) {
-                            toastr.success("Deleted (with force) connector " + inst.name);
+                            toastr.success($translate.instant('externalsync.delete.force.success.msg', {name: inst.name}));
                             if (isExternal) {
-                                toastr.warning("You may have to remove the index manually from " + type.key);
+                                toastr.warning($translate.instant('externalsync.delete.remote.warning', {key: type.key}));
                             }
                         } else {
-                            toastr.success("Deleted connector " + inst.name);
+                            toastr.success($translate.instant('externalsync.delete.success.msg', {name: inst.name}));
                         }
                     }, function (err) {
                         toastr.error(getError(err));
@@ -577,11 +575,10 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 }
 
-DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
-function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'popoverMsg'];
+function DeleteConnectorCtrl($scope, $modalInstance, popoverMsg) {
     $scope.force = false;
-    $scope.type = type;
-    $scope.isExternal = isExternal;
+    $scope.popoverMsg = popoverMsg;
 
     $scope.ok = function () {
         $modalInstance.close($scope.force);
@@ -677,9 +674,9 @@ function CreateConnectorCtrl($scope, $controller, $http, $modalInstance, connect
 // Note that this is a fancy controller: it's used both for a modal and for a directive.
 // This means you can't rely on custom injection through resolve in the modal and the scope
 // must be shared with the main connectors controller.
-CreateProgressCtrl.$inject = ['$scope', '$interval', '$http', '$repositories'];
+CreateProgressCtrl.$inject = ['$scope', '$interval', '$http', '$repositories', '$translate'];
 
-function CreateProgressCtrl($scope, $interval, $http, $repositories) {
+function CreateProgressCtrl($scope, $interval, $http, $repositories, $translate) {
     function evaluateSparqlQuery(query) {
         return _evaluateSparqlQuery($http, $repositories.getActiveRepository(), query);
     }
@@ -712,7 +709,7 @@ function CreateProgressCtrl($scope, $interval, $http, $repositories) {
                         $scope.beingBuiltConnector.status = status;
                         $scope.beingBuiltConnector.percentDone = (100 * status.processedEntities / status.estimatedEntities).toFixed(0);
                         $scope.beingBuiltConnector.eta = $scope.getHumanReadableSeconds(status.etaSeconds);
-                        $scope.beingBuiltConnector.actionName = status.repair ? 'Repairing' : 'Creating';
+                        $scope.beingBuiltConnector.actionName = status.repair ? $translate.instant('externalsync.repairing') : $translate.instant('externalsync.creating');
                         $scope.beingBuiltConnector.waitOnRepairStartOnce = false;
                     } else if (status.status === 'BUILT' && !$scope.beingBuiltConnector.waitOnRepairStartOnce) {
                         // done
