@@ -24,23 +24,23 @@
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
                         <em class="icon-warning" ng-show="query.owner != principal().username && isUser()"
-                           popover="Query shared by another user. You may not edit or delete it."
+                           popover="{{'core.popover.shared.query.warning' | translate}}"
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Edit query" popover-trigger="mouseenter"
+                                    popover="{{'core.edit.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Delete query" popover-trigger="mouseenter"
+                                    popover="{{'core.delete.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    popover="Get URL to query" popover-trigger="mouseenter"
+                                    popover="{{'core.popover.get.url.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="copyToClipboardQuery(query.name, query.owner)">
 								<span class="icon-link"></span>
 							</button>
@@ -76,7 +76,7 @@
                                 ng-show="!notoolbarSaved && isUser()"
                                 ng-click="saveTab(currentQuery.id); saveQuery(currentQuery);"
                                 data-container="#queryEditor"
-                                tooltip="Create saved query"
+                                tooltip="{{'core.create.saved.query' | translate}}"
                                 tooltip-append-to-body="true"
                                 tooltip-trigger="mouseenter">
                             <em class="icon-save icon-2-5x"></em>
@@ -86,7 +86,7 @@
                            ng-hide="notoolbarSaved"
                            ng-click="toggleSampleQueries()"
                            data-container="#queryEditor"
-                           tooltip="Show saved queries"
+                           tooltip="{{'core.show.saved.query' | translate}}"
                            tooltip-append-to-body="true"
                            tooltip-trigger="mouseenter"
                            popover-template="'sampleQueriesPopoverTemplate.html'"
@@ -103,14 +103,14 @@
                         <button class="btn btn-link" id="wb-sparql-copyToClipboardQuery"
                                 ng-hide="notoolbarCopy"
                                 ng-click="copyToClipboardQuery()"
-                                tooltip="Get URL to current query"
+                                tooltip="{{'core.popover.get.url.current.query' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-link icon-2-5x"></span>
                         </button>
                         <button class="btn btn-link" id="inference"
                                 ng-hide="notoolbarInference"
                                 ng-click="currentQuery.inference = !currentQuery.inference"
-                                tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
+                                tooltip="{{createTooltipMsg('core.include.inferred', currentQuery.inference)}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   ng-class="{'icon-inferred-on':currentQuery.inference, 'icon-inferred-off':!currentQuery.inference}"></span>
@@ -118,7 +118,7 @@
                         <button class="btn btn-link" id="sameAs"
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
-                                tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
+                                tooltip="{{createTooltipMsg('core.expand.sameAs', currentQuery.sameAs)}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"

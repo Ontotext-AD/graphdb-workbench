@@ -54,6 +54,7 @@ const moduleDefinition = function (productInfo) {
             });
             // load 'en' table on startup
             $translateProvider.preferredLanguage('en');
+            $translateProvider.useSanitizeValueStrategy('escape');
 
             // configure toastr
             angular.extend(toastrConfig, {
@@ -151,18 +152,35 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', function ($rootScope, $route, toastr, $sce) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', function ($rootScope, $route, toastr, $sce, $translate) {
         $rootScope.$on('$routeChangeSuccess', function () {
-            if ($route.current.title) {
-                document.title = $route.current.title + ' | GraphDB Workbench';
-            } else {
-                document.title = 'GraphDB Workbench';
-            }
-            $rootScope.helpInfo = $sce.trustAsHtml($route.current.helpInfo);
-            $rootScope.title = $route.current.title;
+            updateTitleAndHelpInfo();
 
             toastr.clear();
         });
+
+        $rootScope.$on('$translateChangeSuccess', function () {
+            updateTitleAndHelpInfo();
+        });
+
+        function updateTitleAndHelpInfo() {
+            if ($route.current.title) {
+                document.title = $translate.instant($route.current.title) + ' | GraphDB Workbench';
+            } else {
+                document.title = 'GraphDB Workbench';
+            }
+
+            $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
+            $rootScope.title = $translate.instant($route.current.title);
+        }
+
+        // $translate.instant converts <b> from strings to &lt;b&gt
+        // and $sce.trustAsHtml could not recognise that this is valid html
+        let decodeHTML = function (html) {
+            let txt = document.createElement('textarea');
+            txt.innerHTML = html;
+            return txt.value;
+        };
     }]);
 
     workbench.filter('titlecase', function() {

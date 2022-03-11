@@ -13,9 +13,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate) {
 
     let callbackOnChange;
 
@@ -445,6 +445,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 });
             }
             return url;
+        }
+
+        scope.createTooltipMsg = function (key, value) {
+            return $translate.instant(key, {value: (value ? 'ON' : 'OFF')});
         }
 
         scope.copyToClipboardQuery = function (savedQueryName, owner) {

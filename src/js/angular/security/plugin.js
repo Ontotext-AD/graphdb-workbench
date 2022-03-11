@@ -6,10 +6,8 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'UsersCtrl',
         'templateUrl': 'js/angular/security/templates/users.html',
-        'title': 'Users and Access',
-        'helpInfo': 'The Users and Access view is used to manage the users and their access to the GraphDB repositories. '
-        + 'You can also enable or disable the security of the entire Workbench. '
-        + 'When disabled, everyone has full access to the repositories and the admin functionality. '
+        'title': 'view.users.access.title',
+        'helpInfo': 'view.users.access.helpInfo'
     }, {
         'url': '/user/create',
         'module': 'graphdb.framework.security',
@@ -25,7 +23,7 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'LoginCtrl',
         'templateUrl': 'pages/login.html',
-        'title': 'Login'
+        'title': 'view.login.title'
     }, {
         'url': '/user/:userId',
         'module': 'graphdb.framework.security',
@@ -41,11 +39,11 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'ChangeUserPasswordSettingsCtrl',
         'templateUrl': 'js/angular/security/templates/user.html',
-        'title': 'Settings'
+        'title': 'view.settings.title'
     }, {
         'url': '/accessdenied',
         'templateUrl': 'pages/accessdenied.html',
-        'title': 'Access Denied'
+        'title': 'view.access.denied.title'
     }, {
         'url': '/rolesmappings',
         'module': 'graphdb.framework.security',
@@ -53,7 +51,7 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'RolesMappingController',
         'templateUrl': 'js/angular/security/templates/roles.html',
-        'title': 'Roles per Request Mapping'
+        'title': 'view.roles.mapping.title'
     }
 ]);
 
@@ -61,13 +59,14 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-settings'
         },
         {
-            label: 'Users and Access', href: 'users', order: 2, parent: 'Setup', role: 'ROLE_ADMIN',
+            label: 'Users and Access', labelKey: 'menu.users.and.access.label', href: 'users', order: 2, parent: 'Setup', role: 'ROLE_ADMIN',
             children: [{
                 href: 'user/create',
                 children: []
@@ -75,6 +74,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'My Settings',
+            labelKey: 'menu.my.settings.label',
             href: 'settings',
             order: 6,
             parent: 'Setup',

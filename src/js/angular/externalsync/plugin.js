@@ -5,14 +5,15 @@ PluginRegistry.add('route', {
     'chunk': 'externalsync',
     'controller': 'ConnectorsCtrl',
     'templateUrl': 'pages/connectorsInfo.html',
-    'title': 'Connector management',
-    'helpInfo': 'The Connector management view is used to create and manage GraphDB connector instances.'
+    'title': 'view.connector.management.title',
+    'helpInfo': 'view.connector.management.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
@@ -20,6 +21,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'Connectors',
+            labelKey: 'menu.connectors.label',
             href: 'connectors',
             order: 10,
             parent: 'Setup',
