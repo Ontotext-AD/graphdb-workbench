@@ -1,6 +1,7 @@
 import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
+import 'angular/rest/plugins.rest.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/rest/license.rest.service';
 import 'angular/rest/repositories.rest.service';
@@ -29,6 +30,7 @@ angular
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
