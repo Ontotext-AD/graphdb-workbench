@@ -26,7 +26,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
-    }
+    };
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
@@ -82,7 +82,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     const removeLabelConfig = function (label) {
-        $scope.setLoader(true,$translate.instant('autocomplete.update'));
+        $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
         AutocompleteRestService.removeLabelConfig(label)
             .success(function () {
@@ -156,7 +156,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || ($translate.instant('autocomplete.loading'))
+        return $scope.loaderMessage || $translate.instant('autocomplete.loading');
     };
 
     $scope.toggleAutocomplete = function () {

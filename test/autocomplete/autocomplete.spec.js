@@ -3,6 +3,8 @@ import 'angular/autocomplete/controllers';
 import 'angular/rest/autocomplete.rest.service';
 import {FakeModal} from '../mocks';
 
+const bundle = require('../../src/i18n/locale-en.json');
+
 let mocks = angular.module('Mocks', []);
 mocks.service('$repositories', function () {
     this.getActiveRepository = function () {
@@ -46,10 +48,11 @@ describe('Autocomplete', function () {
         let createController;
         let modalInstance;
         let $autocompleteStatus;
+        let $translate;
 
         beforeEach(angular.mock.module('Mocks'));
 
-        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_) {
+        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_, _$translate_) {
             $scope = _$rootScope_.$new();
             $http = _$http_;
             $interval = _$interval_;
@@ -63,6 +66,11 @@ describe('Autocomplete', function () {
             AutocompleteRestService = _AutocompleteRestService_;
             $httpBackend = _$httpBackend_;
             $autocompleteStatus = _$autocompleteStatus_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key) {
+                return bundle[key];
+            };
 
             createController = () => $controller('AutocompleteCtrl', {
                 $scope: $scope,
@@ -74,7 +82,8 @@ describe('Autocomplete', function () {
                 $modal: $modal,
                 $timeout: $timeout,
                 AutocompleteRestService,
-                $autocompleteStatus
+                $autocompleteStatus,
+                $translate
             });
 
             createController();
