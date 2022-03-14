@@ -3,6 +3,7 @@ import 'angular-cookies/angular-cookies.min';
 import 'angular-route/angular-route.min';
 import 'angular-local-storage/dist/angular-local-storage.min';
 import 'angular-sanitize/angular-sanitize.min';
+import toastr from 'angular-toastr';
 import 'lodash';
 import 'angular-ui-bootstrap/ui-bootstrap-tpls.min';
 import 'angular-bowser/src/angular-bowser';
