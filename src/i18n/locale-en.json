@@ -200,7 +200,8 @@
     "common.ok.btn": "OK",
     "common.error": "Error",
     "common.warning": "Warning",
-
+    "common.on.btn": "ON",
+    "common.off.btn": "OFF",
 
     "menu.btn.translate.en": "English",
     "menu.btn.translate.de": "German"

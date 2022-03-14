@@ -448,7 +448,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         }
 
         scope.createTooltipMsg = function (key, value) {
-            return $translate.instant(key, {value: (value ? 'ON' : 'OFF')});
+            return $translate.instant(key, {value: (value ? $translate.instant('common.on.btn') : $translate.instant('common.off.btn'))});
         }
 
         scope.copyToClipboardQuery = function (savedQueryName, owner) {
