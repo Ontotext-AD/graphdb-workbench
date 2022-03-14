@@ -179,8 +179,6 @@
     "autocomplete.index.build": "Requesting index build...",
     "autocomplete.interrupt": "Interrupting index...",
 
-
-
     "export.format.warning.msg": "This format does not support graphs.<br>Graph information will not be available in the export.",
     "export.multiple.graph": "Multiple graph export",
     "export.check.graphs.msg": "Check graphs you want to export first.",
@@ -196,12 +194,10 @@
     "export.warning.clear.graph.msg": "Are you sure you want to clear the selected graphs?",
     "export.cleared.graph.msg": "Cleared the selected graphs",
 
-
     "common.confirm.delete": "Confirm delete",
     "common.cancel.btn": "Cancel",
     "common.yes.btn": "Yes",
     "common.ok.btn": "OK",
-
     "common.error": "Error",
     "common.warning": "Warning",
 
