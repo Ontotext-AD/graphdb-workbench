@@ -1,4 +1,16 @@
 {
+    "explore.validation": "Please enter a valid value.",
+    "explore.namespaces": "Cannot get namespaces for repository. View will not work properly; ",
+    "explore.error.resource.details": "Cannot get resource details; ",
+    "explore.error.resource": "Could not get resource; ",
+    "explore.error.autocomplete": "Error attempting to check autocomplete capability!",
+    "explore.error.invalid.input": "Invalid input",
+    "explore.resource.saved": "Resource saved",
+    "explore.explicit.implicit": "Explicit and Implicit",
+    "explore.explicit": "Explicit only",
+    "explore.implicit": "Implicit only",
+    "explore.autocomplete.warning.msg": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
+
     "core_errors.repository.create.btn": "Create new repository",
     "core_errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",
     "core_errors.restricted.warning.msg": "Some functionalities are not available because",
@@ -46,6 +58,21 @@
     "externalsync.delete.success.msg": "Deleted connector {{name}}",
     "externalsync.delete.remote.warning": "You may have to remove the index manually from {{key}}",
 
+    "add_label.add.autocomplete": "Add label for autocomplete",
+    "add_label.edit.autocomplete": "Edit label for autocomplete",
+    "add_label.enter.iri": "Enter label IRI or click one of the predefined IRIs",
+    "add_label.enter.comma-separated": "Enter comma-separated languages or leave empty for any language",
+
+    "autocomplete.update": "Updating label config...",
+    "autocomplete.loading": "Loading...",
+    "autocomplete.enabling": "Enabling autocomplete...",
+    "autocomplete.disabling": "Disabling autocomplete...",
+    "autocomplete.index.iri": "Setting index IRIs...",
+    "autocomplete.index.build": "Requesting index build...",
+    "autocomplete.interrupt": "Interrupting index...",
+
+
+
     "export.format.warning.msg": "This format does not support graphs.<br>Graph information will not be available in the export.",
     "export.multiple.graph": "Multiple graph export",
     "export.check.graphs.msg": "Check graphs you want to export first.",
@@ -65,6 +92,9 @@
     "common.confirm.delete": "Confirm delete",
     "common.cancel.btn": "Cancel",
     "common.yes.btn": "Yes",
+    "common.ok.btn": "OK",
+
+    "common.error": "Error",
     "common.error": "Error",
     "common.warning": "Warning",
 

@@ -1,3 +1,5 @@
+import {bundle} from "../test-main";
+
 beforeEach(angular.mock.module('graphdb.framework.explore.controllers'));
 
 describe('=> ExploreCtrl tests', function () {
@@ -123,9 +125,10 @@ describe('=> EditResourceCtrl', function () {
         $window,
         ClassInstanceDetailsService,
         StatementsService,
-        $scope;
+        $scope,
+        $translate;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope, _$translate_) {
         $repositories = _$repositories_;
         $httpBackend = _$httpBackend_;
         $location = _$location_;
@@ -135,8 +138,13 @@ describe('=> EditResourceCtrl', function () {
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         StatementsService = _StatementsService_;
         $scope = $rootScope.$new();
+        $translate = _$translate_;
 
-        $controller('EditResourceCtrl', {$scope: $scope});
+        $translate.instant = function (key) {
+            return bundle[key];
+        }
+
+        $controller('EditResourceCtrl', {$scope: $scope, $translate: $translate});
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,
