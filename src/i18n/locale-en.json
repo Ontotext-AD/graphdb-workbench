@@ -6,11 +6,10 @@
     "explore.error.autocomplete": "Error attempting to check autocomplete capability!",
     "explore.error.invalid.input": "Invalid input",
     "explore.resource.saved": "Resource saved",
-    "explore.autocomplete.off": "Autocomplete is OFF",
-    "explore.autocomplete.setup": "Go to Setup -> Autocomplete",
     "explore.explicit.implicit": "Explicit and Implicit",
     "explore.explicit": "Explicit only",
     "explore.implicit": "Implicit only",
+    "explore.autocomplete.warning.msg": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
 
     "core_errors.repository.create.btn": "Create new repository",
     "core_errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",

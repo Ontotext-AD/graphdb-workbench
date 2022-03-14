@@ -286,7 +286,8 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (response) {
                 if (!response) {
-                    toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
+                    const warningMsg = $translate.instant('explore.autocomplete.warning.msg');
+                    toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
                         {allowHtml: true});
                 }
                 $scope.autocompleteEnabled = response;

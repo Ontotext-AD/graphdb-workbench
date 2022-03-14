@@ -2,8 +2,7 @@ import 'angular/autocomplete/app';
 import 'angular/autocomplete/controllers';
 import 'angular/rest/autocomplete.rest.service';
 import {FakeModal} from '../mocks';
-
-const bundle = require('../../src/i18n/locale-en.json');
+import {bundle} from "../test-main";
 
 let mocks = angular.module('Mocks', []);
 mocks.service('$repositories', function () {
