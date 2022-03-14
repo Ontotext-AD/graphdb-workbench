@@ -165,13 +165,13 @@ const moduleDefinition = function (productInfo) {
 
         function updateTitleAndHelpInfo() {
             if ($route.current.title) {
-                document.title = $translate.instant($route.current.title) + ' | GraphDB Workbench';
+                document.title = decodeHTML($translate.instant($route.current.title)) + ' | GraphDB Workbench';
             } else {
                 document.title = 'GraphDB Workbench';
             }
 
             $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
-            $rootScope.title = $translate.instant($route.current.title);
+            $rootScope.title = decodeHTML($translate.instant($route.current.title));
         }
 
         // $translate.instant converts <b> from strings to &lt;b&gt

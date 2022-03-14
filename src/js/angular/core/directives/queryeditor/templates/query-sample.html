@@ -8,33 +8,34 @@
     <div class="modal-body">
         <input id="wb-sparql-sampleName" required type="text" ng-model="query.name" class="form-control"
                ng-change="queryExists = false"
-               placeholder="Enter Title"/>
+               placeholder="{{'query-sample.title.placeholder' | translate}}"/>
         <label for="share-query"
-               tooltip="If checked other users will be able to see the query but not delete or edit it.">
+               tooltip="{{'query-sample.share.tooltip.msg' | translate}}">
             <input id="share-query" type="checkbox" ng-model="query.shared">
-            Share query with other users
+            {{'query-sample.share.msg' | translate}}
         </label>
         <input style="height: 0; border: 0; padding: 0; margin: 0;" autofocus/>
         <br>
         <textarea id="wb-sparql-sampleValue" required rows="8" class="form-control" ng-model="query.body"
-                  placeholder="Create your Sample Query" ng-blur="errorMsg = ''"></textarea>
+                  placeholder="{{'query-sample.textarea.placeholder' | translate}}" ng-blur="errorMsg = ''"></textarea>
         <div class="saved-query-errors">
             <div ng-show="form.$error.required.length" >
                 <div ng-hide="query.name" class="alert alert-danger empty-query-name-err" style="margin-top: 5px;">
-                    Name cannot be empty!
+                    {{'query-sample.empty.name.alert' | translate}}
                 </div>
                 <div ng-hide="query.body" class="alert alert-danger empty-query-err" style="margin-top: 5px;">
-                    Query cannot be empty!
+                    {{'query-sample.empty.query.alert' | translate}}
                 </div>
             </div>
             <div ng-hide="form.$error.required.length" ng-if="queryExists" class="alert alert-danger query-exists-error"
-                 style="margin-top: 5px;">
-                Query with name <strong>&#39;{{query.name}}&#39;</strong> already exists!
+                 style="margin-top: 5px;"
+                 translate="query-sample.existing.query.warning"
+                 translate-value-name="{{query.name}}">
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
         <button id="wb-sparql-submit" class="btn btn-primary create-btn" ng-click="ok()" type="submit">
             {{okButtonText}}
         </button>
