@@ -298,7 +298,7 @@ exportCtrl.controller('ExportCtrl',
                                         "repository is incompatible with collecting history") > -1) {
                                         toastr.error($translate.instant('export.clearing.statements.warning'));
                                     } else {
-                                        toastr.error($translate.instant('export.cleared.repo.failed.msg', {repo:$repositories.getActiveRepository(), err}));
+                                        toastr.error($translate.instant('export.cleared.repo.failed.msg', {repo:$repositories.getActiveRepository()}), err);
                                     }
                                 });
                         }, 100);
