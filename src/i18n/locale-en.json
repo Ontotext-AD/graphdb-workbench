@@ -46,9 +46,28 @@
     "externalsync.delete.success.msg": "Deleted connector {{name}}",
     "externalsync.delete.remote.warning": "You may have to remove the index manually from {{key}}",
 
+    "export.format.warning.msg": "This format does not support graphs.<br>Graph information will not be available in the export.",
+    "export.multiple.graph": "Multiple graph export",
+    "export.check.graphs.msg": "Check graphs you want to export first.",
+    "export.confirm.clear.msg": "Confirm clear repository",
+    "export.warning.clear.repo.msg": "Are you sure you want to clear repository {{repo}}?",
+    "export.cleared.repo": "Cleared repository {{repo}}",
+    "export.clearing.statements.warning": "Clearing all statements in the repository is incompatible with collecting history",
+    "export.cleared.repo.failed.msg": "Failed to clear repository {{repo}}, ",
+    "export.confirm.clear.graph": "Confirm clear graph",
+    "export.clear.graph.warning": "Are you sure you want to clear the '{{longName}}'?",
+    "export.cleared.graph": "'Cleared the '{{longName}}' ",
+    "export.clear.graph.msg": "Failed to clear the {{longName}}",
+    "export.warning.clear.graph.msg": "Are you sure you want to clear the selected graphs?",
+    "export.cleared.graph.msg": "Cleared the selected graphs",
+
+
     "common.confirm.delete": "Confirm delete",
     "common.cancel.btn": "Cancel",
     "common.yes.btn": "Yes",
+    "common.error": "Error",
+    "common.warning": "Warning",
+
 
     "menu.btn.translate.en": "English",
     "menu.btn.translate.de": "German"
