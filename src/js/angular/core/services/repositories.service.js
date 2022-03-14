@@ -231,10 +231,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.isActiveRepoOntopType = function (repoId) {
             const that = this;
-            if (!repoId) {
-                repoId = that.getActiveRepository();
-            }
-            let activeRepo = that.repositories.find(current => current.id === repoId);
+            let activeRepo = that.repositories.find(current => current.id === (repoId ? repoId : that.getActiveRepository()));
             if (activeRepo) {
                 return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
             }
