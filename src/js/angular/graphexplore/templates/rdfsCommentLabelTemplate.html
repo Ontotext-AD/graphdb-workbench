@@ -25,8 +25,8 @@
     </div>
     <div ng-if="!alwaysExpanded && rdfsComment && !checkCommentLength()" class="clearfix">
 		<button class="pull-right btn btn-link small px-0" ng-click="scrollToTop(); equalHeights(); toggleFullComment()">
-			<span ng-show="!expanded">Show</span>
-			<span ng-show="expanded">Hide</span> full comment
+			<span ng-show="!expanded">{{'rdfs_comment.show' | translate}}</span>
+			<span ng-show="expanded">{{'rdfs_comment.hide' | translate}}</span> {{'rdfs_comment.full.comment' | translate}}
 		</button>
     </div>
 </div>

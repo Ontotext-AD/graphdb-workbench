@@ -8,19 +8,19 @@
     <div class="modal-body">
         <input id="wb-graphviz-savegraph-name" required type="text" ng-model="graph.name" class="form-control"
                ng-change="graphExists = false"
-               placeholder="Enter name" ng-maxlength="100"/>
+               placeholder="{{'save_graph.enter.name | translate}}" ng-maxlength="100"/>
         <label for="share-graph"
-               tooltip="If checked other users will be able to see the graph but not delete or edit it.">
+               tooltip="{{'save_graph.visible.graph' | translate}}">
             <input id="share-graph" type="checkbox" ng-model="graph.shared">
-            Share graph with other users
+            {{'save_graph.share.graph' | translate}}
         </label>
         <input style="height: 0; border: 0; padding: 0; margin: 0;" autofocus/>
         <br>
         <div ng-show="form.$error.maxlength">
-            <div class="alert alert-danger" style="margin-top: 5px;">Name is too long!</div>
+            <div class="alert alert-danger" style="margin-top: 5px;">{{'save_graph.name.too.long' | translate}}</div>
         </div>
         <div ng-show="form.$error.required.length">
-            <div ng-hide="graph.name" class="alert alert-danger" style="margin-top: 5px;">Name cannot be empty!</div>
+            <div ng-hide="graph.name" class="alert alert-danger" style="margin-top: 5px;">{{'save_graph.name.empty' | translate}}</div>
         </div>
         <div ng-hide="form.$error.required.length" ng-if="graphExists" class="alert alert-danger"
              style="margin-top: 5px;">Saved graph with name <strong>&#39;{{graph.name}}&#39;</strong> already exists!
@@ -28,8 +28,8 @@
         <!-- <div ng-if="graphExists || overwrite"><label for="override-saved">Overwrite existing saved graph <input id="override-saved" type="checkbox" ng-model="overwrite"></label></div> -->
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-        <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary" ng-click="saveNew()" type="button">Save as new...</button>
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+        <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary" ng-click="saveNew()" type="button">{{'save_graph.save.as' | translate}}</button>
         <button id="wb-graphviz-savegraph-submit" class="btn btn-primary" ng-click="ok()" type="submit">{{okButtonText}}</button>
     </div>
 </form>
