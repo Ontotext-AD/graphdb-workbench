@@ -156,7 +156,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || $translate.instant('autocomplete.loading');
+        return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
     $scope.toggleAutocomplete = function () {
