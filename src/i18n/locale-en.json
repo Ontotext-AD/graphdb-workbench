@@ -297,7 +297,7 @@
     "namespace.prefix.deleted.successfully": "Namespace with prefix {{prefix}} was deleted successfully.",
     "namespace.selected.namespaces.deleted.successfully": "Selected namespaces were deleted successfully.",
     "namespace.invalid.prefix": "Invalid prefix: {{prefix}}",
-    "namespace.warning.provide.namespace": "Please provide namespace",
+    "namespace.warning.provide.namespace": "Please provide namespace.",
 
     "common.confirm.delete": "Confirm delete",
     "common.cancel.btn": "Cancel",
