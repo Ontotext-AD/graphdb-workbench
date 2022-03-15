@@ -29,8 +29,7 @@
             </div>
             <div ng-hide="form.$error.required.length" ng-if="queryExists" class="alert alert-danger query-exists-error"
                  style="margin-top: 5px;"
-                 translate="query-sample.existing.query.warning"
-                 translate-value-name="{{query.name}}">
+                 ng-bind-html="existingQueryErrMsg">
             </div>
         </div>
     </div>

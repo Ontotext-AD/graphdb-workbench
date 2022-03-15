@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import 'angular/rest/sparql.rest.service';
+import {decodeHTML} from "../../../../../app";
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.controllers', [
@@ -559,7 +560,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                         query: {name: query.name, body: query.query, shared: query.shared},
                         edit: false,
                         okButtonText: $translate.instant('common.create.btn'),
-                        queryExists: queryExists
+                        queryExists: queryExists,
+                        existingQueryErrMsg: decodeHTML($translate.instant('query-sample.existing.query.warning', {name: query.name}))
                     };
                 }
             }
@@ -926,9 +928,9 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 }
 
-QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data', '$sce'];
 
-function QuerySampleModalCtrl($scope, $modalInstance, data) {
+function QuerySampleModalCtrl($scope, $modalInstance, data, $sce) {
     if (data.queryExists) {
         $scope.queryExists = true;
     }
@@ -936,6 +938,7 @@ function QuerySampleModalCtrl($scope, $modalInstance, data) {
     $scope.title = data.title;
     $scope.edit = data.edit;
     $scope.okButtonText = data.okButtonText;
+   $scope.existingQueryErrMsg = $sce.trustAsHtml(data.existingQueryErrMsg);
     $scope.ok = function () {
         if ($scope.form.$valid) {
             $modalInstance.close($scope.query);

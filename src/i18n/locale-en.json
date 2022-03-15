@@ -63,6 +63,7 @@
     "view.system.information.helpInfo": "The System information view shows the configuration values of the JVM running the GraphDB Workbench as well generate a detailed server report file you can use to hunt down issues",
     "view.rest.api.documentation.title": "REST API documentation",
     "view.rest.api.documentation.helpInfo": "The REST API view documents the available public RESTful endpoints and provides an interactive interface to execute the requests.",
+    "view.plugins.helpInfo": "Activate or deactivate plugins.",
 
     "menu.import.label": "Import",
     "menu.rdf.label": "RDF",
@@ -95,6 +96,7 @@
     "menu.documentation.label": "Documentation",
     "menu.developer.hub.label": "Developer Hub",
     "menu.support.label": "Support",
+    "menu.plugins.label": "Plugins",
 
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",
@@ -200,7 +202,7 @@
     "query-sample.textarea.placeholder": "Create your Sample Query",
     "query-sample.empty.name.alert": "Name cannot be empty!",
     "query-sample.empty.query.alert": "Query cannot be empty!",
-    "query-sample.existing.query.warning": "Query with name <strong>{{name}}</strong> already exists!",
+    "query-sample.existing.query.warning": "Query with name <strong>'{{name}}'</strong> already exists!",
 
     "explore.validation": "Please enter a valid value.",
     "explore.namespaces": "Cannot get namespaces for repository. View will not work properly; ",
