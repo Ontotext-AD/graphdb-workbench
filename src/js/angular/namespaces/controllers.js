@@ -227,7 +227,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.removeNamespace = function (namespace) {
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm.delete'),
-                message: $translate.instant('namespace.warning.delete.msg', {namespace: namespace.prefix}),
+                message: $translate.instant('namespace.warning.delete.msg', {prefix: namespace.prefix}),
                 warning: true
             }).result.then(function () {
                 deleteNamespace(namespace);
@@ -295,9 +295,9 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                         $scope.loader = false;
                         $scope.displayedNamespaces = [];
                         if (namespaces === undefined) {
-                            toastr.success($translate.instant('namespace.prefix.deleted.successfully', {namespace: prefix}, ''));
+                            toastr.success($translate.instant('namespace.prefix.deleted.successfully', {prefix: prefix}, ''));
                         } else {
-                            toastr.success($translate.instant('namespace.selected.namespaces.deleted'), '');
+                            toastr.success($translate.instant('namespace.selected.namespaces.deleted.successfully'), '');
                         }
                     }
                 }).error(function (data) {
@@ -324,12 +324,12 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
 
         function validatePrefixAndNamespace(prefix, namespace) {
             if (!validatePrefix(prefix)) {
-                toastr.error($translate.instant('namespace.invalid.prefix', {namespases: prefix}, 'common.error'));
+                toastr.error($translate.instant('namespace.invalid.prefix', {prefix: prefix}, $translate.instant('common.error')));
                 return false;
             }
 
             if (angular.isUndefined(namespace) || namespace === '') {
-                toastr.error('namespace.warning.provide.namespace', 'common.error');
+                toastr.error($translate.instant('namespace.warning.provide.namespace'), $translate.instant('common.error'));
                 return false;
             }
 
