@@ -18,8 +18,8 @@ const modules = [
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', 'LicenseRestService',
-    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, LicenseRestService) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService',
+    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, $translate, LicenseRestService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -41,7 +41,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 $scope.maxUploadFileSizeMB = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value / (1024 * 1024);
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('import.error'));
             });
         };
 
@@ -61,7 +61,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             });
             $scope.fileFormatsHuman = _.reduce(basics, function (el, all) {
                 return el + ' ' + all;
-            }) + ', as well as their .gz versions and .zip archives';
+            }) + $translate.instant('import.gz.zip');
             $scope.textFileFormatsHuman = _.reduce(_.filter(basics, function (el) {
                     return el !== '.brf';
                 }),
@@ -108,7 +108,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
 
                 $scope.loader = false;
             }).error(function (data) {
-                toastr.warning('Could not get files; ' + getError(data));
+                toastr.warning($translate.instant('import.error.could.not.get.files') + getError(data));
                 $scope.loader = false;
             });
         };
@@ -235,7 +235,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             }).success(function () {
                 $scope.updateList();
             }).error(function (data) {
-                toastr.warning('Could not stop import; ' + getError(data));
+                toastr.warning($translate.instant('import.error.could.not.stop') + getError(data));
             });
         };
 
@@ -316,7 +316,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             }).success(function () {
                 $scope.updateList(true);
             }).error(function (data) {
-                toastr.warning('Could not clear status; ' + getError(data));
+                toastr.warning($translate.instant('import.error.could.not.clear') + getError(data));
             });
         };
 
@@ -361,7 +361,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             }).success(function (data) {
                 $scope.defaultSettings = data;
             }).error(function (data) {
-                toastr.warning('Could not get default settings; ' + getError(data));
+                toastr.warning($translate.instant('import.error.default.settings') + getError(data));
             });
         };
 
@@ -405,7 +405,7 @@ importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller',
             $scope.batch = false;
             $scope.fileChecked = {};
         }).error(function (data) {
-            toastr.error('Could not send file for import; ' + getError(data));
+            toastr.error($translate.instant('import.could.not.send.file') + getError(data));
         });
     };
 
@@ -439,7 +439,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
         if ($invalidFiles.length > 0) {
             $invalidFiles.forEach(function (f) {
-                toastr.warning('File ' + f.name + ' too big ' + Math.floor(f.size / (1024 * 1024)) + ' MB. Use Server Files import.');
+                toastr.warning($translate.instant('import.large.file', {name: f.name}) + Math.floor(f.size / (1024 * 1024)) + $translate.instant('import.use.server.files'));
             });
         }
     };
@@ -452,7 +452,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     if (fileIdx > -1) {
                         $scope.currentFiles.splice(fileIdx, 1);
                     }
-                    toastr.error('Could not upload file ' + f.name + '. BZip2 archives are not supported.');
+                    toastr.error($translate.instant('import.could.not.upload', {name: f.name}));
                 }
             });
         }
@@ -481,7 +481,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.importFile = function (fileName, startImport, nextCallback) {
         const fileIndex = _.findIndex($scope.files, {name: fileName});
         if (fileIndex < 0) {
-            toastr.warning('No such file; ' + fileName);
+            toastr.warning($translate.instant('import.no.such.file') + fileName);
         } else {
             const file = $scope.files[fileIndex];
             if (file.type === 'text') {
@@ -498,7 +498,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 }).success(function () {
                     $scope.updateList();
                 }).error(function (data) {
-                    toastr.error('Could not send data for import; ' + getError(data));
+                    toastr.error($translate.instant('import.could.not.send.data') + getError(data));
                     file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
@@ -517,7 +517,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 }).success(function () {
                     $scope.updateList();
                 }).error(function (data) {
-                    toastr.error('Could not send url for import; ' + getError(data));
+                    toastr.error($translate.instant('import.could.not.send.url') + getError(data));
                 }).finally(nextCallback || function () {
                 });
             } else {
@@ -547,7 +547,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 }).success(function () {
                     $scope.updateList();
                 }).error(function (data) {
-                    toastr.error('Could not upload file; ' + getError(data));
+                    toastr.error($translate.instant('import.could.not.upload.file') + getError(data));
                     file.status = FILE_STATUS.ERROR;
                     file.message = getError(data);
                 }).finally(nextCallback || function () {
@@ -564,7 +564,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
             data: settings
         }).success(function (data) {
         }).error(function (data) {
-            toastr.error('Could not update text import; ' + getError(data));
+            toastr.error($translate.instant('import.could.not.update.text') + getError(data));
         }).finally(function () {
             $scope.updating = false;
         });
@@ -601,7 +601,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
             if (file) {
                 if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
                     file.status = FILE_STATUS.NONE;
-                    file.message = 'Text snippet was edited but has not been imported again.';
+                    file.message = $translate.instant('import.text.snippet.not.imported');
                 }
                 file.data = data.text;
                 file.format = data.format;
@@ -784,7 +784,7 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr'
                 $scope.replaceGraph = '';
                 $scope.settings.replaceGraphs.push(graph);
             } else {
-                toastr.warning('This graph is already in the list.');
+                toastr.warning($translate.instant('import.graph.already.in.list'));
             }
         }
     };

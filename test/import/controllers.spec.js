@@ -1,5 +1,7 @@
 import "angular/import/controllers";
 
+const bundle = require('../../src/i18n/locale-en.json');
+
 beforeEach(angular.mock.module('graphdb.framework.impex.import.controllers', function ($provide) {
     $provide.constant("productInfo", {
         "productType": "standard", "productVersion": "7.0", "sesame": "2.9.0", "connectors": "5.0.0"
@@ -14,16 +16,28 @@ describe('==> Import module controllers tests', function () {
             $repositories,
             $scope,
             getFilesListHttp;
+            let $translate;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, $rootScope, _$repositories_) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, $rootScope, _$repositories_, _$translate_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $repositories = _$repositories_;
+            $translate = _$translate_;
+
+                    $translate.instant = function (key, modification) {
+                        if (modification) {
+                            let modKey = Object.keys(modification)[0];
+                            return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                        }
+                        return bundle[key];
+                    };
+
             //new a $scope
             $scope = $rootScope.$new();
             var controller = $controller('CommonCtrl', {
                 $scope: $scope,
+                $translate: $translate,
                 ModalService: {
                     openSimpleModal: function () {
                         return this;
