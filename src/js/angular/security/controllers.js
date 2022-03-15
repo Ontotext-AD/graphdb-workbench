@@ -433,8 +433,8 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         }
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
+securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -448,7 +448,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 $timeout.cancel(timer);
             });
         };
-        $scope.pageTitle = 'Create new user';
+        $scope.pageTitle = $translate.instant('view.create.user.title');
         $scope.passwordPlaceholder = 'Password';
 
         $scope.user = {
@@ -543,8 +543,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
+securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
 
@@ -559,7 +559,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             });
         };
         $scope.params = $routeParams;
-        $scope.pageTitle = 'Edit user: ' + $scope.params.userId;
+        $scope.pageTitle = $translate.instant('view.edit.user.title', {userId: $scope.params.userId});
         $scope.passwordPlaceholder = 'New password';
         $scope.userType = UserType.USER;
         const defaultUserSettings = {

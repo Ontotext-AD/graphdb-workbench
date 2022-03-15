@@ -6,10 +6,8 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'LocationsAndRepositoriesCtrl',
         'templateUrl': 'pages/repositories.html',
-        'title': 'Repositories',
-        'helpInfo': 'The Repositories view is used to manage repositories and connect to remote locations. '
-        + 'A location represents a local or remote instance of GraphDB. '
-        + 'Only a single location can be active at a given time.'
+        'title': 'menu.repositories.label',
+        'helpInfo': 'view.repositories.helpInfo'
     }, {
         'url': '/repository/create',
         'module': 'graphdb.framework.repositories',
@@ -17,7 +15,7 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'ChooseRepositoryCtrl',
         'templateUrl': 'pages/choose-repository-type.html',
-        'title': 'Select Repository Type'
+        'title': 'view.choose.repo.title'
     }, {
         'url': '/repository/create/:repositoryType',
         'module': 'graphdb.framework.repositories',
@@ -41,6 +39,7 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
@@ -48,6 +47,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'Repositories',
+            labelKey: 'menu.repositories.label',
             href: 'repository',
             order: 1,
             role: 'ROLE_REPO_MANAGER',
