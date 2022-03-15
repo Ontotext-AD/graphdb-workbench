@@ -1,7 +1,7 @@
 angular.module('graphdb.framework.core.services.licenseService', [])
-    .service('$licenseService', ['$rootScope', 'LicenseRestService', licenseService]);
+    .service('$licenseService', ['$rootScope', 'LicenseRestService', '$translate', licenseService]);
 
-function licenseService($rootScope, LicenseRestService) {
+function licenseService($rootScope, LicenseRestService, $translate) {
 
     const that = this;
 
@@ -18,7 +18,7 @@ function licenseService($rootScope, LicenseRestService) {
                 that.loadingLicense = false;
                 updateProductType(that.license);
             }, function () {
-                that.license = {message: 'No license was set.', valid: false};
+                that.license = {message: $translate.instant('no.license.set.msg'), valid: false};
                 that.showLicense = true;
                 that.loadingLicense = false;
                 updateProductType(that.license);

@@ -8,6 +8,14 @@ import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 
+// $translate.instant converts <b> from strings to &lt;b&gt
+// and $sce.trustAsHtml could not recognise that this is valid html
+export const decodeHTML = function (html) {
+    let txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+};
+
 const modules = [
     'ngRoute',
     'graphdb.workbench.se.controllers',
@@ -173,14 +181,6 @@ const moduleDefinition = function (productInfo) {
             $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
             $rootScope.title = decodeHTML($translate.instant($route.current.title));
         }
-
-        // $translate.instant converts <b> from strings to &lt;b&gt
-        // and $sce.trustAsHtml could not recognise that this is valid html
-        let decodeHTML = function (html) {
-            let txt = document.createElement('textarea');
-            txt.innerHTML = html;
-            return txt.value;
-        };
     }]);
 
     workbench.filter('titlecase', function() {

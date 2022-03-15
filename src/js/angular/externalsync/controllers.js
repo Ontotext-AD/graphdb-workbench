@@ -255,7 +255,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
         if ($scope.progressMessage) {
             message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = $translate.instant('externalsync.running.operation', {timeHuman: timeHuman});
+            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
         }
         if ($scope.extraMessage && timeSeconds > 10) {
             message += '\n' + $scope.extraMessage;
@@ -298,7 +298,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             return;
         }
 
-        $scope.setLoader(true, $translate.instant('externalsync.fetching.connectors'), $translate.instant('externalsync.extra.message'));
+        $scope.setLoader(true, $translate.instant('externalsync.fetching.connectors'), $translate.instant('common.extra.message'));
 
         ConnectorsRestService.getConnectors()
             .then(function (res) {
