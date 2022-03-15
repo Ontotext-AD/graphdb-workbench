@@ -20,9 +20,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate) {
 
     // We need to get sameAs and inference for the current user
     const principal = $jwtAuth.getPrincipal();
@@ -55,9 +55,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Fixed inference when we're showing the context tab and a named graph
     $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
-        {id: 'all', title: 'Explicit and Implicit'},
-        {id: 'explicit', title: 'Explicit only'},
-        {id: 'implicit', title: 'Implicit only'}
+        {id: 'all', title: $translate.instant('explore.explicit.implicit')},
+        {id: 'explicit', title: $translate.instant('explore.explicit')},
+        {id: 'implicit', title: $translate.instant('explore.implicit')}
     ];
     $scope.context = '';
 
@@ -101,7 +101,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                         });
                         $scope.loadResource();
                     }).error(function (data) {
-                        toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
+                        toastr.error($translate.instant('explore.namespaces') + getError(data));
                     });
             }
         }
@@ -147,7 +147,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }
         }).error(function (data) {
-            toastr.error('Cannot get resource details; ' + getError(data));
+            toastr.error($translate.instant('explore.error.resource.details') + getError(data));
         });
 
         $scope.exploreResource();
@@ -202,7 +202,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
             yasr.setResponse(jqXhr, textStatus);
         }).fail(function (data) {
-            toastr.error('Could not get resource; ' + getError(data));
+            toastr.error($translate.instant('explore.error.resource') + getError(data));
             toggleOntoLoader(false);
         });
     };
@@ -244,7 +244,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             }
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, 'Error');
+            toastr.error(msg, $translate.instant('common.error'));
         });
     };
 
@@ -263,9 +263,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 }
 
-FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService'];
+FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];
 
-function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, RDF4JRepositoriesRestService) {
+function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, RDF4JRepositoriesRestService, $translate) {
     $scope.submit = submit;
     $scope.getAutocompleteSuggestions = getAutocompleteSuggestions;
     $scope.inputChangedFn = inputChangedFn;
@@ -286,13 +286,14 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (response) {
                 if (!response) {
-                    toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
+                    const warningMsg = $translate.instant('explore.autocomplete.warning.msg');
+                    toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
                         {allowHtml: true});
                 }
                 $scope.autocompleteEnabled = response;
             })
             .error(function () {
-                toastr.error("Error attempting to check autocomplete capability!");
+                toastr.error($translate.instant('explore.error.autocomplete'));
             });
     }
 
@@ -308,7 +309,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
                 $scope.loader = false;
             }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, 'Error');
+            toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
         });
     }
@@ -357,7 +358,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         } else {
             setFormInvalid(true);
             if (uri) {
-                toastr.error("Invalid input!");
+                toastr.error($translate.instant('explore.error.invalid.input'));
             }
         }
     }
@@ -410,9 +411,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -449,7 +450,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 $scope.loader = false;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
                 $scope.loader = false;
             });
 
@@ -458,7 +459,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-                toastr.error('Cannot get resource details; ' + getError(data));
+                toastr.error($translate.instant('explore.error.resource.details') + getError(data));
             });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
@@ -534,7 +535,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
         if (!angular.isUndefined(data)) {
             return true;
         }
-        return "Please enter a valid value.";
+        return $translate.instant('explore.validation');
     }
 
     function validEditRow() {
@@ -572,7 +573,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
             },
             data: StatementsService.transformToTrig($scope.statements)
         }).success(function () {
-            toastr.success("Resource saved.");
+            toastr.success($translate.instant('explore.resource.saved'));
             const timer = $timeout(function () {
                 $location.path('resource').search('uri', $scope.uriParam);
             }, 500);
