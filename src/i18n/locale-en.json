@@ -127,6 +127,7 @@
     "query-editor.add.known.prefixes.error": "Error! Could not add known prefixes",
     "query-editor.edit.saved.query.error": "Error! Cannot edit saved query",
     "query-editor.create.saved.query.error": "Error! Cannot create saved query",
+    "query-editor.delete.saved.query.error": "Error! Cannot delete saved query",
     "query-editor.edit.saved.query": "Edit Saved Query: \"{{name}}\"",
     "query-editor.edit.saved.query.success.msg": "Saved query {{name}} was edited.",
     "query-editor.delete.saved.query.success.msg": "Saved query: {{savedQueryName}} was deleted.",

@@ -517,7 +517,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('Error! Cannot delete saved query'));
+                toastr.error(msg, $translate.instant('query-editor.delete.saved.query.error'));
             });
     }
 
