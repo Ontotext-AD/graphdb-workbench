@@ -30,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService',
-    function ($scope, $http, $repositories, toastr, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
+    function ($scope, $http, $repositories, toastr, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -136,7 +136,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                     $scope.loader = false;
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
                 });
         };
@@ -149,15 +149,15 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                     $scope.loader = false;
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
                 });
         };
 
         $scope.confirmReplace = function (okCallback, cancelCallback) {
             ModalService.openSimpleModal({
-                title: 'Confirm replace',
-                message: 'This namespace prefix already exists. Do you want to replace it?',
+                title: $translate.instant('namespace.confirm.replace'),
+                message: $translate.instant('namespace.already.exists.msg'),
                 warning: true
             }).result.then(okCallback, cancelCallback);
         };
@@ -226,8 +226,8 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
 
         $scope.removeNamespace = function (namespace) {
             ModalService.openSimpleModal({
-                title: 'Confirm delete',
-                message: 'Are you sure you want to delete the namespace \'' + namespace.prefix + '\'?',
+                title: $translate.instant('common.confirm.delete'),
+                message: $translate.instant('namespace.warning.delete.msg', {namespace: namespace.prefix}),
                 warning: true
             }).result.then(function () {
                 deleteNamespace(namespace);
@@ -243,8 +243,8 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.deleteSelected = function () {
             const openModalInstance = function () {
                 ModalService.openSimpleModal({
-                    title: 'Confirm delete',
-                    message: 'Are you sure you want to delete the selected namespace(s)?',
+                    title: $translate.instant('common.confirm.delete'),
+                    message: $translate.instant('namespace.warning.delete.selected'),
                     warning: true
                 }).result.then(function () {
                     $scope.loader = true;
@@ -295,14 +295,14 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                         $scope.loader = false;
                         $scope.displayedNamespaces = [];
                         if (namespaces === undefined) {
-                            toastr.success('Namespace with prefix \'' + prefix + '\' was deleted successfully.', '');
+                            toastr.success($translate.instant('namespace.prefix.deleted.successfully', {namespace: prefix}, ''));
                         } else {
-                            toastr.success('Selected namespaces were deleted successfully.', '');
+                            toastr.success($translate.instant('namespace.selected.namespaces.deleted'), '');
                         }
                     }
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
                 });
         }
@@ -324,12 +324,12 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
 
         function validatePrefixAndNamespace(prefix, namespace) {
             if (!validatePrefix(prefix)) {
-                toastr.error('Invalid prefix: ' + prefix, 'Error');
+                toastr.error($translate.instant('namespace.invalid.prefix', {namespases: prefix}, 'common.error'));
                 return false;
             }
 
             if (angular.isUndefined(namespace) || namespace === '') {
-                toastr.error('Please provide namespace.', 'Error');
+                toastr.error('namespace.warning.provide.namespace', 'common.error');
                 return false;
             }
 
