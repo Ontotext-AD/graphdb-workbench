@@ -5,15 +5,15 @@ PluginRegistry.add('route', {
     'chunk': 'monitor-queries',
     'controller': 'QueriesCtrl',
     'templateUrl': 'pages/monitor/queries.html',
-    'title': 'Query and Update monitoring',
-    'helpInfo': 'The Queries and Updates monitoring view shows all running queries or updates in GraphDB. '
-    + 'A query or update can be terminated by pressing the Abort button.'
+    'title': 'view.query.and.update.monitoring.title',
+    'helpInfo': 'view.query.and.update.monitoring.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Monitor',
+            labelKey: 'menu.monitor.label',
             href: '#',
             order: 3,
             // Changed to role user as now users can monitor their own queries
@@ -21,6 +21,7 @@ PluginRegistry.add('main.menu', {
             icon: 'icon-monitoring'
         }, {
             label: 'Queries and Updates',
+            labelKey: 'menu.queries.and.updates.label',
             href: 'monitor/queries',
             order: 1,
             parent: 'Monitor'

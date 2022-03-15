@@ -483,7 +483,6 @@ function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
 
 ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
 function ChooseRepositoryCtrl($scope, $location) {
-    $scope.pageTitle = 'Select repository type';
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.chooseRepositoryType = function (repoType) {
         $location.path(`${$location.path()}/${repoType}`);
@@ -501,7 +500,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.enable = true;
 
     $scope.loader = true;
-    $scope.pageTitle = 'Create Repository';
+    $scope.pageTitle = $translate.instant('view.create.repo.title');
     $scope.repositoryInfo = {
         id: '',
         params: {},
@@ -548,13 +547,13 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     function setPageTitle(repositoryType) {
         switch (repositoryType) {
             case REPOSITORY_TYPES.graphdbRepo:
-                $scope.pageTitle = 'Create GraphDB repository';
+                $scope.pageTitle = $translate.instant('view.create.repo.title', {repoType: 'GraphDB'});
                 break;
            case REPOSITORY_TYPES.ontop:
-                $scope.pageTitle = 'Create Ontop Virtual SPARQL repository';
+                $scope.pageTitle = $translate.instant('view.create.repo.title', {repoType: 'Ontop Virtual SPARQL'});
                 break;
             case REPOSITORY_TYPES.fedx:
-                $scope.pageTitle = 'Create FedX Virtual SPARQL repository';
+                $scope.pageTitle = $translate.instant('view.create.repo.title', {repoType: 'FedX Virtual SPARQL'});
                 break;
         }
     }
@@ -738,9 +737,9 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService'];
+EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService', '$translate'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService) {
+function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate) {
 
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
@@ -756,7 +755,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.repositoryInfo.restartRequested = false;
     $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
-    $scope.pageTitle = 'Edit Repository: ' + $scope.params.repositoryId;
+    $scope.pageTitle = $translate.instant('view.edit.repo.title', {repositoryId: $scope.params.repositoryId});
     $scope.invalidValues = {
         isInvalidQueryTimeout: false,
         isInvalidQueryLimit: false,

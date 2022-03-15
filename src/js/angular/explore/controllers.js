@@ -1,6 +1,7 @@
 import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'ngCookies',
@@ -286,7 +287,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         AutocompleteRestService.checkAutocompleteStatus()
             .success(function (response) {
                 if (!response) {
-                    const warningMsg = $translate.instant('explore.autocomplete.warning.msg');
+                    const warningMsg = decodeHTML($translate.instant('explore.autocomplete.warning.msg'));
                     toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
                         {allowHtml: true});
                 }

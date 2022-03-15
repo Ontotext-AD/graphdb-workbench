@@ -8,8 +8,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.rest.security.service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -239,11 +239,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if (enabled !== this.securityEnabled) {
                     this.securityEnabled = enabled;
                     SecurityRestService.toggleSecurity(enabled).then(function () {
-                        toastr.success('Security has been ' + (enabled ? 'enabled.' : 'disabled.'));
+                        toastr.success($translate.instant('jwt-auth.security.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
                         that.clearStorage();
                         that.initSecurity();
                     }, function (err) {
-                        toastr.error(err.data.error.message, 'Error');
+                        toastr.error(err.data.error.message, $translate.instant('common.error'));
                     });
                 }
             };
@@ -262,12 +262,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         appSettings: appSettings
                     }).then(function () {
                         if (updateFreeAccess) {
-                            toastr.success('Free access settings have been updated.');
+                            toastr.success($translate.instant('jwt-auth.free.access.updated.msg'));
                         } else {
-                            toastr.success('Free access has been ' + (enabled ? 'enabled.' : 'disabled.'));
+                            toastr.success($translate.instant('jwt-auth.free.access.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
                         }
                     }, function (err) {
-                        toastr.error(err.data.error.message, 'Error');
+                        toastr.error(err.data.error.message, $translate.instant('common.error'));
                     });
                     $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
                 }
