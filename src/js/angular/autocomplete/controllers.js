@@ -161,7 +161,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     $scope.toggleAutocomplete = function () {
         const newValue = !$scope.autocompleteEnabled;
-        $scope.setLoader(true, newValue ? $translate.instant( 'autocomplete.enabling') : $translate.instant('autocomplete.disabling'));
+        $scope.setLoader(true, newValue ? $translate.instant('autocomplete.enabling') : $translate.instant('autocomplete.disabling'));
 
         AutocompleteRestService.toggleAutocomplete(newValue)
             .success(function () {
@@ -202,7 +202,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     $scope.interruptIndexing = function () {
-        $scope.setLoader(true, $translate.instant('autocomplete.interrupt'));
+        $scope.setLoader(true, $translate.instant('index.interrupt'));
 
         AutocompleteRestService.interruptIndexing()
             .success(function () {

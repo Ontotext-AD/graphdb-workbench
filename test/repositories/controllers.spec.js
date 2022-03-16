@@ -3,6 +3,7 @@ import "angular/repositories/controllers";
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
 describe('==> Repository module controllers tests', function () {
 
@@ -23,25 +24,36 @@ describe('==> Repository module controllers tests', function () {
         let jwtAuthMock;
         let httpSecurity;
         let httpDefaultUser;
+        let $translate;
 
-        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
+        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q, _$translate_) {
             $repositories = _$repositories_;
             $httpBackend = _$httpBackend_;
             $location = _$location_;
             $controller = _$controller_;
             $window = _$window_;
             $timeout = _$timeout_;
+            $translate = _$translate_;
 
             modalInstance = new FakeModal($q, $rootScope);
 
             jwtAuthMock = {};
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             $scope = $rootScope.$new();
             var controller = $controller('LocationsAndRepositoriesCtrl', {
                 $scope: $scope,
                 $modal: modalInstance,
                 ModalService: modalInstance,
-                $jwtAuth: jwtAuthMock
+                $jwtAuth: jwtAuthMock,
+                $translate: $translate
             });
 
             httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, {});
@@ -236,9 +248,7 @@ describe('==> Repository module controllers tests', function () {
                 const argument = modalInstance.openSimpleModal.calls.first().args[0];
                 expect(argument).toEqual({
                     title: 'Confirm delete',
-                    message: `<p>Are you sure you want to delete the repository <strong>${repoId}</strong>?</p>
-                      <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
-                            All data in the repository will be lost.</p>`,
+                    message: `<p>Are you sure you want to delete the repository <strong>${repoId}</strong>?</p><p><span class="icon-2x icon-warning" style="color: #d54a33"/>All data in the repository will be lost.</p>`,
                     warning: true
                 });
 
@@ -262,12 +272,18 @@ describe('==> Repository module controllers tests', function () {
             let httpSecurity;
             let toastr;
             let createController;
+            let $translate;
 
-            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope) {
+            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope, _$translate_) {
                 toastr = _toastr_;
                 $repositories = _$repositories_;
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
+                $translate = _$translate_;
+
+                $translate.instant = function (key) {
+                    return bundle[key];
+                };
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
@@ -285,7 +301,8 @@ describe('==> Repository module controllers tests', function () {
                     $controller('AddRepositoryCtrl', {
                         $scope: $scope,
                         $location: locationMock,
-                        $routeParams: routeParamsMock
+                        $routeParams: routeParamsMock,
+                        $translate: $translate
                     });
                 };
 

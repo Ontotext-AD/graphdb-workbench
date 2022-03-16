@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout', 'LocationsRestService'];
+fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout', 'LocationsRestService', '$translate'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, LocationsRestService) {
+function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, LocationsRestService, $translate) {
     return {
         restrict: 'E',
         scope: false,
@@ -47,7 +47,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     $scope.knownRepos = $scope.knownRepos.concat($scope.allAttachedRepos);
                 }).error(function (response) {
                     const msg = getError(response);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         }
 
@@ -98,7 +98,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     $scope.locations = response.slice();
                 }).error(function (response) {
                     const msg = getError(response);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         }
 
@@ -326,7 +326,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                 if (checkEditMode() && $scope.fedxMembers.find(el => el.repositoryName === member.repositoryName
                     && el.repositoryServer === member.repositoryServer)) {
                     let resolvedName = $scope.resolveName(member);
-                    toastr.error(`Repository ${resolvedName} already added as a FedX member`);
+                    toastr.error($translate.instant('fedx.repo.already.added.member.error', {name: resolvedName}));
                     $scope.$modalInstance.close();
                     return;
                 }
@@ -344,7 +344,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
 
                 if (checkEditMode() && $scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
                     let resolvedName = $scope.resolveName(member);
-                    toastr.error(`SPARQL endpoint ${resolvedName} already added as a FedX member`);
+                    toastr.error($translate.instant('fedx.repo.already.added.sparql.endpoint.error', {name: resolvedName}));
                     $scope.$modalInstance.close();
                     return;
                 }
