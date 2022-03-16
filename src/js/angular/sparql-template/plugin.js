@@ -6,8 +6,8 @@ PluginRegistry.add('route', [
     'chunk': 'sparql-template',
     'controller': 'SparqlTemplatesCtrl',
     'templateUrl': 'pages/sparql-templates.html',
-    'title': 'SPARQL Templates',
-    'helpInfo': 'Allows storing configurations for future updates of repository data'
+    'title': 'view.sparql.template.title',
+    'helpInfo': 'view.sparql.template.helpInfo'
     },
     {
         'url': '/sparql-template/create',
@@ -16,14 +16,14 @@ PluginRegistry.add('route', [
         'chunk': 'sparql-template',
         'controller': 'SparqlTemplateCreateCtrl',
         'templateUrl': 'pages/sparql-template-create.html',
-        'title': 'Create SPARQL Templates',
-        'helpInfo': 'SPARQL Template configuration tool'
+        'title': 'view.create.sparql.template.title',
+        'helpInfo': 'view.create.sparql.template.helpInfo'
     }
     ]);
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
-        {label: 'SPARQL Templates', href: 'sparql-templates', order: 51, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
+        {label: 'Setup', labelKey: 'menu.setup.label', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
+        {label: 'SPARQL Templates', labelKey: 'menu.sparql.template.label', href: 'sparql-templates', order: 51, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
     ]
 });

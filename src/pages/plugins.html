@@ -1,0 +1,61 @@
+<link href="css/plugins.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<div id="plugins" class="page">
+    <h1>
+        {{title}} for repository {{getActiveRepository()}}
+        <em class="btn btn-link"
+            popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+            popover-trigger="mouseenter"
+            popover-placement="bottom-right"
+            popover-append-to-body="true"><span class="icon-info"></span></em>
+    </h1>
+
+    <div onto-loader-new
+         ng-show="loader"
+         class="plugins-loader"
+         message="getLoaderMessage"
+         size="75">
+    </div>
+
+    <div core-errors write ontop fedx license></div>
+
+    <!--search box-->
+    <div class="search-bar" ng-show="plugins.length > 0 && !loader">
+            <span class="pull-left" id="searchbox-plugins">
+                <input type="text" class="form-control plugins-filter" placeholder="Search plugins"
+                       ng-model="searchPlugins" tooltip-trigger="mouseenter" tooltip="Search"
+                       ng-change="onPluginsSearch()">
+            </span>
+        <span class="showing-info-plugins pull-right">Showing {{matchedElements.length}} results</span>
+    </div>
+
+    <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
+           id="wb-plugins-pluginInPlugins"
+           class="table table-hover" aria-describedby="Plugins table">
+        <tbody>
+        <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin"
+            loader-post-repeat-directive>
+            <td id="wb-plugins-td" ng-show="!loader">
+                <div class="lead" id="toggleIndex">
+                    <span class="plugins-header">{{plugin.name}}</span>
+                    <span id="toggleAndTag">
+                    <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'ON' :
+                        'OFF'}}</span>
+                    <span tooltip="Click to {{plugin.enabled ? 'deactivate' : 'activate'}} {{plugin.name}}"
+                          tooltip-placement="top" tooltip-trigger="mouseenter"
+                          ng-click="togglePlugin(plugin.name, plugin.enabled)"
+                          class="switch enable-plugins-switch plugins-switch">
+                    <input type="checkbox" class="switch"
+                           ng-checked="plugin.enabled"/>
+                    <label for="toggleIndex"></label>
+                    </span>
+                    </span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="alert alert-info no-plugins-match-alert" ng-show="displayedPlugins.length === 0">
+        <p>No plugins match this filter.</p>
+    </div>
+
+</div>
