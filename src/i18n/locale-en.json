@@ -267,7 +267,6 @@
     "add_label.enter.comma-separated": "Enter comma-separated languages or leave empty for any language",
 
     "autocomplete.update": "Updating label config...",
-    "autocomplete.loading": "Loading...",
     "autocomplete.enabling": "Enabling autocomplete...",
     "autocomplete.disabling": "Disabling autocomplete...",
     "autocomplete.index.iri": "Setting index IRIs...",
@@ -325,12 +324,17 @@
     "jdbc.invalid.columns": "Invalid columns",
     "jdbc.warning.all.column.msg": "Please select SQL type for all columns",
 
+    "deactivating.plugin": "Deactivating {{pluginName}}",
+    "activating.plugin": "Activating {{pluginName}}",
+
+
     "common.confirm.delete": "Confirm delete",
     "common.cancel.btn": "Cancel",
     "common.yes.btn": "Yes",
     "common.ok.btn": "OK",
     "common.error": "Error",
     "common.warning": "Warning",
+    "common.loading": "Loading...",
     "common.on.btn": "ON",
     "common.off.btn": "OFF",
     "common.operation.msg": "Operation",
