@@ -363,7 +363,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, $translate.instant('common-refreshing-namespaces'), $translate.instant('common.extra.message'));
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         $scope.namespacesLoading = true;
 
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
@@ -431,7 +431,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('query-editor.add.known.prefixes.error'));
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }

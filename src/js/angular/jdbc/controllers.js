@@ -168,7 +168,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, $translate.instant('jdbc.refreshing.namespaces.msg'), $translate.instant('externalsync.extra.message'));//TODO you have to change with common key
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -357,7 +357,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('jdbc.not.add.known.prefixes'));
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
@@ -377,10 +377,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, [columnName]).success(function (columnSuggestion) {
                 column.column_type = columnSuggestion[columnName].column_type;
                 if (column.column_type === prevColumnType) {
-                    toastr.info('SQL type is the same after suggest: <b>' + column.column_type + '</b>',
+                    toastr.info($translate.instant('jdbc.same.suggested.sql.type', {type: column.column_type}),
                         $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
                 } else {
-                    toastr.success('SQL type set to: <b>' + column.column_type + '</b>',
+                    toastr.success($translate.instant('jdbc.suggested.sql.type', {type: column.column_type}),
                         $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
                 }
                 column.sparql_type = columnSuggestion[columnName].sparql_type;
@@ -425,7 +425,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 $scope.currentQuery.columns = suggestedColumns;
                 $scope.setDirty();
             }).error(function (e) {
-                toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.type'));
+                toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.types'));
             });
         }).error(function (e) {
             toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.names'));
@@ -456,7 +456,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             $scope.resetCurrentTabConfig();
 
             setLoader(true, $translate.instant('jdbc.preview.first.rows', {name: $scope.name}),
-                                                                        $translate.instant('externalsync.extra.message'));//TODO you have to change with common key
+                                                                        $translate.instant('common.extra.message'));
 
             const successCallback = function (data, textStatus, jqXhr) {
                 setPreviewResult(data, jqXhr, textStatus);
@@ -518,7 +518,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     function setPreviewResult(data, jqXhr, textStatus) {
         if (!data.results || !data.results.bindings || !data.results.bindings.length) {
             // Hides YASR as it may contain previous results
-            toastr.info($translate.instant('jdbc.table.definition', 'jdbc.preview.sql'));
+            toastr.info($translate.instant('jdbc.table.definition'), $translate.instant('jdbc.preview.sql'));
         } else {
             // Custom content extractor that won't insert " in SQL values (since we treat them as fake literals)
             window.yasr.plugins.table.options.getCellContent = getCellContentSQL;
@@ -539,7 +539,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function validateQuery() {
         if (!hasValidQuery()) {
-            toastr.error($translate.instant('jdbc.warning.invalid.query', 'jdbc.invalid.query)'));
+            toastr.error($translate.instant('jdbc.warning.invalid.query'), $translate.instant('jdbc.invalid.query)'));
             return false;
         }
 
@@ -548,12 +548,12 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function validateColumns() {
         if (!$scope.currentQuery.columns || !$scope.currentQuery.columns.length) {
-            toastr.error($translate.instant('jdbc.warning.one.column.msg', 'jdbc.invalid.columns'));
+            toastr.error($translate.instant('jdbc.warning.one.column.msg'), $translate.instant('jdbc.invalid.columns'));
             return false;
         }
 
         if ($scope.containsUnknownColumns()) {
-            toastr.error($translate.instant('jdbc.warning.all.column.msg', 'jdbc.invalid.columns'));
+            toastr.error($translate.instant('jdbc.warning.all.column.msg'), $translate.instant('jdbc.invalid.columns'));
             return false;
         }
 
