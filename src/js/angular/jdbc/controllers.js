@@ -17,9 +17,9 @@ angular.module('graphdb.framework.jdbc.controllers', modules, [
     .controller('JdbcListCtrl', JdbcListCtrl)
     .controller('JdbcCreateCtrl', JdbcCreateCtrl);
 
-JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService'];
+JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService', '$translate'];
 
-function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService) {
+function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService, $translate) {
 
     $scope.getSqlConfigurations = function () {
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
@@ -31,7 +31,7 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
                 $scope.jdbcConfigurations = data;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not get SQL table configurations');
+                toastr.error(msg, $translate.instant('jdbc.not.get.SQL.msg'));
             });
         } else {
             $scope.jdbcConfigurations = [];
@@ -46,23 +46,23 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
 
     $scope.deleteConfiguration = function (name) {
         ModalService.openSimpleModal({
-            title: 'Warning',
-            message: 'Are you sure you want to delete the SQL table configuration ' + '\'' + name + '\'?',
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('jdbc.delete.sql.table.warning.msg', {name: name}),
             warning: true
         }).result
             .then(function () {
                 JdbcRestService.deleteJdbcConfiguration(name).success(function () {
                     $scope.getSqlConfigurations();
                 }).error(function(e) {
-                    toastr.error(getError(e), 'Could not delete SQL table');
+                    toastr.error(getError(e), $translate.instant('jdbc.not.delete.sql.msg'));
                 });
             });
     };
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -106,7 +106,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function confirmExit(event) {
         if (!$scope.currentQuery.isPristine) {
-            if (!confirm('You have unsaved changes. Are you sure that you want to exit?')) {
+            if (!confirm($translate.instant('jdbc.warning.unsaved.changes'))) {
                 event.preventDefault();
             } else {
                 window.removeEventListener('beforeunload', showBeforeunloadMessage);
@@ -168,7 +168,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -261,7 +261,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             setQueryFromTabConfig();
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, 'Could not get SQL table configuration');
+            toastr.error(msg, $translate.instant('jdbc.not.get.sql.msg2'));
         });
     }
 
@@ -291,7 +291,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         }
 
         if (!$scope.currentQuery.name) {
-            toastr.error('SQL configuration name is required');
+            toastr.error($translate.instant('jdbc.required.configuration.name'));
             return;
         }
 
@@ -299,21 +299,21 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             JdbcRestService.createNewJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewConfiguration = false;
-                toastr.success('SQL table configuration saved');
+                toastr.success($translate.instant('jdbc.saved.configuration'));
                 $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not save SQL table configuration');
+                toastr.error(msg, $translate.instant('jdbc.not.saved.configuration'));
             });
         } else {
             JdbcRestService.updateJdbcConfiguration($scope.currentQuery).success(function () {
                 $scope.currentQuery.isPristine = true;
                 $scope.currentQuery.isNewConfiguration = false;
-                toastr.success('SQL table configuration updated');
+                toastr.success($translate.instant('jdbc.configuration.updated'));
                 $scope.goBack();
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not save SQL table configuration');
+                toastr.error(msg, $translate.instant('jdbc.not.saved.configuration'));
             });
         }
     };
@@ -357,7 +357,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not add known prefixes');
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
@@ -377,15 +377,15 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             JdbcRestService.getColumnsTypeSuggestion($scope.currentQuery.query, [columnName]).success(function (columnSuggestion) {
                 column.column_type = columnSuggestion[columnName].column_type;
                 if (column.column_type === prevColumnType) {
-                    toastr.info('SQL type is the same after suggest: <b>' + column.column_type + '</b>',
-                        'Suggest SQL type', {allowHtml: true});
+                    toastr.info($translate.instant('jdbc.same.suggested.sql.type', {type: column.column_type}),
+                        $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
                 } else {
-                    toastr.success('SQL type set to: <b>' + column.column_type + '</b>',
-                        'Suggest SQL type', {allowHtml: true});
+                    toastr.success($translate.instant('jdbc.suggested.sql.type', {type: column.column_type}),
+                        $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
                 }
                 column.sparql_type = columnSuggestion[columnName].sparql_type;
             }).error(function(e) {
-                toastr.error(getError(e), 'Could not suggest column type');
+                toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.type'));
             });
         }
         $scope.setDirty();
@@ -394,8 +394,8 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     $scope.getColumnsSuggestions = function () {
         if ($scope.currentQuery.columns && $scope.currentQuery.columns.length > 0) {
             ModalService.openSimpleModal({
-                title: 'Warning',
-                message: 'Are you sure you want to get suggestions for all columns? This action will overwrite all column type mappings!',
+                title: $translate.instant('common.warning'),
+                message: $translate.instant('jdbc.warning.column.type.msg'),
                 warning: true
             }).result
                 .then(function () {
@@ -425,17 +425,17 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                 $scope.currentQuery.columns = suggestedColumns;
                 $scope.setDirty();
             }).error(function (e) {
-                toastr.error(getError(e), "Could not suggest column types");
+                toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.types'));
             });
         }).error(function (e) {
-            toastr.error(getError(e), "Could not suggest column names");
+            toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.names'));
         });
     }
 
     $scope.deleteColumn = function (columnName, index) {
         ModalService.openSimpleModal({
-            title: 'Warning',
-            message: 'Are you sure you want to delete the column ' + '\'' + columnName + '\'?',
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('jdbc.warning.delete.column.msg', {columnName: columnName}),
             warning: true
         }).result
             .then(function () {
@@ -455,8 +455,8 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             $scope.currentQuery.outputType = 'table';
             $scope.resetCurrentTabConfig();
 
-            setLoader(true, 'Preview of first 100 rows of table ' + $scope.name,
-                'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+            setLoader(true, $translate.instant('jdbc.preview.first.rows', {name: $scope.name}),
+                                                                        $translate.instant('common.extra.message'));
 
             const successCallback = function (data, textStatus, jqXhr) {
                 setPreviewResult(data, jqXhr, textStatus);
@@ -465,7 +465,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
             const failCallback = function (data) {
                 setLoader(false);
-                toastr.error(getError(data, 0, 100), 'Could not show preview');
+                toastr.error(getError(data, 0, 100), $translate.instant('jdbc.not.show.preview'));
             };
 
             if ($scope.canWriteActiveRepo()) {
@@ -518,7 +518,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     function setPreviewResult(data, jqXhr, textStatus) {
         if (!data.results || !data.results.bindings || !data.results.bindings.length) {
             // Hides YASR as it may contain previous results
-            toastr.info('The table definition produced no results', 'Preview SQL');
+            toastr.info($translate.instant('jdbc.table.definition'), $translate.instant('jdbc.preview.sql'));
         } else {
             // Custom content extractor that won't insert " in SQL values (since we treat them as fake literals)
             window.yasr.plugins.table.options.getCellContent = getCellContentSQL;
@@ -539,7 +539,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function validateQuery() {
         if (!hasValidQuery()) {
-            toastr.error('The data query must be a SELECT query', 'Invalid query');
+            toastr.error($translate.instant('jdbc.warning.invalid.query'), $translate.instant('jdbc.invalid.query)'));
             return false;
         }
 
@@ -548,12 +548,12 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function validateColumns() {
         if (!$scope.currentQuery.columns || !$scope.currentQuery.columns.length) {
-            toastr.error('Please define at least one column', 'Invalid columns');
+            toastr.error($translate.instant('jdbc.warning.one.column.msg'), $translate.instant('jdbc.invalid.columns'));
             return false;
         }
 
         if ($scope.containsUnknownColumns()) {
-            toastr.error('Please select SQL type for all columns', 'Invalid columns');
+            toastr.error($translate.instant('jdbc.warning.all.column.msg'), $translate.instant('jdbc.invalid.columns'));
             return false;
         }
 
