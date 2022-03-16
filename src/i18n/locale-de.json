@@ -4,7 +4,7 @@
     "view.connector.management.title": "Konnektorverwaltung",
     "view.connector.management.helpInfo": "Die Connector-Verwaltungsansicht wird verwendet, um GraphDB-Connector-Instanzen zu erstellen und zu verwalten.",
 
-    "menu.import.label": "Importieren",
+    "common.import": "Importieren",
     "menu.rdf.label": "RDF",
     "menu.ontoRefine.label": "Tabellarisch (OntoRefine)",
     "menu.explore.label": "Entdecken",

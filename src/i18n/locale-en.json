@@ -65,7 +65,6 @@
     "view.rest.api.documentation.helpInfo": "The REST API view documents the available public RESTful endpoints and provides an interactive interface to execute the requests.",
     "view.plugins.helpInfo": "Activate or deactivate plugins.",
 
-    "menu.import.label": "Import",
     "menu.rdf.label": "RDF",
     "menu.ontoRefine.label": "Tabular (OntoRefine)",
     "menu.explore.label": "Explore",
@@ -267,7 +266,6 @@
     "import.forces.serial.statements": "Forces the use of the serial statements pipeline. Not recommended. Use for debugging only.",
     "import.force.serial.pipeline": "Force serial pipeline",
     "import.restore.defaults.btn": "Restore defaults",
-    "import.btn": "Import",
     "import.abort.btn": "Abort",
     "import.no.files.found": "No files found",
 
@@ -281,7 +279,6 @@
     "import.supported.url.with.rdf": "URL with RDF data. Supported formats are",
     "import.invalid.url": "Not valid url!",
     "import.format": "Format",
-    "import.error": "Error",
     "import.gz.zip": ", as well as their .gz versions and .zip archives",
     "import.error.could.not.get.files": "Could not get files; {{data}}",
     "import.error.could.not.stop": "Could not stop import; {{data}}",
@@ -411,6 +408,7 @@
     "common.save.btn": "Save",
     "common.confirm": "Confirm",
     "common.create.btn": "Create",
+    "common.import": "Import",
 
     "menu.btn.translate.en": "English",
     "menu.btn.translate.de": "German"

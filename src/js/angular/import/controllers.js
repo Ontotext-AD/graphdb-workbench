@@ -41,7 +41,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 $scope.maxUploadFileSizeMB = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value / (1024 * 1024);
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('import.error'));
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
@@ -439,7 +439,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
         if ($invalidFiles.length > 0) {
             $invalidFiles.forEach(function (f) {
-                toastr.warning($translate.instant('import.large.file', {name: f.name}, {size: Math.floor(f.size / (1024 * 1024))}));
+                toastr.warning($translate.instant('import.large.file', {name: f.name, size: Math.floor(f.size / (1024 * 1024))}));
             });
         }
     };

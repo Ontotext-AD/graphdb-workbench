@@ -1,6 +1,5 @@
 import "angular/import/controllers";
-
-const bundle = require('../../src/i18n/locale-en.json');
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.impex.import.controllers', function ($provide) {
     $provide.constant("productInfo", {
@@ -25,13 +24,13 @@ describe('==> Import module controllers tests', function () {
             $repositories = _$repositories_;
             $translate = _$translate_;
 
-                    $translate.instant = function (key, modification) {
-                        if (modification) {
-                            let modKey = Object.keys(modification)[0];
-                            return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
-                        }
-                        return bundle[key];
-                    };
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             //new a $scope
             $scope = $rootScope.$new();

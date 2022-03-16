@@ -39,7 +39,7 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Import',
-            labelKey: 'menu.import.label',
+            labelKey: 'common.import',
             href: '#',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',

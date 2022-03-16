@@ -31,7 +31,7 @@
                  popover="{{'import.selected.items' | translate}}"
                  popover-trigger="mouseenter"
                  popover-placement="top">
-                <button type="button" class="btn btn-primary import-btn" ng-click="setSettingsFor('')"><span class="icon-import"></span> {{'import.btn' | translate}}</button>
+                <button type="button" class="btn btn-primary import-btn" ng-click="setSettingsFor('')"><span class="icon-import"></span> {{'common.import' | translate}}</button>
                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle import-dropdown-btn" dropdown-toggle>
                     <span class="sr-only"></span>
                 </button>
@@ -144,7 +144,7 @@
                         ng-hide="!importable(file) || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
                         data-target="#{{viewType}}Modal">
                     <span class="icon-import"></span>
-                    {{'import.btn' | translate}}
+                    {{'common.import' | translate}}
                 </button>
                 <button class="btn btn-sm pull-right"
                         ng-click="stopImport(file)"
