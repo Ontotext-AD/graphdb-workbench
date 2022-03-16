@@ -6,7 +6,7 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
-        'title': 'Resource'
+        'title': 'view.resource.title'
     }, {
         'url': '/resource/edit',
         'module': 'graphdb.framework.explore',
@@ -14,7 +14,7 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'EditResourceCtrl',
         'templateUrl': 'pages/edit.html',
-        'title': 'Resource'
+        'title': 'view.resource.title'
     }, {
         'url': '/resource/:any*',
         'module': 'graphdb.framework.explore',
@@ -22,13 +22,14 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
-        'title': 'Resource'
+        'title': 'view.resource.title'
     }
 ]);
 
 PluginRegistry.add('main.menu', {
     'items': [{
         label: 'Explore',
+        labelKey: 'menu.explore.label',
         href: '#',
         order: 1,
         role: 'IS_AUTHENTICATED_FULLY',

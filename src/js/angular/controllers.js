@@ -142,6 +142,20 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.menu.forEach(function (menu) {
+            menu.label = $translate.instant(menu.labelKey);
+            if (menu.children) {
+                menu.children.forEach(function (child) {
+                    child.label = $translate.instant(child.labelKey);
+                });
+            }
+        });
+
+        $rootScope.helpInfo = $sce.trustAsHtml($translate.instant($rootScope.helpInfo));
+        $rootScope.title = $translate.instant($rootScope.title)
+    });
+
     $scope.checkMenu = function () {
         return $('.main-menu').hasClass('collapsed');
     };

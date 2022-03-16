@@ -1,4 +1,5 @@
 import 'angular/utils/local-storage-adapter';
+import {decodeHTML} from "../../../app";
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -247,9 +248,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate) {
     return {
         restrict: 'EA',
         scope: {
@@ -323,7 +324,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         });
                     }).error(function (data) {
                         const msg = getError(data);
-                        toastr.error(msg, 'Error getting namespaces for repository.');
+                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
                     });
                 }
             });
@@ -336,7 +337,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             $scope.onChange();
                         }
                     }).error(function () {
-                        toastr.error('Error attempting to check autocomplete capability!');
+                        toastr.error($translate.instant('explore.error.autocomplete'));
                     });
                 }
             });
@@ -395,7 +396,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             if (attrs.$attr.placeholder) {
                 $scope.placeholder = attrs.$attr.placeholder;
             } else {
-                $scope.placeholder = 'Search RDF resources...';
+                $scope.placeholder = `${$translate.instant('search.resources.msg')}...`;
             }
 
             if (angular.isDefined(attrs.$attr.uriValidation)) {
@@ -465,7 +466,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const checkIfValidAndSearch = function (callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
-                    toastr.error('Please fill the input field!');
+                    toastr.error($translate.instant('fill.input.field.msg'));
                     return;
                 }
                 if ($scope.uriValidation !== 'false') {
@@ -480,7 +481,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         if (validateRdfUri(uri)) {
                             $scope.searchRdfResource(uri, callback);
                         } else {
-                            toastr.error('Invalid URI');
+                            toastr.error($translate.instant('invalid.uri.msg'));
                         }
                     }
                 } else {
@@ -528,7 +529,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             if (validateRdfUri(event.target.value)) {
                                 $scope.searchRdfResourceByEvent(event.target.value, event);
                             } else {
-                                toastr.error('Invalid URI');
+                                toastr.error($translate.instant('invalid.uri.msg'));
                             }
                         }
                     } else {
@@ -536,7 +537,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     }
                 } else if ($scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
                     element.autoCompleteWarning = true;
-                    toastr.warning('', '<div class="autocomplete-toast"><a href="autocomplete">Autocomplete is OFF<br>Go to Setup -> Autocomplete</a></div>',
+                    const warningMsg = decodeHTML($translate.instant('explore.autocomplete.warning.msg'));
+                    toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
                         {allowHtml: true});
                 }
 
@@ -610,7 +612,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         .then(function () {
                             scrollToPreviouslySelectedEl();
                         }).catch(function (err) {
-                        toastr.error(getError(err), 'Could not find previous search element in menu!');
+                        toastr.error(getError(err), $translate.instant('no.prev.search.element'));
                     });
                 }
 
@@ -760,8 +762,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$translate'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $translate) {
     return {
         restrict: 'E',
         transclude: true,
@@ -784,14 +786,15 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                     $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
                 })
                 .fail(function (data) {
-                    toastr.error(getError(data), 'Could not check if plugin is active!');
+                    toastr.error(getError(data), $translate.instant('check.active.plugin.failure'));
                 });
         }
 
         $scope.activatePlugin = function () {
+            const activatePluginWarning= decodeHTML($translate.instant('activate.plugin.warning.msg', {humanReadablePluginName: $scope.humanReadablePluginName}));
             ModalService.openSimpleModal({
-                title: 'Confirm plugin activation',
-                message: `<p>Are you sure you want to activate <strong>${$scope.humanReadablePluginName}</strong>?</p>`,
+                title: $translate.instant('activate.plugin.confirmation'),
+                message: `<p>${activatePluginWarning}</p>`,
                 warning: true
             }).result
                 .then(function () {
@@ -802,7 +805,7 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                             $scope.loadSaved();
                         })
                         .fail(function (data) {
-                            toastr.error(getError(data), 'Could not activate plugin!');
+                            toastr.error(getError(data), $translate.instant('activate.plugin.failure'));
                         });
                 });
         };

@@ -16,9 +16,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService',
+                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate',
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-              RepositoriesRestService, LocationsRestService, LicenseRestService) {
+              RepositoriesRestService, LocationsRestService, LicenseRestService, $translate) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
 
         this.location = '';
@@ -46,9 +46,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
                 // notify user
                 if (err.statusText) {
-                    toastr.error(err.statusText, 'Error loading location');
+                    toastr.error(err.statusText, $translate.instant('repositories.service.error.loading.location'));
                 } else {
-                    toastr.error('Error loading location');
+                    toastr.error($translate.instant('repositories.service.error.loading.location'));
                 }
             }
         };
@@ -85,16 +85,16 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     if (typeof res === 'object') {
                         // New style, check version and product
                         if (res.productVersion !== productInfo.productVersion) {
-                            that.degradedReason = 'The remote location is running a different GraphDB version.';
+                            that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
                         }
                     } else {
                         // Pre 7.1 style
-                        that.degradedReason = 'The remote location is running a different GraphDB version.';
+                        that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
                     }
                 })
                 .error(function () {
                     // Even older style, endpoint missing
-                    that.degradedReason = 'The remote location is running a different GraphDB version.';
+                    that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
                 });
         };
 
@@ -193,7 +193,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.getLocationError = function () {
             if (!this.locationError) {
-                return 'There is no active location';
+                return $translate.instant('repositories.service.no.active.location');
             } else {
                 return this.locationError;
             }
@@ -289,7 +289,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.setDefaultRepository = function (id) {
             if (!this.hasActiveLocation()) {
-                toastr.error('No active location', 'Error');
+                toastr.error($translate.instant('repositories.service.no.active.location'), $translate.instant('common.error'));
                 return;
             }
             const that = this;
@@ -300,7 +300,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         };
 
@@ -316,7 +316,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
@@ -326,7 +326,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
             if (that.getActiveRepository() === repositoryId) {
                 that.setRepository('');
@@ -336,12 +336,12 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.restartRepository = function (repositoryId) {
             RepositoriesRestService.restartRepository(repositoryId)
                 .success(function () {
-                    toastr.success(`Restarting repository ${repositoryId}`);
+                    toastr.success($translate.instant('repositories.service.restarting.repo', {repositoryId: repositoryId}));
                     // This provides immediate visual feedback by updating the status
                     that.initQuick();
                 }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
