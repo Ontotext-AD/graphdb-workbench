@@ -295,7 +295,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                         $scope.loader = false;
                         $scope.displayedNamespaces = [];
                         if (namespaces === undefined) {
-                            toastr.success($translate.instant('namespace.prefix.deleted.successfully', {prefix: prefix}, ''));
+                            toastr.success($translate.instant('namespace.prefix.deleted.successfully', {prefix: prefix}), '');
                         } else {
                             toastr.success($translate.instant('namespace.selected.namespaces.deleted.successfully'), '');
                         }
