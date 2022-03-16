@@ -6,8 +6,8 @@ PluginRegistry.add('route', [
         'chunk': 'similarity',
         'controller': 'SimilarityCtrl',
         'templateUrl': 'pages/similarity-indexes.html',
-        'title': 'Similarity indexes',
-        'helpInfo': 'Similarity indexes help you look up semantically similar entities and text.'
+        'title': 'view.similarity.indexes.title',
+        'helpInfo': 'view.similarity.indexes.helpInfo'
     }, {
         'url': '/similarity/index/create',
         'module': 'graphdb.framework.similarity',
@@ -15,8 +15,8 @@ PluginRegistry.add('route', [
         'chunk': 'similarity',
         'controller': 'CreateSimilarityIdxCtrl',
         'templateUrl': 'pages/create-index.html',
-        'title': 'Create similarity index',
-        'helpInfo': 'Index name and select query are required. Add Semantic Vectors parameters if you want.'
+        'title': 'view.create.similarity.index.title',
+        'helpInfo': 'view.create.similarity.index.helpInfo'
     }
 ]);
 
@@ -24,6 +24,7 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
@@ -31,6 +32,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'Similarity',
+            labelKey: 'menu.similarity.label',
             href: 'similarity',
             order: 40,
             parent: 'Explore',

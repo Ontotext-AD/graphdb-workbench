@@ -5,21 +5,22 @@ PluginRegistry.add('route', {
     'chunk': 'resources',
     'controller': 'ResourcesCtrl',
     'templateUrl': 'pages/monitor/resources.html',
-    'title': 'Resource monitoring',
-    'helpInfo': 'The Resource monitoring view shows the usage of various system resources, '
-    + 'such as memory and CPU, for the currently active location.'
+    'title': 'view.resource.monitoring.title',
+    'helpInfo': 'view.resource.monitoring.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Monitor',
+            labelKey: 'menu.monitor.label',
             href: '#',
             order: 3,
             role: 'ROLE_MONITORING',
             icon: 'icon-monitoring'
         }, {
             label: 'Resources',
+            labelKey: 'menu.resources.label',
             href: 'monitor/resources',
             // Added role requirement here to assert that users cannot see Resources menu item
             role: 'ROLE_MONITORING',

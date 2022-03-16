@@ -3,7 +3,7 @@ import 'angular/core/services';
 angular.module('graphdb.framework.core.interceptors.unauthorized', [
     'ngCookies'
 ])
-    .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
+    .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', '$translate', function ($q, $location, $rootScope, $translate) {
         return {
             'responseError': function (response) {
                 let redirect = false;
@@ -18,7 +18,7 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                     }
                 } else if (response.status === 403) {
                     if ($rootScope.setPermissionDenied($location.path())) {
-                        console.log('Permission to page denied. Some errors in the console are normal.'); // eslint-disable-line no-console
+                        console.log($translate.instant('unauthorized.console.warning')); // eslint-disable-line no-console
                     } else {
                         redirect = true;
                     }

@@ -65,6 +65,7 @@ function MenuItemsProvider() {
     const cloneItem = function (item, children) {
         return {
             label: item.label,
+            labelKey: item.labelKey,
             href: item.href,
             hrefFun: item.hrefFun,
             order: item.order,
