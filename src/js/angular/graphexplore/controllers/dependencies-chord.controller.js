@@ -46,9 +46,9 @@ function humanize(number) {
     return result + si[exp - 1];
 }
 
-DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService'];
+DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService', '$translate'];
 
-function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService) {
+function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService, $translate) {
 
     let timer = null;
 
@@ -69,7 +69,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
             }).error(function (data) {
             $scope.repositoryError = getError(data);
-            toastr.error(getError(data), 'Error getting graphs');
+            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graph'));
         });
     };
 
@@ -101,7 +101,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 $scope.status = STATUS.READY;
             }).error(function (data) {
             $scope.status = STATUS.READY;
-            toastr.error(getError(data), 'Could not get dependencies count');
+            toastr.error(getError(data), $translate.instant('graphexplore.error.dependencies.count'));
         });
     };
 
@@ -116,7 +116,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
                 getRelationshipsData($scope.selectedClasses);
                 if (status === 207) {
-                    toastr.warning('You can update the diagram by pressing the reload button.', 'Repository data has changed');
+                    toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
                 }
             });
     };
@@ -145,12 +145,12 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
                 if ($scope.status.indexOf('ERROR;') === 0) {
                     $scope.status = STATUS.ERROR;
-                    toastr.error('There was an error while calculating dependencies: ' + $scope.status.substring('ERROR;'.length));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 }
             })
             .error(function (data) {
                 $scope.status = STATUS.ERROR;
-                toastr.error(getError(data), 'Could not get dependencies count status!');
+                toastr.error(getError(data), $translate.instant('graphexplore.error.dependencies.count.status'));
             });
     };
 
@@ -224,8 +224,8 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.confirmCalculateDependencies = function () {
         ModalService.openSimpleModal({
-            title: 'Confirm operation',
-            message: 'Calculating relationships data may take some time. Are you sure?',
+            title: $translate.instant('graphexplore.confirm.operation'),
+            message: $translate.instant('graphexplore.calculating.relationships'),
             warning: true
         }).result
             .then(function () {
@@ -239,13 +239,13 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         GraphDataRestService.calculateRelationships(selectedGraph.contextID.uri)
             .success(function (data) {
                 if (data.indexOf('ERROR;') === 0) {
-                    toastr.error('There was an error while calculating dependencies: ' + data.substring('ERROR;'.length));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 } else {
                     getRelationshipsStatus();
                 }
             })
             .error(function (data) {
-                toastr.error('Could not force dependencies count' + getError(data));
+                toastr.error($translate.instant('graphexplore.error.could.not.force.count', {error: getError(data)}));
             });
     };
 
