@@ -1,67 +1,66 @@
 <div class="modal-header">
     <button ng-click="cancel();" class="close" aria-hidden="true"></button>
-    <h3 class="modal-title">Settings</h3>
+    <h3 class="modal-title">{{'view.settings.title' | translate}}</h3>
 </div>
 
 
 <form id="settingsForm" class="form-horizontal" novalidate name="settingsForm">
     <div class="modal-body">
         <div ng-hide="supportsStatistics" class="alert alert-info">
-            The version of GraphDB at your active location does not support settings.
+            {{'active.location.version.not.support.settings.warning' | translate}}
         </div>
         <div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
-           
+
 			<div class="form-check">
-				<label tooltip="Click to {{settings.statistics ? 'disable' : 'enable'}} this setting"
+				<label tooltip="{{'click.to' | translate}} {{settings.statistics ? 'disable' : 'enable' | translate}} {{'this.setting' | translate}}"
 					   tooltip-placement="top" tooltip-trigger="mouseenter" class="form-check-label">
 					<input type="checkbox" ng-model="settings.statistics" class="form-check-input">
-					Send anonymous usage statistics to Ontotext
+					{{'send.anonymous.statistics' | translate}}
 				</label>
 			</div>
-            
+
             <div class="clearfix">
-				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">more info <span class="icon-caret-down"></span></button>
-				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">less info <span class="icon-caret-up"></span></button>
+				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">{{'more.info' | translate}} <span class="icon-caret-down"></span></button>
+				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">{{'less.info' | translate}} <span class="icon-caret-up"></span></button>
             </div>
-               
+
 			<div id="statisticsInfo" ng-if="moreInfo">
-				<h4>Why should you send us your statistics?</h4>
-				<p>We aim to provide better products that suit the needs of our users and customers.
-					The anonymous statistics help us understand those needs better and focus our efforts.</p>
-				<h4>What do the statistics include?</h4>
-				<p>For each repository we gather:</p>
+				<h4>{{'why.send.statistics' | translate}}</h4>
+				<p>{{'why.send.statistics.explanation' | translate}}</p>
+				<h4>{{'what.statistics.include' | translate}}</h4>
+				<p>{{'for.each.repo.header' | translate}}</p>
 				<ul>
 					<li>
-						Absolute values
+						{{'absolute.values' | translate}}
 						<ul>
-							<li>GraphDB edition and version</li>
-							<li>Number of explicit and implicit triples</li>
-							<li>Number of entities</li>
-							<li>Number of predicates</li>
-							<li>Size of repository on disk</li>
-							<li>Whether a given plugin is used, e.g. geo-spatial</li>
-							<li>Ruleset (custom rulesets are reported only as "custom")</li>
-							<li>OS type</li>
+							<li>{{'gdb.edition.and.version' | translate}}</li>
+							<li>{{'number.explicit.implicit.triples' | translate}}</li>
+							<li>{{'entities.number' | translate}}</li>
+							<li>{{'predicates.number' | translate}}</li>
+							<li>{{'repo.size.on.disk' | translate}}</li>
+							<li>{{'is.given.plugin.used' | translate}}</li>
+							<li>{{'used.ruleset' | translate}}</li>
+							<li>{{'os.type' | translate}}</li>
 						</ul>
 					</li>
 					<li>
-						Aggregated values
+						{{'aggregated.values.header' | translate}}
 						<ul>
-							<li>Number of queries per day</li>
-							<li>Average time per query per day</li>
-							<li>Number of updates per day</li>
-							<li>Average time per update per day</li>
+							<li>{{'queries.per.day' | translate}}</li>
+							<li>{{'average.time.per.query' | translate}}</li>
+							<li>{{'updates.per.day' | translate}}</li>
+							<li>{{'average.time.per.updates' | translate}}</li>
 						</ul>
 					</li>
 				</ul>
-				<p>The data is sent every 24 hours over HTTP to a dedicated endpoint at
+				<p>{{'data.send.to.msg' | translate}}
 					http://statistics.graphdb.ontotext.com.</p>
-				<p>The data is encrypted with a 2048-bit RSA key.</p>
+				<p>{{'data.encryption.msg' | translate}}</p>
 			</div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button ng-click="submitForm();" class="btn btn-primary">Save settings</button>
+        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
+        <button ng-click="submitForm();" class="btn btn-primary">{{'save.settings.btn' | translate}}</button>
     </div>
 </form>

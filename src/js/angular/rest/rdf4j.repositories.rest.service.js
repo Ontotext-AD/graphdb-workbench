@@ -95,7 +95,7 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
-                            value: $translate.instant('rest.the.default.graph')
+                            value: $translate.instant('import.default.graph')
                         }
                     });
 

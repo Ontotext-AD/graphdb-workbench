@@ -416,7 +416,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     function confirmReloadClassHierarchy() {
         ModalService.openSimpleModal({
-            title: $translate.instant('graphexplore.confirm.operation'),
+            title: $translate.instant('confirm.operation'),
             message: $translate.instant('graphexplore.calculating.hierarchy'),
             warning: true
         }).result

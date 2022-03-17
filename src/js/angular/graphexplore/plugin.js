@@ -34,7 +34,7 @@ PluginRegistry.add('route', [
         'chunk': 'graphs-visualizations',
         'controller': 'GraphsVisualizationsCtrl',
         'templateUrl': 'pages/graphs-visualizations.html',
-        'title': 'view.visual.graph.title',
+        'title': 'menu.visual.graph.label',
         'reloadOnSearch': false,
         'helpInfo': 'view.visual.graph.helpInfo'
     }, {
