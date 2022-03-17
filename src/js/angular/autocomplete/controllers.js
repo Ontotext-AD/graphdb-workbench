@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus', '$translate'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, AutocompleteRestService, $autocompleteStatus, $translate) {
 
     let timer;
 
@@ -26,7 +26,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
-    }
+    };
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()
@@ -34,8 +34,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
                 $scope.autocompleteEnabled = data;
                 $autocompleteStatus.setAutocompleteStatus(data);
             }).error(function (data) {
-                toastr.error(getError(data));
-            });
+            toastr.error(getError(data));
+        });
     };
 
     const refreshIndexIRIs = function () {
@@ -43,8 +43,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
             .success(function (data) {
                 $scope.shouldIndexIRIs = data;
             }).error(function (data) {
-                toastr.error(getError(data));
-            });
+            toastr.error(getError(data));
+        });
     };
 
     const refreshIndexStatus = function () {
@@ -62,36 +62,37 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
             .success(function (data) {
                 $scope.labelConfig = data;
             }).error(function (data) {
-                toastr.error(getError(data));
-            });
+            toastr.error(getError(data));
+        });
     };
 
     const addLabelConfig = function (label) {
-        $scope.setLoader(true, 'Updating label config...');
+        $scope.setLoader(true, $translate.instant('autocomplete.update'));
+
 
         AutocompleteRestService.addLabelConfig(label)
             .success(function () {
                 refreshLabelConfig();
                 refreshIndexStatus();
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     const removeLabelConfig = function (label) {
-        $scope.setLoader(true, 'Updating label config...');
+        $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
         AutocompleteRestService.removeLabelConfig(label)
             .success(function () {
                 refreshLabelConfig();
                 refreshIndexStatus();
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     $scope.checkForPlugin = function () {
@@ -112,10 +113,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
                     $scope.loading = false;
                 }
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     const pullStatus = function () {
@@ -134,8 +135,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     const init = function() {
         if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
-                $repositories.isActiveRepoOntopType() ||
-                    $repositories.isActiveRepoFedXType()) {
+            $repositories.isActiveRepoOntopType() ||
+            $repositories.isActiveRepoFedXType()) {
             return;
         }
         $scope.checkForPlugin();
@@ -155,62 +156,62 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || 'Loading...';
+        return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
     $scope.toggleAutocomplete = function () {
         const newValue = !$scope.autocompleteEnabled;
-        $scope.setLoader(true, newValue ? 'Enabling autocomplete...' : 'Disabling autocomplete...');
+        $scope.setLoader(true, newValue ? $translate.instant('autocomplete.enabling') : $translate.instant('autocomplete.disabling'));
 
         AutocompleteRestService.toggleAutocomplete(newValue)
             .success(function () {
                 refreshEnabledStatus();
                 refreshIndexStatus();
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     $scope.toggleIndexIRIs = function () {
-        $scope.setLoader(true, 'Setting index IRIs...');
+        $scope.setLoader(true, ($translate.instant('autocomplete.index.iri')));
 
         AutocompleteRestService.toggleIndexIRIs(!$scope.shouldIndexIRIs)
             .success(function () {
                 refreshIndexIRIs();
                 refreshIndexStatus();
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     $scope.buildIndex = function () {
-        $scope.setLoader(true, 'Requesting index build...');
+        $scope.setLoader(true, $translate.instant('autocomplete.index.build'));
 
         AutocompleteRestService.buildIndex()
             .success(function () {
                 $scope.indexStatus = 'BUILDING';
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     $scope.interruptIndexing = function () {
-        $scope.setLoader(true, 'Interrupting index...');
+        $scope.setLoader(true, $translate.instant('index.interrupt'));
 
         AutocompleteRestService.interruptIndexing()
             .success(function () {
                 refreshIndexStatus();
             }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
-                $scope.setLoader(false);
-            });
+            toastr.error(getError(data));
+        }).finally(function () {
+            $scope.setLoader(false);
+        });
     };
 
     $scope.getDegradedReason = function () {
@@ -248,8 +249,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
         cancelTimer();
         if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
-                $repositories.isActiveRepoOntopType() ||
-                    $repositories.isActiveRepoFedXType()) {
+            $repositories.isActiveRepoOntopType() ||
+            $repositories.isActiveRepoFedXType()) {
             return;
         }
         $scope.checkForPlugin();

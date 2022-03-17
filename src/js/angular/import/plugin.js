@@ -5,25 +5,23 @@ PluginRegistry.add('route', {
     'chunk': 'import',
     'controller': 'CommonCtrl',
     'templateUrl': 'pages/import.html',
-    'title': 'Import',
+    'title': 'common.import',
     'reloadOnSearch': false,
-    'helpInfo': 'The Import view allows you to import RDF data into GraphDB. '
-    + 'Import data from local files, from files on the server where the workbench is located, '
-    + 'from a remote URL (with a format extension or by specifying the data format), '
-    + 'or by pasting the RDF data in the Text area tab. '
-    + 'Each import method supports different serialisation formats.'
+    'helpInfo': 'view.import.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Import',
+            labelKey: 'common.import',
             href: '#',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-import'
         }, {
             label: 'RDF',
+            labelKey: 'menu.rdf.label',
             href: 'import',
             order: 1,
             parent: 'Import',

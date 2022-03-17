@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import 'angular/rest/sparql.rest.service';
+import {decodeHTML} from "../../../../../app";
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.controllers', [
@@ -9,9 +10,9 @@ angular
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
-QueryEditorCtrl.$inject = ['$scope', '$timeout', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService', 'LocalStorageAdapter', 'LSKeys'];
+QueryEditorCtrl.$inject = ['$scope', '$timeout', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService, LocalStorageAdapter, LSKeys) {
+function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService, LocalStorageAdapter, LSKeys, $translate) {
     const defaultTabConfig = {
         id: "1",
         name: '',
@@ -50,7 +51,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 
     this.hint =  document.createElement("span");
-    this.hint.innerHTML = "Hint: \"abC\" matches \"abC*\", \"ab c*\" and \"ab-c*\"";
+    this.hint.innerHTML = $translate.instant('query-editor-autocomplete-hint');
     this.hint.style.fontSize = "12px";
     this.hint.style.color = "gray";
     this.hint.style.backgroundColor = "white";
@@ -181,12 +182,12 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         }
 
         if ($scope.progressMessage) {
-            message = $scope.progressMessage + "... " + timeHuman;
+            message = $translate.instant('query-editor-progress-msg', {progressMessage: $scope.progressMessage, timeHuman: timeHuman});
         } else {
-            message = "Running operation... " + timeHuman;
+            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
         }
         if ($scope.extraMessage && timeSeconds > 10) {
-            message += "\n" + $scope.extraMessage;
+            message += $translate.instant('query-editor-extra-msg', {extraMessage: $scope.extraMessage});
         }
 
         return message;
@@ -309,15 +310,15 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     // start of query operations
     function runQuery(changePage, explain) {
-        $scope.executedQueryTab = $scope.currentQuery;
+        $scope.executedQueryTab = $scope.currentQuery ;
         if (explain) {
             if (!(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-                toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
+                toastr.warning($translate.instant('query-editor-warning-msg'));
                 return;
             }
 
             if ($repositories.isActiveRepoOntopType()) {
-                toastr.warning('Explain not supported for Virtual repositories.');
+                toastr.warning($translate.instant('query-editor-virtual-repo-warning-msg'));
                 return;
             }
         }
@@ -333,7 +334,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             $scope.lastRunQueryMode = window.editor.getQueryMode();
 
             if ($scope.lastRunQueryMode === 'update' && $repositories.isActiveRepoOntopType()) {
-                toastr.warning('Updates are not supported for Virtual repositories.');
+                toastr.warning($translate.instant('query-editor-virtual-repo-update-warning-msg'));
                 return;
             }
 
@@ -362,7 +363,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         $scope.namespacesLoading = true;
 
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
@@ -403,7 +404,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error! Could not get saved queries');
+                    toastr.error(msg, $translate.instant('query-editor.get.saved.queries.error'));
                 });
         } else {
             $('#sampleQueriesCollapse').collapse('hide');
@@ -430,7 +431,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not add known prefixes');
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
@@ -467,10 +468,10 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             resolve: {
                 data: function () {
                     return {
-                        title: 'Edit Saved Query: "' + query.name + '"',
+                        title: $translate.instant('query-editor.edit.saved.query', {name: query.name}),
                         query: query,
                         edit: true,
-                        okButtonText: 'Save'
+                        okButtonText: $translate.instant('common.save.btn')
                     };
                 }
             }
@@ -489,18 +490,18 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                     })
                     .error(function (error) {
                         const msg = getError(error);
-                        toastr.error(msg, 'Error! Cannot edit saved query');
+                        toastr.error(msg, $translate.instant('query-editor.edit.saved.query.error'));
                     });
             } else {
                 SparqlRestService.editSavedQuery(data)
                     .success(function () {
                         $('#editQueryContainer').modal('hide');
                         $scope.toggleSampleQueries();
-                        toastr.success('Saved query ' + query.name + ' was edited.');
+                        toastr.success($translate.instant('query-editor.edit.saved.query.success.msg', {name: query.name}));
                     })
                     .error(function (error) {
                         const msg = getError(error);
-                        toastr.error(msg, 'Error! Cannot edit Saved query');
+                        toastr.error(msg, $translate.instant('query-editor.edit.saved.query.error'));
                     });
             }
         });
@@ -511,19 +512,19 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             .success(function () {
                 $scope.toggleSampleQueries();
                 if (!edit) {
-                    toastr.success('Saved query: ' + savedQueryName + ' was deleted.');
+                    toastr.success($translate.instant('query-editor.delete.saved.query.success.msg', {savedQueryName: savedQueryName}));
                 }
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Cannot delete saved query');
+                toastr.error(msg, $translate.instant('query-editor.delete.saved.query.error'));
             });
     }
 
     function deleteQuery(savedQueryName) {
         ModalService.openSimpleModal({
-            title: 'Confirm',
-            message: 'Are you sure you want to delete the saved query ' + '\'' + savedQueryName + '\'?',
+            title: $translate.instant('common.confirm'),
+            message: $translate.instant('query-editor.delete.saved.query.warning.msg', {savedQueryName: savedQueryName}),
             warning: true
         }).result
             .then(function () {
@@ -534,11 +535,11 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     function saveQueryHttp(query) {
         SparqlRestService.addNewSavedQuery(query)
             .success(function () {
-                toastr.success('Saved query ' + query.name + ' was saved.');
+                toastr.success($translate.instant('query-editor.save.saved.query.success.msg', {name: query.name}));
             })
             .error(function (data) {
                 let msg = getError(data);
-                toastr.error(msg, 'Error! Cannot create saved query');
+                toastr.error(msg, $translate.instant('query-editor.create.saved.query.error'));
                 // TODO: This condition will always be true
                 if (msg = "Query '" + query.name + "' already exists!") {
                     query.query = query.body;
@@ -555,11 +556,12 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             resolve: {
                 data: function () {
                     return {
-                        title: 'Create New Saved Query',
+                        title: $translate.instant('query-editor.create.saved.query.msg'),
                         query: {name: query.name, body: query.query, shared: query.shared},
                         edit: false,
-                        okButtonText: 'Create',
-                        queryExists: queryExists
+                        okButtonText: $translate.instant('common.create.btn'),
+                        queryExists: queryExists,
+                        existingQueryErrMsg: decodeHTML($translate.instant('query-sample.existing.query.warning', {name: query.name}))
                     };
                 }
             }
@@ -664,7 +666,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         const tab = $scope.tabsData[idx];
 
         if (tab.yasrData) {
-            setLoader(true, 'Rendering results', null, true);
+            setLoader(true, $translate.instant('query-editor.render.results.msg'), null, true);
         }
 
         // set query in editor available on the current tab
@@ -762,9 +764,9 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     function isTabChangeOk(isNew) {
         if ($scope.queryIsRunning && !$scope.namespacesLoading) {
             if (isNew) {
-                toastr.info('New tabs may not be opened while query or update is running.');
+                toastr.info($translate.instant('query-editor.new.tab.running.query.warning.msg'));
             } else {
-                toastr.info('Tabs may not be switched while query or update is running.');
+                toastr.info($translate.instant('query-editor.tab.switching.running.query.warning.msg'));
             }
 
             return false;
@@ -854,18 +856,18 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         } else if ($scope.currentTabConfig.sizeDelta === undefined) {
             return '';
         } else if ($scope.currentTabConfig.sizeDelta < 0) {
-            return 'Removed ' + Math.abs($scope.currentTabConfig.sizeDelta) + ' statements.';
+            return $translate.instant('yasr.removed.statements.result.msg', {sizeDelta: Math.abs($scope.currentTabConfig.sizeDelta)});
         } else if ($scope.currentTabConfig.sizeDelta > 0) {
-            return 'Added ' + $scope.currentTabConfig.sizeDelta + ' statements.';
+            return $translate.instant('yasr.added.statements.result.msg', {sizeDelta: $scope.currentTabConfig.sizeDelta});
         } else {
-            return 'The number of statements did not change.';
+            return $translate.instant('yasr.statements.no.change.msg');
         }
     };
 
     $scope.getStaleWarningMessage = function () {
         const secondsAgo = Math.round((Date.now() - $scope.currentTabConfig.timeFinished) / 60000) * 60;
         if (secondsAgo >= 3600) { // must be at least an hour
-            return "Possibly stale result (obtained " + $scope.getHumanReadableSeconds(secondsAgo) + " ago).";
+            return $translate.instant('yasr.stale.result.msg', {secondsAgo: $scope.getHumanReadableSeconds(secondsAgo)});
         }
     };
 
@@ -926,9 +928,9 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 }
 
-QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data', '$sce'];
 
-function QuerySampleModalCtrl($scope, $modalInstance, data) {
+function QuerySampleModalCtrl($scope, $modalInstance, data, $sce) {
     if (data.queryExists) {
         $scope.queryExists = true;
     }
@@ -936,6 +938,7 @@ function QuerySampleModalCtrl($scope, $modalInstance, data) {
     $scope.title = data.title;
     $scope.edit = data.edit;
     $scope.okButtonText = data.okButtonText;
+   $scope.existingQueryErrMsg = $sce.trustAsHtml(data.existingQueryErrMsg);
     $scope.ok = function () {
         if ($scope.form.$valid) {
             $modalInstance.close($scope.query);

@@ -298,7 +298,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             return;
         }
 
-        $scope.setLoader(true, $translate.instant('externalsync.fetching.connectors'), $translate.instant('externalsync.extra.message'));
+        $scope.setLoader(true, $translate.instant('externalsync.fetching.connectors'), $translate.instant('common.extra.message'));
 
         ConnectorsRestService.getConnectors()
             .then(function (res) {

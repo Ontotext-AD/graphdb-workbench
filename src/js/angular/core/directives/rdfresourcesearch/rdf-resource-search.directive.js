@@ -1,14 +1,16 @@
+import {decodeHTML} from "../../../../../app";
+
 angular
     .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', [])
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
     'AutocompleteRestService', 'RDF4JRepositoriesRestService',
-    'RepositoriesRestService', '$repositories', '$location', '$licenseService', 'toastr'];
+    'RepositoriesRestService', '$repositories', '$location', '$licenseService', 'toastr', '$translate'];
 
 function rdfResourceSearchDirective($rootScope, $timeout,
                                     AutocompleteRestService, RDF4JRepositoriesRestService,
-                                    RepositoriesRestService, $repositories, $location, $licenseService, toastr) {
+                                    RepositoriesRestService, $repositories, $location, $licenseService, toastr, $translate) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -103,7 +105,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
                         }, 200);
                     } else {
                         $('#search-resource-input-home input').focus();
-                        toastr.info('Use <b>View resource</b> on this page', 'Search RDF resources', {
+                        toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
                             allowHtml: true
                         });
                     }

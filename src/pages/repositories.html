@@ -16,27 +16,27 @@
 		<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="false"></div>
 			<div ng-show="hasActiveLocation()">
 				<div class="pull-left">
-					<strong>Repositories from: </strong>
-					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></em>
+					<strong>{{'repos.from' | translate}}</strong>
+					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" tooltip="{{getDegradedReason()}}{{'repos.degraded.reason.extra.msg' | translate}}" tooltip-placement="right"></em>
 					<span class="mr-1">{{getActiveLocation().label}}</span>
 				</div>
 				<div class="actions-bar-inline pull-right">
 					<button
-						tooltip="Edit common settings for these repositories"
+						tooltip="{{'repos.edit.common.settings' | translate}}"
 						tooltip-placement="top" tooltip-trigger="mouseenter"
 						class="btn btn-link px-0"
 						ng-click="openActiveLocationSettings()">
 						<span class="icon-settings"></span>
 					</button>
 					<a class="btn btn-link px-0 pull-right" href="license"
-						tooltip="View or update license for these repositories"
+						tooltip="{{'repos.view.update.licenses' | translate}}"
 						tooltip-placement="top" tooltip-trigger="mouseenter">
 						<span class="icon-key"></span>
 					</a>
 				</div>
 			</div>
 			<div class="alert alert-danger" ng-show="getActiveLocation().errorMsg">
-				{{getActiveLocation().errorMsg}} Refresh the page to retry.
+				{{getActiveLocation().errorMsg}}{{'repos.refresh.page.msg' | translate}}
 			</div>
 
 			<div class="alert alert-warning" ng-hide="!getLocations().length || hasActiveLocation()">
@@ -45,7 +45,7 @@
 
 			<div ng-show="hasActiveLocation()" class="pt-2 mb-3">
 				<div class="alert alert-warning no-repositories-alert" ng-hide="getRepositories().length || getActiveLocation().errorMsg">
-					There are no repositories in the active location
+					{{'no.repos.in.active.location' | translate}}
 				</div>
 				<div ng-show="getRepositories().length" class="mb-1">
 					<table id="wb-repositories-repositoryInGetRepositories" class="table table-hover table-striped" aria-describedby="Repositories table">
@@ -54,12 +54,12 @@
 								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
 								ng-class="{'table-info text-secondary': getActiveRepository() == repository.id}">
 								<td width="25">
-									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
+									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" tooltip="{{'connect.repo' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-click="setRepository(repository.id)"
 										  ng-if="getActiveRepository() !== repository.id"
 										  data-repository-id="{{repository.id}}"></span>
 									<span role="button" class="icon-connection-on icon-lg text-tertiary"
-										  tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
+										  tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-if="getActiveRepository() === repository.id"></span>
 								</td>
 								<td>
@@ -76,18 +76,18 @@
 								<td width="150" class="text-nowrap repository-actions">
 									<button class="btn btn-link p-0"
 											ng-click="copyToClipboard(repository.externalUrl)"
-											tooltip="Copy repository URL to clipboard">
+											tooltip="{{'copy.repo.url' | translate}}">
 										<span class="icon-link"></span>
 									</button>
 									<span ng-show="getDegradedReason()">
 										<em class="icon-warning icon-lg text-warning"
-											tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
+											tooltip="{{getDegradedReason()}}{{'repo.not.supported.delete.or.edit' | translate}}"
 											tooltip-placement="top" tooltip-trigger="mouseenter"></em>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
 										<a class="btn btn-link p-0 edit-repository-btn"
 											href="repository/edit/{{repository.id}}"
-											tooltip="Edit repository"
+											tooltip="{{'repoTooltips.editRepository' | translate}}"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter">
 											<span class="icon-edit"></span>
@@ -95,20 +95,20 @@
 										<a class="btn btn-link p-0 download-turtle-config download-repository-config-btn" ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                 rel="noopener"
 												target="_blank"
-												tooltip="Download repository configuration as Turtle"
+												tooltip="{{'download.repo.config' | translate}}"
 												tooltip-placement="top"
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
                                         <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                           tooltip="Restart repository {{repository.id}}"
+                                           tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
                                            tooltip-placement="top"
                                            tooltip-trigger="mouseenter"
                                            ng-click="restartRepository(repository.id)">
 												<span class="icon-reload"></span>
 										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
-											tooltip="Delete repository"
+											tooltip="{{'delete.repo' | translate}}"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter"
 											ng-click="deleteRepository(repository.id)">
@@ -120,7 +120,7 @@
 									<button class="btn btn-link p-0 pin-repository-btn" ng-hide="repository.type === 'system'"
 										ng-click="toggleDefaultRepository(repository.id)"
 										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
-										tooltip="Set as default repository">
+										tooltip="{{'set.as.default.repo' | translate}}">
 										<em class="icon-pin"></em>
 									</button>
 								</td>
@@ -130,20 +130,20 @@
 				</div>
 
 				<div ng-hide="getDegradedReason()" class="btn-group" dropdown>
-					<a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span class="icon-plus"></span> Create new repository</a>
+					<a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span class="icon-plus"></span> {{'repository.create.btn' | translate}}</a>
 					<button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
-						<span class="sr-only">Split button!</span>
+						<span class="sr-only">{{'split.btn' | translate}}</span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
 						<!--<li><a class="dropdown-item" ng-href="repository/add">Form</a></li>-->
-						<li><a class="dropdown-item" href ng-click="fromFile()">Create from file</a></li>
+						<li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
 					</ul>
 				</div>
 
 			</div>
 
 			<div ng-show="isAdmin()">
-				<h3 ng-show="getLocations().length">Repository locations</h3>
+				<h3 ng-show="getLocations().length">{{'repo.locations' | translate}}</h3>
 				<table class="table table-hover table-striped locations-table" ng-show="getLocations().length" aria-describedby="Locations table">
 					<tbody>
 						<tr
@@ -152,12 +152,12 @@
 							<td width="25">
 
 								<span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-									  tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									  tooltip="{{'activate.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 									  ng-click="activateLocation(location)"
 									  ng-if="!location.active"></span>
 
 								<span class="icon-connection-on icon-lg text-tertiary"
-									tooltip="Activated" tooltip-placement="top" tooltip-trigger="mouseenter"
+									tooltip="{{'common.activated' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-if="location.active"></span>
 
 							</td>
@@ -165,17 +165,17 @@
 								<div class="text-overflow">
 									<strong>{{location.label}}</strong>
 								</div>
-								<div ng-show="!location.active && location.errorMsg">{{location.errorMsg}} Activate to try again.</div>
+								<div ng-show="!location.active && location.errorMsg">{{location.errorMsg}}{{'activate.location.to.try' | translate}}</div>
 							</td>
 							<td width="150" class="text-nowrap">
 								<button class="btn btn-link p-0"
-									tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									tooltip="{{'edit.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.local"
 									ng-click="editLocation(location)">
 									<em class="icon-edit"></em>
 								</button>
 								<button class="btn btn-link p-0 secondary"
-									tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									tooltip="{{'detach.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.system"
 									ng-click="deleteLocation(location.uri)">
 									<em class="icon-close"></em>
@@ -185,10 +185,10 @@
 						</tr>
 					</tbody>
 				</table>
-				<button id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span> Attach remote location</button>
+				<button id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span>{{'attach.remote.location' | translate}}</button>
 
 				<p class="text-muted" ng-hide="getLocations().length">
-					<em>There are no connected GraphDB instances.</em>
+					<em>{{'no.connected.gdb.instances' | translate}}</em>
 				</p>
 
 			</div>

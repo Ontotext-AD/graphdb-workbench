@@ -6,8 +6,8 @@ PluginRegistry.add('route', [
     'chunk': 'jdbc',
     'controller': 'JdbcListCtrl',
     'templateUrl': 'pages/jdbc.html',
-    'title': 'JDBC configuration',
-    'helpInfo': 'JDBC driver configuration to allow SQL access to repository data'
+    'title': 'view.jdbc.title',
+    'helpInfo': 'view.jdbc.helpInfo'
     },
     {
         'url': '/jdbc/configuration/create',
@@ -16,14 +16,14 @@ PluginRegistry.add('route', [
         'chunk': 'jdbc',
         'controller': 'JdbcCreateCtrl',
         'templateUrl': 'pages/jdbc-create.html',
-        'title': 'SQL table configuration',
-        'helpInfo': 'RDF to SQL table mapping configuration tool'
+        'title': 'view.jdbc.create.title',
+        'helpInfo': 'view.jdbc.create.helpInfo'
     }
     ]);
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
-        {label: 'JDBC', href: 'jdbc', order: 50, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
+        {label: 'Setup', labelKey: 'menu.setup.label', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
+        {label: 'JDBC', labelKey: 'menu.jdbc.label', href: 'jdbc', order: 50, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
     ]
 });

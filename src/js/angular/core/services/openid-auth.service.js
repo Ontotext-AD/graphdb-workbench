@@ -12,8 +12,8 @@ const openIDReqHeaders = {headers: {
 
 
 angular.module('graphdb.framework.core.services.openIDService', modules)
-    .service('$openIDAuth', ['$http', '$location', '$window', 'toastr',
-        function ($http, $location, $window, toastr) {
+    .service('$openIDAuth', ['$http', '$location', '$window', 'toastr', '$translate',
+        function ($http, $location, $window, toastr, $translate) {
             const storagePrefix = 'com.ontotext.graphdb.openid.';
             const that = this;
 
@@ -69,7 +69,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     $window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else {
                     console.log('oidc: unknown auth flow: ' + authFlow);
-                    toastr.error('Unknown auth flow: ' + authFlow)
+                    toastr.error($translate.instant('openid-auth.unknown.flow', {authFlow: authFlow}));
                 }
             };
 
@@ -101,7 +101,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         params.push('nonce=' + encodeURIComponent(state));
                         break;
                     default:
-                        throw new Error('Unknown authentication flow: ' + openIDConfig.authFlow);
+                        throw new Error($translate.instant('openid-auth.unknown.flow', {authFlow: openIDConfig.authFlow}));
                 }
 
                 // We want these first even though the order doesn't matter.
@@ -195,7 +195,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                             if (openIDConfig.authFlow === 'code') {
                                 // Verify state matches what we set at the beginning
                                 if (that.getStorageItem('pkce_state') !== s.state) {
-                                    toastr.error('Invalid pkce_state');
+                                    toastr.error($translate.instant('openid-auth.invalid.pkce_state'));
                                     console.log('oidc: PKCE state mismatch ' + that.getStorageItem('pkce_state') + ' != ' + s.state);
                                     errorCallback();
                                 } else {
@@ -301,7 +301,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         }
                     } catch (e) {
                     }
-                    return {error: 'not a JWT token: ' + token};
+                    return {error: $translate.instant('openid-auth.not.jwt.token', {token: token})};
                 } else {
                     return {};
                 }
@@ -399,7 +399,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         }
                     } catch (e) {
                     }
-                    return {error: 'not a JWT token: ' + token};
+                    return {error: $translate.instant('openid-auth.not.jwt.token', {token: token})};
                 } else {
                     return {};
                 }
@@ -485,7 +485,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }).success(function(data) {
                     that.saveTokens(data, true, false, successCallback);
                 }).error(function(e) {
-                    toastr.error('Cannot retrieve token after login; ' + getError(e));
+                    toastr.error($translate.instant('openid-auth.cannot.retrieve.token.msg', {error: getError(e)}));
                     errorCallback();
                 })
             };
@@ -518,7 +518,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         that.isLoggedIn = true;
                     }).error(function(e) {
                         console.log('oidc: could not refresh tokens');
-                        toastr.error('Could not refresh OpenID token; ' + getError(e));
+                        toastr.error($translate.instant('openid-auth.cannot.refresh.token.msg', {error: getError(e)}));
                         if (errorCallback) {
                             errorCallback();
                         }

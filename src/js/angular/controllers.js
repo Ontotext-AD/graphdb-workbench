@@ -1,6 +1,7 @@
 import 'angular/core/services';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
+import 'angular/rest/plugins.rest.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/rest/license.rest.service';
 import 'angular/rest/repositories.rest.service';
@@ -29,6 +30,7 @@ angular
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.autocomplete.service',
+        'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
@@ -138,6 +140,20 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // Recheck license status on navigation within the workbench (security is already inited)
             $licenseService.checkLicenseStatus();
         }
+    });
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.menu.forEach(function (menu) {
+            menu.label = $translate.instant(menu.labelKey);
+            if (menu.children) {
+                menu.children.forEach(function (child) {
+                    child.label = $translate.instant(child.labelKey);
+                });
+            }
+        });
+
+        $rootScope.helpInfo = $sce.trustAsHtml($translate.instant($rootScope.helpInfo));
+        $rootScope.title = $translate.instant($rootScope.title)
     });
 
     $scope.checkMenu = function () {
