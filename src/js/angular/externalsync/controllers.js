@@ -425,7 +425,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
                         $scope.existing[connector.key] = res.data;
                     });
                 });
-                toastr.success($translate.instant('externalsync.created.connector', {name: obj.name}));
+                toastr.success($translate.instant('created.connector', {name: obj.name}));
             }, function (err) {
                 toastr.error(getError(err));
                 errorCallback();

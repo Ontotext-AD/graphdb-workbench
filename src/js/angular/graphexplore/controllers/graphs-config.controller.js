@@ -95,7 +95,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 initForConfig();
             })
             .error(function (data) {
-                toastr.error(getError(data), $translate.instant('externalsync.created.connector', {name: configName}));
+                toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
             });
     } else {
         $scope.isUpdate = false;
@@ -525,7 +525,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         }
 
         if (window.editor.getQueryMode() === 'update') {
-            toastr.warning($translate.instant('graphexplore.cannot.execute.updates'));
+            toastr.warning($translate.instant('cannot.execute.update.error'));
             return;
         }
 
@@ -543,7 +543,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 $scope.fixSizesOnHorizontalViewModeSwitch()
             }
 
-            setLoader(true, $translate.instant('graphexplore.evaluating.query'));
+            setLoader(true, $translate.instant('evaluating.query.msg'));
             window.editor.query();
         }
     }

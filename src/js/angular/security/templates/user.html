@@ -43,7 +43,7 @@
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
-								<input id="wb-user-username" placeholder="{{'security.table.user.name' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
+								<input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>

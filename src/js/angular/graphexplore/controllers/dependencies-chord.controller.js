@@ -224,7 +224,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.confirmCalculateDependencies = function () {
         ModalService.openSimpleModal({
-            title: $translate.instant('graphexplore.confirm.operation'),
+            title: $translate.instant('confirm.operation'),
             message: $translate.instant('graphexplore.calculating.relationships'),
             warning: true
         }).result

@@ -538,7 +538,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         }
 
         if (window.editor.getQueryMode() === 'update') {
-            toastr.warning($translate.instant('similarity.cannot.execute.update.error'));
+            toastr.warning($translate.instant('cannot.execute.update.error'));
             return;
         }
 
@@ -556,7 +556,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                 $scope.fixSizesOnHorizontalViewModeSwitch();
             }
 
-            setLoader(true, $translate.instant('similarity.evaluating.query.msg'));
+            setLoader(true, $translate.instant('evaluating.query.msg'));
             window.editor.query();
         }
     }

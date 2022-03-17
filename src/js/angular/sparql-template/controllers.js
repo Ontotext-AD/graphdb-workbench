@@ -297,7 +297,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                     if (templateExist) {
                         const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: $scope.currentQuery.templateID}));
                         ModalService.openSimpleModal({
-                            title: $translate.instant('confirm.save'),
+                            title: $translate.instant('common.confirm.save'),
                             message: modalMsg,
                             warning: true
                         }).result

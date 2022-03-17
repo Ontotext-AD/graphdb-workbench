@@ -327,7 +327,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                 scope.currentTabConfig.customUpdateMessage = $translate.instant('query-editor.repaired.connector', {name: res.data.name});
                             } else {
                                 scope.setLoader(true, $translate.instant('query-editor.creating.connector', {name: res.data.name}));
-                                scope.currentTabConfig.customUpdateMessage = $translate.instant('query-editor.created.connector', {name: res.data.name});
+                                scope.currentTabConfig.customUpdateMessage = $translate.instant('created.connector', {name: res.data.name});
                             }
 
                             const progressScope = scope.$new(true);
