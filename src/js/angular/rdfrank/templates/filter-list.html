@@ -2,7 +2,7 @@
 	<label>{{list.name.split(" ")[0]}}</label>
 	<div>
 		<tags-input class="wb-tags-input" ng-model="list.elements" min-length="3" add-on-space="true"
-					add-on-comma="true" placeholder="Add {{list.name}}"
+					add-on-comma="true" placeholder="{{'common.add' | translate}} {{list.name}}"
 					on-tag-added="addToList(list, $tag)"
 					on-tag-removed="deleteFromList(list, $tag)"></tags-input>
 	</div>

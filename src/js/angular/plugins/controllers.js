@@ -8,9 +8,9 @@ angular
     .module('graphdb.framework.plugins.controllers', modules)
     .controller('PluginsCtrl', PluginsCtrl);
 
-PluginsCtrl.$inject = ['$scope', '$interval', '$repositories', '$licenseService', '$modal', '$timeout', 'PluginsRestService'];
+PluginsCtrl.$inject = ['$scope', '$interval', '$repositories', '$licenseService', '$modal', '$timeout', 'PluginsRestService', '$translate'];
 
-function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, $timeout, PluginsRestService) {
+function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, $timeout, PluginsRestService, $translate) {
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
@@ -55,7 +55,7 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
 
     $scope.togglePlugin = function (pluginName, enabled) {
         const repoId = $scope.getActiveRepository();
-        $scope.setLoader(true, enabled ? `Deactivating ${pluginName}` : `Activating ${pluginName}`);
+        $scope.setLoader(true, enabled ? $translate.instant('deactivating.plugin', {pluginName: pluginName}) : $translate.instant('activating.plugin', {pluginName: pluginName}));
         PluginsRestService.togglePlugin(repoId, enabled, pluginName).success(function () {
             getPlugins();
         });
@@ -73,7 +73,7 @@ function PluginsCtrl($scope, $interval, $repositories, $licenseService, $modal, 
     });
 
     $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || 'Loading...';
+        return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
     $scope.setLoader = function (loader, message) {

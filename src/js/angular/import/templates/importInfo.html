@@ -1,11 +1,11 @@
 <div class="ot-view-info">
-    <h4>Import files from the server where the Workbench is running</h4>
+    <h4>{{'import.from.server' | translate}}</h4>
     <p>
-        Put files or directories you want to import into <strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>.
+        {{'import.put.files.into' | translate}}<strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>.
     </p>
 
     <p>
-        The directory can be changed by setting the <em>graphdb.workbench.importDirectory</em> property.
+        {{'import.directory.setting' | translate}}<em>graphdb.workbench.importDirectory</em>{{'import.property' | translate}}.
     </p>
     <div ng-include="commonUrl">
     </div>

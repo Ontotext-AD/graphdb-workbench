@@ -102,7 +102,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                         });
                         $scope.loadResource();
                     }).error(function (data) {
-                        toastr.error($translate.instant('explore.namespaces') + getError(data));
+                        toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
                     });
             }
         }
