@@ -11,8 +11,8 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'graphdb.framework.rest.rdfrank.service'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService',
-    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
+    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
 
         let timer;
 
@@ -47,7 +47,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                         return n.uri.length;
                     });
                 }).error(function (data) {
-                    toastr.error('Cannot get namespaces for repository. View will not work properly; ' + getError(data));
+                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
                 });
         };
 
@@ -144,11 +144,11 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.getLoaderMessage = function () {
-            return $scope.loaderMessage || 'Loading...';
+            return $scope.loaderMessage || $translate.instant('common.loading');
         };
 
         $scope.computeRank = function () {
-            $scope.setLoader(true, 'Requesting rank full computation...');
+            $scope.setLoader(true, $translate.instant('rdfrank.full.computation'));
 
             RdfRankRestService.compute().success(function () {
                 $scope.currentRankStatus = $scope.rdfStatus.COMPUTING;
@@ -160,7 +160,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.computeIncrementalRank = function () {
-            $scope.setLoader(true, 'Requesting rank incremental computation...');
+            $scope.setLoader(true, $translate.instant('rdfrank.incremental.computation'));
 
             RdfRankRestService.computeIncremental().success(function () {
                 $scope.currentRankStatus = $scope.rdfStatus.COMPUTING;
@@ -172,7 +172,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.interruptComputation = function () {
-            $scope.setLoader(true, 'Interrupting index...');
+            $scope.setLoader(true, $translate.instant('index.interrupt'));
 
             RdfRankRestService.interrupt().success(function () {
                 refreshStatus();
@@ -252,7 +252,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 _addToList(list, expandPrefix(iri.text, $scope.namespaces));
             } else {
                 refreshFilteringConfig();
-                toastr.error('\'' + iri.text + '\' is not a valid IRI');
+                toastr.error($translate.instant('not.valid.iri', {value: iri.text}));
             }
         };
 
