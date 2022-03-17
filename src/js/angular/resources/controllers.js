@@ -12,8 +12,8 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$timeout', 'MonitoringRestService',
-    function ($scope, toastr, $interval, $timeout, MonitoringRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$timeout', 'MonitoringRestService', '$translate',
+    function ($scope, toastr, $interval, $timeout, MonitoringRestService, $translate) {
         $scope.data = {
             classCount: [{
                 key: 'Classes',
@@ -171,11 +171,11 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
 
             $scope.garbadgeCollectorLoader = true;
             MonitoringRestService.monitorGC().success(function () {
-                toastr.success('Garbage collection performed.');
+                toastr.success($translate.instant('resources.garbage.collection.done'));
                 $scope.garbadgeCollectorLoader = false;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
                 $scope.garbadgeCollectorLoader = false;
             });
         };

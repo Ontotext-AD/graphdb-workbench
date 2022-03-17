@@ -148,7 +148,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }
         }).error(function (data) {
-            toastr.error($translate.instant('explore.error.resource.details') + getError(data));
+            toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
         });
 
         $scope.exploreResource();
@@ -203,7 +203,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
             yasr.setResponse(jqXhr, textStatus);
         }).fail(function (data) {
-            toastr.error($translate.instant('explore.error.resource') + getError(data));
+            toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
             toggleOntoLoader(false);
         });
     };
@@ -460,7 +460,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-                toastr.error($translate.instant('explore.error.resource.details') + getError(data));
+                toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
             });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
