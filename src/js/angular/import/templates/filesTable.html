@@ -151,7 +151,7 @@
                         ng-disabled="file.status === 'INTERRUPTING'"
                         ng-cloak
                         ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
-                        tooltip="Interrupt import" tooltip-trigger="mouseenter"
+                        tooltip="{{'filesTable.interrupt.import' | translate}}" tooltip-trigger="mouseenter"
                         tooltip-append-to-body="true">
                     <span class="icon-close"></span>
                     {{'import.abort.btn' | translate}}
