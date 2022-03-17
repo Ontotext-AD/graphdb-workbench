@@ -2992,9 +2992,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 }
 
-SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data', '$translate'];
 
-function SaveGraphModalCtrl($scope, $modalInstance, data) {
+function SaveGraphModalCtrl($scope, $modalInstance, data, $translate) {
     $scope.mode = data.mode;
     $scope.graph = angular.copy(data.graph);
     $scope.graphExists = data.graphExists;

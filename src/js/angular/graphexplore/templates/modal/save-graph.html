@@ -8,7 +8,7 @@
     <div class="modal-body">
         <input id="wb-graphviz-savegraph-name" required type="text" ng-model="graph.name" class="form-control"
                ng-change="graphExists = false"
-               placeholder="{{'save_graph.enter.name | translate}}" ng-maxlength="100"/>
+               placeholder="{{'save_graph.enter.name' | translate}}" ng-maxlength="100"/>
         <label for="share-graph"
                tooltip="{{'save_graph.visible.graph' | translate}}">
             <input id="share-graph" type="checkbox" ng-model="graph.shared">
