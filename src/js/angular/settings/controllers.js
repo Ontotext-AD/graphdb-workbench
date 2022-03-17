@@ -14,9 +14,9 @@ angular
     .controller('RegisterLicenseCtrl', RegisterLicenseCtrl)
     .controller('LoaderSamplesCtrl', LoaderSamplesCtrl);
 
-ActiveLocationSettingsCtrl.$inject = ['$scope', 'toastr', '$modalInstance', 'LicenseRestService'];
+ActiveLocationSettingsCtrl.$inject = ['$scope', 'toastr', '$modalInstance', 'LicenseRestService', '$translate'];
 
-function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestService) {
+function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestService, $translate) {
     $scope.supportsStatistics = true;
     $scope.settings = {statistics: false};
     $scope.getSettings = getSettings;
@@ -31,7 +31,7 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
                 $scope.supportsStatistics = false;
             } else {
                 const msg = getError(response.data);
-                toastr.error(msg, 'Error getting settings');
+                toastr.error(msg, $translate.instant('error.getting.settings'));
             }
         });
     }
@@ -42,10 +42,10 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
         $scope.loader = true;
         LicenseRestService.toggleStatistics($scope.settings.statistics).then(function () {
             $modalInstance.close();
-            toastr.success('Settings have been saved');
+            toastr.success($translate.instant('saving.settings.success'));
         }, function (response) {
             const msg = getError(response.data);
-            toastr.error(msg, 'Error saving settings');
+            toastr.error(msg, $translate.instant('saving.settings.error'));
         });
     };
 
@@ -58,9 +58,9 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
     };
 }
 
-LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService'];
+LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService', '$translate'];
 
-function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService) {
+function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate) {
 
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense;
@@ -70,8 +70,8 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 
     $scope.revertToFree = function () {
         ModalService.openSimpleModal({
-            title: 'Confirm operation',
-            message: "Reverting to a GraphDB Free license will make SE and EE features unusable. Are you sure?",
+            title: $translate.instant('confirm.operation'),
+            message: $translate.instant("revert.to.free.warning.msg"),
             warning: true
         }).result
             .then(function () {
@@ -83,9 +83,9 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
     };
 }
 
-RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
+RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$modal', 'toastr', '$window', '$jwtAuth', '$translate'];
 
-function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
+function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth, $translate) {
     $scope.$on('securityInit', function () {
         if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
@@ -104,7 +104,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
                 .success(function (licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
                 }).error(function () {
-                    toastr.error('Could not upload file');
+                    toastr.error($translate.instant('could.not.upload.file.error'));
                 });
         }
     });
@@ -130,7 +130,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
                 }
             })
             .error(function () {
-                toastr.error('Invalid license');
+                toastr.error($translate.instant('invalid.license'));
             });
     }
 
@@ -168,10 +168,10 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
                 .success(function () {
                     $window.history.back();
                 }).error(function () {
-                    toastr.error('Error registering GraphDB license');
+                    toastr.error($translate.instant('license.register.error'));
                 });
         } else {
-            toastr.error('No license code available in textarea');
+            toastr.error($translate.instant('no.license.code.error'));
         }
     }
 }

@@ -14,6 +14,7 @@ import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/autocomplete-status.service';
+import {decodeHTML} from "../../app";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -113,7 +114,7 @@ mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$loc
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate) {
-    $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
+    $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
     $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
@@ -153,7 +154,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         });
 
         $rootScope.helpInfo = $sce.trustAsHtml($translate.instant($rootScope.helpInfo));
-        $rootScope.title = $translate.instant($rootScope.title)
+        $rootScope.title = $translate.instant($rootScope.title);
+        $scope.initTutorial();
     });
 
     $scope.checkMenu = function () {
@@ -467,7 +469,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not get saved queries');
+                toastr.error(msg, $translate.instant('query-editor.get.saved.queries.error'));
             });
     };
 
@@ -489,46 +491,24 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
         $scope.tutorialInfo = [
             {
-                "title": "Welcome to GraphDB",
-                "info": "GraphDB is a graph database compliant with RDF and SPARQL specifications. " +
-                    "It supports open APIs based on RDF4J (ex-Sesame) project and enables fast publishing of linked data on the web. " +
-                    "The Workbench is used for searching, exploring and managing GraphDB semantic repositories. " +
-                    "This quick tutorial will guide you through the basics: <br>" +
-                    "<ul>" +
-                    "<li>(1) Create a repository</li>" +
-                    "<li>(2) Load a sample dataset</li>" +
-                    "<li>(3) Run a SPARQL query</li>" +
-                    "</ul>" +
-                    "You can always come back to this tutorial by pressing the GraphDB icon in the top left corner."
+                "title": $translate.instant("main.info.title.welcome.page"),
+                "info": decodeHTML($translate.instant('main.info.welcome.page'))
             },
             {
-                "title": "Create a repository",
-                "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
-                    "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
-                    "RDF statements. If you plan to load more check for more information: " +
-                    "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                "title": $translate.instant('main.info.title.create.repo.page'),
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">"}))
             },
             {
-                "title": "Load a sample dataset",
-                "info": "GraphDB includes a sample dataset in the distribution under the directory examples/data/news. " +
-                    "The dataset represents new articles semantically enriched with structured information from Wikipedia. " +
-                    "To load the data go to Import > RDF and select the local files. "
+                "title": $translate.instant('main.info.title.load.sample.dataset'),
+                "info": $translate.instant('main.info.load.sample.dataset')
             },
             {
-                "title": "Run a SPARQL query",
-                "info": "You can find a list of sample SPARQL queries under examples/data/news/queries.txt demonstrating how to find " +
-                    "interesting searches of news articles and the mentioned entities like: <br>" +
-                    "<ul>" +
-                    "<li>(1) Give me articles about persons born in New York</li>" +
-                    "<li>(2) Show me all occupations of every person in the news</li>" +
-                    "<li>(3) List me the members of a specific political party</li>" +
-                    "</ul>"
+                "title": $translate.instant('main.info.title.run.sparql.query'),
+                "info": decodeHTML($translate.instant('main.info.run.sparql.query'))
             },
             {
-                "title": "REST API",
-                "info": "GraphDB allows you to perform every operation also via a REST API or by using language specific RDF4J client application. " +
-                    "To see the full list of supported functionality go to Help > REST API or check the sample code under examples/developer-getting-started/\n" +
-                    "Have fun!"
+                "title": $translate.instant('menu.rest.api.label'),
+                "info": decodeHTML($translate.instant('main.info.rest.api'))
             }
         ];
         $scope.activePage = 0;
@@ -866,22 +846,22 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const now = Date.now();
         const delta = (now - time) / 1000;
         if (delta < 60) {
-            return "moments ago";
+            return $translate.instant('timestamp.moments.ago');
         } else if (delta < 600) {
-            return "minutes ago";
+            return $translate.instant('timestamp.minutes.ago');
         } else {
             const dNow = new Date(now);
             const dTime = new Date(time);
             if (dNow.getYear() === dTime.getYear() && dNow.getMonth() === dTime.getMonth() && dNow.getDate() === dTime.getDate()) {
                 // today
-                return $filter('date')(time, "'today at' HH:mm");
+                return $filter('date')(time, "'" + $translate.instant('timestamp.today.at') + "' HH:mm");
             } else if (delta < 86400) {
                 // yesterday
-                return $filter('date')(time, "'yesterday at' HH:mm");
+                return $filter('date')(time, "'" + $translate.instant('timestamp.yesterday.at') + "' HH:mm");
             }
         }
 
-        return $filter('date')(time, "'on' yyyy-MM-dd 'at' HH:mm");
+        return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
 }
 

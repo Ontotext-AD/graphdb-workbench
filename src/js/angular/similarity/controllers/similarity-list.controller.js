@@ -1,12 +1,13 @@
 import YASR from 'lib/yasr.bundled';
+import {decodeHTML} from "../../../../app";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -50,7 +51,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             $scope.searchQueries = data;
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, 'Could not get search queries');
+            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
         });
     }
 
@@ -69,7 +70,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not get indexes');
+                toastr.error(msg, $translate.instant('similarity.could.not.get.indexes.error'));
             });
     };
 
@@ -113,7 +114,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
                         hideHeader: true
                     });
                 }).error(function (data) {
-                    toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly;');
+                    toastr.error(getError(data), $translate.instant('explore.namespaces'));
                 });
         }
     });
@@ -231,7 +232,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             toggleOntoLoader(false);
             yasr.setResponse(data, textStatus, jqXhrOrErrorString);
         }).fail(function (data) {
-            toastr.error(getError(data), 'Could not get resource!');
+            toastr.error(getError(data), $translate.instant('similarity.get.resource.error'));
             toggleOntoLoader(false);
         });
     };
@@ -268,8 +269,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     $scope.deleteIndex = function (index) {
         ModalService.openSimpleModal({
-            title: 'Confirm',
-            message: 'Are you sure you want to delete the index ' + '\'' + index.name + '\'?',
+            title: $translate.instant('common.confirm'),
+            message: $translate.instant('similarity.delete.index.warning', {name: index.name}),
             warning: true
         }).result
             .then(function () {
@@ -311,8 +312,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             index.searchQuery = index.type ? $scope.searchQueries[index.type] : $scope.searchQueries.text;
         }
         ModalService.openSimpleModal({
-            title: 'Confirm',
-            message: 'Are you sure you want to rebuild the whole index ' + '\'' + index.name + '\'?' + '<br>You will still be able to use the latest successful build!',
+            title: $translate.instant('common.confirm'),
+            message: decodeHTML($translate.instant('similarity.rebuild.index.warning', {name: index.name})),
             warning: true
         }).result
             .then(function () {

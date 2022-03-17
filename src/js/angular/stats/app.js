@@ -2,8 +2,8 @@ import 'angular/core/services';
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
-adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth',
-    function ($scope, $http, toastr, $timeout, $jwtAuth) {
+adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate',
+    function ($scope, $http, toastr, $timeout, $jwtAuth, $translate) {
 
         $http.get('rest/info/data')
             .success(function (data) {
@@ -11,7 +11,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
 
 
@@ -30,7 +30,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         };
 
@@ -53,7 +53,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         };
     }]);

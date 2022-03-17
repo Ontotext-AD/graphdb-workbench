@@ -8,9 +8,9 @@ angular
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$modal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys) {
+function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -106,7 +106,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Could not get indexes');
+                    toastr.error(msg, $translate.instant('similarity.could.not.get.indexes.error'));
                 });
 
                 $scope.samples = $scope.allSamples['predication'];
@@ -123,31 +123,31 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         $scope.invalidIndexName = false;
         $scope.saveQueries();
         if (!$scope.newIndex.name) {
-            $scope.invalidIndexName = 'Index name cannot be empty';
+            $scope.invalidIndexName = $translate.instant('similarity.empty.index.name.error');
             return false;
         }
         if (!filenamePattern.test($scope.newIndex.name)) {
-            $scope.invalidIndexName = 'Index name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"';
+            $scope.invalidIndexName = $translate.instant('similarity.index.name.constraint');
             return false;
         }
 
         if (!$scope.newIndex.query) {
-            toastr.error('Select query cannot be empty.');
+            toastr.error($translate.instant('similarity.empty.select.query.error'));
             return false;
         }
 
         if (!$scope.newIndex.searchQuery) {
-            toastr.error('Search query cannot be empty.');
+            toastr.error($translate.instant('similarity.empty.search.query.error'));
             return false;
         }
 
         if ($scope.viewType === 'predication' && !$scope.newIndex.analogicalQuery) {
-            toastr.error('Analogical query cannot be empty.');
+            toastr.error($translate.instant('similarity.empty.analogical.query.error'));
             return false;
         }
 
         if (window.editor.getQueryType() !== 'SELECT') {
-            toastr.error('Similarity index requires SELECT queries.');
+            toastr.error($translate.instant('similarity.index.select.queries.constraint'));
             return;
         }
 
@@ -171,7 +171,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         });
     }).error(function (data) {
         const msg = getError(data);
-        toastr.error(msg, 'Could not get search queries');
+        toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
     });
 
     $scope.$watch('viewType', function () {
@@ -279,7 +279,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
             .success(function (data) {
                 data.forEach(function (index) {
                     if (index.name === $scope.newIndex.name) {
-                        $scope.invalidIndexName = 'Index with this name already exists.';
+                        $scope.invalidIndexName = $translate.instant('similarity.existing.index.name.error');
                     }
                 });
                 if (!$scope.invalidIndexName) {
@@ -308,7 +308,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                         indexType,
                         $scope.newIndex.analyzer)
                         .error(function (err) {
-                            toastr.error(getError(err), 'Could not create index');
+                            toastr.error(getError(err), $translate.instant('similarity.create.index.error'));
                         });
                     $location.url('similarity');
                 }
@@ -316,7 +316,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not get indexes');
+                toastr.error(msg, $translate.instant('similarity.could.not.get.indexes.error'));
             });
     };
 
@@ -433,7 +433,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
         if ($scope.progressMessage) {
             message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = 'Running operation...' + timeHuman;
+            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
         }
         if ($scope.extraMessage && timeSeconds > 10) {
             message += '\n' + $scope.extraMessage;
@@ -529,16 +529,16 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
         if (window.editor.getQueryType() !== 'SELECT') {
-            toastr.error('Similarity indexes work only with SELECT queries.');
+            toastr.error($translate.instant('similarity.indexes.select.queries.constraint'));
             return;
         }
-        if (explain && !(window.editor.getQueryType() === 'SELECT')) {
-            toastr.warning('Explain only works with SELECT queries.');
+        if (explain && window.editor.getQueryType() !== 'SELECT') {
+            toastr.warning($translate.instant('similarity.explain.select.queries.constraint'));
             return;
         }
 
         if (window.editor.getQueryMode() === 'update') {
-            toastr.warning('Cannot execute updates from this editor.');
+            toastr.warning($translate.instant('similarity.cannot.execute.update.error'));
             return;
         }
 
@@ -556,7 +556,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                 $scope.fixSizesOnHorizontalViewModeSwitch();
             }
 
-            setLoader(true, 'Evaluating query');
+            setLoader(true, $translate.instant('similarity.evaluating.query.msg'));
             window.editor.query();
         }
     }
@@ -564,7 +564,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
     // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -608,7 +608,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not add known prefixes');
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
@@ -740,7 +740,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
     $scope.saveSearchQuery = function () {
         // Should validate that query is SELECT
         if (window.editor.getQueryType() !== 'SELECT') {
-            toastr.error('Similarity index requires SELECT queries.');
+            toastr.error($translate.instant('similarity.index.select.queries.constraint'));
             return;
         }
         let data = {
@@ -751,14 +751,15 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
 
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
             .then(async function () {
-                await Notifications.showToastMessageWithDelay($scope.page === 2 ? 'Changed search query' : 'Changed analogical query');
+                await Notifications.showToastMessageWithDelay($scope.page === 2 ? $translate.instant('similarity.changed.search.query.msg') : $translate.instant('similarity.changed.analogical.query.msg'));
                 $location.url('similarity');
             }, function (response) {
-                toastr.error(getError(response), 'Could not change query!');
+                toastr.error(getError(response), $translate.instant('similarity.change.query.error'));
             });
     };
 
     $scope.getCloseBtnMsg = function () {
-        return "Closes " + ($scope.editSearchQuery ? "query edition": "index creation") + " without saving the changes."
+        let operationType = $scope.editSearchQuery ? $translate.instant('similarity.query.edition.msg') : $translate.instant('similarity.index.creation.msg');
+        return $translate.instant('similarity.close.btn.msg', {operation: operationType});
     }
 }
