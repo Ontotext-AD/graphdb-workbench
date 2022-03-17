@@ -81,6 +81,10 @@
     "security.new.password": "New password",
     "security.save.admin.settings": "Save administrator settings",
     "security.admin.pass.unset": "If you unset the password and then enable security, this administrator will not be able to log into GraphDB through the workbench. Are you sure that you want to continue?",
+    "resource.classes": "Classes",
+    "resource.system.cpu.load": "System CPU Load",
+    "resource.used.memory": "Used memory",
+    "resource.thread.count": "Thread Count",
 
     "view.autocomplete.title": "Autocomplete index",
     "view.autocomplete.helpInfo": "The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.",
@@ -106,6 +110,7 @@
     "view.jdbc.helpInfo": "JDBC driver configuration to allow SQL access to repository data",
     "view.jdbc.create.title": "SQL table configuration",
     "view.jdbc.create.helpInfo": "RDF to SQL table mapping configuration tool",
+    "jdbc.column.names.constraint": "Column names must be placed in array.",
     "view.namespaces.title": "Namespaces",
     "view.namespaces.helpInfo": "The Namespaces view provides an overview of all namespaces used in your data. Here you can add, remove and modify them.",
     "view.ontoRefine.title": "OntoRefine",

@@ -329,9 +329,12 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
         };
     }]);
 
-securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate) {
-
+securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
+    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+        $rootScope.$on('$translateChangeSuccess', function () {
+            $scope.saveButtonText = $translate.instant('common.create.btn');
+            $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
+        });
         $scope.isAdmin = function () {
             return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
         };
@@ -436,7 +439,7 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
 
         $scope.mode = 'add';
         $scope.saveButtonText = $translate.instant('common.create.btn');
@@ -545,7 +548,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
 securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
@@ -680,7 +683,7 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
 securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
         $scope.mode = 'settings';
         $scope.hasEditRestrictions = function () {

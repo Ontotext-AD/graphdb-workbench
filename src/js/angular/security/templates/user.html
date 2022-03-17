@@ -39,7 +39,7 @@
 			<div class="col-md-6">
 				<div class="card login-credentials" ng-hide="isOverrideAuth() || !isLocalAuthentication()">
 					<div class="card-block">
-						<h3>Login</h3>
+						<h3>{{'view.login.title' | translate}}</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
@@ -50,7 +50,7 @@
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
 								<span class="input-group-addon" tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-password" placeholder="{{'passwordPlaceholder' | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
+								<input id="wb-user-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
 							</div>
 							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
@@ -80,7 +80,7 @@
 							<span class="sameas-label">
 								{{'security.expand.sameAs.is' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_SAMEAS ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_SAMEAS ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_SAMEAS ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
 							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
@@ -96,7 +96,7 @@
 							<span class="inference-label">
 								{{'security.inference.is' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_INFERENCE ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_INFERENCE ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_INFERENCE ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
 							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
@@ -112,7 +112,7 @@
 							<span class="schema-label">
 								{{'security.show.schema' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
                                 <span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
                                       ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"

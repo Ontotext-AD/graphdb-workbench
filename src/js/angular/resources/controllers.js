@@ -16,19 +16,19 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
     function ($scope, toastr, $interval, $timeout, MonitoringRestService, $translate) {
         $scope.data = {
             classCount: [{
-                key: 'Classes',
+                key: $translate.instant('resource.classes'),
                 values: []
             }],
             cpuLoad: [{
-                key: 'System CPU Load',
+                key: $translate.instant('resource.system.cpu.load'),
                 values: []
             }],
             memoryUsage: [{
-                key: 'Used memory',
+                key: $translate.instant('resource.used.memory'),
                 values: []
             }],
             threadCount: [{
-                key: 'Thread Count',
+                key: $translate.instant('resource.thread.count'),
                 values: []
             }]
         };
