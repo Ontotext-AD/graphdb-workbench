@@ -605,7 +605,7 @@
     "save.sparql.template.failure.msg": "Could not save {{templateID}} template",
     "sparql.template.query.constraint": "The template query must be an UPDATE query",
     "save.sparql.template.success.msg": "Saved SPARQL template",
-    "attach.remote.location": "Attach a remote GraphDB instance",
+    "attach.remote.gdb.instance": "Attach a remote GraphDB instance",
     "remote.location.url": "Location URL*",
     "remote.location.enter.url.msg": "Enter a URL to a remote GraphDB instance",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",

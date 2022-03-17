@@ -114,7 +114,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
                         hideHeader: true
                     });
                 }).error(function (data) {
-                    toastr.error(getError(data), $translate.instant('explore.namespaces'));
+                    toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));
                 });
         }
     });
