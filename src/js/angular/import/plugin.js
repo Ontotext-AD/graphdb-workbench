@@ -5,7 +5,7 @@ PluginRegistry.add('route', {
     'chunk': 'import',
     'controller': 'CommonCtrl',
     'templateUrl': 'pages/import.html',
-    'title': 'menu.import.label',
+    'title': 'common.import',
     'reloadOnSearch': false,
     'helpInfo': 'view.import.helpInfo'
 });
@@ -14,7 +14,7 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Import',
-            labelKey: 'menu.import.label',
+            labelKey: 'common.import',
             href: '#',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',
