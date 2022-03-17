@@ -7,8 +7,8 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
     'graphdb.framework.rest.monitoring.service'
 ]);
 
-queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService',
-    function ($scope, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService) {
+queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService', '$translate',
+    function ($scope, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;
@@ -99,11 +99,11 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
 
             $scope.loader = true;
             MonitoringRestService.deleteQuery(queryId).success(function () {
-                toastr.success('Abort request sent.');
+                toastr.success($translate.instant('abort.request.sent.msg'));
                 $scope.loader = false;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
 
                 $scope.loader = false;
             });
@@ -111,8 +111,8 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
 
         $scope.abortQuery = function (queryId) {
             ModalService.openSimpleModal({
-                title: 'Confirm abort',
-                message: 'Are you sure you want to abort the query?',
+                title: $translate.instant('confirm.abort'),
+                message: $translate.instant('confirm.abort.warning.msg'),
                 warning: true
             }).result.then(function () {
                 $scope.deleteQueryHttp(queryId);
