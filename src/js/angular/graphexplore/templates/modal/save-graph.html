@@ -20,7 +20,7 @@
             <div class="alert alert-danger" style="margin-top: 5px;">{{'save_graph.name.too.long' | translate}}</div>
         </div>
         <div ng-show="form.$error.required.length">
-            <div ng-hide="graph.name" class="alert alert-danger" style="margin-top: 5px;">{{'save_graph.name.empty' | translate}}</div>
+            <div ng-hide="graph.name" class="alert alert-danger" style="margin-top: 5px;">{{'empty.name.alert' | translate}}</div>
         </div>
         <div ng-hide="form.$error.required.length" ng-if="graphExists" class="alert alert-danger"
              style="margin-top: 5px;">Saved graph with name <strong>&#39;{{graph.name}}&#39;</strong> already exists!

@@ -156,7 +156,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 toastr.warning($translate.instant('graphexplore.disabling.animations', {classLimit: classLimit}),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             } else {
-                toastr.warning(bowser.name + $translate.instant('graphexplore.browser.performance', {classLimit: classLimit}),
+                toastr.warning($translate.instant('graphexplore.browser.performance', {browser: bowser.name, classLimit: classLimit}),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             }
         };
@@ -457,7 +457,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                     $scope.loader = false;
                     $scope.classHierarchyData = response;
                     if (status === 207) {
-                        toastr.warning($translate.instant('graphexplore.reload.to.update'), $translate.instant('graphexplore.repository.data.changed'));
+                        toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
                     }
                     fixToolbar();
                 }).error(function (response) {

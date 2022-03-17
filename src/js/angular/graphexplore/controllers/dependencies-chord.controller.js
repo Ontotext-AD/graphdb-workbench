@@ -69,7 +69,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
             }).error(function (data) {
             $scope.repositoryError = getError(data);
-            toastr.error(getError(data), $translate.instant('graphexplore.error.graph'));
+            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graph'));
         });
     };
 
@@ -145,7 +145,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
                 if ($scope.status.indexOf('ERROR;') === 0) {
                     $scope.status = STATUS.ERROR;
-                    toastr.error($translate.instant('graphexplore.error.dependencies.calc') + $scope.status.substring('ERROR;'.length));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 }
             })
             .error(function (data) {
@@ -239,13 +239,13 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         GraphDataRestService.calculateRelationships(selectedGraph.contextID.uri)
             .success(function (data) {
                 if (data.indexOf('ERROR;') === 0) {
-                    toastr.error($translate.instant('graphexplore.error.dependencies.calc') + data.substring('ERROR;'.length));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 } else {
                     getRelationshipsStatus();
                 }
             })
             .error(function (data) {
-                toastr.error($translate.instant('graphexplore.error.could.not.force.count') + getError(data));
+                toastr.error($translate.instant('graphexplore.error.could.not.force.count', {error: getError(data)}));
             });
     };
 

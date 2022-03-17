@@ -916,7 +916,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.deleteConfig = function (config) {
         ModalService.openSimpleModal({
-            title: $translate.instant('graphexplore.confirm'),
+            title: $translate.instant('common.confirm'),
             message: $translate.instant('graphexplore.delete.graph', {configName: config.name}),
             warning: true
         }).result
@@ -2940,7 +2940,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.deleteSavedGraph = function (savedGraph) {
         ModalService.openSimpleModal({
-            title: $translate.instant('graphexplore.confirm'),
+            title: $translate.instant('common.confirm'),
             message: $translate.instant('graphexplore.confirm.delete.graph', {graphName: savedGraph.name}),
             warning: true
         }).result
@@ -3002,15 +3002,15 @@ function SaveGraphModalCtrl($scope, $modalInstance, data) {
     switch ($scope.mode) {
         case 'new':
             $scope.title = $translate.instant('graphexplore.create.new.graph');
-            $scope.okButtonText = $translate.instant('graphexplore.create');
+            $scope.okButtonText = $translate.instant('common.create.btn');
             break;
         case 'update':
             $scope.title = $translate.instant('graphexplore.update');
-            $scope.okButtonText = $translate.instant('graphexplore.save');
+            $scope.okButtonText = $translate.instant('common.save.btn');
             break;
         case 'rename':
             $scope.title = $translate.instant('graphexplore.rename');
-            $scope.okButtonText = $translate.instant('graphexplore.save');
+            $scope.okButtonText = $translate.instant('common.save.btn');
     }
 
     $scope.ok = function () {

@@ -520,7 +520,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
         if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-            toastr.warning($translate.instant('graphexplore.construct.select.explain'));
+            toastr.warning($translate.instant('query-editor-warning-msg'));
             return;
         }
 
@@ -550,7 +550,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
 
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, $translate.instant('graphexplore.refreshing.namespaces'), $translate.instant('graphexplore.refreshing.namespaces.info'));
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -594,7 +594,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
             })
             .error(function (data) {
                 let msg = getError(data);
-                toastr.error(msg, $translate.instant('graphexplore.error.prefixes'));
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }

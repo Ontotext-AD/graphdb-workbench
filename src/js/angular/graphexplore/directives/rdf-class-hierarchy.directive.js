@@ -137,7 +137,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 }).error(function (response) {
                 $rootScope.loader = false;
                 $rootScope.hierarchyError = getError(response);
-                toastr.error($translate.instant('graphexplore.error.request.failed', {name: ROOT_OBJ_NAME}) + getError(response));
+                toastr.error($translate.instant('graphexplore.error.request.failed', {name: ROOT_OBJ_NAME, error: getError(response)}));
             });
         }
 
