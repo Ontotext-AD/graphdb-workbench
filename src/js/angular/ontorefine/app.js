@@ -5,7 +5,7 @@ import 'lib/yasr.bundled';
 
 const ontorefine = angular.module('graphdb.framework.ontorefine', ['graphdb.framework.core.directives']);
 
-ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$location', '$timeout', function ($scope, $routeParams, $window, $location, $timeout) {
+ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$location', '$timeout', '$translate', function ($scope, $routeParams, $window, $location, $timeout, $translate) {
     $scope.refineDisabled = false;
     window.addEventListener("message", isProjectPristine);
     var isPristine = true;
@@ -57,7 +57,7 @@ ontorefine.controller('OntoRefineCtrl', ['$scope', '$routeParams', '$window', '$
 
     $scope.$on('$locationChangeStart', (event) => {
         if (!isPristine) {
-            if (!confirm("There are unsaved changes! Are you sure, you want to exit?")) {
+            if (!confirm($translate.instant('page.leave.pristine.warning'))) {
                 event.preventDefault();
             }
         }
