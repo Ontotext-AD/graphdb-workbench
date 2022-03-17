@@ -36,7 +36,7 @@
     "menu.developer.hub.label": "Entwickler-Hub",
     "menu.support.label": "Unterstützung",
 
-    "core_errors.repository.create.btn": "Erstellen sie ein neues repository",
+    "repository.create.btn": "Erstellen sie ein neues repository",
     "core_errors.no.connected.repository.warning.msg": "Einige Funktionen sind nicht verfügbar, da Sie mit keinem Repository verbunden sind.",
     "core_errors.restricted.warning.msg": "Einige Funktionen sind nicht verfügbar, weil",
     "core_errors.not.valid.license.warning.msg": "Ihre Lizenz ist ungültig.",

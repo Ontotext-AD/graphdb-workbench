@@ -317,7 +317,6 @@
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",
 
-    "core_errors.repository.create.btn": "Create new repository",
     "core_errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",
     "core_errors.restricted.warning.msg": "Some functionalities are not available because",
     "core_errors.not.valid.license.warning.msg": "your license is not valid.",
