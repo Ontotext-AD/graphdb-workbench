@@ -16,21 +16,21 @@
     <div core-errors license></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
-        <p>The currently selected repository cannot be used for queries due to an error:</p>
+        <p>{{'not.usable.active.repo.error' | translate}}</p>
 
         <p>{{repositoryError}}</p>
     </div>
 
     <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
-                tooltip="Back to visual graph home"
+                tooltip="{{'visual.graph.home.label' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-click="goToHome()">
             <em class="icon-arrow-up icon-2x"></em>
         </button>
         <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link p-0"
-                tooltip="Search another resource"
+                tooltip="{{'search.another.resource.label' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -38,7 +38,7 @@
             <em class="icon-search icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to rotate the graph to the left"
+                tooltip="{{'visual.graph.rotate.graph.left' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -46,7 +46,7 @@
             <em class="icon-rotate-left icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to rotate the graph to the right"
+                tooltip="{{'visual.graph.rotate.graph.right' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -54,7 +54,7 @@
             <em class="icon-rotate-right icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{numberOfPinnedNodes > 0 ? 'Unpin all nodes' : 'Pin down all nodes'}}"
+                tooltip="{{numberOfPinnedNodes > 0 ? 'visual.graph.unpin.nodes' : 'visual.graph.pin.down.nodes' | translate}}"
                 ng-class="numberOfPinnedNodes > 0 ? 'active' : ''"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
@@ -63,7 +63,7 @@
             <em class="icon-pin icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Save graph snapshot"
+                tooltip="{{'visual.save.graph.snapshot' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-if="isUser() && !embedded"
@@ -72,7 +72,7 @@
             <em class="icon-save icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to configure the view"
+                tooltip="{{'visual.graph.click.configure.view' | translate}}"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-if="isUser()"
@@ -89,15 +89,15 @@
                 <div class="card">
                     <div class="card-block">
                         <h3>{{configLoaded.name}}</h3>
-                        <p>Search for an IRI to view it.
-                            <span ng-if="configLoaded.name != defaultGraphConfig.name">This is a user defined advanced configuration.</span>
-                            <p ng-if="configLoaded.hint">Hint: {{configLoaded.hint}}</p>
+                        <p>{{'visual.search.iri' | translate}}
+                            <span ng-if="configLoaded.name != defaultGraphConfig.name">{{'visual.graph.advanced.option' | translate}}</span>
+                            <p ng-if="configLoaded.hint">{{'hint' | translate}} {{configLoaded.hint}}</p>
                         </p>
                         <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
-                                visual-button="Show"
+                                visual-button="{{'rdfs_comment.show' | translate}}"
                                 visual-callback="openUri(uri)"
                                 empty="empty">
                         </search-resource-input>
@@ -112,13 +112,13 @@
 
                 <div class="card mb-2">
                     <div class="card-block">
-                        <h3>Easy graph</h3>
-                        <p>Search for an IRI to view it and configure the visualisation through the UI without using SPARQL</p>
+                        <h3>{{'visual.easy.graph' | translate}}</h3>
+                        <p>{{'visual.easy.graph.info' | translate}}</p>
                         <search-resource-input class="search-rdf-resources"
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
-                                visual-button="Show"
+                                visual-button="{{'rdfs_comment.show' | translate}}"
                                 visual-callback="easyGraphSearch(uri)"
                                 empty="empty">
                         </search-resource-input>
@@ -127,19 +127,19 @@
                 <div ng-show="isFreeAccessEnabled() || isUser()" class="card mb-2">
                     <div class="card-block graph-configurations" ng-init="getGraphConfigs()">
                         <div class="clearfix">
-                            <a  ng-if="isUser()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> Create graph config</a>
-                            <h3>Advanced graph configurations</h3>
-                            <p>Define how the visualisation works by writing your own SPARQL queries</p>
+                            <a  ng-if="isUser()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> {{'visual.create.graph.config' | translate}}</a>
+                            <h3>{{'visual.advanced.graph.config' | translate}}</h3>
+                            <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
-                        <div ng-show="graphConfigs.length == 0">No graph configs</div>
+                        <div ng-show="graphConfigs.length == 0">{{'visual.no.configs' | translate}}</div>
                         <table class="table table-hover mb-0" aria-describedby="Graph configurations table">
                             <tbody>
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
                                     <a href ng-click="goToGraphConfig(config)">
-                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Search box" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Fixed resource" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Query results" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="{{'visual.config.search.box.starting.point' | translate}}" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="{{'visual.config.fixed.resource.starting.point' | translate}}" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="{{'visual.config.query.results.starting.point' | translate}}" popover-trigger="mouseenter">
                                     </a>
                                 </td>
                                 <td>
@@ -150,8 +150,8 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal().username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="Edit configuration"><span class="icon-edit"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="Delete configuration"><span class="icon-trash"></span></button>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="{{'visual.delete.config' | translate}}"><span class="icon-trash"></span></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -161,8 +161,8 @@
 
                 <div ng-show="isFreeAccessEnabled() || isUser()" class="card mb-2">
                     <div class="card-block">
-                        <h3 class="mb-2">Saved graphs</h3>
-                        <div ng-show="savedGraphs.length == 0">No saved visual graph snapshots</div>
+                        <h3 class="mb-2">{{'visual.saved.graphs' | translate}}</h3>
+                        <div ng-show="savedGraphs.length == 0">{{'visual.no.saved.graphs' | translate}}</div>
                         <table class="table table-hover mb-0" ng-init="refreshSavedGraphs()" aria-describedby="Saved graphs table">
                             <tbody>
                             <tr ng-repeat="graph in savedGraphs">
@@ -170,24 +170,24 @@
                                     <h5><a href ng-click="loadSavedGraph(graph)">{{graph.name}}</a></h5>
                                 </td>
                                 <td>
-                                    <span ng-show="graph.config != 'default'">Advanced: <strong>{{findConfigById(graph.config).name}}</strong></span>
-                                    <span ng-show="graph.config == 'default'">Easy graph</span>
+                                    <span ng-show="graph.config != 'default'">{{'visual.advanced' | translate}} <strong>{{findConfigById(graph.config).name}}</strong></span>
+                                    <span ng-show="graph.config == 'default'">{{'visual.easy.graph' | translate}}</span>
                                 </td>
                                 <td class="text-xs-right">
                                     <button class="btn btn-link"
-                                            tooltip="Get URL to graph" tooltip-trigger="mouseenter"
+                                            tooltip="{{'visual.get.graph.url' | translate}}" tooltip-trigger="mouseenter"
                                             ng-click="copyToClipboardSavedGraph(graph)">
                                         <span class="icon-link"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal().username"
-                                            tooltip="Rename graph" tooltip-trigger="mouseenter"
+                                            tooltip="{{'visual.rename.graph' | translate}}" tooltip-trigger="mouseenter"
                                             ng-click="renameSavedGraph(graph)">
                                         <span class="icon-edit"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal().username"
-                                            tooltip="Delete graph" tooltip-trigger="mouseenter"
+                                            tooltip="{{'visual.delete.graph' | translate}}" tooltip-trigger="mouseenter"
                                             ng-click="deleteSavedGraph(graph)">
                                         <span class="icon-trash"></span>
                                     </button>
@@ -220,12 +220,12 @@
         ps-custom-height="calc(100vh - 55px)"
         ps-size="{{pageslideExpanded ? '80vw' : '25vw'}}">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
-        <span class="toggle-sidepanel" title="Collapse sidepanel" ng-click="toggleSidePanel()">
+        <span class="toggle-sidepanel" title="{{'visual.collapse.sidepanel' | translate}}" ng-click="toggleSidePanel()">
             <em ng-class="pageslideExpanded ? 'icon-caret-right' : 'icon-caret-left'"></em>
         </span>
         <button class="close mb-1 ml-1" ng-click="closeInfoPanel()"></button>
         <h3 class="hovered-parent" ng-if="showPredicates">
-            Predicates
+            {{'predicates.label' | translate}}
         </h3>
 
         <ul class="rdf-list tab-content" ng-if="showPredicates">
@@ -239,11 +239,11 @@
         </ul>
 
         <div ng-if="showFilter" class="filter-sidepanel tab-content">
-            <h4>Graph settings</h4>
+            <h4>{{'sidepanel.graph.settings' | translate}}</h4>
 
             <div>
                 <div class="form-group mb-2">
-                    <label tooltip="Limit the number of links when often they are too many">Maximum links to show</label>
+                    <label tooltip="{{'sidepanel.limit.links.tooltip' | translate}}">{{'sidepanel.maximum.links' | translate}}</label>
                     <div class="form-inline">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
                                 ng-click="changeLimit(-1)">
@@ -265,25 +265,25 @@
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label tooltip="Preferred languages for node and predicates labels">Preferred languages</label>
+                    <label tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}">{{'sidepanel.preferred.languages' | translate}}</label>
                     <div class="input-group preferred-languages">
                         <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
-                                    add-on-comma="true" placeholder="Add a language tag"></tags-input>
+                                    add-on-comma="true" placeholder="{{'sidepanel.add.language.tag' | translate}}"></tags-input>
                     </div>
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Include/Exclude predicates from owl: rdf: rdfs: sesame: dul: prov: fibo: wd:">
+                        <label tooltip="{{'sidepanel.include.schema.statements.tooltip' | translate}}">
                         <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
-                            Include schema statements
+                            {{'sidepanel.include.schema.statements' | translate}}
                         </label>
                     </div>
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Include/exclude inferred statements">
+                        <label tooltip="{{'sidepanel.include.inferred.statements.tooltip' | translate}}">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
-                            Include inferred statements
+                            {{'sidepanel.include.inferred.statements' | translate}}
                         </label>
                     </div>
                 </div>
@@ -291,11 +291,11 @@
 
 
                 <div class="form-group mb-2">
-                    <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}">
+                    <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : '' | translate}}">
                         <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
-                            Expand results over owl:sameAs
+                            {{'sidepanel.expand.results.sameas' | translate}}
                         </label>
                     </div>
                 </div>
@@ -304,9 +304,9 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Show predicate labels as links titles">
+                        <label tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
-                            Show predicate labels
+                            {{'sidepanel.show.pred.labels.as.links.titles' | translate}}
                         </label>
                     </div>
                 </div>
@@ -315,30 +315,30 @@
                     <tab>
                         <tab-heading class="nav-item"
                                      tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link">Types</span></tab-heading>
+                                     tooltip-trigger="mouseenter"><span class="nav-link">{{'types.label' | translate}}</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label tooltip="Types of nodes to show with preference when there are too many nodes">Preferred types</label>
+                            <label tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
-                                            add-on-comma="true" placeholder="Add preferred type"
+                                            add-on-comma="true" placeholder="{{'sidepanel.add.preferred.type.placeholder' | translate}}"
                                             on-tag-adding="validateTag($tag, 'Preferred types', false)"
                                             on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="Show only nodes of the preferred types">
+                                <label tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
-                                    Show preferred types only
+                                    {{'sidepanel.show.preferred.types.nodes.only' | translate}}
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label tooltip="Types of nodes to exclude from the visual graph">Ignored types</label>
+                            <label tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
-                                            add-on-comma="true" placeholder="Add ignored type"
+                                            add-on-comma="true" placeholder="{{'sidepanel.add.ignored.type.placeholder' | translate}}"
                                             on-tag-adding="validateTag($tag, 'Ignored types', false)"
                                             on-tag-added="addedTag($tag)"></tags-input>
                             </div>
@@ -347,33 +347,33 @@
                     <tab>
                         <tab-heading class="nav-item"
                                      tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></tab-heading>
+                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">{{'predicates.label' | translate}}</span></tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <div>
-                                <label tooltip="Predicates to show with preference when there are too many links">Preferred predicates</label>
+                                <label tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
 
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
-                                            add-on-comma="true" placeholder="Add preferred predicate"
+                                            add-on-comma="true" placeholder="{{'sidepanel.add.preferred.predicate' | translate}}"
                                             on-tag-adding="validateTag($tag, 'Preferred predicates', false)"
                                             on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="Show only links of the preferred predicates">
+                                <label tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
-                                    Show preferred predicates only
+                                    {{'sidepanel.show.preferred.predicates' | translate}}
                                 </label>
                             </div>
                         </div>
 
                         <div class="form-group ">
-                            <label tooltip="Ignored predicates will not appear as links in the visual graph but will be listed as instance properties when you click on a node">Ignored predicates</label>
+                            <label tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
-                                            add-on-comma="true" placeholder="Add ignored predicate"
+                                            add-on-comma="true" placeholder="{{'sidepanel.add.ignored.predicate.placeholder' | translate}}"
                                             on-tag-adding="validateTag($tag, 'Ignored predicates', true)"
                                             on-tag-added="addedTag($tag)"
                                             template="ignored-predicates-template"
@@ -384,13 +384,13 @@
                 </tabset>
 
                 <div class="mt-1">
-                    <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">Reset</button>
-                    <button type="submit" class="btn btn-primary btn-lg save-settings-btn" ng-click="updateSettings()">Save</button>
+                    <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">{{'common.reset' | translate}}</button>
+                    <button type="submit" class="btn btn-primary btn-lg save-settings-btn" ng-click="updateSettings()">{{'common.save.btn' | translate}}</button>
                 </div>
 
                 <script type="text/ng-template" id="ignored-predicates-template">
                     <div class="tag-template">
-                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *' : ''}}">
+                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'sidepanel.wildcard.iris' : '' | translate}}">
                             <span>{{$getDisplayText()}}</span>
                             <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
                         </div>
@@ -405,7 +405,7 @@
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
-                        title="Copy to Clipboard">
+                        title="{{'copy_to_clipboard_modal.ok.btn' | translate}}">
                     <span class="icon-link"></span>
                 </button>
             </h3>
@@ -419,7 +419,7 @@
 
             <div class="media mb-1">
                 <div class="media-left"
-                     tooltip="Labels"
+                     tooltip="{{'labels.label' | translate}}"
                      tooltip-placement="top"
                      tooltip-trigger="mouseenter">
                     <em class="icon-tag icon-lg" aria-hidden="true"></em>
@@ -433,7 +433,7 @@
             </div>
 
             <div class="break-word-alt">
-                <strong>Types: </strong><em class="text-muted" ng-if="!nodeTypes.length">No types</em><br>
+                <strong>{{'types.label' | translate}}: </strong><em class="text-muted" ng-if="!nodeTypes.length">No types</em><br>
                 <ul class="list-inline">
                     <li class="list-inline-item" ng-repeat="nodeType in nodeTypes"
                         ng-class="{'lead d-block': $index == 0}">
@@ -443,7 +443,7 @@
                 </ul>
             </div>
             <div class="mb-1" ng-show="rdfRank >= 0">
-                <strong>RDF rank: </strong>
+                <strong>{{'view.rdf.rank.title' | translate}}: </strong>
                 <div class="progress">
                     <div class="progress-bar" role="progressbar" aria-valuenow="{{rdfRank}}"
                          aria-valuemin="0" aria-valuemax="1" style="word-break: normal; width: {{rdfRank*100}}%">
@@ -465,7 +465,7 @@
             </list-items-search-filter>
 
             <div ng-switch on="propertiesObj.items.length">
-                <p ng-switch-when="0" class="alert alert-warning">No properties found</p>
+                <p ng-switch-when="0" class="alert alert-warning">{{'sidepanel.no.properties.found' | translate}}</p>
 
                 <div ng-switch-default ui-scroll-viewport class="rdf-list">
                     <div ui-scroll='item in datasource' adapter="adapterContainer.adapter"
@@ -478,7 +478,7 @@
                             <button class="btn btn-link btn-sm" type="button"
                                     ng-if="item.value.length > 1"
                                     ng-click="toggleMoreInfo($event, this)">
-                                Show {{item.value.length - 1}} more <span
+                                {{'rdfs_comment.show' | translate}} {{item.value.length - 1}} {{'more' | translate}} <span
                                     class="icon-caret-down"></span>
                             </button>
                         </div>
