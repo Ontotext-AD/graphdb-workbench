@@ -58,7 +58,7 @@
     <div ng-show="!isWorker(selectedNode)">
         <div ng-hide="selectedNode.disabledReason">
             <div ng-show="hasInfo(selectedNode)">
-                <div class="row" id="selectedNodeReadonly" ng-click="setReadonly(!selectedNode.readonly)"><div class="col-sm-6">{{'read.only.label' | translate}}</div><div class="col-sm-6">
+                <div class="row" id="selectedNodeReadonly" ng-click="setReadonly(!selectedNode.readonly)"><div class="col-sm-6">{{'read.only.label.simple' | translate}}</div><div class="col-sm-6">
                     <span class="switch">
                         <input type="checkbox" ng-checked="selectedNode.readonly" class="switch" />
                         <label for="selectedNodeReadonly"></label>
