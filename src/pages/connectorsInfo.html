@@ -18,7 +18,7 @@
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
-                    tooltip="Reload all connector information" tooltip-placement="left">
+                    tooltip="{{'reload.all.connector.info' | translate}}" tooltip-placement="left">
                 <em class="icon-reload"></em>
             </button>
         </div>
@@ -33,17 +33,17 @@
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
 										ng-click="copyConnector(connector, exist)"
-										tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
+										tooltip="{{'copy.connector' | translate}} {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-copy"></em>
 									</button>
 									<button class="btn btn-link p-0" type="button"
 										ng-click="repair(exist, connector)"
-										tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
+										tooltip="{{'repair.connector' | translate}} {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-reload"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										ng-click="delete(exist, connector)"
-										tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
+										tooltip="{{'delete.connector' | translate}} {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-trash"></em>
                                     </button>
 								</div>
@@ -63,7 +63,7 @@
                                              ng-init="key = option.__name; value = exist.values[key] != null ? exist.values[key] : option.__defaultValue">
                                             <label class="col-xs-2 col-form-label">{{option.__label}}</label>
                                             <div ng-if="value == null" class="col-xs-10">
-                                                <div class="form-control"><em>No value set</em></div>
+                                                <div class="form-control"><em>{{'no.value.set' | translate}}</em></div>
                                             </div>
                                             <div ng-if="value != null" class="col-xs-10">
                                                 <div ng-if="option.__type == 'String'">
@@ -104,7 +104,7 @@
                                                     </div>
 
                                                     <div class="col-form-label mb-1" ng-show="isEmpty(value)">
-                                                        <label><em>No {{option.__label}} added</em></label>
+                                                        <label><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
                                                     </div>
 
                                                 </div>
@@ -129,7 +129,7 @@
                                                                     <!-- Handles other types, e.g. OptionArray -->
                                                                     <div ng-if="child.__type != 'String' && child.__type != 'StringArray'"
                                                                          class="col-form-label">
-                                                                        <label ng-show="!field[child.__name]"><em>No value set</em></label>
+                                                                        <label ng-show="!field[child.__name]"><em>{{'no.value.set' | translate}}</em></label>
                                                                         <pre class="form-control" ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
                                                                     </div>
                                                                 </div>
@@ -153,7 +153,7 @@
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-secondary pull-right"
-                                                    ng-click="viewQuery(connector, exist)">View SPARQL Query
+                                                    ng-click="viewQuery(connector, exist)">{{'view.sparql.query' | translate}}
                                             </button>
                                         </div>
                                     </div>
@@ -161,11 +161,11 @@
                             </div>
                         </div>
                     </div>
-                    <div ng-hide="existing[connector.key].length">No connector instances.</div>
+                    <div ng-hide="existing[connector.key].length">{{'no.connector.instances' | translate}}</div>
                 </section>
                 <section>
                     <button class="btn btn-primary new-connector-btn" ng-click="newConnector(connector)"><em class="icon-plus"></em>
-                        New {{connector.key}} connector
+                        {{'new.sentence.start' | translate}} {{connector.key}} {{'connector.label' | translate}}
                     </button>
                 </section>
 
@@ -173,9 +173,8 @@
         </div>
 
         <div class="alert alert-info" ng-if="isActiveRepoFedXType() || !connectors.length">
-            <h4>No connectors available</h4>
-            <p>The current repository does not support any connectors. Please check the type of the repository or select
-                another one.</p>
+            <h4>{{'no.connectors.available' | translate}}</h4>
+            <p>{{'current.repo.no.connector.support' | translate}}</p>
         </div>
     </div>
 </div>
