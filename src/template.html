@@ -54,7 +54,7 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <a dropdown-toggle>
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
+                          popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
                         {{getActiveRepository()}}
                     </span>
@@ -94,8 +94,8 @@
                 <span class="icon-arrow-right text-primary"></span> {{'view.login.title' | translate}}
             </a>
         </div>
+        <language-selector></language-selector>
     </div>
-    <language-selector></language-selector>
 </div>
 
 <ul class="main-menu" ng-cloak ng-show="!embedded">

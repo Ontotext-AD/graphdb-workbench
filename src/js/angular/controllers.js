@@ -153,8 +153,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             }
         });
 
-        $rootScope.helpInfo = $sce.trustAsHtml($translate.instant($rootScope.helpInfo));
-        $rootScope.title = $translate.instant($rootScope.title);
+        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
+        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
         $scope.initTutorial();
     });
 
