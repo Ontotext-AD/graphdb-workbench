@@ -16,7 +16,7 @@
                 data-toggle="dropdown"
                 aria-expanded="false">
             <a dropdown-toggle>
-				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Select graph">
+				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
 					{{getSelGraphValue()}}
 				</span>
             </a>
@@ -36,13 +36,13 @@
 			initial-value="searchedClass"
 			search-fields="name"
 			title-field="name"
-			search-placeholder="Search classes"
+			search-placeholder="{{'search.classes.placeholder' | translate}}"
 			searched-obj-callback="searchedClassCallback">
 	</search-icon-input>
 
 	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
 		ng-click="hidePrefixes = !hidePrefixes"
-		tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
+		tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="fa fa-2x"
@@ -50,7 +50,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 focus-diagram-btn"
-		tooltip="Focus diagram"
+		tooltip="{{'focus.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
@@ -58,7 +58,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
-		tooltip="Reload diagram"
+		tooltip="{{'reload.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
@@ -66,7 +66,7 @@
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
-		tooltip="Export Diagram"
+		tooltip="{{'export.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="icon-export icon-2x"></em>
@@ -88,7 +88,7 @@
 <div class="top-offset" core-errors license></div>
 <div class="top-offset" system-repo-warning></div>
 <div class="top-offset alert alert-danger" ng-show="repositoryError">
-    <p>The currently selected repository cannot be used for queries due to an error:</p>
+    <p>{{'not.usable.active.repo.error' | translate}}</p>
 
     <p>{{repositoryError}}</p>
 </div>
@@ -97,7 +97,7 @@
 
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
-			Class Count
+			{{'class.count.label' | translate}}
 			<span class="btn btn-link help-button"
 				  popover-template="'js/angular/graphexplore/templates/rdfClassHierarchyClassCountSliderHelpTemplate.html'"
 				  popover-trigger="mouseenter"
@@ -112,9 +112,9 @@
     </div>
     <div class='explore_results'>
 		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
-			<p>The class hierarchy for the currently selected repository cannot be loaded:
+			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
-						tooltip="Reload diagram"
+						tooltip="{{'reload.diagram.tooltip' | translate}}"
 						tooltip-placement="bottom"
 						tooltip-trigger="mouseenter"
 						ng-click="confirmReloadClassHierarchy()">
@@ -125,11 +125,10 @@
 
 		</div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
-            <p class="alert alert-warning">The currently selected repository does not contain a class hierarchy.</p>
+            <p class="alert alert-warning">{{'no.classhierarchy.for.repo.warning' | translate}}</p>
         </div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
-            <p class="alert alert-warning">The currently selected repository's graph contains no class hierarchy.
-                Please select another graph from dropdown menu.</p>
+            <p class="alert alert-warning">{{'no.classhierarchy.for.selected.graph.warning' | translate}}</p>
         </div>
 
         <rdf-class-hierarchy
@@ -160,13 +159,13 @@
 					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.name}}</a>
 					<button class="btn btn-link btn-sm px-0 hovered-item"
 						ng-click="copyToClipboard(selectedClass.fullName)"
-						title="Copy to Clipboard">
+						title="{{'copy_to_clipboard_modal.ok.btn' | translate}}">
 						<span class="icon-link"></span>
 					</button>
 				</h3>
 				<p>
 					<button class="btn btn-sm btn-primary domain-range-graph-btn"
-						ng-click="goToDomainRangeGraphView(selectedClass)">Domain-Range Graph
+						ng-click="goToDomainRangeGraphView(selectedClass)">{{'view.domain-range.graph.title' | translate}}
 					</button>
                 </p>
 
@@ -178,10 +177,10 @@
 
                 <div ng-switch on="selectedClass.instancesCount">
                     <p class="alert alert-warning" ng-switch-when="0">
-                    	No instances available of selected class type
+                    	{{'no.instances.for.selected.class.type' | translate}}
                     </p>
-					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}}>View this instance in SPARQL</a></p>
-                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}}>View all {{selectedClass.instancesCount | number}} instances in SPARQL</a></p>
+					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}}>{{'view.instance.in.sparql.label' | translate}}</a></p>
+                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}}>{{'view.all.label' | translate}} {{selectedClass.instancesCount | number}} {{'instances.in.sparql' | translate}}</a></p>
                 </div>
 
                 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="instancesLoader"></div>
@@ -196,7 +195,7 @@
                     </list-items-search-filter>
 
                     <div ng-switch on="instances.items.length">
-						<p ng-switch-when="0" class="alert alert-warning">No instances found</p>
+						<p ng-switch-when="0" class="alert alert-warning">{{'no.instances.found.label' | translate}}</p>
 
                         <div ng-switch-default ui-scroll-viewport class="rdf-list" ng-class="rdfsComment ? 'rdf-list-comment' : ''">
 							<table class="table table-sm table-striped" aria-describedby="Class instances table">
@@ -204,7 +203,7 @@
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
 										<td class="break-word-alt">
 											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
-												title="Copy to Clipboard"
+												title="{{'copy_to_clipboard_modal.ok.btn' | translate}}"
 												ng-click="copyToClipboard(item.absUriNonEncoded)">
 												<span class="icon-link"></span>
 											</button>

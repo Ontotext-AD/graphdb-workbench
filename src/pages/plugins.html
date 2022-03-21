@@ -21,11 +21,11 @@
     <!--search box-->
     <div class="search-bar" ng-show="plugins.length > 0 && !loader">
             <span class="pull-left" id="searchbox-plugins">
-                <input type="text" class="form-control plugins-filter" placeholder="Search plugins"
-                       ng-model="searchPlugins" tooltip-trigger="mouseenter" tooltip="Search"
+                <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
+                       ng-model="searchPlugins" tooltip-trigger="mouseenter" tooltip="{{'common.search.btn' | translate}}"
                        ng-change="onPluginsSearch()">
             </span>
-        <span class="showing-info-plugins pull-right">Showing {{matchedElements.length}} results</span>
+        <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{matchedElements.length}} {{'results.label' | translate}}</span>
     </div>
 
     <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
@@ -38,9 +38,9 @@
                 <div class="lead" id="toggleIndex">
                     <span class="plugins-header">{{plugin.name}}</span>
                     <span id="toggleAndTag">
-                    <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'ON' :
-                        'OFF'}}</span>
-                    <span tooltip="Click to {{plugin.enabled ? 'deactivate' : 'activate'}} {{plugin.name}}"
+                    <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'common.on.btn' :
+                        'common.off.btn' | translate}}</span>
+                    <span tooltip="{{'click.to' | translate}} {{plugin.enabled ? 'deactivate' : 'activate' | translate}} {{plugin.name}}"
                           tooltip-placement="top" tooltip-trigger="mouseenter"
                           ng-click="togglePlugin(plugin.name, plugin.enabled)"
                           class="switch enable-plugins-switch plugins-switch">
@@ -55,7 +55,7 @@
         </tbody>
     </table>
     <div class="alert alert-info no-plugins-match-alert" ng-show="displayedPlugins.length === 0">
-        <p>No plugins match this filter.</p>
+        <p>{{'no.plugins.match.filter.warning' | translate}}</p>
     </div>
 
 </div>

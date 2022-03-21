@@ -334,6 +334,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.saveButtonText = $translate.instant('common.create.btn');
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
+            $scope.pageTitle = $translate.instant('view.create.user.title');
         });
         $scope.isAdmin = function () {
             return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);

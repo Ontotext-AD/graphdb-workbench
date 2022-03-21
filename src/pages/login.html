@@ -2,30 +2,30 @@
 	<div class="col-xs-6 col-sm-6 col-md-6">
 		<div class="card">
 			<div class="card-block">
-				<h1>Login</h1>
+				<h1>{{'view.login.title' | translate}}</h1>
 				<form class="form-horizontal loginForm"  ng-submit="login()" ng-if="isGDBLoginEnabled()">
 					<div ng-if="error" class="alert alert-danger">
-						Password or username did not match!
+						{{'pass.or.username.mismatch' | translate}}
 					</div>
 
 					<div class="form-group mb-2" ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
-							<input id="wb-login-username" ng-model="$parent.username" placeholder="Your name" type="text" class="form-control form-control-lg" autofocus required ng-blur="wrongCredentials = false">
+							<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+							<input id="wb-login-username" ng-model="$parent.username" placeholder="{{'your.name.placeholder' | translate}}" type="text" class="form-control form-control-lg" autofocus required ng-blur="wrongCredentials = false">
 						</div>
 					</div>
 					<div class="form-group mb-2"  ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-							<input id="wb-login-password" type="password" placeholder="Your password" ng-model="$parent.password" class="form-control form-control-lg" required ng-blur="wrongCredentials = false">
+							<span class="input-group-addon" tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+							<input id="wb-login-password" type="password" placeholder="{{'your.password.placeholder' | translate}}" ng-model="$parent.password" class="form-control form-control-lg" required ng-blur="wrongCredentials = false">
 						</div>
 					</div>
 					<div class="form-group">
 <!-- 					<a href="#" class="requestAccess">Request access</a> -->
-						<button id="wb-login-submitLogin" type="submit" class="btn btn-primary btn-lg">Sign in</button>
+						<button id="wb-login-submitLogin" type="submit" class="btn btn-primary btn-lg">{{'sign.in' | translate}}</button>
 					</div>
 				</form>
-                <button ng-if="isOpenIDEnabled()" ng-click="loginWithOpenID()" class="btn btn-primary btn-lg">Sign in with OpenID</button>
+                <button ng-if="isOpenIDEnabled()" ng-click="loginWithOpenID()" class="btn btn-primary btn-lg">{{'sign.in.openid' | translate}}</button>
 			</div>
 		</div>
 	</div>

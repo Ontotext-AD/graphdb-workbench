@@ -38,8 +38,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.openedNodeInfoPanel = undefined;
 
     $scope.invalidLimit = false;
-    $scope.INVALID_LINKS_MSG = 'Invalid links limit';
-    $scope.INVALID_LINKS_TOOLTIP = 'The valid limit range is 1-1000';
+    $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
+    $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
+        $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+        $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
+    });
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
@@ -99,7 +105,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.adapterContainer = {adapter: {remain: true}};
 
     $scope.propertiesQueryObj.query = '';
-    $scope.propertiesSearchPlaceholder = "Search instance properties";
+    $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     $scope.propertiesFilterFunc = propertiesFilterFunc;
 
     $scope.resetState = function () {

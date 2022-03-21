@@ -30,42 +30,42 @@
 
     <div ng-show="isLicenseValid() && canWriteActiveRepo() && !loading && pluginIsActive">
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
-			<h4>RDFRank not fully supported</h4>
-			<p>Configuring RDFRank is not supported. {{getDegradedReason()}}</p>
+			<h4>{{'not.fully.supported.rdfrank.warning' | translate}}</h4>
+			<p>{{'configuring.rdfrank.not.supported.warning' | translate}} {{getDegradedReason()}}</p>
 		</div>
 		<div ng-show="!isRestricted && pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span class="rdf-rank-status">RDFRank for repository <strong>{{getActiveRepository()}}</strong> is with status</span>
-                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> Computed</span>
+				<span class="rdf-rank-status">{{'rdfrank.for.repo.label' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.with.status.label' | translate}}</span>
+                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> {{'computed.status' | translate}}</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
                     <span class="tag tag-info">
                         <span class="icon-reload icon-lg loader"></span>
-                        Computing...
+                        {{'computing.loader.msg' | translate}}
                     </span>
                     <button class="btn btn-link btn-sm" ng-click="interruptComputation()"
-                            tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+                            tooltip="{{'interrupt.indexing.tooltip' | translate}}" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
                 </span>
 
                 <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="icon-warning icon-lg"></em> {{currentRankStatus}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="icon-warning icon-lg"></em> Outdated</span>
-				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="icon-warning icon-lg"></em> Configuration changed</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="icon-warning icon-lg"></em> Computation canceled</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> RDFRank not built yet</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="icon-warning icon-lg"></em> {{'outdated.status' | translate}}</span>
+				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="icon-warning icon-lg"></em> {{'configuration.changed.warning' | translate}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="icon-warning icon-lg"></em> {{'computation.canceled.warning' | translate}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
 
 				<p class="pull-right">
-					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary compute-rdf-rank-btn">Compute Full</button>
+					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary compute-rdf-rank-btn">{{'compute.full.btn' | translate}}</button>
                     <button ng-hide="currentRankStatus != rdfStatus.OUTDATED"
-							ng-click="computeIncrementalRank()" class="btn btn-primary">Compute Incremental</button>
+							ng-click="computeIncrementalRank()" class="btn btn-primary">{{'compute.incremental.btn' | translate}}</button>
 				</p>
 			</div>
 
 			<br>
 
 			<div id="toggleFilterMode">
-				<h3 class="d-inline-block mr-1">Filtering</h3>
-				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
+				<h3 class="d-inline-block mr-1">{{'filtering.header' | translate}}</h3>
+				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
+				<span tooltip="{{'click.to' | translate}} {{filteringEnabled ? 'disable' : 'enable' | translate}} {{'filtering' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
                     <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
                     <label for="toggleFilterMode"></label>
                 </span>
@@ -76,18 +76,18 @@
 
 				<div class="mb-2">
 					<div id="toggleIncludeExplicit" class="d-inline-block mr-2">
-						Include Explicit
-						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'YES' : 'NO'}}</span></span>
-						<span tooltip="Click to {{includeExplicit ? 'exclude' : 'include'}} Explicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
+						{{'include.explicit.header' | translate}}
+						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'yes' : 'no' | translate}}</span></span>
+						<span tooltip="{{'click.to' | translate}} {{includeExplicit ? 'exclude' : 'include' | translate}} {{'explicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeExplicit"/>
 	                    <label for="toggleIncludeExplicit"></label>
 	                </span>
 					</div>
 
 					<div id="toggleIncludeImplicit" class="d-inline-block">
-						Include Implicit
-						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'YES' : 'NO'}}</span></span>
-						<span tooltip="Click to {{includeImplicit ? 'exclude' : 'include'}} implicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
+						{{'include.implicit.header' | translate}}
+						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'yes' : 'no' | translate}}</span></span>
+						<span tooltip="{{'click.to' | translate}} {{includeImplicit ? 'exclude' : 'include' | translate}} {{'implicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeImplicit"/>
 	                    <label for="toggleIncludeImplicit"></label>
 	                </span>
@@ -98,14 +98,14 @@
 					<tab>
 						<tab-heading class="nav-item"
 									 tooltip-placement="bottom"
-									 tooltip-trigger="mouseenter"><span class="nav-link">Graphs</span></tab-heading>
+									 tooltip-trigger="mouseenter"><span class="nav-link">{{'graphs.label' | translate}}</span></tab-heading>
 						<div class="included-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]" />
 						<div class="excluded-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]" />
 					</tab>
 					<tab>
 						<tab-heading class="nav-item"
 									 tooltip-placement="bottom"
-									 tooltip-trigger="mouseenter"><span class="nav-link">Predicates</span></tab-heading>
+									 tooltip-trigger="mouseenter"><span class="nav-link">{{'predicates.label' | translate}}</span></tab-heading>
 						<div class="included-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]" />
 						<div class="excluded-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]" />
 					</tab>

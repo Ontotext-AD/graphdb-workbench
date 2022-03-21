@@ -7,17 +7,17 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
-            Edit
+            {{'edit.label' | translate}}
             <a href="{{details.uri}}" tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
-            <a class="btn btn-link" tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
+            <a class="btn btn-link" tooltip="{{'common.cancel.btn' | translate}}" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
         </h1>
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
 
         <p class="source">
-            <span>Source:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
+            <span>{{'source.label' | translate}}:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
         </p>
     </div>
 
@@ -26,9 +26,9 @@
             <table class="table table-hover table-striped" aria-describedby="Resources table">
                 <thead>
                 <tr>
-                    <th id="predicateColumn">Predicate</th>
-                    <th id="objectColumn">Object</th>
-                    <th id="contextColumn">Context</th>
+                    <th id="predicateColumn">{{'pred.label' | translate}}</th>
+                    <th id="objectColumn">{{'object.label' | translate}}</th>
+                    <th id="contextColumn">{{'context.label' | translate}}</th>
 					<th id="actionsColumn"></th>
                 </tr>
                 </thead>
@@ -37,13 +37,13 @@
                     <td style="vertical-align: top;">
                         <form name="newRowPredicate" novalidate>
                             <input required uri name="value"
-                                   placeholder="Example: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
+                                   placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
                                    class="form-control" type="text" ng-model="newRow.predicate">
 
                             <div ng-show="predicate_new.$submitted || predicate_new.value.$touched">
                                 <p ng-show="predicate_new.value.$error.required"
                                    class="alert alert-info completeUriAlert">
-                                    Please complete the short URI.
+                                    {{'complete.short.iri.warning' | translate}}
                                 </p>
                             </div>
                             <ul class="list-inline">
@@ -56,17 +56,17 @@
                     <td style="vertical-align: top;">
                         <form name="newRowObject" novalidate>
                             <select class="form-control mb-1" ng-model="newRow.object.type">
-                                <option value="uri">URI</option>
-                                <option value="literal">Literal</option>
+                                <option value="uri">{{'iri.label' | translate}}</option>
+                                <option value="literal">{{'literal.type.index' | translate}}</option>
                             </select>
                             <input required name="value" id="objectUriText" class="form-control" type="text"
                                    ng-model="newRow.object.value" auto-complete uiItems="namespaces"
-                                   value="exampleObjectValueText" placeholder="value">
+                                   value="exampleObjectValueText" placeholder="{{'value.label' | translate}}">
 
                             <div ng-show="object_new.$submitted || object_new.value.$touched">
                                 <p ng-show="newRow.object.type == 'uri' && !validateUri(newRow.object.value)"
                                    class="alert alert-info completeUriAlert">
-                                    Please complete the short URI.
+                                    {{'complete.short.iri.warning' | translate}}
                                 </p>
                             </div>
                             <ul class="list-inline" ng-show="newRow.object.type == 'uri'">
@@ -89,12 +89,12 @@
                     <td style="vertical-align: top;">
                         <form name="newRowContext" novalidate>
                             <input name="" uri
-                                   placeholder="Example: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
+                                   placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
                                    class="form-control" type="text" ng-model="newRow.context">
 
                             <p ng-show="newRow.context && !validateUri(newRow.context)"
                                class="alert alert-info completeUriAlert">
-                                Please complete the short URI.
+                                {{'complete.short.iri.warning' | translate}}
                             </p>
                             <ul class="list-inline">
                                 <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
@@ -151,11 +151,11 @@
                         <form editable-form name="rowform" class="form-buttons form-inline" ng-show="rowform.$visible"
                               shown="inserted == statement">
                             <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-link px-0"
-                                    tooltip="Save">
+                                    tooltip="{{'common.save.btn' | translate}}">
                                 <em class="icon-check"></em>
                             </button>
                             <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
-                                    class="btn btn-link px-0 secondary" tooltip="Cancel">
+                                    class="btn btn-link px-0 secondary" tooltip="{{'common.cancel.btn' | translate}}">
                                 <em class="icon-close"></em>
                             </button>
                         </form>
@@ -175,14 +175,14 @@
     <div class="text-xs-right">
 		<button class="btn btn-secondary"
 			ng-disabled="statements.length == 0"
-			tooltip="View the resource graph in TriG format"
+			tooltip="{{'view.resource.trig.format.tooltip' | translate}}"
 			ng-click="viewTrig()">
-			View TriG
+			{{'view.trig.format.label' | translate}}
 		</button>
 		<button class="btn btn-primary"
-			tooltip="Save changes"
+			tooltip="{{'save.changes.label' | translate}}"
 			ng-click="save()">
-			Save
+			{{'common.save.btn' | translate}}
 		</button>
     </div>
 </div>

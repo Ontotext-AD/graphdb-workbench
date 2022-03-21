@@ -20,19 +20,20 @@
     <div core-errors></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
-        <p>The currently selected repository cannot be used for queries due to an error:</p>
+        <p>{{'not.usable.active.repo.error' | translate}}</p>
 
         <p>{{repositoryError}}</p>
     </div>
 
     <div class="card mb-2 sql-table-config">
         <div class="card-block pt-1">
-            <p class="lead">Template IRI</p>
+            <p class="lead">{{'template.iri.header' | translate}}</p>
             <div class="table-group table-group-lg">
-                <input required class="form-control sparql-template-name" type="text" ng-mousedown="isInvalidTemplateId = false" ng-placeholder="http://exampleuri.com/examplepath (required)"
+                <input required class="form-control sparql-template-name" type="text" ng-mousedown="isInvalidTemplateId = false" placeholder="http://exampleuri.com/examplepath ({{'required' | translate}})"
                        ng-model="currentQuery.templateID" ng-disabled="!currentQuery.isNewTemplate">
-                <div style="margin-top: 5px" ng-if="isInvalidTemplateId" class="idError alert alert-danger">
-                    {{currentQuery.templateID}} is not a valid IRI
+                <div style="margin-top: 5px" ng-if="isInvalidTemplateId" class="idError alert alert-danger"
+                    translate="not.valid.iri"
+                    translate-value-value="{{currentQuery.templateID}}">
                 </div>
             </div>
 
@@ -46,25 +47,25 @@
         </div>
     </div>
     <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
-            popover="Save SPARQL template"
+            popover="{{'save.sparql.template.tooltip' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter"
             ng-if="canWriteActiveRepo()">
-        Save
+        {{'common.save.btn' | translate}}
     </button>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="Cancel SPARQL template creation"
+       popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
-        Cancel
+        {{'common.cancel.btn' | translate}}
     </a>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
-       popover="Cancel SPARQL template creation"
+       popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">
-        Close
+        {{'common.close' | translate}}
     </a>
     <br/><br/><br/>
 </div>
