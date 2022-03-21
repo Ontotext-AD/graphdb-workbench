@@ -10,7 +10,7 @@
 
 	<tabset>
 		<tab>
-		    <tab-heading class="nav-item application-info-tab"><span class="nav-link">Application info</span></tab-heading>
+		    <tab-heading class="nav-item application-info-tab"><span class="nav-link">{{'app.info' | translate}}</span></tab-heading>
 			<div class="list-group border-top-0 application-info-body">
 				<div class="list-group-item">
 					<div class="row">
@@ -50,45 +50,44 @@
 				</div>
 				<div class="list-group-item">
 					<h5>
-						Server report
+						{{'server.report' | translate}}
 						<button type="button" ng-click="isHelpVisible = !isHelpVisible" class="btn btn-link server-report-help-btn">
 							<span class="icon-help"></span>
 						</button>
 					</h5>
 
 					<div collapse="!isHelpVisible" class="alert alert-info server-report-help">
-						<button type="button" ng-click="isHelpVisible = false" tooltip="Close" class="close"
+						<button type="button" ng-click="isHelpVisible = false" tooltip="{{'common.close' | translate}}" class="close"
 								aria-label="Close"></button>
-						A server report is a .zip file that contains various bits of information that help with diagnosing problems.
-						The file will contain:
+						{{'server.report.help.info.title' | translate}}
 						<ul>
-							<li>The JVM stack strace</li>
-							<li>The content of the SYSTEM repository</li>
-							<li>Directory listings of various GraphDB directories</li>
-							<li>The latest log files</li>
+							<li>{{'server.report.help.info.jvm.stack.trace' | translate}}</li>
+							<li>{{'server.report.help.info.system.repo.content' | translate}}</li>
+							<li>{{'server.report.help.info.directories' | translate}}</li>
+							<li>{{'server.report.help.info.logs' | translate}}</li>
 						</ul>
 					</div>
 
 					<div class="lead report-status">
-						<span class="report-none" ng-show="status === 'NONE'">No previous report found.</span>
-						<span class="report-in-progress" ng-show="status === 'IN_PROGRESS'"><em class="icon-reload loader"></em> Report is being generated...</span>
-						<span class="report-error" ng-show="status === 'ERROR'"><em class="icon-warning"></em> Error: {{errorMessage}}</span>
-						<span class="report-ready" ng-show="status === 'READY'">Last report was generated {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}</span>
+						<span class="report-none" ng-show="status === 'NONE'">{{'no.prev.server.report.found' | translate}}</span>
+						<span class="report-in-progress" ng-show="status === 'IN_PROGRESS'"><em class="icon-reload loader"></em> {{'server.report.generation.in.progress' | translate}}</span>
+						<span class="report-error" ng-show="status === 'ERROR'"><em class="icon-warning"></em> {{'common.error' | translate}}: {{errorMessage}}</span>
+						<span class="report-ready" ng-show="status === 'READY'">{{'last.server.report.timestamp' | translate}} {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}</span>
 					</div>
 
 					<div ng-show="status === 'ERROR' && timestamp > 0">
-						Previous report available, generated {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}
+						{{'prev.server.report.timestamp' | translate}} {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}
 					</div>
 
 					<div class="pt-1 pb-3 reports-toobar">
 						<div class="btn-group">
-							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" tooltip="Generates a new server report">
+							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" tooltip="{{'new.server.report.tooltip' | translate}}">
 								<em class="icon-monitoring"></em>
-								New report
+								{{'new.server.report' | translate}}
 							</button>
-							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" tooltip="Download the latest report file">
+							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" tooltip="{{'download.server.report.tooltip' | translate}}">
 								<em class="icon-download"></em>
-								Download
+								{{'common.download' | translate}}
 							</button>
 						</div>
 					</div>
@@ -104,7 +103,7 @@
 			</ul>
 		</tab>
 		<tab>
-		    <tab-heading class="nav-item configuration-parameters"><span class="nav-link">Configuration Parameters</span></tab-heading>
+		    <tab-heading class="nav-item configuration-parameters"><span class="nav-link">{{'info.configuration.parameters' | translate}}</span></tab-heading>
 			<ul class="list-group border-top-0 configuration-parameters-body">
 				<li ng-repeat="property in info.properties track by $index" class="list-group-item">
 					<div class="row">
