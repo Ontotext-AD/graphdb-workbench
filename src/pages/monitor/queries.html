@@ -22,9 +22,9 @@
 
 			<div class="ng-scope" ng-show="!loader && error">
 				<p class="alert alert-danger">
-					Error: {{error}}.
+					{{'common.error' | translate}}: {{error}}.
 					<br/>
-					Refresh the page to retry.
+					{{'refresh.to.retry' | translate}}
 				</p>
 			</div>
 
@@ -32,9 +32,9 @@
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							btn-checkbox
-						tooltip="Temporarily pauses query monitoring so you can copy text"
+						tooltip="{{'temp.pause' | translate}}"
 						tooltip-placement="left">
-						{{paused ? 'Paused' : 'Pause'}}
+						{{paused ? 'paused.btn' : 'pause.btn' | translate}}
 					</button>
 				</div>
 				<div ng-hide="noQueries">
@@ -42,12 +42,12 @@
 						<thead>
 							<tr>
 								<th id="queryIdColumn">id</th>
-								<th id="queryId2Column">node</th>
-                                <th id="usernameColumn">username</th>
-								<th id="queryTypeColumn">type</th>
-								<th id="queryColumn">query</th>
-								<th id="lifetimeColumn">lifetime</th>
-								<th id="queryStateColumn">state</th>
+								<th id="queryId2Column">{{'node.label' | translate}}</th>
+                                <th id="usernameColumn">{{'username.label' | translate}}</th>
+								<th id="queryTypeColumn">{{'type.label.lower.case' | translate}}</th>
+								<th id="queryColumn">{{'query.label' | translate}}</th>
+								<th id="lifetimeColumn">{{'lifetime.label' | translate}}</th>
+								<th id="queryStateColumn">{{'state.label' | translate}}</th>
 								<th id="actionsColumn"></th>
 							</tr>
 						</thead>
@@ -64,11 +64,11 @@
                                 <td>{{query.username}}</td>
 								<td>{{query.type}}</td>
 								<td>
-									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">Download</button>
+									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">{{'Download' | translate}}</button>
 									<div ng-if="query.sparqlString.length > stringLimit" class="pull-right">
 										<button class="btn btn-link small px-0" ng-click="toggleQueryExpanded(query.trackId)">
-											<span ng-show="!expanded[query.trackId]">Show remaining {{query.sparqlString.length - stringLimit}} characters</span>
-											<span ng-show="expanded[query.trackId]">Show first 500 characters</span>
+											<span ng-show="!expanded[query.trackId]">{{'show.remaining' | translate}} {{query.sparqlString.length - stringLimit}} {{'characters.label' | translate}}</span>
+											<span ng-show="expanded[query.trackId]">{{'show.first.chars' | translate}}</span>
 										</button>
 									</div>
 									<div ng-if="query.sparqlString.length > stringLimit && !expanded[query.trackId]" class="query-string">{{query.sparqlString | limitTo: stringLimit}}...</div>
@@ -77,16 +77,16 @@
 								<td><span tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
 								<td>
 									<p>{{query.state}}</p>
-									<div>{{query.numberOfOperations}} operations</div>
+									<div>{{query.numberOfOperations}} {{'operations.label' | translate}}</div>
 								</td>
 								<td>
-									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'Query was requested to abort and will be terminated on the first I/O operation' : 'Update was requested to abort and will be terminated if possible') : (query.type == 'QUERY' ? 'Click to abort query' : 'Click to abort update')}}"
+									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'query.abort.request' : 'update.requested') : (query.type == 'QUERY' ? 'click.to.abort.query' : 'click.to.abort.update') | translate}}"
 										 popover-trigger="mouseenter"
 										 popover-placement="bottom">
 										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->
 											<button ng-disabled="query.isRequestedToStop" class="abortQuery btn btn-xs btn-primary"
 													ng-click="abortQuery(query.trackId)">
-												{{query.isRequestedToStop ? 'Stop has been requested' : (query.type == 'QUERY' ? 'Abort query' : 'Abort update')}}
+												{{query.isRequestedToStop ? 'stop.was.requested' : (query.type == 'QUERY' ? 'abort.query' : 'abort.update') | translate}}
 											</button>
 										</div>
 									</div>
@@ -96,7 +96,7 @@
 					</table>
 				</div>
 				<div class="alert alert-info no-icon no-running-queries-alert" ng-show="noQueries">
-					No running queries or updates.
+					{{'no.running.queries.updates' | translate}}
 				</div>
 			</div>
 		</div>
