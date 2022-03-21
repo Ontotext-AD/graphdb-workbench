@@ -5,7 +5,7 @@ PluginRegistry.add('route', {
     'path': 'namespaces/app',
     'controller': 'NamespacesCtrl',
     'templateUrl': 'pages/namespaces.html',
-    'title': 'view.namespaces.title',
+    'title': 'menu.namespaces.label',
     'helpInfo': 'view.namespaces.helpInfo'
 });
 

@@ -34,7 +34,7 @@ PluginRegistry.add('route', [
         'chunk': 'graphs-visualizations',
         'controller': 'GraphsVisualizationsCtrl',
         'templateUrl': 'pages/graphs-visualizations.html',
-        'title': 'menu.visual.graph.label',
+        'title': 'visual.graph.label',
         'reloadOnSearch': false,
         'helpInfo': 'view.visual.graph.helpInfo'
     }, {
@@ -72,7 +72,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Explore'
         }, {
             label: 'Visual graph',
-            labelKey: 'menu.visual.graph.label',
+            labelKey: 'visual.graph.label',
             href: 'graphs-visualizations',
             order: 5,
             parent: 'Explore',
