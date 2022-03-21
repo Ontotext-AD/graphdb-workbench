@@ -18,7 +18,7 @@
          ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
         <button class="btn btn-link p-0" type="button"
 			ng-click="goToClassHierarchyView()"
-			tooltip="Back to Class Hierarchy diagram"
+			tooltip="{{'back.to.class.hierarchy.label' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
             <em class="icon-arrow-left icon-2x"></em>
@@ -26,7 +26,7 @@
 
 		<button class="btn btn-link p-0 compact-mode-toggle" type="button"
 			ng-click="toggleCollapseEdgesState()"
-			tooltip="{{collapseEdges ? 'Show all predicates' : 'Show collapsed predicates'}}"
+			tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="fa fa-2x"
@@ -34,7 +34,7 @@
         </button>
 
 		<a id="download-svg" href class="btn btn-link p-0"
-			tooltip="Export Diagram"
+			tooltip="{{'export.diagram.tooltip' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="icon-export icon-2x"></em>
@@ -66,7 +66,7 @@
                        ng-switch-default>
                         {{sourceTargetObjectNodeName}}
                     </a>
-                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="Copy to Clipboard" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
+                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy_to_clipboard_modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
                         <span class="icon-link"></span>
                     </button>
                 </h3>
@@ -91,14 +91,14 @@
 
                     <div class="rdf-not-found-container" ng-switch-when="0">
                         <div class="alert alert-warning rdf-not-found-alert">
-                            <p class="rdf-not-found-label">No predicates found</p>
+                            <p class="rdf-not-found-label">{{'no.preds.found.label' | translate}}</p>
                         </div>
                     </div>
 
                     <ul ng-switch-default ui-scroll-viewport class="rdf-list">
                         <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
                             <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
-                            <button class="btn btn-link btn-sm p-0 hovered-item" title="Copy to Clipboard" ng-click="copyToClipboard(item.absUriNonEncoded)">
+                            <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy_to_clipboard_modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
                                 <span class="icon-link"></span>
                             </button>
                             <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">
