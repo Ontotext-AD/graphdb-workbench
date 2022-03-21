@@ -56,8 +56,8 @@ describe('Visual graph screen validation', () => {
             getSearchField().should('be.visible').type('.invalid_resource');
             // There are two buttons rendered in the DOM where one of them is hidden. We need the visible one.
             cy.get('.autocomplete-visual-btn:visible').click();
-            // Verify that an "Invalid URI" message is displayed
-            cy.get('#toast-container').should('contain', 'Invalid URI');
+            // Verify that an "Invalid IRI" message is displayed
+            cy.get('#toast-container').should('contain', 'Invalid IRI');
         });
 
         it('Test search for a valid resource', () => {
