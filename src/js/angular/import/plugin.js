@@ -18,16 +18,10 @@ PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Import',
-            href: '#',
+            href: 'import',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-import'
-        }, {
-            label: 'RDF',
-            href: 'import',
-            order: 1,
-            parent: 'Import',
-            role: 'IS_AUTHENTICATED_FULLY'
         }
     ]
 });
