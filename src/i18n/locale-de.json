@@ -11,7 +11,7 @@
     "menu.graphs.overview.label": "Diagrammübersicht",
     "menu.class.relationships.label": "Klassenbeziehungen",
     "menu.class.hierarchy.label": "Klassenhierarchie",
-    "menu.visual.graph.label": "Visuelles Diagramm",
+    "visual.graph.label": "Visuelles Diagramm",
     "menu.similarity.label": "Ähnlichkeit",
     "menu.sparql.label": "SPARQL",
     "menu.monitor.label": "Monitor",

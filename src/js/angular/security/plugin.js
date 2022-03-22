@@ -6,7 +6,7 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'UsersCtrl',
         'templateUrl': 'js/angular/security/templates/users.html',
-        'title': 'view.users.access.title',
+        'title': 'menu.users.and.access.label',
         'helpInfo': 'view.users.access.helpInfo'
     }, {
         'url': '/user/create',
