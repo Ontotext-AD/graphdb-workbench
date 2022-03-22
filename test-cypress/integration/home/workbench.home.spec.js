@@ -281,6 +281,19 @@ describe('Home screen validation', () => {
         });
     });
 
+    context('Set preferred language', () => {
+        beforeEach(() => HomeSteps.visitAndWaitLoader());
+        it('language button should be visible and actionable', () => {
+            cy.get('#languageGroupDrop')
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    cy.get('.dropdown-menu .dropdown-item')
+                        .should('have.length.at.least', 1);
+                });
+        });
+    });
+
     function getRDFResourceSearchBox() {
         return cy.get('rdf-resource-search').should('be.visible');
     }

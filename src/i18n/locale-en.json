@@ -1488,6 +1488,7 @@
     "change.menu.or.user.warning": "Please choose another menu item or login as a different user.",
     "all.rights.reserved.label": "All rights reserved.",
     "workbench.loading.warning": "GraphDB Workbench is loading...",
+    "change.language.tooltip": "Change language to",
 
     "menu.btn.translate.en": "English",
     "menu.btn.translate.de": "German"

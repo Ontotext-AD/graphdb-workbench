@@ -1,4 +1,20 @@
-<div class="translate-buttons pull-right">
-    <button ng-click="changeLanguage('de')" translate="menu.btn.translate.de"></button> |
-    <button ng-click="changeLanguage('en')" translate="menu.btn.translate.en"></button>
+<div class="btn-group" role="group" ng-if="languages.length > 0">
+    <button id="languageGroupDrop" type="button"
+            class="btn btn-lg btn-secondary dropdown-toggle translate-button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{selectedLang.key}}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="languageGroupDrop">
+        <li ng-repeat="language in languages"
+            ng-if="language.key !== selectedLang.key"
+            tooltip-trigger="mouseenter"
+            tooltip-placement="left"
+            tooltip="{{'change.language.tooltip' | translate}} {{language.translation | translate}}">
+            <a class="dropdown-item" ng-click="changeLanguage(language)">
+                <span class="multiline-text">
+                    <small ng-if="!isLoadingLocation() && hasActiveLocation()">{{language.translation | translate}}</small>
+                </span>
+            </a>
+        </li>
+    </ul>
 </div>
