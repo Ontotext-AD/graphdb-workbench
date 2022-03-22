@@ -70,7 +70,7 @@
 												<button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" popover="{{'delete_connector.delete.btn' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])" >
 													<em class="icon-minus"></em>
 												</button>
-												<button type="button" class="btn btn-link btn-sm" popover="{{'add.sentence.start' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
+												<button type="button" class="btn btn-link btn-sm" popover="{{'common.add' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
 													<em class="icon-plus"></em>
 												</button>
 											</span>
@@ -107,7 +107,7 @@
 					<div class="col-form-label mb-1">
 						<label><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
 						<span class="btn-group-sm">
-							<button type="button" class="btn btn-link" popover="{{'add.sentence.start' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>
@@ -127,7 +127,7 @@
 							<button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" popover="{{'delete_connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteMapOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="{{'add.sentence.start' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>

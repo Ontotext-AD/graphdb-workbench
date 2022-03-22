@@ -25,7 +25,7 @@
         <form class="form-inline">
             <div class="btn btn-link">
                 <input class="form-check-input select-all-files" type="checkbox" ng-click="selectAllFiles()" ng-model="checkAll"
-                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" tooltip="{{'import.select.all' | translate}}">
+                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" tooltip="{{'select.all.tooltip' | translate}}">
             </div>
             <div class="btn-group" dropdown ng-hide="!hasImportable() || !batch"
                  popover="{{'import.selected.items' | translate}}"
