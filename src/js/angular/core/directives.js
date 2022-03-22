@@ -760,8 +760,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories) {
     return {
         restrict: 'E',
         transclude: true,
@@ -778,6 +778,13 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
     function linkFunc($scope) {
         $scope.pluginIsActive = true;
         function checkPluginIsActive() {
+            // Should not check if plugin is active if no there isn't active repository,
+            // or repository is of type ontop or fedx
+            if (!$repositories.getActiveRepository() ||
+                    $repositories.isActiveRepoOntopType() ||
+                        $repositories.isActiveRepoFedXType()) {
+                return;
+            }
             return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
                 .done(function (data) {
                     $scope.pluginIsActive = data.indexOf('true') > 0;
