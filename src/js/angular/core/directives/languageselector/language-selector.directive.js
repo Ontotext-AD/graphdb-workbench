@@ -51,20 +51,21 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
             getPredefinedLanguages()
                 .then(function () {
                     // Get user preferred language from local storage adapter
-                   if (userPreferredLang) {
+                    if (userPreferredLang) {
                         $scope.selectedLang = $scope.languages.find(lang => lang.key === userPreferredLang);
                     } else if (browserPreferredLanguages) {
-                       // Or browser languages ordered based on user preference
-                       for (let language of browserPreferredLanguages) {
-                           $scope.selectedLang = $scope.languages.find(lang => lang.key === language);
-                           if ($scope.selectedLang) {
-                               break;
-                           }
-                       }
+                        // Or browser languages ordered based on user preference
+                        for (let language of browserPreferredLanguages) {
+                            $scope.selectedLang = $scope.languages.find(lang => lang.key === language);
+                            if ($scope.selectedLang) {
+                                break;
+                            }
+                        }
                     } else {
-                       // or fallback to English
+                        // or fallback to English
                         $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
                     }
+                    $translate.use($scope.selectedLang.key);
                 });
         }
     };
