@@ -527,10 +527,17 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             $('a[data-id = "' + scope.executedQueryTab.id + '"]').tab('show');
         }
 
+        let locale = window.locale;
+        scope.$on('language-changed', function (event, args) {
+            locale = args.locale;
+            window.yasr.options.locale = args.locale;
+        });
+
         function initYasr() {
             yasr = YASR(document.getElementById("yasr"), { // eslint-disable-line new-cap
                 getUsedPrefixes: {}, // initially blank, populated when we fetch the namespaces
-                persistency: false
+                persistency: false,
+                locale: locale
             });
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;

@@ -21,7 +21,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
             $scope.selectedLang = {};
             $scope.languages = [];
 
-            // If some of the keys in i18n folder are not
+            // If some keys in i18n folder are not
             // translated they will be translated in English
             $translate.fallbackLanguage('en');
 
@@ -29,6 +29,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
                 $scope.selectedLang = lang
                 $translate.use(lang.key);
                 LocalStorageAdapter.set(LSKeys.PREFERRED_LANG, lang.key);
+                $scope.$broadcast('language-changed', {locale: lang.key});
             };
 
             function getPredefinedLanguages() {
@@ -66,6 +67,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
                         $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
                     }
                     $translate.use($scope.selectedLang.key);
+                    window.locale = $scope.selectedLang.key;
                 });
         }
     };
