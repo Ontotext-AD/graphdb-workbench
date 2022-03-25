@@ -17,7 +17,7 @@ angular.module('graphdb.framework.sparql-template.controllers', modules, [
     .controller('SparqlTemplatesCtrl', SparqlTemplatesCtrl)
     .controller('SparqlTemplateCreateCtrl', SparqlTemplateCreateCtrl);
 
-SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService', '$licenseService'];
+SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService'];
 
 function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService) {
 
