@@ -3,14 +3,15 @@ angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
         'graphdb.framework.utils.localstorageadapter'
     ])
-    .directive('languageSelector', languageSelector);
+    .directive('languageSelector', languageSelector)
+    .service('$languageService', languageService);
 
 const MENU_BTN_TRANSLATE_PREFIX = 'menu.btn.translate.';
 const fileContent = require('../../../../../../src/i18n/locale-en.json');
 
-languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys'];
+languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService'];
 
-function languageSelector($translate, LocalStorageAdapter, LSKeys) {
+function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageService) {
     return {
         templateUrl: 'js/angular/core/directives/languageselector/templates/languageSelector.html',
         restrict: 'E',
@@ -29,6 +30,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
                 $scope.selectedLang = lang
                 $translate.use(lang.key);
                 LocalStorageAdapter.set(LSKeys.PREFERRED_LANG, lang.key);
+                $languageService.setLanguage($scope.selectedLang.key);
                 $scope.$broadcast('language-changed', {locale: lang.key});
             };
 
@@ -67,8 +69,19 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys) {
                         $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
                     }
                     $translate.use($scope.selectedLang.key);
-                    window.locale = $scope.selectedLang.key;
+                    $languageService.setLanguage($scope.selectedLang.key);
                 });
         }
     };
+}
+
+function languageService() {
+    this.language = 'en';
+    this.setLanguage = function (lang) {
+        this.language = lang;
+    }
+
+    this.getLanguage = function () {
+        return this.language;
+    }
 }

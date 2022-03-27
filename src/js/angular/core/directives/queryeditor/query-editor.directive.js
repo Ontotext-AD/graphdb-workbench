@@ -14,9 +14,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService) {
 
     let callbackOnChange;
 
@@ -134,7 +134,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     "Cmd-Alt-Left": goToPreviousTabAction,
                     "Ctrl-Alt-Right": goToNextTabAction,
                     "Cmd-Alt-Right": goToNextTabAction
-                }
+                },
+                locale: $languageService.getLanguage()
             }
         );
 
@@ -527,17 +528,21 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             $('a[data-id = "' + scope.executedQueryTab.id + '"]').tab('show');
         }
 
-        let locale = window.locale;
         scope.$on('language-changed', function (event, args) {
-            locale = args.locale;
-            window.yasr.options.locale = args.locale;
+            if (yasr && yasr.options) {
+                yasr.options.locale = args.locale;
+                yasr.changeLanguage(args.locale);
+            }
+            window.editor.options.locale = args.locale;
+            // Notify YASQE about the new namespaces
+            YASQE.signal(window.editor, 'language-changed');
         });
 
         function initYasr() {
             yasr = YASR(document.getElementById("yasr"), { // eslint-disable-line new-cap
                 getUsedPrefixes: {}, // initially blank, populated when we fetch the namespaces
                 persistency: false,
-                locale: locale
+                locale: $languageService.getLanguage()
             });
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
