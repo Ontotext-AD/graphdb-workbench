@@ -5,7 +5,7 @@ PluginRegistry.add('route', {
     'chunk': 'plugins',
     'controller': 'PluginsCtrl',
     'templateUrl': 'pages/plugins.html',
-    'title': 'menu.setup.label',
+    'title': 'menu.plugins.label',
     'helpInfo': 'view.plugins.helpInfo'
 });
 

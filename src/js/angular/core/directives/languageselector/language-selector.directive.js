@@ -48,7 +48,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                     setTimeout(() => {
                         resolve(true);
                     })
-                })
+                });
             }
 
             getPredefinedLanguages()

@@ -1,7 +1,7 @@
 import 'angular/export/controllers';
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
-const bundle = require('../../src/i18n/locale-en.json');
 beforeEach(angular.mock.module('graphdb.framework.impex.export.controllers'));
 
 describe('==> ExportCtrl tests', function () {
