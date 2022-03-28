@@ -54120,7 +54120,7 @@ module.exports={
         "spec": ">=1.4.1 <2.0.0",
         "type": "range"
       },
-      "/home/onto/Projects/YASR-Ontotext"
+      "/home/sava/IntellijProjects/YASR-Ontotext"
     ]
   ],
   "_from": "yasgui-utils@>=1.4.1 <2.0.0",
@@ -54154,7 +54154,7 @@ module.exports={
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
   "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/home/onto/Projects/YASR-Ontotext",
+  "_where": "/home/sava/IntellijProjects/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -55815,9 +55815,10 @@ var root = module.exports = function(parent, options, queryResults) {
 			var menuUl = $('<ul id="yasrBtnGroup" class="yasr_btnGroup nav nav-tabs"></ul>');
 			$.each(yasr.plugins, function(pluginName, plugin) {
 				if (plugin.hideFromSelection) return;
+				var name = plugin.nameLabel ? yasr.translate(plugin.nameLabel) : pluginName;
 				var li = $("<li class='nav-item'></li>");
 				var link = $("<a class='nav-link'></a>")
-				.text(yasr.translate(plugin.nameLabel))
+				.text(name)
 				.addClass("select_" + pluginName)
 				.click(function() {
 					if ($(this).parent().hasClass('disabled')) {
