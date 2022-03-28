@@ -762,10 +762,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories', '$licenseService'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories, $licenseService) {
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$translate'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $translate) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories', '$licenseService', '$translate'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories, $licenseService, $translate) {
     return {
         restrict: 'E',
         transclude: true,
