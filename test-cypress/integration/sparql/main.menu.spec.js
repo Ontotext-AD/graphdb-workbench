@@ -17,18 +17,7 @@ describe('Main menu tests', function () {
             {
                 name: 'Import',
                 visible: true,
-                submenu: [
-                    {
-                        name: 'RDF',
-                        visible: false,
-                        redirect: '/import'
-                    },
-                    {
-                        name: 'Tabular (OntoRefine)',
-                        visible: false,
-                        redirect: '/ontorefine'
-                    }
-                ]
+                redirect: '/import'
             },
             {
                 name: 'Explore',

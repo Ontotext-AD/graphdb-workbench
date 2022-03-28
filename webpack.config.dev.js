@@ -49,7 +49,7 @@ module.exports = merge(commonConfig, {
             disableDotRule: true
         },
         proxy: [{
-            context: ['/rest', '/repositories', '/orefine', '/protocol', '/rdf-bridge'],
+            context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,
             onProxyRes: proxyRes => {
                 var key = 'www-authenticate';
