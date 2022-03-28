@@ -40,6 +40,7 @@ describe('Repositories', () => {
     const REPO_LIST_ID = '#wb-repositories-repositoryInGetRepositories';
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'repo-' + Date.now();
 
         cy.visit('/repository');

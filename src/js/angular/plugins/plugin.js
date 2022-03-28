@@ -11,7 +11,21 @@ PluginRegistry.add('route', {
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', labelKey: 'menu.setup.label', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
-        {label: 'Plugins', labelKey: 'menu.plugins.label', href: 'plugins', order: 25, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
+        {
+            label: 'Setup',
+            labelKey: 'menu.setup.label',
+            href: '#',
+            order: 5,
+            role: 'IS_AUTHENTICATED_FULLY',
+            icon: "icon-settings"
+        },
+        {
+            label: 'Plugins',
+            labelKey: 'menu.plugins.label',
+            href: 'plugins',
+            order: 25,
+            parent: 'Setup',
+            role: "IS_AUTHENTICATED_FULLY"
+        }
     ]
 });

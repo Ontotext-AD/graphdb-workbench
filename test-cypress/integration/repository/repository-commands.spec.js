@@ -7,6 +7,7 @@ describe('Repository commands test', () => {
 
     let repoId;
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repoId = 'repo-' + Date.now();
     });
 

@@ -3,6 +3,7 @@ describe('Import/ OntoRefine', () => {
     let repositoryId;
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'onto-refine-' + Date.now();
         cy.createRepository({id: repositoryId});
 
