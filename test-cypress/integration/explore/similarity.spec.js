@@ -235,6 +235,7 @@ describe('Similarity screen validation', () => {
     });
 
     function initRepository() {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);

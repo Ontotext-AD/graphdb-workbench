@@ -23,6 +23,7 @@ describe('Autocomplete ', () => {
     }
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         createRepository();
         cy.visit('/autocomplete');
         cy.window();

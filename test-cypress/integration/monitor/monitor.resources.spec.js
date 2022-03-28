@@ -8,6 +8,7 @@ describe('Monitor Resources', () => {
     });
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.presetRepository(repositoryId);
 
         cy.visit('/monitor/resources');

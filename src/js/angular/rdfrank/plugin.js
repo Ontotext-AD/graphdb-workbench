@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'RDF Rank',
-            labelKey: 'menu.rdf.rank.label',
+            labelKey: 'view.rdf.rank.title',
             href: 'rdfrank',
             order: 45,
             parent: 'Setup',
