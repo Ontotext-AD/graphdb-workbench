@@ -1,4 +1,10 @@
 <div ng-init="getRepositorySize()" style="margin: -4px 0; padding: 10px">
+    <div class="row">
+        <label style="margin-right: 10px">Location:</label>
+        <span class="text-right pull-right">
+			{{popoverRepo.location ? popoverRepo.location : 'Local'}}
+		</span>
+    </div>
 	<div class="row">
 		<label style="margin-right: 10px">Type:</label>
 		<span class="text-right pull-right">

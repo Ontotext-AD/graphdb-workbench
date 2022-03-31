@@ -309,18 +309,18 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
         };
 
-        this.setRepositoryHeaders();
+        that.setRepositoryHeaders();
 
         this.setRepository = function (repo) {
             this.repository = repo;
             if (repo) {
-                localStorage.setItem(this.repositoryStorageName, this.repository.id);
-                localStorage.setItem(this.repositoryStorageLocationName, this.repository.location);
+                localStorage.setItem(that.repositoryStorageName, this.repository.id);
+                localStorage.setItem(that.repositoryStorageLocationName, this.repository.location);
             } else {
-                localStorage.removeItem(this.repositoryStorageName);
-                localStorage.removeItem(this.repositoryStorageLocationName);
+                localStorage.removeItem(that.repositoryStorageName);
+                localStorage.removeItem(that.repositoryStorageLocationName);
             }
-            this.setRepositoryHeaders(repo);
+            that.setRepositoryHeaders(repo);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)

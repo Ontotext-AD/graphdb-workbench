@@ -26,7 +26,7 @@
 
                 <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
                     <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'id', 'location']"
-                        ng-if="repository.id !== getActiveRepository()"
+                        ng-if="repository.id !== getActiveRepository() || repository.location !== getActiveRepositoryObject().location"
                         class="list-group-item list-group-item-action repository"
                         ng-mouseenter="showPopoverForRepo($event, repository)" ngx-mouseleave="setPopoverForRepo($event, repository, false)">
                         <div class="lead ellipsis-block" ng-click="setRepository(repository)">

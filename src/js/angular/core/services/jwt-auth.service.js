@@ -404,7 +404,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(location, repo, 'WRITE');
+                    return this.checkRights(repo, 'WRITE');
                 } else {
                     return true;
                 }
@@ -433,8 +433,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     const authRole = this.principal.authorities[i];
                     const parts = authRole.split('_', 2);
                     const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-                    const repoOnLocation = repo.location ? `${repo.id}_${repo.location}` : repo.id;
-                    if (parts[0] === action && (repoPart === repo.id || repoOnLocation === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
+                    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                    if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
                         return true;
                     }
                 }

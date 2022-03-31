@@ -21,7 +21,7 @@ const modules = [
 
 const createUniqueKey = function (repository) {
     if (repository.location) {
-        return `${repository.id}_${repository.location}`;
+        return `${repository.id}@${repository.location}`;
     }
     return repository.id;
 }
