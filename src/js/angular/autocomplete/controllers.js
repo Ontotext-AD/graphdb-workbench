@@ -26,7 +26,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
-    }
+    };
 
     const refreshEnabledStatus = function () {
         AutocompleteRestService.checkAutocompleteStatus()

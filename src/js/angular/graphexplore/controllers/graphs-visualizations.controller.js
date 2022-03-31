@@ -2025,9 +2025,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         if (newNodes.length === 0) {
             if (isStartNode) {
-                toastr.info('This node has no visible connections. Check your Graph Settings if you expect such.');
+                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
             } else if (linksFound.length === 0) {
-                toastr.info('This node has no other visible connections. Check your Graph Settings if you expect such.');
+                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
             }
 
             graph.addAndMatchLinks(linksFound);
