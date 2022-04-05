@@ -124,7 +124,14 @@ exportCtrl.controller('ExportCtrl',
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);
                 }
-                window.open(url);
+                let win = window.open(url);
+                $timeout(function () {
+                    if (win.document.location.href !== 'about:blank') {
+                        win.close();
+                        toastr.error('Could not export graph. Check GraphDB logs for detailed reason.');
+                    }
+                }, 100);
+
             };
 
             /// <summary>Trigger the custom event for DD tooltip.</summary>
