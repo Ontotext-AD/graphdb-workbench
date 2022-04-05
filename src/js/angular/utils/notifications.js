@@ -6,8 +6,7 @@ Notifications.$inject = ['toastr', '$translate'];
 
 function Notifications(toastr, $translate) {
     return {
-        showToastMessageWithDelay,
-        success,
+        showToastMessageWithDelay
     };
 
     /**
@@ -21,9 +20,5 @@ function Notifications(toastr, $translate) {
             toastr.success($translate.instant(message));
             setTimeout(r, 200);
         });
-    }
-
-    function success(message) {
-        toastr.success($translate.instant(message.msg, message.msgVar), $translate.instant(message.title, message.titleVar));
     }
 }
