@@ -469,7 +469,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('query-editor.get.saved.queries.error'));
+                toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
             });
     };
 

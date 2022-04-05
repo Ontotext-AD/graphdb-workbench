@@ -751,7 +751,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
 
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
             .then(async function () {
-                await Notifications.showToastMessageWithDelay($scope.page === 2 ? $translate.instant('similarity.changed.search.query.msg') : $translate.instant('similarity.changed.analogical.query.msg'));
+                await Notifications.showToastMessageWithDelay($scope.page === 2 ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
                 $location.url('similarity');
             }, function (response) {
                 toastr.error(getError(response), $translate.instant('similarity.change.query.error'));

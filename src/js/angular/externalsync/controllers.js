@@ -528,7 +528,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             controller: 'DeleteConnectorCtrl',
             resolve: {
                 popoverMsg: function () {
-                    return isExternal ? $translate.instant('delete_connector.conditional', {type: type.key}) : '';
+                    return isExternal ? $translate.instant('delete.connector.conditional', {type: type.key}) : '';
                 }
             }
         }).result

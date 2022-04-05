@@ -2,11 +2,12 @@ angular
     .module('graphdb.framework.utils.notifications', [])
     .factory('Notifications', Notifications);
 
-Notifications.$inject = ['toastr'];
+Notifications.$inject = ['toastr', '$translate'];
 
-function Notifications(toastr) {
+function Notifications(toastr, $translate) {
     return {
-        showToastMessageWithDelay
+        showToastMessageWithDelay,
+        success,
     };
 
     /**
@@ -17,8 +18,12 @@ function Notifications(toastr) {
      */
     function showToastMessageWithDelay(message) {
         return new Promise((r) => {
-            toastr.success(message);
+            toastr.success($translate.instant(message));
             setTimeout(r, 200);
         });
+    }
+
+    function success(message) {
+        toastr.success($translate.instant(message.msg, message.msgVar), $translate.instant(message.title, message.titleVar));
     }
 }

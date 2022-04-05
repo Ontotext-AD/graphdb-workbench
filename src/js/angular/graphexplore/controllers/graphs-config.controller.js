@@ -125,7 +125,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         $scope.createGraphConfig = function () {
             GraphConfigRestService.createGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await Notifications.showToastMessageWithDelay($translate.instant('graphexplore.saved.new.config'));
+                    await Notifications.showToastMessageWithDelay('graphexplore.saved.new.config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.create'));
@@ -135,7 +135,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         $scope.updateGraphConfig = function () {
             GraphConfigRestService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await Notifications.showToastMessageWithDelay($translate.instant('graphexplore.saved.config'));
+                    await Notifications.showToastMessageWithDelay('graphexplore.saved.config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.save'));
@@ -520,7 +520,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
         if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-            toastr.warning($translate.instant('query-editor-warning-msg'));
+            toastr.warning($translate.instant('query.editor.warning.msg'));
             return;
         }
 

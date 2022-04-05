@@ -2,13 +2,13 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"></button>
-    <h3 ng-if="isNew" class="modal-title">{{'add_label.add.autocomplete' | translate}}</h3>
-    <h3 ng-if="!isNew" class="modal-title">{{'add_label.edit.autocomplete' | translate}}</h3>
+    <h3 ng-if="isNew" class="modal-title">{{'add.label.add.autocomplete' | translate}}</h3>
+    <h3 ng-if="!isNew" class="modal-title">{{'add.label.edit.autocomplete' | translate}}</h3>
 </div>
 <form ng-submit="ok()" name="form">
     <div class="modal-body">
         <input id="wb-autocomplete-iri" required type="text" ng-model="label.labelIri" class="form-control" ng-readonly="!isNew"
-               placeholder= "{{'add_label.enter.iri' | translate}}" autofocus/>
+               placeholder= "{{'add.label.enter.iri' | translate}}" autofocus/>
 
         <div class="mt-1 mb-2 templates">
             <span class="tag tag-default" ng-click="setTemplate('http://www.w3.org/2000/01/rdf-schema#label')">rdfs:label</span>
@@ -17,7 +17,7 @@
         </div>
 
         <input id="wb-autocomplete-languages" type="text" ng-model="label.languages" class="form-control"
-               placeholder="{{'add_label.enter.comma-separated' | translate}}"/>
+               placeholder="{{'add.label.enter.comma.separated' | translate}}"/>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>

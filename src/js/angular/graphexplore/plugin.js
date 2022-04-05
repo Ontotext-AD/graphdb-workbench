@@ -16,8 +16,8 @@ PluginRegistry.add('route', [
         'chunk': 'domain-range-graph',
         'controller': 'DomainRangeGraphCtlr',
         'templateUrl': 'pages/domainRangeInfo.html',
-        'title': 'view.domain-range.graph.title',
-        'helpInfo': 'view.domain-range.graph.helpInfo'
+        'title': 'view.domain.range.graph.title',
+        'helpInfo': 'view.domain.range.graph.helpInfo'
     }, {
         'url': '/relationships',
         'module': 'graphdb.framework.graphexplore',

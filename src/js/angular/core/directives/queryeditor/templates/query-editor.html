@@ -110,7 +110,7 @@
                         <button class="btn btn-link" id="inference"
                                 ng-hide="notoolbarInference"
                                 ng-click="currentQuery.inference = !currentQuery.inference"
-                                tooltip="{{createTooltipMsg('core.include.inferred', currentQuery.inference)}}"
+                                tooltip="{{'core.include.inferred' | translate}}{{currentQuery.inference ? 'common.on.btn' : 'common.off.btn' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   ng-class="{'icon-inferred-on':currentQuery.inference, 'icon-inferred-off':!currentQuery.inference}"></span>
@@ -118,7 +118,7 @@
                         <button class="btn btn-link" id="sameAs"
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
-                                tooltip="{{createTooltipMsg('core.expand.sameAs', currentQuery.sameAs)}}"
+                                tooltip="{{'core.expand.sameAs' | translate}}{{currentQuery.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   tooltip="{{!currentQuery.inference ? 'core.require.inferred' : '' | translate}}"
@@ -175,7 +175,7 @@
         <div class="yasr" id="yasr-inner">
             <div ng-hide="nostatus || currentTabConfig.queryType || queryIsRunning"
                  class="alert alert-info no-icon no-query-run">
-                 {{'query-editor.no.results.from.prev.run.warning' | translate}}
+                 {{'query.editor.no.results.from.prev.run.warning' | translate}}
             </div>
             <!--ng-show="!queryIsRunning">-->
             <div class='yasr_header mb-1 clearfix'
@@ -183,7 +183,7 @@
                  <div class="resultsVisualButton btn-group pull-right">
                     <button class="btn btn-primary btn-sm" ng-show="!queryIsRunning && currentTabConfig.queryType && (currentTabConfig.queryType == 'CONSTRUCT' || currentTabConfig.queryType == 'DESCRIBE')"
                         ng-click="goToVisual()">
-                        {{'query-editor.visual.btn' | translate}}
+                        {{'query.editor.visual.btn' | translate}}
                     </button>
                  </div>
             </div>
@@ -200,7 +200,7 @@
                         {{getResultsDescription()}}
                     </span>
                     <span ng-show="currentTabConfig.timeTook" class="query-duration"
-                          translate="query-editor.query.took.msg"
+                          translate="query.editor.query.took.msg"
                           translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
                           translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
                     </span>
@@ -210,7 +210,7 @@
                  ng-show="!nostatus && currentTabConfig.queryType == 'UPDATE' && !queryIsRunning">
                 {{getUpdateDescription()}}
                 <span ng-show="currentTabConfig.timeTook"
-                      translate="query-editor.update.msg"
+                      translate="query.editor.update.msg"
                       translate-value-message="{{currentTabConfig.customUpdateMessage ? 'common.operation.msg' : 'common.update.msg' | translate}}"
                       translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
                       translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
@@ -219,7 +219,7 @@
             <div class="alert alert-danger no-icon results-info update-info" ng-show="currentTabConfig.queryType == 'ERROR'">
                 <div>
                     <div class="pull-right" ng-show="currentTabConfig.timeTook"
-                         translate="query-editor.operation.msg"
+                         translate="query.editor.operation.msg"
                          translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
                          translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
                     </div>
@@ -238,8 +238,8 @@
                 <div ng-class="abortRequested ? 'disabled' : ''"> <!-- Keep this div -->
                     <button ng-disabled="abortRequested" class="btn btn-xs btn-primary"
                             ng-click="abortCurrentQuery()" ng-hide="!isUserLoggedIn() && isSecurityEnabled()"
-                            translate="query-editor-abort"
-                            translate-value-abort="{{abortRequested ? 'query-editor-abort-requested' : (lastRunQueryMode === 'update' ? 'query-editor-abort-update' : 'query-editor-abort-query') | translate}}">
+                            translate="query.editor.abort"
+                            translate-value-abort="{{abortRequested ? 'query.editor.abort.requested' : (lastRunQueryMode === 'update' ? 'query.editor.abort.update' : 'query.editor.abort.query') | translate}}">
                     </button>
                 </div>
             </div>

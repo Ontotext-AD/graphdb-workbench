@@ -66,7 +66,7 @@
                        ng-switch-default>
                         {{sourceTargetObjectNodeName}}
                     </a>
-                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy_to_clipboard_modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
+                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
                         <span class="icon-link"></span>
                     </button>
                 </h3>
@@ -98,7 +98,7 @@
                     <ul ng-switch-default ui-scroll-viewport class="rdf-list">
                         <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
                             <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
-                            <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy_to_clipboard_modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
+                            <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
                                 <span class="icon-link"></span>
                             </button>
                             <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">

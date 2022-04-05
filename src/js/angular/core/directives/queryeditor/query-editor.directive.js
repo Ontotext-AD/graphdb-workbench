@@ -159,7 +159,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 $('a[data-id = "' + idx + '"]')
                     .toggleClass('query-has-error', hasError)
                     .attr('title', hasError ?
-                        $translate.instant('query-editor.query.syntax.error') :
+                        $translate.instant('query.editor.query.syntax.error') :
                         '');
             }, 200);
             scope.currentQuery.query = window.editor.getValue();
@@ -292,7 +292,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             return originalExecuteQuery(cm, {});
                         })
                         .error(function (data) {
-                            toastr.warning($translate.instant('query-editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
+                            toastr.warning($translate.instant('query.editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
                             scope.queryStartTime = new Date().getTime();
                             return originalExecuteQuery(cm, {});
                         });
@@ -306,7 +306,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             scope.currentTabConfig.timeFinished = Date.now();
                             scope.currentTabConfig.timeTook = (scope.currentTabConfig.timeFinished - scope.queryStartTime) / 1000;
 
-                            const customError = createCustomError(-1, $translate.instant('query-editor.inactive.plugin.warning.msg', {connectorName: res.data.connectorName, pluginName: res.data.pluginName}));
+                            const customError = createCustomError(-1, $translate.instant('query.editor.inactive.plugin.warning.msg', {connectorName: res.data.connectorName, pluginName: res.data.pluginName}));
 
                             yasr.results = {
                                 getException: function () {
@@ -324,10 +324,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                         if (res.data.command === 'create' || res.data.command === 'repair') {
                             const repair = res.data.command === 'repair';
                             if (repair) {
-                                scope.setLoader(true, $translate.instant('query-editor.repairing.connector', {name: res.data.name}));
-                                scope.currentTabConfig.customUpdateMessage = $translate.instant('query-editor.repaired.connector', {name: res.data.name});
+                                scope.setLoader(true, $translate.instant('query.editor.repairing.connector', {name: res.data.name}));
+                                scope.currentTabConfig.customUpdateMessage = $translate.instant('query.editor.repaired.connector', {name: res.data.name});
                             } else {
-                                scope.setLoader(true, $translate.instant('query-editor.creating.connector', {name: res.data.name}));
+                                scope.setLoader(true, $translate.instant('query.editor.creating.connector', {name: res.data.name}));
                                 scope.currentTabConfig.customUpdateMessage = $translate.instant('created.connector', {name: res.data.name});
                             }
 
@@ -449,10 +449,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             return url;
         }
 
-        scope.createTooltipMsg = function (key, booleanExpr) {
-            return $translate.instant(key, {value: (booleanExpr ? $translate.instant('common.on.btn') : $translate.instant('common.off.btn'))});
-        }
-
         scope.copyToClipboardQuery = function (savedQueryName, owner) {
             ModalService.openCopyToClipboardModal(createQueryURL(savedQueryName, owner));
         };
@@ -552,7 +548,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
                 $('#wb-download-query').val(scope.currentQuery.query);
                 if (window.editor.getValue() !== scope.currentQuery.query) {
-                    toastr.warning($translate.instant('query-editor.query.results.mismatch'));
+                    toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
                 $('#wb-download-infer').val(scope.currentQuery.inference);
                 $('#wb-download-sameAs').val(scope.currentQuery.sameAs);
@@ -636,7 +632,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                 scope.currentTabConfig.sizeDelta = repoSizeDiff;
                                 setNewTabStateForThis();
                             }).error(function (data) {
-                                toastr.warning($translate.instant('query-editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
+                                toastr.warning($translate.instant('query.editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
                                 scope.currentTabConfig.sizeDelta = undefined;
                                 setNewTabStateForThis();
                             });
@@ -683,7 +679,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     }
 
                     // The following long-running code needs to be in timeout to get the updated loader message
-                    scope.setLoader(true, $translate.instant('query-editor.render.results.msg'), null, true);
+                    scope.setLoader(true, $translate.instant('query.editor.render.results.msg'), null, true);
 
                     updateResultsCallback = function () {
                         scope.setYasrResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
@@ -823,7 +819,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 if (window.editor.getQueryMode() === 'update') {
                     ModalService.openSimpleModal({
                         title: $translate.instant('confirm.execute'),
-                        message: $translate.instant('query-editor.automatically.execute.update.warning'),
+                        message: $translate.instant('query.editor.automatically.execute.update.warning'),
                         warning: true
                     }).result
                         .then(function () {
@@ -866,7 +862,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     loadQueryIntoExistingOrNewTab(data, infer, sameAs);
                 })
                 .error(function (data) {
-                    toastr.error($translate.instant('query-editor.missing.saved.query.data.error', {savedQueryName: savedQueryName, error: getError(data)}));
+                    toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {savedQueryName: savedQueryName, error: getError(data)}));
                 });
         }
 

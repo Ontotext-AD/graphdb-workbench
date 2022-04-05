@@ -159,13 +159,13 @@
 					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.name}}</a>
 					<button class="btn btn-link btn-sm px-0 hovered-item"
 						ng-click="copyToClipboard(selectedClass.fullName)"
-						title="{{'copy_to_clipboard_modal.ok.btn' | translate}}">
+						title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">
 						<span class="icon-link"></span>
 					</button>
 				</h3>
 				<p>
 					<button class="btn btn-sm btn-primary domain-range-graph-btn"
-						ng-click="goToDomainRangeGraphView(selectedClass)">{{'view.domain-range.graph.title' | translate}}
+						ng-click="goToDomainRangeGraphView(selectedClass)">{{'view.domain.range.graph.title' | translate}}
 					</button>
                 </p>
 
@@ -203,7 +203,7 @@
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
 										<td class="break-word-alt">
 											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
-												title="{{'copy_to_clipboard_modal.ok.btn' | translate}}"
+												title="{{'copy.to.clipboard.modal.ok.btn' | translate}}"
 												ng-click="copyToClipboard(item.absUriNonEncoded)">
 												<span class="icon-link"></span>
 											</button>

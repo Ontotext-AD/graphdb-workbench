@@ -97,7 +97,7 @@
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
-                                visual-button="{{'rdfs_comment.show' | translate}}"
+                                visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="openUri(uri)"
                                 empty="empty">
                         </search-resource-input>
@@ -118,7 +118,7 @@
                                 namespacespromise="getNamespacesPromise"
                                 autocompletepromisestatus="getAutocompletePromise"
                                 text-button=""
-                                visual-button="{{'rdfs_comment.show' | translate}}"
+                                visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="easyGraphSearch(uri)"
                                 empty="empty">
                         </search-resource-input>
@@ -405,7 +405,7 @@
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
-                        title="{{'copy_to_clipboard_modal.ok.btn' | translate}}">
+                        title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">
                     <span class="icon-link"></span>
                 </button>
             </h3>
@@ -478,7 +478,7 @@
                             <button class="btn btn-link btn-sm" type="button"
                                     ng-if="item.value.length > 1"
                                     ng-click="toggleMoreInfo($event, this)">
-                                {{'rdfs_comment.show' | translate}} {{item.value.length - 1}} {{'more' | translate}} <span
+                                {{'rdfs.comment.show' | translate}} {{item.value.length - 1}} {{'more' | translate}} <span
                                     class="icon-caret-down"></span>
                             </button>
                         </div>

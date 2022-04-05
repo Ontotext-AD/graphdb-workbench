@@ -239,7 +239,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if (enabled !== this.securityEnabled) {
                     this.securityEnabled = enabled;
                     SecurityRestService.toggleSecurity(enabled).then(function () {
-                        toastr.success($translate.instant('jwt-auth.security.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
+                        toastr.success($translate.instant('jwt.auth.security.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
                         that.clearStorage();
                         that.initSecurity();
                     }, function (err) {
@@ -262,9 +262,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         appSettings: appSettings
                     }).then(function () {
                         if (updateFreeAccess) {
-                            toastr.success($translate.instant('jwt-auth.free.access.updated.msg'));
+                            toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
                         } else {
-                            toastr.success($translate.instant('jwt-auth.free.access.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
+                            toastr.success($translate.instant('jwt.auth.free.access.status', {status: (enabled ? 'enabled.status' : 'disabled.status')}));
                         }
                     }, function (err) {
                         toastr.error(err.data.error.message, $translate.instant('common.error'));

@@ -69,7 +69,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     $window.location.href = that.getLoginUrl(state, '', returnToUrl, openIDConfig);
                 } else {
                     console.log('oidc: unknown auth flow: ' + authFlow);
-                    toastr.error($translate.instant('openid-auth.unknown.flow', {authFlow: authFlow}));
+                    toastr.error($translate.instant('openid.auth.unknown.flow', {authFlow: authFlow}));
                 }
             };
 
@@ -101,7 +101,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         params.push('nonce=' + encodeURIComponent(state));
                         break;
                     default:
-                        throw new Error($translate.instant('openid-auth.unknown.flow', {authFlow: openIDConfig.authFlow}));
+                        throw new Error($translate.instant('openid.auth.unknown.flow', {authFlow: openIDConfig.authFlow}));
                 }
 
                 // We want these first even though the order doesn't matter.
@@ -195,7 +195,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                             if (openIDConfig.authFlow === 'code') {
                                 // Verify state matches what we set at the beginning
                                 if (that.getStorageItem('pkce_state') !== s.state) {
-                                    toastr.error($translate.instant('openid-auth.invalid.pkce_state'));
+                                    toastr.error($translate.instant('openid.auth.invalid.pkce.state'));
                                     console.log('oidc: PKCE state mismatch ' + that.getStorageItem('pkce_state') + ' != ' + s.state);
                                     errorCallback();
                                 } else {
@@ -301,7 +301,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         }
                     } catch (e) {
                     }
-                    return {error: $translate.instant('openid-auth.not.jwt.token', {token: token})};
+                    return {error: $translate.instant('openid.auth.not.jwt.token', {token: token})};
                 } else {
                     return {};
                 }
@@ -399,7 +399,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         }
                     } catch (e) {
                     }
-                    return {error: $translate.instant('openid-auth.not.jwt.token', {token: token})};
+                    return {error: $translate.instant('openid.auth.not.jwt.token', {token: token})};
                 } else {
                     return {};
                 }
@@ -485,7 +485,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 }).success(function(data) {
                     that.saveTokens(data, true, false, successCallback);
                 }).error(function(e) {
-                    toastr.error($translate.instant('openid-auth.cannot.retrieve.token.msg', {error: getError(e)}));
+                    toastr.error($translate.instant('openid.auth.cannot.retrieve.token.msg', {error: getError(e)}));
                     errorCallback();
                 })
             };
@@ -518,7 +518,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         that.isLoggedIn = true;
                     }).error(function(e) {
                         console.log('oidc: could not refresh tokens');
-                        toastr.error($translate.instant('openid-auth.cannot.refresh.token.msg', {error: getError(e)}));
+                        toastr.error($translate.instant('openid.auth.cannot.refresh.token.msg', {error: getError(e)}));
                         if (errorCallback) {
                             errorCallback();
                         }

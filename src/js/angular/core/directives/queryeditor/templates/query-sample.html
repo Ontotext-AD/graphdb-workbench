@@ -8,23 +8,23 @@
     <div class="modal-body">
         <input id="wb-sparql-sampleName" required type="text" ng-model="query.name" class="form-control"
                ng-change="queryExists = false"
-               placeholder="{{'query-sample.title.placeholder' | translate}}"/>
+               placeholder="{{'query.sample.title.placeholder' | translate}}"/>
         <label for="share-query"
-               tooltip="{{'query-sample.share.tooltip.msg' | translate}}">
+               tooltip="{{'query.sample.share.tooltip.msg' | translate}}">
             <input id="share-query" type="checkbox" ng-model="query.shared">
-            {{'query-sample.share.msg' | translate}}
+            {{'query.sample.share.msg' | translate}}
         </label>
         <input style="height: 0; border: 0; padding: 0; margin: 0;" autofocus/>
         <br>
         <textarea id="wb-sparql-sampleValue" required rows="8" class="form-control" ng-model="query.body"
-                  placeholder="{{'query-sample.textarea.placeholder' | translate}}" ng-blur="errorMsg = ''"></textarea>
+                  placeholder="{{'query.sample.textarea.placeholder' | translate}}" ng-blur="errorMsg = ''"></textarea>
         <div class="saved-query-errors">
             <div ng-show="form.$error.required.length" >
                 <div ng-hide="query.name" class="alert alert-danger empty-query-name-err" style="margin-top: 5px;">
                     {{'empty.name.alert' | translate}}
                 </div>
                 <div ng-hide="query.body" class="alert alert-danger empty-query-err" style="margin-top: 5px;">
-                    {{'query-sample.empty.query.alert' | translate}}
+                    {{'query.sample.empty.query.alert' | translate}}
                 </div>
             </div>
             <div ng-hide="form.$error.required.length" ng-if="queryExists" class="alert alert-danger query-exists-error"
