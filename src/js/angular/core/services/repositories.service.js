@@ -32,7 +32,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
         this.locations = [];
         this.repositories = new Map();
-        this.locationsShouldReload = false;
+        this.locationsShouldReload = true;
 
         const that = this;
         const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
@@ -186,7 +186,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.getLocations = function () {
             if (this.locationsShouldReload) {
                 this.locationsShouldReload = false;
-                this.locations = [this.location];
                 const that = this;
                 return LocationsRestService.getLocations()
                     .success(function (data) {
@@ -202,6 +201,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.locations;
         };
 
+        that.getLocations();
 
         this.getActiveLocation = function () {
             return this.location;
