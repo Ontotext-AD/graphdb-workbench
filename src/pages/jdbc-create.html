@@ -17,7 +17,7 @@
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
-    <div core-errors></div>
+    <div core-errors license></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
         <p>{{'not.usable.active.repo.error' | translate}}</p>
@@ -25,7 +25,7 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="card mb-2 sql-table-config">
+    <div class="card mb-2 sql-table-config" ng-if="isLicenseValid()">
         <div class="card-block pt-1">
             <p class="lead">{{'table.name' | translate}}</p>
             <div class="table-group table-group-lg">
@@ -116,7 +116,7 @@
 
             <div class="clearfix">
                 <div class="pull-right">
-                    <button ng-if="page === 2 && canWriteActiveRepo()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
+                    <button ng-if="page === 2 && canWriteActiveRepo() && isLicenseValid()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
                             popover="{{'jdbc.column.suggestions' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
@@ -138,24 +138,24 @@
             popover="{{'jdbc.save.configuration' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter"
-            ng-if="canWriteActiveRepo()">
+            ng-if="canWriteActiveRepo() && isLicenseValid()">
         {{'common.save.btn' | translate}}
     </button>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-query-btn"
        popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
-       ng-if="canWriteActiveRepo()">
+       ng-if="canWriteActiveRepo() && isLicenseValid()">
         {{'common.cancel.btn' | translate}}
     </a>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary"
        popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
-       ng-if="!canWriteActiveRepo()">
+       ng-if="!canWriteActiveRepo() && isLicenseValid()">
         {{'common.close' | translate}}
     </a>
-    <div class="pull-right">
+    <div class="pull-right" ng-if="isLicenseValid()">
         <button class="btn btn-lg preview-btn" ng-click="getPreview()"
                 popover="{{'jdbc.preview.configuration' | translate}}"
                 popover-placement="top"
