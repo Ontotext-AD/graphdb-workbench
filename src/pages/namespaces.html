@@ -15,8 +15,8 @@
 
 <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 <div id="wb-namespaces" ng-hide="loader">
-    <div core-errors></div>
-    <div ng-show="getActiveRepository()">
+    <div core-errors license></div>
+    <div ng-show="getActiveRepository() && isLicenseValid()">
         <div class="clearfix mb-2">
             <form novalidate name="form" class="form-inline pull-right add-namespace-form" ng-show="canWriteActiveRepo()">
                 <div class="form-group" style="width: 130px;">

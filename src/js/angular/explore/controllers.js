@@ -1,6 +1,7 @@
 import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
+import 'angular/core/services/license.service';
 
 const modules = [
     'ngCookies',
@@ -10,7 +11,8 @@ const modules = [
     'graphdb.framework.core',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.core.services.licenseService'
 ];
 
 angular
@@ -20,9 +22,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$licenseService', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth) {
+function ExploreCtrl($scope, $http, $location, toastr, $licenseService, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth) {
 
     // We need to get sameAs and inference for the current user
     const principal = $jwtAuth.getPrincipal();
@@ -81,9 +83,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.$watch(function () {
-        return $repositories.getActiveRepository();
+            return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.getActiveRepository()) {
+        if ($scope.getActiveRepository() && $licenseService.isLicenseValid()) {
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {
