@@ -2,6 +2,7 @@ import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
+import 'angular/core/services/license.service';
 
 const modules = [
     'ngCookies',
@@ -11,7 +12,8 @@ const modules = [
     'graphdb.framework.core',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.core.services.licenseService'
 ];
 
 angular
@@ -21,9 +23,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$licenseService', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
+function ExploreCtrl($scope, $http, $location, toastr, $licenseService, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
 
     // We need to get sameAs and inference for the current user
     const principal = $jwtAuth.getPrincipal();
@@ -56,9 +58,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Fixed inference when we're showing the context tab and a named graph
     $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
-        {id: 'all', title: 'explore.explicit.implicit'},
-        {id: 'explicit', title: 'explore.explicit'},
-        {id: 'implicit', title: 'explore.implicit'}
+        {id: 'all', title: $translate.instant('explore.explicit.implicit')},
+        {id: 'explicit', title: $translate.instant('explore.explicit')},
+        {id: 'implicit', title: $translate.instant('explore.implicit')}
     ];
     $scope.context = '';
 
@@ -82,9 +84,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.$watch(function () {
-        return $repositories.getActiveRepository();
+            return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.getActiveRepository()) {
+        if ($scope.getActiveRepository() && $licenseService.isLicenseValid()) {
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {

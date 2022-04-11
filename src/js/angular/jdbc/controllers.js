@@ -60,9 +60,9 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     };
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', '$licenseService', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, $licenseService, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -407,7 +407,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     function getSuggestions() {
-        if (!validateQuery()) {
+        if (!validateQuery() || !$licenseService.isLicenseValid()) {
             return;
         }
 
