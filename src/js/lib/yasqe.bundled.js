@@ -26548,7 +26548,7 @@ module.exports={
         "spec": ">=1.6.0 <2.0.0",
         "type": "range"
       },
-      "/home/onto/Projects/YASQE-Ontotext"
+      "/home/sava/IntellijProjects/YASQE-Ontotext"
     ]
   ],
   "_from": "yasgui-utils@>=1.6.0 <2.0.0",
@@ -26582,7 +26582,7 @@ module.exports={
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
   "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.6.0",
-  "_where": "/home/onto/Projects/YASQE-Ontotext",
+  "_where": "/home/sava/IntellijProjects/YASQE-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -26869,7 +26869,7 @@ module.exports = function (YASQE, yasqe) {
 	var completionTriggeredFlag = false;
 
 	// load and register the translation service providing the locale config
-	yasqe.translate = require('../translate.js')(yasqe);
+	yasqe.translate = require('../translate.js')(yasqe.options.locale);
 
 	yasqe.on('cursorActivity', function (yasqe, eventInfo) {
 		autoComplete(true);
@@ -27769,7 +27769,7 @@ var preprocessResourceTokenForCompletion = function (yasqe, token) {
 		}
 	}
 // load and register the translation service providing the locale config
-yasqe.translate = require('../translate.js')(yasqe);
+yasqe.translate = require('../translate.js')(yasqe.options.locale);
 
 	token.autocompletionString = token.string.trim();
 	if (!token.string.indexOf("<") == 0 && token.string.indexOf(":") > -1) {
@@ -28163,16 +28163,6 @@ YASQE.defaults = $.extend(true, {}, YASQE.defaults, {
 module.exports = require('./main.js');
 },{"./main.js":48}],45:[function(require,module,exports){
 module.exports={
-  "yasqe.invalid.line": "Diese Zeile ist ungültig. Erwartet: ",
-  "yasqe.btn.title.fullscreen": "Stellen Sie den Editor im Vollbildmodus ein",
-  "yasqe.btn.title.normalsize": "Stellen Sie den Editor auf die normale Größe ein",
-  "yasqe.autocompleterBase.message": "Drücken Sie Alt+Enter, um automatisch zu vervollständigen",
-  "yasqe.btn.title.share": "Teilen Sie Ihre Anfrage",
-  "yasqe.btn.lbl.curl": "CURL",
-  "yasqe.btn.lbl.shorten": "Verkürzen"
-}
-},{}],46:[function(require,module,exports){
-module.exports={
   "yasqe.invalid.line": "This line is invalid. Expected: ",
   "yasqe.btn.title.fullscreen": "Set editor full screen",
   "yasqe.btn.title.normalsize": "Set editor to normal size",
@@ -28184,6 +28174,20 @@ module.exports={
   "yasqe.utils.message2": "0 matches found...",
   "yasqe.utils.message3": "Failed fetching suggestions.."
 }
+},{}],46:[function(require,module,exports){
+module.exports={
+   "yasqe.invalid.line": "Cette ligne n'est pas valide. Attendu:",
+   "yasqe.btn.title.fullscreen": "Configurer l'éditeur en plein écran",
+   "yasqe.btn.title.normalsize": "Configurer l'éditeur à la taille normale",
+   "yasqe.btn.title.share": "Partagez votre requête",
+   "yasqe.btn.lbl.curl": "CURL",
+   "yasqe.btn.lbl.shorten": "Raccourcir",
+   "yasqe.autocompleterBase.message": "Appuyez sur Alt+Enter pour l'autocomplétion.",
+   "yasqe.utils.message1": "Rien à autocompléter encore !",
+   "yasqe.utils.message2": "0 correspondances trouvées ...",
+   "yasqe.utils.message3": "Échec de la récupération des suggestions..."
+} 
+
 },{}],47:[function(require,module,exports){
 'use strict';
 module.exports = {
@@ -28274,7 +28278,7 @@ var extendConfig = function (config) {
  */
 var extendCmInstance = function (yasqe) {
     // load and register the translation service providing the locale config
-    yasqe.translate = require('./translate.js')(yasqe);
+    yasqe.translate = require('./translate.js')(yasqe.options.locale);
 
 	//instantiate autocompleters
 	yasqe.autocompleters = require('./autocompleters/autocompleterBase.js')(root, yasqe);
@@ -28455,11 +28459,6 @@ var postProcessCmElement = function (yasqe) {
 		checkSyntax(yasqe);
 		root.updateQueryButton(yasqe);
 		root.positionButtons(yasqe);
-	});
-
-	yasqe.on('language-changed', function () {
-		checkSyntax(yasqe);
-		root.drawButtons(yasqe);
 	});
 
 	yasqe.on('cursorActivity', function (yasqe, eventInfo) {
@@ -29605,7 +29604,7 @@ module.exports = function(yasqe, parent, html) {
 },{"./utils.js":55,"jquery":16}],54:[function(require,module,exports){
 const bundle = {
     "en": require('./i18n/locale-en'),
-    "de": require('./i18n/locale-de')
+    "fr": require('./i18n/locale-fr')
 };
 const DEFAULT_LANG = 'en';
 var currentLang = DEFAULT_LANG;
@@ -29625,19 +29624,15 @@ var translate = function (key) {
     return translation;
 };
 
-function init(yasqe) {
-    yasqe.on("language-changed", function () {
-        currentLang = yasqe.options.locale;
-    });
-
-    if (yasqe.options.locale) {
-        currentLang = yasqe.options.locale;
+function init(lang) {
+    if (lang) {
+        currentLang = lang;
     }
     return translate;
 }
 
 module.exports = init;
-},{"./i18n/locale-de":45,"./i18n/locale-en":46}],55:[function(require,module,exports){
+},{"./i18n/locale-en":45,"./i18n/locale-fr":46}],55:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 

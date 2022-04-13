@@ -834,14 +834,14 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         } else {
             const currentPageEnd = ($scope.currentTabConfig.page - 1) * $scope.currentTabConfig.pageSize
                 + Math.min($scope.currentTabConfig.resultsCount, $scope.currentTabConfig.pageSize);
-            desc = "Showing results from " + $filter('currency')($scope.currentTabConfig.offset, '', 0)
-                + " to " + $filter('currency')(currentPageEnd, '', 0);
+            desc = $translate.instant('query.editor.showing.results.from.msg') + $filter('currency')($scope.currentTabConfig.offset, '', 0)
+                + $translate.instant('query.editor.to') + $filter('currency')(currentPageEnd, '', 0);
             if ($scope.currentTabConfig.allResultsCount > 0) {
                 // Unsure total results count "of at least" happens if counting timed out or
                 // counting was disabled and we got at least $pageSize + 1 results for the current page.
                 // It may reset become exact when we navigate and reach the end of results.
-                desc += $scope.currentTabConfig.allResultsCountExact
-                    ? " of " : " of at least ";
+                desc += $translate.instant(($scope.currentTabConfig.allResultsCountExact
+                    ? 'query.editor.of' : 'query.editor.of.at.least'));
                 desc += $filter('currency')($scope.currentTabConfig.allResultsCount, '', 0);
             }
             desc += ".";

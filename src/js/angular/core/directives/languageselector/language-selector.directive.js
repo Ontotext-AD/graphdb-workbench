@@ -23,8 +23,8 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                     translation: 'menu.btn.translate.en'
                 },
                 {
-                    key: 'de',
-                    translation: 'menu.btn.translate.de'
+                    key: 'fr',
+                    translation: 'menu.btn.translate.fr'
             }];
 
             // If some keys in i18n folder are not

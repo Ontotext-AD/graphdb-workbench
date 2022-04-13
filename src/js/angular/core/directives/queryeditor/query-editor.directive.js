@@ -49,7 +49,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         // Doesn't show the run button
         scope.norun = attrs.hasOwnProperty('norun');
         // Name of the Run button in the editor
-        scope.runButtonName = "Run";
+        scope.runButtonName = $translate.instant('query.editor.run.btn');
         if (attrs.runButtonName) {
             scope.runButtonName = attrs.runButtonName;
         }
