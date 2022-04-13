@@ -9,6 +9,7 @@ describe('Setup / Connectors - Lucene', () => {
     const connectorDeleteToastMessage = 'Deleted connector ' + luceneConnectorName;
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);

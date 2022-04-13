@@ -3,6 +3,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'ui.bootstrap',
@@ -17,9 +18,9 @@ angular.module('graphdb.framework.sparql-template.controllers', modules, [
     .controller('SparqlTemplatesCtrl', SparqlTemplatesCtrl)
     .controller('SparqlTemplateCreateCtrl', SparqlTemplateCreateCtrl);
 
-SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService', '$licenseService'];
+SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService', '$licenseService', '$translate'];
 
-function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService, $licenseService) {
+function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService, $licenseService, $translate) {
 
     $scope.pluginName = 'sparql-template';
 
@@ -38,7 +39,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
                 $scope.sparqlTemplateIds = data;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Could not get SPARQL templates');
+                toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
             });
         } else {
             $scope.sparqlTemplateIds = [];
@@ -53,29 +54,29 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
 
     $scope.deleteTemplate = function (templateID) {
         ModalService.openSimpleModal({
-            title: 'Warning',
-            message: 'Are you sure you want to delete the SPARQL template ' + '\'' + templateID + '\'?',
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('sparql.template.delete.template.warning', {templateID: templateID}),
             warning: true
         }).result
             .then(function () {
                 SparqlTemplatesRestService.deleteSparqlTemplate(templateID)
                     .success(function () {
-                        toastr.success(templateID, 'Deleted successfully SPARQL template');
+                        toastr.success(templateID, $translate.instant('sparql.template.delete.template.success'));
                         $scope.getSparqlTemplates();
                     }).error(function (e) {
-                    toastr.error(getError(e), `Could not delete ${templateID} template`);
+                    toastr.error(getError(e), $translate.instant('sparql.template.delete.template.failure', {templateID: templateID}));
                 });
             });
     };
 }
 
-SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils', 'ModalService'];
+SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils', 'ModalService', '$translate'];
 
-function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils, ModalService) {
+function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils, ModalService, $translate) {
 
     const hash = $location.hash() || '';
     $scope.templateID = ($location.search().templateID || '') + (hash ? (`#${hash}`) : '');
-    $scope.title = ($scope.templateID ? 'Edit' : 'Create') + ' SPARQL Template';
+    $scope.title = ($scope.templateID ? $translate.instant('edit') : $translate.instant('common.create.btn')) + ' SPARQL Template';
     $scope.getNamespaces = getNamespaces;
     $scope.setLoader = setLoader;
     $scope.addKnownPrefixes = addKnownPrefixes;
@@ -116,7 +117,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
 
     function confirmExit(event) {
         if (!$scope.currentQuery.isPristine) {
-            if (!confirm('You have unsaved changes. Are you sure that you want to exit?')) {
+            if (!confirm($translate.instant('jdbc.warning.unsaved.changes'))) {
                 event.preventDefault();
             } else {
                 window.removeEventListener('beforeunload', showBeforeunloadMessage);
@@ -169,7 +170,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -252,7 +253,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
             setQueryFromTabConfig();
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, `Could not get ${$scope.currentQuery.templateID} template`);
+            toastr.error(msg, $translate.instant('sparql.template.get.template.error', {templateID: $scope.currentQuery.templateID}));
             $scope.repositoryError = msg;
         });
     }
@@ -281,7 +282,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         }
 
         if (!$scope.currentQuery.templateID) {
-            toastr.error('SPARQL template IRI is required');
+            toastr.error($translate.instant('sparql.template.iri.constraint'));
             return;
         } else {
             validateTemplateID();
@@ -294,10 +295,9 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
             checkIfTemplateExists()
                 .then(() => {
                     if (templateExist) {
-                        const modalMsg = `<div>SPARQL Template <strong>${$scope.currentQuery.templateID}</strong> already exists.</div><br>
-                                        <div><span class="icon-2x icon-warning" style="color: #d54a33"/> Do you want to override the template query?</div>`;
+                        const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: $scope.currentQuery.templateID}));
                         ModalService.openSimpleModal({
-                            title: 'Confirm save',
+                            title: $translate.instant('common.confirm.save'),
                             message: modalMsg,
                             warning: true
                         }).result
@@ -313,11 +313,11 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                 SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
                     $scope.currentQuery.isPristine = true;
                     $scope.currentQuery.isNewTemplate = false;
-                    toastr.success($scope.currentQuery.templateID, 'Updated SPARQL template');
+                    toastr.success($scope.currentQuery.templateID, $translate.instant('update.sparql.template.success.msg'));
                     $scope.goBack();
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
+                    toastr.error(msg, $translate.instant('save.sparql.template.failure.msg', {templateID: $scope.currentQuery.templateID}));
                 });
             } else {
                 // No changes to template query, go back to
@@ -337,7 +337,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not add known prefixes');
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
@@ -358,7 +358,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
 
     function validateQuery() {
         if (!hasValidQuery()) {
-            toastr.error('The template query must be an UPDATE query', 'Invalid query');
+            toastr.error($translate.instant('sparql.template.query.constraint'), $translate.instant('jdbc.invalid.query'));
             return false;
         }
 
@@ -373,11 +373,11 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
         SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
             $scope.currentQuery.isPristine = true;
             $scope.currentQuery.isNewTemplate = false;
-            toastr.success($scope.currentQuery.templateID, 'Saved SPARQL template');
+            toastr.success($scope.currentQuery.templateID, $translate.instant('save.sparql.template.success.msg'));
             $scope.goBack();
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, `Could not save ${$scope.currentQuery.templateID} template`);
+            toastr.error(msg, $translate.instant('save.sparql.template.failure.msg', {templateID: $scope.currentQuery.templateID}));
         });
     }
 
@@ -388,7 +388,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                     templateExist = data.find((templateId) => templateId === $scope.currentQuery.templateID);
         }).error(function (data) {
             const msg = getError(data);
-            toastr.error(msg, 'Could not get SPARQL templates');
+            toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
         });
     }
 }

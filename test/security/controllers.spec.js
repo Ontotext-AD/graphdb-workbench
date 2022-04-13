@@ -1,5 +1,6 @@
 import 'angular/security/controllers';
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.security.controllers'));
 
@@ -15,14 +16,24 @@ describe('==> Controllers tests', function () {
             $window,
             $timeout,
             httpLogin;
+        let $translate;
 
-        beforeEach(angular.mock.inject(function (_$jwtAuth_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _$rootScope_) {
+        beforeEach(angular.mock.inject(function (_$jwtAuth_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _$rootScope_, _$translate_) {
             $jwtAuth = _$jwtAuth_;
             $httpBackend = _$httpBackend_;
             $location = _$location_;
             $controller = _$controller_;
             $window = _$window_;
             $timeout = _$timeout_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             $rootScope = _$rootScope_;
             $scope = _$rootScope_.$new();
@@ -318,11 +329,21 @@ describe('==> Controllers tests', function () {
             $timeout,
             httpCreateUser,
             windowMock;
+        let $translate;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope, _$translate_) {
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $timeout = _$timeout_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             httpCreateUser = $httpBackend.when('POST', "rest/security/user/testov", {
                 "grantedAuthorities": [],
@@ -466,11 +487,21 @@ describe('==> Controllers tests', function () {
             httpEditUser,
             windowMock,
             jwtMock;
+        let $translate;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope, _$translate_) {
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $timeout = _$timeout_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             httpGetUserData = $httpBackend.when('GET', "rest/security/user/editedUser")
                 .respond(200, {
@@ -644,11 +675,21 @@ describe('==> Controllers tests', function () {
             locationMock,
             jwtMock,
             windowMock;
+        let $translate;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope, _$translate_) {
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $timeout = _$timeout_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
 
             locationMock = {url: jasmine.createSpy('locationMock.url')};
 

@@ -1,6 +1,7 @@
 import "angular/core/services";
 import 'angular/core/services/repositories.service';
 import "angular/resources/controllers";
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.jmx.resources.controllers', function ($provide) {
     $provide.constant("productInfo", {
@@ -16,14 +17,24 @@ describe('=> ResourcesCtrl tests', function () {
         $scope,
         $repositories,
         httpGetResourcesData;
+        let $translate;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, _$interval_, $rootScope) {
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, _$interval_, $rootScope, _$translate_) {
 
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
         $interval = _$interval_;
         $repositories = _$repositories_;
+        $translate = _$translate_;
+
+        $translate.instant = function (key, modification) {
+            if (modification) {
+                let modKey = Object.keys(modification)[0];
+                return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+            }
+            return bundle[key];
+        };
 
         httpGetResourcesData = $httpBackend.when('GET', 'rest/monitor/resource').respond(200, {
             "heapMemoryUsage": {

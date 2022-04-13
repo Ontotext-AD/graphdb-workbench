@@ -13,9 +13,9 @@ angular
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', '$licenseService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', '$licenseService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, $licenseService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, $licenseService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
     return {
         restrict: 'AE',
         template: '<div id="classChart"></div>',
@@ -127,7 +127,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 .success(function (response, status, headers) {
                     $rootScope.loader = false;
                     if (status === 207) {
-                        toastr.warning("You can update the diagram by pressing the reload button.", "Repository data has changed");
+                        toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
                     }
                     scope.classHierarchyData = response;
 
@@ -137,7 +137,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 }).error(function (response) {
                 $rootScope.loader = false;
                 $rootScope.hierarchyError = getError(response);
-                toastr.error("Request for " + ROOT_OBJ_NAME + " failed! " + getError(response));
+                toastr.error($translate.instant('graphexplore.error.request.failed', {name: ROOT_OBJ_NAME, error: getError(response)}));
             });
         }
 

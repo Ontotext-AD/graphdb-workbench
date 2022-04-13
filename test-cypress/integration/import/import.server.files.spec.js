@@ -13,6 +13,7 @@ describe('Import screen validation - server files', () => {
     const BLANK_NODE_FILE = 'bnodes.ttl';
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportSteps.visitServerImport(repositoryId);

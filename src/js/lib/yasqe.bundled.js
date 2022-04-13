@@ -26045,7 +26045,7 @@ function createStore(storages, plugins, namespace) {
 }
 
 },{"./util":21}],21:[function(require,module,exports){
-(function (global){
+(function (global){(function (){
 var assign = make_assign()
 var create = make_create()
 var trim = make_trim()
@@ -26165,7 +26165,7 @@ function isObject(val) {
 	return val && {}.toString.call(val) === '[object Object]'
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],22:[function(require,module,exports){
 module.exports = [
@@ -26539,32 +26539,50 @@ function clearAll() {
 module.exports={
   "_args": [
     [
-      "yasgui-utils@1.6.7",
-      "/ssd/IntelliJProjects/YASQE-Ontotext"
+      {
+        "raw": "yasgui-utils@^1.6.0",
+        "scope": null,
+        "escapedName": "yasgui-utils",
+        "name": "yasgui-utils",
+        "rawSpec": "^1.6.0",
+        "spec": ">=1.6.0 <2.0.0",
+        "type": "range"
+      },
+      "/home/sava/IntellijProjects/YASQE-Ontotext"
     ]
   ],
-  "_from": "yasgui-utils@1.6.7",
+  "_from": "yasgui-utils@>=1.6.0 <2.0.0",
   "_id": "yasgui-utils@1.6.7",
-  "_inBundle": false,
-  "_integrity": "sha1-K8/FoxVojeOuYFeIPZrjQrIF8mc=",
+  "_inCache": true,
   "_location": "/yasgui-utils",
+  "_nodeVersion": "7.10.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/yasgui-utils-1.6.7.tgz_1495459781202_0.06725964159704745"
+  },
+  "_npmUser": {
+    "name": "laurens.rietveld",
+    "email": "laurens.rietveld@gmail.com"
+  },
+  "_npmVersion": "4.2.0",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "yasgui-utils@1.6.7",
-    "name": "yasgui-utils",
+    "raw": "yasgui-utils@^1.6.0",
+    "scope": null,
     "escapedName": "yasgui-utils",
-    "rawSpec": "1.6.7",
-    "saveSpec": null,
-    "fetchSpec": "1.6.7"
+    "name": "yasgui-utils",
+    "rawSpec": "^1.6.0",
+    "spec": ">=1.6.0 <2.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
-  "_spec": "1.6.7",
-  "_where": "/ssd/IntelliJProjects/YASQE-Ontotext",
+  "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
+  "_shrinkwrap": null,
+  "_spec": "yasgui-utils@^1.6.0",
+  "_where": "/home/sava/IntellijProjects/YASQE-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -26575,6 +26593,13 @@ module.exports={
     "store": "^2.0.4"
   },
   "description": "Utils for YASGUI libs",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
+    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz"
+  },
+  "gitHead": "6031b1cb732d390b29cd5376dceb9a9d665bbd11",
   "homepage": "https://github.com/YASGUI/Utils",
   "licenses": [
     {
@@ -26585,16 +26610,18 @@ module.exports={
   "main": "src/main.js",
   "maintainers": [
     {
-      "name": "Laurens Rietveld",
-      "email": "laurens.rietveld@gmail.com",
-      "url": "http://laurensrietveld.nl"
+      "name": "laurens.rietveld",
+      "email": "laurens.rietveld@gmail.com"
     }
   ],
   "name": "yasgui-utils",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git://github.com/YASGUI/Utils.git"
   },
+  "scripts": {},
   "version": "1.6.7"
 }
 
@@ -26784,12 +26811,12 @@ module.exports={
     "url": "https://github.com/YASGUI/YASQE.git"
   },
   "dependencies": {
-    "bootstrap-sass": "^3.3.7",
+    "bootstrap-sass": "~3.3.1",
     "browserify": "^13.1.0",
     "browserify-transform-tools": "^1.6.0",
     "codemirror": "5.17.0",
     "exorcist": "^0.4.0",
-    "gulp": "^3.9.1",
+    "gulp": "~3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssimport": "^3.1.0",
@@ -26798,12 +26825,11 @@ module.exports={
     "gulp-jsvalidate": "^2.1.0",
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.3.2",
+    "gulp-sass": "^2.2.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-streamify": "1.0.2",
-    "gulp-uglify": "^1.5.4",
+    "gulp-uglify": "~0.2.1",
     "jquery": "^2.2.4",
-    "node-sass": "^3.8.0",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.2.2",
     "vinyl-buffer": "^1.0.0",
@@ -26842,6 +26868,9 @@ module.exports = function (YASQE, yasqe) {
 	// introduce a flag to not trigger continuous completion always
 	var completionTriggeredFlag = false;
 
+	// load and register the translation service providing the locale config
+	yasqe.translate = require('../translate.js')(yasqe.options.locale);
+
 	yasqe.on('cursorActivity', function (yasqe, eventInfo) {
 		autoComplete(true);
 	});
@@ -26876,13 +26905,13 @@ module.exports = function (YASQE, yasqe) {
 	});
 
 
-
 	/**
 	 * Store bulk completions in memory as trie, and store these in localstorage as well (if enabled)
 	 * 
 	 * @method doc.storeBulkCompletions
 	 * @param completions {array}
 	 */
+
 	var storeBulkCompletions = function (completer, completions) {
 		// store array as trie
 		tries[completer.name] = new Trie();
@@ -26893,6 +26922,7 @@ module.exports = function (YASQE, yasqe) {
 		var storageId = utils.getPersistencyId(yasqe, completer.persistent);
 		if (storageId) yutils.storage.set(storageId, completions, "month");
 	};
+
 
 	var initCompleter = function (name, completionInit) {
 		var completer = completers[name] = new completionInit(yasqe, name);
@@ -27130,8 +27160,10 @@ module.exports = function (YASQE, yasqe) {
 					$('#keyboardShortcuts').hide();
 					completionNotifications[completer.name]
 						.show()
-						.text("Press Alt+Enter to autocomplete")
+						.text(yasqe.translate('yasqe.autocompleterBase.message'))
 						.appendTo($(yasqe.getWrapperElement()));
+
+
 				}
 			},
 			hide: function (yasqe, completer) {
@@ -27185,7 +27217,7 @@ var selectHint = function (yasqe, data, completion) {
 //	loadBulkCompletions: loadBulkCompletions,
 //};
 
-},{"../../lib/trie.js":4,"../main.js":46,"../utils.js":52,"jquery":16,"yasgui-utils":30}],35:[function(require,module,exports){
+},{"../../lib/trie.js":4,"../main.js":48,"../translate.js":54,"../utils.js":55,"jquery":16,"yasgui-utils":30}],35:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 module.exports = function(yasqe, name) {
@@ -27736,6 +27768,8 @@ var preprocessResourceTokenForCompletion = function (yasqe, token) {
 			token.tokenPrefixUri = queryPrefixes[token.tokenPrefix.slice(0, -1)];
 		}
 	}
+// load and register the translation service providing the locale config
+yasqe.translate = require('../translate.js')(yasqe.options.locale);
 
 	token.autocompletionString = token.string.trim();
 	if (!token.string.indexOf("<") == 0 && token.string.indexOf(":") > -1) {
@@ -27786,7 +27820,8 @@ var fetchFromLov = function (yasqe, completer, token, callback) {
 	if (!token || !token.string || token.string.trim().length == 0) {
 		yasqe.autocompleters.notifications.getEl(completer)
 			.empty()
-			.append("Nothing to autocomplete yet!");
+			.append(yasqe.translate("yasqe.utils.message1"));
+
 		return false;
 	}
 	var maxResults = 50;
@@ -27830,7 +27865,7 @@ var fetchFromLov = function (yasqe, completer, token, callback) {
 					if (results.length > 0) {
 						yasqe.autocompleters.notifications.hide(yasqe, completer);
 					} else {
-						yasqe.autocompleters.notifications.getEl(completer).text("0 matches found...");
+						yasqe.autocompleters.notifications.getEl(completer).text(yasqe.translate("yasqe.utils.message2"));
 					}
 					callback(results);
 					// requests done! Don't call this function again
@@ -27838,7 +27873,7 @@ var fetchFromLov = function (yasqe, completer, token, callback) {
 			}).fail(function (jqXHR, textStatus, errorThrown) {
 				yasqe.autocompleters.notifications.getEl(completer)
 					.empty()
-					.append("Failed fetching suggestions..");
+					.append(yasqe.translate("yasqe.utils.message3"));
 
 			});
 	};
@@ -27858,7 +27893,7 @@ module.exports = {
 	postprocessResourceTokenForCompletion: postprocessResourceTokenForCompletion
 };
 
-},{"../imgs.js":45,"./utils.js":40,"jquery":16,"yasgui-utils":30}],41:[function(require,module,exports){
+},{"../imgs.js":47,"../translate.js":54,"./utils.js":40,"jquery":16,"yasgui-utils":30}],41:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 module.exports = function(yasqe) {
@@ -27950,7 +27985,7 @@ module.exports = {
   }
 }
 
-},{"./sparql.js":49,"jquery":16}],43:[function(require,module,exports){
+},{"./sparql.js":51,"jquery":16}],43:[function(require,module,exports){
 /**
  * The default options of YASQE (check the CodeMirror documentation for even
  * more options, such as disabling line numbers, or changing keyboard shortcut
@@ -28121,12 +28156,39 @@ YASQE.defaults = $.extend(true, {}, YASQE.defaults, {
 	},
 });
 
-},{"./main.js":46,"jquery":16}],44:[function(require,module,exports){
+},{"./main.js":48,"jquery":16}],44:[function(require,module,exports){
 //this is the entry-point for browserify.
 //the current browserify version does not support require-ing js files which are used as entry-point
 //this way, we can still require our main.js file
 module.exports = require('./main.js');
-},{"./main.js":46}],45:[function(require,module,exports){
+},{"./main.js":48}],45:[function(require,module,exports){
+module.exports={
+  "yasqe.invalid.line": "This line is invalid. Expected: ",
+  "yasqe.btn.title.fullscreen": "Set editor full screen",
+  "yasqe.btn.title.normalsize": "Set editor to normal size",
+  "yasqe.btn.title.share": "Share your query",
+  "yasqe.btn.lbl.curl": "CURL",
+  "yasqe.btn.lbl.shorten": "Shorten",
+  "yasqe.autocompleterBase.message": "Press Alt+Enter to autocomplete",
+  "yasqe.utils.message1": "Nothing to autocomplete yet!",
+  "yasqe.utils.message2": "0 matches found...",
+  "yasqe.utils.message3": "Failed fetching suggestions.."
+}
+},{}],46:[function(require,module,exports){
+module.exports={
+   "yasqe.invalid.line": "Cette ligne n'est pas valide. Attendu:",
+   "yasqe.btn.title.fullscreen": "Configurer l'éditeur en plein écran",
+   "yasqe.btn.title.normalsize": "Configurer l'éditeur à la taille normale",
+   "yasqe.btn.title.share": "Partagez votre requête",
+   "yasqe.btn.lbl.curl": "CURL",
+   "yasqe.btn.lbl.shorten": "Raccourcir",
+   "yasqe.autocompleterBase.message": "Appuyez sur Alt+Enter pour l'autocomplétion.",
+   "yasqe.utils.message1": "Rien à autocompléter encore !",
+   "yasqe.utils.message2": "0 correspondances trouvées ...",
+   "yasqe.utils.message3": "Échec de la récupération des suggestions..."
+} 
+
+},{}],47:[function(require,module,exports){
 'use strict';
 module.exports = {
 	query: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 80 80" enable-background="new 0 0 80 80" xml:space="preserve"><g ></g><g >	<path d="M64.622,2.411H14.995c-6.627,0-12,5.373-12,12v49.897c0,6.627,5.373,12,12,12h49.627c6.627,0,12-5.373,12-12V14.411   C76.622,7.783,71.249,2.411,64.622,2.411z M24.125,63.906V15.093L61,39.168L24.125,63.906z"/></g></svg>',
@@ -28138,7 +28200,7 @@ module.exports = {
 	smallscreen: '<svg   xmlns:dc="http://purl.org/dc/elements/1.1/"   xmlns:cc="http://creativecommons.org/ns#"   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"   xmlns:svg="http://www.w3.org/2000/svg"   xmlns="http://www.w3.org/2000/svg"   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"   version="1.1"      x="0px"   y="0px"   width="100%"   height="100%"   viewBox="5 -10 74.074074 100"   enable-background="new 0 0 100 100"   xml:space="preserve"   inkscape:version="0.48.4 r9939"   sodipodi:docname="noun_2186_cc.svg"><metadata     ><rdf:RDF><cc:Work         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs      /><sodipodi:namedview     pagecolor="#ffffff"     bordercolor="#666666"     borderopacity="1"     objecttolerance="10"     gridtolerance="10"     guidetolerance="10"     inkscape:pageopacity="0"     inkscape:pageshadow="2"     inkscape:window-width="1855"     inkscape:window-height="1056"          showgrid="false"     fit-margin-top="0"     fit-margin-left="0"     fit-margin-right="0"     fit-margin-bottom="0"     inkscape:zoom="2.36"     inkscape:cx="44.101509"     inkscape:cy="31.481481"     inkscape:window-x="65"     inkscape:window-y="24"     inkscape:window-maximized="1"     inkscape:current-layer="Layer_1" /><path     d="m 30.926037,28.889 0,-38.889 -16.667,16.667 -16.667,-16.667 -5.555,5.555 16.667,16.667 -16.667,16.667 38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 53.148037,28.889 0,-38.889 16.667,16.667 16.666,-16.667 5.556,5.555 -16.666,16.667 16.666,16.667 -38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 30.926037,51.111 0,38.889 -16.667,-16.666 -16.667,16.666 -5.555,-5.556 16.667,-16.666 -16.667,-16.667 38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /><path     d="m 53.148037,51.111 0,38.889 16.667,-16.666 16.666,16.666 5.556,-5.556 -16.666,-16.666 16.666,-16.667 -38.889,0 z"          inkscape:connector-curvature="0"     style="fill:#010101" /></svg>',
 };
 
-},{}],46:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 //make sure any console statements
 window.console = window.console || {
@@ -28215,6 +28277,9 @@ var extendConfig = function (config) {
  * @private
  */
 var extendCmInstance = function (yasqe) {
+    // load and register the translation service providing the locale config
+    yasqe.translate = require('./translate.js')(yasqe.options.locale);
+
 	//instantiate autocompleters
 	yasqe.autocompleters = require('./autocompleters/autocompleterBase.js')(root, yasqe);
 	if (yasqe.options.autocompleters) {
@@ -28506,7 +28571,8 @@ var checkSyntax = function (yasqe, deepcheck) {
 					state.possibleCurrent.forEach(function (expected) {
 						expectedEncoded.push("<strong style='text-decoration:underline'>" + $("<div/>").text(expected).html() + "</strong>");
 					});
-					return "This line is invalid. Expected: " + expectedEncoded.join(", ");
+                    var translation = yasqe.translate('yasqe.invalid.line');
+                    return translation + expectedEncoded.join(", ");
 				});
 			}
 			warningEl.style.marginTop = "2px";
@@ -28638,7 +28704,8 @@ root.drawButtons = function (yasqe) {
 			popup.empty().append($('<div>', { class: 'inputWrapper' }).append($input));
 			if (yasqe.options.createShortLink) {
 				popup.addClass('enableShort');
-				$('<button>Shorten</button>')
+				const btnLabelShorten = yasqe.translate('yasqe.btn.lbl.shorten');
+				$('<button>' + btnLabelShorten + '</button>')
 					.addClass('yasqe_btn yasqe_btn-sm yasqe_btn-primary')
 					.click(function () {
 						$(this).parent().find('button').attr('disabled', 'disabled');
@@ -28652,7 +28719,8 @@ root.drawButtons = function (yasqe) {
 						})
 					}).appendTo(popup);
 			}
-			$('<button>CURL</button>')
+            const btnLabelCurl = yasqe.translate('yasqe.btn.lbl.curl');
+			$('<button>' + btnLabelCurl + '</button>')
 				.addClass('yasqe_btn yasqe_btn-sm yasqe_btn-primary')
 				.click(function () {
 
@@ -28664,7 +28732,7 @@ root.drawButtons = function (yasqe) {
 			$input.focus();
 		})
 			.addClass("yasqe_share")
-			.attr("title", "Share your query")
+			.attr("title", yasqe.translate('yasqe.btn.title.share'))
 			.appendTo(yasqe.buttons);
 
 	}
@@ -28679,13 +28747,13 @@ root.drawButtons = function (yasqe) {
 	})
 		.append($(yutils.svg.getElement(imgs.fullscreen))
 			.addClass("yasqe_fullscreenBtn")
-			.attr("title", "Set editor full screen")
+			.attr("title", yasqe.translate('yasqe.btn.title.fullscreen'))
 			.click(function () {
 				yasqe.setOption("fullScreen", true);
 			}))
 		.append($(yutils.svg.getElement(imgs.smallscreen))
 			.addClass("yasqe_smallscreenBtn")
-			.attr("title", "Set editor to normale size")
+			.attr("title", yasqe.translate('yasqe.btn.title.normalsize'))
 			.click(function () {
 				yasqe.setOption("fullScreen", false);
 			}))
@@ -28949,7 +29017,7 @@ root.version = {
 	"yasgui-utils": yutils.version
 };
 
-},{"../lib/deparam.js":1,"../lib/grammar/tokenizer.js":3,"../package.json":33,"./autocompleters/autocompleterBase.js":34,"./autocompleters/classes.js":35,"./autocompleters/localNames.js":36,"./autocompleters/properties.js":37,"./autocompleters/sesame-prefixes.js":38,"./autocompleters/standard.js":39,"./autocompleters/variables.js":41,"./curl.js":42,"./defaults.js":43,"./imgs.js":45,"./prefixFold.js":47,"./prefixUtils.js":48,"./sparql.js":49,"./tokenUtils.js":50,"./tooltip":51,"./utils.js":52,"codemirror":15,"codemirror/addon/display/fullscreen.js":5,"codemirror/addon/edit/closebrackets.js":6,"codemirror/addon/edit/matchbrackets.js":7,"codemirror/addon/fold/brace-fold.js":8,"codemirror/addon/fold/foldcode.js":9,"codemirror/addon/fold/foldgutter.js":10,"codemirror/addon/fold/xml-fold.js":11,"codemirror/addon/hint/show-hint.js":12,"codemirror/addon/runmode/runmode.js":13,"codemirror/addon/search/searchcursor.js":14,"jquery":16,"yasgui-utils":30}],47:[function(require,module,exports){
+},{"../lib/deparam.js":1,"../lib/grammar/tokenizer.js":3,"../package.json":33,"./autocompleters/autocompleterBase.js":34,"./autocompleters/classes.js":35,"./autocompleters/localNames.js":36,"./autocompleters/properties.js":37,"./autocompleters/sesame-prefixes.js":38,"./autocompleters/standard.js":39,"./autocompleters/variables.js":41,"./curl.js":42,"./defaults.js":43,"./imgs.js":47,"./prefixFold.js":49,"./prefixUtils.js":50,"./sparql.js":51,"./tokenUtils.js":52,"./tooltip":53,"./translate.js":54,"./utils.js":55,"codemirror":15,"codemirror/addon/display/fullscreen.js":5,"codemirror/addon/edit/closebrackets.js":6,"codemirror/addon/edit/matchbrackets.js":7,"codemirror/addon/fold/brace-fold.js":8,"codemirror/addon/fold/foldcode.js":9,"codemirror/addon/fold/foldgutter.js":10,"codemirror/addon/fold/xml-fold.js":11,"codemirror/addon/hint/show-hint.js":12,"codemirror/addon/runmode/runmode.js":13,"codemirror/addon/search/searchcursor.js":14,"jquery":16,"yasgui-utils":30}],49:[function(require,module,exports){
 var CodeMirror = require('codemirror'),
 	tokenUtils = require('./tokenUtils.js');
 
@@ -29095,7 +29163,7 @@ CodeMirror.registerHelper("fold", "prefix", function(cm, start) {
 		to: CodeMirror.Pos(prefixEndLine, prefixEndChar)
 	};
 });
-},{"./tokenUtils.js":50,"codemirror":15}],48:[function(require,module,exports){
+},{"./tokenUtils.js":52,"codemirror":15}],50:[function(require,module,exports){
 'use strict';
 /**
  * Append prefix declaration to list of prefixes in query window.
@@ -29233,7 +29301,7 @@ module.exports = {
 	getPrefixesFromQuery: getPrefixesFromQuery,
 	removePrefixes: removePrefixes
 };
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 'use strict';
 var $ = require('jquery'),
 	utils = require('./utils.js'),
@@ -29424,7 +29492,7 @@ module.exports = {
 	getAjaxConfig: YASQE.getAjaxConfig
 };
 
-},{"./main.js":46,"./utils.js":52,"jquery":16}],50:[function(require,module,exports){
+},{"./main.js":48,"./utils.js":55,"jquery":16}],52:[function(require,module,exports){
 'use strict';
 /**
  * When typing a query, this query is sometimes syntactically invalid, causing
@@ -29497,7 +29565,7 @@ module.exports = {
 	getCompleteToken: getCompleteToken,
 	getNextNonWsToken: getNextNonWsToken,
 };
-},{}],51:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 var $ = require('jquery'),
 	utils = require('./utils.js');
@@ -29533,7 +29601,38 @@ module.exports = function(yasqe, parent, html) {
 		}
 	};
 };
-},{"./utils.js":52,"jquery":16}],52:[function(require,module,exports){
+},{"./utils.js":55,"jquery":16}],54:[function(require,module,exports){
+const bundle = {
+    "en": require('./i18n/locale-en'),
+    "fr": require('./i18n/locale-fr')
+};
+const DEFAULT_LANG = 'en';
+var currentLang = DEFAULT_LANG;
+
+var translate = function (key) {
+    const selectedLang = currentLang;
+    if (!bundle || !bundle[selectedLang]) {
+        console.warn('Missing locale file for [' + selectedLang + ']');
+        return key;
+    }
+
+    let translation = bundle[selectedLang][key];
+    if (!translation) {
+        // Fallback to English
+        translation = bundle[DEFAULT_LANG][key];
+    }
+    return translation;
+};
+
+function init(lang) {
+    if (lang) {
+        currentLang = lang;
+    }
+    return translate;
+}
+
+module.exports = init;
+},{"./i18n/locale-en":45,"./i18n/locale-fr":46}],55:[function(require,module,exports){
 'use strict';
 var $ = require('jquery');
 

@@ -17,23 +17,23 @@
 
 <div class="card mb-2">
     <div class="card-block" style="padding-top: 1rem">
-        <p class="lead">Config name</p>
+        <p class="lead">{{'config.name.label' | translate}}</p>
         <div class="input-group input-group-lg">
-            <input required class="form-control graph-config-name" type="text" placeholder="My graph config (required)" ng-model="newConfig.name" >
+            <input required class="form-control graph-config-name" type="text" placeholder="{{'graph.config.required' | translate}}" ng-model="newConfig.name" >
         </div>
         <br/>
-        <p>Description</p>
+        <p>{{'description.text' | translate}}</p>
         <div class="input-group input-group-lg">
             <input class="form-control graph-config-description" type="text"
-                   placeholder="Enter a description to guide users what this visual graph represents"
+                   placeholder="{{'enter.description' | translate}}"
                    ng-model="newConfig.description" >
         </div>
         <div ng-if="newConfig.startMode === 'search'">
             <br/>
-            <p>Hint</p>
+            <p>{{'hint.label' | translate}}</p>
             <div class="input-group input-group-lg">
                 <input  class="form-control graph-config-example" type="text"
-                        placeholder="Add a hint to guide users what the starting point IRI should be"
+                        placeholder="{{'add.hint.prompt' | translate}}"
                         ng-model="newConfig.hint" >
             </div>
         </div>
@@ -42,36 +42,36 @@
 
 <div>
     <button ng-show="page != 1" type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-        <span class="icon-help" popover="Toggle help"
+        <span class="icon-help" popover="{{'toggle.help' | translate}}"
                                 popover-placement="top"
                                 popover-trigger="mouseenter">
         </span>
-        <span class="hidden-lg-down">Help</span></button>
+        <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span></button>
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link page-1-link" href>
-                Starting point
+                {{'starting.point.label' | translate}}
             </a>
         </li>
         <li class="nav-item">
             <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link page-2-link" href>
-                Graph expansion
+                {{'graph.expansion' | translate}}
             </a>
         </li>
 
         <li class="nav-item">
             <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link page-3-link" href>
-                Node basics
+                {{'node.basics' | translate}}
             </a>
         </li>
         <li class="nav-item">
             <a ng-class="page == 4 ? 'active' : ''" ng-click="goToPage(4)" class="nav-link page-4-link" href>
-                Edge basics
+                {{'edge.basics' | translate}}
             </a>
         </li>
         <li class="nav-item">
             <a ng-class="page == 5 ? 'active' : ''" ng-click="goToPage(5)" class="nav-link page-5-link" href>
-                Node extra
+                {{'node.extra' | translate}}
             </a>
         </li>
     </ul>
@@ -84,8 +84,8 @@
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
                         <img class="image-label-image" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="search image" width="100%">
                         <div class="image-label-content">
-                            <h5>Start with a search box</h5>
-                            <div>Choose the starting point of your visual graph every time</div>
+                            <h5>{{'start.with.search.box' | translate}}</h5>
+                            <div>{{'choose.starting.point' | translate}}</div>
                         </div>
                     </label>
 
@@ -93,8 +93,8 @@
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="node">
                         <img class="image-label-image" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="node image" width="100%">
                         <div class="image-label-content">
-                            <h5>Start with a fixed node</h5>
-                            <div>The visual graph will always start from the chosen node.</div>
+                            <h5>{{'start.with.fixed.node' | translate}}</h5>
+                            <div>{{'visual.graph.start' | translate}}</div>
                         </div>
                     </label>
 
@@ -102,8 +102,8 @@
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="query">
                         <img class="image-label-image" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="query image" width="100%">
                         <div class="image-label-content">
-                            <h5>Start with graph query results</h5>
-                            <div>The results from your query will be the starting point of the visual graph.</div>
+                            <h5>{{'query.results.start' | translate}}</h5>
+                            <div>{{'results.start' | translate}}</div>
                         </div>
                     </label>
                 </div>
@@ -111,16 +111,16 @@
                 <div class="form-group card mb-2" ng-show="newConfig.startMode == 'node' && page == 1">
                     <div class="card-block">
                         <p class="lead" ng-show="newConfig.startIRI">
-                            <strong>Selected node:</strong>
+                            <strong>{{'selected.node' | translate}}</strong>
                             <code ng-bind="newConfig.startIRILabel ? newConfig.startIRILabel + '<' + newConfig.startIRI + '>' : newConfig.startIRI"></code>
-                            <em ng-hide="newConfig.startIRI" class="text-muted">No node selected</em>
+                            <em ng-hide="newConfig.startIRI" class="text-muted">{{'no.node.selected' | translate}}</em>
                         </p>
                         <p class="lead" ng-hide="newConfig.startIRI">
-                            <strong>No node selected</strong>
+                            <strong>{{'no.node.selected' | translate}}</strong>
                         </p>
                         <search-resource-input
                             namespacespromise="getNamespacesPromise"
-                            placeholder="Search start RDF node..."
+                            placeholder="{{'search.start.rdf.node' | translate}}"
                             autocompletepromisestatus="getAutocompletePromise"
                             text-button=""
                             visual-button=""
@@ -134,11 +134,11 @@
                     <div class="d-flex" ng-if="page == 2">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
-                            <p class="lead">This is a <span class="small-caps">CONSTRUCT</span> query that determines which nodes and edges are added to the graph when the user expands an existing node.</p>
+                            <p class="lead">{{'this.is.a' | translate}} <span class="small-caps">CONSTRUCT</span> {{'construct.query.explanation' | translate}}</p>
 
-                            <p>The <code>?node</code> variable is required and will be replaced with the IRI of the expanded node.</p>
+                            <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}</p>
 
-                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'expandQuery')}}</em> sample query will be used.</p>
+                            <p>{{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'expandQuery')}}</em> {{'sample.query.used' | translate}}</p>
                         </div>
                         <div>
                             <img src="css/images/expand.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="expand image">
@@ -151,21 +151,20 @@
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
                             <p class="lead">
-                                This <span class="small-caps">SELECT</span> query determines the basic information about a node.
-                                Some of that information affects the colour and size of the node.
+                                {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.node.basic.info' | translate}}
                             </p>
 
-                            <p>The query must <span class="small-caps">SELECT</span> one or more of these bindings:</p>
+                            <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'one.or.more.bindings' | translate}}</p>
                             <ul>
-                                <li><code>?type</code> determines the colour. If missing, all nodes will have the same colour.</li>
-                                <li><code>?label</code> determines the label of the node. If missing, the IRI's local name will be used.</li>
-                                <li><code>?comment</code> determines the description of the node. If missing, no description will be provided.</li>
-                                <li><code>?rank</code> determines the size of the node and it must be a real number between 0 and 1. If missing, all nodes will have same size.</li>
+                                <li><code>?type</code> {{'determines.color' | translate}}</li>
+                                <li><code>?label</code> {{'determines.label' | translate}}</li>
+                                <li><code>?comment</code> {{'determines.description' | translate}}</li>
+                                <li><code>?rank</code> {{'determines.size' | translate}}</li>
                             </ul>
 
-                            <p>The <code>?node</code> variable is required and will be replaced with the IRI of the expanded node.</p>
+                            <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}</p>
 
-                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> sample query will be used.</p>
+                            <p>{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> {{'sample.query.used' | translate}}</p>
                         </div>
                         <div>
                             <img src="css/images/labels-size.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="labels size image">
@@ -175,16 +174,16 @@
                     <div class="d-flex" ng-if="page == 4">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
-                            <p class="lead">This <span class="small-caps">SELECT</span> query determines the basic information about an edge.</p>
+                            <p class="lead">{{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.edge.basic.info' | translate}}</p>
 
-                            <p>The query must <span class="small-caps">SELECT</span> this binding:</p>
+                            <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'this.binding' | translate}}</p>
                             <ul>
-                                <li><code>?label</code> determines the label of the edge. If missing, the IRI's local name will be used.</li>
+                                <li><code>?label</code> {{'determines.label.edge' | translate}}</li>
                             </ul>
 
-                            <p>The <code>?edge</code> variable is required and will be replaced with the IRI of the edge.</p>
+                            <p>{{'the.sentence.start' | translate}} <code>?edge</code> {{'variable.required.edge' | translate}}</p>
 
-                            <p>This query is optional. If empty, the edge IRI's local name is used.</p>
+                            <p>{{'query.is.optional.local.name' | translate}}</p>
                         </div>
                         <div>
                             <img src="css/images/predicates.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="predicates image">
@@ -194,22 +193,22 @@
                     <div class="d-flex" ng-if="page == 5">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
-                            <p class="lead">This <span class="small-caps">SELECT</span> query determines the extra properties shown for a node when the info icon is clicked.</p>
+                            <p class="lead">{{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'extra.properties.shown.node' | translate}}</p>
 
-                            <p>The query must <span class="small-caps">SELECT</span> these bindings:</p>
+                            <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'these.bindings' | translate}}</p>
                             <ul>
-                                <li><code>?property</code> is the name of each property.</li>
-                                <li><code>?value</code> is the value of each property.</li>
+                                <li><code>?property</code> {{'name.of.each.property' | translate}}</li>
+                                <li><code>?value</code> {{'value.of.each.property' | translate}}</li>
                             </ul>
 
-                            <p>The query may also <span class="small-caps">SELECT</span> this binding:</p>
+                            <p>{{'query.may.also' | translate}} <span class="small-caps">SELECT</span> {{'this.binding' | translate}}</p>
                             <ul>
-                                <li><code>?image</code> is a URL to an image that will be shown together with the properties.</li>
+                                <li><code>?image</code> {{'url.to.image.properties' | translate}}</li>
                             </ul>
 
-                            <p>The <code>?node</code> variable is required and will be replaced with the IRI of the viewed node.</p>
+                            <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required.viewed.node' | translate}}</p>
 
-                            <p>This query is optional. If empty, the <em>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em> sample query will be used.</p>
+                            <p>{{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em> {{'sample.query.used' | translate}}</p>
                         </div>
                         <div>
                             <img src="css/images/side-panel.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="side panel image">
@@ -327,53 +326,53 @@
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
     <div>
         <label for="share-graph-config"
-               tooltip="If checked other users will be able to see the visual graph, but not delete or edit it.">
+               tooltip="{{'visual.graph.other.users.see' | translate}}">
             <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared">
-            Share visual graph with other users
+            {{'share.visual.graph' | translate}}
         </label>
     </div>
     <div class="pull-left">
         <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
-            popover="Closes configuration and saves all changes."
+            popover="{{'closes.config.save' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
-            Save
+            {{'common.save.btn' | translate}}
         </a>
         <button class="btn btn-lg btn-secondary" ng-click="showPreview()" ng-hide="viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-            popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
+            popover="{{'preview.results' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
-            Preview
+            {{'common.preview' | translate}}
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="showEditor()" ng-show="viewMode == 'editor' && (page != 1 || newConfig.startMode == 'query')"
-            popover="Closes the preview and shows the query editor."
+            popover="{{'closes.preview' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
-            Edit query
+            {{'core.edit.query' | translate}}
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="revertEditor()" ng-disabled="!queryEditorIsDirty" ng-hide="!revertConfig || viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-                popover="Reverts the changes in the query editor."
+                popover="{{'reverts.changes' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter">
-            Revert changes
+            {{'revert.changes.btn' | translate}}
         </button>
     </div>
     <div class="pull-right">
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary"
-                popover="Go to previous configuration step."
+                popover="{{'previous.config.step' | translate}}"
                 popover-placement="top"
-                popover-trigger="mouseenter"> <span class="icon-arrow-left"></span> Previous </button>
+                popover-trigger="mouseenter"> <span class="icon-arrow-left"></span> {{'previous.btn' | translate}} </button>
 
         <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary"
-                popover="Go to next configuration step."
+                popover="{{'next.config.step' | translate}}"
                 popover-placement="top"
-                popover-trigger="mouseenter"> Next <span class="icon-arrow-right"></span></button>
+                popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="icon-arrow-right"></span></button>
 
         <a ng-href="graphs-visualizations/" class="btn btn-lg btn-secondary"
-            popover="Closes the configuration without saving the changes."
+            popover="{{'closes.config.no.save' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
-            Cancel
+            {{'common.cancel.btn' | translate}}
         </a>
     </div>
 </div>

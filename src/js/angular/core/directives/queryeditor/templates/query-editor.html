@@ -24,23 +24,23 @@
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
                         <em class="icon-warning" ng-show="query.owner != principal().username && isUser()"
-                           popover="Query shared by another user. You may not edit or delete it."
+                           popover="{{'core.popover.shared.query.warning' | translate}}"
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Edit query" popover-trigger="mouseenter"
+                                    popover="{{'core.edit.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Delete query" popover-trigger="mouseenter"
+                                    popover="{{'core.delete.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    popover="Get URL to query" popover-trigger="mouseenter"
+                                    popover="{{'core.popover.get.url.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="copyToClipboardQuery(query.name, query.owner)">
 								<span class="icon-link"></span>
 							</button>
@@ -76,7 +76,7 @@
                                 ng-show="!notoolbarSaved && isUser()"
                                 ng-click="saveTab(currentQuery.id); saveQuery(currentQuery);"
                                 data-container="#queryEditor"
-                                tooltip="Create saved query"
+                                tooltip="{{'core.create.saved.query' | translate}}"
                                 tooltip-append-to-body="true"
                                 tooltip-trigger="mouseenter">
                             <em class="icon-save icon-2-5x"></em>
@@ -86,7 +86,7 @@
                            ng-hide="notoolbarSaved"
                            ng-click="toggleSampleQueries()"
                            data-container="#queryEditor"
-                           tooltip="Show saved queries"
+                           tooltip="{{'core.show.saved.query' | translate}}"
                            tooltip-append-to-body="true"
                            tooltip-trigger="mouseenter"
                            popover-template="'sampleQueriesPopoverTemplate.html'"
@@ -103,14 +103,14 @@
                         <button class="btn btn-link" id="wb-sparql-copyToClipboardQuery"
                                 ng-hide="notoolbarCopy"
                                 ng-click="copyToClipboardQuery()"
-                                tooltip="Get URL to current query"
+                                tooltip="{{'core.popover.get.url.current.query' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-link icon-2-5x"></span>
                         </button>
                         <button class="btn btn-link" id="inference"
                                 ng-hide="notoolbarInference"
                                 ng-click="currentQuery.inference = !currentQuery.inference"
-                                tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
+                                tooltip="{{'core.include.inferred' | translate}}{{currentQuery.inference ? 'common.on.btn' : 'common.off.btn' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   ng-class="{'icon-inferred-on':currentQuery.inference, 'icon-inferred-off':!currentQuery.inference}"></span>
@@ -118,10 +118,10 @@
                         <button class="btn btn-link" id="sameAs"
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
-                                tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
+                                tooltip="{{'core.expand.sameAs' | translate}}{{currentQuery.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
-                                  tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"
+                                  tooltip="{{!currentQuery.inference ? 'core.require.inferred' : '' | translate}}"
                                   ng-class="{'icon-sameas-on':currentQuery.sameAs, 'icon-sameas-off':!currentQuery.sameAs}"></span>
                         </button>
                     </div>
@@ -174,8 +174,8 @@
 
         <div class="yasr" id="yasr-inner">
             <div ng-hide="nostatus || currentTabConfig.queryType || queryIsRunning"
-                 class="alert alert-info no-icon no-query-run">No results from previous run.
-                Click Run or press Ctrl/Cmd-Enter to execute the current query or update.
+                 class="alert alert-info no-icon no-query-run">
+                 {{'query.editor.no.results.from.prev.run.warning' | translate}}
             </div>
             <!--ng-show="!queryIsRunning">-->
             <div class='yasr_header mb-1 clearfix'
@@ -183,7 +183,7 @@
                  <div class="resultsVisualButton btn-group pull-right">
                     <button class="btn btn-primary btn-sm" ng-show="!queryIsRunning && currentTabConfig.queryType && (currentTabConfig.queryType == 'CONSTRUCT' || currentTabConfig.queryType == 'DESCRIBE')"
                         ng-click="goToVisual()">
-                        Visual
+                        {{'query.editor.visual.btn' | translate}}
                     </button>
                  </div>
             </div>
@@ -199,24 +199,31 @@
                     <span ng-show="currentTabConfig.queryType != 'ASK'" class="results-description">
                         {{getResultsDescription()}}
                     </span>
-                    <span ng-show="currentTabConfig.timeTook" class="query-duration">
-                        Query took {{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}, {{ getHumanReadableTimestamp(currentTabConfig.timeFinished) }}.
+                    <span ng-show="currentTabConfig.timeTook" class="query-duration"
+                          translate="query.editor.query.took.msg"
+                          translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
+                          translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
                     </span>
                 </div>
             </div>
             <div class='alert alert-info no-icon update-info'
                  ng-show="!nostatus && currentTabConfig.queryType == 'UPDATE' && !queryIsRunning">
                 {{getUpdateDescription()}}
-                <span ng-show="currentTabConfig.timeTook">
-                    {{currentTabConfig.customUpdateMessage ? 'Operation' : 'Update'}} took {{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}, {{ getHumanReadableTimestamp(currentTabConfig.timeFinished) }}.
+                <span ng-show="currentTabConfig.timeTook"
+                      translate="query.editor.update.msg"
+                      translate-value-message="{{currentTabConfig.customUpdateMessage ? 'common.operation.msg' : 'common.update.msg' | translate}}"
+                      translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
+                      translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
                 </span>
             </div>
             <div class="alert alert-danger no-icon results-info update-info" ng-show="currentTabConfig.queryType == 'ERROR'">
                 <div>
-                    <div class="pull-right" ng-show="currentTabConfig.timeTook">
-                        Operation took {{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}, {{ getHumanReadableTimestamp(currentTabConfig.timeFinished) }}.
+                    <div class="pull-right" ng-show="currentTabConfig.timeTook"
+                         translate="query.editor.operation.msg"
+                         translate-value-seconds="{{getHumanReadableSeconds(currentTabConfig.timeTook, true)}}"
+                         translate-value-timestamp="{{getHumanReadableTimestamp(currentTabConfig.timeFinished)}}">
                     </div>
-                    <h6>Error<span ng-show="yasr.results.getException().status > 0"> {{yasr.results.getException().status}}: {{yasr.results.getException().statusText}}</span></h6>
+                    <h6>{{'common.error' | translate}}<span ng-show="yasr.results.getException().status > 0"> {{yasr.results.getException().status}}: {{yasr.results.getException().statusText}}</span></h6>
                 </div>
 
                 <div class="plaintext">{{yasr.results.getException().responseText}}</div>
@@ -230,8 +237,9 @@
                  popover-placement="left">
                 <div ng-class="abortRequested ? 'disabled' : ''"> <!-- Keep this div -->
                     <button ng-disabled="abortRequested" class="btn btn-xs btn-primary"
-                            ng-click="abortCurrentQuery()" ng-hide="!isUserLoggedIn() && isSecurityEnabled()">
-                        {{abortRequested ? 'Stop has been requested' : (lastRunQueryMode === 'update' ? 'Abort update' : 'Abort query')}}
+                            ng-click="abortCurrentQuery()" ng-hide="!isUserLoggedIn() && isSecurityEnabled()"
+                            translate="query.editor.abort"
+                            translate-value-abort="{{abortRequested ? 'query.editor.abort.requested' : (lastRunQueryMode === 'update' ? 'query.editor.abort.update' : 'query.editor.abort.query') | translate}}">
                     </button>
                 </div>
             </div>

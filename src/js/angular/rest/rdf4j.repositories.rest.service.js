@@ -2,7 +2,7 @@ angular
     .module('graphdb.framework.rest.rdf4j.repositories.service', [])
     .factory('RDF4JRepositoriesRestService', RDF4JRepositoriesRestService);
 
-RDF4JRepositoriesRestService.$inject = ['$http', '$repositories'];
+RDF4JRepositoriesRestService.$inject = ['$http', '$repositories', '$translate'];
 
 const ACTIVATE_PLUGIN_QUERY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'{{pluginName}}\' .}';
 const CHECK_PLUGIN_ACTIVE_QUERY = 'select ?o where {\n' +
@@ -12,7 +12,7 @@ const CHECK_PLUGIN_ACTIVE_QUERY = 'select ?o where {\n' +
 
 const REPOSITORIES_ENDPOINT = 'repositories';
 
-function RDF4JRepositoriesRestService($http, $repositories) {
+function RDF4JRepositoriesRestService($http, $repositories, $translate) {
     return {
         getNamespaces,
         getRepositoryNamespaces,
@@ -95,7 +95,7 @@ function RDF4JRepositoriesRestService($http, $repositories) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
-                            value: "The default graph"
+                            value: $translate.instant('import.default.graph')
                         }
                     });
 

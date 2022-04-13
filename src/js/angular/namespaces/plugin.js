@@ -5,21 +5,22 @@ PluginRegistry.add('route', {
     'path': 'namespaces/app',
     'controller': 'NamespacesCtrl',
     'templateUrl': 'pages/namespaces.html',
-    'title': 'Namespaces',
-    'helpInfo': 'The Namespaces view provides an overview of all namespaces used in your data. '
-    + 'Here you can add, remove and modify them. '
+    'title': 'menu.namespaces.label',
+    'helpInfo': 'view.namespaces.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
             icon: "icon-settings"
         }, {
             label: 'Namespaces',
+            labelKey: 'menu.namespaces.label',
             href: 'namespaces',
             order: 30,
             parent: 'Setup'

@@ -1,5 +1,6 @@
 import 'angular/export/controllers';
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.impex.export.controllers'));
 
@@ -15,8 +16,9 @@ describe('==> ExportCtrl tests', function () {
     let $repositories;
     let toastr;
     let filterFilter;
+    let $translate;
 
-    beforeEach(angular.mock.inject(function (_$jwtAuth_, _$controller_, _$httpBackend_, $rootScope, $q, _$timeout_, _$repositories_, _toastr_, _filterFilter_) {
+    beforeEach(angular.mock.inject(function (_$jwtAuth_, _$controller_, _$httpBackend_, $rootScope, $q, _$timeout_, _$repositories_, _toastr_, _filterFilter_, _$translate_) {
         $jwtAuth = _$jwtAuth_;
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
@@ -26,13 +28,23 @@ describe('==> ExportCtrl tests', function () {
         $repositories = _$repositories_;
         toastr = _toastr_;
         filterFilter = _filterFilter_;
+        $translate = _$translate_;
+
+        $translate.instant = function (key, modification) {
+            if (modification) {
+                let modKey = Object.keys(modification)[0];
+                return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+            }
+            return bundle[key];
+        };
 
         createController = () => $controller('ExportCtrl', {
             $scope: $scope,
             ModalService: modalInstance,
             $repositories: $repositories,
             toastr: toastr,
-            filterFilter: filterFilter
+            filterFilter: filterFilter,
+            $translate: $translate
         });
         createController();
 

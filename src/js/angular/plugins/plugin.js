@@ -5,13 +5,27 @@ PluginRegistry.add('route', {
     'chunk': 'plugins',
     'controller': 'PluginsCtrl',
     'templateUrl': 'pages/plugins.html',
-    'title': 'Plugins',
-    'helpInfo': 'Activate or deactivate plugins.'
+    'title': 'menu.plugins.label',
+    'helpInfo': 'view.plugins.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings"},
-        {label: 'Plugins', href: 'plugins', order: 25, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY"}
+        {
+            label: 'Setup',
+            labelKey: 'menu.setup.label',
+            href: '#',
+            order: 5,
+            role: 'IS_AUTHENTICATED_FULLY',
+            icon: "icon-settings"
+        },
+        {
+            label: 'Plugins',
+            labelKey: 'menu.plugins.label',
+            href: 'plugins',
+            order: 25,
+            parent: 'Setup',
+            role: "IS_AUTHENTICATED_FULLY"
+        }
     ]
 });

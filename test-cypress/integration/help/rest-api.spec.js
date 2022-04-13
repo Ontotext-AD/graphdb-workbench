@@ -7,6 +7,7 @@ describe('Help / REST API', () => {
     });
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.visit('/webapi');
         cy.window();
         getSwaggerFrame()

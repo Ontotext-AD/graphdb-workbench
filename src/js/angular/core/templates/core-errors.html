@@ -3,23 +3,24 @@
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
                 <div class="alert alert-warning lead">
-                    <div ng-if="!getActiveRepository()" >Some functionalities are not available because you are not connected to any repository.</div>
-                    <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">Some functionalities are not available because
-                        <span ng-if="!isLicenseValid()">your license is not valid.
+                    <div ng-if="!getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
+                    <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">{{'core.errors.restricted.warning.msg' | translate}}
+                        <span ng-if="!isLicenseValid()">{{'core.errors.not.valid.license.warning.msg' | translate}}
                             <p></p>
-                            <div><a href="license" class="btn btn-primary confirm-btn">Set new license</a></div>
+                            <div><a href="license" class="btn btn-primary confirm-btn">{{'core.errors.set.new.license.warning.msg' | translate}}</a></div>
                         </span>
-                        <span ng-if="isSecurityEnabled() && !canWriteActiveRepo()">you have no write permission to repository </span>
+                        <span ng-if="isSecurityEnabled() && !canWriteActiveRepo()">{{'core.errors.no.permission.to.repository.warning.msg' | translate}}</span>
                         <strong ng-if="isActiveRepoOntopType()">{{getActiveRepository()}}</strong>
-                        <span ng-if="canWriteActiveRepo() && isActiveRepoOntopType()"> is read-only Virtual Repository.</span>
-                        <span ng-if="canWriteActiveRepo() && isActiveRepoFedXType()"> <b>{{title}}</b> view is not supported by FedX Repository.</span></div>
+                        <span ng-if="canWriteActiveRepo() && isActiveRepoOntopType()">{{'core.errors.read.only.repository.warning.msg' | translate}}</span>
+                        <span ng-if="canWriteActiveRepo() && isActiveRepoFedXType()"> <b>{{title | translate}}</b>{{'core.errors.fedx.repository.warning.msg' | translate}}</span></div>
                     <small>
                         <span ng-if="getAccessibleRepositories().length && isLicenseValid()">
-                            Click one of the repositories below to connect to it<span ng-if="canManageRepositories()"> or create a new repository</span>.
+                            {{'core.errors.select.repository.warning.msg' | translate}}<span ng-if="canManageRepositories()">{{'core.errors.or.create.repository.warning.msg' | translate}}</span>.
                         </span>
 
                         <span ng-hide="getAccessibleRepositories().length">
-                            There are no accessible <span ng-if="isRestricted">writable </span>repositories<span ng-if="canManageRepositories()">. You can create a new repository</span>.
+                            {{'core.errors.no.accessible.warning.msg' | translate}}<span ng-if="isRestricted">{{'core.errors.writable' | translate}}
+                        </span>{{'core.errors.repositories' | translate}}<span ng-if="canManageRepositories()">{{'core.errors.create.repository.warning.msg' | translate}}</span>.
                         </span>
                     </small>
                 </div>
@@ -42,7 +43,7 @@
 
                 <div class="pull-right" ng-if="isLicenseValid() && canManageRepositories()">
                     <button class="btn btn-link px-0 create-repository-btn" ng-click="goToAddRepo()">
-                        <span class="icon-plus"></span> Create new repository
+                        <span class="icon-plus"></span> {{ 'repository.create.btn' | translate }}
                     </button>
                 </div>
             </div>
