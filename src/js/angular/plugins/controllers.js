@@ -1,7 +1,8 @@
 import 'angular/rest/plugins.rest.service';
 
 const modules = [
-    'graphdb.framework.rest.plugins.service'
+    'graphdb.framework.rest.plugins.service',
+    'toastr'
 ];
 
 angular
