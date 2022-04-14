@@ -79,8 +79,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         const refreshFilteringStatus = function () {
-            console.log('refreshing status')
-
             RdfRankRestService.checkFilteringEnabled()
                 .success(function (data) {
                     $scope.filteringEnabled = data;
@@ -280,7 +278,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 $scope.$broadcast('checkIsActive');
                 if ($scope.pluginFound) {
                     refreshStatus();
-                    refreshFilteringStatus();
                 }
             }, 5000);
         };
