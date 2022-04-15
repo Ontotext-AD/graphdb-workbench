@@ -13,19 +13,9 @@ PluginsRestService.$inject = ['$http'];
 
 function PluginsRestService($http) {
     return {
-        checkHistoryStatus,
         togglePlugin,
         getPlugins
     };
-
-    function checkHistoryStatus(repoId) {
-        return $http.get(`${PLUGINS_ENDPOINT}${repoId}`, {
-            params: {
-                query: PLUGIN_ENABLED
-            }
-        });
-    }
-
     function getPlugins(repoId) {
         return $http.get(`${PLUGINS_ENDPOINT}${repoId}`, {
             params: {
