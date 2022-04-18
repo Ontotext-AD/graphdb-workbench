@@ -23,14 +23,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {};
+        this.location = {uri: ''};
         this.locationError = '';
         this.loading = true;
         this.repository = {
             id: localStorage.getItem(this.repositoryStorageName),
             location: localStorage.getItem(this.repositoryStorageLocationName)
         };
-        this.locations = [];
+        this.locations = [this.location];
         this.repositories = new Map();
         this.locationsShouldReload = true;
 
@@ -91,11 +91,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                         if (typeof res === 'object') {
                             // New style, check version and product
                             if (res.productVersion !== productInfo.productVersion) {
-                                currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version'); // should add current location
+                                currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
                             }
                         } else {
                             // Pre 7.1 style
-                            currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version');
+                            currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
                         }
                     })
                     .error(function (error) {
@@ -176,6 +176,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     $rootScope.globalRepositories = that.getRepositories();
                 },
                 function (err) {
+                    console.log('in error')
                     loadingDone(err);
                     if (errorCallback) {
                         errorCallback();
@@ -186,8 +187,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.getLocations = function () {
             if (this.locationsShouldReload) {
                 this.locationsShouldReload = false;
+                this.locations = [this.location];
                 const that = this;
-                return LocationsRestService.getLocations()
+                LocationsRestService.getLocations()
                     .success(function (data) {
                         that.locations = data;
                     })

@@ -429,13 +429,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.checkRights = function (repo, action) {
-                for (let i = 0; i < this.principal.authorities.length; i++) {
-                    const authRole = this.principal.authorities[i];
-                    const parts = authRole.split('_', 2);
-                    const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-                    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                    if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
-                        return true;
+                if (repo) {
+                    for (let i = 0; i < this.principal.authorities.length; i++) {
+                        const authRole = this.principal.authorities[i];
+                        const parts = authRole.split('_', 2);
+                        const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
+                        const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                        if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
+                            return true;
+                        }
                     }
                 }
                 return false;

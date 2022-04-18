@@ -245,29 +245,32 @@ describe('$jwtAuth tests', function () {
     describe('$jwtAuth.checkRights', function () {
         it('return correct value', function () {
             $httpBackend.flush();
-            var location = {uri: 'otherLocation'};
+            let repo = {id: 'someRepo', location: 'otherLocation'};
             $jwtAuth.principal = {
                 authorities: [
-                    'WRITE_REPO_someRepo',
-                    'READ_REPO_someRepo',
-                    'READ_REPO_OtherRepo',
+                    'WRITE_REPO_someRepo@location',
+                    'READ_REPO_someRepo@location',
+                    'WRITE_REPO_someRepo@otherLocation',
+                    'READ_REPO_someRepo@otherLocation',
+                    'READ_REPO_OtherRepo@otherLocation',
                     'WRITE_REPO_someOtherRepo',
-                    "READ_REPO_workertest"]
+                    "READ_REPO_workertest@http://darwin:27040"]
             }
             expect($jwtAuth.checkRights()).toEqual(false);
 
-            expect($jwtAuth.checkRights(location, 'someRepo', 'READ')).toEqual(true);
-            expect($jwtAuth.checkRights(location, 'someRepo', 'WRITE')).toEqual(true);
-            expect($jwtAuth.checkRights(location, 'OtherRepo', 'READ')).toEqual(true);
-            expect($jwtAuth.checkRights(location, 'OtherRepo', 'WRITE')).toEqual(false);
+            expect($jwtAuth.checkRights(repo, 'READ')).toEqual(true);
+            expect($jwtAuth.checkRights(repo, 'WRITE')).toEqual(true);
 
-            location = {uri: 'http://darwin:27040'}
-            expect($jwtAuth.checkRights(location, 'workertest', 'READ')).toEqual(true);
+            repo = {id: 'OtherRepo', location: 'otherLocation'};
+            expect($jwtAuth.checkRights(repo, 'READ')).toEqual(true);
+            expect($jwtAuth.checkRights(repo, 'WRITE')).toEqual(false);
 
-            location = {uri: 'location'}
-            expect($jwtAuth.checkRights(location, 'someRepo', 'READ')).toEqual(true);
-            expect($jwtAuth.checkRights(location, 'someRepo', 'WRITE')).toEqual(true);
+            repo = {id: 'workertest', location: 'http://darwin:27040'}
+            expect($jwtAuth.checkRights(repo, 'READ')).toEqual(true);
 
+            repo = {id: 'someRepo', location: 'location'}
+            expect($jwtAuth.checkRights(repo, 'READ')).toEqual(true);
+            expect($jwtAuth.checkRights(repo, 'WRITE')).toEqual(true);
         });
     });
 

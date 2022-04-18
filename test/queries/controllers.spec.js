@@ -53,6 +53,8 @@ describe('=> QueriesCtrl tests', function () {
 
         modalInstance = new FakeModal();
 
+        $httpBackend.when('GET', 'rest/locations', {}).respond(200);
+
         httpGetQueriesData = $httpBackend.when('GET', 'rest/monitor/query').respond(200, [{
             "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
             "trackId": "21107",

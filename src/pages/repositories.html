@@ -25,22 +25,22 @@
                 <td>
                     <div>
                         <div class="pull-left">
-                            <strong>Repositories from: </strong>
+                            <strong>{{'repos.from' | translate}}</strong>
                             <em ng-if="location.degradedReason" class="icon-warning icon-lg text-warning"
-                                tooltip="{{location.degradedReason}} Some operations may not be performed."
+                                tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
                                 tooltip-placement="right"></em>
                             <span class="mr-1">{{location.label}}</span>
                         </div>
                         <div ng-if="location.local" class="actions-bar-inline pull-right">
                             <button
-                                tooltip="Edit common settings for these repositories"
+                                tooltip="{{'repos.edit.common.settings' | translate}}"
                                 tooltip-placement="top" tooltip-trigger="mouseenter"
                                 class="btn btn-link px-0"
                                 ng-click="openActiveLocationSettings()">
                                 <span class="icon-settings"></span>
                             </button>
                             <a class="btn btn-link px-0 pull-right" href="license"
-                               tooltip="View or update license for these repositories"
+                               tooltip="{{'repos.view.update.licenses' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter">
                                 <span class="icon-key"></span>
                             </a>
@@ -52,7 +52,7 @@
                                 <em class="icon-edit"></em>
                             </button>
                             <button class="btn btn-link p-0 secondary"
-                                    tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                    tooltip="{{'detach.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
                                     ng-click="deleteLocation(location.uri)">
                                 <em class="icon-close"></em>
                             </button>
@@ -61,10 +61,10 @@
                     <div ng-if="hasActiveLocation()" class="pt-2 mb-3">
                         <div class="alert alert-warning no-repositories-alert"
                              ng-if="!getRepositoriesFromLocation(location.uri).length && !location.errorMsg">
-                            There are no repositories in the current location
+                            {{'no.repos.in.current.location' | translate}}
                         </div>
                         <div class="alert alert-danger" ng-if="location.errorMsg">
-                            {{location.errorMsg}} Refresh the page to retry.
+                            {{location.errorMsg}}{{'repos.refresh.page.msg' | translate}}
                         </div>
                         <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                             <table id="wb-repositories-repositoryInGetRepositories"
@@ -75,13 +75,13 @@
                                     ng-class="{'table-info text-secondary': isRepoActive(repository)}">
                                     <td width="25">
                                         <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-                                              tooltip="Connect repository" tooltip-placement="top"
+                                              tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                               tooltip-trigger="mouseenter"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
                                               data-repository-id="{{repository}}"></span>
                                         <span role="button" class="icon-connection-on icon-lg text-tertiary"
-                                              tooltip="Connected" tooltip-placement="top"
+                                              tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                               tooltip-trigger="mouseenter"
                                               ng-if="isRepoActive(repository)"></span>
                                     </td>
@@ -90,7 +90,7 @@
                                             <span popover-popup-delay="500"
                                                   popover-trigger="mouseenter" popover-placement="bottom-right"
                                                   popover-template="popoverTemplate"
-                                                  popover-title="Repository {{repository.id}}">
+                                                  popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
                                                 <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
                                                 <strong class="repository-id">{{repository.id}}</strong></span>
                                             <span class="repository-status" class="small"><small> &middot; <span
@@ -102,18 +102,18 @@
                                     <td width="150" class="text-nowrap repository-actions">
                                         <button class="btn btn-link p-0"
                                                 ng-click="copyToClipboard(repository.externalUrl)"
-                                                tooltip="Copy repository URL to clipboard">
+                                                tooltip="{{'copy.repo.url' | translate}}">
                                             <span class="icon-link"></span>
                                         </button>
                                         <span ng-if="location.degradedReason">
                                             <em class="icon-warning icon-lg text-warning"
-                                                tooltip="{{location.degradedReason}} Editing or deleting this repository is not supported."
+                                                tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                 tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                                         </span>
                                         <span ng-if="repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
-                                               tooltip="Edit repository"
+                                               tooltip="{{'repoTooltips.editRepository' | translate}}"
                                                tooltip-placement="top"
                                                tooltip-trigger="mouseenter">
                                                 <span class="icon-edit"></span>
@@ -122,13 +122,13 @@
                                                ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                rel="noopener"
                                                target="_blank"
-                                               tooltip="Download repository configuration as Turtle"
+                                               tooltip="{{'download.repo.config' | translate}}"
                                                tooltip-placement="top"
                                                tooltip-trigger="mouseenter">
                                                     <em class="icon-download"></em>
                                             </a>
                                             <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                    tooltip="Restart repository {{repository.id}}"
+                                                    tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
                                                     tooltip-placement="top"
                                                     tooltip-trigger="mouseenter"
                                                     ng-click="restartRepository(repository)">
@@ -136,7 +136,7 @@
                                             </button>
                                             <button class="btn btn-link p-0 secondary delete-repository-btn"
                                                     type="button"
-                                                    tooltip="Delete repository"
+                                                    tooltip="{{'delete.repo' | translate}}"
                                                     tooltip-placement="top"
                                                     tooltip-trigger="mouseenter"
                                                     ng-click="deleteRepository(repository)">
@@ -149,7 +149,7 @@
                                                 ng-if="repository.type !== 'system' && location.active"
                                                 ng-click="toggleDefaultRepository(repository.id)"
                                                 ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
-                                                tooltip="Set as default repository">
+                                                tooltip="{{'set.as.default.repo' | translate}}">
                                             <em class="icon-pin"></em>
                                         </button>
                                     </td>
@@ -166,16 +166,16 @@
     <div class="btns-all" ng-if="getLocationError()">
         <div class="btn-group" dropdown>
             <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span
-                class="icon-plus"></span> Create new repository</a>
+                class="icon-plus"></span> {{'repository.create.btn' | translate}}</a>
             <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
-                <span class="sr-only">Split button!</span>
+                <span class="sr-only">{{'split.btn' | translate}}</span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a class="dropdown-item" href ng-click="fromFile()">Create from file</a></li>
+                <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
         <button id="addLocation1" ng-click="addLocation()" class="btn btn-primary pull-right"><span
-            class="icon-plus"></span> Attach remote location
+            class="icon-plus"></span>{{'attach.remote.location' | translate}}
         </button>
     </div>
 </div>
