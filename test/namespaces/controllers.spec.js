@@ -41,7 +41,7 @@ describe('=> NamespacesCtrl tests', function () {
 
         modalInstance = new FakeModal($q, $rootScope);
 
-        $httpBackend.when('GET', 'rest/locations', {}).respond(200);
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
         $repositories.getActiveRepositoryObject = function () {
             return {id: 'activeRepository', location: ''};

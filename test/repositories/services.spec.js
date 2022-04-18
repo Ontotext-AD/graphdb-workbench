@@ -8,7 +8,7 @@ beforeEach(angular.mock.module('graphdb.framework.core.services.repositories', f
 
 describe('==> Repository module services tests', function () {
 
-    fdescribe('=> $repositories tests', function () {
+    describe('=> $repositories tests', function () {
 
         var $repositories, $httpBackend, $http, $jwtAuth, httpGetLocations, httpGetActiveLocation, httpGetRepositories, httpSecurity, httpDefaultUser;
 
@@ -72,21 +72,21 @@ describe('==> Repository module services tests', function () {
         });
 
         describe('$repositories.init tests', function () {
-            fit('should not set activeRepository when there is no active location', function () {
-                //If there is no active location
-                httpGetActiveLocation.respond(200, {});
+            it('should not set activeRepository when there is no active location', function () {
                 httpGetLocations.respond(200, []);
+                //If there is no active location
+                httpGetActiveLocation.respond(200);
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/locations/active');
                 $repositories.init();
                 $httpBackend.flush();
                 expect($repositories.repositories).toEqual(new Map());
-                expect($repositories.repository).toEqual({id: null, location: null});
-                expect($repositories.location).toEqual({uri: ''});
+                expect($repositories.repository).toEqual('');
+                expect($repositories.location).toEqual('');
                 expect($repositories.locations).toEqual([]);
-                expect($repositories.getActiveLocation()).toEqual({uri: ''});
+                expect($repositories.getActiveLocation()).toEqual('');
                 expect($repositories.hasActiveLocation()).toEqual(false);
-                expect($repositories.getActiveRepository()).toBeNull();
+                expect($repositories.getActiveRepository()).toBeUndefined();
                 expect($repositories.getRepositories()).toEqual([]);
             });
 
@@ -176,8 +176,8 @@ describe('==> Repository module services tests', function () {
             expect($repositories.repository).toEqual(null);
             expect($http.defaults.headers.common['X-GraphDB-Repository']).toBeUndefined();
 
-            $repositories.setRepository('test');
-            expect($repositories.repository).toEqual('test');
+            $repositories.setRepository({id: 'test'});
+            expect($repositories.repository.id).toEqual('test');
             expect($http.defaults.headers.common['X-GraphDB-Repository']).toEqual('test');
 
         });
@@ -191,7 +191,7 @@ describe('==> Repository module services tests', function () {
 
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/locations/active');
-                $httpBackend.expectGET('rest/repositories');
+                $httpBackend.expectGET('rest/repositories/all');
                 $repositories.init();
                 $httpBackend.flush();
 
@@ -203,6 +203,7 @@ describe('==> Repository module services tests', function () {
                 };
                 $repositories.deleteLocation(uri);
                 $httpBackend.flush();
+                console.log($repositories.location)
                 expect($repositories.location).toEqual('');
                 expect($repositories.getActiveLocation()).toEqual('');
 
@@ -246,9 +247,11 @@ describe('==> Repository module services tests', function () {
 
         describe('$repositories.deleteRepository', function () {
             it('should clear activeRepository if repository is the same as active one', function () {
-                let repository = {id: 'test', location: ''};
+                let uri = "C:\\temp\\ee\\test";
+                let repository = {id: 'test', location: uri};
                 $repositories.repository = repository;
-                $httpBackend.expectDELETE('rest/repositories/' + repository.id + '?location=').respond(200, '');
+                $repositories.repositories.set(uri, [repository]);
+                $httpBackend.expectDELETE('rest/repositories/' + repository.id + '?location=C:%5Ctemp%5Cee%5Ctest').respond(200, '');
                 //override init() so we can see if the function clear the var repository
                 $repositories.init = function () {
                     return
@@ -256,20 +259,22 @@ describe('==> Repository module services tests', function () {
                 $repositories.deleteRepository(repository);
                 $httpBackend.flush();
                 expect($repositories.repository).toEqual('');
-                expect($repositories.getActiveRepository()).toEqual('');
+                expect($repositories.getActiveRepository()).toBeUndefined();
             });
 
             it('should not clear activeRepository if repository is different that the active one', function () {
-                let repository = {id: 'test', location: ''};
-                $repositories.repository = 'activeRepository';
-                $httpBackend.expectDELETE('rest/repositories/' + repository.id + '?location=').respond(200, '');
+                let uri = "C:\\temp\\ee\\test";
+                let repository = {id: 'test', location: uri};
+                $repositories.repository = {id: 'activeRepository', location: ''};
+                $repositories.repositories.set('', [$repositories.repository]);
+                $httpBackend.expectDELETE('rest/repositories/' + repository.id + '?location=C:%5Ctemp%5Cee%5Ctest').respond(200, '');
                 //override init() so we can see if the function clear the var repository
                 $repositories.init = function () {
                     return
                 };
                 $repositories.deleteRepository(repository);
                 $httpBackend.flush();
-                expect($repositories.repository).toEqual('activeRepository');
+                expect($repositories.repository).toEqual({id: 'activeRepository', location: ''});
                 expect($repositories.getActiveRepository()).toEqual('activeRepository');
             })
         })

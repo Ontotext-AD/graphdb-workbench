@@ -189,7 +189,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 this.locationsShouldReload = false;
                 this.locations = [this.location];
                 const that = this;
-                LocationsRestService.getLocations()
+                return LocationsRestService.getLocations()
                     .success(function (data) {
                         that.locations = data;
                     })
@@ -302,13 +302,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         }
 
         this.setRepositoryHeaders = function () {
-            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository.id ? this.repository.id : undefined;
+            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository.id ? this.repository.id : undefined;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
 
-            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
+            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository ? this.repository.location : undefined;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository.location ? this.repository.location : undefined;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository ? this.repository.location : undefined;
         };
 
         that.setRepositoryHeaders();
@@ -359,6 +359,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
                     //Reload locations and repositories
+                    if (that.getActiveLocation().uri === uri) {
+                        that.location = '';
+                        that.setRepository('');
+                    }
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
@@ -374,7 +378,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
-            if (that.getActiveRepository() === repo.id) {
+            let activeRepo = that.getActiveRepositoryObject();
+            if (activeRepo.id === repo.id && activeRepo.location === repo.location) {
                 that.setRepository('');
             }
         };

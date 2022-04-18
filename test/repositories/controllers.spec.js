@@ -146,16 +146,18 @@ describe('==> Repository module controllers tests', function () {
 
         describe('$scope.deleteRepository()', function () {
             it('should call $repositories.deleteRepository() on modal.close()', function () {
-                const repoId = 'testrepo';
+                const repo = {id: 'testrepo', location: ''};
+                $repositories.repository = repo;
+                $repositories.repositories.set('', [repo]);
                 spyOn(modalInstance, 'openSimpleModal').and.returnValue(modalInstance);
-                $httpBackend.expectDELETE(`rest/repositories/${repoId}?location=`).respond(200);
+                $httpBackend.expectDELETE(`rest/repositories/${repo.id}?location=`).respond(200);
 
-                $scope.deleteRepository({id: repoId, location: ''});
+                $scope.deleteRepository(repo);
 
                 const argument = modalInstance.openSimpleModal.calls.first().args[0];
                 expect(argument).toEqual({
                     title: 'Confirm delete',
-                    message: `<p>Are you sure you want to delete the repository <strong>${repoId}</strong>?</p><p><span class="icon-2x icon-warning" style="color: #d54a33"/>All data in the repository will be lost.</p>`,
+                    message: `<p>Are you sure you want to delete the repository <strong>${repo.id}</strong>?</p><p><span class="icon-2x icon-warning" style="color: #d54a33"/>All data in the repository will be lost.</p>`,
                     warning: true
                 });
 
@@ -191,6 +193,8 @@ describe('==> Repository module controllers tests', function () {
                 $translate.instant = function (key) {
                     return bundle[key];
                 };
+
+                $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
@@ -302,6 +306,8 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
+                $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
 
                 $scope = $rootScope.$new();
@@ -361,8 +367,13 @@ describe('==> Repository module controllers tests', function () {
                 }, init: function (callback) {
                     init = true;
                     callback();
+                },
+                getLocations: function () {
+                    return {uri: '', local: true}
                 }
             };
+
+            $httpBackend.when('GET', 'rest/locations').respond(200, {});
             routeParamsMock = {repositoryId: 'repo'};
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 
