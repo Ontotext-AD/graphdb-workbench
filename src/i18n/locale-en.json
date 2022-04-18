@@ -55,6 +55,7 @@
             "errors": {
                 "at_least_two_nodes": "Must have at least two nodes",
                 "node_in_list": "Node is already in the list",
+                "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
                     "label": "Some of the preconditions for creating a cluster are not met!",
                     "valid_license": "Nodes must have a valid enterprise license",
