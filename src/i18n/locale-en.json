@@ -1,4 +1,111 @@
 {
+    "cluster_management": {
+        "buttons": {
+            "create_cluster": "Create cluster",
+            "create_cluster_tooltip": "Create a new cluster ",
+            "edit_cluster": "Edit cluster",
+            "edit_cluster_tooltip": "Edit cluster settings"
+        },
+        "no_cluster_configured": "No cluster is configured",
+        "cluster_configuration": {
+            "label": "Cluster configuration",
+            "configuration_label": "Configuration",
+            "nodes_list_label": "Nodes list"
+        },
+        "cluster_status": {
+            "label": "Cluster status",
+            "leader": "Leader",
+            "followers": "Followers",
+            "node": {
+                "address": "Address",
+                "endpoint": "Endpoint",
+                "state": "State",
+                "term": "Term"
+            },
+            "election": {
+                "label": "Election in progress",
+                "nodes_status": "Nodes status"
+            }
+        },
+        "cluster_configuration_properties": {
+            "election_min_timeout": "Election Minimum Timeout",
+            "election_min_timeout_tooltip": "Election min timeout concerns the minimum wait time in milliseconds for a heartbeat from a leader. Should the time pass without receiving a heartbeat message from a leader. The follower will become a candidate and request votes from other nodes",
+            "election_range_timeout": "Election Range Timeout",
+            "election_range_timeout_tooltip": "Election range timeout concerns the variable portion of each waiting period in milliseconds for a heartbeat. The reason we have a variable portion of the election timeout is because it helps us elect a leader more easily, as the node with lower timeout period would usually be elected",
+            "heartbeat_interval": "Heartbeat Interval",
+            "heartbeat_interval_tooltip": "Heartbeat interval is the interval in milliseconds between each heartbeat is sent to follower nodes by the leader. The interval should be at least twice as small as the election timeout in order to avoid unnecessary leader changes",
+            "message_size_kb": "Message Size KB",
+            "message_size_kb_tooltip": "Message size concerns the size of the data blocks transferred during data replication streaming through the RPC protocol",
+            "verification_timeout": "Verification Timeout",
+            "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful"
+        },
+        "cluster_page": {
+            "create_page_title": "Create cluster",
+            "edit_page_title": "Edit cluster",
+            "creating_cluster_loader": "Creating cluster...",
+            "create_form_legend": "Cluster properties",
+            "cluster_nodes_list": "Cluster nodes list",
+            "manual_node_add": "Add node by address",
+            "node_address": "Node RPC address",
+            "node_address_placeholder": "Enter node address",
+            "node_address_tooltip": "Node RPC address",
+            "add_node_btn": "Add node",
+            "add_node_btn_tooltip": "Add node to cluster",
+            "remove_node_btn_tooltip": "Remove node from cluster",
+            "errors": {
+                "at_least_two_nodes": "Must have at least two nodes",
+                "node_in_list": "Node is already in the list",
+                "preconditions_failed": {
+                    "label": "Some of the preconditions for creating a cluster are not met!",
+                    "valid_license": "Nodes must have a valid enterprise license",
+                    "authentication_secret": "Authentication secret must be set on all nodes",
+                    "nodes_reachable": "Nodes must be reachable",
+                    "no_cluster_configured": "Nodes must not have cluster configuration"
+                }
+            },
+            "create_btn": "Create",
+            "save_btn": "Save",
+            "notifications": {
+                "create_success": "Cluster created successfully",
+                "create_failed": "Cluster creation failed",
+                "update_success": "Cluster updated successfully",
+                "update_failed": "Cluster update failed",
+                "form_invalid": "The form data is invalid"
+            }
+        },
+        "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",
+        "locations.and.repos": "Locations and Repositories",
+        "to.activate.add.locations": "to activate or add your locations.",
+        "average.task.time": "Average task time",
+        "running.tasks": "Running tasks",
+        "completed.tasks": "Completed tasks",
+        "failed.tasks": "Failed tasks",
+        "clone.to.another.location": "Clone to another location",
+        "read.only.label.simple": "Read only",
+        "mode.label": "Mode",
+        "normal.label": "Normal",
+        "mute.label": "Mute",
+        "avg.read.time": "Average read time",
+        "completed.read.writes": "Completed reads/writes",
+        "failed.read.writes": "Failed reads/writes",
+        "running.read.writes": "Running reads/writes",
+        "pending.writes": "Pending writes",
+        "drag.drop.nodes": "Drag and drop nodes to connect them or click to get additional information.",
+        "click.link.to.disconnect": "Click link to disconnect the nodes",
+        "master.is.peer": "This master is a peer to the other master but not vice versa, drag and drop the masters to fix it.",
+        "link_status": {
+            "on": "ON",
+            "off": "OFF",
+            "out.of.sync": "OUT OF SYNC",
+            "out.of.sync.forced": "OUT OF SYNC FORCED",
+            "writing.label": "WRITING",
+            "writing.copy": "WRITING COPY",
+            "waiting.write": "WAITING WRITE",
+            "replication.server": "REPLICATION SERVER",
+            "replication.client": "REPLICATION CLIENT",
+            "unknown.label": "UNKNOWN"
+        }
+    },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
     "description.text": "Description",
@@ -121,34 +228,6 @@
     "ontop.repos.translate.data": "Ontop repositories translate data stored in an SQL database to a virtual SPARQL endpoint.",
     "fedex.virtual.sparql": "FedX Virtual SPARQL",
     "fedex.multi.sparql.endpoints": "FedX repositories provide transparent federation of multiple SPARQL endpoints under a single virtual endpoint.",
-    "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",
-    "locations.and.repos": "Locations and Repositories",
-    "to.activate.add.locations": "to activate or add your locations.",
-    "average.task.time": "Average task time",
-    "running.tasks": "Running tasks",
-    "completed.tasks": "Completed tasks",
-    "failed.tasks": "Failed tasks",
-    "clone.to.another.location": "Clone to another location",
-    "read.only.label.simple": "Read only",
-    "mode.label": "Mode",
-    "normal.label": "Normal",
-    "mute.label": "Mute",
-    "avg.read.time": "Average read time",
-    "completed.read.writes": "Completed reads/writes",
-    "failed.read.writes": "Failed reads/writes",
-    "running.read.writes": "Running reads/writes",
-    "pending.writes": "Pending writes",
-    "drag.drop.nodes": "Drag and drop nodes to connect them or click to get additional information.",
-    "click.link.to.disconnect": "Click link to disconnect the nodes",
-    "master.is.peer": "This master is a peer to the other master but not vice versa, drag and drop the masters to fix it.",
-    "out.of.sync": "OUT OF SYNC",
-    "out.of.sync.forced": "OUT OF SYNC FORCED",
-    "writing.label": "WRITING",
-    "writing.copy": "WRITING COPY",
-    "waiting.write": "WAITING WRITE",
-    "replication.server": "REPLICATION SERVER",
-    "replication.client": "REPLICATION CLIENT",
-    "unknown.label": "UNKNOWN",
     "connector.label": "connector",
     "eta.label": "ETA:",
     "processed.entities": "Processed entities:",
@@ -209,7 +288,6 @@
     "add.field.popover": "Add Field",
     "key.label": "key",
     "value.label": "value",
-
     "graphexplore.error.dependencies.count": "Could not get dependencies count",
     "graphexplore.error.dependencies.count.status": "Could not get dependencies count status!",
     "graphexplore.error.could.not.force.count": "Could not force dependencies count {{error}}",
@@ -268,7 +346,6 @@
     "graphexplore.update": "Update saved graph",
     "graphexplore.rename": "Rename saved graph",
     "domain.range.error.get.label.comment": "Error getting rdfs:label and rdfs:comment",
-
     "save.graph.share.graph": "Share graph with other users",
     "save.graph.save.as": "Save as new...",
     "save.graph.name.too.long": "Name is too long!",
@@ -276,21 +353,16 @@
     "save.graph.exists": "already exists!",
     "save.graph.visible.graph": "If checked other users will be able to see the graph but not delete or edit it.",
     "save.graph.enter.name": "Enter name",
-
     "rdf.class.hierarchy.class.count.slider": "Class Count Slider",
     "rdf.class.hierarchy.description": "Allows you to reduce the number of classes displayed on the diagram\n by sorting those who have the maximum number of instances in your repository.\n You can adjust the count precisely using click + drag movement or the mousewheel\n to the number you are satisfied with.",
     "rdf.class.hierarchy.min.value": "Min value:",
     "rdf.class.hierarchy.max.value": "Max value:",
     "rdf.class.hierarchy.max.from.repo": "Calculated from your repository",
-
     "rdfs.comment.show": "Show",
     "rdfs.comment.hide": "Hide",
     "rdfs.comment.full.comment": " full comment",
-
     "system.repo.warning.msg": "SYSTEM repository cannot be visualised. Please select a different repository from the dropdown list in the top right.",
-
     "resources.garbage.collection.done": "Garbage collection performed.",
-
     "security.mapping.header": "mapping",
     "security.free.access.config.title": "Free Access configuration",
     "security.free.access.config.settings": "Configure Free Access application settings and read or read/write access repositories",
@@ -372,11 +444,12 @@
     "resource.system.cpu.load": "System CPU Load",
     "resource.used.memory": "Used memory",
     "resource.thread.count": "Thread Count",
-
     "view.autocomplete.title": "Autocomplete index",
     "view.autocomplete.helpInfo": "The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.",
     "view.clusterManagement.title": "Cluster management",
-    "view.clusterManagement.helpInfo": "The Cluster management view is a visual administration tool for the GraphDB cluster. Here you can create or modify a cluster by dragging and dropping the nodes or you can use it to monitor the state of a running cluster in near real time. The view shows repositories from the active location and all remote locations.",
+    "view.clusterManagement.create.title": "Create cluster",
+    "view.clusterManagement.edit.title": "Edit cluster",
+    "view.clusterManagement.helpInfo": "The Cluster management view is a visual administration tool for the GraphDB cluster. Here you can create, modify and delete a cluster or you can use it to monitor the state of a running cluster in near real time.",
     "view.resource.title": "Resource",
     "view.export.ctr.helpInfo": "Graphs overview provides a list of the default graph and all named graphs in GraphDB. It can be used to inspect the statements in each graph, export the graph or clear the graph's data.",
     "view.connector.management.title": "Connector management",
@@ -435,7 +508,6 @@
     "view.rest.api.documentation.title": "REST API documentation",
     "view.rest.api.documentation.helpInfo": "The REST API view documents the available public RESTful endpoints and provides an interactive interface to execute the requests.",
     "view.plugins.helpInfo": "Activate or deactivate plugins.",
-
     "menu.rdf.label": "RDF",
     "menu.ontoRefine.label": "Tabular (OntoRefine)",
     "menu.explore.label": "Explore",
@@ -465,7 +537,6 @@
     "menu.developer.hub.label": "Developer Hub",
     "menu.support.label": "Support",
     "menu.plugins.label": "Plugins",
-
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",
     "core.edit.query": "Edit query",
@@ -522,43 +593,34 @@
     "query.editor.creating.connector": "Creating connector {{name}}",
     "query.editor.query.results.mismatch": "The query in your editor does not match the query results. Download will save the results from the last executed query.",
     "query.editor.automatically.execute.update.warning": "This is an update and it may change the data in the repository.<br>Are you sure you want to execute it automatically?",
-
     "sparql.tab.directive.close.last.warning": "Last tab must remain open.",
     "sparql.tab.directive.delete.all.tabs.warning": "Are you sure you want to delete all query tabs except selected tab?",
     "sparql.tab.directive.close.tab.warning": "Are you sure you want to close this query tab?",
-
     "search.resource.current.page.msg": "Use <b>View resource</b> on this page",
     "search.resources.msg": "Search RDF resources",
     "search.resource.close.msg": "Close search",
-
     "unauthorized.console.warning": "Permission to page denied. Some errors in the console are normal.",
     "jwt.auth.security.status": "Security has been {{status}}.",
     "jwt.auth.free.access.updated.msg": "Free access settings have been updated.",
     "jwt.auth.free.access.status": "Free access has been {{status}}.",
     "enabled.status": "enabled",
     "disabled.status": "disabled",
-
     "openid.auth.unknown.flow": "'Unknown auth flow: {{authFlow}}",
     "openid.auth.invalid.pkce.state": "Invalid pkce_state",
     "openid.auth.not.jwt.token": "not a JWT token: {{token}}",
     "openid.auth.cannot.retrieve.token.msg": "Cannot retrieve token after login; {{error}}",
     "openid.auth.cannot.refresh.token.msg": "Could not refresh OpenID token; {{error}}",
-
     "repositories.service.error.loading.location": "Error loading location",
     "repositories.service.different.gdb.version": "The remote location is running a different GraphDB version.",
     "repositories.service.no.active.location": "There is no active location",
     "repositories.service.restarting.repo": "Restarting repository {{repositoryId}}",
-
     "no.license.set.msg": "No license was set.",
-
     "aborted.request.msg": "Request was aborted",
     "aborted.request.no.results.msg": "The request has been aborted. There are no results to show.",
     "confirm.execute": "Confirm execute",
-
     "modal.ctr.copy.url.success": "URL copied successfully to clipboard.",
     "modal.ctr.copy.not.supported.warning": "Your browser doesn't support \"copy\" operation.\nPress Ctrl-C / Cmd-C to copy URL manually.",
     "modal.ctr.copy.query.success": "Query copied successfully to clipboard.",
-
     "activate.plugin.warning.msg": "Are you sure you want to activate <strong>{{humanReadablePluginName}}</strong>?",
     "error.getting.namespaces.for.repo": "Error getting namespaces for repository.",
     "fill.input.field.msg": "Please fill the input field!",
@@ -567,7 +629,6 @@
     "check.active.plugin.failure": "Could not check if plugin is active!",
     "activate.plugin.confirmation": "Confirm plugin activation",
     "activate.plugin.failure": "Could not activate plugin!",
-
     "query.sample.title.placeholder": "Enter Title",
     "query.sample.share.tooltip.msg": "If checked other users will be able to see the query but not delete or edit it.",
     "query.sample.share.msg": "Share query with other users",
@@ -575,7 +636,6 @@
     "empty.name.alert": "Name cannot be empty!",
     "query.sample.empty.query.alert": "Query cannot be empty!",
     "query.sample.existing.query.warning": "Query with name <strong>'{{name}}'</strong> already exists!",
-
     "explore.validation": "Please enter a valid value.",
     "get.namespaces.error.msg": "Cannot get namespaces for repository. View will not work properly; {{error}}",
     "explore.error.resource.details": "Cannot get resource details; ",
@@ -587,7 +647,6 @@
     "explore.explicit": "Explicit only",
     "explore.implicit": "Implicit only",
     "explore.autocomplete.warning.msg": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
-
     "repository.create.btn": "Create new repository",
     "import.execution": "Import execution",
     "import.work.in.background": "Imports are executed in the background while you continue working on other things.",
@@ -643,7 +702,6 @@
     "import.restore.defaults.btn": "Restore defaults",
     "import.abort.btn": "Abort",
     "import.no.files.found": "No files found",
-
     "import.rdf.from.snippet": "Import RDF data from a text snippet",
     "import.rdf.data.here": "Put your RDF data here and select its format.",
     "import.enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
@@ -688,7 +746,6 @@
     "text.snippet.text.aria.placeholder": "# Example: rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",
-
     "core.errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",
     "core.errors.restricted.warning.msg": "Some functionalities are not available because",
     "core.errors.not.valid.license.warning.msg": "your license is not valid.",
@@ -704,21 +761,16 @@
     "core.errors.create.repository.warning.msg": ". You can create a new repository",
     "core.loading.longer.than.usual.warning": "GraphDB Workbench is still loading but it's taking longer than usual, please wait...",
     "core.loading.refresh.warning": "If the Workbench hasn't loaded yet, please try to clear your browser cache and reload the page.",
-
     "copy.to.clipboard.modal.paragraph": "Copy URL to clipboard",
     "copy.to.clipboard.modal.ok.btn": "Copy to clipboard",
-
     "inactive.plugin.warning": " is not active for this repository.",
     "inactive.plugin.warning.for.use": "When a plugin is not active it cannot be used or configured.",
-
     "view.trig.h": "View Statements in TriG",
-
     "delete.connector.paragraph": "Are you sure you want to delete this connector?",
     "delete.connector.popover": "Force delete will remove the connector even if part of the operation fails. Use it if normal delete does not work.",
     "delete.connector.conditional": " Note that you may have to drop the index manually from {{type}}.",
     "delete.connector.force.checkbox": "Force delete",
     "delete.connector.delete.btn": "Delete",
-
     "externalsync.empty.value.key.error": "Key may not be empty with value \"{{value}}\"",
     "externalsync.duplicate.key.error": "Duplicate key {{key}}",
     "externalsync.fetching.connectors": "Fetching connectors",
@@ -734,19 +786,16 @@
     "externalsync.delete.force.success.msg": "Deleted (with force) connector {{name}}",
     "externalsync.delete.success.msg": "Deleted connector {{name}}",
     "externalsync.delete.remote.warning": "You may have to remove the index manually from {{key}}",
-
     "add.label.add.autocomplete": "Add label for autocomplete",
     "add.label.edit.autocomplete": "Edit label for autocomplete",
     "add.label.enter.iri": "Enter label IRI or click one of the predefined IRIs",
     "add.label.enter.comma.separated": "Enter comma-separated languages or leave empty for any language",
-
     "autocomplete.update": "Updating label config...",
     "autocomplete.enabling": "Enabling autocomplete...",
     "autocomplete.disabling": "Disabling autocomplete...",
     "autocomplete.index.iri": "Setting index IRIs...",
     "autocomplete.index.build": "Requesting index build...",
     "index.interrupt": "Interrupting index...",
-
     "export.format.warning.msg": "This format does not support graphs.<br>Graph information will not be available in the export.",
     "export.multiple.graph": "Multiple graph export",
     "export.check.graphs.msg": "Check graphs you want to export first.",
@@ -761,7 +810,6 @@
     "export.clear.graph.msg": "Failed to clear the {{longName}}",
     "export.warning.clear.graph.msg": "Are you sure you want to clear the selected graphs?",
     "export.cleared.graph.msg": "Cleared the selected graphs",
-
     "namespace.confirm.replace": "Confirm replace",
     "namespace.already.exists.msg": "This namespace prefix already exists. Do you want to replace it?",
     "namespace.warning.delete.msg": "Are you sure you want to delete the namespace '{{prefix}}'?",
@@ -770,7 +818,6 @@
     "namespace.selected.namespaces.deleted.successfully": "Selected namespaces were deleted successfully.",
     "namespace.invalid.prefix": "Invalid prefix: {{prefix}}",
     "namespace.warning.provide.namespace": "Please provide namespace.",
-
     "jdbc.not.get.sql.msg": "Could not get SQL table configurations",
     "jdbc.delete.sql.table.warning.msg": "Are you sure you want to delete the SQL table configuration '{{name}}'?",
     "jdbc.not.delete.sql.msg": "Could not delete SQL table",
@@ -797,10 +844,8 @@
     "jdbc.warning.one.column.msg": "Please define at least one column",
     "jdbc.invalid.columns": "Invalid columns",
     "jdbc.warning.all.column.msg": "Please select SQL type for all columns",
-
     "deactivating.plugin": "Deactivating {{pluginName}}",
     "activating.plugin": "Activating {{pluginName}}",
-
     "abort.request.sent.msg": "Abort request sent.",
     "confirm.abort": "Confirm abort",
     "confirm.abort.warning.msg": "Are you sure you want to abort the query?",
@@ -808,7 +853,6 @@
     "rdfrank.full.computation": "Requesting rank full computation...",
     "rdfrank.incremental.computation": "Requesting rank incremental computation...",
     "not.valid.iri": "'{{value}}' is not a valid IRI",
-
     "fedx.repo.federation.members": "Federation members",
     "fedx.repo.no.members.warning": " No members - add at least one local or remote repository",
     "fedx.repo.local.attached.header": " Local repositories and attached locations ",
@@ -951,7 +995,6 @@
     "detach.location": "Detach location",
     "attach.remote.location": " Attach remote location",
     "no.connected.gdb.instances": "There are no connected GraphDB instances.",
-
     "edit.file.content": "Edit file content",
     "upload.file": "Upload file...",
     "common.confirm.delete": "Confirm delete",
@@ -985,7 +1028,6 @@
     "common.attach": "Attach",
     "common.close": "Close",
     "common.preview": "Preview",
-
     "active.location.version.not.support.settings.warning": "The version of GraphDB at your active location does not support settings.",
     "click.to": "Click to",
     "disable": "disable",
@@ -1154,7 +1196,6 @@
     "show.prefixes.btn": "Show prefixes",
     "hide.prefixes.btn": "Hide prefixes",
     "search.classes.placeholder": "Search classes",
-
     "webapi.title": "Web api module",
     "view.sparql.query.title": "View SPARQL Query",
     "sparql.template.plugin": "SPARQL Template Plugin",
@@ -1417,7 +1458,6 @@
     "sidepanel.add.ignored.predicate.placeholder": "Add ignored predicate",
     "sidepanel.wildcard.iris": "IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *",
     "sidepanel.no.properties.found": "No properties found",
-
     "find.enter.resource.iri": "Enter resource IRI",
     "export.no.graphs.in.repo": "No graphs in this repository. Add graphs via the",
     "export.sparql.update.form": "SPARQL update form",
@@ -1502,7 +1542,6 @@
     "sparql.shortcuts.switch.next.tab": "Switch to next tab",
     "sparql.shortcuts.switch.prev.tab": "Switch to previous tab",
     "sparql.shortcuts.close.all.tabs.except.selected": "Click at close tab icon closes all the tabs except the clicked one",
-
     "graph.shortcuts.mouse.keyboard": "mouse and keyboard actions",
     "graph.shortcuts.mouse.actions": "Mouse actions",
     "graph.shortcuts.single.click": "Single click",
@@ -1526,7 +1565,6 @@
     "graph.shortcuts.rotate.graph.left": "Rotate the graph to the left",
     "graph.shortcuts.right.arrow": "Right arrow",
     "graph.shortcuts.rotate.graph.right": "Rotate the graph to the right",
-
     "menu.btn.translate.en": "English",
     "menu.btn.translate.fr": "French"
 }

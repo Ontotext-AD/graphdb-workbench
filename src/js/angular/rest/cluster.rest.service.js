@@ -4,73 +4,52 @@ angular
 
 ClusterRestService.$inject = ['$http'];
 
-const CLUSTER_MASTERS_ENDPOINT = 'rest/cluster/masters';
+const CLUSTER_GROUP_ENDPOINT = 'rest/cluster';
 
 function ClusterRestService($http) {
     return {
-        getMaster,
-        configureMaster,
-        cloneRepository,
-        connectWorker,
-        disconnectWorker,
-        disconnectNodes,
-        connectNodes
+        getClusterConfig,
+        createCluster,
+        updateCluster,
+        deleteCluster,
+        addNodesToCluster,
+        removeNodesFromCluster,
+        getClusterStatus,
+        getNodeStatus
     };
 
-    function getMaster(masterRepositoryID, data = {}) {
-        return $http.get(`${CLUSTER_MASTERS_ENDPOINT}/${masterRepositoryID}`, data);
+    function getClusterConfig() {
+        return $http.get(`${CLUSTER_GROUP_ENDPOINT}/config`);
     }
 
-    function configureMaster(master, location, data) {
-        return $http({
-            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}?masterLocation=${encodeURIComponent(location)}`,
-            method: 'POST',
-            data
-        });
+    function createCluster(groupConfiguration) {
+        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config`, groupConfiguration);
     }
 
-    function cloneRepository(data) {
-        return $http.post('rest/cluster/nodes/clone', {
-            cloningNodeLocation: data.currentNodeLocation,
-            cloningNodeRepositoryID: data.selectedNodeName,
-            newNodeRepositoryID: data.repositoryID,
-            newNodeLocation: data.locationUri,
-            newNodeTitle: data.repositoryTitle
-        })
+    function updateCluster(groupConfiguration) {
+        if (groupConfiguration.nodes) {
+            delete groupConfiguration.nodes;
+        }
+        return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/config`, groupConfiguration);
     }
 
-    function connectWorker(master, masterLocation, workerLocation) {
-        return $http({
-            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/workers/`,
-            method: 'POST',
-            data: {
-                workerURL: workerLocation,
-                masterLocation: masterLocation
-            }
-        })
+    function deleteCluster() {
+        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config`);
     }
 
-    function disconnectWorker(master, params) {
-        return $http({
-            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/workers?${params}`,
-            method: 'DELETE',
-            dataType: 'text'
-        });
+    function addNodesToCluster(nodesArray) {
+        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config/node`, nodesArray);
     }
 
-    function disconnectNodes(master, params) {
-        return $http({
-            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/peers?${params}`,
-            method: 'DELETE',
-            dataType: 'text'
-        });
+    function removeNodesFromCluster(nodesArray) {
+        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config/node`, nodesArray);
     }
 
-    function connectNodes(master, data) {
-        return $http({
-            url: `${CLUSTER_MASTERS_ENDPOINT}/${master}/peers`,
-            method: 'POST',
-            data
-        });
+    function getClusterStatus() {
+        return $http.get(`${CLUSTER_GROUP_ENDPOINT}/group/status`);
+    }
+
+    function getNodeStatus() {
+        return $http.get(`${CLUSTER_GROUP_ENDPOINT}/node/status`);
     }
 }
