@@ -21,8 +21,14 @@
 <div class="clearfix mb-2">
     <button type="button" class="btn btn-primary create-cluster-btn" ng-disabled="clusterConfiguration"
             ng-click="createCluster()"
-            tooltip="{{'cluster_management.buttons.create_cluster_tooltip' | translate}}" tooltip-placement="top">
+            tooltip="{{'cluster_management.buttons.create_cluster_tooltip' | translate}}" tooltip-placement="bottom">
         <span class="icon-plus"></span> {{'cluster_management.buttons.create_cluster' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary delete-cluster-btn"
+            ng-click="showDeleteDialog()"
+            tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}" tooltip-placement="bottom"
+            ng-disabled="!clusterConfiguration">
+        <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
     </button>
 </div>
 

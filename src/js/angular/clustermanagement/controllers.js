@@ -12,7 +12,8 @@ const modules = [
 angular
     .module('graphdb.framework.clustermanagement.controllers', modules)
     .controller('ClusterManagementCtrl', ClusterManagementCtrl)
-    .controller('CreateClusterCtrl', CreateClusterCtrl);
+    .controller('CreateClusterCtrl', CreateClusterCtrl)
+    .controller('DeleteClusterCtrl', DeleteClusterCtrl);
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService', '$location', '$translate'];
@@ -81,6 +82,39 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
     };
 
+    $scope.showDeleteDialog = () => {
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-delete-dialog.html',
+            controller: 'DeleteClusterCtrl'
+        });
+
+        modalInstance.result.then(function (forceDelete) {
+            const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
+            $scope.setLoader(true, loaderMessage);
+            ClusterRestService.deleteCluster(!!forceDelete)
+                .success((data) => {
+                    const partialDelete = Object.values(data).every((node) => node === 'DELETED');
+                    if (partialDelete) {
+                        const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
+                        toastr.success(successMessage);
+                    } else {
+                        const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
+                        const failedNodesList = Object.keys(data)
+                            .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
+                        toastr.success(failedNodesList, successMessage, {allowHtml: true});
+                    }
+                    $scope.getClusterConfiguration();
+                })
+                .error((data) => {
+                    const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
+                    const failedNodesList = Object.keys(data)
+                        .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
+                    toastr.error(failedNodesList, failMessage, {allowHtml: true});
+                })
+                .finally(() => $scope.setLoader(false));
+        });
+    };
+
     $scope.getClusterConfiguration();
     $scope.getClusterStatus();
 
@@ -100,9 +134,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     });
 }
 
-CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'LocationsRestService', '$interval'];
+CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate',
+    'LocationsRestService', '$interval'];
 
-function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate, LocationsRestService, $interval) {
+function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate,
+    LocationsRestService, $interval) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
@@ -191,5 +227,17 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
 
     $scope.removeNodeFromList = function (index, node) {
         $scope.clusterConfiguration.nodes.splice(index, 1);
+    };
+}
+
+DeleteClusterCtrl.$inject = ['$scope', '$modalInstance'];
+
+function DeleteClusterCtrl($scope, $modalInstance) {
+    $scope.ok = function () {
+        $modalInstance.close($scope.forceDelete);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
     };
 }

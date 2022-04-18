@@ -33,8 +33,11 @@ function ClusterRestService($http) {
         return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/config`, groupConfiguration);
     }
 
-    function deleteCluster() {
-        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config`);
+    function deleteCluster(forceDelete) {
+        const data = $.param({
+            force: forceDelete
+        });
+        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config?${data}`);
     }
 
     function addNodesToCluster(nodesArray) {
