@@ -1,15 +1,15 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"></button>
-    <h4 class="modal-title">Import settings</h4>
+    <h4 class="modal-title">{{'import.settings' | translate}}</h4>
 </div>
 <form name="settingsForm" class="settings-form">
     <div class="modal-body">
         <div class="form-horizontal">
             <div class="form-group row">
                 <label class="col-lg-3 col-form-label">
-                    Base IRI
+                    {{'import.label.base.iri' | translate}}
                     <span class="btn btn-link p-0"
-                          popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
+                          popover="{{'import.popover.relative.iri' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
@@ -18,16 +18,15 @@
                 <div class="col-lg-9">
                     <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control"
                            placeholder="http://exampleuri.com/examplepath">
-                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">Not a
-                        valid IRI!
+                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">{{'import.alert.not.valid.iri' | translate}}
                     </div>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-lg-3 col-form-label">
-                    Target graphs
+                    {{'import.target.graphs' | translate}}
                     <span class="btn btn-link p-0"
-                          popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
+                          popover="{{'import.into.graphs' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
@@ -35,24 +34,24 @@
                 </label>
                 <div class="col-lg-9">
                     <div>
-                        <label popover="Import into the graph(s) specified by the data source."
+                        <label popover="{{'import.by.data.source' | translate}}"
                                popover-trigger="mouseenter">
                             <input type="radio" class="from-data-btn" ng-model="target" value="data"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                            From data
+                            {{'import.from.data' | translate}}
                         </label>
                         &nbsp;
-                        <label popover="Import everything into the default graph."
+                        <label popover="{{'import.into.default.graph' | translate}}"
                                popover-trigger="mouseenter">
                             <input type="radio" class="default-graph-btn" ng-model="target" value="default"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                            The default graph
+                            {{'import.default.graph' | translate}}
                         </label>
                         &nbsp;
-                        <label popover="Import everything into a user-specified named graph."
+                        <label popover="{{'import.into.user.graph' | translate}}"
                                popover-trigger="mouseenter">
                             <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
-                            Named graph
+                            {{'import.named.graph' | translate}}
                         </label>
                     </div>
                     <div>
@@ -65,28 +64,28 @@
             <div class="form-group row">
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label"
-                           popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
+                           popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
                            popover-trigger="mouseenter"
                            popover-placement="top">
                         <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
-                        Enable replacement of existing data
+                        {{'import.enter.replacement' | translate}}
                     </label>
                 </div>
             </div>
             <div class="form-group row" ng-show="enableReplace">
                 <label class="col-lg-3 col-form-label">
-                    Replaced graphs
+                    {{'import.replaced.graphs' | translate}}
                     <span class="btn btn-link p-0"
-                          popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
+                          popover="{{'import.replaced.graphs.for.update' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
                                 </span>
                 </label>
                 <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
-                    <span ng-show="target === 'default'">The default graph</span>
+                    <span ng-show="target === 'default'">{{'import.default.graph' | translate}}</span>
                     <span ng-show="target === 'named'">{{settings.context}}</span>
-                    <span class="text-muted">(same as the target graph)</span>
+                    <span class="text-muted">{{'import.same.as.target' | translate}}</span>
                 </label>
                 <div class="col-lg-9" ng-show="target === 'data'">
                     <div class="row">
@@ -94,14 +93,14 @@
                             <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
                                    placeholder="http://example.com/graph..."
                                    ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
-                                   popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
+                                   popover="{{'import.graph.wildcard' | translate}}"
                                    popover-placement="top"
                                    popover-trigger="mouseenter">
                         </div>
                         <div class="col-lg-3 col-lg-no-padding">
                             <div class="btn-group" dropdown>
                                 <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
-                                    <span class="icon-plus"></span> Add graph
+                                    <span class="icon-plus"></span> {{'import.add.graph' | translate}}
                                 </button>
                                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
                                         dropdown-toggle>
@@ -110,7 +109,7 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <button type="button" class="dropdown-item"
-                                                ng-click="addReplaceGraph('default')">Add default graph
+                                                ng-click="addReplaceGraph('default')">{{'import.add.default.graph' | translate}}
                                         </button>
                                     </li>
                                 </ul>
@@ -121,14 +120,14 @@
                         <table aria-describedby="Replaced graphs table">
                             <tr>
                                 <th id="graphsColumn">
-                                    <span ng-show="settings.replaceGraphs.length">Replaced graphs</span>
-                                    <span ng-show="!settings.replaceGraphs.length">No replaced graphs added</span>
+                                    <span ng-show="settings.replaceGraphs.length">{{'import.replaced.graphs' | translate}}</span>
+                                    <span ng-show="!settings.replaceGraphs.length">{{'import.no.replaced.graphs.added' | translate}}</span>
                                 </th>
                             </tr>
                             <tr ng-repeat="g in settings.replaceGraphs">
                                 <td>
                                     <span ng-show="g !== 'default'">{{g}}</span>
-                                    <span ng-show="g === 'default'">The default graph</span>
+                                    <span ng-show="g === 'default'">{{'import.default.graph' | translate}}</span>
                                     <button type="button" class="btn btn-link btn-sm secondary"
                                             ng-click="settings.replaceGraphs.splice($index, 1)">
                                         <em class="icon icon-trash"></em>
@@ -141,121 +140,120 @@
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label">
                         <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree" ng-required="enableReplace">
-                        <strong>I understand that data in the replaced graphs will be cleared before importing new data.</strong>
+                        <strong>{{'import.data.cleared.before.import' | translate}}</strong>
                     </label>
                 </div>
             </div>
             <div class="text-xs-center">
                 <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm toggle-advanced-settings">
-                    <span ng-hide="showAdvancedSettings">Show advanced settings<em class="icon-caret-down"></em></span>
-                    <span ng-show="showAdvancedSettings">Hide advanced settings<em class="icon-caret-up"></em></span>
+                    <span ng-hide="showAdvancedSettings">{{'import.show.advance.settings' | translate}}<em class="icon-caret-down"></em></span>
+                    <span ng-show="showAdvancedSettings">{{'import.hide.advance.settings' | translate}}<em class="icon-caret-up"></em></span>
                 </button>
             </div>
 
             <div ng-show="hasParserSettings && showAdvancedSettings" class="advanced-settings">
                 <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">BNodes</label>
+                    <label class="col-lg-3 col-form-label">{{'import.label.bnodes' | translate}}</label>
                     <div class="col-lg-9">
                         <div>
                             <label>
                                 <input name="preserveBNodeIDs" type="checkbox"
                                        ng-model="settings['parserSettings']['preserveBNodeIds']"
-                                       popover="Assign its own internal blank node identifiers or use the blank node ids it finds in the file."
+                                       popover="{{'import.assign.own.bnode.ids' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Preserve BNode IDs
+                                       popover-placement="bottom"> {{'import.preserve.bnode.ids' | translate}}
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Datatype</label>
+                    <label class="col-lg-3 col-form-label">import.label.datatype</label>
                     <div class="col-lg-9">
                         <div>
                             <label>
                                 <input name="failOnUnknownDataTypes" type="checkbox"
                                        ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
-                                       popover="Fail on unknown datatypes"
+                                       popover="{{'import.fail.unknown.datatype' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Fail parsing if datatypes are not recognised
+                                       popover-placement="bottom"> {{'import.fail.parsing.if.unrecognised' | translate}}
                             </label>
                         </div>
                         <div>
                             <label>
                                 <input name="verifyDataTypeValues" type="checkbox"
                                        ng-model="settings['parserSettings']['verifyDataTypeValues']"
-                                       popover="Validate recognised datatype values"
+                                       popover="{{'import.validate.recognised' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Verify recognised datatypes
+                                       popover-placement="bottom"> {{'import.verify.recognised' | translate}}
                             </label>
                         </div>
                         <div>
                             <label>
                                 <input name="normalizeDataTypeValues" type="checkbox"
                                        ng-model="settings['parserSettings']['normalizeDataTypeValues']"
-                                       popover="Normalize recognised datatype values"
+                                       popover="{{'import.normalize.recognised' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Normalize recognised datatypes values
+                                       popover-placement="bottom"> {{'import.normalize.recognised' | translate}}
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Language tags</label>
+                    <label class="col-lg-3 col-form-label">{{'import.language.tags' | translate}}</label>
                     <div class="col-lg-9">
                         <div>
                             <label>
                                 <input name="failOnUnknownLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
-                                       popover="Fail on unknown languages"
+                                       popover="{{'import.fail.lang.unknown' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Fail parsing if languages are not recognised
+                                       popover-placement="bottom"> {{'import.fail.parsing.lang.unknown' | translate}}
                             </label>
                         </div>
                         <div>
                             <label>
                                 <input name="verifyLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['verifyLanguageTags']"
-                                       popover="Validate recognised language tags"
+                                       popover="{{'import.validate.lang.tags' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Verify language based on a given set of definitions
-                                for valid languages
+                                       popover-placement="bottom"> {{'import.verify.language' | translate}}
                             </label>
                         </div>
                         <div>
                             <label>
                                 <input name="normalizeLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['normalizeLanguageTags']"
-                                       popover="Normalize language tags"
+                                       popover="{{'import.normalize.lang.tags' | translate}}"
                                        popover-trigger="mouseenter"
-                                       popover-placement="bottom"> Normalize recognised language tags
+                                       popover-placement="bottom"> {{'import.normalize.recognized.tags' | translate}}
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Error handling</label>
+                    <label class="col-lg-3 col-form-label">{{'import.error.handling' | translate}}</label>
                     <div class="col-lg-9">
                         <label>
                             <input name="stopOnError" type="checkbox"
                                    ng-model="settings['parserSettings']['stopOnError']"
-                                   popover="By default parser stops on error. When set on false errors are reported in the log and parsing continues."
+                                   popover="{{'import.parser.stops.on.error' | translate}}"
                                    popover-trigger="mouseenter"
-                                   popover-placement="bottom"> Should stop on error
+                                   popover-placement="bottom"> {{'import.should.stop.on.error' | translate}}
                         </label>
                     </div>
                 </div>
             </div>
 
             <div ng-show="showAdvancedSettings" class="form-group row">
-                <label class="col-lg-3 col-form-label">Debug</label>
+                <label class="col-lg-3 col-form-label">{{'import.debug.label' | translate}}</label>
                 <div class="col-lg-9 col-form-label">
                     <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
                     <label for="force-serial"
-                           popover="Forces the use of the serial statements pipeline. Not recommended. Use for debugging only."
+                           popover="{{'import.forces.serial.statements' | translate}}"
                            popover-placement="bottom"
-                           popover-trigger="mouseenter">Force serial pipeline</label>
+                           popover-trigger="mouseenter">{{'import.force.serial.pipeline' | translate}}</label>
                 </div>
             </div>
 
@@ -263,8 +261,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-link pull-left" ng-click="reset()">Restore defaults</button>
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-        <button type="submit" class="btn btn-primary import-settings-import-button" ng-click="ok()"><span class="import"></span> Import</button>
+        <button type="button" class="btn btn-link pull-left" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
+        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+        <button type="submit" class="btn btn-primary import-settings-import-button" ng-click="ok()"><span class="import"></span> {{'common.import' | translate}}</button>
     </div>
 </form>

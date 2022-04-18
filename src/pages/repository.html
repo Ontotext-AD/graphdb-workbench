@@ -5,7 +5,7 @@
 <div id="wb-repository">
     <h1>{{pageTitle}}</h1>
     <p class="alert alert-danger" ng-hide="hasActiveLocation()">
-        No active location! Please <a ng-href="repository" href="repository">select a location first</a>.
+        {{'repo.no.active.location.warning' | translate}}<a ng-href="repository" href="repository">{{'repo.choose.location.warning' | translate}}</a>.
     </p>
     <div ng-show="hasActiveLocation()">
         <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
@@ -13,24 +13,24 @@
             <form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
                 <fieldset>
                     <!-- Simply to satisfy the HTML specs, because it's reported as bug from SonarCloud -->
-                    <legend style="display: none">Repository properties</legend>
+                    <legend style="display: none">{{'repo.properties' | translate}}</legend>
                     <div class="form-group row">
-                        <label for="id" class="col-md-3 col-lg-2 col-form-label">Repository ID*</label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.id}}">
+                        <label for="id" class="col-md-3 col-lg-2 col-form-label">{{'repo.id.label' | translate}}</label>
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repoTooltips.id' | translate}}">
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
                                ng-if="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter"
-                               tooltip="Edit repository id" tooltip-placement="right"><span class="icon-edit"></span></a>
+                               tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right"><span class="icon-edit"></span></a>
                             <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
-                                   placeholder="This field is required" type="text" ng-model="repositoryInfo.id"
+                                   placeholder="{{'required.field' | translate}}" type="text" ng-model="repositoryInfo.id"
                                    required ng-attr-autofocus="{{ autofocusId }}">
                             <div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">
-                                Repository name can contain only letters (a-z, A-Z), numbers (0-9), "-" and "_"
+                                {{'invalid.repo.name.error' | translate}}
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-3 col-lg-2 col-form-label">Repository description</label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.title}}">
+                        <label class="col-md-3 col-lg-2 col-form-label">{{'repo.description' | translate}}</label>
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repoTooltips.title' | translate}}">
                             <input class="form-control" type="text" name="title" id="title"
                                    ng-model="repositoryInfo.title">
                         </div>
@@ -38,7 +38,7 @@
                     <div class="form-group row"
                          ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop' && repositoryInfo.type != 'fedx'">
                         <div class="checkbox offset-md-3 offset-lg-2">
-                            <label class="padding-label" tooltip="{{repoTooltips.readOnly}}">
+                            <label class="padding-label" tooltip="{{'repoTooltips.readOnly' | translate}}">
                                 <input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                        ng-model="repositoryInfo.params.readOnly.value"/>
                                 {{repositoryInfo.params.readOnly.label}}
@@ -70,7 +70,7 @@
 
                     <div id="additionalParams" class="pt-1"
                          ng-if="repositoryInfo.type != 'ontop' && repositoryInfo.type != 'fedx'">
-                        <h5>Inference and Validation</h5>
+                        <h5>{{'repo.inference.and.validation.section' | translate}}</h5>
                         <div class="form-group row indented-div">
                             <label for="ruleset" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
                                 {{repositoryInfo.params.ruleset.label}}
@@ -79,7 +79,7 @@
                                     tooltip-html-unsafe="{{rulesetWarning()}}"
                                     tooltip-placement="top"></div>
                             </label>
-                            <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" tooltip="{{repoTooltips.ruleset}}" tooltip-trigger="mouseenter">
+                            <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" tooltip="{{'repoTooltips.ruleset' | translate}}" tooltip-trigger="mouseenter">
                                 <select ng-disabled="editRepoPage" class="form-control" id="ruleset"
                                         ng-model="repositoryInfo.params.ruleset.value"
                                         ng-change="repositoryInfo.params.disableSameAs.value = repositoryInfo.params.ruleset.value.indexOf('owl') === 0 ? 'false' : 'true'"
@@ -91,12 +91,12 @@
                                     <div ngf-select ngf-change="uploadRuleset($files)" ngf-multiple="false"
                                          class="selectFiles pointer clearfix"
                                          accept=".pie"
-                                         tooltip="Upload a custom ruleset file."
+                                         tooltip="{{'upload.custom.ruleset.file' | translate}}"
                                          tooltip-trigger="mouseenter">
                                         <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></em>&nbsp;
                                         <div ng-show="uploadFileLoader" onto-loader size="24"
                                              class="spinner-container ot-loader"></div>
-                                        <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Custom ruleset...</span>
+                                        <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">{{'custom.ruleset' | translate}}</span>
                                     </div>
                                 </div>
                                 <input class="form-control" id="customRuleSet" type="file" name="ruleset"
@@ -106,7 +106,7 @@
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
                                 <label class="padding-label"
-                                       tooltip="{{repoTooltips.disableSameAs}}">
+                                       tooltip="{{'repoTooltips.disableSameAs' | translate}}">
                                     <input id="disableSameAs"
                                            ng-disabled="editRepoPage || repositoryInfo.params.ruleset.value === 'empty'"
                                            type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
@@ -117,7 +117,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" tooltip="{{repoTooltips.checkForInconsistencies}}">
+                                <label class="padding-label" tooltip="{{'repoTooltips.checkForInconsistencies' | translate}}">
                                     <input id="checkForInconsistencies" type="checkbox" ng-true-value="'true'"
                                            ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.checkForInconsistencies.value"/>
@@ -128,21 +128,21 @@
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
                                 <label class="padding-label"
-                                       tooltip="{{repoTooltips.isShacl}}">
+                                       tooltip="{{'repoTooltips.isShacl' | translate}}">
                                     <input id="isShacl" ng-disabled="editRepoPage" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.isShacl.value"/>
                                     {{repositoryInfo.params.isShacl.label}}
                                 </label>
                                 <label class="padding-label wrapper-div"
-                                       tooltip="Shows additional SHACL options when SHACL is enabled.">
+                                       tooltip="{{'repoTooltips.shaclOptions.additional' | translate}}">
                                     <i class="{{getShaclOptionsClass()}}"
                                        aria-hidden="true"></i>
                                     <button class="text-btn"
                                             data-toggle="collapse" style="text-align: left"
                                             ng-disabled="repositoryInfo.params.isShacl.value !== 'true'"
                                             data-target="#shaclOptions">
-                                        SHACL options
+                                        {{'shaclOptions.btn' | translate}}
                                     </button>
                                 </label>
                             </div>
@@ -150,7 +150,7 @@
                         <div ng-if="repositoryInfo.params.isShacl.value === 'true'" id="shaclOptions" class="collapse pb-1">
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" tooltip="{{repoTooltips.shaclOptions.cacheSelectNodes}}">
+                                    <label class="col-lg-4" tooltip="{{'repoTooltips.shaclOptions.cacheSelectNodes' | translate}}">
                                         <input id="cacheSelectNodes" name="cacheSelectNodes" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
@@ -159,7 +159,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.undefinedTargetValidatesAllSubjects}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.undefinedTargetValidatesAllSubjects' | translate}}">
                                         <input id="undefinedTargetValidatesAllSubjects"
                                                name="undefinedTargetValidatesAllSubjects" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
@@ -171,7 +171,7 @@
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="col-lg-4"
-                                           tooltip="{{repoTooltips.shaclOptions.logValidationPlans}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.logValidationPlans' | translate}}">
                                         <input id="logValidationPlans" name="logValidationPlans" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.logValidationPlans.value"/>
@@ -180,7 +180,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.logValidationViolations}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.logValidationViolations' | translate}}">
                                         <input id="logValidationViolations" name="logValidationViolations"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.logValidationViolations.value"/>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" tooltip="{{repoTooltips.shaclOptions.parallelValidation}}">
+                                    <label class="col-lg-4" tooltip="{{'repoTooltips.shaclOptions.parallelValidation' | translate}}">
                                         <input id="parallelValidation" name="parallelValidation" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.parallelValidation.value"/>
@@ -199,7 +199,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.globalLogValidationExecution}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.globalLogValidationExecution' | translate}}">
                                         <input id="globalLogValidationExecution" name="globalLogValidationExecution"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
@@ -210,7 +210,7 @@
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="col-lg-4"
-                                           tooltip="{{repoTooltips.shaclOptions.performanceLogging}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.performanceLogging' | translate}}">
                                         <input id="performanceLogging" name="performanceLogging" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.performanceLogging.value"/>
@@ -219,7 +219,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           tooltip="{{repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions}}">
+                                           tooltip="{{'repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions' | translate}}">
                                         <input id="eclipseRdf4jShaclExtensions" name="eclipseRdf4jShaclExtensions"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.eclipseRdf4jShaclExtensions.value"/>
@@ -231,7 +231,7 @@
                                 <div class="row">
                                     <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                         <label class="col-lg-4"
-                                               tooltip="{{repoTooltips.shaclOptions.dashDataShapes}}">
+                                               tooltip="{{'repoTooltips.shaclOptions.dashDataShapes' | translate}}">
                                             <input id="dashDataShapes" name="dashDataShapes" type="checkbox"
                                                    ng-true-value="'true'" ng-false-value="'false'"
                                                    ng-model="repositoryInfo.params.dashDataShapes.value"/>
@@ -269,17 +269,17 @@
                                 </div>
                             </div>
                         </div>
-                        <h5>Indexing</h5>
+                        <h5>{{'repo.indexing.section' | translate}}</h5>
                         <div class="form-group row indented-div">
                             <label
                                 class="col-md-3 col-lg-2">{{repositoryInfo.params.entityIdSize.label}}</label>
                             <div class="radio">
-                                <label class="padding-label" tooltip-html-unsafe="{{repoTooltips.entityIdSize}}">
+                                <label class="padding-label" tooltip-html-unsafe="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize32" type="radio" value="32" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     32-bit
                                 </label>
-                                <label class="padding-label" tooltip-html-unsafe="{{repoTooltips.entityIdSize}}">
+                                <label class="padding-label" tooltip-html-unsafe="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize40" type="radio" value="40" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     40-bit
@@ -288,7 +288,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" tooltip="{{repoTooltips.enableContextIndex}}">
+                                <label class="padding-label" tooltip="{{'repoTooltips.enableContextIndex' | translate}}">
                                     <input id="enableContextIndex" name="enableContextIndex" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.enableContextIndex.value"/>
@@ -298,7 +298,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" tooltip="{{repoTooltips.enablePredicateList}}">
+                                <label class="padding-label" tooltip="{{'repoTooltips.enablePredicateList' | translate}}">
                                     <input id="enablePredicateList" name="enablePredicateList" ng-true-value="'true'"
                                            ng-false-value="'false'" type="checkbox"
                                            ng-model="repositoryInfo.params.enablePredicateList.value"
@@ -307,17 +307,17 @@
                                 </label>
                             </div>
                         </div>
-                        <h5>Queries and Updates</h5>
+                        <h5>{{'menu.queries.and.updates.label' | translate}}</h5>
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
-                            <div class="col-xs-3 col-md-2" tooltip="{{repoTooltips.queryTimeout}}">
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.queryTimeout' | translate}}">
                                 <input class="form-control" id="queryTimeout" type="number" step="1"
                                        ng-model="repositoryInfo.params.queryTimeout.value"
                                        ng-change="validateNumberInput()"/>
                             </div>
                             <div class="checkbox offset-xs-3 offset-md-2">
-                                <label class="padding-label col-form-label" tooltip="{{repoTooltips.throwQueryEvaluationExceptionOnTimeout}}">
+                                <label class="padding-label col-form-label" tooltip="{{'repoTooltips.throwQueryEvaluationExceptionOnTimeout' | translate}}">
                                     <input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>
@@ -328,7 +328,7 @@
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
-                            <div class="col-xs-3 col-md-2" tooltip="{{repoTooltips.queryLimitResults}}">
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.queryLimitResults' | translate}}">
                                 <input class="form-control" id="queryLimitResults" type="number" step="1"
                                        ng-model="repositoryInfo.params.queryLimitResults.value"
                                        ng-change="validateNumberInput()"/>
@@ -337,7 +337,7 @@
                         <div class="form-group row indented-div" ng-if="repositoryInfo.type == 'worker'">
                             <label
                                 class="col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
-                            <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{repoTooltips.nonInterpretablePredicates}}">
+                            <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repoTooltips.nonInterpretablePredicates' | translate}}">
 									<textarea class="form-control" id="nonInterpretablePredicates"
                                               name="nonInterpretablePredicates"
                                               ng-model="repositoryInfo.params.nonInterpretablePredicates.value"
@@ -363,12 +363,12 @@
                     <div class="form-group row pb-3" ng-if="repositoryInfo.type !== 'ontop'">
                         <div class="col-xs-12">
                             <button id="addSaveRepository" ng-click="createRepo()" ng-if="!editRepoPage" type="submit"
-                                    class="btn btn-primary">Create
+                                    class="btn btn-primary">{{'common.create.btn' | translate}}
                             </button>
                             <button id="addSaveRepository" ng-click="editRepository()" ng-if="editRepoPage"
-                                    type="submit" class="btn btn-primary">Save
+                                    type="submit" class="btn btn-primary">{{'common.save.btn' | translate}}
                             </button>
-                            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">Cancel</a>
+                            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
                         </div>
                     </div>
                 </fieldset>

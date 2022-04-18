@@ -5,15 +5,15 @@ PluginRegistry.add('route', {
     'chunk': 'export',
     'controller': 'ExportCtrl',
     'templateUrl': 'pages/export.html',
-    'title': 'Graphs overview',
-    'helpInfo': 'Graphs overview provides a list of the default graph and all named graphs in GraphDB. '
-    + 'It can be used to inspect the statements in each graph, export the graph or clear the graph\'s data. '
+    'title': 'menu.explore.label',
+    'helpInfo': 'view.export.ctr.helpInfo '
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Explore',
+            labelKey: 'menu.explore.label',
             href: '#',
             order: 1,
             role: 'IS_AUTHENTICATED_FULLY',
@@ -21,6 +21,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'Graphs overview',
+            labelKey: 'menu.graphs.overview.label',
             href: 'graphs',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',

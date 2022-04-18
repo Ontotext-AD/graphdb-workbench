@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr'];
+fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$translate'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
+function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) {
     return {
         restrict: 'E',
         scope: true,
@@ -40,7 +40,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                     $scope.allAttachedRepos = _.cloneDeep(repos);
                 }).error(function (response) {
                     const msg = getError(response);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
         }
 
@@ -277,7 +277,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
                 if (checkEditMode() && $scope.fedxMembers.find(el => el.repositoryName === member.repositoryName
                     && el.repositoryServer === member.repositoryServer)) {
                     let resolvedName = $scope.resolveName(member);
-                    toastr.error(`Repository ${resolvedName} already added as a FedX member`);
+                    toastr.error($translate.instant('fedx.repo.already.added.member.error', {name: resolvedName}));
                     $scope.$modalInstance.close();
                     return;
                 }
@@ -295,7 +295,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr) {
 
                 if (checkEditMode() && $scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
                     let resolvedName = $scope.resolveName(member);
-                    toastr.error(`SPARQL endpoint ${resolvedName} already added as a FedX member`);
+                    toastr.error($translate.instant('fedx.repo.already.added.sparql.endpoint.error', {name: resolvedName}));
                     $scope.$modalInstance.close();
                     return;
                 }

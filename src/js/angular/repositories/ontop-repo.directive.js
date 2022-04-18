@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
 
-ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload'];
+ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload', '$translate'];
 
-function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
+function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $translate) {
     return {
         restrict: 'E',
         scope: false,
@@ -58,7 +58,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                 .success(function (response) {
                     $scope.supportedDriversData = response;
                 }).error(function (response) {
-                    showErrorMsg('Error', response);
+                    showErrorMsg($translate.instant('common.error'), response);
                 });
         }
 
@@ -109,7 +109,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                     $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
                     $scope.repositoryInfo.params[file].value = result.fileLocation;
                 }).error(function (error) {
-                    showErrorMsg('Error', error);
+                    showErrorMsg($translate.instant('common.error'), error);
                 })
             });
         }
@@ -131,7 +131,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         }
                         $scope.uploadFileLoader = false;
                     }).error(function (data) {
-                    showErrorMsg('Error', data);
+                    showErrorMsg($translate.instant('common.error'), data);
                     $scope.uploadFile = '';
                     $scope.uploadFileLoader = false;
                 });
@@ -178,8 +178,8 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         return !$scope.repositoryInfo.params[requiredFile].value;
                     });
                     if (missingRequired.length > 0) {
-                        toastr.error('Missing required ontop repo file');
-                        return Promise.reject('Missing required ontop repo file');
+                        toastr.error($translate.instant('ontop.repo.missing.required.file.error'));
+                        return Promise.reject($translate.instant('ontop.repo.missing.required.file.error'));
                     }
                     return Promise.resolve();
                 });
@@ -199,7 +199,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         $scope.selectedDriver.jdbc.url = driverData.url;
                     }
                 }).error(function (data) {
-                showErrorMsg('Error', data);
+                showErrorMsg($translate.instant('common.error'), data);
                 $scope.uploadFileLoader = false;
             });
         }
@@ -209,9 +209,9 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                 .then(function () {
                     RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo)
                         .success(function () {
-                            toastr.success('Connection is successful');
+                            toastr.success($translate.instant('ontop.repo.successful.connection.msg'));
                         }).error(function (data) {
-                        showErrorMsg('Failed to connect', data);
+                        showErrorMsg($translate.instant('ontop.repo.failed.to.connect'), data);
                     });
                 });
         }
@@ -227,7 +227,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                     return !$scope.selectedDriver.jdbc[requiredField]
                 });
             if (missing.length > 0) {
-                toastr.error('Missing required field');
+                toastr.error($translate.instant('missing.required.field.error'));
                 return true;
             }
             return false;
@@ -236,7 +236,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         function updateProperties() {
             if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
                 if (missingRequiredField()) {
-                    return Promise.reject('Missing required field');
+                    return Promise.reject($translate.instant('missing.required.field.error'));
                 }
                 return updatePropertiesFile();
             }
@@ -252,7 +252,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                     $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;
                     $scope.uploadFileLoader = false;
                 }).error(function (data) {
-                    showErrorMsg('Error', data);
+                    showErrorMsg($translate.instant('common.error'), data);
                     $scope.uploadFileLoader = false;
                 });
         }
@@ -284,7 +284,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
 
         $scope.createOntopRepo = function () {
             if (!$scope.repositoryInfo.id) {
-                toastr.error('Repository ID cannot be empty');
+                toastr.error($translate.instant('empty.repoid.warning'));
                 return;
             }
 

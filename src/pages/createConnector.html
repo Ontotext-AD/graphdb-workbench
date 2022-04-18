@@ -8,9 +8,9 @@
 	<div class="form-horizontal">
 
 		<div class="form-group row">
-			<label class="col-xs-2 col-form-label">Name<sup>*</sup></label>
+			<label class="col-xs-2 col-form-label">{{'name.simple.label' | translate}}<sup>*</sup></label>
 			<div class="col-xs-10 connector-name-field">
-				<input type="text" class="form-control" placeholder="connector name" ng-model="name" required popover="Name that identifies the connector." popover-trigger="focus" popover-placement="bottom">
+				<input type="text" class="form-control" placeholder="{{'connector.name' | translate}}" ng-model="name" required popover="{{'connector.name.popover' | translate}}" popover-trigger="focus" popover-placement="bottom">
 			</div>
 		</div>
 
@@ -67,16 +67,16 @@
 										<div class="input-group mb-1" ng-if="child.__type == 'StringArray'" ng-repeat="value in values[option.__name][fieldIndex][child.__name] track by $index">
 											<input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name][$index]" ng-required="child.__required"  popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
 											<span class="input-group-btn btn-group-sm">
-												<button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" popover="Delete {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])" >
+												<button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" popover="{{'delete.connector.delete.btn' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])" >
 													<em class="icon-minus"></em>
 												</button>
-												<button type="button" class="btn btn-link btn-sm" popover="Add {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
+												<button type="button" class="btn btn-link btn-sm" popover="{{'common.add' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
 													<em class="icon-plus"></em>
 												</button>
 											</span>
 										</div>
 										<div ng-if="child.__type == 'OptionArray'" class="col-form-label">
-											<em>Defining nested objects is not supported through this interface.</em>
+											<em>{{'nested.objects.error' | translate}}</em>
 										</div>
 									</div>
 								</div>
@@ -93,10 +93,10 @@
 						</div>
 						<div class="col-xs-1 p-0" style="margin-left: -1rem">
 							<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="Delete Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="{{'delete.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
+							<button type="button" class="btn btn-link" popover="{{'add.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
 								<em class="icon-plus"></em>
 							</button>
 							</span>
@@ -105,9 +105,9 @@
                 </div>
 				<div ng-if="option.__type == 'Map'" ng-show="values[option.__name].length === 0">
 					<div class="col-form-label mb-1">
-						<label><em>No {{option.__label}} added</em></label>
+						<label><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
 						<span class="btn-group-sm">
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>
@@ -117,17 +117,17 @@
 					<div class="input-group mb-1">
 						<div class="row">
 							<div class="col-xs-6">
-								<input type="text" class="form-control" placeholder="key"  ng-model="kv.key" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+								<input type="text" class="form-control" placeholder="{{'key.label' | translate}}"  ng-model="kv.key" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 							</div>
 							<div class="col-xs-6">
-								<input type="text" class="form-control" placeholder="value"  ng-model="kv.value" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+								<input type="text" class="form-control" placeholder="{{'value.label' | translate}}"  ng-model="kv.value" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 							</div>
 						</div>
 						<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteMapOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteMapOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>
@@ -141,8 +141,8 @@
 
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View SPARQL Query</button>
-	<button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-	<button type="submit" class="btn btn-primary create-connector-btn">OK</button>
+	<button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">{{'view.sparql.query' | translate}}</button>
+	<button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+	<button type="submit" class="btn btn-primary create-connector-btn">{{'common.ok.btn' | translate}}</button>
 </div>
 </form>

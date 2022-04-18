@@ -10,7 +10,7 @@
 <div class="container-fluid">
 
     <h1>
-        {{editSearchQuery ? (viewType === 'text' ? 'Edit search query':(page === 2 ? 'Edit search query' : 'Edit analogical query')) : title}}
+        {{editSearchQuery ? (viewType === 'text' ? 'edit.search.query':(page === 2 ? 'edit.search.query' : 'edit.analogical.query')) : title | translate}}
         <span ng-hide="editSearchQuery" class="btn btn-link"
               popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
@@ -20,59 +20,59 @@
     <div core-errors></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
-        <p>The currently selected repository cannot be used for queries due to an error:</p>
+        <p>{{'current.repo.error' | translate}}</p>
 
         <p>{{repositoryError}}</p>
     </div>
 
     <ul ng-hide="editSearchQuery" class="nav nav-tabs mb-2">
         <li class="nav-item" id="create-text-index"><a class="nav-link" ng-class="viewType == 'text' ? 'active' : ''" href ng-click="viewType = 'text'"
-                data-toggle="tab">Create text similarity index</a></li>
+                data-toggle="tab">{{'text.similarity.index' | translate}}</a></li>
         <li class="nav-item" id="create-predication-index"><a class="nav-link" ng-class="viewType == 'predication' ? 'active' : ''" href ng-click="viewType = 'predication'" data-toggle="tab">
-            Create predication index</a></li>
+            {{'predication.index' | translate}}</a></li>
     </ul>
     <div class="card mb-2">
       <div class="card-block pt-1">
-        <p class="lead">Index name</p>
+        <p class="lead">{{'index.name' | translate}}</p>
         <div class="input-group input-group-lg">
-          <input ng-disabled="editSearchQuery" required class="form-control similarity-index-name" type="text" placeholder="My index name (required)" ng-model="newIndex.name">
+          <input ng-disabled="editSearchQuery" required class="form-control similarity-index-name" type="text" placeholder="{{'my.index.name.required' | translate}}" ng-model="newIndex.name">
         </div>
         <div style="margin-top: 5px" ng-show="invalidIndexName" class="idError alert alert-danger">{{invalidIndexName}}</div>
 
-        <button ng-hide="editSearchQuery" class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn" data-toggle="collapse" data-target="#more-options">more options <span class="icon-caret-up"></span></button>
+        <button ng-hide="editSearchQuery" class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn" data-toggle="collapse" data-target="#more-options">{{'more.options.label' | translate}} <span class="icon-caret-up"></span></button>
 
         <div class="collapse mt-1" id="more-options" >
 
           <div class="form-group row">
-                <label for="indexParameters" class="col-md-4 col-form-label">Semantic Vectors create index parameters</label>
+                <label for="indexParameters" class="col-md-4 col-form-label">{{'semantic.vectors.index.params' | translate}}</label>
                 <div class="col-md-8">
       <input class="form-control" type="text" ng-model="newIndex.options" id="indexParameters" placeholder="-vectortype binary">
-                    <div class="small text-muted" style="margin-top: 0.5rem">See the full <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#create-index-parameters" rel="noopener" target="_blank">list of supported parameters</a></div>
+                    <div class="small text-muted" style="margin-top: 0.5rem">{{'see.full.label' | translate}} <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#create-index-parameters" rel="noopener" target="_blank">{{'list.of.supported.params' | translate}}</a></div>
                 </div>
             </div>
 
           <div class="form-group row" ng-show="viewType == 'text'">
-            <label class="col-md-4 col-form-label">Stop words</label>
+            <label class="col-md-4 col-form-label">{{'stop.words' | translate}}</label>
             <div class="col-md-8">
-              <input class="form-control stop-words" type="text" placeholder="a and be but ... (optional). Default Lucene stop list will be used if empty." ng-model="newIndex.stopList">
+              <input class="form-control stop-words" type="text" placeholder="{{'default.lucene.stop.list' | translate}}" ng-model="newIndex.stopList">
             </div>
           </div>
           <div class="form-group row" ng-show="viewType == 'text'">
-              <label class="col-md-4 col-form-label">Analyzer Class</label>
+              <label class="col-md-4 col-form-label">{{'analyzer.class' | translate}}</label>
               <div class="col-md-8">
                   <input class="form-control analyzer-class" type="text" ng-model="newIndex.analyzer">
               </div>
           </div>
             <div class="checkbox offset-xs-3 offset-md-4" ng-show="viewType == 'text'">
                 <label class="col-xs-6 col-md-6"
-                       tooltip="Literal indexes can be used as input for Predication indexes. These index can not be used for searching."
+                       tooltip="{{'literal.index.input' | translate}}"
                        tooltip-placement="bottom">
                     <input type="checkbox" class="literal-index" ng-true-value="'true'" ng-false-value="'false'" ng-model="newIndex.isLiteralIndex"/>
-                    Literal index
+                    {{'literal.index.label' | translate}}
                 </label>
             </div>
             <div class="form-group row" ng-show="viewType == 'predication'">
-                <label class="col-md-4 col-form-label">Input Literal Index</label>
+                <label class="col-md-4 col-form-label">{{'input.literal.index.label' | translate}}</label>
                 <div class="col-md-8">
                     <select class="form-control" ng-options="idx for idx in literalIndexes" ng-model="newIndex.inputIndex"/>
                 </div>
@@ -86,24 +86,24 @@
         <div class="card-block">
 
             <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-              <span class="icon-help" popover="Toggle help" popover-placement="top" popover-trigger="mouseenter"></span>
-              <span class="hidden-lg-down">Help</span>
+              <span class="icon-help" popover="{{'toggle.help' | translate}}" popover-placement="top" popover-trigger="mouseenter"></span>
+              <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span>
             </button>
 
             <ul class="nav nav-tabs">
                 <li ng-hide="editSearchQuery" class="nav-item">
                     <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
-                        Data query
+                        {{'data.query.label' | translate}}
                     </a>
                 </li>
                 <li class="nav-item search-query-tab">
                     <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
-                        Search query
+                        {{'search.query.label' | translate}}
                     </a>
                 </li>
                 <li class="nav-item analogical-query-tab" ng-show="viewType == 'predication'">
                     <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link" href>
-                        Analogical query
+                        {{'analogical.query.label' | translate}}
                     </a>
                 </li>
             </ul>
@@ -112,13 +112,13 @@
                 <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 1">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
-                        This <span class="small-caps">SELECT</span> query determines the data that will be indexed.
+                        {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.determines.data.index' | translate}}
                     </p>
 
-                    <p>The query must <span class="small-caps">SELECT</span> the following bindings:</p>
+                    <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'the.following.bindings' | translate}}</p>
                     <ul ng-show="viewType == 'text'">
-                        <li><code>?documentID</code> determines the identifier of the indexed document.</li>
-                        <li><code>?documentText</code> determines the document content that will be indexed.</li>
+                        <li><code>?documentID</code> {{'determines.id.indexed.doc' | translate}}</li>
+                        <li><code>?documentText</code> {{'determines.doc.content' | translate}}</li>
                     </ul>
                     <ul ng-show="viewType == 'predication'">
                         <li><code>?subject</code></li>
@@ -126,27 +126,25 @@
                         <li><code>?object</code></li>
                     </ul>
 
-                    This query is executed during index creation to obtain the actual data for the index.
-                    Incremental updates are not supported. When data in your repo changes you should rebuild the index.
-                    It is a subquery of a more complicated query you can see from the 'View Index Query' link bellow.
+                    {{'query.execution.info' | translate}}
                 </div>
 
                 <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 2">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
-                        This <span class="small-caps">SELECT</span> query determines the data that will be fetched on search.
+                        {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.on.search' | translate}}
                     </p>
 
-                    This query is executed during search. Add more bindings by modifying this query to see more data in the results table.
+                    {{'query.execution.on.search' | translate}}
                 </div>
 
                 <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 3">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
-                        This <span class="small-caps">SELECT</span> query determines the data that will be fetched on analogical search.
+                        {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.analogical.search' | translate}}
                     </p>
 
-                    This query is executed during analogical search. Add more bindings by modifying this query to see more data in the results table.
+                    {{'analogical.search.info' | translate}}
                 </div>
 
                 <div class="row">
@@ -155,7 +153,7 @@
                         </query-editor>
                     </div>
                     <div class="col-md-3" ng-show="page == 1">
-                        <p>Sample queries: </p>
+                        <p>{{'sample.queries' | translate}} </p>
 
                         <div class="list-group">
                             <div ng-repeat="(sampleKey, sampleValue) in samples">
@@ -177,34 +175,34 @@
                        popover="{{getCloseBtnMsg()}}"
                        popover-placement="top"
                        popover-trigger="mouseenter">
-                        Cancel
+                        {{'common.cancel.btn' | translate}}
                     </a>
                     <button ng-if="!editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
-                            popover="Create index"
+                            popover="{{'create.index.label' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
-                        Create
+                        {{'common.create.btn' | translate}}
                     </button>
                     <button ng-if="editSearchQuery" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
-                            popover="Edit query"
+                            popover="{{'core.edit.query' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
-                        Save
+                        {{'common.save.btn' | translate}}
                     </button>
                 </div>
                 <div class="pull-left">
-                  <button ng-if="!editSearchQuery" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
+                  <button ng-if="!editSearchQuery" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">{{'view.index.query' | translate}}</button>
                   <button class="btn btn-link test-query-btn" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
-                          popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
+                          popover="{{'preview.results' | translate}}"
                           popover-placement="top"
                           popover-trigger="mouseenter">
-                      Test Query
+                      {{'test.query.btn' | translate}}
                   </button>
                   <button class="btn btn-link" ng-click="showEditor()" ng-show="viewMode == 'editor' && page == 1"
-                          popover="Closes the preview and shows the query editor."
+                          popover="{{'closes.preview' | translate}}"
                           popover-placement="top"
                           popover-trigger="mouseenter">
-                      Edit query
+                      {{'core.edit.query' | translate}}
                   </button>
                 </div>
             </div>

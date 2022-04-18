@@ -5,6 +5,7 @@ describe('Main menu tests', function () {
     });
 
     beforeEach(function () {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.visit('/');
         cy.window();
 

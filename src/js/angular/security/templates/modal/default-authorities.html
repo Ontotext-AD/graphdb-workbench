@@ -1,32 +1,32 @@
 <div class="modal-header">
-    <h3 class="modal-title">Free Access configuration</h3>
-    <div>Configure Free Access application settings and read or read/write access repositories</div>
+    <h3 class="modal-title">{{'security.free.access.config.title' | translate}}</h3>
+    <div>{{'security.free.access.config.settings' | translate}}</div>
 </div>
 <div class="modal-body">
     <div class="card" id="user-settings">
         <div class="card-block">
-            <h3>Application settings</h3>
-            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_SAMEAS" id="defaultSameAs" checked="appSettings.DEFAULT_SAMEAS" > Default SameAS value</label>
-            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_INFERENCE" id="defaultInference" checked="appSettings.DEFAULT_INFERENCE" > Default Inference</label>
-            <label><input type="checkbox" ng-model="appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT"> Count all SPARQL results</label>
+            <h3>{{'security.application.settings' | translate}}</h3>
+            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_SAMEAS" id="defaultSameAs" checked="appSettings.DEFAULT_SAMEAS" > {{'security.default.same.as' | translate}}</label>
+            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_INFERENCE" id="defaultInference" checked="appSettings.DEFAULT_INFERENCE" > {{'security.default.inference' | translate}}</label>
+            <label><input type="checkbox" ng-model="appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT"> {{'security.count.all.results' | translate}}</label>
         </div>
     </div>
     <div class="card">
         <div class="card-block repo-fields">
-            <h3>Repositories read/write access</h3>
+            <h3>{{'security.read.write.access' | translate}}</h3>
             <div class="row">
                 <p ng-show="repositoryCheckError" class="authoritiesError alert alert-danger col-xs-12">
-                    Users should have rights to at least one repository!
+                    {{'security.user.rights' | translate}}
                 </p>
-                <p ng-hide="hasActiveLocation()" class="authoritiesError alert alert-danger col-xs-12">There is no active location.
-                    <a href="repository" ng-if="isAdmin()">Activate location</a>
+                <p ng-hide="hasActiveLocation()" class="authoritiesError alert alert-danger col-xs-12">{{'security.no.active.location' | translate}}
+                    <a href="repository" ng-if="isAdmin()">{{'activate.location' | translate}}</a>
                 </p>
             </div>
             <div class="row" style="margin-top: 0">
-                <h5 class="boldless col-xs-10">Repository</h5>
-                <span class="fa fa-eye fa-1andAhalfx col-xs-1" tooltip="Read" tooltip-trigger="mouseenter"
+                <h5 class="boldless col-xs-10">{{'security.repository.title' | translate}}</h5>
+                <span class="fa fa-eye fa-1andAhalfx col-xs-1" tooltip="{{'security.tooltip.read' | translate}}" tooltip-trigger="mouseenter"
                       tooltip-placement="top" tooltip-append-to-body="true" style="margin-top: 10px"></span>
-                <span class="fa fa-pencil fa-1andAhalfx col-xs-1" tooltip="Write" tooltip-trigger="mouseenter"
+                <span class="fa fa-pencil fa-1andAhalfx col-xs-1" tooltip="{{'security.tooltip.write' | translate}}" tooltip-trigger="mouseenter"
                       tooltip-placement="top" tooltip-append-to-body="true" style="margin-top: 10px"></span>
             </div>
             <div id="access-user-repos access-user-rights" class="row"
@@ -51,6 +51,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button type="button" class="btn btn-default" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button class="btn btn-primary" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
 </div>

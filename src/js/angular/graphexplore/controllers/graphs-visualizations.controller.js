@@ -21,9 +21,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService", "$translate"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService, $translate) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -38,8 +38,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.openedNodeInfoPanel = undefined;
 
     $scope.invalidLimit = false;
-    $scope.INVALID_LINKS_MSG = 'Invalid links limit';
-    $scope.INVALID_LINKS_TOOLTIP = 'The valid limit range is 1-1000';
+    $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
+    $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
+        $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+        $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
+    });
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
@@ -99,7 +105,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.adapterContainer = {adapter: {remain: true}};
 
     $scope.propertiesQueryObj.query = '';
-    $scope.propertiesSearchPlaceholder = "Search instance properties";
+    $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     $scope.propertiesFilterFunc = propertiesFilterFunc;
 
     $scope.resetState = function () {
@@ -374,7 +380,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             initGraphFromResponse(response);
         }, function (response) {
             $scope.loading = false;
-            toastr.error(getError(response.data), 'Cannot load visual graph!');
+            toastr.error(getError(response.data), $translate.instant('graphexplore.error.cannot.load.graph'));
         });
     };
 
@@ -860,7 +866,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     graphCallback();
                 }
             }).error(function (data) {
-            toastr.error(getError(data), 'Could not get graph configs');
+            toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs.short.msg'));
         });
     };
 
@@ -874,7 +880,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     successCallback();
                 })
                 .error(function (data) {
-                    toastr.error(getError(data), 'Could not load config ' + configId);
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.load.config', {configId: configId}));
                 });
         }
     };
@@ -909,15 +915,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     initGraphFromResponse(response);
                 }, function (data) {
                     $scope.loading = false;
-                    toastr.error(getError(data), 'Could not load graph from config');
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.graph.load'));
                 });
         }
     };
 
     $scope.deleteConfig = function (config) {
         ModalService.openSimpleModal({
-            title: 'Confirm',
-            message: 'Are you sure you want to delete the graph config ' + '\'' + config.name + '\'?',
+            title: $translate.instant('common.confirm'),
+            message: $translate.instant('graphexplore.delete.graph', {configName: config.name}),
             warning: true
         }).result
             .then(function () {
@@ -926,7 +932,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                         $scope.getGraphConfigs();
                         $scope.refreshSavedGraphs();
                     }).error(function (data) {
-                    toastr.error(getError(data), 'Could not delete graph config');
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.cannot.delete.config'));
                 });
             });
     };
@@ -992,7 +998,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                         expandNode(rootNode, true);
                     }).catch(function (err) {
                         $scope.loading = false;
-                        toastr.error(getError(err), 'Could not load visual graph');
+                        toastr.error(getError(err), $translate.instant('graphexplore.error.could.not.load.graph'));
                     });
                 }
             });
@@ -1009,7 +1015,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 })
                 .error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error! Could not open saved graph');
+                    toastr.error(msg, $translate.instant('graphexplore.error.could.not.open'));
                 });
         }
     };
@@ -1052,7 +1058,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.addedTag = function (tag) {
         if (tag.text.indexOf(':') < 0) {
-            toastr.warning('Enter an absolute full or prefixed IRI');
+            toastr.warning($translate.instant('graphexplore.absolute.prefixed.iri'));
             return null;
         }
         tag.text = expandPrefix(tag.text, $scope.namespaces);
@@ -1063,19 +1069,19 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.validateTag = function (tag, category, wildcardOK) {
         if (tag.text.indexOf(':') < 0) {
             if (wildcardOK) {
-                toastr.warning('Enter an absolute full or prefixed IRI, optionally ending in *', category);
+                toastr.warning($translate.instant('graphexplore.absolute.prefixed.iri.option'), category);
             } else {
-                toastr.warning('Enter an absolute full or prefixed IRI', category);
+                toastr.warning($translate.instant('graphexplore.absolute.prefixed.iri'), category);
             }
             return false;
         }
         const wildcardPos = tag.text.indexOf('*');
         if (wildcardPos >= 0) {
             if (!wildcardOK) {
-                toastr.warning('Wildcards not allowed here', category);
+                toastr.warning($translate.instant('graphexplore.wildcards.not.allowed'), category);
                 return false;
             } else if (wildcardPos < tag.text.length - 1) {
-                toastr.warning('Wildcard allowed only as the last character', category);
+                toastr.warning($translate.instant('graphexplore.wildcards.last.char'), category);
                 return false;
             }
         }
@@ -1128,7 +1134,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
                 checkAutocompleteStatus();
             }).error(function (data) {
-                toastr.error(getError(data), 'Cannot get namespaces for repository. View will not work properly!');
+                toastr.error(getError(data), $translate.instant('graphexplore.error.view.will.not.work'));
             });
     }
 
@@ -1294,7 +1300,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     // Show how many predicates left
                     const textToShow = numOfPredLeft > 1 ? numOfPredLeft + ' predicates'
                         : numOfPredLeft + ' predicate';
-                    return ' \u00B7 ' + 'more ' + textToShow + ' to show';
+                    return ' \u00B7 ' + $translate.instant('graphexplore.tip.text', {textToShow: textToShow});
                 }
             }), '');
 
@@ -1540,7 +1546,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     if (shownLinks <= $scope.saveSettings['linksLimit']) {
                         expandNode(d, false, element.parentNode);
                     } else {
-                        toastr.info('Increase limit to see more connections and try again', 'Node already expanded to predefined maximum links to show.');
+                        toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
                     }
                     $scope.closeInfoPanel();
                 }
@@ -2025,9 +2031,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         if (newNodes.length === 0) {
             if (isStartNode) {
-                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
+                toastr.info($translate.instant('graphexplore.error.node.connections'));
             } else if (linksFound.length === 0) {
-                toastr.info('This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.');
+                toastr.info($translate.instant('graphexplore.error.node.connections'));
             }
 
             graph.addAndMatchLinks(linksFound);
@@ -2107,7 +2113,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             renderGraphFromResponse(response, d, isStartNode);
         }, function (response) {
             const msg = getError(response.data);
-            toastr.error(msg, 'Error exploring node');
+            toastr.error(msg, $translate.instant('graphexplore.error.exploring.node'));
             $scope.loading = false;
             loader.setLoadingState(false);
         });
@@ -2806,14 +2812,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 $scope.lastSavedGraphId = headers()['x-saved-graph-id'];
                 $scope.shared = graph.shared;
                 $scope.refreshSavedGraphs();
-                toastr.success('Saved graph ' + graph.name + ' was saved.');
+                toastr.success($translate.instant('graphexplore.saved.graph', {name: graph.name}));
             })
             .error(function (data, status) {
                 if (status === 422) {
                     $scope.saveGraphModal('new', graph, true);
                 } else {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error! Cannot create saved graph');
+                    toastr.error(msg, $translate.instant('graphexplore.error.cannot.create.graph'));
                 }
             });
     }
@@ -2840,11 +2846,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 $scope.lastSavedGraphName = savedGraph.name;
                 $scope.shared = savedGraph.shared;
                 $scope.refreshSavedGraphs();
-                toastr.success('Saved graph ' + savedGraph.name + ' was edited.');
+                toastr.success($translate.instant('graphexplore.saved.graph.was.edited', {name: savedGraph.name}));
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Cannot edit saved graph');
+                toastr.error(msg, $translate.instant('graphexplore.error.cannot.edit'));
             });
     };
 
@@ -2890,7 +2896,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not get saved graphs');
+                toastr.error(msg, $translate.instant('graphexplore.error.getting.saved.graphs'));
             });
     };
 
@@ -2930,18 +2936,18 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         SavedGraphsRestService.deleteSavedGraph(savedGraph)
             .success(function () {
                 $scope.refreshSavedGraphs();
-                toastr.success('Saved graph ' + savedGraph.name + ' was deleted.');
+                toastr.success($translate.instant('graphexplore.saved.graph.was.deleted', {name: savedGraph.name}));
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Cannot delete saved graph');
+                toastr.error(msg, $translate.instant('graphexplore.error.cannot.delete'));
             });
     }
 
     $scope.deleteSavedGraph = function (savedGraph) {
         ModalService.openSimpleModal({
-            title: 'Confirm',
-            message: 'Are you sure you want to delete the saved graph ' + '\'' + savedGraph.name + '\'?',
+            title: $translate.instant('common.confirm'),
+            message: $translate.instant('graphexplore.confirm.delete.graph', {graphName: savedGraph.name}),
             warning: true
         }).result
             .then(function () {
@@ -2992,25 +2998,25 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 }
 
-SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data', '$translate'];
 
-function SaveGraphModalCtrl($scope, $modalInstance, data) {
+function SaveGraphModalCtrl($scope, $modalInstance, data, $translate) {
     $scope.mode = data.mode;
     $scope.graph = angular.copy(data.graph);
     $scope.graphExists = data.graphExists;
 
     switch ($scope.mode) {
         case 'new':
-            $scope.title = 'Create new saved graph';
-            $scope.okButtonText = 'Create';
+            $scope.title = $translate.instant('graphexplore.create.new.graph');
+            $scope.okButtonText = $translate.instant('common.create.btn');
             break;
         case 'update':
-            $scope.title = 'Update saved graph';
-            $scope.okButtonText = 'Save';
+            $scope.title = $translate.instant('graphexplore.update');
+            $scope.okButtonText = $translate.instant('common.save.btn');
             break;
         case 'rename':
-            $scope.title = 'Rename saved graph';
-            $scope.okButtonText = 'Save';
+            $scope.title = $translate.instant('graphexplore.rename');
+            $scope.okButtonText = $translate.instant('common.save.btn');
     }
 
     $scope.ok = function () {

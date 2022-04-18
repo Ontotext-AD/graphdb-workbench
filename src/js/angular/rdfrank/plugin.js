@@ -5,16 +5,15 @@ PluginRegistry.add('route', {
     'chunk': 'rdfrank',
     'controller': 'RDFRankCtrl',
     'templateUrl': 'pages/rdfrank.html',
-    'title': 'RDF Rank',
-    'helpInfo': 'RDF Rank is an algorithm that identifies the more important or more popular ' +
-    'entities in the repository by examining their interconnectedness. The popularity of entities' +
-    ' can then be used to order the query results.'
+    'title': 'view.rdf.rank.title',
+    'helpInfo': 'view.rdf.rank.helpInfo'
 });
 
 PluginRegistry.add('main.menu', {
     'items': [
         {
             label: 'Setup',
+            labelKey: 'menu.setup.label',
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
@@ -22,6 +21,7 @@ PluginRegistry.add('main.menu', {
         },
         {
             label: 'RDF Rank',
+            labelKey: 'view.rdf.rank.title',
             href: 'rdfrank',
             order: 45,
             parent: 'Setup',

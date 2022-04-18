@@ -2,29 +2,29 @@
 <div class="modal-header" ng-if="mode === 'remote'">
     <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
     </button>
-    <h3 class="modal-title" ng-if="!model.editMode">Add remote repository</h3>
-    <h3 class="modal-title" ng-if="model.editMode">Edit remote repository</h3>
+    <h3 class="modal-title" ng-if="!model.editMode">{{'add.remote.repo' | translate}}</h3>
+    <h3 class="modal-title" ng-if="model.editMode">{{'edit.remote.repo' | translate}}</h3>
 </div>
 <div class="modal-header" ng-if="mode === 'local'">
     <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
     </button>
-    <h3 class="modal-title">Edit local repository</h3>
+    <h3 class="modal-title">{{'edit.local.repo' | translate}}</h3>
 </div>
 <form id="addFedXRepositoryForm" novalidate name="form">
     <div class="modal-body" ng-if="mode === 'remote'">
         <label> <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="graphdb-server" value="RemoteRepository">
-            GraphDB/RDF4J server</label>
+            {{'gdb.rdf4j.server' | translate}}</label>
         <label class="padding-label"> <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="sparql-endpoint" value="SPARQLEndpoint">
-            Generic SPARQL endpoint</label>
+            {{'generic.sparql.endpoint' | translate}}</label>
         <div ng-if="model.store === 'RemoteRepository'">
             <div class="form-group row">
-                <label for="server-url" class="col-lg-3 col-form-label">Server URL*:</label>
+                <label for="server-url" class="col-lg-3 col-form-label">{{'server.url' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.repositoryServer" ng-model="model.repositoryServer" type="text" id="server-url" class="form-control" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="repository-id" class="col-lg-3 col-form-label">Repository ID*:</label>
+                <label for="repository-id" class="col-lg-3 col-form-label">{{'repo.id' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.repositoryName" ng-model="model.repositoryName" type="text" id="repository-id" class="form-control" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
                 </div>
@@ -32,27 +32,27 @@
         </div>
         <div ng-if="model.store === 'SPARQLEndpoint'">
             <div class="form-group row">
-                <label for="url-endpoint" class="col-lg-3 col-form-label">Endpoint URL*:</label>
+                <label for="url-endpoint" class="col-lg-3 col-form-label">{{'endpoint.url' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.sparqlEndpoint" ng-model="model.sparqlEndpoint" type="text" id="url-endpoint" class="form-control" ng-disabled="model.editMode" ng-required='!model.repositoryServer' ng-required='!model.repositoryName'>
                 </div>
             </div>
             <div class="form-group row indented-div">
                 <label for="ask-queries" class="col-lg-7 offset-xs-2">
-                    <input name = "model.supportsASKQueries" ng-model = "model.supportsASKQueries" type="checkbox" id="ask-queries" ng-true-value="'true'" ng-false-value="'false'">  Supports ASK queries
+                    <input name = "model.supportsASKQueries" ng-model = "model.supportsASKQueries" type="checkbox" id="ask-queries" ng-true-value="'true'" ng-false-value="'false'">  {{'supports.ask.queries' | translate}}
                 </label>
             </div>
         </div>
         <div id="auth-credentials">
-            <p> <strong>Authentication credentials</strong> </p>
+            <p> <strong>{{'authentication.credentials' | translate}}</strong> </p>
             <div id="username" class="form-group row">
-                <label for="username-credentials" class=" col-lg-3 col-form-label">Username:</label>
+                <label for="username-credentials" class=" col-lg-3 col-form-label">{{'username' | translate}}</label>
                 <div class="col-lg-8">
                     <input type="text" id="username-credentials" class="form-control" placeholder="my-user" ng-model="model.username">
                 </div>
             </div>
             <div id="password" class="form-group row">
-                <label for="password-credentials" class="col-lg-3 col-form-label">Password:</label>
+                <label for="password-credentials" class="col-lg-3 col-form-label">{{'pass' | translate}}</label>
                 <div class="col-lg-8">
                     <input type="password" id="password-credentials" class="form-control" placeholder="my-password" ng-model="model.password">
                 </div>
@@ -62,24 +62,22 @@
     <div class="modal-body" ng-if="mode === 'local'">
         <div id="respect">
             <input type="radio" name="model.respectRights" ng-model="model.respectRights" id="respect_access" value="true">
-            <label for="respect_access" style="font-size: 1.3em; display:inline">Respect repository's access rights</label>
-            <p class="indented-div">Users without rights to this repository will see a federated view
-                that does not include results from the repository</p>
+            <label for="respect_access" style="font-size: 1.3em; display:inline">{{'respect.repo.access.rights' | translate}}</label>
+            <p class="indented-div">{{'no.access.to.repo.users.warning' | translate}}</p>
         </div>
         <div id="ignore">
             <input type="radio" name="model.respectRights" ng-model="model.respectRights" id="ignore_access" value="false">
-            <label for="ignore_access" style="font-size: 1.3em; display:inline">Ignore repository's access rights</label>
-            <p class="indented-div">Users will see a federated view that includes results from
-                the repository regardless of their rights to access the repository</p>
+            <label for="ignore_access" style="font-size: 1.3em; display:inline">{{'ignore.repo.access.rights' | translate}}</label>
+            <p class="indented-div">{{'regardless.repo.rights.federated.view.warning' | translate}}</p>
         </div>
     </div>
     <div class="modal-footer">
         <button type="submit" ng-click="ok();" class="btn btn-primary"
-                ng-disabled="form.$invalid" ng-if="!model.editMode"> Add
+                ng-disabled="form.$invalid" ng-if="!model.editMode"> {{'common.add' | translate}}
         </button>
         <button type="submit" ng-click="ok();" class="btn btn-primary"
-                ng-disabled="form.$invalid" ng-if="model.editMode"> Edit
+                ng-disabled="form.$invalid" ng-if="model.editMode"> {{'edit' | translate}}
         </button>
-        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
     </div>
 </form>

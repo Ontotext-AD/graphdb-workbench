@@ -19,9 +19,9 @@ function SimpleModalCtrl($scope, $modalInstance, title, message) {
     };
 }
 
-CopyToClipboardModalCtrl.$inject = ['$scope', '$modalInstance', 'uri', 'toastr'];
+CopyToClipboardModalCtrl.$inject = ['$scope', '$modalInstance', 'uri', 'toastr', '$translate'];
 
-function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
+function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr, $translate) {
     $scope.clipboardURI = uri;
 
     $scope.ok = function () {
@@ -29,9 +29,9 @@ function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
             const copyText = document.getElementById('clipboardURI');
             copyText.select();
             document.execCommand('copy');
-            toastr.success('URL copied successfully to clipboard.');
+            toastr.success($translate.instant('modal.ctr.copy.url.success'));
         } catch (e) {
-            toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy URL manually.');
+            toastr.error($translate.instant('modal.ctr.copy.not.supported.warning'));
         }
         $modalInstance.close();
     };
@@ -41,9 +41,9 @@ function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
     };
 }
 
-ViewQueryCtrl.$inject = ['$scope', '$modalInstance', 'query', 'toastr'];
+ViewQueryCtrl.$inject = ['$scope', '$modalInstance', 'query', 'toastr', '$translate'];
 
-function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
+function ViewQueryCtrl($scope, $modalInstance, query, toastr, $translate) {
     $scope.query = query;
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
@@ -58,9 +58,9 @@ function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
             $scope.selectQuery();
             document.execCommand('copy');
             $modalInstance.close();
-            toastr.success('Query copied successfully to clipboard.');
+            toastr.success($translate.instant('modal.ctr.copy.query.success'));
         } catch (e) {
-            toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy query to clipboard manually.');
+            toastr.error($translate.instant('modal.ctr.copy.not.supported.warning'));
         }
     };
 

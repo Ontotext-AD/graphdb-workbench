@@ -6,47 +6,47 @@
 		</span>
     </div>
 	<div class="row">
-		<label style="margin-right: 10px">Type:</label>
+		<label style="margin-right: 10px">{{'type.label' | translate}}</label>
 		<span class="text-right pull-right">
 			{{toHumanReadableType(popoverRepo.type)}}
 		</span>
 	</div>
 	<div class="row mb-1">
-		<label style="margin-right: 10px">Access:</label>
+		<label style="margin-right: 10px">{{'access.label' | translate}}</label>
 		<span class="text-right pull-right">
-			{{(popoverRepo.writable && canWriteRepoInLocation(popoverRepo) && popoverRepo.type !== 'ontop') ? 'Read/write' : 'Read-only'}}
+			{{(popoverRepo.writable && canWriteRepoInLocation(popoverRepo) && popoverRepo.type !== 'ontop') ? 'read.write.label' : 'read.only.label' | translate}}
 		</span>
 	</div>
 	<div ng-show="repositorySize.total >= 0">
 		<div class="row" ng-show="repositorySize.total >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">Total statements:</label>
+				<label style="margin-right: 10px">{{'total.statements.label' | translate}}</label>
 			<span class="text-right pull-right">
 				{{repositorySize.total | currency:'':0}}
 			</span>
 		</div>
 		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">Explicit:</label>
+				<label style="margin-right: 10px">{{'explicit.label' | translate}}</label>
 			<span class="text-right pull-right">
 				{{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
 			</span>
 		</div>
 		<div class="row" ng-show="repositorySize.inferred >= 0" style="margin-top: 0">
-			<label style="margin-right: 10px">Inferred:</label>
+			<label style="margin-right: 10px">{{'inferred.label' | translate}}</label>
 			<span class="text-right pull-right">
 				{{repositorySize.inferred | currency:'':0}}
 			</span>
 		</div>
 		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">Expansion ratio (total/explicit):</label>
+				<label style="margin-right: 10px">{{'expansion.ratio.label' | translate}}</label>
 			<span class="text-right pull-right">
 				{{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
 			</span>
 		</div>
 	</div>
 	<div class="row" ng-hide="repositorySize.loading || repositorySize.total >= 0">
-		Size info not available.
+		{{'size.info.not.available' | translate}}
 	</div>
 	<div class="row" class="row" ng-show="repositorySize.loading">
-		Loading...
+		{{'common.loading' | translate}}
 	</div>
 </div>

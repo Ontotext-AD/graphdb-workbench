@@ -20,9 +20,9 @@ angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
     .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService", "$translate"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService) {
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService, $translate) {
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -63,7 +63,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 setSelectedGraphFromCache();
             }).error(function (data) {
             $scope.repositoryError = getError(data);
-            toastr.error(getError(data), 'Error getting graphs');
+            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
         });
     };
 
@@ -153,13 +153,11 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
         const showBrowserCompatibleClassLimitWarning = function (classLimit) {
             if (bowser.chrome) {
-                toastr.warning("Disabling animations for more than " + classLimit + " classes.",
-                    "Reducing visual effects");
+                toastr.warning($translate.instant('graphexplore.disabling.animations', {classLimit: classLimit}),
+                    $translate.instant('graphexplore.reducing.visual.effects'));
             } else {
-                toastr.warning(bowser.name + " performs poorly with more than " +
-                    classLimit + " classes. " +
-                    "Please consider using Chrome for more optimal performance.",
-                    "Reducing visual effects");
+                toastr.warning($translate.instant('graphexplore.browser.performance', {browser: bowser.name, classLimit: classLimit}),
+                    $translate.instant('graphexplore.reducing.visual.effects'));
             }
         };
 
@@ -195,13 +193,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             $scope.classCountSlider.value = currentSliderValue;
         } else if (classCount >= CLASS_COUNT_THRESHOLD) {
             $scope.classCountSlider.value = CLASS_COUNT_THRESHOLD;
-            toastr.warning("Class count is reduced to " + CLASS_COUNT_THRESHOLD + " for faster initial load. Use the slider to see all classes.", "Reducing class count");
+            toastr.warning($translate.instant('graphexplore.class.count.slider', {count: CLASS_COUNT_THRESHOLD}), $translate.instant('graphexplore.reducing.class.count'));
         }
 
         if (classCount >= CLASS_COUNT_THRESHOLD_IE && (!(window.ActiveXObject) && "ActiveXObject" in window) && !$scope.isWarningShowed) {
             $scope.classCountSlider.value = CLASS_COUNT_THRESHOLD_IE;
             $scope.isWarningShowed = true;
-            toastr.warning("Class count is reduced to " + CLASS_COUNT_THRESHOLD_IE + " for faster load in IE. If you want better performance please switch to different browser.", "Reducing class count");
+            toastr.warning($translate.instant('graphexplore.class.count.browser', {count: CLASS_COUNT_THRESHOLD_IE}), $translate.instant('graphexplore.reducing.class.count'));
         }
 
         $timeout(function () {
@@ -256,7 +254,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
                 if (status === 204) {
-                    toastr.warning("No domain-range data available for '" + name + "'");
+                    toastr.warning($translate.instant('graphexplore.no.domain.range', {name: name}));
                 } else {
                     LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_LAST_SELECTED_CLASS, $location.hash());
                     $location
@@ -266,7 +264,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                         .search("name", name);
                 }
             }).error(function () {
-                toastr.error("Request for " + name + " failed!");
+                toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
             });
     }
 
@@ -331,7 +329,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 $scope.instancesNotFiltered = $scope.instancesObj.items;
             })
             .error(function () {
-                toastr.error("Request for class instances for  failed!");
+                toastr.error($translate.instant('graphexplore.error.instances.request'));
             });
 
     }
@@ -412,14 +410,14 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             .error(function (response) {
                 $scope.loader = false;
                 $scope.hierarchyError = getError(response);
-                toastr.error(getError(response), "Request for RDF Class Hierarchy failed!");
+                toastr.error(getError(response), $translate.instant('graphexplore.error.rdf.class.request'));
             });
     }
 
     function confirmReloadClassHierarchy() {
         ModalService.openSimpleModal({
-            title: 'Confirm operation',
-            message: 'Calculating class hierarchy data may take some time. Are you sure?',
+            title: $translate.instant('confirm.operation'),
+            message: $translate.instant('graphexplore.calculating.hierarchy'),
             warning: true
         }).result
             .then(function () {
@@ -459,13 +457,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                     $scope.loader = false;
                     $scope.classHierarchyData = response;
                     if (status === 207) {
-                        toastr.warning("You can update the diagram by pressing the reload button.", "Repository data has changed");
+                        toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
                     }
                     fixToolbar();
                 }).error(function (response) {
                 $scope.loader = false;
                 $scope.hierarchyError = getError(response);
-                toastr.error(getError(response), "Request for RDF Class Hierarchy failed!");
+                toastr.error(getError(response), $translate.instant('graphexplore.error.rdf.class.request'));
             });
         }
     }

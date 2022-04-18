@@ -2,11 +2,11 @@ angular
     .module('graphdb.framework.rest.jdbc.service', [])
     .factory('JdbcRestService', JdbcRestService);
 
-JdbcRestService.$inject = ['$http', '$repositories'];
+JdbcRestService.$inject = ['$http', '$repositories', '$translate'];
 
 const JDBC_ENDPOINT = 'rest/sql-views';
 
-function JdbcRestService($http) {
+function JdbcRestService($http, $translate) {
 
     return {
         getJdbcConfigurations,
@@ -67,7 +67,7 @@ function JdbcRestService($http) {
 
     function getColumnsTypeSuggestion(query, columns) {
         if (!Array.isArray(columns)) {
-            throw 'Column names must be placed in array.'
+            throw new Error($translate.instant('jdbc.column.names.constraint'));
         }
 
         return $http({

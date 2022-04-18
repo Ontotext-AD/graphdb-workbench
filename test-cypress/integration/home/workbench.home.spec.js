@@ -11,7 +11,10 @@ describe('Home screen validation', () => {
         'foaf:name "Green Goblin" .\n';
     const GOBLIN_URI = 'http://example.org/#green-goblin';
 
-    beforeEach(() => cy.viewport(1280, 1000));
+    beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
+        cy.viewport(1280, 1000);
+    });
 
     context('RDF resource search', () => {
         it('Search button should not be present when no repo is selected', () => {
@@ -278,6 +281,19 @@ describe('Home screen validation', () => {
             HomeSteps.noAutocompleteToast();
 
             cy.deleteRepository(repositoryId);
+        });
+    });
+
+    context('Set preferred language', () => {
+        beforeEach(() => HomeSteps.visitAndWaitLoader());
+        it('language button should be visible and actionable', () => {
+            cy.get('#languageGroupDrop')
+                .should('be.visible')
+                .click()
+                .then(() => {
+                    cy.get('.dropdown-menu .dropdown-item')
+                        .should('have.length.at.least', 1);
+                });
         });
     });
 

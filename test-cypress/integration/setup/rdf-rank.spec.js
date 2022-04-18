@@ -21,6 +21,7 @@ describe('Setup / RDF Rank', () => {
     }
 
     beforeEach(() => {
+        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         createRepository();
         cy.visit('/rdfrank');
         cy.window();

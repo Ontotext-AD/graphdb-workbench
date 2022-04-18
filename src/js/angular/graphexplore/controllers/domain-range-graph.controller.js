@@ -9,9 +9,9 @@ angular
     ])
     .controller('DomainRangeGraphCtlr', DomainRangeGraphCtlr);
 
-DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'LocalStorageAdapter', 'LSKeys', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'toastr'];
+DomainRangeGraphCtlr.$inject = ['$scope', '$location', '$rootScope', '$timeout', '$repositories', '$window', 'LocalStorageAdapter', 'LSKeys', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'toastr', '$translate'];
 
-function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, LocalStorageAdapter, LSKeys, GraphDataRestService, UiScrollService, ModalService, toastr) {
+function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $repositories, $window, LocalStorageAdapter, LSKeys, GraphDataRestService, UiScrollService, ModalService, toastr, $translate) {
     $scope.predicatesObj = {};
     $scope.predicatesQueryObj = {};
     $scope.predicatesObj.items = [];
@@ -116,7 +116,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
                     $scope.rdfsComment = response.comment;
                 })
                 .error(function () {
-                    toastr.error('Error getting rdfs:label and rdfs:comment');
+                    toastr.error($translate.instant('domain.range.error.get.label.comment'));
                 });
         } else {
             $scope.rdfsComment = undefined;

@@ -10,7 +10,7 @@
     <div core-errors ontop fedx license></div>
     <inactive-plugin-directive
         plugin-name="{{pluginName}}"
-        human-readable-plugin-name="SPARQL Template Plugin"
+        human-readable-plugin-name="{{'sparql.template.plugin' | translate}}"
         load-saved="getSparqlTemplates()"
         set-plugin-active="setPluginIsActive(isPluginActive)"
         ng-if="isLicenseValid()">
@@ -19,15 +19,15 @@
         <div class="card-block" ng-init="getSparqlTemplates();">
             <div class="clearfix">
                 <a ng-href="sparql-template/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
-                    <span class="icon-plus create-sql-table-configuration"></span> Create new SPARQL template
+                    <span class="icon-plus create-sql-table-configuration"></span> {{'create.new.sparql.template' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
-                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> Existing templates</span>
+                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> {{'existing.sparql.templates' | translate}}</span>
                 </h3>
             </div>
 
             <div class="collapse in mt-1" id="configurations-table">
-                <div class="no-indexes" ng-if="sparqlTemplateIds.length == 0"><em>No templates are defined</em></div>
+                <div class="no-indexes" ng-if="sparqlTemplateIds.length == 0"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
                 <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
                     <tbody>
                     <tr ng-repeat="templateID in sparqlTemplateIds track by $index"
@@ -40,12 +40,12 @@
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="sparql-template/create?templateID={{templateID}}"
-                                       tooltip="Edit SPARQL template">
+                                       tooltip="{{'edit.sparql.template.tooltip' | translate}}">
                                         <em class="icon-edit"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(templateID)"
-                                    class="btn btn-link delete-configuration-btn" tooltip="Delete SPARQL template"><span
+                                    class="btn btn-link delete-configuration-btn" tooltip="{{'delete.sparql.template.tooltip' | translate}}"><span
                                 class="icon-trash"></span>
                             </button>
                         </td>

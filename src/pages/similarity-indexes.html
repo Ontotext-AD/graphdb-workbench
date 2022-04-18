@@ -13,7 +13,7 @@
 	<div core-errors ontop fedx license></div>
 	<div system-repo-warning></div>
 	<div class="alert alert-danger" ng-show="repositoryError">
-		<p>The currently selected repository cannot be used for queries due to an error:</p>
+		<p>{{'not.usable.active.repo.error' | translate}}</p>
 		<p>{{repositoryError}}</p>
 	</div>
 
@@ -29,12 +29,12 @@
 		<div class="card-block" ng-init="getSimilarityIndexes();">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
-					<span class="icon-plus create-similarity-index"></span> Create similarity index
+					<span class="icon-plus create-similarity-index"></span> {{'view.create.similarity.index.title' | translate}}
 				</a>
-				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> Existing Indexes</span></h3>
-				<div class="mt-1" ng-if="selected === undefined">Select one of your existing indexes to search in it</div>
+				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
+				<div class="mt-1" ng-if="selected === undefined">{{'select.existing.similarity.index' | translate}}</div>
 			</div>
-			<div class="no-indexes" ng-if="similarityIndexes.length == 0"><em>No Indexes</em></div>
+			<div class="no-indexes" ng-if="similarityIndexes.length == 0"><em>{{'no.indexes' | translate}}</em></div>
 
 			<div class="collapse in mt-1" id="indexes-table">
 				<table class="table table-hover mb-0" aria-describedby="Similarity index table">
@@ -46,45 +46,45 @@
                             <a class="lead index-name" ng-href="{{(index.status == 'BUILT' || index.status == 'REBUILDING' || index.status == 'OUTDATED') ? '#' : ''}}" ng-click="goToSimilarityIndex(index)">{{index.name}}</a>
 						</td>
 						<td>
-							<span class="tag tag-default" ng-show="index.type == 'text'" tooltip="Index type">Text</span>
-							<span class="tag tag-default" ng-show="index.type == 'predication'" tooltip="Index type">Predication</span>
-							<span class="tag tag-default" ng-show="index.type == 'textLiteral'" tooltip="Index type">Literal</span>
+							<span class="tag tag-default" ng-show="index.type == 'text'" tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="index.type == 'predication'" tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="index.type == 'textLiteral'" tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
 						</td>
 
 						<td class="text-xs-right">
-							<span class="text-muted mr-2" ng-show="index.status == 'OUTDATED'" tooltip="Data changes since last index build.">Outdated</span>
-							<span class="text-muted mr-2" ng-show="index.status == 'FAILED'" tooltip="Index build failed.">Failed</span>
-							<span class="text-muted mr-2" ng-show="index.status == 'INTERRUPTED'" tooltip="Index build interrupted.">Interrupted</span>
-							<span class="text-muted mr-2" ng-show="index.status == 'OBSOLETE'" tooltip="Index cannot be recovered. Please, rebuild.">Obsolete</span>
+							<span class="text-muted mr-2" ng-show="index.status == 'OUTDATED'" tooltip="{{'data.changed.tooltip' | translate}}">{{'outdated.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-show="index.status == 'FAILED'" tooltip="{{'index.building.failed.tooltip' | translate}}">{{'failed.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-show="index.status == 'INTERRUPTED'" tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-show="index.status == 'OBSOLETE'" tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
 							<span class="btn btn-link similarity-index-building-loader" ng-show="index.status === 'BUILDING' || index.status === 'REBUILDING' || index.status === 'CREATING'">
           				        <em class="icon-reload loader"></em>
       				        </span>
 
 							<span class="btn btn-link view-sparql-query-btn" ng-click="viewCreateQuery(index)"
                                   ng-if="index.selectQuery && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')"
-                                  tooltip="View SPARQL Query">
+                                  tooltip="{{'view.sparql.query.title' | translate}}">
 									<em class="icon-sparql"></em>
 							</span>
                             <span class="actions-bar hovered-item">
 								<a class="btn btn-link edit-query-btn"
                                    ng-if="canWriteActiveRepo() && index.status != 'BUILDING' && index.status != 'REBUILDING' && index.status != 'CREATING'" href="similarity/index/create?selectQuery={{encodeURIComponent(index.selectQuery)}}&options={{index.options}}&editSearchQuery&name={{index.name}}&infer={{index.infer}}&sameAs={{index.sameAs}}&stopList={{index.stopList}}&type={{index.type}}&analyzer={{index.analyzer}}&searchQuery={{index.searchQuery ? encodeURIComponent(index.searchQuery) : ''}}&analogicalQuery={{index.analogicalQuery ? encodeURIComponent(index.analogicalQuery) : ''}}"
-                                        tooltip="{{index.type == 'predication' ? 'Edit Search, Analogical queries'
-																			   : 'Edit Search query'}}">
+                                        tooltip="{{index.type == 'predication' ? 'edit.search.analogical.query.title'
+																			   : 'edit.search.query.title' | translate}}">
 									<em class="icon-edit"></em>
 								</a>
 							</span>
 
 							<a class="btn btn-link clone-index-btn" ng-if="index.selectQuery && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')"
                                href="similarity/index/create?selectQuery={{encodeURIComponent(index.selectQuery)}}&options={{index.options}}&name={{index.name}}&infer={{index.infer}}&sameAs={{index.sameAs}}&stopList={{index.stopList}}&type={{index.type}}&analyzer={{index.analyzer}}&searchQuery={{index.searchQuery ? encodeURIComponent(index.searchQuery) : ''}}&analogicalQuery={{index.analogicalQuery ? encodeURIComponent(index.analogicalQuery) : ''}}"
-							   tooltip="Create index from existing one.">
+							   tooltip="{{'create.index.from.existing.tooltip' | translate}}">
 									<em class="icon-copy"></em>
 							</a>
 
 							<button type="button" ng-if="canWriteActiveRepo() && index.status != 'BUILDING' && index.status != 'REBUILDING' && index.status != 'CREATING' && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')" ng-disabled="!index.selectQuery"
-									ng-click="rebuildIndex(index)" class="btn btn-link reload-index-btn" tooltip="Rebuild index"><span
+									ng-click="rebuildIndex(index)" class="btn btn-link reload-index-btn" tooltip="{{'rebuild.index.tooltip' | translate}}"><span
 									class="icon-reload similarity-index-icon-reload"></span></button>
 							<button type="button" ng-if="canWriteActiveRepo() && index.status != 'BUILDING' && index.status != 'REBUILDING' && index.status != 'CREATING'" ng-click="deleteIndex(index)"
-									class="btn btn-link delete-index-btn" tooltip="Delete index"><span class="icon-trash"></span>
+									class="btn btn-link delete-index-btn" tooltip="{{'delete.index.tooltip' | translate}}"><span class="icon-trash"></span>
 							</button>
 						</td>
 
@@ -98,20 +98,20 @@
 
 	<div class="card mb-2 index-search-panel" ng-hide="selected === undefined || selected.type == 'textLiteral'">
 		<div class="card-block">
-			<h3 class="selected-index">Search in <strong>{{selected.name}}</strong></h3>
+			<h3 class="selected-index">{{'search.in.index' | translate}} <strong>{{selected.name}}</strong></h3>
 
 			<div ng-show="selected.type == 'text'">
 				<div class="d-inline-block">
-					<strong>Search type: </strong>
+					<strong>{{'similarity.search.type' | translate}} </strong>
 					<div class="btn-group">
 						<div class="dropdown">
 						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						    <span ng-if="searchType == 'searchTerm'">Term</span>
-						    <span ng-if="searchType == 'searchDocumentID'">Document</span>
+						    <span ng-if="searchType == 'searchTerm'">{{'term' | translate}}</span>
+						    <span ng-if="searchType == 'searchDocumentID'">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="searchType = 'searchTerm'">Term</a>
-						    <a class="dropdown-item" ng-click="searchType = 'searchDocumentID'">Document</a>
+						    <a class="dropdown-item" ng-click="searchType = 'searchTerm'">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="searchType = 'searchDocumentID'">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
@@ -128,16 +128,16 @@
 
 				</div>
 				<div class="d-inline-block">
-					<strong>Result type: </strong>
+					<strong>{{'similarity.result.type' | translate}} </strong>
 					<div class="btn-group">
 						<div class="dropdown">
 						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span ng-if="resultType == 'termResult'">Term</span>
-								<span ng-if="resultType == 'documentResult'">Document</span>
+								<span ng-if="resultType == 'termResult'">{{'term' | translate}}</span>
+								<span ng-if="resultType == 'documentResult'">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="resultType = 'termResult'">Term</a>
-						    <a class="dropdown-item" ng-click="resultType = 'documentResult'">Document</a>
+						    <a class="dropdown-item" ng-click="resultType = 'termResult'">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="resultType = 'documentResult'">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
@@ -153,19 +153,19 @@
 			</div>
 
 			<div ng-show="selected.type == 'predication'">
-				<strong>Search type: </strong>
+				<strong>{{'similarity.search.type' | translate}} </strong>
 
 				<div class="btn-group">
 					<div class="dropdown">
 						<button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span ng-if="searchType == 'searchEntity'">Similar subject</span>
-							<span ng-if="searchType == 'searchEntityPredicate'">Object</span>
-							<span ng-if="searchType == 'searchAnalogical'">Analogical</span>
+							<span ng-if="searchType == 'searchEntity'">{{'similar.subject.label' | translate}}</span>
+							<span ng-if="searchType == 'searchEntityPredicate'">{{'object.label' | translate}}</span>
+							<span ng-if="searchType == 'searchAnalogical'">{{'analogical.label' | translate}}</span>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" ng-click="searchType = 'searchEntity'">Similar subject</a>
-							<a class="dropdown-item" ng-click="searchType = 'searchEntityPredicate'">Object</a>
-							<a class="dropdown-item" ng-click="searchType = 'searchAnalogical'">Analogical</a>
+							<a class="dropdown-item" ng-click="searchType = 'searchEntity'">{{'similar.subject.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="searchType = 'searchEntityPredicate'">{{'object.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="searchType = 'searchAnalogical'">{{'analogical.label' | translate}}</a>
 						</div>
 					</div>
 				</div>
@@ -184,7 +184,7 @@
 					ng-show="searchType != 'searchEntityPredicate' && searchType != 'searchAnalogical'"
 					namespacespromise="getNamespacesPromise"
 					autocompletepromisestatus="getAutocompletePromise"
-					placeholder="Search RDF resources for RDF entity"
+					placeholder="{{'search.rdf.resources.for.rdf.entity.placeholder' | translate}}"
 					text-button=""
 					visual-button="Show"
 					visual-callback="performSearch(selected.name, uri, searchType, resultType, (!searchParameters) ? '' : searchParameters)"
@@ -198,7 +198,7 @@
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
 							autocompletepromisestatus="getAutocompletePromise"
-							placeholder="Search RDF for subject"
+							placeholder="{{'search.rdf.for.subject.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
 							visual-callback="psiSubject = uri"
@@ -213,7 +213,7 @@
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
 							autocompletepromisestatus="getAutocompletePromise"
-							placeholder="Search RDF for predicate"
+							placeholder="{{'search.rdf.for.predicate.placeholder' | translate}}"
 							text-button=""
 							visual-button="Show"
 							visual-callback="performSearch(selected.name, uri, searchType, resultType, (!searchParameters) ? '' : searchParameters)"
@@ -229,7 +229,7 @@
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
 							autocompletepromisestatus="getAutocompletePromise"
-							placeholder="Search RDF for given subject"
+							placeholder="{{'search.rdf.for.given.subject.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
 							visual-callback="analogicalSubject = uri"
@@ -243,7 +243,7 @@
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
 							autocompletepromisestatus="getAutocompletePromise"
-							placeholder="Search RDF for given object"
+							placeholder="{{'search.rdf.for.given.object.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
 							visual-callback="analogicalObject = uri"
@@ -259,7 +259,7 @@
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
 							autocompletepromisestatus="getAutocompletePromise"
-							placeholder="Search RDF for search subject"
+							placeholder="{{'search.rdf.for.search.subject.placeholder' | translate}}"
 							text-button=""
 							visual-button="Show"
 							visual-callback="performSearch(selected.name, uri, searchType, resultType, (!searchParameters) ? '' : searchParameters)"
@@ -270,20 +270,20 @@
 				</div>
 			</div>
 
-			<button ng-show="selected.type == 'text'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">search options <span class="icon-caret-up"></span></button>
+			<button ng-show="selected.type == 'text'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
-			<button ng-show="selected.type == 'predication'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">search options <span class="icon-caret-up"></span></button>
+			<button ng-show="selected.type == 'predication'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
 			<div id="search-type" class="mt-1 collapse" ng-show="selected.type == 'text'">
-				<label for="indexParameters" class="col-form-label"><strong>Semantic Vectors search parameters:</strong></label>
-				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim (optional)" ng-model="searchParameters" >
-				<div class="small text-muted" style="margin-top: 0.5rem">See the full <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#search-parameters">list of supported parameters</a></div>
+				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>
+				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim ({{'optional.label' | translate}})" ng-model="searchParameters" >
+				<div class="small text-muted" style="margin-top: 0.5rem">{{'see.the.full' | translate}} <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#search-parameters">{{'supported.parameters.list' | translate}}</a></div>
 			</div>
 
 			<div id="search-type-predication" class="mt-1 collapse" ng-show="selected.type == 'predication'">
-				<label for="indexParameters" class="col-form-label"><strong>Semantic Vectors search parameters:</strong></label>
-				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim (optional)" ng-model="searchParameters" >
-				<div class="small text-muted" style="margin-top: 0.5rem">See the full <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#search-parameters">list of supported parameters</a></div>
+				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>
+				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim ({{'optional.label' | translate}})" ng-model="searchParameters" >
+				<div class="small text-muted" style="margin-top: 0.5rem">{{'see.the.full' | translate}} <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/{{info.productType}}/semantic-similarity-searches.html#search-parameters">{{'supported.parameters.list' | translate}}</a></div>
 			</div>
 
 
@@ -292,7 +292,7 @@
 
 	<div class="card search-results" ng-show="lastSearch">
 		<div class="card-block">
-				<em ng-show="lastSearch.type != 'searchAnalogical'">Showing results for
+				<em ng-show="lastSearch.type != 'searchAnalogical'">{{'results.for.label' | translate}}
 					<a ng-show="lastSearch.type == 'searchDocumentID' || lastSearch.type == 'searchEntity' || lastSearch.type == 'searchEntityPredicate'"
 					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" rel="noopener" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
 
@@ -311,7 +311,7 @@
 
 				</em>
 
-			<button type="button" class="btn btn-link" ng-click="viewSearchQuery()">View SPARQL Query</button>
+			<button type="button" class="btn btn-link" ng-click="viewSearchQuery()">{{'view.sparql.query.title' | translate}}</button>
 
 
 			<div class="yasr-container" ng-show="lastSearch">

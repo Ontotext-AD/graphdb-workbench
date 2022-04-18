@@ -8,9 +8,9 @@ angular
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys'];
+GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys) {
+function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -69,7 +69,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                     }
                 });
             }).error(function (data) {
-                toastr.error(getError(data), 'Could not get graph configs. You may not see sample values');
+                toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs'));
             });
     };
 
@@ -95,7 +95,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 initForConfig();
             })
             .error(function (data) {
-                toastr.error(getError(data), 'Could not load config for name ' + configName);
+                toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
             });
     } else {
         $scope.isUpdate = false;
@@ -125,20 +125,20 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         $scope.createGraphConfig = function () {
             GraphConfigRestService.createGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await Notifications.showToastMessageWithDelay('Saved new graph config');
+                    await Notifications.showToastMessageWithDelay('graphexplore.saved.new.config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
-                toastr.error(getError(data), 'Error! Could not create graph config');
+                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.create'));
             });
         };
 
         $scope.updateGraphConfig = function () {
             GraphConfigRestService.updateGraphConfig($scope.newConfig)
                 .success(async function () {
-                    await Notifications.showToastMessageWithDelay('Graph config saved');
+                    await Notifications.showToastMessageWithDelay('graphexplore.saved.config');
                     $location.url('graphs-visualizations');
                 }).error(function (data) {
-                toastr.error(getError(data), 'Error! Could not save graph config');
+                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.save'));
             });
         };
 
@@ -171,9 +171,9 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
 
             if ($scope.page === 1) {
                 if ($scope.newConfig.startMode === 'node' && !$scope.newConfig.startIRI) {
-                    showInvalidMsg('Please select start node.');
+                    showInvalidMsg($translate.instant('graphexplore.select.start.node'));
                 } else if ($scope.newConfig.startMode === 'query' && !$scope.newConfig.startGraphQuery) {
-                    showInvalidMsg('Please provide start graph query.');
+                    showInvalidMsg($translate.instant('graphexplore.provide.query'));
                 } else if ($scope.newConfig.startMode === 'query') {
                     validateQueryWithCallback(successCallback, $scope.newConfig.startGraphQuery, 'graph')
                 } else {
@@ -242,7 +242,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
 
             $scope.validateCurrentPage(function () {
                 if (!$scope.newConfig.name) {
-                    showInvalidMsg('Please provide config name.');
+                    showInvalidMsg($translate.instant('graphexplore.provide.config.name'));
                     return;
                 }
                 $scope.isUpdate ? $scope.updateGraphConfig($scope.newConfig) : $scope.createGraphConfig($scope.newConfig);
@@ -420,7 +420,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         if ($scope.progressMessage) {
             message = $scope.progressMessage + '... ' + timeHuman;
         } else {
-            message = 'Running operation...' + timeHuman;
+            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
         }
         if ($scope.extraMessage && timeSeconds > 10) {
             message += '\n' + $scope.extraMessage;
@@ -520,12 +520,12 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
         if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
-            toastr.warning('Explain only works with SELECT or CONSTRUCT queries.');
+            toastr.warning($translate.instant('query.editor.warning.msg'));
             return;
         }
 
         if (window.editor.getQueryMode() === 'update') {
-            toastr.warning('Cannot execute updates from this editor.');
+            toastr.warning($translate.instant('cannot.execute.update.error'));
             return;
         }
 
@@ -543,14 +543,14 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 $scope.fixSizesOnHorizontalViewModeSwitch()
             }
 
-            setLoader(true, 'Evaluating query');
+            setLoader(true, $translate.instant('evaluating.query.msg'));
             window.editor.query();
         }
     }
 
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, 'Refreshing namespaces', 'Normally this is a fast operation but it may take longer if a bigger repository needs to be initialised first.');
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces()
             .success(function (data) {
                 const usedPrefixes = {};
@@ -594,7 +594,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
             })
             .error(function (data) {
                 let msg = getError(data);
-                toastr.error(msg, 'Error! Could not add known prefixes');
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
                 return true;
             });
     }
