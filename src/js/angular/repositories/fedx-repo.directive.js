@@ -309,6 +309,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
         };
 
         $scope.$on('changedLocation', function () {
+            $scope.fedxMembers = [];
             getKnownRepos();
         });
 
