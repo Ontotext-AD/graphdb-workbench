@@ -19,26 +19,36 @@
 </div>
 
 <div class="clearfix mb-2">
-    <button type="button" class="btn btn-primary create-cluster-btn" ng-disabled="clusterConfiguration"
+    <button type="button" class="btn btn-primary create-cluster-btn" ng-if="!hasClusterConfiguration"
             ng-click="createCluster()"
             tooltip="{{'cluster_management.buttons.create_cluster_tooltip' | translate}}" tooltip-placement="bottom">
         <span class="icon-plus"></span> {{'cluster_management.buttons.create_cluster' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary delete-cluster-btn"
+    <button type="button" class="btn btn-secondary delete-cluster-btn mr-2" ng-disabled="!clusterConfiguration"
             ng-click="showDeleteDialog()"
-            tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}" tooltip-placement="bottom"
-            ng-disabled="!clusterConfiguration">
+            tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}" tooltip-placement="bottom">
         <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
+    </button>
+
+    <button type="button" class="btn btn-primary add-node-btn" ng-if="isLeader"
+            ng-click="addNodeToCluster()"
+            tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+        <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary remove-node-btn" ng-if="isLeader"
+            ng-click="removeNodesFromCluster()"
+            tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+        <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
     </button>
 </div>
 
-<div class="ng-scope" ng-hide="clusterConfiguration">
+<div class="ng-scope" ng-hide="hasClusterConfiguration">
     <p class="alert alert-danger">
         {{'cluster_management.no_cluster_configured' | translate}}
     </p>
 </div>
 
-<div ng-if="clusterConfiguration" class="row">
+<div ng-if="hasClusterConfiguration" class="row">
     <div class="col-lg-6">
         <div class="card cluster-information-card">
             <div class="card-block">
