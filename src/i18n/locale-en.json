@@ -5,7 +5,11 @@
             "create_cluster_tooltip": "Create a new cluster ",
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
-            "show_cluster_settings_tooltip": "Show cluster settings"
+            "show_cluster_settings_tooltip": "Show cluster settings",
+            "add_nodes_btn": "Add nodes",
+            "add_nodes_btn_tooltip": "Add nodes to existing cluster",
+            "remove_nodes_btn": "Remove nodes",
+            "remove_nodes_btn_tooltip": "Remove nodes from existing cluster"
         },
         "no_cluster_configured": "No cluster is configured",
         "cluster_configuration": {
@@ -46,6 +50,8 @@
             "create_page_title": "Create cluster",
             "edit_page_title": "Edit cluster",
             "creating_cluster_loader": "Creating cluster...",
+            "add_nodes_loader": "Adding nodes to cluster...",
+            "remove_nodes_loader": "Removing nodes from cluster...",
             "create_form_legend": "Cluster properties",
             "cluster_nodes_list": "Cluster nodes list",
             "remote_locations": "Remote locations",
@@ -81,7 +87,11 @@
                 "create_failed": "Cluster creation failed",
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
-                "form_invalid": "The form data is invalid"
+                "form_invalid": "The form data is invalid",
+                "add_nodes_success": "Nodes added successfully",
+                "add_nodes_fail": "Adding nodes failed",
+                "remove_nodes_success": "Nodes removed successfully",
+                "remove_nodes_fail": "Removing nodes failed"
             }
         },
         "delete_cluster_dialog": {
@@ -94,6 +104,21 @@
                 "success_delete": "Cluster deleted successfully",
                 "success_delete_partial": "Not all nodes are deleted",
                 "fail_delete": "Can not delete cluster"
+            }
+        },
+        "add_nodes_dialog": {
+            "title": "Add nodes to cluster",
+            "errors": {
+                "at_least_one_node": "Must add at least one node",
+                "node_in_cluster": "Node is already in the existing cluster"
+            }
+        },
+        "remove_nodes_dialog": {
+            "title": "Remove nodes from cluster",
+            "content": "Select nodes to be removed from existing cluster",
+            "errors": {
+                "at_least_one_node": "Must add at least one node",
+                "node_in_cluster": "Node is already in the existing cluster"
             }
         },
         "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",

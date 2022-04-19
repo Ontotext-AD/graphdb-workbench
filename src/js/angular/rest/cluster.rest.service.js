@@ -41,11 +41,11 @@ function ClusterRestService($http) {
     }
 
     function addNodesToCluster(nodesArray) {
-        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config/node`, nodesArray);
+        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config/node`, {nodes: nodesArray});
     }
 
     function removeNodesFromCluster(nodesArray) {
-        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config/node`, nodesArray);
+        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config/node`, {data: {nodes: nodesArray}, headers: {'Content-Type': 'application/json'}});
     }
 
     function getClusterStatus() {
