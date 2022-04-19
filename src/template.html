@@ -68,7 +68,7 @@
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
                     popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository.id)">
+                    <a class="dropdown-item" ng-click="setRepository(repository)">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>
 						    {{repository.id}} <br/>

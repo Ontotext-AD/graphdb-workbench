@@ -317,10 +317,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}`;
+        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}?location=${repository.location}`;
         const token = $jwtAuth.getAuthToken();
         if (token) {
-            url = `${url}?authToken=${encodeURIComponent(token)}`;
+            url = `${url}&authToken=${encodeURIComponent(token)}`;
         }
         return url;
     };

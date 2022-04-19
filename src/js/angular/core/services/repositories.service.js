@@ -27,8 +27,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.locationError = '';
         this.loading = true;
         this.repository = {
-            id: localStorage.getItem(this.repositoryStorageName),
-            location: localStorage.getItem(this.repositoryStorageLocationName)
+            id: localStorage.getItem(this.repositoryStorageName) || '',
+            location: localStorage.getItem(this.repositoryStorageLocationName) || ''
         };
         this.locations = [this.location];
         this.repositories = new Map();
@@ -70,7 +70,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
                 }
             } else {
-                this.setRepository(this.location.defaultRepository ? this.location.defaultRepository : '');
+                this.setRepository(this.location.defaultRepository ? {id: this.location.defaultRepository, location: this.location.uri} : '');
             }
         };
 
@@ -322,7 +322,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 localStorage.removeItem(that.repositoryStorageName);
                 localStorage.removeItem(that.repositoryStorageLocationName);
             }
-            that.setRepositoryHeaders(repo);
+            that.setRepositoryHeaders();
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
@@ -358,9 +358,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.deleteLocation = function (uri) {
             LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
+                    let activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
-                    if (that.getActiveLocation().uri === uri) {
-                        that.location = '';
+                    if (activeRepo && activeRepo.location === uri) {
                         that.setRepository('');
                     }
                     that.init();
