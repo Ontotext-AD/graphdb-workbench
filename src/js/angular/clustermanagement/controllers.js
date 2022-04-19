@@ -93,8 +93,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(!!forceDelete)
                 .success((data) => {
-                    const partialDelete = Object.values(data).every((node) => node === 'DELETED');
-                    if (partialDelete) {
+                    const allNodesDeleted = Object.values(data).every((node) => node === 'DELETED');
+                    if (allNodesDeleted) {
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
                     } else {
