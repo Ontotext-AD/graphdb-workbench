@@ -27,6 +27,11 @@
             tooltip-placement="bottom">
         <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
     </button>
+    <button type="button" class="btn btn-secondary edit-cluster-btn" ng-if="clusterConfiguration && currentNode.nodeState === 'LEADER'"
+            ng-click="editCluster()"
+            tooltip="{{'cluster_management.buttons.edit_cluster_tooltip' | translate}}" tooltip-placement="bottom">
+        <span class="icon-edit"></span> {{'cluster_management.buttons.edit_cluster' | translate}}
+    </button>
     <button class="btn btn-link pull-right"
             ng-click="toggleSidePanel()"
             tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"

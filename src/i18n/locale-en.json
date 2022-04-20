@@ -3,6 +3,8 @@
         "buttons": {
             "create_cluster": "Create cluster",
             "create_cluster_tooltip": "Create a new cluster ",
+            "edit_cluster": "Edit cluster",
+            "edit_cluster_tooltip": "Edit cluster settings",
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
             "show_cluster_settings_tooltip": "Show cluster settings"
@@ -59,8 +61,11 @@
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
+            "back_btn": "Back",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
+                "no_cluster": "No cluster is created",
+                "not_leader": "Only the Leader can edit the cluster settings",
                 "at_least_two_nodes": "Must have at least two nodes",
                 "no_rpc_address": "Error retrieving RCP address: {{error}}",
                 "node_in_list": "Node is already in the list",

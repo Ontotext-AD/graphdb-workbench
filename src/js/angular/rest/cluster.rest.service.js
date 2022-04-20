@@ -27,9 +27,6 @@ function ClusterRestService($http) {
     }
 
     function updateCluster(groupConfiguration) {
-        if (groupConfiguration.nodes) {
-            delete groupConfiguration.nodes;
-        }
         return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/config`, groupConfiguration);
     }
 

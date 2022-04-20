@@ -216,6 +216,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.getCurrentNodeStatus = () => {
+        ClusterRestService.getNodeStatus()
+            .success((data) => {
+                $scope.currentNode = data;
+            });
+    };
+
+    $scope.getCurrentNodeStatus = () => {
         return ClusterRestService.getNodeStatus()
             .success((data) => {
                 $scope.currentNode = data;
@@ -233,6 +240,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 const localNode = response.find((location) => location.local);
                 localNode.uri = $scope.currentNode.endpoint;
                 localNode.rpcAddress = $scope.currentNode.address;
+    $scope.getCurrentNodeStatus();
 
                 $scope.clusterModel.locations = response.map((loc) => {
                     return {
@@ -340,6 +348,32 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
                 $modalInstance.close();
             })
             .error(function (data, status) {
+                toastr.error($translate.instant('cluster_management.cluster_page.notifications.create_failed'));
+                handleErrors(data, status);
+                $scope.setLoader(false);
+            });
+    };
+
+    $scope.updateCluster = function () {
+        if (!validateClusterSettings()) {
+            toastr.warning($translate.instant('cluster_management.cluster_page.notifications.form_invalid'));
+            return;
+        }
+
+        $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
+        ClusterRestService.updateCluster($scope.clusterConfiguration)
+            .success(function () {
+                toastr.success($translate.instant('cluster_management.cluster_page.notifications.update_success'));
+                const timer = $timeout(function () {
+                    $scope.setLoader(false);
+                    $scope.goToClusterManagementPage();
+                }, 2000);
+                $scope.$on('$destroy', function () {
+                    $timeout.cancel(timer);
+                });
+            })
+            .error(function (data, status) {
+                toastr.error($translate.instant('cluster_management.cluster_page.notifications.update_failed'));
                 handleErrors(data, status);
             })
             .finally(() => $scope.setLoader(false));
@@ -347,12 +381,15 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
 
     function handleErrors(data, status) {
         delete $scope.preconditionErrors;
-        toastr.error($translate.instant('cluster_management.cluster_page.notifications.create_failed'));
         $scope.errors.splice(0);
         if (status === 412) {
             $scope.preconditionErrors = Object.keys(data).map((key) => `${key} - ${data[key]}`);
         } else if (status === 400) {
-            $scope.errors.push(...data);
+            if (Array.isArray(data)) {
+                $scope.errors.push(...data);
+            } else {
+                $scope.errors.push(data);
+            }
         } else if (status === 409) {
             $scope.errors.push(data);
         }
@@ -384,7 +421,7 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
         $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint);
     };
 
-    $scope.removeNodeFromList = function (index, node) {
+    $scope.removeNodeFromList = function (index) {
         $scope.selectedLocations.splice(index, 1);
         $scope.locations.push(node);
     };
@@ -435,6 +472,43 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+
+    function getClusterConfiguration() {
+        return ClusterRestService.getClusterConfig()
+            .success((data) => {
+                $scope.clusterConfiguration = data;
+            })
+            .error(() => {
+                $scope.noClusterExists = true;
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+            });
+    }
+
+    function getNodeStatus() {
+        return ClusterRestService.getNodeStatus()
+            .success((data) => {
+                $scope.currentNode = data;
+            }).error(() => {
+                $scope.noClusterExists = true;
+                $scope.setLoader(false);
+            });
+    }
+
+    if ($scope.editCluster) {
+        getNodeStatus().then(() => getClusterConfiguration());
+    } else {
+        $scope.clusterConfiguration = {
+            electionMinTimeout: 1500,
+            electionRangeTimeout: 2000,
+            heartbeatInterval: 500,
+            messageSizeKB: 64,
+            nodes: [],
+            verificationTimeout: 1500
+        };
+        $scope.setLoader(false);
+    }
 }
 
 DeleteClusterCtrl.$inject = ['$scope', '$modalInstance'];
