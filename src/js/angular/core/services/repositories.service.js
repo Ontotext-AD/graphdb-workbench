@@ -361,6 +361,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     let activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
                     if (activeRepo && activeRepo.location === uri) {
+                        that.location = '';
                         that.setRepository('');
                     }
                     that.init();

@@ -189,6 +189,18 @@ describe('==> Repository module services tests', function () {
                 var uri = "C:\\temp\\ee\\test",
                     escapedUri = encodeURIComponent(uri);
 
+                $repositories.repository = {
+                    "id": "abcd",
+                    "title": "",
+                    "uri": "http://localhost:8080/graphdb-workbench/repositories/abcd",
+                    "type": "worker",
+                    "sesameType": "owlim:ReplicationClusterWorker",
+                    "location": "C:\\temp\\ee\\test",
+                    "readable": true,
+                    "writable": true,
+                    "local": true
+                };
+
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/locations/active');
                 $httpBackend.expectGET('rest/repositories/all');
@@ -203,7 +215,6 @@ describe('==> Repository module services tests', function () {
                 };
                 $repositories.deleteLocation(uri);
                 $httpBackend.flush();
-                console.log($repositories.location)
                 expect($repositories.location).toEqual('');
                 expect($repositories.getActiveLocation()).toEqual('');
 
