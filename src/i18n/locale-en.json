@@ -3,8 +3,8 @@
         "buttons": {
             "create_cluster": "Create cluster",
             "create_cluster_tooltip": "Create a new cluster ",
-            "edit_cluster": "Edit cluster",
-            "edit_cluster_tooltip": "Edit cluster settings"
+            "delete_cluster": "Delete cluster",
+            "delete_cluster_tooltip": "Delete existing cluster"
         },
         "no_cluster_configured": "No cluster is configured",
         "cluster_configuration": {
@@ -72,6 +72,18 @@
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
                 "form_invalid": "The form data is invalid"
+            }
+        },
+        "delete_cluster_dialog": {
+            "title": "Cluster delete confirmation",
+            "content": "Are you sure you want to delete the cluster?",
+            "force_delete_label": "Force cluster delete",
+            "force_delete_tooltip": "Checking this option will delete cluster on reachable nodes only",
+            "loader_message": "Deleting cluster",
+            "notifications": {
+                "success_delete": "Cluster deleted successfully",
+                "success_delete_partial": "Not all nodes are deleted",
+                "fail_delete": "Can not delete cluster"
             }
         },
         "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",
