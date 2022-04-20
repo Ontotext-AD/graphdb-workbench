@@ -30,12 +30,12 @@
         <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
     </button>
 
-    <button type="button" class="btn btn-primary add-node-btn" ng-if="isLeader"
+    <button type="button" class="btn btn-primary add-node-btn" ng-if="currentNode.nodeState === 'LEADER'"
             ng-click="addNodeToCluster()"
             tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
         <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary remove-node-btn" ng-if="isLeader"
+    <button type="button" class="btn btn-secondary remove-node-btn" ng-if="currentNode.nodeState === 'LEADER'"
             ng-click="removeNodesFromCluster()"
             tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
         <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
