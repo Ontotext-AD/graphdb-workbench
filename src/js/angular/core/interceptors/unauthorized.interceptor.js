@@ -7,7 +7,6 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
         return {
             'responseError': function (response) {
                 let redirect = false;
-                let expired = false;
 
                 if (response.status === 401) {
                     if (response.config.url.indexOf('rest/security/authenticatedUser') < 0 && !$rootScope.hasExternalAuthUser()) {
@@ -22,15 +21,10 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                     } else {
                         redirect = true;
                     }
-                } else if (response.status === 409) {
-                    // We get 409 only if a GDB token expired, OpenID needs to be handled differently
-                    // as it returns 401.
-                    redirect = true;
-                    expired = true;
                 }
 
                 if (redirect) {
-                    return Promise.resolve($rootScope.redirectToLogin(expired))
+                    return Promise.resolve($rootScope.redirectToLogin())
                         .then(() => {
                             return $q.reject(response);
                         });
