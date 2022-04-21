@@ -44,7 +44,7 @@
 
     <div class="pull-right">
 
-        <label for="inference-select" class="mr-1 mb-0">
+        <label for="inference-select" class="mb-0">
             <select ng-if="!loading && role !== 'context' && getActiveRepository() !== 'SYSTEM'" id="inference-select"
                     ng-options="inf.id as inf.title for inf in inferences" ng-model="inference"
                     ng-change="changeInference(inference)" class="form-control form-control-sm"></select>
@@ -89,7 +89,7 @@
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
                 ng-click="goToGraphsViz()">
-            {{'Visual graph' | translate}}
+            {{'visual.graph.label' | translate}}
         </button>
 
     </div>

@@ -49,7 +49,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         // Doesn't show the run button
         scope.norun = attrs.hasOwnProperty('norun');
         // Name of the Run button in the editor
-        scope.runButtonName = $translate.instant('query.editor.run.btn');
+        scope.runButtonName = 'query.editor.run.btn';
         if (attrs.runButtonName) {
             scope.runButtonName = attrs.runButtonName;
         }
@@ -530,7 +530,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 yasr.changeLanguage(args.locale);
             }
             window.editor.options.locale = args.locale;
-            // Notify YASQE about the new namespaces
+            // Notify YASQE about the new language
             YASQE.signal(window.editor, 'language-changed');
         });
 

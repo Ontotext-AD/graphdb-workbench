@@ -11,14 +11,14 @@
 		<div class="pull-right">
 			<span id="toggle-security" class="mr-1">
 				<span class="security-switch-label">{{'security.is' | translate}} <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
+				<span tooltip="{{'click.to' | translate}} {{securityEnabled() ? 'disable' : 'enable' | translate}} {{'security.label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
 					<label for="toggle-security"></label>
 				</span>
 			</span>
 			<span ng-show="securityEnabled()" id="toggle-freeaccess">
-				<span>Free Access is <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{freeAccessEnabled() ? 'disable' : 'enable'}} free access to non-admin functionality" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
+				<span>{{'security.free.access.is' | translate}} <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
+				<span tooltip="{{'click.to' | translate}} {{freeAccessEnabled() ? 'disable' : 'enable' | translate}} {{'security.free.access.non.admin' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
 					<label for="toggle-freeaccess"></label>
 				</span>

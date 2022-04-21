@@ -50,7 +50,9 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                         break;
                     }
                 }
-            } else {
+            }
+
+            if (!$scope.selectedLang) {
                 // or fallback to English
                 $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
             }
