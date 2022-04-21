@@ -30,25 +30,9 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             : o1 === o2;
 
     const getPlugins = function () {
+        initPlugins();
         timer = $interval(function () {
-
-            PluginsRestService.getPlugins($scope.getActiveRepository())
-                .success(function (data) {
-                    $scope.pluginsArray = $scope.buildPluginsArray(data.results.bindings);
-                    if (!objectsEqual($scope.plugins.map((plugin) => ({
-                        name: plugin.name,
-                        enabled: plugin.enabled
-                    })), $scope.pluginsArray)) {
-                        $scope.plugins = $scope.pluginsArray;
-                        if (angular.isDefined($scope.plugins)) {
-                            $scope.displayedPlugins = $scope.plugins;
-                        }
-                        $scope.matchedElements = $scope.plugins;
-                        toastr.info("A plugin status or multiple statuses were changed");
-                     }
-                }).error(function (data) {
-                toastr.error(getError(data));
-            });
+            initPlugins();
         }, 5000);
     };
     const initPlugins = function () {
@@ -74,7 +58,6 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             return;
         }
         $scope.searchPlugins = '';
-        initPlugins();
         getPlugins();
     };
 
@@ -113,7 +96,6 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             return;
         }
         $scope.searchPlugins = '';
-        initPlugins();
         getPlugins();
     });
 
