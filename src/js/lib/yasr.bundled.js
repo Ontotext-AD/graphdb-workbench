@@ -55393,7 +55393,7 @@ module.exports={
 },{}],50:[function(require,module,exports){
 module.exports={
   "yasr.table.filter": "Filtrer les résultats des requêtes",
-  "yasr.table": "Table",
+  "yasr.table": "Tableau",
   "yasr.graph.beta": "Graphe(beta)",
   "yasr.pivot.pivot_table": "Table de pivotement",
   "yasr.name.raw_response": "Réponse brute",

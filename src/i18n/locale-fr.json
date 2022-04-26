@@ -570,6 +570,7 @@
     "core.require.inferred": "Nécessite 'Inclure les données inférées' !",
     "query.editor.no.results.from.prev.run.warning": "Aucun résultat de l'exécution précédente. Cliquez sur Exécuter ou appuyez sur Ctrl/Cmd-Enter pour exécuter la requête ou la mise à jour en cours.",
     "query.editor.visual.btn": "Visuel",
+    "query.editor.table.btn": "Tableau",
     "query.editor.run.btn": "Exécuter",
     "query.editor.query.took.msg": "La requête a pris {{seconds}}, {{timestamp}}.",
     "query.editor.update.msg": "{{message}} a pris {{seconds}}, {{timestamp}}.",
@@ -1548,7 +1549,9 @@
     "no.access.permission.to.functionality.error": "Vous n'avez pas la permission d'accéder à cette fonctionnalité avec vos informations d'identification actuelles.",
     "change.menu.or.user.warning": "Veuillez choisir un autre élément du menu ou vous connecter comme un autre utilisateur.",
     "all.rights.reserved.label": "Tous droits réservés.",
-    "workbench.loading.warning": "GraphDB Workbench se charge...",
+    "workbench.loading.warning": "GraphDB Workbench est en cours de chargement mais cela prend plus de temps que d'habitude, veuillez patienter...",
+    "workbench.loading.hint5": "GraphDB Workbench is still loading but it's taking longer than usual, please wait...",
+    "workbench.loading.hint10": "Si le Workbench n'est pas encore chargé, essayez de vider le cache de votre navigateur et de recharger la page.",
     "change.language.tooltip": "Changer la langue en",
 
     "sparql.shortcuts": "raccourcis clavier",
