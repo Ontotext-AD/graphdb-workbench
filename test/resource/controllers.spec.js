@@ -11,9 +11,10 @@ describe('=> ExploreCtrl tests', function () {
         $timeout,
         $window,
         $scope,
-        $jwtAuth;
+        $jwtAuth,
+        $licenseService;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_, _$licenseService_) {
         $repositories = _$repositories_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         $httpBackend = _$httpBackend_;
@@ -22,6 +23,7 @@ describe('=> ExploreCtrl tests', function () {
         $window = _$window_;
         $timeout = _$timeout_;
         $jwtAuth = _$jwtAuth_;
+        $licenseService = _$licenseService_;
 
         $scope = $rootScope.$new();
 
@@ -37,6 +39,8 @@ describe('=> ExploreCtrl tests', function () {
 
         $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth});
 
+        $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
+        $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,
             freeAccess: {enabled: false},
