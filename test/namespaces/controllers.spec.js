@@ -43,6 +43,9 @@ describe('=> NamespacesCtrl tests', function () {
 
         modalInstance = new FakeModal($q, $rootScope);
 
+        $licenseService.isLicenseValid = function () {
+            return true;
+        }
         $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
         $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
