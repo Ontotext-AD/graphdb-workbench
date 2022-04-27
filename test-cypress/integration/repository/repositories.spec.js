@@ -376,7 +376,7 @@ describe('Repositories', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = '';
-        const url = 'http://localhost:9000/rest/repositories/uploadFile';
+        const url = 'http://localhost:9000/rest/repositories/file/upload';
         const fileType = '';
         const virtualRepoName = 'virtual-repo-' + Date.now();
 
@@ -384,7 +384,7 @@ describe('Repositories', () => {
         cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
             Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                 const formData = new FormData();
-                formData.set('uploadFile', blob, 'university-complete.obda');
+                formData.set('file', blob, 'university-complete.obda');
 
                 cy.form_request(url, formData).then(response => {
                     return obdaFileUpload = response.response.body.fileLocation;
@@ -395,7 +395,7 @@ describe('Repositories', () => {
             cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
                 Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                     const formData = new FormData();
-                    formData.set('uploadFile', blob, 'university-complete.ttl');
+                    formData.set('file', blob, 'university-complete.ttl');
 
                     cy.form_request(url, formData).then(response => {
                         return ontologyFileUpload = response.response.body.fileLocation;
@@ -406,7 +406,7 @@ describe('Repositories', () => {
                 cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
                     Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                         const formData = new FormData();
-                        formData.set('uploadFile', blob, 'university-complete.properties');
+                        formData.set('file', blob, 'university-complete.properties');
 
                         cy.form_request(url, formData).then(response => {
                             return propertiesFileUpload = response.response.body.fileLocation;

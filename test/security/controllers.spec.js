@@ -51,7 +51,7 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
 
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -147,8 +147,8 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/freeaccess').respond(200, {enabled: false});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/free-access').respond(200, {enabled: false});
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -200,7 +200,7 @@ describe('==> Controllers tests', function () {
             });
 
             it('should open $modal and call $jwtAuth.toggleFreeAccess() on $modal.close', function () {
-                $httpBackend.expectGET('rest/security/freeaccess');
+                $httpBackend.expectGET('rest/security/free-access');
                 $jwtAuth.isFreeAccessEnabled = function () {
                     return false;
                 };
@@ -370,7 +370,7 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
 
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
 
             $scope.user.username = 'testov';
             $scope.user.password = 'testova';
@@ -559,7 +559,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -733,7 +733,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {

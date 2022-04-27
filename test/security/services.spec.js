@@ -29,7 +29,7 @@ describe('$jwtAuth tests', function () {
             grantedAuthorities: []
         });
 
-        $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
 
         /*
         //requests that starts from repository/services.js after the security is OK
@@ -168,7 +168,7 @@ describe('$jwtAuth tests', function () {
     describe('$jwtAuth.toggleFreeAccess', function () {
         it('should change securityEnabled to false', function () {
             $httpBackend.flush();
-            $httpBackend.expectPOST('rest/security/freeaccess', {enabled: "false"}).respond(200, '')
+            $httpBackend.expectPOST('rest/security/free-access', {enabled: "false"}).respond(200, '');
             $jwtAuth.freeAccess = true;
             $jwtAuth.toggleFreeAccess(false);
             $httpBackend.flush();
@@ -178,7 +178,7 @@ describe('$jwtAuth tests', function () {
         })
         it('should change securityEnabled to true', function () {
             $httpBackend.flush();
-            $httpBackend.expectPOST('rest/security/freeaccess', {enabled: "true"}).respond(200, '')
+            $httpBackend.expectPOST('rest/security/free-access', {enabled: "true"}).respond(200, '');
             $jwtAuth.freeAccess = false;
             $jwtAuth.toggleFreeAccess(true);
             $httpBackend.flush();
