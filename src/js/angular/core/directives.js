@@ -21,7 +21,7 @@ ontoLoader.$inject = [];
 function ontoLoader() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">Loading...</object>';
+            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">{{\'common.loading\' | translate}}</object>';
         }
     };
 }
@@ -32,7 +32,7 @@ function ontoLoaderFancy() {
     return {
         template: function (elem, attr) {
             return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>'
-                + '<div>Loading...<div>';
+                + '<div>{{\'common.loading\' | translate}}<div>';
         }
     };
 }

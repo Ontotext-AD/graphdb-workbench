@@ -99,7 +99,7 @@
             <li ng-repeat="roleVar in roles" class="nav-item">
                 <a class="nav-link" href ng-click="changeRole(roleVar)"
                    ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading">
-                    {{roleVar}}
+                    {{roleVar | translate}}
                 </a>
             </li>
         </ul>

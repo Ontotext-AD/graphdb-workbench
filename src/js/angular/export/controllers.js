@@ -65,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',
-                                value: 'The default graph'
+                                value: 'import.default.graph'
                             }
                         });
                         $scope.graphsByValue = {};

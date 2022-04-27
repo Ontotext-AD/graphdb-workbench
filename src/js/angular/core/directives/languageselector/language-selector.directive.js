@@ -39,26 +39,35 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 $scope.$broadcast('language-changed', {locale: lang.key});
             };
 
-            // Get user preferred language from local storage adapter
-            if (userPreferredLang) {
-                $scope.selectedLang = $scope.languages.find(lang => lang.key === userPreferredLang);
-            } else if (browserPreferredLanguages) {
-                // Or browser languages ordered based on user preference
-                for (let language of browserPreferredLanguages) {
-                    $scope.selectedLang = $scope.languages.find(lang => lang.key === language);
-                    if ($scope.selectedLang) {
-                        break;
+            function getPreferredLanguage() {
+                return new Promise(resolve => {
+                    // Get user preferred language from local storage adapter
+                    if (userPreferredLang) {
+                        $scope.selectedLang = $scope.languages.find(lang => lang.key === userPreferredLang);
+                    } else if (browserPreferredLanguages) {
+                        // Or browser languages ordered based on user preference
+                        for (let language of browserPreferredLanguages) {
+                            $scope.selectedLang = $scope.languages.find(lang => lang.key === language);
+                            if ($scope.selectedLang) {
+                                break;
+                            }
+                        }
                     }
-                }
+                    setTimeout(() => {
+                        resolve(true);
+                    })
+                });
             }
 
-            if (!$scope.selectedLang) {
-                // or fallback to English
-                $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
-            }
-
-            $translate.use($scope.selectedLang.key);
-            $languageService.setLanguage($scope.selectedLang.key);
+            getPreferredLanguage()
+                .then(function () {
+                    if (!$scope.selectedLang) {
+                        // or fallback to English
+                        $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
+                    }
+                    $translate.use($scope.selectedLang.key);
+                    $languageService.setLanguage($scope.selectedLang.key);
+            });
         }
     };
 }
