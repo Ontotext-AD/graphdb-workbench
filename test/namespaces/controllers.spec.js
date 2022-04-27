@@ -43,6 +43,9 @@ describe('=> NamespacesCtrl tests', function () {
 
         modalInstance = new FakeModal($q, $rootScope);
 
+        $licenseService.isLicenseValid = function () {
+            return true;
+        }
         $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
         $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -109,7 +112,7 @@ describe('=> NamespacesCtrl tests', function () {
     });
 
     describe('$scope.getNamespaces()', function () {
-        xit('should set $scope.namespaces', function () {
+        it('should set $scope.namespaces', function () {
             $httpBackend.flush();
             expect($scope.namespaces).toEqual([{prefix: 'prefix', namespace: 'namespace'}, {
                 prefix: 'prefix2',
