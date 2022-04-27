@@ -1591,6 +1591,8 @@
     "graph.shortcuts.rotate.graph.left": "Rotate the graph to the left",
     "graph.shortcuts.right.arrow": "Right arrow",
     "graph.shortcuts.rotate.graph.right": "Rotate the graph to the right",
+    "filter.classes.placeholder": "Filter classes",
+    "all.graphs.label": "All graphs",
     "subject": "subject",
     "predicate": "predicate",
     "object": "object",

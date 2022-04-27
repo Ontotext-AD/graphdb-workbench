@@ -488,6 +488,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelGraphValue() === 'All graphs'
+        return $scope.getSelGraphValue() === 'all.graphs.label'
     }
 }

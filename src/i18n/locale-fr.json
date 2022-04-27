@@ -1598,6 +1598,8 @@
     "graph.shortcuts.rotate.graph.left": "Faites pivoter le graphique vers la gauche.",
     "graph.shortcuts.right.arrow": "Flèche droite",
     "graph.shortcuts.rotate.graph.right": "Faites pivoter le graphique vers la droite.",
+    "filter.classes.placeholder": "Classes de filtres",
+    "all.graphs.label": "Tous les graphiques",
     "subject": "sujet",
     "predicate": "prédicat",
     "object": "objet",

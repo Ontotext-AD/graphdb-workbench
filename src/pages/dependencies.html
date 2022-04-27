@@ -27,7 +27,7 @@
                     aria-expanded="false">
                 <a dropdown-toggle>
                     <span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
-                        {{getSelectedGraphValue()}}
+                        {{getSelectedGraphValue() | translate}}
                     </span>
                 </a>
             </button>
@@ -35,7 +35,7 @@
                 <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">
                     <a class="dropdown-item" ng-click="selectGraph(graph)">
                         <span class="multiline-text">
-						    {{graph.contextID.value}} <br/>
+						    {{graph.contextID.value | translate}} <br/>
 					    </span>
                     </a>
                 </li>
@@ -100,7 +100,7 @@
                             filter-function="classFilterFunc"
                             list-items-obj="allClasses"
                             list-items-not-filtered="allNotFilteredClasses"
-                            search-placeholder="Filter classes">
+                            search-placeholder="{{'filter.classes.placeholder' | translate}}">
                     </list-items-search-filter>
                 </div>
                 <div class="row direction-filter">

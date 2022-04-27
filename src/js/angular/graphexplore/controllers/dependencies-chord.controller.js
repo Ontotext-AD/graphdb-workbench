@@ -17,7 +17,7 @@ const modules = [
 const allGraphs = {
     contextID: {
         type: "all",
-        value: "All graphs",
+        value: "all.graphs.label",
         uri: ""
     }
 };
@@ -324,6 +324,6 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelectedGraphValue() === 'All graphs'
+        return $scope.getSelectedGraphValue() === 'all.graphs.label'
     }
 }
