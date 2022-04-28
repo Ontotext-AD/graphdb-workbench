@@ -28,16 +28,16 @@
             }
         },
         "cluster_configuration_properties": {
-            "election_min_timeout": "Election Minimum Timeout",
-            "election_min_timeout_tooltip": "Election min timeout concerns the minimum wait time in milliseconds for a heartbeat from a leader. Should the time pass without receiving a heartbeat message from a leader. The follower will become a candidate and request votes from other nodes",
-            "election_range_timeout": "Election Range Timeout",
-            "election_range_timeout_tooltip": "Election range timeout concerns the variable portion of each waiting period in milliseconds for a heartbeat. The reason we have a variable portion of the election timeout is because it helps us elect a leader more easily, as the node with lower timeout period would usually be elected",
-            "heartbeat_interval": "Heartbeat Interval",
-            "heartbeat_interval_tooltip": "Heartbeat interval is the interval in milliseconds between each heartbeat is sent to follower nodes by the leader. The interval should be at least twice as small as the election timeout in order to avoid unnecessary leader changes",
-            "message_size_kb": "Message Size KB",
-            "message_size_kb_tooltip": "Message size concerns the size of the data blocks transferred during data replication streaming through the RPC protocol",
-            "verification_timeout": "Verification Timeout",
-            "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful"
+            "election_min_timeout": "Election minimum timeout",
+            "election_min_timeout_tooltip": "Election min timeout concerns the minimum wait time in milliseconds for a heartbeat from a leader. Should the time pass without receiving a heartbeat message from a leader. The follower will become a candidate and request votes from other nodes.",
+            "election_range_timeout": "Election range timeout",
+            "election_range_timeout_tooltip": "Election range timeout concerns the variable portion of each waiting period in milliseconds for a heartbeat. The reason we have a variable portion of the election timeout is because it helps us elect a leader more easily, as the node with lower timeout period would usually be elected.",
+            "heartbeat_interval": "Heartbeat interval",
+            "heartbeat_interval_tooltip": "Heartbeat interval is the interval in milliseconds between each heartbeat is sent to follower nodes by the leader. The interval should be at least twice as small as the election timeout in order to avoid unnecessary leader changes.",
+            "message_size_kb": "Message size KB",
+            "message_size_kb_tooltip": "Message size concerns the size of the data blocks transferred during data replication streaming through the RPC protocol.",
+            "verification_timeout": "Verification timeout",
+            "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful."
         },
         "cluster_page": {
             "create_page_title": "Create cluster",
@@ -52,7 +52,12 @@
             "add_node_btn": "Add node",
             "add_node_btn_tooltip": "Add node to cluster",
             "remove_node_btn_tooltip": "Remove node from cluster",
+            "current_node": "Current node",
+            "advanced_options": "Advanced options",
+            "advanced_options_tooltip": "Advanced options for cluster configuration",
             "errors": {
+                "rpc_pattern_warning": "The RPC address is invalid. E.g. server.example.com:7300 | server.example.com:7300/graph | 10.10.10.10:7300 ",
+                "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
                 "node_in_list": "Node is already in the list",
                 "nodes_status_label": "Nodes status",
