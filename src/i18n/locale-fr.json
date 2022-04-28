@@ -52,7 +52,12 @@
             "add_node_btn": "Ajouter un nœud",
             "add_node_btn_tooltip": "Ajouter un nœud au cluster",
             "remove_node_btn_tooltip": "Retirer le nœud du cluster",
+            "current_node": "Nœud actuel",
+            "advanced_options": "Options avancées",
+            "advanced_options_tooltip": "Options avancées pour la configuration des clusters",
             "errors": {
+                "rpc_pattern_warning": "L'adresse RPC n'est pas valide. Par exemple : server.example.com:7300 | server.example.com:7300/graph | 10.10.10.10:7300 ",
+                "only_positive_integers": "Saisissez uniquement des nombres entiers positifs",
                 "at_least_two_nodes": "Doit avoir au moins deux nœuds",
                 "node_in_list": "Le nœud est déjà dans la liste",
                 "nodes_status_label": "Statut des noeuds",
