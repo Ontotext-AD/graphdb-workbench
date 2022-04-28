@@ -56,7 +56,6 @@
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
             "errors": {
-                "rpc_pattern_warning": "The RPC address is invalid. E.g. server.example.com:7300 | server.example.com:7300/graph | 10.10.10.10:7300 ",
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
                 "node_in_list": "Node is already in the list",
