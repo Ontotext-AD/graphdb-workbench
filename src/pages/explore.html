@@ -46,10 +46,10 @@
 
         <label for="inference-select" class="mb-0">
             <select ng-if="!loading && role !== 'context' && getActiveRepository() !== 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inference"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inference"
                     ng-change="changeInference(inference)" class="form-control form-control-sm"></select>
             <select ng-if="loading || role === 'context' || getActiveRepository() === 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inferenceNamed"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inferenceNamed"
                     class="form-control form-control-sm" disabled>
             </select>
         </label>
