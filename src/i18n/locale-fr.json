@@ -1,73 +1,89 @@
 {
     "cluster_management": {
         "buttons": {
-            "create_cluster": "Create cluster",
-            "create_cluster_tooltip": "Create a new cluster ",
-            "edit_cluster": "Edit cluster",
-            "edit_cluster_tooltip": "Edit cluster settings"
+            "create_cluster": "Créer un cluster",
+            "create_cluster_tooltip": "Créer un nouveau cluster ",
+            "delete_cluster": "Supprimer le cluster",
+            "delete_cluster_tooltip": "Supprimer le cluster existant"
         },
-        "no_cluster_configured": "No cluster is configured",
+        "no_cluster_configured": "Aucun cluster n'est configuré",
         "cluster_configuration": {
-            "label": "Cluster configuration",
+            "label": "Configuration des clusters",
             "configuration_label": "Configuration",
-            "nodes_list_label": "Nodes list"
+            "nodes_list_label": "Liste des nœuds"
         },
         "cluster_status": {
-            "label": "Cluster status",
+            "label": "Statut du cluster",
             "leader": "Leader",
-            "followers": "Followers",
+            "followers": "Suiveurs",
             "node": {
-                "address": "Address",
-                "endpoint": "Endpoint",
-                "state": "State",
-                "term": "Term"
+                "address": "Addresse",
+                "endpoint": "Point de terminaison",
+                "state": "État",
+                "term": "Terme"
             },
             "election": {
-                "label": "Election in progress",
-                "nodes_status": "Nodes status"
+                "label": "Élection en cours",
+                "nodes_status": "Statut des noeuds"
             }
         },
         "cluster_configuration_properties": {
-            "election_min_timeout": "Election Minimum Timeout",
-            "election_min_timeout_tooltip": "Election Minimum Timeout",
-            "election_range_timeout": "Election Range Timeout",
-            "election_range_timeout_tooltip": "Election Range Timeout",
-            "heartbeat_interval": "Heartbeat Interval",
-            "heartbeat_interval_tooltip": "Heartbeat Interval",
-            "message_size_kb": "Message Size KB",
-            "message_size_kb_tooltip": "Message Size KB",
-            "verification_timeout": "Verification Timeout",
-            "verification_timeout_tooltip": "Verification Timeout"
+            "election_min_timeout": "Délai minimum d'élection",
+            "election_min_timeout_tooltip": "Election min timeout concerne le temps d'attente minimum en millisecondes pour un heartbeat d'un leader. Si le temps s'écoule sans qu'un leader ne reçoive de message Heartbeat. Le suiveur deviendra un candidat et demandera des votes aux autres nœuds.",
+            "election_range_timeout": "Délai d'expiration de la plage d'élection",
+            "election_range_timeout_tooltip": "Le délai d'attente pour l'élection concerne la partie variable de chaque période d'attente en millisecondes pour un heartbeat. La raison pour laquelle nous avons une portion variable de la période d'élection est qu'elle nous aide à élire un leader plus facilement, car le nœud avec la période d'attente la plus basse sera généralement élu.",
+            "heartbeat_interval": "Intervalle de Heartbeat",
+            "heartbeat_interval_tooltip": "L'intervalle de heartbeat est l'intervalle en millisecondes entre chaque heartbeat envoyé par le leader aux nœuds suiveurs. L'intervalle doit être au moins deux fois plus petit que le délai d'élection afin d'éviter les changements inutiles de leader.",
+            "message_size_kb": "Taille du message KB",
+            "message_size_kb_tooltip": "La taille du message concerne la taille des blocs de données transférés lors de la réplication des données en continu via le protocole RPC.",
+            "verification_timeout": "Délai de vérification",
+            "verification_timeout_tooltip": "Le délai de vérification concerne la durée pendant laquelle un nœud suiveur attendra avant de tenter de vérifier la dernière entrée engagée lorsque la première vérification n'a pas abouti."
         },
         "cluster_page": {
-            "create_page_title": "Create cluster",
-            "edit_page_title": "Edit cluster",
-            "creating_cluster_loader": "Creating cluster group...",
-            "create_form_legend": "Cluster properties",
-            "nodes": "Nodes",
-            "node_address": "Node RPC address",
-            "node_address_placeholder": "Enter node address",
-            "node_address_tooltip": "Node RPC address",
-            "add_node_btn": "Add node",
-            "add_node_btn_tooltip": "Add node",
-            "remove_node_btn_tooltip": "Remove node from cluster group",
+            "create_page_title": "Créer un cluster",
+            "edit_page_title": "Modifier le cluster",
+            "creating_cluster_loader": "Création d'un cluster...",
+            "create_form_legend": "Propriétés du cluster",
+            "cluster_nodes_list": "Liste des nœuds du cluster",
+            "manual_node_add": "Ajouter un nœud par adresse",
+            "node_address": "Adresse RPC du nœud",
+            "node_address_placeholder": "Entrez l'adresse du noeud",
+            "node_address_tooltip": "Adresse RPC du nœud",
+            "add_node_btn": "Ajouter un nœud",
+            "add_node_btn_tooltip": "Ajouter un nœud au cluster",
+            "remove_node_btn_tooltip": "Retirer le nœud du cluster",
             "errors": {
-                "at_least_two_nodes": "Must have at least two nodes",
-                "node_in_list": "Node is already in the list",
+                "at_least_two_nodes": "Doit avoir au moins deux nœuds",
+                "node_in_list": "Le nœud est déjà dans la liste",
+                "nodes_status_label": "Statut des noeuds",
                 "preconditions_failed": {
-                    "label": "Some of the preconditions for creating a cluster group are not met!",
-                    "valid_license": "Nodes must have a valid enterprise license",
-                    "authentication_secret": "Authentication secret must be set on all nodes",
-                    "nodes_reachable": "Nodes must be reachable",
-                    "no_cluster_configured": "Nodes must not have cluster configuration"
+                    "label": "Certaines des conditions préalables à la création d'un cluster ne sont pas remplies!",
+                    "valid_license": "Les nœuds doivent avoir une licence d'entreprise valide",
+                    "authentication_secret": "Le secret d'authentification doit être défini sur tous les nœuds.",
+                    "nodes_reachable": "Les nœuds doivent être joignables",
+                    "no_cluster_configured": "Les nœuds ne doivent pas avoir de configuration de cluster"
                 }
             },
-            "create_btn": "Create",
-            "save_btn": "Save",
-            "notifications":{
-                "create_success": "Cluster created successfully",
-                "create_failed": "Cluster creation failed",
-                "form_invalid": "The form data is invalid"
+            "create_btn": "Créer",
+            "save_btn": "Sauvez",
+            "notifications": {
+                "create_success": "Cluster créé avec succès",
+                "create_failed": "La création du cluster a échoué",
+                "update_success": "Cluster mis à jour avec succès",
+                "update_failed": "La mise à jour du cluster a échoué",
+                "form_invalid": "Les données du formulaire ne sont pas valides"
+            }
+        },
+        "delete_cluster_dialog": {
+            "title": "Confirmation de la suppression d'un cluster",
+            "content": "Etes-vous sûr de vouloir supprimer le cluster?",
+            "force_delete_label": "Forcer la suppression du cluster",
+            "force_delete_tooltip": "En cochant cette option, le cluster sera supprimé uniquement sur les nœuds accessibles.",
+            "loader_message": "Suppression d'un cluster",
+            "notifications": {
+                "success_delete": "Cluster supprimé avec succès",
+                "success_delete_partial": "Tous les nœuds ne sont pas supprimés",
+                "fail_delete": "Impossible de supprimer le cluster"
             }
         },
         "no.repos.reachable": "Aucun répertoire n'est joignable.\nLa gestion des clusters montre tous les répertoires d'entreprise de l'emplacement actif et de tous les emplacements distants.\nVeuillez aller sur ",

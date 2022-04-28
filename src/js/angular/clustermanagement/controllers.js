@@ -91,7 +91,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         modalInstance.result.then(function (forceDelete) {
             const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
             $scope.setLoader(true, loaderMessage);
-            ClusterRestService.deleteCluster(!!forceDelete)
+            ClusterRestService.deleteCluster(forceDelete)
                 .success((data) => {
                     const allNodesDeleted = Object.values(data).every((node) => node === 'DELETED');
                     if (allNodesDeleted) {
@@ -134,11 +134,24 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     });
 }
 
-CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate',
-    'LocationsRestService', '$interval'];
 
-function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate,
-    LocationsRestService, $interval) {
+const getAdvancedOptionsClass = function () {
+    const optionsModule = document.getElementById('advancedOptions');
+
+    if (optionsModule) {
+        const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+        if (isAriaExpanded && isAriaExpanded === 'true') {
+            return 'fa fa-angle-down';
+        }
+    }
+    return 'fa fa-angle-right';
+};
+
+export const RPC_ADDRESS_PATTERN = new RegExp('^[\\w\\d][\\w\\d\\.]+:[\\d]+\\/?\\w*');
+
+CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate'];
+
+function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
@@ -150,6 +163,22 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
         nodes: [],
         verificationTimeout: 1500
     };
+
+    function getCurrentNodeStatus() {
+        return ClusterRestService.getNodeStatus()
+            .then((data) => {
+                $scope.currentNode = data;
+            })
+            .catch((error) => {
+                $scope.currentNode = error.data;
+            })
+            .finally(() => {
+                $scope.clusterConfiguration.nodes.push($scope.currentNode.address);
+            });
+    }
+    getCurrentNodeStatus();
+
+    $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
     $rootScope.$on('$translateChangeSuccess', function () {
         $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
@@ -217,8 +246,15 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
         }
     };
 
+    $scope.onInput = function () {
+        $scope.badRpcAddress = false;
+    };
+
     $scope.addNodeToList = function (nodeRpcAddress) {
         if (!nodeRpcAddress || $scope.clusterConfiguration.nodes.includes(nodeRpcAddress)) {
+            return;
+        } else if (!RPC_ADDRESS_PATTERN.test(nodeRpcAddress)) {
+            $scope.badRpcAddress = true;
             return;
         }
         $scope.clusterConfiguration.nodes.push(nodeRpcAddress);
@@ -233,6 +269,8 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
 DeleteClusterCtrl.$inject = ['$scope', '$modalInstance'];
 
 function DeleteClusterCtrl($scope, $modalInstance) {
+    $scope.forceDelete = false;
+
     $scope.ok = function () {
         $modalInstance.close($scope.forceDelete);
     };
