@@ -147,8 +147,6 @@ const getAdvancedOptionsClass = function () {
     return 'fa fa-angle-right';
 };
 
-export const RPC_ADDRESS_PATTERN = new RegExp('^[\\w\\d][\\w\\d\\.]+:[\\d]+\\/?\\w*');
-
 CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate'];
 
 function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate) {
@@ -246,17 +244,11 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
         }
     };
 
-    $scope.onInput = function () {
-        $scope.badRpcAddress = false;
-    };
-
     $scope.addNodeToList = function (nodeRpcAddress) {
         if (!nodeRpcAddress || $scope.clusterConfiguration.nodes.includes(nodeRpcAddress)) {
             return;
-        } else if (!RPC_ADDRESS_PATTERN.test(nodeRpcAddress)) {
-            $scope.badRpcAddress = true;
-            return;
         }
+
         $scope.clusterConfiguration.nodes.push(nodeRpcAddress);
         $scope.rpcAddress = '';
     };
