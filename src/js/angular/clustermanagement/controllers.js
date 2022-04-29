@@ -80,6 +80,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         return ClusterRestService.getClusterConfig()
             .success((data) => {
                 $scope.clusterConfiguration = data;
+                if (!$scope.currentNode) {
+                    $scope.getCurrentNodeStatus();
+                }
             })
             .error(() => {
                 $scope.clusterConfiguration = null;
