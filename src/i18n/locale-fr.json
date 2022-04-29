@@ -808,7 +808,7 @@
     "externalsync.could.not.get.connectors.error": "Impossible de récupérer des connecteurs",
     "externalsync.repairing": "Réparation de",
     "externalsync.creating": "Création de",
-    "created.connector": "Connecteur créé {{name}}.",
+    "created.connector": "Connecteur créé {{name}}",
     "externalsync.confirm.repair": "Confirmer la réparation",
     "externalsync.repair.warning.msg": "Êtes-vous sûr de vouloir réparer ce connecteur ? Notez que réparer signifie supprimer + recréer avec les mêmes paramètres.",
     "externalsync.repair.success.msg": "Réparation du connecteur {{name}}",

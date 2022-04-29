@@ -5,8 +5,8 @@ describe('Setup / Connectors - Lucene', () => {
     const fieldName = 'grape';
     const connectorPropertyChain = 'http://www.ontotext.com/example/wine#madeFromGrape';
     const uriType = 'http://www.ontotext.com/example/wine#Wine';
-    const connectorCreateToastMessage = `Created connector ${luceneConnectorName}.`;
-    const connectorDeleteToastMessage = `Deleted connector ${luceneConnectorName}.`;
+    const connectorCreateToastMessage = 'Created connector ' + luceneConnectorName;
+    const connectorDeleteToastMessage = 'Deleted connector ' + luceneConnectorName;
 
     beforeEach(() => {
         cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
@@ -66,8 +66,10 @@ describe('Setup / Connectors - Lucene', () => {
                     .click();
                 getConfirmConnectorDeletebutton()
                     .should('be.visible')
-                    .click();
-                verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
+                    .click()
+                    .then(() => {
+                        verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
+                    });
             });
     });
 
@@ -137,6 +139,6 @@ describe('Setup / Connectors - Lucene', () => {
      */
     function hideToastContainer() {
         cy.get('.toast-success')
-            .then(toastContainer => toastContainer.hide());
+            .then(toastContainer => toastContainer && toastContainer.remove());
     }
 });
