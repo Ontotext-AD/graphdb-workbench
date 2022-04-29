@@ -188,6 +188,33 @@ svg:not(.active):not(.ctrl) path.link:hover {
     stroke-width: 5px;
 }
 
+.cluster-zone {
+  stroke: black;
+  fill: transparent;
+}
+
+.cluster-zone.no-cluster {
+  cursor: pointer;
+  stroke: black;
+  fill: transparent;
+  transition: fill 0.2s, stroke 0.2s;
+}
+
+.cluster-zone.no-cluster:hover {
+  stroke-width: 3 !important;
+  fill: #f7f7f7 !important;
+  height: 120%;
+  width: 120%;
+}
+
+.settings-icon {
+  font-size: 110px !important;
+}
+
+.settings-icon.small {
+  font-size: 56px !important;
+}
+
 path.dragline {
   pointer-events: none;
   stroke: #999;
@@ -369,4 +396,17 @@ div.nodetooltip {
     height: calc(100vh - 120px);
     padding-top: calc((100vh - 300px) / 2);
     background-color: rgba(255,255,255,0.66);
+}
+
+.create-cluster-loader {
+  position: absolute;
+  margin: auto;
+  display: flex;
+  z-index: 100000;
+  background-color: rgba(255,255,255,0.66);
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
