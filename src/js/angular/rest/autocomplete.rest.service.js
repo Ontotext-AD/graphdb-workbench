@@ -42,7 +42,7 @@ function AutocompleteRestService($http) {
     }
 
     function buildIndex() {
-        return $http.post(`${AUTOCOMPLETE_ENDPOINT}reIndex`);
+        return $http.post(`${AUTOCOMPLETE_ENDPOINT}reindex`);
     }
 
     function interruptIndexing() {
@@ -54,7 +54,7 @@ function AutocompleteRestService($http) {
     }
 
     function checkForPlugin() {
-        return $http.get(`${AUTOCOMPLETE_ENDPOINT}pluginFound`);
+        return $http.get(`${AUTOCOMPLETE_ENDPOINT}plugin-found`);
     }
 
     function getAutocompleteSuggestions(str, cancelerPromise) {
