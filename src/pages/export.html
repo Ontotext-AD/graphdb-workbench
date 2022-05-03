@@ -126,7 +126,7 @@
                                    title="{{graph.contextID.value}}">{{'shacl.shape.graph.tooltip' | translate}} ({{graph.contextID.value}})</a>
                             </td>
                             <td ng-if="graph.contextID.uri && !isShacl(graph.contextID.uri)" >
-                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value}}</a>
+                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value | translate}}</a>
 							</td>
 							<td ng-if="!graph.contextID.uri">
 								{{graph.contextID.value}}

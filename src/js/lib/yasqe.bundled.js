@@ -26869,7 +26869,7 @@ module.exports = function (YASQE, yasqe) {
 	var completionTriggeredFlag = false;
 
 	// load and register the translation service providing the locale config
-	yasqe.translate = require('../translate.js')(yasqe.options.locale);
+	yasqe.translate = require('../translate.js')(yasqe);
 
 	yasqe.on('cursorActivity', function (yasqe, eventInfo) {
 		autoComplete(true);
@@ -27769,7 +27769,7 @@ var preprocessResourceTokenForCompletion = function (yasqe, token) {
 		}
 	}
 // load and register the translation service providing the locale config
-yasqe.translate = require('../translate.js')(yasqe.options.locale);
+yasqe.translate = require('../translate.js')(yasqe);
 
 	token.autocompletionString = token.string.trim();
 	if (!token.string.indexOf("<") == 0 && token.string.indexOf(":") > -1) {
@@ -28278,7 +28278,7 @@ var extendConfig = function (config) {
  */
 var extendCmInstance = function (yasqe) {
     // load and register the translation service providing the locale config
-    yasqe.translate = require('./translate.js')(yasqe.options.locale);
+    yasqe.translate = require('./translate.js')(yasqe);
 
 	//instantiate autocompleters
 	yasqe.autocompleters = require('./autocompleters/autocompleterBase.js')(root, yasqe);
@@ -28459,6 +28459,12 @@ var postProcessCmElement = function (yasqe) {
 		checkSyntax(yasqe);
 		root.updateQueryButton(yasqe);
 		root.positionButtons(yasqe);
+	});
+
+	yasqe.on('language-changed', function () {
+		checkSyntax(yasqe);
+		root.drawButtons(yasqe);
+		root.autoComplete(yasqe);
 	});
 
 	yasqe.on('cursorActivity', function (yasqe, eventInfo) {
@@ -29624,9 +29630,13 @@ var translate = function (key) {
     return translation;
 };
 
-function init(lang) {
-    if (lang) {
-        currentLang = lang;
+function init(yasqe) {
+    yasqe.on("language-changed", function () {
+        currentLang = yasqe.options.locale;
+    });
+
+    if (yasqe.options.locale) {
+        currentLang = yasqe.options.locale;
     }
     return translate;
 }

@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'ngCookies',
@@ -64,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',
-                                value: 'The default graph'
+                                value: 'import.default.graph'
                             }
                         });
                         $scope.graphsByValue = {};
@@ -148,7 +149,7 @@ exportCtrl.controller('ExportCtrl',
                 if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
                     ModalService.openSimpleModal({
                         title: $translate.instant('common.warning'),
-                        message: $translate.instant('export.format.warning.msg'),
+                        message: decodeHTML($translate.instant('export.format.warning.msg')),
                         warning: true
                     }).result
                         .then(function () {
@@ -201,7 +202,7 @@ exportCtrl.controller('ExportCtrl',
                     if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
                         ModalService.openSimpleModal({
                             title: $translate.instant('common.warning'),
-                            message: $translate.instant('export.format.warning.msg'),
+                            message: decodeHTML($translate.instant('export.format.warning.msg')),
                             warning: true
                         }).result
                             .then(function () {
