@@ -21,6 +21,13 @@ ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositori
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
     $window, $interval, ModalService, $timeout, ClusterRestService, RepositoriesRestService, $location, $translate) {
     $scope.loader = true;
+    $scope.isLeader = false;
+    $scope.currentNode = null;
+    $scope.clusterModel = {};
+
+    // Holds child context
+    $scope.childContext = {};
+
     // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
     $scope.setLoader = function (loader, message) {
         $scope.loader = loader;
@@ -35,35 +42,53 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         }
     };
 
-    $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || $translate.instant('common.loading');
-    };
+    function initialize() {
+        $scope.loader = true;
 
-    $scope.createCluster = function () {
-        $location.path(`${$location.path()}/create`);
-    };
-
-    $scope.getClusterConfiguration = () => {
-        $scope.setLoader(true);
-        ClusterRestService.getClusterConfig()
-            .success((data, status) => {
-                $scope.clusterConfiguration = data;
+        $scope.getCurrentNodeStatus()
+            .then(() => {
+                return $scope.getClusterConfiguration();
             })
-            .error((data, status) => {
-                $scope.clusterConfiguration = null;
+            .then(() => {
+                return $scope.getClusterStatus();
             })
             .finally(() => {
                 $scope.setLoader(false);
             });
+    }
+
+    function updateCluster() {
+        $scope.getClusterStatus()
+            .then(() => {
+                if (!$scope.clusterConfiguration) {
+                    return $scope.getClusterConfiguration();
+                }
+            })
+            .then(() => {
+                if (!$scope.currentNode) {
+                    return $scope.getCurrentNodeStatus();
+                }
+            })
+            .finally(() => $scope.childContext.redraw());
+    }
+
+    $scope.getLoaderMessage = function () {
+        return $scope.loaderMessage || $translate.instant('common.loading');
+    };
+
+    $scope.getClusterConfiguration = () => {
+        return ClusterRestService.getClusterConfig()
+            .success((data) => {
+                $scope.clusterConfiguration = data;
+            })
+            .error(() => {
+                $scope.clusterConfiguration = null;
+            });
     };
 
     $scope.getClusterStatus = function () {
-        ClusterRestService.getClusterStatus()
-            .success(function (data, status) {
-                if (!$scope.clusterConfiguration) {
-                    $scope.getClusterConfiguration();
-                    return;
-                }
+        return ClusterRestService.getClusterStatus()
+            .success(function (data) {
                 $scope.leader = data.find((node) => node.nodeState === 'LEADER');
 
                 if ($scope.leader) {
@@ -74,12 +99,25 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 } else {
                     $scope.followers = data;
                 }
+                $scope.clusterModel.hasCluster = true;
             })
             .error(function (data, status) {
                 if (status === 404) {
+                    $scope.clusterModel.hasCluster = false;
                     $scope.clusterConfiguration = null;
                 }
             });
+    };
+
+    $scope.showCreateClusterDialog = function () {
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
+            controller: 'CreateClusterCtrl'
+        });
+
+        modalInstance.result.then(function () {
+            updateCluster();
+        });
     };
 
     $scope.showDeleteDialog = () => {
@@ -98,7 +136,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
                     } else {
-                        const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
+                        const successMessage = $translate.instant(
+                            'cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
                         const failedNodesList = Object.keys(data)
                             .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
                         toastr.success(failedNodesList, successMessage, {allowHtml: true});
@@ -111,29 +150,44 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                         .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
                     toastr.error(failedNodesList, failMessage, {allowHtml: true});
                 })
-                .finally(() => $scope.setLoader(false));
+                .finally(() => {
+                    $scope.setLoader(false);
+                    updateCluster();
+                });
         });
     };
 
-    $scope.getClusterConfiguration();
-    $scope.getClusterStatus();
+    $scope.getCurrentNodeStatus = () => {
+        return ClusterRestService.getNodeStatus()
+            .success((data) => {
+                $scope.currentNode = data;
+            })
+            .error((error) => {
+                $scope.currentNode = error.data;
+                $scope.clusterModel.hasCluster = false;
+            });
+    };
 
-    let timerCounter = 0;
+    initialize();
+
     const timer = $interval(function () {
-        if (timerCounter % 3 === 0) {
-            $scope.getClusterConfiguration();
-        }
-        timerCounter++;
-        if ($scope.clusterConfiguration) {
-            $scope.getClusterStatus();
-        }
-    }, 2000);
+        updateCluster();
+    }, 1000);
 
     $scope.$on("$destroy", function () {
         $interval.cancel(timer);
     });
-}
 
+    // track window resizing
+    const w = angular.element($window);
+    const resize = function () {
+        $scope.childContext.resize();
+    };
+    w.bind('resize', resize);
+    $scope.$on('$destroy', function () {
+        w.unbind('resize', resize);
+    });
+}
 
 const getAdvancedOptionsClass = function () {
     const optionsModule = document.getElementById('advancedOptions');
@@ -147,25 +201,27 @@ const getAdvancedOptionsClass = function () {
     return 'fa fa-angle-right';
 };
 
-CreateClusterCtrl.$inject = ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'ClusterRestService', 'toastr', '$translate'];
+CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate'];
 
-function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout, ClusterRestService, toastr, $translate) {
+function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
     $scope.clusterConfiguration = {
-        electionMinTimeout: 1500,
-        electionRangeTimeout: 2000,
-        heartbeatInterval: 500,
+        electionMinTimeout: 7000,
+        electionRangeTimeout: 5000,
+        heartbeatInterval: 2000,
         messageSizeKB: 64,
         nodes: [],
         verificationTimeout: 1500
     };
 
+    $scope.loader = false;
+
     function getCurrentNodeStatus() {
         return ClusterRestService.getNodeStatus()
-            .then((data) => {
-                $scope.currentNode = data;
+            .then((res) => {
+                $scope.currentNode = res.data;
             })
             .catch((error) => {
                 $scope.currentNode = error.data;
@@ -174,43 +230,22 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
                 $scope.clusterConfiguration.nodes.push($scope.currentNode.address);
             });
     }
+
     getCurrentNodeStatus();
 
     $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
-    $rootScope.$on('$translateChangeSuccess', function () {
-        $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
-    });
-
-    $scope.getLoaderMessage = function () {
-        return $scope.loaderMessage || $translate.instant('common.loading');
-    };
-
-    $scope.goToClusterManagementPage = function () {
-        $location.path('/cluster');
-    };
-
     $scope.createCluster = function () {
-        if (!validateClusterSettings()) {
-            toastr.warning($translate.instant('cluster_management.cluster_page.notifications.form_invalid'));
-            return;
-        }
         $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
-        ClusterRestService.createCluster($scope.clusterConfiguration)
-            .success(function (data, status) {
+        return ClusterRestService.createCluster($scope.clusterConfiguration)
+            .success(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
-                const timer = $timeout(function () {
-                    $scope.setLoader(false);
-                    $scope.goToClusterManagementPage();
-                }, 2000);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
-                });
+                $modalInstance.close();
             })
             .error(function (data, status) {
                 handleErrors(data, status);
-                $scope.setLoader(false);
-            });
+            })
+            .finally(() => $scope.setLoader(false));
     };
 
     function handleErrors(data, status) {
@@ -226,11 +261,11 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
         }
     }
 
-    function validateClusterSettings() {
+    $scope.isClusterConfigurationValid = () => {
         const isFormValid = !$scope.clusterConfigurationForm.$invalid;
         const nodesListValid = $scope.clusterConfiguration.nodes && $scope.clusterConfiguration.nodes.length >= 2;
         return isFormValid && nodesListValid;
-    }
+    };
 
     $scope.setLoader = function (loader, message) {
         $timeout.cancel($scope.loaderTimeout);
@@ -255,6 +290,18 @@ function CreateClusterCtrl($rootScope, $scope, $routeParams, $location, $timeout
 
     $scope.removeNodeFromList = function (index, node) {
         $scope.clusterConfiguration.nodes.splice(index, 1);
+    };
+
+    $scope.ok = function () {
+        if (!$scope.isClusterConfigurationValid()) {
+            toastr.warning($translate.instant('cluster_management.cluster_page.notifications.form_invalid'));
+            return;
+        }
+        $scope.createCluster();
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
     };
 }
 
