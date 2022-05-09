@@ -334,13 +334,13 @@
                     <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
                     <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && editRepoPage">
                         <div class="checkbox col-xs-12">
-                            <label tooltip="Check to restart the repository and apply the changes.">
+                            <label tooltip="{{'restart.repo.check.tooltip' | translate}}">
                                 <input id="restartRepo" name="restartRepo"
                                        type="checkbox"
                                        ng-model="repositoryInfo.restartRequested"
                                        ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
                                        ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
-                                Restart repository
+                                {{'restart.repo.label' | translate}}
                             </label>
                         </div>
                     </div>

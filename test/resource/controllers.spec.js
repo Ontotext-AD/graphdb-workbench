@@ -2,6 +2,14 @@ import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.explore.controllers'));
 
+beforeEach(angular.mock.module(function($provide) {
+    $provide.service('$languageService', function() {
+        this.getLanguage = function() {
+            return 'en';
+        }
+    });
+}));
+
 describe('=> ExploreCtrl tests', function () {
     var $repositories,
         ClassInstanceDetailsService,
@@ -11,9 +19,10 @@ describe('=> ExploreCtrl tests', function () {
         $timeout,
         $window,
         $scope,
-        $jwtAuth;
+        $jwtAuth,
+        $languageService;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_, _$languageService_) {
         $repositories = _$repositories_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         $httpBackend = _$httpBackend_;
@@ -22,6 +31,7 @@ describe('=> ExploreCtrl tests', function () {
         $window = _$window_;
         $timeout = _$timeout_;
         $jwtAuth = _$jwtAuth_;
+        $languageService = _$languageService_;
 
         $scope = $rootScope.$new();
 
@@ -35,7 +45,7 @@ describe('=> ExploreCtrl tests', function () {
             }
         }
 
-        $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth});
+        $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth, $languageService: $languageService});
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,

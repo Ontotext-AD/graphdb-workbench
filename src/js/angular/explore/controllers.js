@@ -21,9 +21,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
 
     // We need to get sameAs and inference for the current user
     const principal = $jwtAuth.getPrincipal();
@@ -56,9 +56,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Fixed inference when we're showing the context tab and a named graph
     $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
-        {id: 'all', title: $translate.instant('explore.explicit.implicit')},
-        {id: 'explicit', title: $translate.instant('explore.explicit')},
-        {id: 'implicit', title: $translate.instant('explore.implicit')}
+        {id: 'all', title: 'explore.explicit.implicit'},
+        {id: 'explicit', title: 'explore.explicit'},
+        {id: 'implicit', title: 'explore.implicit'}
     ];
     $scope.context = '';
 
@@ -98,7 +98,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                             //this way, the URLs in the results are prettified using the defined prefixes
                             getUsedPrefixes: $scope.usedPrefixes,
                             persistency: false,
-                            hideHeader: true
+                            hideHeader: true,
+                            locale: $languageService.getLanguage()
                         });
                         $scope.loadResource();
                     }).error(function (data) {
@@ -262,6 +263,13 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.copyToClipboardResult = function (uri) {
         ModalService.openCopyToClipboardModal(uri);
     };
+
+    $scope.$on('language-changed', function (event, args) {
+        if (yasr && yasr.options) {
+            yasr.options.locale = args.locale;
+            yasr.changeLanguage(args.locale);
+        }
+    });
 }
 
 FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];

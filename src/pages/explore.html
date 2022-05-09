@@ -44,12 +44,12 @@
 
     <div class="pull-right">
 
-        <label for="inference-select" class="mr-1 mb-0">
+        <label for="inference-select" class="mb-0">
             <select ng-if="!loading && role !== 'context' && getActiveRepository() !== 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inference"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inference"
                     ng-change="changeInference(inference)" class="form-control form-control-sm"></select>
             <select ng-if="loading || role === 'context' || getActiveRepository() === 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inferenceNamed"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inferenceNamed"
                     class="form-control form-control-sm" disabled>
             </select>
         </label>
@@ -89,7 +89,7 @@
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
                 ng-click="goToGraphsViz()">
-            {{'Visual graph' | translate}}
+            {{'visual.graph.label' | translate}}
         </button>
 
     </div>
@@ -99,7 +99,7 @@
             <li ng-repeat="roleVar in roles" class="nav-item">
                 <a class="nav-link" href ng-click="changeRole(roleVar)"
                    ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading">
-                    {{roleVar}}
+                    {{roleVar | translate}}
                 </a>
             </li>
         </ul>

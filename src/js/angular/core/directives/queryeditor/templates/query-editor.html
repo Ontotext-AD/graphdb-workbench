@@ -129,7 +129,7 @@
                 <div id="runButton" ng-hide="norun">
                     <button id="wb-sparql-runQuery" class="btn btn-primary" ng-disabled="queryIsRunning"
                             ng-click="runQuery(false, $event.shiftKey)">
-                        {{runButtonName}}
+                        {{runButtonName | translate}}
                     </button>
                 </div>
                 <div>
@@ -232,7 +232,7 @@
         </div>
 
         <div ng-show="queryIsRunning && currentTrackAlias" class="qe-aborter">
-            <div disabled-wrapper class="d-inline-block" popover="{{abortRequested ? (lastRunQueryMode === 'update' ? 'Update was requested to abort and will be terminated if possible' : 'Query was requested to abort and will be terminated on the first I/O operation') : (lastRunQueryMode === 'update' ? 'Click to abort update' : 'Click to abort query')}}"
+            <div disabled-wrapper class="d-inline-block" popover="{{abortRequested ? (lastRunQueryMode === 'update' ? 'update.requested' : 'query.abort.request') : (lastRunQueryMode === 'update' ? 'click.to.abort.update' : 'click.to.abort.query') | translate}}"
                  popover-trigger="mouseenter"
                  popover-placement="left">
                 <div ng-class="abortRequested ? 'disabled' : ''"> <!-- Keep this div -->

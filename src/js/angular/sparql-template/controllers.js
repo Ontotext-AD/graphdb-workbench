@@ -35,7 +35,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
             $repositories.getActiveRepository()
                 && !$repositories.isActiveRepoOntopType()
                     && !$repositories.isActiveRepoFedXType()) {
-            SparqlTemplatesRestService.getSparqlTemplates().success(function (data) {
+            SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository()).success(function (data) {
                 $scope.sparqlTemplateIds = data;
             }).error(function (data) {
                 const msg = getError(data);
@@ -59,7 +59,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
             warning: true
         }).result
             .then(function () {
-                SparqlTemplatesRestService.deleteSparqlTemplate(templateID)
+                SparqlTemplatesRestService.deleteSparqlTemplate(templateID, $repositories.getActiveRepository())
                     .success(function () {
                         toastr.success(templateID, $translate.instant('sparql.template.delete.template.success'));
                         $scope.getSparqlTemplates();
@@ -244,7 +244,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     }
 
     function getSparqlTemplate(templateID) {
-        SparqlTemplatesRestService.getSparqlTemplate(templateID).success(function (templateContent) {
+        SparqlTemplatesRestService.getSparqlTemplate(templateID, $repositories.getActiveRepository() ).success(function (templateContent) {
             defaultTabConfig.query = templateContent;
             defaultTabConfig.templateID = templateID;
 
@@ -310,7 +310,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                 });
         } else {
             if (!$scope.currentQuery.isPristine) {
-                SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery).success(function () {
+                SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery, $repositories.getActiveRepository()).success(function () {
                     $scope.currentQuery.isPristine = true;
                     $scope.currentQuery.isNewTemplate = false;
                     toastr.success($scope.currentQuery.templateID, $translate.instant('update.sparql.template.success.msg'));
@@ -370,7 +370,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     }
 
     function saveNewTemplate() {
-        SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery).success(function () {
+        SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery, $repositories.getActiveRepository()).success(function () {
             $scope.currentQuery.isPristine = true;
             $scope.currentQuery.isNewTemplate = false;
             toastr.success($scope.currentQuery.templateID, $translate.instant('save.sparql.template.success.msg'));
@@ -383,7 +383,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
 
     function checkIfTemplateExists() {
         return SparqlTemplatesRestService
-            .getSparqlTemplates()
+            .getSparqlTemplates($repositories.getActiveRepository())
                 .success(function (data) {
                     templateExist = data.find((templateId) => templateId === $scope.currentQuery.templateID);
         }).error(function (data) {

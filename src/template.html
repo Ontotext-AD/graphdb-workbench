@@ -100,7 +100,7 @@
 
 <ul class="main-menu" ng-cloak ng-show="!embedded">
     <li class="brand">
-        <span class="toggle-menu" title="Collapse menu" ng-click="toggleNavigation()">
+        <span class="toggle-menu" title="{{'collapse.menu.title' | translate}}" ng-click="toggleNavigation()">
             <em class="icon-caret-left"></em>
         </span>
         <a class="menu-element-root" ng-href="./" href="./" ng-click="selected = -1">
@@ -160,7 +160,8 @@
 </div>
 <div class="show-ng-cloak ot-splash" style="display: none;">
     <object data="img/graphdb-splash.svg"></object>
-    <div>{{'workbench.loading.warning' | translate}}</div>
+    <div>GraphDB Workbench is loading...</div>
+    <div>GraphDB Workbench se charge...</div>
 </div>
 </body>
 

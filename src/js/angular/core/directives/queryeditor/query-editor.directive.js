@@ -49,7 +49,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         // Doesn't show the run button
         scope.norun = attrs.hasOwnProperty('norun');
         // Name of the Run button in the editor
-        scope.runButtonName = $translate.instant('query.editor.run.btn');
+        scope.runButtonName = 'query.editor.run.btn';
         if (attrs.runButtonName) {
             scope.runButtonName = attrs.runButtonName;
         }
@@ -325,10 +325,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             const repair = res.data.command === 'repair';
                             if (repair) {
                                 scope.setLoader(true, $translate.instant('query.editor.repairing.connector', {name: res.data.name}));
-                                scope.currentTabConfig.customUpdateMessage = $translate.instant('query.editor.repaired.connector', {name: res.data.name});
+                                scope.currentTabConfig.customUpdateMessage = {msg: 'query.editor.repaired.connector', name: res.data.name};
                             } else {
                                 scope.setLoader(true, $translate.instant('query.editor.creating.connector', {name: res.data.name}));
-                                scope.currentTabConfig.customUpdateMessage = $translate.instant('created.connector', {name: res.data.name});
+                                scope.currentTabConfig.customUpdateMessage = {msg: 'created.connector', name: res.data.name};
                             }
 
                             const progressScope = scope.$new(true);
@@ -362,7 +362,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             });
                         } else if (res.data.command === 'drop') {
                             scope.setLoader(true, $translate.instant('externalsync.delete.progress.msg', {name: res.data.name}));
-                            scope.currentTabConfig.customUpdateMessage = $translate.instant('externalsync.delete.success.msg', {name: res.data.name});
+                            scope.currentTabConfig.customUpdateMessage = {msg: 'externalsync.delete.success.msg', name: res.data.name};
                         }
 
                         doExecute();
@@ -530,7 +530,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 yasr.changeLanguage(args.locale);
             }
             window.editor.options.locale = args.locale;
-            // Notify YASQE about the new namespaces
+            // Notify YASQE about the new language
             YASQE.signal(window.editor, 'language-changed');
         });
 

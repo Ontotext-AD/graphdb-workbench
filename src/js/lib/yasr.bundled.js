@@ -387,14 +387,14 @@ module.exports = require('./main.js');
 		 * sZeroRecords - assuming that is given.
 		 */
 		if ( ! lang.sEmptyTable && zeroRecords &&
-			defaults.sEmptyTable === "No data available in table" )
+			defaults.sEmptyTable === "yasr.empty.table" )
 		{
 			_fnMap( lang, lang, 'sZeroRecords', 'sEmptyTable' );
 		}
 	
 		/* Likewise with loading records */
 		if ( ! lang.sLoadingRecords && zeroRecords &&
-			defaults.sLoadingRecords === "Loading..." )
+			defaults.sLoadingRecords === "yasr.loading.label" )
 		{
 			_fnMap( lang, lang, 'sZeroRecords', 'sLoadingRecords' );
 		}
@@ -1982,7 +1982,7 @@ module.exports = require('./main.js');
 					'valign':  'top',
 					'colSpan': _fnVisbleColumns( oSettings ),
 					'class':   oSettings.oClasses.sRowEmpty
-				} ).html( sZero ) )[0];
+				} ).html( oSettings.translate(sZero) ) )[0];
 		}
 	
 		/* Header and footer callbacks */
@@ -6205,6 +6205,7 @@ module.exports = require('./main.js');
 			_fnCallbackReg( oSettings, 'aoPreDrawCallback',    oInit.fnPreDrawCallback,   'user' );
 			
 			var oClasses = oSettings.oClasses;
+			oSettings.translate = options.translate;
 			
 			// @todo Remove in 1.11
 			if ( oInit.bJQueryUI )
@@ -10960,7 +10961,7 @@ module.exports = require('./main.js');
 			 *      } );
 			 *    } );
 			 */
-			"sEmptyTable": "No data available in table",
+			"sEmptyTable": "yasr.empty.table",
 	
 	
 			/**
@@ -11177,7 +11178,7 @@ module.exports = require('./main.js');
 			 *      } );
 			 *    } );
 			 */
-			"sLoadingRecords": "Loading...",
+			"sLoadingRecords": "yasr.loading.label",
 	
 	
 			/**
@@ -55388,12 +55389,14 @@ module.exports={
   "yasr.btn.title.csv": "Download as CSV",
   "yasr.btn.title.raw": "Download raw response",
   "yasr.copy.to.clipboard": "Copy to Clipboard",
-  "yasr.chart.config": "Chart Config"
+  "yasr.chart.config": "Chart Config",
+  "yasr.empty.table": "No data available in table",
+  "yasr.loading.label": "Loading..."
 }
 },{}],50:[function(require,module,exports){
 module.exports={
   "yasr.table.filter": "Filtrer les résultats des requêtes",
-  "yasr.table": "Table",
+  "yasr.table": "Tableau",
   "yasr.graph.beta": "Graphe(beta)",
   "yasr.pivot.pivot_table": "Table de pivotement",
   "yasr.name.raw_response": "Réponse brute",
@@ -55421,7 +55424,9 @@ module.exports={
   "yasr.btn.title.csv": "Télécharger comme CSV",
   "yasr.btn.title.raw": "Télécharger la réponse brute",
   "yasr.copy.to.clipboard": "Copier dans le presse-papiers",
-  "yasr.chart.config": "Configuration du graphique"
+  "yasr.chart.config": "Configuration du graphique",
+  "yasr.empty.table": "Aucune donnée disponible dans le tableau",
+  "yasr.loading.label": "Chargement..."
 }
 
 },{}],51:[function(require,module,exports){
@@ -55585,8 +55590,10 @@ var root = module.exports = function(parent, options, queryResults) {
 		if (downloadIcon) {
 			downloadIcon.remove();
 		}
-		drawHeader(yasr);
-		yasr.updateHeader();
+		if (!yasr.options.hideHeader) {
+			drawHeader(yasr);
+		}
+		yasr.draw();
 	};
 
 	var prefix = null;
@@ -57095,8 +57102,8 @@ var root = module.exports = function(yasr) {
 		//fetch stored datatables length value
 		var pLength = yutils.storage.get(tableLengthPersistencyId);
 		if (pLength) dataTableConfig.pageLength = pLength;
-		
-		
+
+		dataTableConfig.translate = require('./translate.js')(yasr.options.locale);
 		
 		table.DataTable($.extend(true, {}, dataTableConfig));//make copy. datatables adds properties for backwards compatability reasons, and don't want this cluttering our own 
 		
@@ -57525,7 +57532,11 @@ var translate = function (key, parameter) {
     if(parameter) {
         translation = translation.replace(`{{${parameter.key}}}`, parameter.value)
     }
-    return translation;
+    if (translation) {
+        return translation;
+    }
+    console.warn('Missing translation for [' + key + '] key in [' + selectedLang + '] locale');
+    return key;
 };
 
 function init(lang) {

@@ -674,7 +674,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.getNumberOfActiveImportsRunning = true;
         $http({
             method: 'GET',
-            url: 'rest/data/import/active/' + $scope.getActiveRepository(),
+            url: '/rest/repositories/' + $scope.getActiveRepository() + '/import/active',
             timeout: 10000
         }).success(function (data) {
             $scope.numberOfActiveImports = data;
