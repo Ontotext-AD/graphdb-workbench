@@ -5,15 +5,29 @@ export const clusterColors = {
     ontoGrey: '#97999C'
 };
 
+function containsIPV4(ip) {
+    const blocks = ip.split(".");
+    for (let i = 0, sequence = 0; i < blocks.length; i++) {
+        if (parseInt(blocks[i], 10) >= 0 && parseInt(blocks[i], 10) <= 255) {
+            sequence++;
+        } else {
+            sequence = 0;
+        }
+        if (sequence === 4) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export function createClusterSvgElement(element) {
     return d3.select(element)
         .append('svg');
 }
 
-export function createClusterZone(parent, hasCluster) {
+export function createClusterZone(parent) {
     const clusterZone = parent.append('g');
     clusterZone
-        .append('g')
         .append("circle")
         .classed('cluster-zone', true)
         .style('fill', 'transparent')
@@ -28,17 +42,7 @@ export function setCreateClusterZone(hasCluster, clusterZone) {
 
     if (hasCluster) {
         clusterZone.selectAll('#no-cluster-zone').remove();
-        clusterZone
-            .append('g')
-            .attr("id", "cluster-zone")
-            .append('text')
-            .text('Cluster')
-            .attr('y', -50)
-            .classed('h2', true)
-            .style('text-anchor', "middle");
     } else {
-        clusterZone.selectAll('#cluster-zone').remove();
-
         const textGroup = clusterZone
             .append('g')
             .attr("id", "no-cluster-zone");
@@ -66,4 +70,189 @@ export function moveElement(element, x, y) {
     element.attr('transform', () => {
         return `translate(${x}, ${y})`;
     });
+}
+
+export function createNodes(nodesDataBinding, nodeRadius) {
+    const nodeGroup = nodesDataBinding.enter()
+        .append('g')
+        .attr('id', 'node-group');
+
+    createHexagon(nodeGroup, nodeRadius);
+    nodesDataBinding.exit().remove();
+
+    nodeGroup
+        .append('text')
+        .attr('class', 'icon-any node-icon');
+
+    addHostnameToNodes(nodeGroup, nodeRadius);
+}
+
+function addHostnameToNodes(nodeElements, nodeRadius) {
+    const nodeTextHost = nodeElements.append('g');
+
+    nodeTextHost
+        .append('rect')
+        .attr('class', 'id-host-background')
+        .attr('rx', 6);
+
+    nodeTextHost
+        .append('text')
+        .attr('y', nodeRadius + 10)
+        .attr('class', 'id id-host')
+        .style('text-anchor', 'middle');
+}
+
+export function updateNodes(nodes) {
+    updateNodesIcon(nodes);
+    updateNodesClasses(nodes);
+    updateNodesHostnameText(nodes);
+}
+
+function updateNodesClasses(nodes) {
+    nodes
+        .select('.node.member')
+        .classed('leader', (node) => node.nodeState === 'LEADER')
+        .classed('follower', (node) => node.nodeState === 'FOLLOWER')
+        .classed('candidate', (node) => node.nodeState === 'CANDIDATE')
+        .classed('other', (node) => {
+            return node.nodeState !== 'LEADER' &&
+                node.nodeState !== 'FOLLOWER' &&
+                node.nodeState !== 'CANDIDATE';
+        });
+}
+
+function updateNodesIcon(nodes) {
+    nodes
+        .select('.icon-any.node-icon')
+        .text(getNodeIconType);
+}
+
+function updateNodesHostnameText(nodes) {
+    const parser = document.createElement('a');
+
+    nodes
+        .select('.id.id-host')
+        .each(function (d) {
+            d.labelNode = this;
+        })
+        .text(function (d) {
+            if (!d.endpoint) {
+                // TODO: remove this check when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/2137 is merged
+                return 'Missing endpoint';
+            } else {
+                parser.href = d.endpoint;
+                let hostname = parser.hostname;
+                if (!containsIPV4(parser.hostname)) {
+                    hostname = parser.hostname.split('.')[0];
+                }
+                return hostname + ":" + parser.port;
+            }
+        });
+
+    nodes
+        .select('.id-host-background')
+        .attr('width', function (d) {
+            return d3.select(d.labelNode).node().getBBox().width + 10;
+        })
+        .attr('height', function (d) {
+            return d3.select(d.labelNode).node().getBBox().height + 2;
+        })
+        .attr('x', function (d) {
+            return d3.select(d.labelNode).node().getBBox().x - 5;
+        })
+        .attr('y', function (d) {
+            return d3.select(d.labelNode).node().getBBox().y - 1;
+        })
+        .attr('fill', '#EEEEEE');
+}
+
+function getNodeIconType(node) {
+    if (node.nodeState === 'LEADER') {
+        return "\ue935";
+    } else if (node.nodeState === 'FOLLOWER') {
+        return "\ue90A";
+    } else if (node.nodeState === 'CANDIDATE') {
+        return "\ue914";
+    } else if (node.nodeState === 'NO_CONNECTION') {
+        return "\ue931";
+    }
+}
+
+export function createLinks(linksDataBinding) {
+    linksDataBinding.enter()
+        .append('path')
+        .classed('link', true);
+
+    linksDataBinding.exit().remove();
+}
+
+export function updateLinks(linksDataBinding, nodes) {
+    linksDataBinding
+        .attr('stroke', (link) => {
+            if (link.status === 'IN_SYNC' || link.status === 'SYNCING') {
+                return clusterColors.ontoGreen;
+            } else if (link.status === 'NO_CONNECTION') {
+                return 'none';
+            }
+            return clusterColors.ontoGrey;
+        })
+        .style('stroke-dasharray', setLinkStyle)
+        .attr('d', (link) => getLinkCoordinates(link, nodes));
+}
+
+function setLinkStyle(link) {
+    if (link.status === 'OUT_OF_SYNC' || link.status === 'SYNCING') {
+        return '10 10';
+    }
+    return 'none';
+}
+
+function getLinkCoordinates(link, nodes) {
+    const source = nodes.find((node) => node.address === link.source);
+    const target = nodes.find((node) => node.address === link.target);
+
+    const deltaX = target.x - source.x;
+    const deltaY = target.y - source.y;
+    const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const normX = deltaX / dist;
+    const normY = deltaY / dist;
+
+    // Padding from node center point
+    const sourcePadding = 55;
+    const targetPadding = 55;
+    const sourceX = source.x + (sourcePadding * normX);
+    const sourceY = source.y + (sourcePadding * normY);
+    const targetX = target.x - (targetPadding * normX);
+    const targetY = target.y - (targetPadding * normY);
+    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+}
+
+export function positionNodesOnClusterZone(nodes, clusterZoneX, clusterZoneY, clusterZoneRadius) {
+    nodes
+        .attr('transform', (node, index) => {
+            // Calculate initial positions for the new nodes based on
+            // spreading them evenly on a circle around the center of the page.
+            const theta = 2 * Math.PI * index / nodes[0].length;
+            var x = clusterZoneX + Math.cos(theta) * clusterZoneRadius;
+            var y = clusterZoneY + Math.sin(theta) * clusterZoneRadius;
+            node.x = x;
+            node.y = y;
+            return `translate(${x}, ${y})`;
+        });
+}
+
+function createHexagon(node, A) {
+    const _s32 = (Math.sqrt(3) / 2);
+    const xDiff = 0;
+    const yDiff = 0;
+    var points = [[A + xDiff, yDiff], [A / 2 + xDiff, A * _s32 + yDiff], [-A / 2 + xDiff, A * _s32 + yDiff],
+        [-A + xDiff, yDiff],
+        [-A / 2 + xDiff, -A * _s32 + yDiff], [A / 2 + xDiff, -A * _s32 + yDiff], [A + xDiff, yDiff], [A / 2 + xDiff, A * _s32 + yDiff]];
+    return node
+        .selectAll("path.area")
+        .data([points])
+        .enter()
+        .append("path")
+        .attr('class', 'node member')
+        .attr("d", d3.svg.line());
 }

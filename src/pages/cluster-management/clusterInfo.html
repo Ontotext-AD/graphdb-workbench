@@ -26,71 +26,10 @@
     </button>
 </div>
 
+<!--TODO: Remove in final version as this information will be shown
+in a sidebar. To be implemented in a future MR-->
 <div ng-if="clusterConfiguration" class="row">
-    <div class="col-lg-6">
-        <div class="card cluster-information-card">
-            <div class="card-block">
-                <div class="clearfix">
-                    <h3 class="mb-0">
-                        <span class="collapsible-heading" data-toggle="collapse" data-target="#cluster-status"
-                              aria-expanded="false" aria-controls="cluster-status">
-                            <em class="icon-caret-down text-muted"></em>
-                              {{'cluster_management.cluster_status.label' | translate}}
-                        </span>
-                    </h3>
-                </div>
-                <div class="collapse show" id="cluster-status">
-                    <div class="mt-1" ng-if="!!leader">
-                        <div class="col-xs-6 mb-1 no-margin-list">
-                            <h4>{{'cluster_management.cluster_status.leader' | translate}}</h4>
-                            <div>{{'cluster_management.cluster_status.node.address' | translate}}</div>
-                            <ul>
-                                <li>
-                                    <div>{{leader.address}}</div>
-                                </li>
-                            </ul>
-                            <div>{{'cluster_management.cluster_status.node.endpoint' | translate}}</div>
-                            <ul>
-                                <li>
-                                    <div>{{leader.endpoint}}</div>
-                                </li>
-                            </ul>
-                            <div>{{'cluster_management.cluster_status.node.state' | translate}}</div>
-                            <ul>
-                                <li>
-                                    <div>{{leader.nodeState}}</div>
-                                </li>
-                            </ul>
-                            <div>{{'cluster_management.cluster_status.node.term' | translate}}</div>
-                            <ul>
-                                <li>
-                                    <div>{{leader.term}}</div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-xs-6 container">
-                            <h4>{{'cluster_management.cluster_status.followers' | translate}}</h4>
-                            <div ng-repeat="node in followers">
-                                {{node.address}} - {{node.syncStatus}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-1" ng-if="!leader">
-                        <div class="col-xs-12">
-                            <h4>{{'cluster_management.cluster_status.election.label' | translate}}</h4>
-                            <h5>{{'cluster_management.cluster_status.election.nodes_status' | translate}}</h5>
-                            <ol>
-                                <li ng-repeat="node in followers">
-                                    {{node.address}} - {{node.nodeState}}
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card cluster-configuration-card">
             <div class="card-block">
                 <div class="clearfix">

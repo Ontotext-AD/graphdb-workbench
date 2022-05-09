@@ -16,10 +16,10 @@ angular
     .controller('DeleteClusterCtrl', DeleteClusterCtrl);
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService', '$location', '$translate'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
-    $window, $interval, ModalService, $timeout, ClusterRestService, RepositoriesRestService, $location, $translate) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate) {
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
@@ -45,7 +45,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     function initialize() {
         $scope.loader = true;
 
-        $scope.getCurrentNodeStatus()
+        return $scope.getCurrentNodeStatus()
             .then(() => {
                 return $scope.getClusterConfiguration();
             })
@@ -92,21 +92,38 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.getClusterStatus = function () {
         return ClusterRestService.getClusterStatus()
             .success(function (data) {
-                $scope.leader = data.find((node) => node.nodeState === 'LEADER');
-
-                if ($scope.leader) {
-                    $scope.followers = data.filter((node) => node !== $scope.leader);
-                    $scope.followers.forEach((node) => {
-                        node.syncStatus = $scope.leader.syncStatus[node.address];
+                const nodes = data.map((node) => {
+                    return {
+                        address: node.address,
+                        nodeState: node.nodeState,
+                        endpoint: node.endpoint,
+                        syncStatus: node.syncStatus
+                    };
+                });
+                const leader = data.find((node) => node.nodeState === 'LEADER');
+                const links = [];
+                if (leader) {
+                    Object.keys(leader.syncStatus).forEach((node) => {
+                        const status = leader.syncStatus[node];
+                        if (status !== 'NO_CONNECTION') {
+                            links.push({
+                                id: `${leader.address}-${node}`,
+                                source: leader.address,
+                                target: node,
+                                status
+                            });
+                        }
                     });
-                } else {
-                    $scope.followers = data;
                 }
                 $scope.clusterModel.hasCluster = true;
+                $scope.clusterModel.nodes = nodes;
+                $scope.clusterModel.links = links;
             })
             .error(function (data, status) {
                 if (status === 404) {
                     $scope.clusterModel.hasCluster = false;
+                    $scope.clusterModel.nodes = [];
+                    $scope.clusterModel.links = [];
                     $scope.clusterConfiguration = null;
                 }
             });
@@ -171,15 +188,16 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
     };
 
-    initialize();
+    initialize()
+        .finally(() => {
+            const timer = $interval(function () {
+                updateCluster();
+            }, 1000);
 
-    const timer = $interval(function () {
-        updateCluster();
-    }, 1000);
-
-    $scope.$on("$destroy", function () {
-        $interval.cancel(timer);
-    });
+            $scope.$on("$destroy", function () {
+                $interval.cancel(timer);
+            });
+        });
 
     // track window resizing
     const w = angular.element($window);

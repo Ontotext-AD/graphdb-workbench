@@ -5,6 +5,8 @@ const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
 
+const nodeRadius = 50;
+
 const clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives', [
     'graphdb.framework.utils.localstorageadapter'
 ]);
@@ -30,6 +32,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 let width = getWindowWidth();
                 let height = getWindowHeight();
                 let clusterZoneRadius = Math.min(width, height) / 2 - 100;
+                let clusterZoneX = width / 2;
+                let clusterZoneY = height / 2;
                 let hasCluster;
 
                 scope.width = function () {
@@ -43,6 +47,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // SVG components
                 let svg;
                 let clusterZone;
+                let nodesGroup;
+                let linksGroup;
 
                 function initialize() {
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
@@ -56,6 +62,23 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .attr('height', height);
 
                     clusterZone = CDS.createClusterZone(svg, hasCluster);
+
+                    linksGroup = svg.append('g').attr('id', 'links-group');
+                    nodesGroup = svg.append('g').attr('id', 'nodes-group');
+                    plot();
+                }
+
+                function createNodes(nodes) {
+                    const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
+                    CDS.createNodes(nodeData, nodeRadius);
+                    CDS.updateNodes(nodeData);
+                    CDS.positionNodesOnClusterZone(nodeData, clusterZoneX, clusterZoneY, clusterZoneRadius);
+                }
+
+                function drawLinks(links, nodes) {
+                    const linksData = linksGroup.selectAll('.link').data(links, (link) => link.id);
+                    CDS.createLinks(linksData);
+                    CDS.updateLinks(linksData, nodes);
                 }
 
                 // Properties and functions that can be used by parent
@@ -70,11 +93,17 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 };
 
                 function resizeClusterComponent() {
-                    clusterZoneRadius = Math.min(width, height) / 2 - 100;
-                    CDS.moveElement(clusterZone, width / 2, height / 2);
+                    calculateClusterZoneProperties();
+                    CDS.moveElement(clusterZone, clusterZoneX, clusterZoneY);
                     clusterZone
                         .select('.cluster-zone')
                         .attr('r', clusterZoneRadius);
+                }
+
+                function calculateClusterZoneProperties() {
+                    clusterZoneRadius = Math.min(width, height) / 2 - 100;
+                    clusterZoneX = width / 2;
+                    clusterZoneY = height / 2;
                 }
 
                 function setClusterZoneType(hasCluster) {
@@ -97,6 +126,10 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         hasCluster = !!scope.clusterModel.hasCluster;
                         setClusterZoneType(hasCluster);
                     }
+                    const nodes = _.cloneDeep(scope.clusterModel.nodes) || [];
+                    const links = _.cloneDeep(scope.clusterModel.links) || [];
+                    createNodes(nodes);
+                    drawLinks(links, nodes);
                 }
 
                 initialize();
