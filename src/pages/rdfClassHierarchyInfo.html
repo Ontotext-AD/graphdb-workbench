@@ -17,7 +17,7 @@
                 aria-expanded="false">
             <a dropdown-toggle>
 				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
-					{{getSelGraphValue()}}
+					{{getSelGraphValue() | translate}}
 				</span>
             </a>
         </button>
@@ -25,7 +25,7 @@
             <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelGraphValue()">
                 <a class="dropdown-item" ng-click="chosenGraph(graph)">
 					<span class="multiline-text">
-						{{graph.contextID.value}} <br/>
+						{{graph.contextID.value | translate}} <br/>
 					</span>
                 </a>
             </li>

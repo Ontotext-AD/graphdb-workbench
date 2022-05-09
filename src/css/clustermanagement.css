@@ -247,6 +247,23 @@ text.icon-any {
     font-size: 56px;
 }
 
+.text-btn {
+  background: none;
+  border: none;
+  margin: 0;
+  padding-top: .1rem;
+  cursor: pointer;
+}
+
+.text-btn:focus, .text-btn {
+  outline: none !important;
+  box-shadow: none
+}
+
+.no-margin-list ul {
+  margin-bottom: 0;
+}
+
 div.nodetooltip {
     z-index: 1000;
     position: absolute;

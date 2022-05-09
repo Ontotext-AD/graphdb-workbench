@@ -41,10 +41,10 @@
 					<div class="input-group mb-1 {{'property-' + option.__name}}">
 						<input type="text" class="form-control" placeholder="{{option.__hint}}"  ng-model="values[option.__name][$index]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 						<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>

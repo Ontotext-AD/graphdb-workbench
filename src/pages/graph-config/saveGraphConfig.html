@@ -164,7 +164,7 @@
 
                             <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}</p>
 
-                            <p>{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> {{'sample.query.used' | translate}}</p>
+                            <p>{{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'resourceQuery')}}</em> {{'sample.query.used' | translate}}</p>
                         </div>
                         <div>
                             <img src="css/images/labels-size.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220" alt="labels size image">
@@ -224,7 +224,7 @@
                         </query-editor>
                     </div>
                     <div class="col-md-3">
-                        <p>Sample queries: </p>
+                        <p>{{'sample.queries' | translate}} </p>
 
                         <div ng-show="page == 1" class="list-group">
                             <div ng-repeat="sample in samples | filter:isDefaultGraph">
@@ -271,7 +271,7 @@
                             </div>
                         </div>
 
-                        <p class="mt-1">User queries: </p>
+                        <p class="mt-1">{{'user.queries' | translate}} </p>
 
                         <div ng-show="page == 1" class="list-group">
                             <div ng-repeat="sample in samples | filter:isUserGraph">

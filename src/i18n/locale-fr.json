@@ -1,73 +1,94 @@
 {
     "cluster_management": {
         "buttons": {
-            "create_cluster": "Create cluster",
-            "create_cluster_tooltip": "Create a new cluster ",
-            "edit_cluster": "Edit cluster",
-            "edit_cluster_tooltip": "Edit cluster settings"
+            "create_cluster": "Créer un cluster",
+            "create_cluster_tooltip": "Créer un nouveau cluster ",
+            "delete_cluster": "Supprimer le cluster",
+            "delete_cluster_tooltip": "Supprimer le cluster existant"
         },
-        "no_cluster_configured": "No cluster is configured",
+        "no_cluster_configured": "Aucun cluster n'est configuré",
         "cluster_configuration": {
-            "label": "Cluster configuration",
+            "label": "Configuration des clusters",
             "configuration_label": "Configuration",
-            "nodes_list_label": "Nodes list"
+            "nodes_list_label": "Liste des nœuds"
         },
         "cluster_status": {
-            "label": "Cluster status",
+            "label": "Statut du cluster",
             "leader": "Leader",
-            "followers": "Followers",
+            "followers": "Suiveurs",
             "node": {
-                "address": "Address",
-                "endpoint": "Endpoint",
-                "state": "State",
-                "term": "Term"
+                "address": "Addresse",
+                "endpoint": "Point de terminaison",
+                "state": "État",
+                "term": "Terme"
             },
             "election": {
-                "label": "Election in progress",
-                "nodes_status": "Nodes status"
+                "label": "Élection en cours",
+                "nodes_status": "Statut des noeuds"
             }
         },
         "cluster_configuration_properties": {
-            "election_min_timeout": "Election Minimum Timeout",
-            "election_min_timeout_tooltip": "Election Minimum Timeout",
-            "election_range_timeout": "Election Range Timeout",
-            "election_range_timeout_tooltip": "Election Range Timeout",
-            "heartbeat_interval": "Heartbeat Interval",
-            "heartbeat_interval_tooltip": "Heartbeat Interval",
-            "message_size_kb": "Message Size KB",
-            "message_size_kb_tooltip": "Message Size KB",
-            "verification_timeout": "Verification Timeout",
-            "verification_timeout_tooltip": "Verification Timeout"
+            "election_min_timeout": "Délai minimum d'élection",
+            "election_min_timeout_tooltip": "Election min timeout concerne le temps d'attente minimum en millisecondes pour un heartbeat d'un leader. Si le temps s'écoule sans qu'un leader ne reçoive de message Heartbeat. Le suiveur deviendra un candidat et demandera des votes aux autres nœuds.",
+            "election_range_timeout": "Délai d'expiration de la plage d'élection",
+            "election_range_timeout_tooltip": "Le délai d'attente pour l'élection concerne la partie variable de chaque période d'attente en millisecondes pour un heartbeat. La raison pour laquelle nous avons une portion variable de la période d'élection est qu'elle nous aide à élire un leader plus facilement, car le nœud avec la période d'attente la plus basse sera généralement élu.",
+            "heartbeat_interval": "Intervalle de Heartbeat",
+            "heartbeat_interval_tooltip": "L'intervalle de heartbeat est l'intervalle en millisecondes entre chaque heartbeat envoyé par le leader aux nœuds suiveurs. L'intervalle doit être au moins deux fois plus petit que le délai d'élection afin d'éviter les changements inutiles de leader.",
+            "message_size_kb": "Taille du message KB",
+            "message_size_kb_tooltip": "La taille du message concerne la taille des blocs de données transférés lors de la réplication des données en continu via le protocole RPC.",
+            "verification_timeout": "Délai de vérification",
+            "verification_timeout_tooltip": "Le délai de vérification concerne la durée pendant laquelle un nœud suiveur attendra avant de tenter de vérifier la dernière entrée engagée lorsque la première vérification n'a pas abouti."
         },
         "cluster_page": {
-            "create_page_title": "Create cluster",
-            "edit_page_title": "Edit cluster",
-            "creating_cluster_loader": "Creating cluster group...",
-            "create_form_legend": "Cluster properties",
-            "nodes": "Nodes",
-            "node_address": "Node RPC address",
-            "node_address_placeholder": "Enter node address",
-            "node_address_tooltip": "Node RPC address",
-            "add_node_btn": "Add node",
-            "add_node_btn_tooltip": "Add node",
-            "remove_node_btn_tooltip": "Remove node from cluster group",
+            "create_page_title": "Créer un cluster",
+            "edit_page_title": "Modifier le cluster",
+            "creating_cluster_loader": "Création d'un cluster...",
+            "create_form_legend": "Propriétés du cluster",
+            "cluster_nodes_list": "Liste des nœuds du cluster",
+            "manual_node_add": "Ajouter un nœud par adresse",
+            "node_address": "Adresse RPC du nœud",
+            "node_address_placeholder": "Entrez l'adresse du noeud",
+            "node_address_tooltip": "Adresse RPC du nœud",
+            "add_node_btn": "Ajouter un nœud",
+            "add_node_btn_tooltip": "Ajouter un nœud au cluster",
+            "remove_node_btn_tooltip": "Retirer le nœud du cluster",
+            "current_node": "Nœud actuel",
+            "advanced_options": "Options avancées",
+            "advanced_options_tooltip": "Options avancées pour la configuration des clusters",
             "errors": {
-                "at_least_two_nodes": "Must have at least two nodes",
-                "node_in_list": "Node is already in the list",
+                "rpc_pattern_warning": "L'adresse RPC n'est pas valide. Par exemple : server.example.com:7300 | server.example.com:7300/graph | 10.10.10.10:7300 ",
+                "only_positive_integers": "Saisissez uniquement des nombres entiers positifs",
+                "at_least_two_nodes": "Doit avoir au moins deux nœuds",
+                "node_in_list": "Le nœud est déjà dans la liste",
+                "nodes_status_label": "Statut des noeuds",
                 "preconditions_failed": {
-                    "label": "Some of the preconditions for creating a cluster group are not met!",
-                    "valid_license": "Nodes must have a valid enterprise license",
-                    "authentication_secret": "Authentication secret must be set on all nodes",
-                    "nodes_reachable": "Nodes must be reachable",
-                    "no_cluster_configured": "Nodes must not have cluster configuration"
+                    "label": "Certaines des conditions préalables à la création d'un cluster ne sont pas remplies!",
+                    "valid_license": "Les nœuds doivent avoir une licence d'entreprise valide",
+                    "authentication_secret": "Le secret d'authentification doit être défini sur tous les nœuds.",
+                    "nodes_reachable": "Les nœuds doivent être joignables",
+                    "no_cluster_configured": "Les nœuds ne doivent pas avoir de configuration de cluster"
                 }
             },
-            "create_btn": "Create",
-            "save_btn": "Save",
-            "notifications":{
-                "create_success": "Cluster created successfully",
-                "create_failed": "Cluster creation failed",
-                "form_invalid": "The form data is invalid"
+            "create_btn": "Créer",
+            "save_btn": "Sauvez",
+            "notifications": {
+                "create_success": "Cluster créé avec succès",
+                "create_failed": "La création du cluster a échoué",
+                "update_success": "Cluster mis à jour avec succès",
+                "update_failed": "La mise à jour du cluster a échoué",
+                "form_invalid": "Les données du formulaire ne sont pas valides"
+            }
+        },
+        "delete_cluster_dialog": {
+            "title": "Confirmation de la suppression d'un cluster",
+            "content": "Etes-vous sûr de vouloir supprimer le cluster?",
+            "force_delete_label": "Forcer la suppression du cluster",
+            "force_delete_tooltip": "En cochant cette option, le cluster sera supprimé uniquement sur les nœuds accessibles.",
+            "loader_message": "Suppression d'un cluster",
+            "notifications": {
+                "success_delete": "Cluster supprimé avec succès",
+                "success_delete_partial": "Tous les nœuds ne sont pas supprimés",
+                "fail_delete": "Impossible de supprimer le cluster"
             }
         },
         "no.repos.reachable": "Aucun répertoire n'est joignable.\nLa gestion des clusters montre tous les répertoires d'entreprise de l'emplacement actif et de tous les emplacements distants.\nVeuillez aller sur ",
@@ -275,7 +296,8 @@
     "query.execution.on.search": "Cette requête est exécutée pendant la recherche. Ajoutez plus de liens en modifiant cette requête pour voir plus de données dans le tableau de résultats.",
     "query.fetch.analogical.search": "La requête détermine les données qui seront recherchées lors de la recherche analogique.",
     "analogical.search.info": "Cette requête est exécutée pendant la recherche analogique. Ajoutez des liens supplémentaires en modifiant cette requête pour voir plus de données dans le tableau de résultats.",
-    "sample.queries": "Exemples de requêtes :",
+    "sample.queries": "Exemples de requêtes:",
+    "user.queries": "Requêtes des utilisateurs:",
     "create.index.label": "Créer un index",
     "view.index.query": "Requête d'affichage de l'index",
     "test.query.btn": "Requête de test",
@@ -411,6 +433,8 @@
     "security.data.repos": "Les répertoires de données sont tous les répertoires qui ne sont pas le répertoire SYSTEM.",
     "security.is": "La sécurité est",
     "security.free.access.settings": "Paramètres d'accès libre",
+    "security.free.access.is": "L'accès gratuit est",
+    "security.free.access.non.admin": "accès libre aux fonctionnalités non administratives",
     "security.using.external.auth.db": "Utilisation d'une base de données d'authentification et d'autorisation externe",
     "security.user.settings.modification": "Vous pouvez modifier les paramètres d'accès des utilisateurs qui se sont connectés précédemment, mais vous ne pouvez pas modifier leurs informations d'identification ou leurs droits d'accès.",
     "security.table.username": "Nom d'utilisateur",
@@ -507,6 +531,7 @@
     "view.system.information.helpInfo": "La vue Informations système affiche les valeurs de configuration de la JVM qui exécute l'atelier GraphDB et génère un fichier de rapport détaillé sur le serveur que vous pouvez utiliser pour rechercher les problèmes.",
     "view.rest.api.documentation.title": "Documentation de l'API REST",
     "view.rest.api.documentation.helpInfo": "La vue API REST documente les points d'accès publics RESTful disponibles et fournit une interface interactive pour exécuter les requêtes.",
+    "collapse.menu.title": "Réduire le menu",
     "view.plugins.helpInfo": "Activez ou désactivez les plugins.",
     "menu.rdf.label": "RDF",
     "menu.ontoRefine.label": "Tabulaire (OntoRefine)",
@@ -551,6 +576,7 @@
     "core.require.inferred": "Nécessite 'Inclure les données inférées' !",
     "query.editor.no.results.from.prev.run.warning": "Aucun résultat de l'exécution précédente. Cliquez sur Exécuter ou appuyez sur Ctrl/Cmd-Enter pour exécuter la requête ou la mise à jour en cours.",
     "query.editor.visual.btn": "Visuel",
+    "query.editor.table.btn": "Tableau",
     "query.editor.run.btn": "Exécuter",
     "query.editor.query.took.msg": "La requête a pris {{seconds}}, {{timestamp}}.",
     "query.editor.update.msg": "{{message}} a pris {{seconds}}, {{timestamp}}.",
@@ -581,7 +607,9 @@
     "query.editor.render.results.msg": "Rendu des résultats",
     "query.editor.new.tab.running.query.warning.msg": "Il est impossible d'ouvrir de nouveaux onglets pendant l'exécution d'une requête ou d'une mise à jour.",
     "query.editor.tab.switching.running.query.warning.msg": "Les onglets ne peuvent pas être changés pendant l'exécution d'une requête ou d'une mise à jour.",
-    "yasr.removed.statements.result.msg": "Suppression de {{sizeDelta} déclarations.",
+    "query.editor.executing.update": "Exécution de la mise à jour",
+    "query.editor.evaluating.query": "Évaluation de la requête",
+    "yasr.removed.statements.result.msg": "Suppression de {{sizeDelta}} déclarations.",
     "yasr.added.statements.result.msg": "Ajout de {{sizeDelta}} déclarations.",
     "yasr.statements.no.change.msg": "Le nombre de déclarations n'a pas changé.",
     "yasr.stale.result.msg": "Résultat possiblement périmé (obtenu il y a {{secondsAgo}}).",
@@ -597,6 +625,7 @@
     "sparql.tab.directive.close.last.warning": "Le dernier onglet doit rester ouvert.",
     "sparql.tab.directive.delete.all.tabs.warning": "Êtes-vous sûr de vouloir supprimer tous les onglets de requête sauf l'onglet sélectionné ?",
     "sparql.tab.directive.close.tab.warning": "Êtes-vous sûr de vouloir fermer cet onglet de requête?",
+    "sparql.tab.directive.unnamed.tab.title": "Anonyme",
     "search.resource.current.page.msg": "Use <b>View resource</b> on this page",
     "search.resources.msg": "Rechercher des ressources RDF",
     "search.resource.close.msg": "Fermer la recherche",
@@ -1100,6 +1129,7 @@
     "ignore.repo.access.rights": "Ignorer les droits d'accès du répertoire",
     "regardless.repo.rights.federated.view.warning": "Les utilisateurs verront une vue fédérée qui inclut les résultats du répertoire, quels que soient leurs droits d'accès au répertoire.",
     "edit": "Éditer",
+    "security.label": "la sécurité",
     "similarity.could.not.get.indexes.error": "Impossible de récupérer des index",
     "similarity.empty.index.name.error": "Le nom d'index ne peut pas être vide",
     "similarity.index.name.constraint": "Le nom de l'index ne peut contenir que des lettres (a-z, A-Z), des chiffres (0-9), \"-\" et \"_\".",
@@ -1387,6 +1417,7 @@
     "access": "accéder",
     "total.statements": "Total des déclarations",
     "explicit": "explicite",
+    "default": "par défaut",
     "inferred": "inféré",
     "expansion.ratio": "ratio d'expansion",
     "error": "erreur",
@@ -1528,7 +1559,9 @@
     "no.access.permission.to.functionality.error": "Vous n'avez pas la permission d'accéder à cette fonctionnalité avec vos informations d'identification actuelles.",
     "change.menu.or.user.warning": "Veuillez choisir un autre élément du menu ou vous connecter comme un autre utilisateur.",
     "all.rights.reserved.label": "Tous droits réservés.",
-    "workbench.loading.warning": "GraphDB Workbench se charge...",
+    "workbench.loading.warning": "GraphDB Workbench est en cours de chargement mais cela prend plus de temps que d'habitude, veuillez patienter...",
+    "workbench.loading.hint5": "GraphDB Workbench is still loading but it's taking longer than usual, please wait...",
+    "workbench.loading.hint10": "Si le Workbench n'est pas encore chargé, essayez de vider le cache de votre navigateur et de recharger la page.",
     "change.language.tooltip": "Changer la langue en",
 
     "sparql.shortcuts": "raccourcis clavier",
@@ -1571,6 +1604,13 @@
     "graph.shortcuts.rotate.graph.left": "Faites pivoter le graphique vers la gauche.",
     "graph.shortcuts.right.arrow": "Flèche droite",
     "graph.shortcuts.rotate.graph.right": "Faites pivoter le graphique vers la droite.",
+    "filter.classes.placeholder": "Classes de filtres",
+    "all.graphs.label": "Tous les graphiques",
+    "subject": "sujet",
+    "predicate": "prédicat",
+    "object": "objet",
+    "context": "contexte",
+    "all": "tous",
 
     "menu.btn.translate.en": "Anglais",
     "menu.btn.translate.fr": "Français"
