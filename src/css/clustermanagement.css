@@ -8,10 +8,7 @@ svg {
 }
 
 path.link {
-  fill: none;
-  stroke: #000;
   stroke-width: 3px;
-  cursor: default;
 }
 
 path.ON {
@@ -175,17 +172,31 @@ path.REPLICATION_CLIENT {
     background: #000000;
 }
 
-svg:not(.active):not(.ctrl) path.link {
-    cursor: url(images/remove-16x16.svg) 8 8, crosshair;
-    /* workaround for webkit bug on retina displays */
-    cursor: -webkit-image-set(
-            url(images/remove-16x16.svg) 1x,
-            url(images/remove-32x32.svg) 2x
-    ) 8 8, crosshair;
+.cluster-zone {
+  stroke: black;
+  fill: transparent;
 }
 
-svg:not(.active):not(.ctrl) path.link:hover {
-    stroke-width: 5px;
+.cluster-zone.no-cluster {
+  cursor: pointer;
+  stroke: black;
+  fill: transparent;
+  transition: fill 0.2s, stroke 0.2s;
+}
+
+.cluster-zone.no-cluster:hover {
+  stroke-width: 3 !important;
+  fill: #f7f7f7 !important;
+  height: 120%;
+  width: 120%;
+}
+
+.settings-icon {
+  font-size: 110px !important;
+}
+
+.settings-icon.small {
+  font-size: 56px !important;
 }
 
 path.dragline {
@@ -205,7 +216,28 @@ line.link {
   cursor: -moz-grab;
   cursor: -webkit-grab;
   cursor: grab;
-  fill: white;
+  fill: #97999C;
+  stroke: black;
+}
+
+.node.leader {
+  fill: #ED4F2F
+}
+.node.follower {
+  fill: #04355E
+}
+.node.candidate {
+  fill: #0CB0A0
+}
+.node.other {
+  fill: #97999C
+}
+
+text.node-icon {
+  fill: rgba(255, 255, 255, 0.5);
+  font-size: 40px;
+  text-anchor: middle;
+  alignment-baseline: middle;
 }
 
 .node.dragged {
@@ -241,10 +273,6 @@ text.id {
 
 text.id-host {
     font-weight: 400;
-}
-
-text.icon-any {
-    font-size: 56px;
 }
 
 .text-btn {
@@ -369,4 +397,21 @@ div.nodetooltip {
     height: calc(100vh - 120px);
     padding-top: calc((100vh - 300px) / 2);
     background-color: rgba(255,255,255,0.66);
+}
+
+.create-cluster-loader {
+  position: absolute;
+  margin: auto;
+  display: flex;
+  z-index: 100000;
+  background-color: rgba(255,255,255,0.66);
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.rdf-info-side-panel {
+  z-index: 1016 !important;
 }

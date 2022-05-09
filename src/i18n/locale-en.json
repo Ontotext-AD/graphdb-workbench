@@ -4,7 +4,8 @@
             "create_cluster": "Create cluster",
             "create_cluster_tooltip": "Create a new cluster ",
             "delete_cluster": "Delete cluster",
-            "delete_cluster_tooltip": "Delete existing cluster"
+            "delete_cluster_tooltip": "Delete existing cluster",
+            "show_cluster_settings_tooltip": "Show cluster settings"
         },
         "no_cluster_configured": "No cluster is configured",
         "cluster_configuration": {
