@@ -44,14 +44,32 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     function initialize() {
         $scope.loader = true;
-        Promise.allSettled([$scope.getCurrentNodeStatus(), $scope.getClusterConfiguration(), $scope.getClusterStatus()])
+
+        $scope.getCurrentNodeStatus()
+            .then(() => {
+                return $scope.getClusterConfiguration();
+            })
+            .then(() => {
+                return $scope.getClusterStatus();
+            })
             .finally(() => {
                 $scope.setLoader(false);
             });
     }
 
     function updateCluster() {
-        $scope.getClusterStatus().finally(() => $scope.childContext.redraw());
+        $scope.getClusterStatus()
+            .then(() => {
+                if (!$scope.clusterConfiguration) {
+                    return $scope.getClusterConfiguration();
+                }
+            })
+            .then(() => {
+                if (!$scope.currentNode) {
+                    return $scope.getCurrentNodeStatus();
+                }
+            })
+            .finally(() => $scope.childContext.redraw());
     }
 
     $scope.getLoaderMessage = function () {
@@ -62,9 +80,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         return ClusterRestService.getClusterConfig()
             .success((data) => {
                 $scope.clusterConfiguration = data;
-                if (!$scope.currentNode) {
-                    $scope.getCurrentNodeStatus();
-                }
             })
             .error(() => {
                 $scope.clusterConfiguration = null;
@@ -74,10 +89,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.getClusterStatus = function () {
         return ClusterRestService.getClusterStatus()
             .success(function (data) {
-                if (!$scope.clusterConfiguration) {
-                    $scope.getClusterConfiguration();
-                    return;
-                }
                 $scope.leader = data.find((node) => node.nodeState === 'LEADER');
 
                 if ($scope.leader) {
@@ -148,11 +159,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     $scope.getCurrentNodeStatus = () => {
         return ClusterRestService.getNodeStatus()
-            .then((data) => {
+            .success((data) => {
                 $scope.currentNode = data;
             })
-            .catch((error) => {
+            .error((error) => {
                 $scope.currentNode = error.data;
+                $scope.clusterModel.hasCluster = false;
             });
     };
 
@@ -166,7 +178,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         $interval.cancel(timer);
     });
 
-// track window resizing
+    // track window resizing
     const w = angular.element($window);
     const resize = function () {
         $scope.childContext.resize();

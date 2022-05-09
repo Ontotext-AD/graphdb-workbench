@@ -45,7 +45,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 let clusterZone;
 
                 function initialize() {
-                    const hasCluster = scope.clusterModel.nodes && scope.clusterModel.nodes.length;
+                    const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
                     createClusterZone(hasCluster);
                     plot();
                 }
