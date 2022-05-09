@@ -4,7 +4,7 @@ angular
 
 SparqlTemplatesRestService.$inject = ['$http'];
 
-const REPOSITORIES_BASE_URL = '/rest/repositories/';
+const REPOSITORIES_BASE_URL = 'rest/repositories/';
 const SPARQL_TEMPLATES_URL = '/sparql-template';
 
 function SparqlTemplatesRestService($http) {
