@@ -47,7 +47,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
 
         $scope.getAppData();
 
-        $scope.fileFormats = ['ttl', 'ttls',  'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld'];
+        $scope.fileFormats = ['ttl', 'ttls', 'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld'];
 
         {
             const gzs = _.map($scope.fileFormats, function (f) {
@@ -464,7 +464,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
         $scope.files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
-                    return {name: file.name, type: 'file', file: file}
+                    return {name: file.name, type: 'file', file: file};
                 }),
                 $scope.files
             ),
@@ -492,8 +492,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.format = file.format;
                 file.status = FILE_STATUS.PENDING;
                 $http({
-                    method: 'POST',
-                    url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/text',
+                    method: (startImport ? 'POST' : 'PUT'),
+                    url: $scope.getBaseUrl() + '/text',
                     data: $scope.settings
                 }).success(function () {
                     $scope.updateList();
@@ -511,8 +511,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.settings.format = file.format;
                 file.status = FILE_STATUS.PENDING;
                 $http({
-                    method: 'POST',
-                    url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/url',
+                    method: (startImport ? 'POST' : 'PUT'),
+                    url: $scope.getBaseUrl() + '/url',
                     data: $scope.settings
                 }).success(function () {
                     $scope.updateList();
@@ -530,7 +530,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                     data = {importSettings: Upload.jsonBlob($scope.settings)};
                 }
                 Upload.upload({
-                    url: $scope.getBaseUrl() + (startImport ? '' : '/update') + '/file',
+                    _method: (startImport ? 'POST' : 'PUT'),
+                    url: $scope.getBaseUrl() + '/file',
                     data: data
                 }).progress(function (evt) {
                     if (file.file) {
@@ -559,8 +560,8 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.updateTextImport = function (settings) {
         $scope.updating = true;
         $http({
-            method: 'POST',
-            url: $scope.getBaseUrl() + '/update/text',
+            method: 'PUT',
+            url: $scope.getBaseUrl() + '/text',
             data: settings
         }).success(function (data) {
         }).error(function (data) {
@@ -671,7 +672,7 @@ importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format',
         {name: 'Turtle*', type: 'application/x-turtlestar'},
         {name: 'TriX', type: 'application/trix'},
         {name: 'TriG', type: 'application/x-trig'},
-        {name: 'TriG*', type: 'application/x-trigstar'},
+        {name: 'TriG*', type: 'application/x-trigstar'}
     ];
 
     $scope.rdfText = text;
