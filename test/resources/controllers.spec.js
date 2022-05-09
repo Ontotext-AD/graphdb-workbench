@@ -60,7 +60,7 @@ describe('=> ResourcesCtrl tests', function () {
             overrideAuth: {enabled: false}
         });
         $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-        $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+        $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
             username: 'admin',
             appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
             authorities: ['ROLE_ADMIN']

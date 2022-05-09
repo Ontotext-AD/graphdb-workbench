@@ -5,7 +5,7 @@ angular
 SecurityRestService.$inject = ['$http'];
 
 const SECURITY_ENDPOINT = 'rest/security';
-const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/user`;
+const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
 const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticatedUser`;
 const SECURITY_FREEACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/freeaccess`;
 const ROLES_ENDPOINT = 'rest/roles';
@@ -48,10 +48,8 @@ function SecurityRestService($http) {
         return $http({
             method: 'POST',
             url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
             data: {
+                password: data.pass,
                 appSettings: data.appSettings,
                 grantedAuthorities: data.grantedAuthorities
             }
@@ -62,10 +60,8 @@ function SecurityRestService($http) {
         return $http({
             method: 'PUT',
             url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
             data: {
+                password: data.pass,
                 appSettings: data.appSettings,
                 grantedAuthorities: data.grantedAuthorities
             }
@@ -76,10 +72,8 @@ function SecurityRestService($http) {
         return $http({
             method: 'PATCH',
             url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
             data: {
+                password: data.pass,
                 appSettings: data.appSettings
             }
         });

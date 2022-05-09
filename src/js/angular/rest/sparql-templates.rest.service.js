@@ -4,7 +4,7 @@ angular
 
 SparqlTemplatesRestService.$inject = ['$http'];
 
-const SPARQL_TEMPLATES_ENDPOINT = 'rest/sparql-template';
+const SPARQL_TEMPLATES_ENDPOINT = 'rest/sparql-templates';
 
 function SparqlTemplatesRestService($http) {
     return {
@@ -29,14 +29,14 @@ function SparqlTemplatesRestService($http) {
     }
 
     function createSparqlTemplate(template) {
-        return $http.post(`${SPARQL_TEMPLATES_ENDPOINT}/create`, {
+        return $http.post(`${SPARQL_TEMPLATES_ENDPOINT}`, {
             templateID: template.templateID,
             query: template.query
         });
     }
 
     function updateSparqlTemplate(template) {
-        return $http.put(`${SPARQL_TEMPLATES_ENDPOINT}/edit`,
+        return $http.put(`${SPARQL_TEMPLATES_ENDPOINT}`,
             template.query,
             {
                 params : {
@@ -49,7 +49,7 @@ function SparqlTemplatesRestService($http) {
     }
 
     function deleteSparqlTemplate(templateID) {
-        return $http.delete(`${SPARQL_TEMPLATES_ENDPOINT}/delete`,
+        return $http.delete(`${SPARQL_TEMPLATES_ENDPOINT}`,
             {
                 params : {
                     'templateID': templateID

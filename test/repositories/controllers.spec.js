@@ -64,7 +64,7 @@ describe('==> Repository module controllers tests', function () {
                 overrideAuth: {enabled: false},
                 freeAccess: {enabled: false}
             });
-            httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+            httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                 username: 'admin',
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
@@ -308,7 +308,7 @@ describe('==> Repository module controllers tests', function () {
 
                 createController();
 
-                httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+                httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                     username: 'admin',
                     appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                     authorities: ['ROLE_ADMIN']
@@ -408,7 +408,7 @@ describe('==> Repository module controllers tests', function () {
                     $scope: $scope,
                     $routeParams: routeParamsMock
                 });
-                httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+                httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                     username: 'admin',
                     appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                     authorities: ['ROLE_ADMIN']
