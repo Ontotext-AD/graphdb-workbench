@@ -36,6 +36,13 @@ module.exports = merge(commonConfig, {
                 version: PACKAGE.version
             }
         }),
+        new HtmlWebpackPlugin({
+            template: './src/js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
+            filename: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
+            templateParameters: {
+                version: PACKAGE.version
+            }
+        }),
         new CleanWebpackPlugin()
     ],
     devServer: {

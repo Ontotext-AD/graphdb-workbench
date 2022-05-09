@@ -6,6 +6,7 @@ LocationsRestService.$inject = ['$http'];
 
 const LOCATIONS_ENDPOINT = 'rest/locations';
 const ACTIVE_LOCATION_ENDPOINT = `${LOCATIONS_ENDPOINT}/active`;
+const RPC_ADDRESS_ENDPOINT = 'rest/info/rpc-address';
 
 function LocationsRestService($http) {
 
@@ -15,7 +16,8 @@ function LocationsRestService($http) {
         editLocation,
         deleteLocation,
         getActiveLocation,
-        setDefaultRepository
+        setDefaultRepository,
+        getLocationRpcAddress
     };
 
     function getLocations() {
@@ -48,6 +50,14 @@ function LocationsRestService($http) {
             method: 'POST',
             data: {
                 defaultRepository: repositoryId
+            }
+        });
+    }
+
+    function getLocationRpcAddress(location) {
+        return $http.get(`${RPC_ADDRESS_ENDPOINT}`, {
+            params: {
+                location
             }
         });
     }
