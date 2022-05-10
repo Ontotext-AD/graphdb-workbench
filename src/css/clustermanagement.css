@@ -424,3 +424,7 @@ div.nodetooltip {
   left: 0;
   right: 0;
 }
+
+.rdf-info-side-panel {
+  z-index: 1016 !important;
+}

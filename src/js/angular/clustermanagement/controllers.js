@@ -6,7 +6,8 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.cluster.service',
-    'toastr'
+    'toastr',
+    'pageslide-directive'
 ];
 
 angular
@@ -44,6 +45,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     // Holds child context
     $scope.childContext = {};
+
+    $scope.shouldShowClusterSettingsPanel = false;
+    $scope.onopen = $scope.onclose = () => angular.noop();
+
+    $scope.toggleSidePanel = () => {
+        $scope.shouldShowClusterSettingsPanel = !$scope.shouldShowClusterSettingsPanel;
+    };
 
     // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
     $scope.setLoader = function (loader, message) {
