@@ -172,19 +172,6 @@ path.REPLICATION_CLIENT {
     background: #000000;
 }
 
-svg:not(.active):not(.ctrl) path.link {
-    cursor: url(images/remove-16x16.svg) 8 8, crosshair;
-    /* workaround for webkit bug on retina displays */
-    cursor: -webkit-image-set(
-            url(images/remove-16x16.svg) 1x,
-            url(images/remove-32x32.svg) 2x
-    ) 8 8, crosshair;
-}
-
-svg:not(.active):not(.ctrl) path.link:hover {
-    stroke-width: 5px;
-}
-
 .cluster-zone {
   stroke: black;
   fill: transparent;
