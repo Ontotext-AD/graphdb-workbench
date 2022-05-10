@@ -1,5 +1,3 @@
-import {mapValues} from "lodash";
-
 angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
@@ -34,7 +32,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
             return RepositoriesRestService.getRepositories($scope.repositoryInfo.location)
                 .success(function (response) {
                     let repos = [];
-                    mapValues(response, (value) => {
+                    _.values(response).forEach((value) => {
                         repos.push.apply(repos, value);
                     });
                     $scope.allAttachedRepos = _.cloneDeep(repos);

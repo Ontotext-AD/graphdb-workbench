@@ -194,7 +194,7 @@
                                         <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()">
                                     </td>
 								</tr>
-								<tr ng-repeat="repository in getReadableRepositories() | orderBy: ['id', 'location']">
+								<tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
 									<td class="repository-name">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></td>
 									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
 									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>

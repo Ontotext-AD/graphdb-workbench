@@ -4,7 +4,6 @@ import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
-import {mapValues} from "lodash";
 
 const modules = [
     'ngCookies',
@@ -141,7 +140,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                         if (location.active) {
                             RepositoriesRestService.getRepositories().then(function (result) {
                                     that.location = location;
-                                    mapValues(result.data, (value, key) => {
+                                    Object.entries(result.data).forEach(([key, value]) => {
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, value);
                                     });
@@ -176,7 +175,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     $rootScope.globalRepositories = that.getRepositories();
                 },
                 function (err) {
-                    console.log('in error')
                     loadingDone(err);
                     if (errorCallback) {
                         errorCallback();

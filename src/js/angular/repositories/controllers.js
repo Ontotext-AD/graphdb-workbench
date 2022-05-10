@@ -108,6 +108,20 @@ const checkInvalidValues = function(invalidValues, $translate) {
 const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
 }
+const filterLocations =  function (result) {
+    return result.filter(location => !location.errorMsg && !location.degradedReason);
+}
+const getLocations = function ($repositories) {
+    // Don't allow the user to create repository on location with error or degradeded reason
+    const result = $repositories.getLocations();
+    if (Array.isArray(result)) {
+        return filterLocations(result);
+    } else {
+        result.success(function (locations) {
+            return filterLocations(locations);
+        })
+    }
+}
 
 const modules = [
     'ngCookies',
@@ -495,8 +509,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            // Don't allow the user to create repository on location with error or degradeded reason
-            $scope.locations = $repositories.getLocations().filter(location => !location.errorMsg && !location.degradedReason);
+            $scope.locations = getLocations($repositories);
         }
     });
 
@@ -771,11 +784,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                             $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
                         }
                     }
+                    $scope.locations = getLocations($repositories);
                     $scope.repositoryInfo = data;
                     $scope.setRepositoryType(data.type);
                     parseNumberParamsIfNeeded($scope.repositoryInfo.params);
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
-                    $scope.locations = $repositories.getLocations();
                     $scope.loader = false;
                 })
                 .error(function (data, status) {

@@ -1612,6 +1612,8 @@
     "context": "contexte",
     "all": "tous",
     "clear.tooltip": "Clair",
+    "repo.page.location.label": "Localisation",
+    "repo.page.location.input.field.tooltip": "L'emplacement où créer le répertoire. Par défaut, il s'agit de l'emplacement local.",
 
     "menu.btn.translate.en": "Anglais",
     "menu.btn.translate.fr": "Français"

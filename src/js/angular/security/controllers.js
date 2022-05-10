@@ -375,22 +375,22 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.hasWritePermission = function (repository) {
-            let uniqueKey = createUniqueKey(repository);
+        $scope.hasWritePermission = function (repoOrWildCard) {
+            let uniqueKey = createUniqueKey(repoOrWildCard);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
+                || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.readCheckDisabled = function (repository) {
-            return $scope.hasWritePermission(repository)
-                || repository.id !== SYSTEM_REPO && repository !== '*' && $scope.grantedAuthorities.READ_REPO['*']
+        $scope.readCheckDisabled = function (repoOrWildCard) {
+            return $scope.hasWritePermission(repoOrWildCard)
+                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.writeCheckDisabled = function (repository) {
+        $scope.writeCheckDisabled = function (repoOrWildCard) {
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repository.id !== SYSTEM_REPO && repository !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
+                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
