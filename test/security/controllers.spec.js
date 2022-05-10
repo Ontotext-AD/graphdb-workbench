@@ -138,7 +138,7 @@ describe('==> Controllers tests', function () {
                 }
             });
 
-            httpGetUsers = $httpBackend.when('GET', 'rest/security/user').respond(200, []);
+            httpGetUsers = $httpBackend.when('GET', 'rest/security/users').respond(200, []);
 
             var httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
                 enabled: true,
@@ -158,7 +158,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.getUsers tests', function () {
             it('load users data correct', function () {
-                $httpBackend.expectGET('rest/security/user');
+                $httpBackend.expectGET('rest/security/users');
                 $httpBackend.flush();
 
                 expect($scope.users).toEqual([]);
@@ -168,7 +168,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.toggleSecurity', function () {
             it('should reload location when toggle to true', function () {
-                $httpBackend.expectGET('rest/security/user');
+                $httpBackend.expectGET('rest/security/users');
                 $httpBackend.flush();
                 $jwtAuth.toggleSecurity = function () {
                     return;
@@ -219,7 +219,7 @@ describe('==> Controllers tests', function () {
         describe('$scope.removeUser()', function () {
             it('should open $modal and call $http.delete on $modal.close', function () {
                 $httpBackend.flush();
-                $httpBackend.expectDELETE('rest/security/user/username').respond(200, '');
+                $httpBackend.expectDELETE('rest/security/users/username').respond(200, '');
                 $scope.getUsers = jasmine.createSpy('scope.getUsers');
 
                 $scope.removeUser('username');
@@ -345,7 +345,7 @@ describe('==> Controllers tests', function () {
                 return bundle[key];
             };
 
-            httpCreateUser = $httpBackend.when('POST', "rest/security/user/testov", {
+            httpCreateUser = $httpBackend.when('POST', "rest/security/users/testov", {
                 "grantedAuthorities": [],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true, 'IGNORE_SHARED_QUERIES': false, 'DEFAULT_VIS_GRAPH_SCHEMA': true}
             }, function (headers) {
@@ -422,7 +422,7 @@ describe('==> Controllers tests', function () {
             it('should make window.history.back after successful registration', function () {
                 $httpBackend.flush();
                 $scope.createUserHttp();
-                $httpBackend.expectPOST("rest/security/user/testov");
+                $httpBackend.expectPOST("rest/security/users/testov");
                 $httpBackend.flush();
                 $timeout.flush();
                 expect(windowMock.history.back).toHaveBeenCalled();

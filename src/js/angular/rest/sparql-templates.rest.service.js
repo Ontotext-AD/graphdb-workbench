@@ -5,7 +5,7 @@ angular
 SparqlTemplatesRestService.$inject = ['$http'];
 
 const REPOSITORIES_BASE_URL = 'rest/repositories/';
-const SPARQL_TEMPLATES_URL = '/sparql-template';
+const SPARQL_TEMPLATES_URL = '/sparql-templates';
 
 function SparqlTemplatesRestService($http) {
     return {
@@ -30,14 +30,14 @@ function SparqlTemplatesRestService($http) {
     }
 
     function createSparqlTemplate(template, repositoryID) {
-        return $http.post(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}/create`, {
+        return $http.post(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`, {
             templateID: template.templateID,
             query: template.query
         });
     }
 
     function updateSparqlTemplate(template, repositoryID) {
-        return $http.put(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}/edit`,
+        return $http.put(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`,
             template.query,
             {
                 params : {
@@ -50,7 +50,7 @@ function SparqlTemplatesRestService($http) {
     }
 
     function deleteSparqlTemplate(templateID, repositoryID) {
-        return $http.delete(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}/delete`,
+        return $http.delete(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`,
             {
                 params : {
                     'templateID': templateID

@@ -23,7 +23,7 @@ describe('$jwtAuth tests', function () {
             freeAccess: {enabled: false},
             overrideAuth: {enabled: false}
         });
-        httpGetAdmin = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+        httpGetAdmin = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
             username: 'admin',
             appSettings: {},
             grantedAuthorities: []
