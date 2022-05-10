@@ -1,3 +1,5 @@
+import {LinkState, NodeState} from "./controllers";
+
 export const clusterColors = {
     ontoOrange: '#ED4F2F',
     ontoBlue: '#04355E',
@@ -111,13 +113,13 @@ export function updateNodes(nodes) {
 function updateNodesClasses(nodes) {
     nodes
         .select('.node.member')
-        .classed('leader', (node) => node.nodeState === 'LEADER')
-        .classed('follower', (node) => node.nodeState === 'FOLLOWER')
-        .classed('candidate', (node) => node.nodeState === 'CANDIDATE')
+        .classed('leader', (node) => node.nodeState === NodeState.LEADER)
+        .classed('follower', (node) => node.nodeState === NodeState.FOLLOWER)
+        .classed('candidate', (node) => node.nodeState === NodeState.CANDIDATE)
         .classed('other', (node) => {
-            return node.nodeState !== 'LEADER' &&
-                node.nodeState !== 'FOLLOWER' &&
-                node.nodeState !== 'CANDIDATE';
+            return node.nodeState !== NodeState.LEADER &&
+                node.nodeState !== NodeState.FOLLOWER &&
+                node.nodeState !== NodeState.CANDIDATE;
         });
 }
 
@@ -125,6 +127,25 @@ function updateNodesIcon(nodes) {
     nodes
         .select('.icon-any.node-icon')
         .text(getNodeIconType);
+}
+
+function getNodeIconType(node) {
+    if (node.nodeState === NodeState.LEADER) {
+        return '\ue935';
+    } else if (node.nodeState === NodeState.FOLLOWER) {
+        return '\ue90A';
+    } else if (node.nodeState === NodeState.CANDIDATE) {
+        return '\ue914';
+    } else if (node.nodeState === NodeState.NO_CONNECTION) {
+        return '\ue931';
+    } else if (node.nodeState === NodeState.OUT_OF_SYNC) {
+        return '\ue920';
+    } else if (node.nodeState === NodeState.READ_ONLY) {
+        return '\ue923';
+    } else if (node.nodeState === NodeState.RESTRICTED) {
+        return '\ue933';
+    }
+    return '';
 }
 
 function updateNodesHostnameText(nodes) {
@@ -149,6 +170,7 @@ function updateNodesHostnameText(nodes) {
             }
         });
 
+    // Add padding styling to text background. left/right +5. top/bottom +1
     nodes
         .select('.id-host-background')
         .attr('width', function (d) {
@@ -166,18 +188,6 @@ function updateNodesHostnameText(nodes) {
         .attr('fill', '#EEEEEE');
 }
 
-function getNodeIconType(node) {
-    if (node.nodeState === 'LEADER') {
-        return "\ue935";
-    } else if (node.nodeState === 'FOLLOWER') {
-        return "\ue90A";
-    } else if (node.nodeState === 'CANDIDATE') {
-        return "\ue914";
-    } else if (node.nodeState === 'NO_CONNECTION') {
-        return "\ue931";
-    }
-}
-
 export function createLinks(linksDataBinding) {
     linksDataBinding.enter()
         .append('path')
@@ -189,19 +199,19 @@ export function createLinks(linksDataBinding) {
 export function updateLinks(linksDataBinding, nodes) {
     linksDataBinding
         .attr('stroke', (link) => {
-            if (link.status === 'IN_SYNC' || link.status === 'SYNCING') {
+            if (link.status === LinkState.IN_SYNC || link.status === LinkState.SYNCING) {
                 return clusterColors.ontoGreen;
-            } else if (link.status === 'NO_CONNECTION') {
-                return 'none';
+            } else if (link.status === LinkState.OUT_OF_SYNC) {
+                return clusterColors.ontoGrey;
             }
-            return clusterColors.ontoGrey;
+            return 'none';
         })
         .style('stroke-dasharray', setLinkStyle)
         .attr('d', (link) => getLinkCoordinates(link, nodes));
 }
 
 function setLinkStyle(link) {
-    if (link.status === 'OUT_OF_SYNC' || link.status === 'SYNCING') {
+    if (link.status === LinkState.OUT_OF_SYNC || link.status === LinkState.SYNCING) {
         return '10 10';
     }
     return 'none';

@@ -15,6 +15,23 @@ angular
     .controller('CreateClusterCtrl', CreateClusterCtrl)
     .controller('DeleteClusterCtrl', DeleteClusterCtrl);
 
+export const NodeState = {
+    LEADER: 'LEADER',
+    FOLLOWER: 'FOLLOWER',
+    CANDIDATE: 'CANDIDATE',
+    OUT_OF_SYNC: 'OUT_OF_SYNC',
+    NO_CONNECTION: 'NO_CONNECTION',
+    READ_ONLY: 'READ_ONLY',
+    RESTRICTED: 'RESTRICTED',
+    NO_CLUSTER: 'NO_CLUSTER'
+};
+export const LinkState = {
+    IN_SYNC: 'IN_SYNC',
+    OUT_OF_SYNC: 'OUT_OF_SYNC',
+    SYNCING: 'SYNCING',
+    NO_CONNECTION: 'NO_CONNECTION'
+};
+
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate'];
 
@@ -100,12 +117,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                         syncStatus: node.syncStatus
                     };
                 });
-                const leader = data.find((node) => node.nodeState === 'LEADER');
+                const leader = data.find((node) => node.nodeState === NodeState.LEADER);
                 const links = [];
                 if (leader) {
                     Object.keys(leader.syncStatus).forEach((node) => {
                         const status = leader.syncStatus[node];
-                        if (status !== 'NO_CONNECTION') {
+                        if (status !== LinkState.NO_CONNECTION) {
                             links.push({
                                 id: `${leader.address}-${node}`,
                                 source: leader.address,
