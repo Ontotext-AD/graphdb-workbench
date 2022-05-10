@@ -13,7 +13,6 @@ describe('My Settings', () => {
     });
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.setDefaultUserData();
         visitSettingsView();
     });

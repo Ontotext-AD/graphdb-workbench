@@ -43,7 +43,7 @@ describe('Similarity screen validation', () => {
 
     context('Creating similarity index', () => {
         beforeEach(() => {
-            initRepositoryAndVisitSimilarityView()
+            initRepositoryAndVisitSimilarityView();
         });
 
         it('Create default text similarity index and view SPARQL query', () => {
@@ -93,7 +93,7 @@ describe('Similarity screen validation', () => {
 
     context('Index operations', () => {
         beforeEach(() => {
-            initRepositoryAndVisitSimilarityView()
+            initRepositoryAndVisitSimilarityView();
         });
 
         it('Change Data query in Create index', () => {
@@ -156,7 +156,7 @@ describe('Similarity screen validation', () => {
 
     context('Searching in index', () => {
         beforeEach(() => {
-            initRepositoryAndVisitSimilarityView()
+            initRepositoryAndVisitSimilarityView();
         });
 
         it('Search for entity in index', () => {
@@ -235,7 +235,6 @@ describe('Similarity screen validation', () => {
     });
 
     function initRepository() {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
