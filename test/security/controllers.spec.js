@@ -346,10 +346,9 @@ describe('==> Controllers tests', function () {
             };
 
             httpCreateUser = $httpBackend.when('POST', "rest/security/users/testov", {
+                "password": "testova",
                 "grantedAuthorities": [],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true, 'IGNORE_SHARED_QUERIES': false, 'DEFAULT_VIS_GRAPH_SCHEMA': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === 'testova';
             }).respond(201, '');
 
             windowMock = {history: {back: jasmine.createSpy('windowMock.history.back')}};
@@ -503,7 +502,7 @@ describe('==> Controllers tests', function () {
                 return bundle[key];
             };
 
-            httpGetUserData = $httpBackend.when('GET', "rest/security/user/editedUser")
+            httpGetUserData = $httpBackend.when('GET', "rest/security/users/editedUser")
                 .respond(200, {
                     "username": "editedUser",
                     "password": "",
@@ -513,11 +512,9 @@ describe('==> Controllers tests', function () {
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 });
 
-            httpEditUser = $httpBackend.when('PUT', "rest/security/user/editedUser", {
+            httpEditUser = $httpBackend.when('PUT', "rest/security/users/editedUser", {
                 "grantedAuthorities": ['ROLE_ADMIN'],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === undefined;
             }).respond(200, '');
 
             windowMock = {history: {back: jasmine.createSpy('windowMock.history.back')}};
@@ -569,7 +566,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.getUserData', function () {
             it('should set admin user data correct', function () {
-                $httpBackend.expectGET("rest/security/user/editedUser");
+                $httpBackend.expectGET("rest/security/users/editedUser");
                 $httpBackend.flush();
                 expect($scope.mode).toEqual("edit");
                 expect($scope.userData).toEqual({
@@ -600,7 +597,7 @@ describe('==> Controllers tests', function () {
                     "external": false,
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 });
-                $httpBackend.expectGET("rest/security/user/editedUser");
+                $httpBackend.expectGET("rest/security/users/editedUser");
                 $httpBackend.flush();
                 expect($scope.userData).toEqual({
                     "username": "editedUser",
@@ -625,7 +622,7 @@ describe('==> Controllers tests', function () {
                     "external": false,
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 };
-                $httpBackend.expectPUT("rest/security/user/editedUser");
+                $httpBackend.expectPUT("rest/security/users/editedUser");
                 $scope.updateUserHttp();
                 $httpBackend.flush();
                 $timeout.flush();
@@ -749,10 +746,9 @@ describe('==> Controllers tests', function () {
                 "authorities": ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
             };
-            $httpBackend.expectPATCH("rest/security/user/username", {
+            $httpBackend.expectPATCH("rest/security/users/username", {
+                "password": "newPassword",
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === 'newPassword';
             }).respond(200, '');
             $scope.updateUserHttp();
             $httpBackend.flush();
