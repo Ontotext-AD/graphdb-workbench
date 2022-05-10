@@ -56,14 +56,14 @@
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
                           popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
-                        {{getActiveRepository()}}
+                        {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
                     </span>
                     <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
                     <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id', 'location']"
+                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
                     ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"

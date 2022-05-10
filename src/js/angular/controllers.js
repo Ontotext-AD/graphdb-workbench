@@ -13,6 +13,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
 
@@ -35,7 +36,8 @@ angular
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
-        'graphdb.framework.core.services.autocompleteStatus'
+        'graphdb.framework.core.services.autocompleteStatus',
+        'graphdb.framework.utils.uriutils'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -109,11 +111,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -339,6 +341,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.getActiveRepositoryObject = function () {
         return $repositories.getActiveRepositoryObject();
+    };
+
+    $scope.getActiveRepositoryShortLocation = function () {
+        const repo = $repositories.getActiveRepositoryObject();
+        if (repo) {
+            const location = repo.location;
+            if (location) {
+                return '@' + UriUtils.shortenIri(location);
+            }
+        }
+
+        return '';
     };
 
     $scope.isActiveRepoOntopType = function () {
