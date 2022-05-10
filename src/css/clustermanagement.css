@@ -8,10 +8,7 @@ svg {
 }
 
 path.link {
-  fill: none;
-  stroke: #000;
   stroke-width: 3px;
-  cursor: default;
 }
 
 path.ON {
@@ -232,7 +229,28 @@ line.link {
   cursor: -moz-grab;
   cursor: -webkit-grab;
   cursor: grab;
-  fill: white;
+  fill: #97999C;
+  stroke: black;
+}
+
+.node.leader {
+  fill: #ED4F2F
+}
+.node.follower {
+  fill: #04355E
+}
+.node.candidate {
+  fill: #0CB0A0
+}
+.node.other {
+  fill: #97999C
+}
+
+text.node-icon {
+  fill: rgba(255, 255, 255, 0.5);
+  font-size: 40px;
+  text-anchor: middle;
+  alignment-baseline: middle;
 }
 
 .node.dragged {
@@ -268,10 +286,6 @@ text.id {
 
 text.id-host {
     font-weight: 400;
-}
-
-text.icon-any {
-    font-size: 56px;
 }
 
 .text-btn {
