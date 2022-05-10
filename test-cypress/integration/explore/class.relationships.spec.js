@@ -7,7 +7,6 @@ describe('Class relations screen validation', () => {
     let repositoryId;
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'class-relations-repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);

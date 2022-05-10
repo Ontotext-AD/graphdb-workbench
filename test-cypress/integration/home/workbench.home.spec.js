@@ -12,7 +12,6 @@ describe('Home screen validation', () => {
     const GOBLIN_URI = 'http://example.org/#green-goblin';
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.viewport(1280, 1000);
     });
 
