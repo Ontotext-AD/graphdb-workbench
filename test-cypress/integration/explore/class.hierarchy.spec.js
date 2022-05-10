@@ -11,7 +11,6 @@ describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
