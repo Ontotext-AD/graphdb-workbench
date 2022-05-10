@@ -1610,6 +1610,7 @@
     "object": "objet",
     "context": "contexte",
     "all": "tous",
+    "clear.tooltip": "Clair",
 
     "menu.btn.translate.en": "Anglais",
     "menu.btn.translate.fr": "Français"
