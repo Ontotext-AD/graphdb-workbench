@@ -36,7 +36,7 @@ describe('Help / REST API', () => {
         verifyControllerListIsCollapsed(getRDF4JAPI());
 
         // Examine the import controller
-        verifyControllerOptions('repositories', 'Repository management');
+        verifyControllerOptions('repository-management-controller', 'Repository management');
     });
 
     function getSwaggerFrame() {
