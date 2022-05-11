@@ -30,20 +30,20 @@
                       tooltip-placement="top" tooltip-append-to-body="true" style="margin-top: 10px"></span>
             </div>
             <div id="access-user-repos access-user-rights" class="row"
-                 ng-repeat="repository in getRepositories() | orderBy: 'id'">
-                <p class="col-xs-10">{{repository.id}}</p>
+                 ng-repeat="repository in getRepositories() | orderBy: ['id', 'location']">
+                <p class="col-xs-10">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
                 <label class="col-xs-1">
                     <input class="animated read" type="checkbox"
-                           ng-model="grantedAuthorities.READ_REPO[repository.id]"
-                           ng-checked="grantedAuthorities.READ_REPO[repository.id] || grantedAuthorities.WRITE_REPO[repository.id]"
-                           ng-disabled="grantedAuthorities.WRITE_REPO[repository.id]"
-                           ng-class="grantedAuthorities.WRITE_REPO[repository.id] ? 'bounceIn' : ''"
+                           ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
+                           ng-checked="grantedAuthorities.READ_REPO[createUniqueKey(repository)] || grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                           ng-disabled="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                           ng-class="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)] ? 'bounceIn' : ''"
                            ng-click="setGrantedAuthorities()">
                 </label>
                 <label class="col-xs-1">
                     <input class="animated write" type="checkbox"
-                           ng-model="grantedAuthorities.WRITE_REPO[repository.id]"
-                           ng-checked="grantedAuthorities.WRITE_REPO[repository.id]"
+                           ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                           ng-checked="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
                            ng-click="setGrantedAuthorities()">
                 </label>
             </div>

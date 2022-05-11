@@ -197,6 +197,7 @@ describe('QueryEditor', function () {
                 };
                 spyOn(window, '$').and.returnValue(elementMock);
                 $httpBackend.when('GET', 'rest/security/all').respond(200);
+                $httpBackend.when('GET', 'rest/locations', {}).respond(200);
 
                 $scope.querySelected({
                     name: 'second tab',
@@ -226,6 +227,7 @@ describe('QueryEditor', function () {
                 });
                 $httpBackend.when('GET', 'rest/security/all').respond(200);
                 $httpBackend.when('GET', 'rest/sparql/saved-queries').respond(200);
+                $httpBackend.when('GET', 'rest/locations').respond(200);
 
                 createController();
                 $scope.tabsData = [

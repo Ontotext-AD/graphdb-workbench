@@ -77,9 +77,7 @@ describe('Repositories', () => {
 
     it('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
-        getLocationsList()
-            .should('have.length', 1)
-            .and('contain', 'Local');
+        getLocationsList();
 
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -344,7 +342,7 @@ describe('Repositories', () => {
 
         confirmModal();
 
-        getRepositoriesList().should('not.contain', repositoryId);
+        getRepositoriesList().should('not.exist');
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
@@ -498,9 +496,7 @@ describe('Repositories', () => {
 
     it('should verify different virtual repository RDBMS provider elements', () => {
         // There should be a default repository location
-        getLocationsList()
-            .should('have.length', 1)
-            .and('contain', 'Local');
+        getLocationsList();
 
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -728,7 +724,11 @@ describe('Repositories', () => {
     }
 
     function getLocationsList() {
-        return cy.get('.locations-table tr');
+        return cy.get('#wb-locations-locationInGetLocations')
+            .find('tr.location')
+            .should('have.length', 1)
+            .and('contain', 'Repositories from: ')
+            .and('contain', 'Local');
     }
 
     function getRepositoryFromList(repository) {

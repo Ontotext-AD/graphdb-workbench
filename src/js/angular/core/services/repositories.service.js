@@ -20,15 +20,18 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
               RepositoriesRestService, LocationsRestService, LicenseRestService, $translate) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
+        this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = '';
+        this.location = {uri: '', label: 'Local'};
         this.locationError = '';
         this.loading = true;
-        this.repository = localStorage.getItem(this.repositoryStorageName);
-        this.locations = [];
-        this.repositories = [];
-        this.locationsShouldReload = false;
-        this.degradedReason = '';
+        this.repository = {
+            id: localStorage.getItem(this.repositoryStorageName) || '',
+            location: localStorage.getItem(this.repositoryStorageLocationName) || ''
+        };
+        this.locations = [this.location];
+        this.repositories = new Map();
+        this.locationsShouldReload = true;
 
         const that = this;
         const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
@@ -39,9 +42,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             that.loading = false;
             if (err) {
                 // reset location data
-                that.location = '';
+                that.location = {};
                 that.locationError = locationError;
-                that.repositories = [];
+                that.repositories = new Map();
                 that.setRepository('');
 
                 // notify user
@@ -54,53 +57,69 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.resetActiveRepository = function () {
+            let repositoriesFromLocation = that.repositories.get(this.repository.location);
             let existsActiveRepo = false;
-            for (let i = 0; i < this.repositories.length; i++) {
-                const repo = this.repositories[i];
-                if (repo.id === this.repository) {
-                    existsActiveRepo = true;
-                    break;
-                }
+            if (repositoriesFromLocation) {
+                existsActiveRepo = repositoriesFromLocation.find(repo => this.repository && repo.id === this.repository.id);
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(this.location, this.repository)) {
+                if (!$jwtAuth.canReadRepo(this.repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
                 }
             } else {
-                this.setRepository(this.location.defaultRepository ? this.location.defaultRepository : '');
+                this.setRepository(this.location.defaultRepository ? {id: this.location.defaultRepository, location: this.location.uri} : '');
             }
         };
 
-        this.checkActiveLocationDegraded = function () {
-            this.degradedReason = '';
-            // local locations are always fully supported
-            if (this.location.local) {
-                return;
-            }
-            const that = this;
-            LicenseRestService.getVersion()
-                .success(function (res) {
-                    if (typeof res === 'object') {
-                        // New style, check version and product
-                        if (res.productVersion !== productInfo.productVersion) {
-                            that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
-                        }
-                    } else {
-                        // Pre 7.1 style
-                        that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
+        this.checkLocationsDegraded = function (quick) {
+            this.locations.forEach(currentLocation => {
+                // local locations are always fully supported
+                if (currentLocation.local) {
+                    return;
+                }
+                if (currentLocation.errorMsg) {
+                    if (that.repositories.delete(currentLocation.uri)) {
+                        that.resetActiveRepository();
                     }
-                })
-                .error(function () {
-                    // Even older style, endpoint missing
-                    that.degradedReason = $translate.instant('repositories.service.different.gdb.version');
-                });
+                }
+
+                LicenseRestService.getVersion(currentLocation.uri)
+                    .success(function (res) {
+                        if (typeof res === 'object') {
+                            // New style, check version and product
+                            if (res.productVersion !== productInfo.productVersion) {
+                                currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
+                            }
+                        } else {
+                            // Pre 7.1 style
+                            currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
+                        }
+                    })
+                    .error(function (error) {
+                        currentLocation.errorMsg = error;
+                        if (!quick) {
+                            that.locationsShouldReload = true;
+                        }
+                    });
+            });
         };
 
         this.getDegradedReason = function () {
-            return this.degradedReason;
+            let activeRepoLocation = this.locations.find(loc => loc.uri === this.repository.location);
+            if (activeRepoLocation) {
+                return activeRepoLocation.degradedReason;
+            }
+            return '';
         };
+
+        this.clearLocationErrorMsg = function (locationUri) {
+            let location = this.locations.find(loc => loc.uri === locationUri);
+            if (location && location.errorMsg) {
+                location.errorMsg = null;
+            }
+        }
 
         this.initQuick = function () {
             // Quick mode - used to refresh the repo list and states, skip loading if no active location
@@ -110,31 +129,33 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.init = function (successCallback, errorCallback, quick) {
+            this.loading = true;
             if (!quick) {
                 this.locationsShouldReload = true;
             }
-            this.loading = true;
-            // noCancelOnRouteChange Prevent angularCancelOnNavigateModule.js from canceling this request on route change
             LocationsRestService.getActiveLocation().then(
                 function (res) {
                     if (res.data) {
                         const location = res.data;
                         if (location.active) {
-                            RepositoriesRestService.getRepositories().then(function (res) {
+                            RepositoriesRestService.getRepositories().then(function (result) {
                                     that.location = location;
-                                    that.repositories = res.data;
+                                    Object.entries(result.data).forEach(([key, value]) => {
+                                        that.clearLocationErrorMsg(key);
+                                        that.repositories.set(key, value);
+                                    });
                                     that.resetActiveRepository();
                                     loadingDone();
-                                    that.checkActiveLocationDegraded();
+                                    that.checkLocationsDegraded(quick);
                                     // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
                                     $rootScope.globalLocation = that.location;
-                                    $rootScope.globalRepositories = that.repositories;
+                                    $rootScope.globalRepositories = that.getRepositories();
                                     if (successCallback) {
                                         successCallback();
                                     }
                                 },
                                 function (err) {
-                                    loadingDone(err, location.errorMsg);
+                                    loadingDone(err);
                                     if (errorCallback) {
                                         errorCallback();
                                     }
@@ -147,20 +168,18 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                             that.locationsShouldReload = true;
                         }
                         that.location = '';
-                        that.locationError = '';
-                        that.repositories = [];
+                        that.repositories = new Map();
                         that.setRepository('');
                     }
                     $rootScope.globalLocation = that.location;
-                    $rootScope.globalRepositories = that.repositories;
+                    $rootScope.globalRepositories = that.getRepositories();
                 },
                 function (err) {
                     loadingDone(err);
                     if (errorCallback) {
                         errorCallback();
                     }
-                }
-            );
+                });
         };
 
         this.getLocations = function () {
@@ -168,7 +187,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 this.locationsShouldReload = false;
                 this.locations = [this.location];
                 const that = this;
-                LocationsRestService.getLocations()
+                return LocationsRestService.getLocations()
                     .success(function (data) {
                         that.locations = data;
                     })
@@ -182,6 +201,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.locations;
         };
 
+        that.getLocations();
 
         this.getActiveLocation = function () {
             return this.location;
@@ -204,36 +224,52 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getRepositories = function () {
-            return this.repositories;
+            let repos = [];
+            this.repositories.forEach(value => repos.push.apply(repos, value));
+            return repos;
         };
 
         this.getReadableRepositories = function () {
-            const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canReadRepo(that.location, repo.id)
+                return $jwtAuth.canReadRepo(repo)
             });
         };
 
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(that.location, repo.id) && !that.isActiveRepoOntopType(repo.id);
+                return $jwtAuth.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
             });
         };
 
         this.getActiveRepository = function () {
-            return this.repository;
+            return this.repository.id;
+        };
+
+        this.getActiveRepositoryObject = function () {
+            const copyThis = this;
+            let repositoriesFromLocation = copyThis.repositories.get(copyThis.repository.location);
+            if (repositoriesFromLocation) {
+                return repositoriesFromLocation.find(repo => repo.id === copyThis.repository.id);
+            }
+            return null;
         };
 
         this.isSystemRepository = function () {
-            return this.repository === 'SYSTEM';
+            return this.repository.id === 'SYSTEM';
         };
 
-        this.isActiveRepoOntopType = function (repoId) {
+        this.isActiveRepoOntopType = function (repo) {
             const that = this;
-            let activeRepo = that.repositories.find(current => current.id === (repoId ? repoId : that.getActiveRepository()));
-            if (activeRepo) {
-                return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+            if (!repo) {
+                repo = that.getActiveRepositoryObject();
+            }
+            let activeRepo;
+            if (repo) {
+                activeRepo = that.repositories.get(repo.location).find(current => current.id === repo.id);
+                if (activeRepo) {
+                    return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
+                }
             }
 
             // On F5 or refresh of page active repo first is undefined,
@@ -244,9 +280,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.isActiveRepoFedXType = function() {
             const that = this;
-            let activeRepo = that.repositories.find(current => current.id === that.getActiveRepository());
-            if (activeRepo) {
-                return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
+            let repo = that.getActiveRepositoryObject();
+            let activeRepo;
+            if (repo) {
+                activeRepo = that.repositories.get(repo.location).find(current => current.id === repo.id);
+                if (activeRepo) {
+                    return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
+                }
             }
 
             // On F5 or refresh of page active repo first is undefined,
@@ -255,28 +295,37 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return typeof activeRepo === "undefined";
         }
 
+        this.getLocationFromUri = function (locationUri) {
+            return this.locations.find((location) => location.uri === locationUri);
+        }
+
         this.setRepositoryHeaders = function () {
-            const repo = this.repository ? this.repository : undefined;
-            $http.defaults.headers.common['X-GraphDB-Repository'] = repo;
+            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repo;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
+
+            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository ? this.repository.location : undefined;
+            $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = this.repository ? this.repository.location : undefined;
         };
 
-        this.setRepositoryHeaders();
+        that.setRepositoryHeaders();
 
-        this.setRepository = function (id) {
-            this.repository = id;
-            if (id) {
-                localStorage.setItem(this.repositoryStorageName, this.repository);
+        this.setRepository = function (repo) {
+            this.repository = repo;
+            if (repo) {
+                localStorage.setItem(that.repositoryStorageName, this.repository.id);
+                localStorage.setItem(that.repositoryStorageLocationName, this.repository.location);
             } else {
-                localStorage.removeItem(this.repositoryStorageName);
+                localStorage.removeItem(that.repositoryStorageName);
+                localStorage.removeItem(that.repositoryStorageLocationName);
             }
-            this.setRepositoryHeaders(id);
+            that.setRepositoryHeaders();
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
             // we unset the repository
-            if (id && !$jwtAuth.canReadRepo(this.location, id)) {
+            if (repo && !$jwtAuth.canReadRepo(repo)) {
                 this.setRepository('');
             }
             // reset denied permissions (different repo, different rights)
@@ -287,16 +336,16 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.hasActiveLocation() ? this.location.defaultRepository : '';
         };
 
-        this.setDefaultRepository = function (id) {
+        this.setDefaultRepository = function (repo) {
             if (!this.hasActiveLocation()) {
                 toastr.error($translate.instant('repositories.service.no.active.location'), $translate.instant('common.error'));
                 return;
             }
             const that = this;
-            LocationsRestService.setDefaultRepository(id)
+            LocationsRestService.setDefaultRepository(repo)
                 .success(function () {
                     // XXX maybe we should reload the active location but oh well
-                    that.location.defaultRepository = id;
+                    that.location.defaultRepository = repo;
                 })
                 .error(function (data) {
                     const msg = getError(data);
@@ -307,10 +356,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.deleteLocation = function (uri) {
             LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
+                    let activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
-                    if (that.getActiveLocation().uri === uri) {
+                    if (activeRepo && activeRepo.location === uri) {
                         that.location = '';
-                        that.locationError = '';
                         that.setRepository('');
                     }
                     that.init();
@@ -320,23 +369,24 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             });
         };
 
-        this.deleteRepository = function (repositoryId) {
-            RepositoriesRestService.deleteRepository(repositoryId)
+        this.deleteRepository = function (repo) {
+            RepositoriesRestService.deleteRepository(repo)
                 .success(function () {
                     that.init();
                 }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
-            if (that.getActiveRepository() === repositoryId) {
+            let activeRepo = that.getActiveRepositoryObject();
+            if (activeRepo.id === repo.id && activeRepo.location === repo.location) {
                 that.setRepository('');
             }
         };
 
-        this.restartRepository = function (repositoryId) {
-            RepositoriesRestService.restartRepository(repositoryId)
+        this.restartRepository = function (repository) {
+            RepositoriesRestService.restartRepository(repository)
                 .success(function () {
-                    toastr.success($translate.instant('repositories.service.restarting.repo', {repositoryId: repositoryId}));
+                    toastr.success($translate.instant('repositories.service.restarting.repo', {repositoryId: repository.id}));
                     // This provides immediate visual feedback by updating the status
                     that.initQuick();
                 }).error(function (data) {
@@ -352,6 +402,17 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 }
             });
         };
+
+        this.isRepoActive = function (repo) {
+            if (this.repository) {
+                return repo.id === this.repository.id && repo.location === this.repository.location;
+            }
+            return false;
+        }
+
+        this.getRepositoriesFromLocation = function (locationId) {
+            return this.repositories.get(locationId);
+        }
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             if (!securityEnabled || userLoggedIn || freeAccess) {

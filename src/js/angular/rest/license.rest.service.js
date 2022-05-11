@@ -91,8 +91,12 @@ function LicenseRestService($http, Upload) {
         return $http.get('rest/info/properties');
     }
 
-    function getVersion() {
-        return $http.get('rest/info/version');
+    function getVersion(locationUri) {
+        return $http.get('rest/info/version', {
+            headers: {
+                'X-GraphDB-Repository-Location': locationUri
+            }
+        });
     }
 
     function getStatistics() {

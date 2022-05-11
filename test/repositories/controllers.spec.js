@@ -56,7 +56,7 @@ describe('==> Repository module controllers tests', function () {
                 $translate: $translate
             });
 
-            httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, {});
+            httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
             httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
             httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -105,27 +105,6 @@ describe('==> Repository module controllers tests', function () {
             })
         });
 
-        describe('$scope.activateLocationRequest()', function () {
-            it('should call $repositories.init() and setRepository() on success', function () {
-                $httpBackend.flush();
-                var init = false,
-                    repository = 'some repository';
-                $repositories.init = function () {
-                    init = true
-                };
-                $repositories.setRepository = function (id) {
-                    repository = id
-                };
-                $httpBackend.expectPOST('rest/locations/activate').respond(200, '');
-                $scope.activateLocationRequest({
-                    'uri': 'uri'
-                });
-                $httpBackend.flush();
-                expect(init).toBeTruthy();
-                expect(repository).toEqual('');
-            })
-        });
-
         describe('$scope.deleteLocation()', function () {
             it('should call $repositories.deleteLocation on modal confirm', function () {
                 $httpBackend.flush();
@@ -165,90 +144,20 @@ describe('==> Repository module controllers tests', function () {
             })
         });
 
-        describe('$scope.activateLocation()', function () {
-            it('should call $scope.activateLocationRequest() on modal confirm', function () {
-                var dummyElement = document.createElement('input');
-                dummyElement.checked = false;
-                dummyElement.id = 'switch-1';
-                document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-                $httpBackend.flush();
-                $scope.hasActiveLocation = function () {
-                    return true;
-                };
-                var activateLocationRequest = {};
-                $scope.activateLocationRequest = function (location) {
-                    activateLocationRequest = location;
-                };
-                $scope.activateLocation({uri: 'uri', '$$hashKey': 1});
-                modalInstance.close();
-                expect(activateLocationRequest).toEqual({uri: 'uri', '$$hashKey': 1});
-            });
-            it('should set element checked to false on modal reject', function () {
-                var dummyElement = document.createElement('input');
-                dummyElement.checked = false;
-                $scope.hasActiveLocation = function () {
-                    return true;
-                };
-                dummyElement.id = 'switch-1';
-                document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-                $httpBackend.flush();
-                var activateLocationRequest = {};
-                $scope.activateLocationRequest = function (location) {
-                    activateLocationRequest = location;
-                };
-                $scope.activateLocation({uri: 'uri', '$$hashKey': 1});
-                dummyElement.checked = true;
-                modalInstance.dismiss();
-                expect(dummyElement.checked).toBeFalsy();
-            });
-            it('should not open modal and call $scope.activateLocationRequest() if there is not activeLocation', function () {
-                var dummyElement = document.createElement('input');
-                dummyElement.checked = false;
-                $scope.hasActiveLocation = function () {
-                    return false;
-                };
-                dummyElement.id = 'switch-1';
-                document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-                modalInstance.open = jasmine.createSpy('modal.open');
-                $httpBackend.flush();
-                var activateLocationRequest = {};
-                $scope.activateLocationRequest = function (location) {
-                    activateLocationRequest = location;
-                };
-                $scope.activateLocation({uri: 'uri', '$$hashKey': 1});
-                dummyElement.checked = true;
-                expect(modalInstance.open).not.toHaveBeenCalled();
-                expect(activateLocationRequest).toEqual({uri: 'uri', '$$hashKey': 1});
-            });
-            it('should not open modal and not call $scope.activateLocationRequest() if the input is checked', function () {
-                $httpBackend.flush();
-                var dummyElement = document.createElement('input');
-                dummyElement.checked = true;
-                $scope.hasActiveLocation = function () {
-                    return true;
-                };
-                modalInstance.open = jasmine.createSpy('modal.open');
-                dummyElement.id = 'switch-1';
-                document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(dummyElement);
-                $scope.activateLocationRequest = jasmine.createSpy('$scope.activateLocationRequest');
-                $scope.activateLocation({uri: 'uri', '$$hashKey': 1});
-                expect(modalInstance.open).not.toHaveBeenCalled();
-                expect($scope.activateLocationRequest).not.toHaveBeenCalled();
-            })
-        });
-
         describe('$scope.deleteRepository()', function () {
             it('should call $repositories.deleteRepository() on modal.close()', function () {
-                const repoId = 'testrepo';
+                const repo = {id: 'testrepo', location: ''};
+                $repositories.repository = repo;
+                $repositories.repositories.set('', [repo]);
                 spyOn(modalInstance, 'openSimpleModal').and.returnValue(modalInstance);
-                $httpBackend.expectDELETE(`rest/repositories/${repoId}`).respond(200);
+                $httpBackend.expectDELETE(`rest/repositories/${repo.id}?location=`).respond(200);
 
-                $scope.deleteRepository(repoId);
+                $scope.deleteRepository(repo);
 
                 const argument = modalInstance.openSimpleModal.calls.first().args[0];
                 expect(argument).toEqual({
                     title: 'Confirm delete',
-                    message: `<p>Are you sure you want to delete the repository <strong>${repoId}</strong>?</p><p><span class="icon-2x icon-warning" style="color: #d54a33"/>All data in the repository will be lost.</p>`,
+                    message: `<p>Are you sure you want to delete the repository <strong>${repo.id}</strong>?</p><p><span class="icon-2x icon-warning" style="color: #d54a33"/>All data in the repository will be lost.</p>`,
                     warning: true
                 });
 
@@ -284,6 +193,8 @@ describe('==> Repository module controllers tests', function () {
                 $translate.instant = function (key) {
                     return bundle[key];
                 };
+
+                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
@@ -395,6 +306,8 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
+                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
+
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
 
                 $scope = $rootScope.$new();
@@ -454,8 +367,13 @@ describe('==> Repository module controllers tests', function () {
                 }, init: function (callback) {
                     init = true;
                     callback();
+                },
+                getLocations: function () {
+                    return [{uri: '', local: true}]
                 }
             };
+
+            $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
             routeParamsMock = {repositoryId: 'repo'};
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 

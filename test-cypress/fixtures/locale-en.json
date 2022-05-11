@@ -1005,7 +1005,7 @@
     "repos.edit.common.settings": "Edit common settings for these repositories",
     "repos.view.update.licenses": "View or update license for these repositories",
     "repos.refresh.page.msg": " Refresh the page to retry.",
-    "no.repos.in.active.location": "There are no repositories in the active location",
+    "no.repos.in.current.location": "There are no repositories in the active location",
     "connect.repo": "Connect repository",
     "connected.tooltip": "Connected",
     "copy.repo.url": "Copy repository URL to clipboard",

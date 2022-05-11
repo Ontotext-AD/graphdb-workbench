@@ -56,23 +56,23 @@
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
                           popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
-                        {{getActiveRepository()}}
+                        {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
                     </span>
                     <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
                     <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id']"
-                    ng-if="repository.id !== getActiveRepository()"
+                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
+                    ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
                     popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository.id)">
+                    <a class="dropdown-item" ng-click="setRepository(repository)">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>
 						    {{repository.id}} <br/>
-						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn())">{{getActiveLocation().label}}</small>
+						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn() || isFreeAccessEnabled())">{{repository.location ? repository.location : 'Local'}}</small>
 					    </span>
                     </a>
                 </li>
@@ -126,7 +126,7 @@
             <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
-                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository()) && checkEdition(submenu.editions)">
+                ng-if="checkForWrite(submenu.role, getActiveRepositoryObject()) && checkEdition(submenu.editions)">
                 <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="{{'open.external.page' | translate}}" ng-class=submenu.icon class="text-muted"></span>
                 </a>

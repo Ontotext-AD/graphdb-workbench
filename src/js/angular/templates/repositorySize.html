@@ -1,4 +1,10 @@
 <div ng-init="getRepositorySize()" style="margin: -4px 0; padding: 10px">
+    <div class="row">
+        <label style="margin-right: 10px">{{'location.label' | translate}}</label>
+        <span class="text-right pull-right">
+			{{popoverRepo.location ? popoverRepo.location : 'Local'}}
+		</span>
+    </div>
 	<div class="row">
 		<label style="margin-right: 10px">{{'type.label' | translate}}</label>
 		<span class="text-right pull-right">
@@ -8,7 +14,7 @@
 	<div class="row mb-1">
 		<label style="margin-right: 10px">{{'access.label' | translate}}</label>
 		<span class="text-right pull-right">
-			{{(popoverRepo.writable && canWriteRepoInActiveLocation(popoverRepo.id) && popoverRepo.type !== 'ontop') ? 'read.write.label' : 'read.only.label' | translate}}
+			{{(popoverRepo.writable && canWriteRepoInLocation(popoverRepo) && popoverRepo.type !== 'ontop') ? 'read.write.label' : 'read.only.label' | translate}}
 		</span>
 	</div>
 	<div ng-show="repositorySize.total >= 0">

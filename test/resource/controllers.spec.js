@@ -54,6 +54,7 @@ describe('=> ExploreCtrl tests', function () {
         });
 
         $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
     }));
 
     afterEach(function () {
@@ -153,6 +154,8 @@ describe('=> EditResourceCtrl', function () {
         $translate.instant = function (key) {
             return bundle[key];
         }
+
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
         $controller('EditResourceCtrl', {$scope: $scope, $translate: $translate});
 

@@ -41,6 +41,12 @@ describe('=> NamespacesCtrl tests', function () {
 
         modalInstance = new FakeModal($q, $rootScope);
 
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
+        $repositories.getActiveRepositoryObject = function () {
+            return {id: 'activeRepository', location: ''};
+        }
+
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: false,
             freeAcesss: {enabled: false},
@@ -162,7 +168,7 @@ describe('=> NamespacesCtrl tests', function () {
         it('should edit prefix', () => {
             $scope.loader = undefined;
             spyOn($scope, 'getNamespaces').and.callThrough();
-            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(200);
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix?location=').respond(200);
 
             $scope.editPrefix();
             $httpBackend.flush();
@@ -175,7 +181,7 @@ describe('=> NamespacesCtrl tests', function () {
             $scope.loader = undefined;
             spyOn(toastr, 'error');
             spyOn($scope, 'getNamespaces').and.callThrough();
-            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(500, {
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix?location=').respond(500, {
                 message: 'Edit prefix error!'
             });
 

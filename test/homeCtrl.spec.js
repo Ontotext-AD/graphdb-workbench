@@ -40,7 +40,7 @@ describe('homeCtrl', function () {
         };
 
         $licenseService.checkLicenseStatus = () => {};
-
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
         createController = () => $controller('homeCtrl', {
             $scope, $http, $repositories, $licenseService, ClassInstanceDetailsService, AutocompleteRestService, LicenseRestService, RepositoriesRestService
@@ -67,10 +67,10 @@ describe('homeCtrl', function () {
         });
 
         it('should initialize repository size variable', () => {
-            $httpBackend.when('GET', 'rest/repositories/active-repo/size').respond(200, '2000000');
+            $httpBackend.when('GET', 'rest/repositories/active-repo/size?location=').respond(200, '2000000');
             $scope.activeRepositorySize = undefined;
             $scope.activeRepositorySizeError = undefined;
-            spyOn($repositories, 'getActiveRepository').and.returnValue('active-repo');
+            spyOn($repositories, 'getActiveRepositoryObject').and.returnValue({id: 'active-repo', location: ''});
 
             $scope.getActiveRepositorySize();
             $httpBackend.flush();
@@ -80,12 +80,12 @@ describe('homeCtrl', function () {
         });
 
         it('should set error message if getting repository size fails', () => {
-            $httpBackend.when('GET', 'rest/repositories/active-repo/size').respond(500, {
+            $httpBackend.when('GET', 'rest/repositories/active-repo/size?location=').respond(500, {
                 message: 'Repository size read error!'
             });
             $scope.activeRepositorySize = undefined;
             $scope.activeRepositorySizeError = undefined;
-            spyOn($repositories, 'getActiveRepository').and.returnValue('active-repo');
+            spyOn($repositories, 'getActiveRepositoryObject').and.returnValue({id: 'active-repo', location: ''});
 
             $scope.getActiveRepositorySize();
             $httpBackend.flush();
