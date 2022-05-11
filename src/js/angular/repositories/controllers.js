@@ -770,6 +770,8 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
+            // Should get locations before getting repository info
+            $scope.locations = getLocations($repositories);
             RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
@@ -784,7 +786,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                             $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
                         }
                     }
-                    $scope.locations = getLocations($repositories);
                     $scope.repositoryInfo = data;
                     $scope.setRepositoryType(data.type);
                     parseNumberParamsIfNeeded($scope.repositoryInfo.params);
