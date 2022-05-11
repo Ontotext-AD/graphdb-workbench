@@ -5,6 +5,7 @@ import 'angular/clustermanagement/directives';
 import 'angular/core/services/repositories.service';
 import 'd3/build/d3';
 import 'lib/d3-ONTO-chord-patch';
+import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 
 const modules = [
     'ngAnimate',
