@@ -2,12 +2,12 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$timeout', 'LocationsRestService', '$translate'];
+fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$translate'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, LocationsRestService, $translate) {
+function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) {
     return {
         restrict: 'E',
-        scope: false,
+        scope: true,
         templateUrl: 'js/angular/repositories/templates/fedx-repo.html',
 
         link: linkFunc
@@ -22,29 +22,20 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
 
         $scope.fedxMembers = [];
         $scope.knownRepos = [];
-        $scope.allLocalRepos = [];
         $scope.allAttachedRepos = [];
-        $scope.locations = [];
 
-        function getRepositories() {
-            return RepositoriesRestService.getRepositories()
-                .success(function (response) {
-                    $scope.allLocalRepos = response.slice();
-                }).error(function (response) {
-                    const msg = getError(response);
-                    toastr.error(msg, 'Error');
-                });
+        if ($scope.editRepoPage) {
+            $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
         }
 
-        function getRepositoriesFromLocation(location) {
-            return RepositoriesRestService.getRepositoriesFromKnownLocation(location)
+        function getRepositories() {
+            return RepositoriesRestService.getRepositories($scope.repositoryInfo.location)
                 .success(function (response) {
-                    $scope.knownRepos = $scope.allLocalRepos.filter(el => $scope.knownRepos.indexOf(el) !== -1);
-                    for (const member of response) {
-                        $scope.allAttachedRepos = $scope.allAttachedRepos.filter(repo => repo.id !== member.id || repo.location !== member.location);
-                    }
-                    $scope.allAttachedRepos = $scope.allAttachedRepos.concat(response.slice());
-                    $scope.knownRepos = $scope.knownRepos.concat($scope.allAttachedRepos);
+                    let repos = [];
+                    _.values(response).forEach((value) => {
+                        repos.push.apply(repos, value);
+                    });
+                    $scope.allAttachedRepos = _.cloneDeep(repos);
                 }).error(function (response) {
                     const msg = getError(response);
                     toastr.error(msg, $translate.instant('common.error'));
@@ -86,47 +77,24 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         }
 
         function getKnownRepos() {
-            return getRepositories()
+            getRepositories()
                 .then(function () {
-                    getAttachedRepositories();
-                });
-        }
-
-        function getLocations() {
-            return LocationsRestService.getLocations()
-                .success(function(response) {
-                    $scope.locations = response.slice();
-                }).error(function (response) {
-                    const msg = getError(response);
-                    toastr.error(msg, $translate.instant('common.error'));
-                });
-        }
-
-        function getAttachedRepositories() {
-            return getLocations()
-                .then(function() {
-                    $scope.locations.forEach(l => getRepositoriesFromLocation(l.uri)
-                        .then(function () {
-                            if ($scope.editRepoPage) {
-                                $scope.fedxMembers = $scope.repositoryInfo.params.member.value.slice();
-                            }
-                            populateKnownRepos();
-                        }))
+                    $scope.knownRepos = $scope.allAttachedRepos.slice();
+                    populateKnownRepos();
                 });
         }
 
         $scope.checkIfRepoExist = function (member) {
+            if (!$scope.allAttachedRepos.length) {
+                return true;
+            }
             if (member.store === LOCAL_REPO_STORE) {
-                return $scope.allLocalRepos.find(repo => repo.id === member.repositoryName);
-            } else if (member.store === REMOTE_REPO_STORE && checkIfLocationIsAttached(member)) {
+                return $scope.allAttachedRepos.find(repo => repo.id === member.repositoryName && !repo.location);
+            } else if (member.store === REMOTE_REPO_STORE) {
                 return $scope.allAttachedRepos.find(repo => repo.id === member.repositoryName && repo.location === member.repositoryServer);
             } else {
                 return true;
             }
-        }
-
-        function checkIfLocationIsAttached(repo) {
-            return $scope.locations.find(el => el.uri === repo.repositoryServer);
         }
 
         $scope.getRepositoryServer = function (repo) {
@@ -146,10 +114,17 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
         });
 
         $scope.addMember = function(repository) {
+            let member;
             if ($scope.getRepositoryServer(repository) === "Local") {
-                $scope.addLocalMember(repository);
+                member = {
+                    store: LOCAL_REPO_STORE,
+                    repositoryName: repository.id,
+                    repoType: repository.type,
+                    respectRights: "true",
+                    writable: "false"
+                };
             } else {
-                let member = {
+                member = {
                     store: REMOTE_REPO_STORE,
                     repositoryName: repository.id,
                     repositoryServer: repository.location,
@@ -157,49 +132,23 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
                     password: '',
                     supportsASKQueries: "true",
                     writable: "false"
-                }
-                $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
-                    if (member.repositoryServer) {
-                        return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
-                    } else {
-                        return repo.id !== member.repositoryName || !repo.local;
-                    }
-                });
-                updateMembers(member);
+                };
             }
-        }
-
-        $scope.addLocalMember = function (repository) {
-            let member = {
-                store: LOCAL_REPO_STORE,
-                repositoryName: repository.id,
-                repoType: repository.type,
-                respectRights: "true",
-                writable: "false"
-            };
-
-            $scope.knownRepos = $scope.knownRepos.filter(function (repo) {
-                if (member.repositoryServer) {
-                    return repo.id !== member.repositoryName || repo.location !== member.repositoryServer;
-                } else {
-                    return repo.id !== member.repositoryName || !repo.local;
-                }
-            });            updateMembers(member);
+            $scope.knownRepos = $scope.knownRepos.filter(repo => repo.id !== repository.id || repo.location !== repository.location);
+            updateMembers(member);
         }
 
         $scope.removeMember = function (member) {
             if (member.store && member.store === LOCAL_REPO_STORE) {
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName || el.store !== member.store);
-                $scope.allLocalRepos = [];
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.store !== member.store || el.repositoryName !== member.repositoryName && !el.repositoryServer);
                 getKnownRepos();
             } else if (member.store && member.store === SPARQL_ENDPOINT_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.endpoint !== member.endpoint);
             } else if (member.store && member.store === NATIVE_STORE) {
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryLocation !== member.repositoryLocation);
             } else if (member.store && member.store === REMOTE_REPO_STORE) {
-                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
-                    || el.repositoryServer !== member.repositoryServer || el.store !== member.store);
-                $scope.allAttachedRepos = []
+                $scope.fedxMembers = $scope.fedxMembers.filter(el => el.store !== member.store || el.repositoryName !== member.repositoryName
+                                                                                                || el.repositoryServer !== member.repositoryServer);
                 getKnownRepos();
             }
             $scope.repositoryInfo.params['member'].value = $scope.fedxMembers;
@@ -356,6 +305,11 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $timeout, Lo
             populateKnownRepos();
             $scope.$modalInstance.close();
         };
+
+        $scope.$on('changedLocation', function () {
+            $scope.fedxMembers = [];
+            getKnownRepos();
+        });
 
         getKnownRepos();
     }

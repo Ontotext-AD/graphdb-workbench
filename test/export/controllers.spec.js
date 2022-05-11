@@ -68,6 +68,7 @@ describe('==> ExportCtrl tests', function () {
         });
 
         $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
     }));
 
     afterEach(function () {

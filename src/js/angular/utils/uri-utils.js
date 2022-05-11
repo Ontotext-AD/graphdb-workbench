@@ -33,8 +33,35 @@ function UriUtils() {
         return iri !== undefined && !!iri.match(iriRegExp);
     }
 
+    function shortenIri(iri) {
+        const parser = document.createElement('a');
+
+        function containsIPV4(ip) {
+            const blocks = ip.split(".");
+            for (let i = 0, sequence = 0; i < blocks.length; i++) {
+                if (parseInt(blocks[i], 10) >= 0 && parseInt(blocks[i], 10) <= 255) {
+                    sequence++;
+                } else {
+                    sequence = 0;
+                }
+                if (sequence === 4) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        parser.href = iri;
+        let hostname = parser.hostname;
+        if (!containsIPV4(parser.hostname)) {
+            hostname = parser.hostname.split('.')[0];
+        }
+        return hostname + ":" + parser.port;
+    }
+
     return {
         isValidIri: isValidIri,
-        validateRdfUri: validateRdfUri
+        validateRdfUri: validateRdfUri,
+        shortenIri: shortenIri
     };
 }

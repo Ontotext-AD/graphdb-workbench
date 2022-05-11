@@ -25,22 +25,22 @@ describe('repositorySizeCtrl', function () {
 
     describe('getRepositorySize', () => {
         it('should set repository size variable', () => {
-            $httpBackend.when('GET', 'rest/repositories/repoId/size').respond(200, '2000000');
+            $httpBackend.when('GET', 'rest/repositories/repoId/size?location=').respond(200, '2000000');
             $scope.size = undefined;
 
-            $scope.getRepositorySize('repoId');
+            $scope.getRepositorySize({id: 'repoId', location: ''});
             $httpBackend.flush();
 
             expect($scope.size).toEqual('2000000');
         });
 
         it('should handle http error when get repository size fails', () => {
-            $httpBackend.when('GET', 'rest/repositories/repoId/size').respond(500, {
+            $httpBackend.when('GET', 'rest/repositories/repoId/size?location=').respond(500, {
                 message: 'Get repository size error!'
             });
             $scope.size = undefined;
 
-            $scope.getRepositorySize('repoId');
+            $scope.getRepositorySize({id: 'repoId', location: ''});
             $httpBackend.flush();
 
             expect($scope.size).toBeUndefined();

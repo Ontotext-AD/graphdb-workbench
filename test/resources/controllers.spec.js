@@ -66,6 +66,8 @@ describe('=> ResourcesCtrl tests', function () {
             authorities: ['ROLE_ADMIN']
         });
 
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
         $scope = $rootScope.$new();
         var controller = $controller('ResourcesCtrl', {$scope: $scope});
 

@@ -72,7 +72,7 @@ describe('==> Import module controllers tests', function () {
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
             });
-
+            $httpBackend.when('GET', 'rest/locations', {}).respond(200);
         }));
 
         describe('$scope.updateListHttp() tests', function () {

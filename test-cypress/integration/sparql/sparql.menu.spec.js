@@ -63,7 +63,6 @@ describe('SPARQL screen validation', () => {
         '}';
 
     function createRepoAndVisit(repoOptions = {}) {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         createRepository(repoOptions);
         visitSparql(true);
     }
