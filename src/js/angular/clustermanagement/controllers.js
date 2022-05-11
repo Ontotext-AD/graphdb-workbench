@@ -68,6 +68,17 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         }
     };
 
+    function selectNode(node) {
+        if ($scope.selectedNode !== node) {
+            $scope.selectedNode = node;
+        } else {
+            $scope.selectedNode = null;
+        }
+        $scope.$apply();
+    }
+
+    $scope.childContext.selectNode = selectNode;
+
     function initialize() {
         $scope.loader = true;
 
@@ -118,14 +129,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.getClusterStatus = function () {
         return ClusterRestService.getClusterStatus()
             .success(function (data) {
-                const nodes = data.map((node) => {
-                    return {
-                        address: node.address,
-                        nodeState: node.nodeState,
-                        endpoint: node.endpoint,
-                        syncStatus: node.syncStatus
-                    };
-                });
+                const nodes = data.slice();
                 const leader = data.find((node) => node.nodeState === NodeState.LEADER);
                 const links = [];
                 if (leader) {
