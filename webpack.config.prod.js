@@ -40,6 +40,13 @@ module.exports = merge(commonConfig, {
             //     removeComments: true
             // }
         }),
+        new HtmlWebpackPlugin({
+            template: './src/js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
+            filename: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
+            templateParameters: {
+                version: PACKAGE.version
+            }
+        }),
         new MiniCssExtractPlugin({filename: "[name].[contentHash].css"}),
         new OptimizeCssAssetsPlugin(),
         new CleanWebpackPlugin()
