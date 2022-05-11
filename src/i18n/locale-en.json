@@ -4,7 +4,8 @@
             "create_cluster": "Create cluster",
             "create_cluster_tooltip": "Create a new cluster ",
             "delete_cluster": "Delete cluster",
-            "delete_cluster_tooltip": "Delete existing cluster"
+            "delete_cluster_tooltip": "Delete existing cluster",
+            "show_cluster_settings_tooltip": "Show cluster settings"
         },
         "no_cluster_configured": "No cluster is configured",
         "cluster_configuration": {
@@ -17,10 +18,12 @@
             "leader": "Leader",
             "followers": "Followers",
             "node": {
-                "address": "Address",
+                "rpc_address": "RPC address",
                 "endpoint": "Endpoint",
-                "state": "State",
-                "term": "Term"
+                "state": "Node state",
+                "term": "Term",
+                "last_log_term": "Last log term",
+                "last_log_index": "Last log index"
             },
             "election": {
                 "label": "Election in progress",
@@ -45,6 +48,7 @@
             "creating_cluster_loader": "Creating cluster...",
             "create_form_legend": "Cluster properties",
             "cluster_nodes_list": "Cluster nodes list",
+            "remote_locations": "Remote locations",
             "manual_node_add": "Add node by address",
             "node_address": "Node RPC address",
             "node_address_placeholder": "Enter node address",

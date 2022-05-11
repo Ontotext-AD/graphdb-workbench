@@ -8,14 +8,6 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/cluster-management/clusterInfo.html',
         'helpInfo': 'view.clusterManagement.helpInfo',
         'title': 'view.clusterManagement.title'
-    }, {
-        'url': '/cluster/create',
-        'module': 'graphdb.framework.clustermanagement',
-        'path': 'clustermanagement/app',
-        'chunk': 'clustermanagement',
-        'controller': 'CreateClusterCtrl',
-        'templateUrl': 'pages/cluster-management/cluster-configuration.html',
-        'title': 'view.clusterManagement.create.title'
     }
 ]);
 
@@ -26,11 +18,7 @@ PluginRegistry.add('main.menu', {
         href: 'cluster',
         order: 20,
         role: 'ROLE_ADMIN',
-        parent: 'Setup',
-        children: [{
-            href: 'cluster/create',
-            children: []
-        }]
+        parent: 'Setup'
     }]
 });
 
