@@ -56,7 +56,7 @@ describe('==> Repository module controllers tests', function () {
                 $translate: $translate
             });
 
-            httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, {});
+            httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
             httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
             httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -194,7 +194,7 @@ describe('==> Repository module controllers tests', function () {
                     return bundle[key];
                 };
 
-                $httpBackend.when('GET', 'rest/locations').respond(200, {});
+                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
@@ -306,7 +306,7 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
-                $httpBackend.when('GET', 'rest/locations').respond(200, {});
+                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
 
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
 
@@ -369,11 +369,11 @@ describe('==> Repository module controllers tests', function () {
                     callback();
                 },
                 getLocations: function () {
-                    return {uri: '', local: true}
+                    return [{uri: '', local: true}]
                 }
             };
 
-            $httpBackend.when('GET', 'rest/locations').respond(200, {});
+            $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
             routeParamsMock = {repositoryId: 'repo'};
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 
