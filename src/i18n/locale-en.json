@@ -18,10 +18,12 @@
             "leader": "Leader",
             "followers": "Followers",
             "node": {
-                "address": "Address",
+                "rpc_address": "RPC address",
                 "endpoint": "Endpoint",
-                "state": "State",
-                "term": "Term"
+                "state": "Node state",
+                "term": "Term",
+                "last_log_term": "Last log term",
+                "last_log_index": "Last log index"
             },
             "election": {
                 "label": "Election in progress",

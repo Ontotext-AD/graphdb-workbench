@@ -56,10 +56,16 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     plot();
                 }
 
+                function mousedown() {
+                    d3.event.preventDefault();
+                    scope.childContext.selectNode(null);
+                }
+
                 function createClusterZone(hasCluster) {
                     svg = CDS.createClusterSvgElement(element[0])
                         .attr('width', width)
                         .attr('height', height);
+                    svg.on('mousedown', mousedown);
 
                     clusterZone = CDS.createClusterZone(svg, hasCluster);
 
@@ -70,6 +76,24 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function createNodes(nodes) {
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
+                    nodeData
+                        .on('click', (d) => {
+                            scope.childContext.selectNode(d);
+
+                            // position the tooltip according to the node!
+                            const tooltip = d3.select('.nodetooltip');
+                            const windowWidth = $(window).width();
+                            if (d3.event.pageX < windowWidth / 2) {
+                                // left
+                                tooltip.style("left", d3.event.pageX + "px");
+                                tooltip.style("right", "");
+                            } else {
+                                // right
+                                tooltip.style("left", "");
+                                tooltip.style("right", (windowWidth - d3.event.pageX) + "px");
+                            }
+                            tooltip.style("top", (d3.event.pageY - 28) + "px");
+                        });
                     CDS.createNodes(nodeData, nodeRadius);
                     CDS.updateNodes(nodeData);
                     CDS.positionNodesOnClusterZone(nodeData, clusterZoneX, clusterZoneY, clusterZoneRadius);

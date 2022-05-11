@@ -33,6 +33,31 @@
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
 </div>
 
+<div class="nodetooltip" ng-hide="selectedNode == null">
+    <a href="{{selectedNode.endpoint}}"><strong>{{selectedNode.endpoint}}</strong></a>
+    <hr style="margin-top: 10px; margin-bottom: 10px"/>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.address}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.state' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.nodeState}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.term' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.term}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_term' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.lastLogTerm}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_index' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.lastLogIndex}}</div>
+    </div>
+</div>
+
 <div ng-if="!loader" class="nodes">
     <div cluster-graphical-view></div>
 </div>
