@@ -14,7 +14,8 @@ angular
     .module('graphdb.framework.clustermanagement.controllers', modules)
     .controller('ClusterManagementCtrl', ClusterManagementCtrl)
     .controller('CreateClusterCtrl', CreateClusterCtrl)
-    .controller('DeleteClusterCtrl', DeleteClusterCtrl);
+    .controller('DeleteClusterCtrl', DeleteClusterCtrl)
+    .controller('AddLocationCtrl', AddLocationCtrl);
 
 export const NodeState = {
     LEADER: 'LEADER',
@@ -34,10 +35,10 @@ export const LinkState = {
 };
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'LocationsRestService'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, LocationsRestService) {
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
@@ -157,7 +158,15 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.showCreateClusterDialog = function () {
         const modalInstance = $modal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
-            controller: 'CreateClusterCtrl'
+            controller: 'CreateClusterCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        clusterModel: $scope.clusterModel
+                    };
+                }
+            }
         });
 
         modalInstance.result.then(function () {
@@ -207,11 +216,50 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             .success((data) => {
                 $scope.currentNode = data;
             })
-            .error((error) => {
-                $scope.currentNode = error.data;
+            .error((data) => {
+                $scope.currentNode = data;
                 $scope.clusterModel.hasCluster = false;
-            });
+            })
+            .finally(() => getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations)));
     };
+
+    function getLocations() {
+        return LocationsRestService.getLocations()
+            .success(function (response) {
+                const localNode = response.find((location) => location.local);
+                localNode.uri = $scope.currentNode.endpoint;
+                localNode.rpcAddress = $scope.currentNode.address;
+
+                $scope.clusterModel.locations = response.map((loc) => {
+                    return {
+                        isLocal: loc.local,
+                        endpoint: loc.uri,
+                        rpcAddress: loc.rpcAddress || ''
+                    };
+                });
+            }).error(function (response) {
+                const msg = getError(response);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
+    }
+
+    function getRemoteLocationsRpcAddresses(locations) {
+        const rpcAddressFetchers = locations.filter((location) => !location.isLocal).map((location) => {
+            return getNodeRpcAddress(location.endpoint)
+                .success((rpcAddress) => {
+                    location.rpcAddress = rpcAddress;
+                    location.isAvailable = true;
+                })
+                .error(() => {
+                    location.isAvailable = false;
+                });
+        });
+        return Promise.allSettled(rpcAddressFetchers);
+    }
+
+    function getNodeRpcAddress(remoteLocation) {
+        return LocationsRestService.getLocationRpcAddress(remoteLocation);
+    }
 
     initialize()
         .finally(() => {
@@ -247,9 +295,10 @@ const getAdvancedOptionsClass = function () {
     return 'fa fa-angle-right';
 };
 
-CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate'];
+CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data', '$modal',
+    'LocationsRestService'];
 
-function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate) {
+function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, LocationsRestService) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
@@ -262,27 +311,16 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
         verificationTimeout: 1500
     };
 
+    $scope.locations = data.clusterModel.locations.filter((location) => !location.isLocal);
+    $scope.selectedLocations = data.clusterModel.locations.filter((location) => location.isLocal);
+
     $scope.loader = false;
-
-    function getCurrentNodeStatus() {
-        return ClusterRestService.getNodeStatus()
-            .then((res) => {
-                $scope.currentNode = res.data;
-            })
-            .catch((error) => {
-                $scope.currentNode = error.data;
-            })
-            .finally(() => {
-                $scope.clusterConfiguration.nodes.push($scope.currentNode.address);
-            });
-    }
-
-    getCurrentNodeStatus();
 
     $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
     $scope.createCluster = function () {
         $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
+        $scope.clusterConfiguration.nodes = $scope.selectedLocations.map((node) => node.rpcAddress);
         return ClusterRestService.createCluster($scope.clusterConfiguration)
             .success(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
@@ -309,7 +347,7 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
 
     $scope.isClusterConfigurationValid = () => {
         const isFormValid = !$scope.clusterConfigurationForm.$invalid;
-        const nodesListValid = $scope.clusterConfiguration.nodes && $scope.clusterConfiguration.nodes.length >= 2;
+        const nodesListValid = $scope.selectedLocations && $scope.selectedLocations.length >= 2;
         return isFormValid && nodesListValid;
     };
 
@@ -325,17 +363,52 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
         }
     };
 
-    $scope.addNodeToList = function (nodeRpcAddress) {
-        if (!nodeRpcAddress || $scope.clusterConfiguration.nodes.includes(nodeRpcAddress)) {
+    $scope.addNodeToList = function (location) {
+        if (!location.rpcAddress) {
             return;
         }
-
-        $scope.clusterConfiguration.nodes.push(nodeRpcAddress);
-        $scope.rpcAddress = '';
+        $scope.selectedLocations.push(location);
+        $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint);
     };
 
     $scope.removeNodeFromList = function (index, node) {
-        $scope.clusterConfiguration.nodes.splice(index, 1);
+        $scope.selectedLocations.splice(index, 1);
+        $scope.locations.push(node);
+    };
+
+    $scope.addLocation = function () {
+        let newLocationData;
+        $modal.open({
+            templateUrl: 'js/angular/templates/modal/add-location.html',
+            windowClass: 'addLocationDialog',
+            controller: 'AddLocationCtrl'
+        }).result
+            .then((dataAddLocation) => {
+                newLocationData = dataAddLocation;
+                return $scope.addLocationHttp(dataAddLocation);
+            })
+            .then((response) => {
+                if (!response) {
+                    return;
+                }
+                const location = {
+                    isLocal: newLocationData.local,
+                    endpoint: newLocationData.uri,
+                    rpcAddress: response.data || ''
+                };
+                $scope.locations.push(location);
+            });
+    };
+
+    $scope.addLocationHttp = function (dataAddLocation) {
+        $scope.loader = true;
+        return LocationsRestService.addLocation(dataAddLocation)
+            .then(() => LocationsRestService.getLocationRpcAddress(dataAddLocation.uri))
+            .catch((data) => {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.error'));
+            })
+            .finally(() => $scope.loader = false);
     };
 
     $scope.ok = function () {
@@ -364,3 +437,39 @@ function DeleteClusterCtrl($scope, $modalInstance) {
         $modalInstance.dismiss('cancel');
     };
 }
+
+AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
+
+function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
+    //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
+    $scope.newLocation = {
+        'uri': '',
+        'authType': 'none',
+        'username': '',
+        'password': '',
+        'active': false
+    };
+    $scope.docBase = getDocBase(productInfo);
+
+    $scope.isValidLocation = function () {
+        return ($scope.newLocation.uri.length < 6 ||
+                $scope.newLocation.uri.indexOf('http:') === 0 || $scope.newLocation.uri.indexOf('https:') === 0)
+            && $scope.newLocation.uri.indexOf('/repositories') <= -1;
+    };
+
+    $scope.ok = function () {
+        if (!$scope.newLocation) {
+            toastr.error($translate.instant('location.cannot.be.empty.error'));
+            return;
+        }
+        $modalInstance.close($scope.newLocation);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}
+
+const getDocBase = function (productInfo) {
+    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
+};

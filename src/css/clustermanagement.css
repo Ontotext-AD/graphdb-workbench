@@ -415,3 +415,27 @@ div.nodetooltip {
 .rdf-info-side-panel {
   z-index: 1016 !important;
 }
+
+.locations-list {
+  border: 1px solid;
+  min-height:8rem;
+}
+
+.location-item {
+  padding: 2px;
+  -webkit-user-select: none;
+  user-select: none
+}
+
+.location-item:not(.alert-danger):hover {
+  background-color: rgba(0,0,0,.05);
+  cursor: pointer;
+}
+
+.location-item.alert-danger:hover {
+  cursor: not-allowed;
+}
+
+.logo-icon {
+  height: 25px;
+}

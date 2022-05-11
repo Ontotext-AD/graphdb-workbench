@@ -46,6 +46,7 @@
             "creating_cluster_loader": "Creating cluster...",
             "create_form_legend": "Cluster properties",
             "cluster_nodes_list": "Cluster nodes list",
+            "remote_locations": "Remote locations",
             "manual_node_add": "Add node by address",
             "node_address": "Node RPC address",
             "node_address_placeholder": "Enter node address",
