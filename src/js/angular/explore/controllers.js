@@ -23,9 +23,9 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$licenseService', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $licenseService, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
 
     // We need to get sameAs and inference for the current user
     const principal = $jwtAuth.getPrincipal();
@@ -86,7 +86,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $licenseService, $routePa
     $scope.$watch(function () {
             return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.getActiveRepository() && $licenseService.isLicenseValid()) {
+        if ($scope.getActiveRepository() && $scope.isLicenseValid()) {
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {

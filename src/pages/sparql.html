@@ -36,8 +36,8 @@
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
 
-    <div core-errors></div>
-    <div class="alert alert-danger" ng-show="repositoryError && getActiveRepository()">
+    <div core-errors license></div>
+    <div class="alert alert-danger" ng-show="repositoryError && getActiveRepository() && isLicenseValid()">
         <p>{{'not.usable.active.repo.error' | translate}}</p>
         <p>{{repositoryError}}</p>
     </div>

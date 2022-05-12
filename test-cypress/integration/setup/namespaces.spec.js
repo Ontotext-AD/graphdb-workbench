@@ -14,13 +14,11 @@ describe('Namespaces', () => {
                     DEFAULT_NAMESPACES[e.prefix.value] = e.namespace.value;
                 });
             }).then(() => {
+            cy.visit('/namespaces');
+            cy.window();
 
+            waitUntilPageIsLoaded();
         });
-
-        cy.visit('/namespaces');
-        cy.window();
-
-        waitUntilPageIsLoaded();
     });
 
     afterEach(() => {

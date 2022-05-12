@@ -30,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$licenseService', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
-    function ($scope, $http, $repositories, toastr, $licenseService, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
+namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate', '$licenseService',
+    function ($scope, $http, $repositories, toastr, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate, $licenseService) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -42,7 +42,11 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.displayedNamespaces = [];
 
         $scope.getNamespaces = function () {
-            if (!$repositories.getActiveRepository() || !$licenseService.isLicenseValid()) {
+            if (!$repositories.getActiveRepository()) {
+                return;
+            }
+
+            if (!$scope.isLicenseValid()) {
                 return;
             }
 
@@ -82,6 +86,10 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
+        $scope.isLicenseValid = function() {
+            return $licenseService.isLicenseValid();
+        }
+
         $scope.changePagination = function () {
             if (angular.isDefined($scope.namespaces)) {
                 $scope.displayedNamespaces = $scope.namespaces.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
@@ -107,6 +115,12 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.$watch(function () {
             return $repositories.getActiveRepository();
         }, function () {
+            $scope.searchNamespaces = '';
+            $scope.getNamespaces();
+            $scope.selectedAll = false;
+        });
+
+        $scope.$on('license.set', function () {
             $scope.searchNamespaces = '';
             $scope.getNamespaces();
             $scope.selectedAll = false;

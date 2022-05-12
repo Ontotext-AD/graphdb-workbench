@@ -57,14 +57,18 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         if (!$scope.getActiveRepository()) {
             return;
         }
+
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
         return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
             }).error(function (data) {
-            $scope.repositoryError = getError(data);
-            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
-        });
+                    $scope.repositoryError = getError(data);
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
+            });
     };
 
     const setSelectedGraphFromCache = function () {
@@ -156,7 +160,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 toastr.warning($translate.instant('graphexplore.disabling.animations', {classLimit: classLimit}),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             } else {
-                toastr.warning($translate.instant('graphexplore.browser.performance', {browser: bowser.name, classLimit: classLimit}),
+                toastr.warning($translate.instant('graphexplore.browser.performance', {
+                        browser: bowser.name,
+                        classLimit: classLimit
+                    }),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             }
         };
@@ -264,8 +271,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                         .search("name", name);
                 }
             }).error(function () {
-                toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
-            });
+            toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
+        });
     }
 
     function onGoToDomainRangeGraphView(event, selectedClass) {
@@ -317,7 +324,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 _.each(response, function (value, key) {
                     const obj = {};
                     // TODO extract in core function isTriple(str)
-                    obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple": "uri";
+                    obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple" : "uri";
                     obj.absUri = encodeURIComponent(value);
                     obj.absUriNonEncoded = value;
                     obj.resolvedUri = key;
@@ -426,8 +433,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     let currentActiveRepository = $repositories.getActiveRepository();
+
     function onRepositoryIsSet() {
-        if (!$licenseService.isLicenseValid()) {
+        if (!$scope.isLicenseValid()) {
             return;
         }
         if (currentActiveRepository === $repositories.getActiveRepository()) {

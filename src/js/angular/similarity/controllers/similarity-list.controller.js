@@ -99,7 +99,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         return $repositories.getActiveRepository();
     }, function () {
         // Don't try to get namespaces for ontop or fedx repository
-        if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
+        if ($scope.isLicenseValid() && $scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
                     checkAutocompleteStatus();

@@ -68,8 +68,10 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                     getRelationshipsStatus();
                 }
             }).error(function (data) {
-            $scope.repositoryError = getError(data);
-            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graph'));
+                if ($scope.isLicenseValid()) {
+                    $scope.repositoryError = getError(data);
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graph'));
+                }
         });
     };
 

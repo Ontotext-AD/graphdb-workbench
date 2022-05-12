@@ -24,7 +24,8 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     $scope.getSqlConfigurations = function () {
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
         // Ontop and FedX repos don't support JDBC.
-        if ($repositories.getActiveRepository()
+        if ($scope.isLicenseValid()
+            && $repositories.getActiveRepository()
                 && !$repositories.isActiveRepoOntopType()
                     && !$repositories.isActiveRepoFedXType()) {
             JdbcRestService.getJdbcConfigurations().success(function (data) {
@@ -60,9 +61,9 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     };
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', '$licenseService', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, $licenseService, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -407,7 +408,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
     };
 
     function getSuggestions() {
-        if (!validateQuery() || !$licenseService.isLicenseValid()) {
+        if (!validateQuery() || !$scope.isLicenseValid()) {
             return;
         }
 

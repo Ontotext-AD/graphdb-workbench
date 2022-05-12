@@ -20,7 +20,7 @@ describe('=> ExploreCtrl tests', function () {
         $window,
         $scope,
         $jwtAuth,
-        $languageService;
+        $languageService,
         $licenseService;
 
     beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_, _$licenseService_, _$languageService_) {

@@ -248,9 +248,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', '$licenseService'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, $licenseService) {
     return {
         restrict: 'EA',
         scope: {
@@ -314,7 +314,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.$watch('namespacespromise', function () {
-                if (angular.isDefined($scope.namespacespromise)) {
+                if (angular.isDefined($scope.namespacespromise) && $scope.isLicenseValid()) {
                     $scope.namespacespromise.success(function (data) {
                         element.namespaces = data.results.bindings.map(function (e) {
                             return {
@@ -328,6 +328,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     });
                 }
             });
+
+            $scope.isLicenseValid = function() {
+                return $licenseService.isLicenseValid();
+            }
 
             $scope.$watch('autocompletepromisestatus', function () {
                 if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
