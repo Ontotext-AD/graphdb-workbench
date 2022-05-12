@@ -254,8 +254,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     location.rpcAddress = rpcAddress;
                     location.isAvailable = true;
                 })
-                .error(() => {
+                .error((error) => {
                     location.isAvailable = false;
+                    location.error = error;
                 });
         });
         return Promise.allSettled(rpcAddressFetchers);
@@ -276,14 +277,22 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
         });
 
-    // track window resizing
+    // track window resizing and window mousedown
     const w = angular.element($window);
     const resize = function () {
         $scope.childContext.resize();
     };
     w.bind('resize', resize);
+
+    const mousedown = function () {
+        if ($scope.selectedNode) {
+            $scope.childContext.selectNode(null);
+        }
+    };
+    w.bind('mousedown', mousedown);
     $scope.$on('$destroy', function () {
         w.unbind('resize', resize);
+        w.unbind('mousedown', mousedown);
     });
 }
 
