@@ -56,16 +56,10 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     plot();
                 }
 
-                function mousedown() {
-                    d3.event.preventDefault();
-                    scope.childContext.selectNode(null);
-                }
-
                 function createClusterZone(hasCluster) {
                     svg = CDS.createClusterSvgElement(element[0])
                         .attr('width', width)
                         .attr('height', height);
-                    svg.on('mousedown', mousedown);
 
                     clusterZone = CDS.createClusterZone(svg, hasCluster);
 
