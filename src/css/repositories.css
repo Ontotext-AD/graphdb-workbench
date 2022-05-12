@@ -105,38 +105,23 @@ form div label.error {
     text-indent: 8px
 }
 
-#fedx-content {
-    width: 69%;
-}
-
 #fedx-members {
     overflow: auto;
 }
 
-.fedXMember:hover {
-    background-color: rgba(0,0,0,.05)
-}
-
 #fedx-options {
     overflow: hidden;
+    width: 69%;
 }
 
 .form-local-repos {
     border: 1px solid;
-    width:66%;
     height:8rem;
     font-size: 1.3em;
 }
 
 .form-repo-members {
     font-size: 1.3em;
-}
-
-.form-group2 {
-    float: right;
-    width: 49%;
-    margin-bottom:1rem;
-    padding-top: 14px;
 }
 
 .fedx-no-members-message {
@@ -147,17 +132,6 @@ form div label.error {
     border-radius: 1rem;
     text-align: center;
     padding: 1em;
-}
-
-.tbody-fedx {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
-
-.form-group3 {
-    float: left;
-    width: 49%;
 }
 
 span.required {
@@ -430,4 +404,47 @@ span.label {
 
 .btns-all {
     padding: 0 13px;
+}
+.repository {
+    padding: 0;
+}
+
+.repository:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.05);
+}
+
+.repository:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+.repository > div {
+    padding: 0.8rem;
+}
+
+.repository .actions {
+    flex-shrink: 0;
+}
+
+.location-item {
+    padding: 2px;
+    -webkit-user-select: none;
+    user-select: none;
+    word-break: break-all;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.location-item.hoverable:hover {
+    background-color: rgba(0,0,0,.05);
+    cursor: pointer;
+}
+
+.location-item a {
+    width: 100%
+}
+
+.attached-header {
+    margin-bottom: 0.5em;
 }
