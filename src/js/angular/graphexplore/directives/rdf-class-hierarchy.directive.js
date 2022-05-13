@@ -18,6 +18,7 @@ classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestServ
 function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
     return {
         restrict: 'AE',
+        transclude: true,
         template: '<div id="classChart"></div>',
         scope: {
             classHierarchyData: '=',
@@ -27,7 +28,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             showClassInfoPanel: '=',
             showExternalElements: '=',
             hidePrefixes: '=',
-            currentBrowserLimit: '='
+            currentBrowserLimit: '=',
+            isLicenseValid: '&'
         },
         link: linkFunc
     };
@@ -119,7 +121,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         var g = appendMainGroup();
 
-        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
+        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository() && scope.isLicenseValid()) {
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
             const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);

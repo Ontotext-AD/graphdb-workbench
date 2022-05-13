@@ -53,12 +53,16 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     let selectedGraph = allGraphs;
 
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
+
     const initView = function () {
         if (!$scope.getActiveRepository()) {
             return;
         }
 
-        if (!$scope.isLicenseValid()) {
+        if (!$licenseService.isLicenseValid()) {
             return;
         }
         return RDF4JRepositoriesRestService.resolveGraphs()
@@ -435,9 +439,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     let currentActiveRepository = $repositories.getActiveRepository();
 
     function onRepositoryIsSet() {
-        if (!$scope.isLicenseValid()) {
-            return;
-        }
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
@@ -456,7 +457,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
+        if (!$scope.isSystemRepository() && $licenseService.isLicenseValid()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
@@ -479,11 +480,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     $scope.hasClassHierarchy = function () {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
-
-    $scope.isLicenseValid = function () {
-        return $licenseService.isLicenseValid();
-    };
-
 
     $scope.chosenGraph = function (graph) {
         selectedGraph = graph;

@@ -140,7 +140,8 @@
                 show-external-elements="showExternalElements"
                 hide-prefixes="hidePrefixes"
                 current-browser-limit="currentBrowserLimit"
-                ng-if="isLicenseValid() && hasClassHierarchy()">
+                is-license-valid="isLicenseValid"
+                ng-show="hasClassHierarchy() && isLicenseValid()">
         </rdf-class-hierarchy>
 
         <pageslide
