@@ -64,14 +64,14 @@
     <div cluster-graphical-view></div>
 </div>
 
-<pageslide ng-if="clusterConfiguration"
-    ps-class="rdf-info-side-panel"
-    ps-open="shouldShowClusterSettingsPanel"
-    onopen="onopen"
-    onclose="onclose"
-    ps-side="right"
-    ps-custom-height="calc(100vh - 55px)"
-    ps-size="25vw">
+<pageslide ng-show="clusterConfiguration"
+           ps-class="rdf-info-side-panel"
+           ps-open="shouldShowClusterSettingsPanel"
+           onopen="onopen"
+           onclose="onclose"
+           ps-side="right"
+           ps-custom-height="calc(100vh - 55px)"
+           ps-size="25vw">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
         <button class="close mb-1 ml-1" ng-click="toggleSidePanel()"></button>
         <h3 class="hovered-parent">
