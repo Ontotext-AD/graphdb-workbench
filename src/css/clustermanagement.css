@@ -213,9 +213,7 @@ line.link {
 }
 
 .node {
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-  cursor: grab;
+  cursor: pointer;
   fill: #97999C;
   stroke: black;
 }
@@ -237,7 +235,7 @@ text.node-icon {
   fill: rgba(255, 255, 255, 0.5);
   font-size: 40px;
   text-anchor: middle;
-  alignment-baseline: middle;
+  dominant-baseline: central;
 }
 
 .node.dragged {
@@ -419,6 +417,7 @@ div.nodetooltip {
 .locations-list {
   border: 1px solid;
   min-height:8rem;
+  max-height: 18rem;
 }
 
 .location-item {
@@ -448,4 +447,8 @@ div.nodetooltip {
       left center;
   height: 25px;
   width: 25px;
+}
+
+.action-buttons {
+  flex-grow: 1;
 }

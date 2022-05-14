@@ -118,8 +118,8 @@
             </div>
 
             <div class="form-group">
-                <div ng-if="selectedLocations.length < 2" class="not-enough-nodes-error alert alert-warning mt-1">
-                    {{'cluster_management.cluster_page.errors.at_least_two_nodes' | translate}}
+                <div ng-if="selectedLocations.length < 2" class="alert alert-warning mt-1">
+                    {{'cluster_management.cluster_page.select_from_locations_hint' | translate}}
                 </div>
                 <div ng-repeat="error in errors" class="cluster-properties-error alert alert-danger mt-1">
                     {{error}}
