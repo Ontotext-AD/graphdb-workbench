@@ -61,7 +61,7 @@
             "node_address_tooltip": "Node RPC address",
             "add_node_btn": "Add node",
             "add_node_btn_tooltip": "Add node to cluster",
-            "remove_node_btn_tooltip": "Remove node from cluster",
+            "remove_node_btn_tooltip": "Remove node",
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
@@ -108,9 +108,9 @@
         },
         "add_nodes_dialog": {
             "title": "Add nodes to cluster",
+            "nodes_to_add_label": "Nodes to add to cluster",
             "errors": {
-                "at_least_one_node": "Must add at least one node",
-                "node_in_cluster": "Node is already in the existing cluster"
+                "at_least_one_node": "Must add at least one node"
             }
         },
         "remove_nodes_dialog": {
