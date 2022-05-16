@@ -333,10 +333,4 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $scope.isAllGraphsSelected = function () {
         return $scope.getSelectedGraphValue() === 'all.graphs.label'
     }
-
-    window.addEventListener('load', initView);
-
-    $scope.$on('$destroy', function (event) {
-        window.removeEventListener('load', initView);
-    });
 }
