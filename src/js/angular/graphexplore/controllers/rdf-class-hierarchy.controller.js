@@ -123,8 +123,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     $scope.instancesQueryObj.query = "";
     $scope.instancesFilterFunc = instancesFilterFunc;
 
-    initView();
-
     $scope.$watch('instancesObj.items', function () {
         if ($scope.instancesObj.items.length > 0) {
             $timeout(function () {
@@ -494,4 +492,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     $scope.isAllGraphsSelected = function () {
         return $scope.getSelGraphValue() === 'all.graphs.label'
     }
+
+    window.addEventListener('load', initView);
+
+    $scope.$on('$destroy', function (event) {
+        window.removeEventListener('load', initView);
+    });
 }
