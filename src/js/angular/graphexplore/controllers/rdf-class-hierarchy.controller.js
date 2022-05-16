@@ -452,10 +452,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function getClassHierarchyData() {
-
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository() && $licenseService.isLicenseValid()) {
+        if (!$scope.isSystemRepository()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)

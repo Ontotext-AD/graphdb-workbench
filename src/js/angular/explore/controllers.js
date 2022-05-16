@@ -58,9 +58,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     // Fixed inference when we're showing the context tab and a named graph
     $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
-        {id: 'all', title: $translate.instant('explore.explicit.implicit')},
-        {id: 'explicit', title: $translate.instant('explore.explicit')},
-        {id: 'implicit', title: $translate.instant('explore.implicit')}
+        {id: 'all', title: 'explore.explicit.implicit'},
+        {id: 'explicit', title: 'explore.explicit'},
+        {id: 'implicit', title: 'explore.implicit'}
     ];
     $scope.context = '';
 

@@ -35,7 +35,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
     };
 
     function linkFunc(scope, element, attrs) {
-        renderCirclePacking(scope, element);
+        window.addEventListener('load', renderCirclePacking);
+
+        scope.$on('$destroy', function (event) {
+            window.removeEventListener('load', renderCirclePacking);
+        });
     }
 
     function renderCirclePacking(scope, element) {
