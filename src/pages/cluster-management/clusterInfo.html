@@ -35,7 +35,7 @@
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
 </div>
 
-<div class="nodetooltip" ng-hide="selectedNode == null">
+<div id="nodeTooltip" class="nodetooltip" ng-hide="selectedNode == null">
     <a href="{{selectedNode.endpoint}}" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
     <hr style="margin-top: 10px; margin-bottom: 10px"/>
     <div class="row">

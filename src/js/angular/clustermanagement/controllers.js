@@ -285,11 +285,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
     w.bind('resize', resize);
 
-    const mousedown = function () {
-        if ($scope.selectedNode) {
-            $timeout(function () {
-                $scope.childContext.selectNode(null);
-            }, 100);
+    const mousedown = function (event) {
+        const target = event.target;
+        const nodeTooltipElement = document.getElementById('nodeTooltip');
+        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
+            $scope.childContext.selectNode(null);
         }
     };
     w.bind('mousedown', mousedown);
