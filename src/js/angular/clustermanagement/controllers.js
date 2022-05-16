@@ -173,7 +173,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             }
         });
 
-        modalInstance.result.then(function () {
+        modalInstance.result.finally(function () {
+            getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations));
             updateCluster();
         });
     };
@@ -404,19 +405,21 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
                 if (!response) {
                     return;
                 }
-                const location = {
-                    isLocal: newLocationData.local,
-                    endpoint: newLocationData.uri,
-                    rpcAddress: response.data || ''
-                };
-                $scope.locations.push(location);
+                newLocationData.rpcAddress = response;
             });
     };
 
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
         return LocationsRestService.addLocation(dataAddLocation)
-            .then(() => LocationsRestService.getLocationRpcAddress(dataAddLocation.uri))
+            .then(() => {
+                const location = {
+                    isLocal: dataAddLocation.local,
+                    endpoint: dataAddLocation.uri
+                };
+                $scope.locations.push(location);
+                return LocationsRestService.getLocationRpcAddress(dataAddLocation.uri);
+            })
             .catch((data) => {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
