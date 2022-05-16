@@ -20,25 +20,27 @@
      size="75">
 </div>
 
-<div class="clearfix mb-2" ng-if="!loader && clusterConfiguration">
-    <button type="button" class="btn btn-secondary delete-cluster-btn mr-2"
-            ng-click="showDeleteDialog()"
-            tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
-            tooltip-placement="bottom">
-        <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
-    </button>
-    <button class="btn btn-link pull-right"
+<div class="clearfix mb-2 d-flex" ng-if="!loader && clusterConfiguration">
+    <div class="action-buttons">
+        <button type="button" class="btn btn-secondary delete-cluster-btn mr-2"
+                ng-click="showDeleteDialog()"
+                tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
+                tooltip-placement="bottom">
+            <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
+        </button>
+    </div>
+    <button class="btn btn-link"
             ng-click="toggleSidePanel()"
             tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
 </div>
 
-<div class="nodetooltip" ng-hide="selectedNode == null">
-    <a href="{{selectedNode.endpoint}}"><strong>{{selectedNode.endpoint}}</strong></a>
+<div id="nodeTooltip" class="nodetooltip" ng-hide="selectedNode == null">
+    <a href="{{selectedNode.endpoint}}" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
     <hr style="margin-top: 10px; margin-bottom: 10px"/>
     <div class="row">
         <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
-        <div class="col-sm-6">{{selectedNode.address}}</div>
+        <div class="col-sm-6 break-word">{{selectedNode.address}}</div>
     </div>
     <div class="row">
         <div class="col-sm-6">{{'cluster_management.cluster_status.node.state' | translate}}</div>
@@ -62,18 +64,15 @@
     <div cluster-graphical-view></div>
 </div>
 
-<pageslide ng-if="clusterConfiguration"
-    ps-class="rdf-info-side-panel"
-    ps-open="shouldShowClusterSettingsPanel"
-    onopen="onopen"
-    onclose="onclose"
-    ps-side="right"
-    ps-custom-height="calc(100vh - 55px)"
-    ps-size="25vw">
+<pageslide ng-show="clusterConfiguration"
+           ps-class="rdf-info-side-panel"
+           ps-open="shouldShowClusterSettingsPanel"
+           onopen="onopen"
+           onclose="onclose"
+           ps-side="right"
+           ps-custom-height="calc(100vh - 55px)"
+           ps-size="25vw">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
-       <span class="toggle-sidepanel" title="{{'visual.collapse.sidepanel' | translate}}" ng-click="toggleSidePanel()">
-            <em ng-class="shouldShowClusterSettingsPanel ? 'icon-caret-right' : 'icon-caret-left'"></em>
-        </span>
         <button class="close mb-1 ml-1" ng-click="toggleSidePanel()"></button>
         <h3 class="hovered-parent">
             {{'cluster_management.cluster_configuration.label' | translate}}

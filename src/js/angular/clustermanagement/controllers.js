@@ -173,7 +173,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             }
         });
 
-        modalInstance.result.then(function () {
+        modalInstance.result.finally(function () {
+            getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations));
             updateCluster();
         });
     };
@@ -254,8 +255,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     location.rpcAddress = rpcAddress;
                     location.isAvailable = true;
                 })
-                .error(() => {
+                .error((error) => {
                     location.isAvailable = false;
+                    location.error = error;
                 });
         });
         return Promise.allSettled(rpcAddressFetchers);
@@ -276,14 +278,24 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
         });
 
-    // track window resizing
+    // track window resizing and window mousedown
     const w = angular.element($window);
     const resize = function () {
         $scope.childContext.resize();
     };
     w.bind('resize', resize);
+
+    const mousedown = function (event) {
+        const target = event.target;
+        const nodeTooltipElement = document.getElementById('nodeTooltip');
+        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
+            $scope.childContext.selectNode(null);
+        }
+    };
+    w.bind('mousedown', mousedown);
     $scope.$on('$destroy', function () {
         w.unbind('resize', resize);
+        w.unbind('mousedown', mousedown);
     });
 }
 
@@ -395,19 +407,21 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
                 if (!response) {
                     return;
                 }
-                const location = {
-                    isLocal: newLocationData.local,
-                    endpoint: newLocationData.uri,
-                    rpcAddress: response.data || ''
-                };
-                $scope.locations.push(location);
+                newLocationData.rpcAddress = response;
             });
     };
 
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
         return LocationsRestService.addLocation(dataAddLocation)
-            .then(() => LocationsRestService.getLocationRpcAddress(dataAddLocation.uri))
+            .then(() => {
+                const location = {
+                    isLocal: dataAddLocation.local,
+                    endpoint: dataAddLocation.uri
+                };
+                $scope.locations.push(location);
+                return LocationsRestService.getLocationRpcAddress(dataAddLocation.uri);
+            })
             .catch((data) => {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -448,7 +462,7 @@ function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate
     //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
     $scope.newLocation = {
         'uri': '',
-        'authType': 'none',
+        'authType': 'signature',
         'username': '',
         'password': '',
         'active': false

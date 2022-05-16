@@ -59,9 +59,11 @@
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
+            "select_from_locations_hint": "Select nodes from remote locations",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
+                "no_rpc_address": "Error retrieving RCP address: {{error}}",
                 "node_in_list": "Node is already in the list",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
@@ -1180,7 +1182,7 @@
     "my.user.placeholder": "my-user",
     "password.required": "Password*",
     "my.password.placeholder": "my-password",
-    "signature.auth.info": "Signature authentication uses the token secret, which must be the same on both GraphDB instances. For more information on configuring the token secret, please refer to ",
+    "signature.auth.info": "Signature authentication uses the token secret, which must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
     "signature.auth.info.last": " in the documentation.",
     "update.file.content.header": "Update file contents",
     "update.file.content.placeholder": "# Update ontop repository file content",
