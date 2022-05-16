@@ -15,6 +15,18 @@
                     <!-- Simply to satisfy the HTML specs, because it's reported as bug from SonarCloud -->
                     <legend style="display: none">{{'repo.properties' | translate}}</legend>
                     <div class="form-group row">
+                        <label for="locations" class="col-md-3 col-lg-2 col-form-label">
+                            {{'repo.page.location.label' | translate}}
+                        </label>
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repo.page.location.input.field.tooltip' | translate}}" tooltip-trigger="mouseenter">
+                            <select ng-disabled="editRepoPage" class="form-control" id="locations"
+                                    ng-model="repositoryInfo.location"
+                                    ng-change="changedLocation()"
+                                    ng-options="location.uri as location.label for location in locations | orderBy: 'uri'">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="id" class="col-md-3 col-lg-2 col-form-label">{{'repo.id.label' | translate}}</label>
                         <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repoTooltips.id' | translate}}">
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
@@ -321,13 +333,13 @@
                     <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
                     <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && editRepoPage">
                         <div class="checkbox col-xs-12">
-                            <label tooltip="Check to restart the repository and apply the changes.">
+                            <label tooltip="{{'restart.repo.check.tooltip' | translate}}">
                                 <input id="restartRepo" name="restartRepo"
                                        type="checkbox"
                                        ng-model="repositoryInfo.restartRequested"
                                        ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
                                        ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
-                                Restart repository
+                                {{'restart.repo.label' | translate}}
                             </label>
                         </div>
                     </div>

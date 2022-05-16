@@ -54,14 +54,14 @@
         <div class="col-lg-6">
             <h3><span tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
             <div class="card active-repo-card"
-                 ng-show="canReadRepo(getActiveLocation(), getActiveRepository())">
+                 ng-show="canReadRepo(getActiveRepositoryObject())">
                 <div class="card-block">
-                    <h6>{{getActiveLocation().label}}</h6>
+                    <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
-                        <button type="button" ng-click="goToEditRepo(getActiveRepository())" class="btn btn-link" tooltip="{{'repoTooltips.editRepository' | translate}}"
+                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" tooltip="{{'repoTooltips.editRepository' | translate}}"
                            ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>

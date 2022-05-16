@@ -13,6 +13,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
 
@@ -35,7 +36,8 @@ angular
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
-        'graphdb.framework.core.services.autocompleteStatus'
+        'graphdb.framework.core.services.autocompleteStatus',
+        'graphdb.framework.utils.uriutils'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -47,7 +49,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     $scope.doClear = false;
 
     $scope.getActiveRepositorySize = function () {
-        const repo = $repositories.getActiveRepository();
+        const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
         }
@@ -109,11 +111,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -171,9 +173,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $location.path('/repository/create').search({previous: 'home'});
     };
 
-    $scope.goToEditRepo = function (repoName) {
-        $location.path('repository/edit/' + repoName).search({previous: 'home'});
+    $scope.goToEditRepo = function (repository) {
+        $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
     };
+
+    $scope.getLocationFromUri = function (location) {
+        return $repositories.getLocationFromUri(location);
+    }
 
     $scope.$on("$locationChangeSuccess", function () {
         $scope.showFooter = $location.url() === '/';
@@ -319,21 +325,34 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getActiveRepository();
     };
 
-    $scope.canWriteRepoInActiveLocation = function (repository) {
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), repository);
+    $scope.canWriteRepoInLocation = function (repository) {
+        return $jwtAuth.canWriteRepo(repository);
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {
-        const activeRepository = $repositories.getActiveRepository();
-        // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem);
+        const activeRepository = $repositories.getActiveRepositoryObject();
+        if (activeRepository) {
+            // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
+            return $jwtAuth.canWriteRepo(activeRepository)
+                && (activeRepository.id !== 'SYSTEM' || !noSystem);
+        }
+        return false;
     };
 
     $scope.getActiveRepositoryObject = function () {
-        return _.find($scope.getRepositories(), function (repo) {
-            return repo.id === $scope.getActiveRepository();
-        });
+        return $repositories.getActiveRepositoryObject();
+    };
+
+    $scope.getActiveRepositoryShortLocation = function () {
+        const repo = $repositories.getActiveRepositoryObject();
+        if (repo) {
+            const location = repo.location;
+            if (location) {
+                return '@' + UriUtils.shortenIri(location);
+            }
+        }
+
+        return '';
     };
 
     $scope.isActiveRepoOntopType = function () {
@@ -388,8 +407,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.setRepository = function (id) {
-        $repositories.setRepository(id);
+    $scope.setRepository = function (repository) {
+        $repositories.setRepository(repository);
     };
 
     $scope.principal = function () {
@@ -432,23 +451,27 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $rootScope.hasPermission();
     };
 
-    $scope.canReadRepo = function (location, repo) {
-        return $jwtAuth.canReadRepo(location, repo);
+    $scope.canReadRepo = function (repo) {
+        return $jwtAuth.canReadRepo(repo);
     };
 
-    $scope.checkForWrite = function (role, location, repo) {
-        return $jwtAuth.checkForWrite(role, location, repo);
+    $scope.checkForWrite = function (role, repo) {
+        return $jwtAuth.checkForWrite(role, repo);
     };
 
     $scope.setPopoverRepo = function (repository) {
         $scope.popoverRepo = repository;
     };
 
+    $scope.isRepoActive = function (repository) {
+        return $repositories.isRepoActive(repository);
+    }
+
     $scope.getRepositorySize = function () {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo.id).then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo).then(function (res) {
                 $scope.repositorySize = res.data;
             });
         }

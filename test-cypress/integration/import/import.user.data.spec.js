@@ -52,7 +52,6 @@ describe('Import screen validation - user data', () => {
     const SUCCESS_MESSAGE = 'Imported successfully';
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         repositoryId = 'user-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportSteps.visitUserImport(repositoryId);

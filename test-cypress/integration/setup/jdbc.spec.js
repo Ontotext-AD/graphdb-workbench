@@ -33,7 +33,6 @@ describe('JDBC configuration', () => {
     let repositoryId;
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         initRepositoryAndVisitJdbcView();
     });
 

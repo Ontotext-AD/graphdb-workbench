@@ -54,7 +54,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
         const REQUIRED_PROPERTIES_FIELD_PARAMS = ['hostName', 'databaseName', 'userName'];
 
         function getSupportedDriversData() {
-            return RepositoriesRestService.getSupportedDriversData()
+            return RepositoriesRestService.getSupportedDriversData($scope.repositoryInfo)
                 .success(function (response) {
                     $scope.supportedDriversData = response;
                 }).error(function (response) {
@@ -105,7 +105,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
 
             modalInstance.result.then(function (data) {
                 // send data to backend
-                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(result) {
+                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, $scope.repositoryInfo.location).success(function(result) {
                     $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
                     $scope.repositoryInfo.params[file].value = result.fileLocation;
                 }).error(function (error) {
@@ -120,7 +120,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
                 $scope.uploadFileLoader = true;
                 Upload.upload({
                     url: 'rest/repositories/uploadFile',
-                    data: {uploadFile: $scope.uploadFile}
+                    data: {uploadFile: $scope.uploadFile, location: $scope.repositoryInfo.location}
                 })
                     .success(function (data) {
                         if (!data.success) {
@@ -186,7 +186,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
         }
 
         function loadPropertiesFile() {
-            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value)
+            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.repositoryInfo.location)
                 .success(function (driverData) {
                     const driver = $scope.loadDriverByClass(driverData.driverClass);
                     // If driver class is not found means that the selected driver is a GENERIC ONE
@@ -207,7 +207,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
         $scope.validateOntopPropertiesConnection = function () {
             updateProperties()
                 .then(function () {
-                    RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile)
+                    RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo)
                         .success(function () {
                             toastr.success($translate.instant('ontop.repo.successful.connection.msg'));
                         }).error(function (data) {
@@ -246,7 +246,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
         function updatePropertiesFile() {
             $scope.uploadFileLoader = true;
             return RepositoriesRestService
-                .updatePropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.selectedDriver.jdbc)
+                .updatePropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.selectedDriver.jdbc, $scope.repositoryInfo.location)
                 .success(function (data) {
                     $scope.ontopRepoFileNames[$scope.propertiesFile] = getFileName(data.fileLocation);
                     $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;

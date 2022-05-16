@@ -34,7 +34,6 @@ describe('SPARQL Templates', () => {
     });
 
     beforeEach(() => {
-        cy.intercept('GET', '/i18n/locale-en.json', {fixture: 'locale-en.json'});
         cy.visit('/sparql-templates', {
             onBeforeLoad: (win) => {
                 win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);

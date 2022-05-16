@@ -62,6 +62,8 @@ describe('mainCtrl', function () {
         $httpBackend = _$httpBackend_;
         $modal = new FakeModal($q, _$rootScope_);
 
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
         createController = () => $controller('mainCtrl', {
             $scope, menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService, $translate
         });

@@ -21,7 +21,7 @@ ontoLoader.$inject = [];
 function ontoLoader() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">Loading...</object>';
+            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">{{\'common.loading\' | translate}}</object>';
         }
     };
 }
@@ -32,7 +32,7 @@ function ontoLoaderFancy() {
     return {
         template: function (elem, attr) {
             return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>'
-                + '<div>Loading...<div>';
+                + '<div>{{\'common.loading\' | translate}}<div>';
         }
     };
 }
@@ -280,8 +280,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const MIN_CHAR_LEN = 0;
             const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
-            $scope.textButtonLabel = $scope.textButton || 'Table';
-            $scope.visualButtonLabel = $scope.visualButton || 'Visual';
+            $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
+            $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
 
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
@@ -353,6 +353,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 if ($scope.clear) {
                     $scope.clearInput();
                     $scope.clear = false;
+                }
+            });
+
+            $rootScope.$on('$translateChangeSuccess', function () {
+                if (attrs.$attr.placeholder) {
+                    $scope.placeholder = attrs.$attr.placeholder;
+                } else {
+                    $scope.placeholder = `${$translate.instant('search.resources.msg')}...`;
                 }
             });
 

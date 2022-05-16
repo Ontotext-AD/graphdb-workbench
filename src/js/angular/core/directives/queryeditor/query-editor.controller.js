@@ -338,7 +338,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
                 return;
             }
 
-            setLoader(true, $scope.lastRunQueryMode === 'update' ? 'Executing update' : 'Evaluating query');
+            setLoader(true, $scope.lastRunQueryMode === 'update' ? $translate.instant('query.editor.executing.update') : $translate.instant('query.editor.evaluating.query'));
             if ($scope.viewMode !== 'none') {
                 $scope.viewMode = 'none';
                 if ($scope.orientationViewMode) {
@@ -852,7 +852,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
 
     $scope.getUpdateDescription = function () {
         if ($scope.currentTabConfig.customUpdateMessage) {
-            return $scope.currentTabConfig.customUpdateMessage;
+            return $translate.instant($scope.currentTabConfig.customUpdateMessage.msg, {name: $scope.currentTabConfig.customUpdateMessage.name});
         } else if ($scope.currentTabConfig.sizeDelta === undefined) {
             return '';
         } else if ($scope.currentTabConfig.sizeDelta < 0) {

@@ -108,6 +108,20 @@ const checkInvalidValues = function(invalidValues, $translate) {
 const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
 }
+const filterLocations =  function (result) {
+    return result.filter(location => !location.errorMsg && !location.degradedReason);
+}
+const getLocations = function ($repositories) {
+    // Don't allow the user to create repository on location with error or degradeded reason
+    const result = $repositories.getLocations();
+    if (Array.isArray(result)) {
+        return filterLocations(result);
+    } else {
+        result.success(function (locations) {
+            return filterLocations(locations);
+        })
+    }
+}
 
 const modules = [
     'ngCookies',
@@ -160,6 +174,18 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $scope.getRepositories = function () {
         return $repositories.getRepositories();
     };
+
+    $scope.getLocationsLabels = function () {
+        let locationsLabels = '';
+        $repositories.getLocations().forEach(location => {
+            locationsLabels += `${location.label}, `;
+        })
+        return locationsLabels;
+    };
+
+    $scope.isRepoActive = function (repo) {
+        return $repositories.isRepoActive(repo);
+    }
 
     //Delete location
     $scope.deleteLocation = function (uri) {
@@ -236,72 +262,34 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     };
 
-    $scope.activateLocationRequest = function (location) {
-        $scope.loader = true;
-        const data = {
-            'uri': location.uri
-        };
-        LocationsRestService.enableLocation(data)
-            .success(function () {
-                $repositories.setRepository('');
-                $repositories.init();
-            }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.error'));
-                document.getElementById('switch-' + location.$$hashKey).checked = false;
-            });
-    };
-
-    //Activate location
-    $scope.activateLocation = function (location) {
-        //This has to be fixed
-        // if (document.getElementById('switch-' + location.$$hashKey).checked == true) {
-        //     return;
-        // }
-        if ($scope.hasActiveLocation()) {
-            ModalService.openSimpleModal({
-                title: $translate.instant('location.change.confirm'),
-                message: $translate.instant('location.change.confirm.warning'),
-                warning: true
-            }).result
-                .then(function () {
-                    $scope.activateLocationRequest(location);
-                }, function () {
-                    document.getElementById('switch-' + location.$$hashKey).checked = false;
-                });
-        } else {
-            $scope.activateLocationRequest(location);
-        }
-    };
-
     //Change repository
-    $scope.setRepository = function (id) {
-        $repositories.setRepository(id);
+    $scope.setRepository = function (repo) {
+        $repositories.setRepository(repo);
     };
 
     //Delete repository
-    $scope.deleteRepository = function (repositoryId) {
+    $scope.deleteRepository = function (repository) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm.delete'),
-            message: decodeHTML($translate.instant('delete.repo.warning.msg', {repositoryId: repositoryId})),
+            message: decodeHTML($translate.instant('delete.repo.warning.msg', {repositoryId: repository.id})),
             warning: true
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteRepository(repositoryId);
-                removeCachedGraphsOnDelete(repositoryId);
+                $repositories.deleteRepository(repository);
+                removeCachedGraphsOnDelete(repository);
             });
     };
 
-    $scope.restartRepository = function (repositoryId) {
+    $scope.restartRepository = function (repository) {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.restart.repo'),
-            message: decodeHTML($translate.instant('confirm.restart.repo.warning.msg', {repositoryId: repositoryId})),
+            message: decodeHTML($translate.instant('confirm.restart.repo.warning.msg', {repositoryId: repository.id})),
             warning: true
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.restartRepository(repositoryId);
+                $repositories.restartRepository(repository);
             });
     }
 
@@ -343,10 +331,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}`;
+        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}?location=${repository.location}`;
         const token = $jwtAuth.getAuthToken();
         if (token) {
-            url = `${url}?authToken=${encodeURIComponent(token)}`;
+            url = `${url}&authToken=${encodeURIComponent(token)}`;
         }
         return url;
     };
@@ -383,9 +371,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         $interval.cancel(timer);
     });
 
-    function removeCachedGraphsOnDelete(repoId) {
-        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repoId}`;
-        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repoId}`;
+    function removeCachedGraphsOnDelete(repo) {
+        const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repo.id}`;
+        const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repo.id}`;
         angular.forEach(LocalStorageAdapter.keys(), function (key) {
             // remove everything but the hide prefixes setting, it should always persist
             if (key.startsWith(cashedClassHierarchyGraphPrefix) || key.startsWith(cashedDependenciesGraphPrefix)) {
@@ -394,6 +382,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     }
 
+    $scope.getRepositoriesFromLocation = function (locationId) {
+        return $repositories.getRepositoriesFromLocation(locationId);
+    }
 }
 
 UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toastr', '$translate'];
@@ -499,7 +490,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         id: '',
         params: {},
         title: '',
-        type: ''
+        type: '',
+        location: ''
     };
 
     $scope.invalidValues = {
@@ -512,6 +504,18 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidValidationResultsLimitPerConstraint : false,
         isInvalidValidationResultsLimitTotal : false
     };
+
+    $scope.locations = [];
+
+    $scope.$watch($scope.hasActiveLocation, function () {
+        if ($scope.hasActiveLocation) {
+            $scope.locations = getLocations($repositories);
+        }
+    });
+
+    $scope.changedLocation = function () {
+        $scope.$broadcast('changedLocation');
+    }
 
     function isValidEERepository(repositoryType) {
         return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
@@ -596,7 +600,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.uploadFileLoader = true;
             Upload.upload({
                 url: 'rest/repositories/uploadRuleSet',
-                data: {ruleset: $scope.uploadFile}
+                data: {ruleset: $scope.uploadFile, location: $scope.repositoryInfo.location}
             }).progress(function (evt) {
                 /*						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                  console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);*/
@@ -745,6 +749,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.loader = true;
     $scope.repositoryInfo = {};
     $scope.repositoryInfo.id = $scope.params.repositoryId;
+    $scope.repositoryInfo.location = $scope.params.location;
     $scope.repositoryInfo.restartRequested = false;
     $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
@@ -765,7 +770,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
-            RepositoriesRestService.getRepository($scope.repositoryInfo.id)
+            // Should get locations before getting repository info
+            $scope.locations = getLocations($repositories);
+            RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;
