@@ -285,8 +285,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
     w.bind('resize', resize);
 
-    const mousedown = function () {
-        if ($scope.selectedNode) {
+    const mousedown = function (event) {
+        const target = event.target;
+        const nodeTooltipElement = document.getElementById('nodeTooltip');
+        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
             $scope.childContext.selectNode(null);
         }
     };
@@ -460,7 +462,7 @@ function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate
     //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
     $scope.newLocation = {
         'uri': '',
-        'authType': 'none',
+        'authType': 'signature',
         'username': '',
         'password': '',
         'active': false
