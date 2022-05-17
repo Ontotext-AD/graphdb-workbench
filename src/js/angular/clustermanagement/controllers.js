@@ -115,22 +115,22 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     $scope.getClusterConfiguration = () => {
         return ClusterRestService.getClusterConfig()
-            .success((data) => {
-                $scope.clusterConfiguration = data;
+            .then((response) => {
+                $scope.clusterConfiguration = response.data;
                 if (!$scope.currentNode) {
                     $scope.getCurrentNodeStatus();
                 }
             })
-            .error(() => {
+            .catch(() => {
                 $scope.clusterConfiguration = null;
             });
     };
 
     $scope.getClusterStatus = function () {
         return ClusterRestService.getClusterStatus()
-            .success(function (data) {
-                const nodes = data.slice();
-                const leader = data.find((node) => node.nodeState === NodeState.LEADER);
+            .then(function (response) {
+                const nodes = response.data.slice();
+                const leader = response.data.find((node) => node.nodeState === NodeState.LEADER);
                 const links = [];
                 if (leader) {
                     Object.keys(leader.syncStatus).forEach((node) => {
@@ -149,8 +149,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 $scope.clusterModel.nodes = nodes;
                 $scope.clusterModel.links = links;
             })
-            .error(function (data, status) {
-                if (status === 404) {
+            .catch(function (error) {
+                if (error.status === 404) {
                     $scope.clusterModel.hasCluster = false;
                     $scope.clusterModel.nodes = [];
                     $scope.clusterModel.links = [];
@@ -189,24 +189,24 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(forceDelete)
-                .success((data) => {
-                    const allNodesDeleted = Object.values(data).every((node) => node === 'DELETED');
+                .then((response) => {
+                    const allNodesDeleted = Object.values(response.data).every((node) => node === 'DELETED');
                     if (allNodesDeleted) {
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
                     } else {
                         const successMessage = $translate.instant(
                             'cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
-                        const failedNodesList = Object.keys(data)
-                            .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
+                        const failedNodesList = Object.keys(response.data)
+                            .reduce((message, key) => message += `<div>${key} - ${response.data[key]}</div>`, '');
                         toastr.success(failedNodesList, successMessage, {allowHtml: true});
                     }
                     $scope.getClusterConfiguration();
                 })
-                .error((data) => {
+                .catch((error) => {
                     const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
-                    const failedNodesList = Object.keys(data)
-                        .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
+                    const failedNodesList = Object.keys(error.data)
+                        .reduce((message, key) => message += `<div>${key} - ${error.data[key]}</div>`, '');
                     toastr.error(failedNodesList, failMessage, {allowHtml: true});
                 })
                 .finally(() => {
@@ -218,32 +218,37 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     $scope.getCurrentNodeStatus = () => {
         return ClusterRestService.getNodeStatus()
-            .success((data) => {
-                $scope.currentNode = data;
+            .then((response) => {
+                $scope.currentNode = response.data;
             })
-            .error((data) => {
-                $scope.currentNode = data;
+            .catch((error) => {
+                $scope.currentNode = error.data;
                 $scope.clusterModel.hasCluster = false;
             })
-            .finally(() => getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations)));
+            .then(() => $scope.getLocationsWithRpcAddresses());
+    };
+
+    $scope.getLocationsWithRpcAddresses = () => {
+        return getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations));
     };
 
     function getLocations() {
         return LocationsRestService.getLocations()
-            .success(function (response) {
-                const localNode = response.find((location) => location.local);
+            .then(function (response) {
+                const localNode = response.data.find((location) => location.local);
                 localNode.uri = $scope.currentNode.endpoint;
                 localNode.rpcAddress = $scope.currentNode.address;
 
-                $scope.clusterModel.locations = response.map((loc) => {
+                $scope.clusterModel.locations = response.data.map((loc) => {
                     return {
                         isLocal: loc.local,
                         endpoint: loc.uri,
                         rpcAddress: loc.rpcAddress || ''
                     };
                 });
-            }).error(function (response) {
-                const msg = getError(response);
+            })
+            .catch(function (error) {
+                const msg = getError(error.data, error.status);
                 toastr.error(msg, $translate.instant('common.error'));
             });
     }
@@ -251,13 +256,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     function getRemoteLocationsRpcAddresses(locations) {
         const rpcAddressFetchers = locations.filter((location) => !location.isLocal).map((location) => {
             return getNodeRpcAddress(location.endpoint)
-                .success((rpcAddress) => {
-                    location.rpcAddress = rpcAddress;
+                .then((response) => {
+                    location.rpcAddress = response.data;
                     location.isAvailable = true;
                 })
-                .error((error) => {
+                .catch((error) => {
                     location.isAvailable = false;
-                    location.error = error;
+                    location.error = error.data;
                 });
         });
         return Promise.allSettled(rpcAddressFetchers);
@@ -338,12 +343,12 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
         $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
         $scope.clusterConfiguration.nodes = $scope.selectedLocations.map((node) => node.rpcAddress);
         return ClusterRestService.createCluster($scope.clusterConfiguration)
-            .success(() => {
+            .then(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
                 $modalInstance.close();
             })
-            .error(function (data, status) {
-                handleErrors(data, status);
+            .catch(function (error) {
+                handleErrors(error.data, error.status);
             })
             .finally(() => $scope.setLoader(false));
     };
@@ -422,8 +427,8 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
                 $scope.locations.push(location);
                 return LocationsRestService.getLocationRpcAddress(dataAddLocation.uri);
             })
-            .catch((data) => {
-                const msg = getError(data);
+            .catch((error) => {
+                const msg = getError(error.data, error.status);
                 toastr.error(msg, $translate.instant('common.error'));
             })
             .finally(() => $scope.loader = false);
