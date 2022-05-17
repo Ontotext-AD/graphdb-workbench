@@ -4,7 +4,6 @@ import "angular/clustermanagement/app";
 import "angular/clustermanagement/controllers";
 import "angular/clustermanagement/directives";
 
-// TODO: Disabled because obsolete. To be re written when raft cluster implementation is complete
 describe('==> Cluster management module controllers tests', function () {
 
     beforeEach(angular.mock.module('graphdb.framework.clustermanagement.controllers', function ($provide) {
