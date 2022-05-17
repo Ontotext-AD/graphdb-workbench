@@ -44,7 +44,7 @@ describe('Namespaces', () => {
         getAddNamespaceButton().should('be.visible').and('not.be.disabled');
 
         // Should render a table with some default namespaces
-        getNamespacesTable().should('be.visible');
+        getNamespacesTable().scrollIntoView().should('be.visible');
         getNamespaces().should('have.length', getDefaultNamespacesLength());
 
         // Should provide pagination options
