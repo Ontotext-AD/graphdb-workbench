@@ -26,7 +26,8 @@ export const NodeState = {
     NO_CONNECTION: 'NO_CONNECTION',
     READ_ONLY: 'READ_ONLY',
     RESTRICTED: 'RESTRICTED',
-    NO_CLUSTER: 'NO_CLUSTER'
+    NO_CLUSTER: 'NO_CLUSTER',
+    DELETED: 'DELETED'
 };
 export const LinkState = {
     IN_SYNC: 'IN_SYNC',
@@ -131,7 +132,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         return ClusterRestService.getClusterStatus()
             .then(function (response) {
                 const nodes = response.data.slice();
-                const leader = response.data.find((node) => node.nodeState === NodeState.LEADER);
+                const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
                 const links = [];
                 if (leader) {
                     Object.keys(leader.syncStatus).forEach((node) => {
@@ -191,7 +192,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(forceDelete)
                 .then((response) => {
-                    const allNodesDeleted = Object.values(response.data).every((node) => node === 'DELETED');
+                    const allNodesDeleted = Object.values(response.data).every((nodeState) => nodeState === NodeState.DELETED);
                     if (allNodesDeleted) {
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
@@ -233,9 +234,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         return RemoteLocationsService.getLocationsWithRpcAddresses()
             .then((locations) => {
                 const localNode = locations.find((location) => location.isLocal);
-                localNode.endpoint = $scope.currentNode.endpoint;
-                localNode.rpcAddress = $scope.currentNode.address;
-
+                if (localNode) {
+                    localNode.endpoint = $scope.currentNode.endpoint;
+                    localNode.rpcAddress = $scope.currentNode.address;
+                }
                 $scope.clusterModel.locations = locations;
             });
     }
@@ -429,6 +431,7 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
                 .then((response) => {
                     location.rpcAddress = response.data;
                     location.isAvailable = true;
+                    return location;
                 })
                 .catch((error) => {
                     location.isAvailable = false;
@@ -464,7 +467,7 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
     /**
      * Fetch rpc address of a remote location
      * @param {*} location the remote location
-     * @return {string} the rpc address of the location
+     * @return {Promise<String>} the rpc address of the location
      */
     function getLocationRpcAddress(location) {
         return LocationsRestService.getLocationRpcAddress(location.endpoint);
