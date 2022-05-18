@@ -15,7 +15,7 @@ angular
     .controller('ClusterManagementCtrl', ClusterManagementCtrl)
     .controller('CreateClusterCtrl', CreateClusterCtrl)
     .controller('DeleteClusterCtrl', DeleteClusterCtrl)
-    .controller('AddLocationCtrl', AddLocationCtrl)
+    .controller('AddLocationFromClusterCtrl', AddLocationFromClusterCtrl)
     .controller('AddNodesDialogCtrl', AddNodesDialogCtrl)
     .controller('RemoveNodesDialogCtrl', RemoveNodesDialogCtrl)
     .factory('RemoteLocationsService', RemoteLocationsService);
@@ -573,7 +573,7 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
         return $modal.open({
             templateUrl: 'js/angular/templates/modal/add-location.html',
             windowClass: 'addLocationDialog',
-            controller: 'AddLocationCtrl'
+            controller: 'AddLocationFromClusterCtrl'
         }).result
             .then((dataAddLocation) => {
                 newLocation = dataAddLocation;
@@ -607,9 +607,9 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
     }
 }
 
-AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
+AddLocationFromClusterCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
 
-function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
+function AddLocationFromClusterCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
     //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
     $scope.newLocation = {
         'uri': '',
@@ -643,9 +643,9 @@ const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
 };
 
-AddNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data', '$modal', 'LocationsRestService', '$translate', 'toastr'];
+AddNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data', '$modal', 'RemoteLocationsService'];
 
-function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, LocationsRestService, $translate, toastr) {
+function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, RemoteLocationsService) {
     const clusterConfiguration = angular.copy(data.clusterConfiguration);
     const clusterModel = angular.copy(data.clusterModel);
     $scope.nodes = [];
@@ -667,40 +667,13 @@ function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, LocationsRestS
         $scope.locations.push(node);
     };
 
-    // TODO: Perhaps extract to lower code duplication
     $scope.addLocation = function () {
-        let newLocationData;
-        $modal.open({
-            templateUrl: 'js/angular/templates/modal/add-location.html',
-            windowClass: 'addLocationDialog',
-            controller: 'AddLocationCtrl'
-        }).result
-            .then((dataAddLocation) => {
-                newLocationData = dataAddLocation;
-                return $scope.addLocationHttp(dataAddLocation);
-            })
-            .then((response) => {
-                if (!response) {
-                    return;
+        RemoteLocationsService.addLocation()
+            .then((newLocation) => {
+                if (newLocation) {
+                    $scope.locations.push(newLocation);
                 }
-                const location = {
-                    isLocal: newLocationData.local,
-                    endpoint: newLocationData.uri,
-                    rpcAddress: response.data || ''
-                };
-                $scope.locations.push(location);
             });
-    };
-
-    $scope.addLocationHttp = function (dataAddLocation) {
-        $scope.loader = true;
-        return LocationsRestService.addLocation(dataAddLocation)
-            .then(() => LocationsRestService.getLocationRpcAddress(dataAddLocation.uri))
-            .catch((data) => {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.error'));
-            })
-            .finally(() => $scope.loader = false);
     };
 
     $scope.ok = function () {
