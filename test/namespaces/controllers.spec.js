@@ -5,6 +5,7 @@ import 'angular/core/services/repositories.service';
 import "angular/namespaces/controllers";
 import "angular/rest/rdf4j.repositories.rest.service";
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.namespaces.controllers', function ($provide) {
     $provide.constant("productInfo", {
@@ -21,9 +22,10 @@ describe('=> NamespacesCtrl tests', function () {
         RDF4JRepositoriesRestService,
         toastr,
         httpGetNamespaces,
-        modalInstance;
+        modalInstance,
+        $translate;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _RDF4JRepositoriesRestService_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q) {
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _RDF4JRepositoriesRestService_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q, _$translate_) {
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
@@ -31,8 +33,19 @@ describe('=> NamespacesCtrl tests', function () {
         RDF4JRepositoriesRestService = _RDF4JRepositoriesRestService_;
         toastr = _toastr_;
         $scope = $rootScope.$new();
+        $translate = _$translate_;
+
+        $translate.instant = function (key) {
+            return bundle[key];
+        };
 
         modalInstance = new FakeModal($q, $rootScope);
+
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
+        $repositories.getActiveRepositoryObject = function () {
+            return {id: 'activeRepository', location: ''};
+        }
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: false,
@@ -40,7 +53,7 @@ describe('=> NamespacesCtrl tests', function () {
             overrideAuth: {enabled: false}
         });
         $httpBackend.when('GET', 'rest/locations/active').respond(200, '');
-        $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+        $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
             username: 'admin',
             appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
             authorities: ['ROLE_ADMIN']
@@ -86,7 +99,8 @@ describe('=> NamespacesCtrl tests', function () {
                 openSimpleModal: function () {
                     return modalInstance;
                 }
-            }
+            },
+            $translate: $translate
         });
     }));
 
@@ -154,7 +168,7 @@ describe('=> NamespacesCtrl tests', function () {
         it('should edit prefix', () => {
             $scope.loader = undefined;
             spyOn($scope, 'getNamespaces').and.callThrough();
-            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(200);
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix?location=').respond(200);
 
             $scope.editPrefix();
             $httpBackend.flush();
@@ -167,7 +181,7 @@ describe('=> NamespacesCtrl tests', function () {
             $scope.loader = undefined;
             spyOn(toastr, 'error');
             spyOn($scope, 'getNamespaces').and.callThrough();
-            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix').respond(500, {
+            $httpBackend.when('POST', 'rest/repositories/activeRepository/prefix?location=').respond(500, {
                 message: 'Edit prefix error!'
             });
 

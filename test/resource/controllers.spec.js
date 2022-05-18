@@ -1,4 +1,14 @@
+import {bundle} from "../test-main";
+
 beforeEach(angular.mock.module('graphdb.framework.explore.controllers'));
+
+beforeEach(angular.mock.module(function($provide) {
+    $provide.service('$languageService', function() {
+        this.getLanguage = function() {
+            return 'en';
+        }
+    });
+}));
 
 describe('=> ExploreCtrl tests', function () {
     var $repositories,
@@ -9,9 +19,10 @@ describe('=> ExploreCtrl tests', function () {
         $timeout,
         $window,
         $scope,
-        $jwtAuth;
+        $jwtAuth,
+        $languageService;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _ClassInstanceDetailsService_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$jwtAuth_, _$languageService_) {
         $repositories = _$repositories_;
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         $httpBackend = _$httpBackend_;
@@ -20,6 +31,7 @@ describe('=> ExploreCtrl tests', function () {
         $window = _$window_;
         $timeout = _$timeout_;
         $jwtAuth = _$jwtAuth_;
+        $languageService = _$languageService_;
 
         $scope = $rootScope.$new();
 
@@ -33,7 +45,7 @@ describe('=> ExploreCtrl tests', function () {
             }
         }
 
-        $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth});
+        $controller('ExploreCtrl', {$scope: $scope, $jwtAuth: $jwtAuth, $languageService: $languageService});
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,
@@ -41,7 +53,8 @@ describe('=> ExploreCtrl tests', function () {
             overrideAuth: {enabled: false}
         });
 
-        $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
     }));
 
     afterEach(function () {
@@ -123,9 +136,10 @@ describe('=> EditResourceCtrl', function () {
         $window,
         ClassInstanceDetailsService,
         StatementsService,
-        $scope;
+        $scope,
+        $translate;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope, _$translate_) {
         $repositories = _$repositories_;
         $httpBackend = _$httpBackend_;
         $location = _$location_;
@@ -135,8 +149,15 @@ describe('=> EditResourceCtrl', function () {
         ClassInstanceDetailsService = _ClassInstanceDetailsService_;
         StatementsService = _StatementsService_;
         $scope = $rootScope.$new();
+        $translate = _$translate_;
 
-        $controller('EditResourceCtrl', {$scope: $scope});
+        $translate.instant = function (key) {
+            return bundle[key];
+        }
+
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
+
+        $controller('EditResourceCtrl', {$scope: $scope, $translate: $translate});
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,
@@ -144,7 +165,7 @@ describe('=> EditResourceCtrl', function () {
             overrideAuth: {enabled: false}
         });
 
-        $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+        $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
     }));
 
     afterEach(function () {

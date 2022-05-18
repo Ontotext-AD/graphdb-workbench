@@ -2,6 +2,7 @@ import 'angular/autocomplete/app';
 import 'angular/autocomplete/controllers';
 import 'angular/rest/autocomplete.rest.service';
 import {FakeModal} from '../mocks';
+import {bundle} from "../test-main";
 
 let mocks = angular.module('Mocks', []);
 mocks.service('$repositories', function () {
@@ -46,10 +47,11 @@ describe('Autocomplete', function () {
         let createController;
         let modalInstance;
         let $autocompleteStatus;
+        let $translate;
 
         beforeEach(angular.mock.module('Mocks'));
 
-        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_) {
+        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_, _$translate_) {
             $scope = _$rootScope_.$new();
             $http = _$http_;
             $interval = _$interval_;
@@ -63,6 +65,11 @@ describe('Autocomplete', function () {
             AutocompleteRestService = _AutocompleteRestService_;
             $httpBackend = _$httpBackend_;
             $autocompleteStatus = _$autocompleteStatus_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key) {
+                return bundle[key];
+            };
 
             createController = () => $controller('AutocompleteCtrl', {
                 $scope: $scope,
@@ -74,7 +81,8 @@ describe('Autocomplete', function () {
                 $modal: $modal,
                 $timeout: $timeout,
                 AutocompleteRestService,
-                $autocompleteStatus
+                $autocompleteStatus,
+                $translate
             });
 
             createController();
@@ -89,7 +97,7 @@ describe('Autocomplete', function () {
             $httpBackend.when('POST', 'rest/autocomplete/iris?enabled=true').respond(200);
             $httpBackend.when('POST', 'rest/autocomplete/iris?enabled=false').respond(200);
 
-            $httpBackend.when('POST', 'rest/autocomplete/reIndex').respond(200);
+            $httpBackend.when('POST', 'rest/autocomplete/reindex').respond(200);
 
             $httpBackend.when('POST', 'rest/autocomplete/interrupt').respond(200);
 
@@ -298,7 +306,7 @@ describe('Autocomplete', function () {
         describe('buildIndex', () => {
             it('should trigger index rebuilding', () => {
                 $scope.indexStatus = undefined;
-                $httpBackend.expectPOST('rest/autocomplete/reIndex').respond(200);
+                $httpBackend.expectPOST('rest/autocomplete/reindex').respond(200);
 
                 $scope.buildIndex();
 
@@ -315,7 +323,7 @@ describe('Autocomplete', function () {
             it('should show notification on error', () => {
                 $scope.indexStatus = undefined;
                 spyOn(toastr, 'error');
-                $httpBackend.expectPOST('rest/autocomplete/reIndex').respond(500, {
+                $httpBackend.expectPOST('rest/autocomplete/reindex').respond(500, {
                     error: {
                         message: 'Index rebuilding error!'
                     }
@@ -542,9 +550,9 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, true);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
@@ -581,9 +589,9 @@ describe('Autocomplete', function () {
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, true);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
@@ -612,9 +620,9 @@ describe('Autocomplete', function () {
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, false);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, false);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
 
                 createController();
                 $httpBackend.flush();
@@ -630,7 +638,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 spyOn(toastr, 'error');
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(500, {
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(500, {
                     error: {
                         message: 'Plugin check failed!'
                     }

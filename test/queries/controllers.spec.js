@@ -53,6 +53,8 @@ describe('=> QueriesCtrl tests', function () {
 
         modalInstance = new FakeModal();
 
+        $httpBackend.when('GET', 'rest/locations', {}).respond(200);
+
         httpGetQueriesData = $httpBackend.when('GET', 'rest/monitor/query').respond(200, [{
             "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
             "trackId": "21107",
@@ -84,7 +86,7 @@ describe('=> QueriesCtrl tests', function () {
             overrideAuth: {enabled: false}
         });
         $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-        $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+        $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
             username: 'admin',
             appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
             authorities: ['ROLE_ADMIN']

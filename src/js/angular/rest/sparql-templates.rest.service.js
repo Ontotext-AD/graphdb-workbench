@@ -4,7 +4,8 @@ angular
 
 SparqlTemplatesRestService.$inject = ['$http'];
 
-const SPARQL_TEMPLATES_ENDPOINT = 'rest/sparql-template';
+const REPOSITORIES_BASE_URL = 'rest/repositories/';
+const SPARQL_TEMPLATES_URL = '/sparql-templates';
 
 function SparqlTemplatesRestService($http) {
     return {
@@ -15,12 +16,12 @@ function SparqlTemplatesRestService($http) {
         deleteSparqlTemplate
     };
 
-    function getSparqlTemplates() {
-        return $http.get(`${SPARQL_TEMPLATES_ENDPOINT}`);
+    function getSparqlTemplates(repositoryID) {
+        return $http.get(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`);
     }
 
-    function getSparqlTemplate(templateID) {
-        return $http.get(`${SPARQL_TEMPLATES_ENDPOINT}/configuration`,
+    function getSparqlTemplate(templateID, repositoryID) {
+        return $http.get(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}/configuration`,
             {
                 params : {
                     'templateID': templateID
@@ -28,15 +29,15 @@ function SparqlTemplatesRestService($http) {
             });
     }
 
-    function createSparqlTemplate(template) {
-        return $http.post(`${SPARQL_TEMPLATES_ENDPOINT}/create`, {
+    function createSparqlTemplate(template, repositoryID) {
+        return $http.post(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`, {
             templateID: template.templateID,
             query: template.query
         });
     }
 
-    function updateSparqlTemplate(template) {
-        return $http.put(`${SPARQL_TEMPLATES_ENDPOINT}/edit`,
+    function updateSparqlTemplate(template, repositoryID) {
+        return $http.put(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`,
             template.query,
             {
                 params : {
@@ -48,8 +49,8 @@ function SparqlTemplatesRestService($http) {
             });
     }
 
-    function deleteSparqlTemplate(templateID) {
-        return $http.delete(`${SPARQL_TEMPLATES_ENDPOINT}/delete`,
+    function deleteSparqlTemplate(templateID, repositoryID) {
+        return $http.delete(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`,
             {
                 params : {
                     'templateID': templateID

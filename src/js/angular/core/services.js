@@ -11,12 +11,14 @@ import 'angular/utils/error-utils';
 import 'autofill-event/autofill-event';
 import 'angular/core/directives';
 import 'angular/core/controllers';
+import 'angular-translate/dist/angular-translate';
 
 const modules = [
     'ui.bootstrap',
     'jlareau.bowser',
     'LocalStorageModule',
-    'graphdb.framework.core.controllers'
+    'graphdb.framework.core.controllers',
+    'pascalprecht.translate'
 ];
 
 angular
@@ -63,6 +65,7 @@ function MenuItemsProvider() {
     const cloneItem = function (item, children) {
         return {
             label: item.label,
+            labelKey: item.labelKey,
             href: item.href,
             hrefFun: item.hrefFun,
             order: item.order,

@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
 
-ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload'];
+ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload', '$translate'];
 
-function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
+function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $translate) {
     return {
         restrict: 'E',
         scope: false,
@@ -54,11 +54,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         const REQUIRED_PROPERTIES_FIELD_PARAMS = ['hostName', 'databaseName', 'userName'];
 
         function getSupportedDriversData() {
-            return RepositoriesRestService.getSupportedDriversData()
+            return RepositoriesRestService.getSupportedDriversData($scope.repositoryInfo)
                 .success(function (response) {
                     $scope.supportedDriversData = response;
                 }).error(function (response) {
-                    showErrorMsg('Error', response);
+                    showErrorMsg($translate.instant('common.error'), response);
                 });
         }
 
@@ -105,11 +105,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
 
             modalInstance.result.then(function (data) {
                 // send data to backend
-                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content).success(function(result) {
+                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, $scope.repositoryInfo.location).success(function(result) {
                     $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
                     $scope.repositoryInfo.params[file].value = result.fileLocation;
                 }).error(function (error) {
-                    showErrorMsg('Error', error);
+                    showErrorMsg($translate.instant('common.error'), error);
                 })
             });
         }
@@ -119,8 +119,8 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                 $scope.uploadFile = files[0];
                 $scope.uploadFileLoader = true;
                 Upload.upload({
-                    url: 'rest/repositories/uploadFile',
-                    data: {uploadFile: $scope.uploadFile}
+                    url: 'rest/repositories/file/upload',
+                    data: {uploadFile: $scope.uploadFile, location: $scope.repositoryInfo.location}
                 })
                     .success(function (data) {
                         if (!data.success) {
@@ -131,7 +131,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         }
                         $scope.uploadFileLoader = false;
                     }).error(function (data) {
-                    showErrorMsg('Error', data);
+                    showErrorMsg($translate.instant('common.error'), data);
                     $scope.uploadFile = '';
                     $scope.uploadFileLoader = false;
                 });
@@ -178,15 +178,15 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         return !$scope.repositoryInfo.params[requiredFile].value;
                     });
                     if (missingRequired.length > 0) {
-                        toastr.error('Missing required ontop repo file');
-                        return Promise.reject('Missing required ontop repo file');
+                        toastr.error($translate.instant('ontop.repo.missing.required.file.error'));
+                        return Promise.reject($translate.instant('ontop.repo.missing.required.file.error'));
                     }
                     return Promise.resolve();
                 });
         }
 
         function loadPropertiesFile() {
-            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value)
+            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.repositoryInfo.location)
                 .success(function (driverData) {
                     const driver = $scope.loadDriverByClass(driverData.driverClass);
                     // If driver class is not found means that the selected driver is a GENERIC ONE
@@ -199,7 +199,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                         $scope.selectedDriver.jdbc.url = driverData.url;
                     }
                 }).error(function (data) {
-                showErrorMsg('Error', data);
+                showErrorMsg($translate.instant('common.error'), data);
                 $scope.uploadFileLoader = false;
             });
         }
@@ -207,11 +207,11 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         $scope.validateOntopPropertiesConnection = function () {
             updateProperties()
                 .then(function () {
-                    RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo.params.propertiesFile)
+                    RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo)
                         .success(function () {
-                            toastr.success('Connection is successful');
+                            toastr.success($translate.instant('ontop.repo.successful.connection.msg'));
                         }).error(function (data) {
-                        showErrorMsg('Failed to connect', data);
+                        showErrorMsg($translate.instant('ontop.repo.failed.to.connect'), data);
                     });
                 });
         }
@@ -227,7 +227,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
                     return !$scope.selectedDriver.jdbc[requiredField]
                 });
             if (missing.length > 0) {
-                toastr.error('Missing required field');
+                toastr.error($translate.instant('missing.required.field.error'));
                 return true;
             }
             return false;
@@ -236,7 +236,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         function updateProperties() {
             if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
                 if (missingRequiredField()) {
-                    return Promise.reject('Missing required field');
+                    return Promise.reject($translate.instant('missing.required.field.error'));
                 }
                 return updatePropertiesFile();
             }
@@ -246,13 +246,13 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         function updatePropertiesFile() {
             $scope.uploadFileLoader = true;
             return RepositoriesRestService
-                .updatePropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.selectedDriver.jdbc)
+                .updatePropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.selectedDriver.jdbc, $scope.repositoryInfo.location)
                 .success(function (data) {
                     $scope.ontopRepoFileNames[$scope.propertiesFile] = getFileName(data.fileLocation);
                     $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;
                     $scope.uploadFileLoader = false;
                 }).error(function (data) {
-                    showErrorMsg('Error', data);
+                    showErrorMsg($translate.instant('common.error'), data);
                     $scope.uploadFileLoader = false;
                 });
         }
@@ -284,7 +284,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
 
         $scope.createOntopRepo = function () {
             if (!$scope.repositoryInfo.id) {
-                toastr.error('Repository ID cannot be empty');
+                toastr.error($translate.instant('empty.repoid.warning'));
                 return;
             }
 

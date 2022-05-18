@@ -1,0 +1,133 @@
+<link href="css/clustermanagement.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/rdf-details-side-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<title>{{'view.clusterManagement.title' | translate}}</title>
+
+<h1>
+    {{title}}
+    <span class="btn btn-link"
+          ng-class="{ 'help-button': showExternalElements, 'help-button-disabled': !showExternalElements }"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div onto-loader-new
+     ng-show="loader"
+     class="cluster-loader"
+     message="getLoaderMessage"
+     size="75">
+</div>
+
+<div class="clearfix mb-2 d-flex" ng-if="!loader && clusterConfiguration">
+    <div class="action-buttons">
+        <button type="button" class="btn btn-secondary delete-cluster-btn mr-2"
+                ng-click="showDeleteDialog()"
+                tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
+                tooltip-placement="bottom">
+            <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
+        </button>
+    </div>
+    <button class="btn btn-link"
+            ng-click="toggleSidePanel()"
+            tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
+            tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
+</div>
+
+<div id="nodeTooltip" class="nodetooltip" ng-hide="selectedNode == null">
+    <a href="{{selectedNode.endpoint}}" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
+    <hr style="margin-top: 10px; margin-bottom: 10px"/>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
+        <div class="col-sm-6 break-word">{{selectedNode.address}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.state' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.nodeState}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.term' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.term}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_term' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.lastLogTerm}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_index' | translate}}</div>
+        <div class="col-sm-6">{{selectedNode.lastLogIndex}}</div>
+    </div>
+</div>
+
+<div ng-if="!loader" class="nodes">
+    <div cluster-graphical-view></div>
+</div>
+
+<pageslide ng-show="clusterConfiguration"
+           ps-class="rdf-info-side-panel"
+           ps-open="shouldShowClusterSettingsPanel"
+           onopen="onopen"
+           onclose="onclose"
+           ps-side="right"
+           ps-custom-height="calc(100vh - 55px)"
+           ps-size="25vw">
+    <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
+        <button class="close mb-1 ml-1" ng-click="toggleSidePanel()"></button>
+        <h3 class="hovered-parent">
+            {{'cluster_management.cluster_configuration.label' | translate}}
+        </h3>
+        <h4>{{'cluster_management.cluster_configuration.configuration_label' | translate}}</h4>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.election_min_timeout' | translate}}
+                <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.electionMinTimeout}}</span>
+            </div>
+        </div>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.election_range_timeout' | translate}}
+                <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.electionRangeTimeout}}</span>
+            </div>
+        </div>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.heartbeat_interval' | translate}}
+                <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.heartbeatInterval}}</span>
+            </div>
+        </div>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.message_size_kb' | translate}}
+                <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.messageSizeKB}}</span>
+            </div>
+        </div>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.verification_timeout' | translate}}
+                <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.verificationTimeout}}</span>
+            </div>
+        </div>
+        <h4>{{'cluster_management.cluster_configuration.nodes_list_label' | translate}}</h4>
+        <ul>
+            <li class="data-value" ng-repeat="node in clusterConfiguration.nodes">
+                {{node}}
+            </li>
+        </ul>
+    </div>
+</pageslide>

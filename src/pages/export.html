@@ -18,15 +18,15 @@
         <div ng-show="getActiveRepository()">
 
 			<div class="alert alert-warning" ng-hide="graphs.length > 0">
-				No graphs in this repository. Add graphs via the <a ng-href="sparql">SPARQL update form</a> or <a ng-href="import">the data import page</a>.
+				{{'export.no.graphs.in.repo' | translate}} <a ng-href="sparql">{{'export.sparql.update.form' | translate}}</a> {{'or' | translate}} <a ng-href="import">{{'export.data.import.page' | translate}}</a>.
 			</div>
 
 			<div>
 				<div class="clearfix mb-2">
 					<div class="pull-right col-form-label">
-						<span class="mr-1">Showing {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= filteredGraphs.length ? filteredGraphs.length : pageSize * page}} of {{filteredGraphs.length}} results</span>
+						<span class="mr-1">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= filteredGraphs.length ? filteredGraphs.length : pageSize * page}} {{'of' | translate}} {{filteredGraphs.length}} {{'results.label' | translate}}</span>
 
-						<span>Graphs per page:</span>
+						<span>{{'export.graphs.per.page' | translate}}</span>
 						<div class="btn-group" dropdown>
 							<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
 									ng-disabled="disabled">
@@ -38,7 +38,7 @@
 									<span class="dropdown-item" ng-click="changePageSize(size)">{{size}}</span>
 								</li>
 								<li>
-									<span class="dropdown-item" ng-click="changePageSize(filteredGraphs.length)">All</span>
+									<span class="dropdown-item" ng-click="changePageSize(filteredGraphs.length)">{{'all.label' | translate}}</span>
 								</li>
 							</ul>
 						</div>
@@ -46,7 +46,7 @@
 
 					<label class="mr-1 mb-0">
 						<input type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="onGraphSearch()"
-							placeholder="Search Graphs"/>
+							placeholder="{{'search.graphs.label' | translate}}"/>
 					</label>
 				</div>
 
@@ -55,7 +55,7 @@
 				<div class="clearfix mb-2">
 					<div class="btn-group" dropdown>
 						<button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle>
-							<span class="icon-export"></span> Export repository
+							<span class="icon-export"></span> {{'export.repository.label' | translate}}
 						</button>
 						<ul class="dropdown-menu">
 							<li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
@@ -66,9 +66,9 @@
 					</div>
 					<button type="button" class="btn btn-secondary clear-repository-btn"
 						ng-click="dropRepository()"
-						tooltip="Removes all data from the current repository" tooltip-placement="top"
+						tooltip="{{'removes.data.from.repo.label' | translate}}" tooltip-placement="top"
 						ng-disabled="!canWriteActiveRepo(true)">
-						<span class="icon-trash"></span> Clear repository
+						<span class="icon-trash"></span> {{'clear.repo.label' | translate}}
 					</button>
                     <div class="pull-right">
                         <div ng-show="pageSize >= filteredGraphs.length"></div>
@@ -79,18 +79,18 @@
 
                 <div class="mb-2">
 					<div ng-hide="displayGraphs.length > 0">
-						<em>No results were found.</em>
+						<em>{{'no.results.found.label' | translate}}</em>
 					</div>
 					<table ng-show="displayGraphs.length > 0" class="table table-striped table-hover" id="export-graphs"
                            aria-describedby="Export graphs table">
 						<thead>
 							<tr>
 								<th id="selectionColumn" class="text-nowrap" style="width: 100px">
-									<label class="form-check-label" tooltip="Select all">
+									<label class="form-check-label" tooltip="{{'select.all.tooltip' | translate}}">
 										<input class="form-check-input" type="checkbox" ng-model="selectedAll" ng-click="checkAll()">
 									</label>
 									<div class="btn-group btn-group-sm" dropdown>
-										<button type="button" class="btn btn-link dropdown-toggle" dropdown-toggle tooltip="Export selected graphs" ng-disabled="!hasMultipleSelected()">
+										<button type="button" class="btn btn-link dropdown-toggle" dropdown-toggle tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()">
 											<span class="icon-export"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
@@ -102,12 +102,12 @@
 									</div>
 									<button type="button" class="btn btn-link secondary"
 										ng-click="dropContext()"
-										tooltip="Removes all data from the selected graphs" tooltip-placement="top"
+										tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
 										<span class="fa fa-trash-o"></span>
 									</button>
 								</th>
-								<th id="graphColumn">Graphs</th>
+								<th id="graphColumn">{{'graphs.label' | translate}}</th>
 								<th id="actionsColumn" style="width: 150px"></th>
 							</tr>
 						</thead>
@@ -123,10 +123,10 @@
 							</td>
                             <td ng-if="graph.contextID.uri && isShacl(graph.contextID.uri)">
                                 <a ng-href="resource?uri={{graph.contextID.uri}}&role=context"
-                                   title="{{graph.contextID.value}}">SHACL Shape Graph ({{graph.contextID.value}})</a>
+                                   title="{{graph.contextID.value}}">{{'shacl.shape.graph.tooltip' | translate}} ({{graph.contextID.value}})</a>
                             </td>
                             <td ng-if="graph.contextID.uri && !isShacl(graph.contextID.uri)" >
-                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value}}</a>
+                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value | translate}}</a>
 							</td>
 							<td ng-if="!graph.contextID.uri">
 								{{graph.contextID.value}}
@@ -134,7 +134,7 @@
 							<td>
 
 								<div class="btn-group" dropdown>
-									<button type="button" class="btn btn-link dropdown-toggle" dropdown-toggle tooltip="Export graph"
+									<button type="button" class="btn btn-link dropdown-toggle" dropdown-toggle tooltip="{{'export.graph.label' | translate}}"
                                             ng-disabled="!graph.contextID.uri">
 										<span class="icon-export"></span>
 									</button>
@@ -148,7 +148,7 @@
 
 								<button class="btn btn-link secondary delete-graph-btn"
 									ng-click="dropContext(graph)"
-									tooltip="Removes all data from this graph" tooltip-placement="top"
+									tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
 									ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
 									<span class="fa fa-trash-o fa-lg"></span>
 								</button>

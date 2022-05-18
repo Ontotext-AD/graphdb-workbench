@@ -15,7 +15,7 @@
 <div class="top-offset" core-errors fedx license></div>
 <div class="top-offset" system-repo-warning></div>
 <div class="top-offset alert alert-danger" ng-show="repositoryError">
-    <p>The currently selected repository cannot be used for queries due to an error:</p>
+    <p>{{'not.usable.active.repo.error' | translate}}</p>
 
     <p>{{repositoryError}}</p>
 </div>
@@ -26,8 +26,8 @@
                     data-toggle="dropdown"
                     aria-expanded="false">
                 <a dropdown-toggle>
-                    <span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Select graph">
-                        {{getSelectedGraphValue()}}
+                    <span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
+                        {{getSelectedGraphValue() | translate}}
                     </span>
                 </a>
             </button>
@@ -35,7 +35,7 @@
                 <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">
                     <a class="dropdown-item" ng-click="selectGraph(graph)">
                         <span class="multiline-text">
-						    {{graph.contextID.value}} <br/>
+						    {{graph.contextID.value | translate}} <br/>
 					    </span>
                     </a>
                 </li>
@@ -44,13 +44,13 @@
         <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
                  ng-show="allNotFilteredClasses.length > 0"
                ng-click="removeAllClasses()"
-               tooltip="Remove All Classes"
+               tooltip="{{'remove.classes.label' | translate}}"
                tooltip-trigger="mouseenter"
                tooltip-placement="bottom">
              <em class="icon-close icon-2x"></em>
          </button>
         <button class="btn btn-link p-0 reload-diagram-btn" type="button"
-             tooltip="Reload Diagram"
+             tooltip="{{'reload.diagram.tooltip' | translate}}"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter"
               ng-click="confirmCalculateDependencies()">
@@ -58,7 +58,7 @@
         </button>
         <a href id="download-svg" class="btn btn-link p-0 export-diagram-btn"
            ng-show="allNotFilteredClasses.length > 0"
-           tooltip="Export Diagram"
+           tooltip="{{'export.diagram.tooltip' | translate}}"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter">
             <em class="icon-export icon-2x"></em>
@@ -66,29 +66,29 @@
     </div>
     <div>
         <div ng-show="selectedClasses.length >= 2" class="available-dependencies-label">
-            <span ng-show="dependenciesData.hasLinks">Showing the dependencies between {{selectedClasses.length}} classes</span>
-            <span ng-show="!dependenciesData.hasLinks">No dependencies between these classes</span>
+            <span ng-show="dependenciesData.hasLinks"
+                translate="show.dependencies.between.classes.label"
+                  translate-value-number="{{selectedClasses.length}}"></span>
+            <span ng-show="!dependenciesData.hasLinks">{{'no.dependencies.found.label' | translate}}</span>
         </div>
 
         <div ng-show="allNotFilteredClasses.length > 0 && selectedClasses.length < 2">
-            At least two classes are needed to show dependency diagram
+            {{'class.count.constraint' | translate}}
         </div>
     </div>
     <div class="top-offset alert alert-warning"
          ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO' && isAllGraphsSelected()">
-        The currently selected repository contains no dependencies data. Please, reload the diagram if you have imported
-        data recently.
+        {{'no.dependencies.for.repo.warning' | translate}}
     </div>
     <div class="top-offset alert alert-warning"
          ng-show="!isLoading() && allNotFilteredClasses.length == 0 && status != 'NO_REPO' && !isAllGraphsSelected()">
-        The currently selected repository's graph contains no dependencies data.
-        Please select another graph from dropdown menu.
+        {{'no.dependencies.for.graph.warning' | translate}}
     </div>
     <div class="dep-status" ng-show="status == 'N/A'">
-        Dependencies plugin is not available. Dependency data cannot be shown without it.
+        {{'not.available.dependencies.plugin.warning' | translate}}
     </div>
     <div class="dep-status" ng-show="status == 'IN_PROGRESS'">
-        Dependencies calculation is in progress. If your repo is big it may take some time.
+        {{'dependencies.calculation.in.progress.warning' | translate}}
     </div>
     <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="isLoading() && status != 'NO_REPO'"></div>
     <div class="row deps-sidebar" ng-show="!isLoading() && allNotFilteredClasses.length > 0">
@@ -100,32 +100,32 @@
                             filter-function="classFilterFunc"
                             list-items-obj="allClasses"
                             list-items-not-filtered="allNotFilteredClasses"
-                            search-placeholder="Filter classes">
+                            search-placeholder="{{'filter.classes.placeholder' | translate}}">
                     </list-items-search-filter>
                 </div>
                 <div class="row direction-filter">
                     <div class="col-sm-4 col-xs-4 col-md-4">
                         <label>
                             <input type="radio" ng-model="direction" value="all">
-                            All
+                            {{'all.label' | translate}}
                         </label>
                     </div>
                     <div class="col-sm-4 col-xs-4 col-md-4">
                         <label>
                             <input type="radio" ng-model="direction" value="in">
-                            Incoming
+                            {{'incoming.label' | translate}}
                         </label>
                     </div>
                     <div class="col-sm-4 col-xs-4 col-md-4">
                         <label>
                             <input type="radio" ng-model="direction" value="out">
-                            Outgoing
+                            {{'outgoing.label' | translate}}
                         </label>
                     </div>
                 </div>
                 <div class="row direction-filter-header">
-                    <div class="col-sm-6">Class</div>
-                    <div class="col-sm-6">Links</div>
+                    <div class="col-sm-6">{{'class.label' | translate}}</div>
+                    <div class="col-sm-6">{{'links.label' | translate}}</div>
                 </div>
                 <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row">
                     <li ui-scroll="class in datasource" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
@@ -138,7 +138,7 @@
                                 {{(mode == "all") ? class.inConnectionsSum + class.outConnectionsSum -
                                 class.selfConnections : class.inConnectionsSum + class.outConnectionsSum | humanize}}
                             </div>
-                            <div class="related-arrow col-sm-1 col-md-1" tooltip="Related Classes" tooltip-trigger="mouseenter"
+                            <div class="related-arrow col-sm-1 col-md-1" tooltip="{{'related.classes.label' | translate}}" tooltip-trigger="mouseenter"
                                  ng-click="showClass(class)">
                                 <em class="fa fa-exchange pointer related-classes"
                                    ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
@@ -149,10 +149,10 @@
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
-                            <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" tooltip="Add Class" tooltip-trigger="mouseenter">
+                            <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
                                 <em class="fa fa-plus" role="button"></em>
                             </div>
-                            <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" tooltip="Remove Class"
+                            <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" tooltip="{{'remove.class.label' | translate}}"
                                   tooltip-trigger="mouseenter">
                                 <em class="fa fa-minus-circle" role="button"></em>
                             </div>
@@ -165,12 +165,11 @@
                     {{classToShow.name}}
                 </div>
                 <div class="back-to-dependencies-list">
-                    <a href="#" ng-click="classToShow = undefined"><em class="fa fa-arrow-left"></em> Back to main Class
-                        Relationships table</a>
+                    <a href="#" ng-click="classToShow = undefined"><em class="fa fa-arrow-left"></em> {{'back.to.main.class.table' | translate}}</a>
                 </div>
                 <div class="row direction-filter-header">
-                    <div class="col-sm-6">Class</div>
-                    <div class="col-sm-6">Links</div>
+                    <div class="col-sm-6">{{'class.label' | translate}}</div>
+                    <div class="col-sm-6">{{'links.label' | translate}}</div>
                 </div>
                 <ul id="wb-dependencies-classToShow" class="rdf-list rdf-list-static row">
                     <li ng-repeat="connection in classToShow.connections.slice(0, 100)" class="col-sm-12 row">
@@ -193,10 +192,10 @@
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
-                            <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" tooltip="Add Class" tooltip-trigger="mouseenter">
+                            <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
                                 <em class="fa fa-plus" role="button"></em>
                             </div>
-                            <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" tooltip="Remove Class"
+                            <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" tooltip="{{'remove.class.label' | translate}}"
                                  tooltip-trigger="mouseenter">
                                 <em class="fa fa-minus-circle" role="button"></em>
                             </div>
@@ -204,7 +203,7 @@
                     </li>
                 </ul>
                 <div ng-show="classToShow.connections.length > 100">
-                    And {{classToShow.connections.length - 100}} more...
+                    {{'and.label' | translate}} {{classToShow.connections.length - 100}} {{'more.label' | translate}}
                 </div>
             </div>
         </div>

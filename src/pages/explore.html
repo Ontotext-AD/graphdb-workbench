@@ -10,7 +10,7 @@
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
 
-            <a tooltip="Edit resource" href="resource/edit?uri={{details.encodeURI}}"
+            <a tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link">
                 <span class="icon-edit"></span>
@@ -19,10 +19,10 @@
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
         <p>
-            <span>Source:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
+            <span>{{'source.label' | translate}}:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
         </p>
         <p ng-show="isContextAvailable()">
-            <span>Context:</span>&nbsp;<a href="{{details.context}}">{{details.context}}</a>
+            <span>{{'context.label' | translate}}:</span>&nbsp;<a href="{{details.context}}">{{details.context}}</a>
         </p>
     </div>
 
@@ -38,18 +38,18 @@
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
         <p>
-            <span>Target:</span>&nbsp;<a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}">{{tripleParam}}</a>
+            <span>{{'target.label' | translate}}:</span>&nbsp;<a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}">{{tripleParam}}</a>
         </p>
     </div>
 
     <div class="pull-right">
 
-        <label for="inference-select" class="mr-1 mb-0">
+        <label for="inference-select" class="mb-0">
             <select ng-if="!loading && role !== 'context' && getActiveRepository() !== 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inference"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inference"
                     ng-change="changeInference(inference)" class="form-control form-control-sm"></select>
             <select ng-if="loading || role === 'context' || getActiveRepository() === 'SYSTEM'" id="inference-select"
-                    ng-options="inf.id as inf.title for inf in inferences" ng-model="inferenceNamed"
+                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inferenceNamed"
                     class="form-control form-control-sm" disabled>
             </select>
         </label>
@@ -58,7 +58,7 @@
                 ng-class="loading ? 'disabled' : ''"
                 ng-show="inference != 'explicit'"
                 ng-click="sameAs = !sameAs; exploreResource()"
-                popover="Expand results over owl:sameAs: {{sameAs ? 'ON' : 'OFF'}}"
+                popover="{{'sidepanel.expand.results.sameas' | translate}}: {{sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
             <span class="icon-2-5x"
@@ -69,13 +69,13 @@
                 ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
                 btn-checkbox btn-checkbox-true="true"
                 btn-checkbox-false="false" ng-change="exploreResource()">
-            Show Blank Nodes
+            {{'show.blank.nodes.label' | translate}}
         </button>
 
         <div class="btn-group" dropdown is-open="isopen">
             <button type="button" ng-class="loading ? 'disabled' : ''" class="btn btn-sm btn-secondary dropdown-toggle"
                     dropdown-toggle>
-                Download as
+                {{'download.as.label' | translate}}
             </button>
             <ul class="dropdown-menu small" role="menu">
                 <li ng-repeat="format in formats">
@@ -85,11 +85,11 @@
         </div>
 
         <button type="button" role="button" class="btn btn-primary btn-sm"
-                popover="Click to explore the graph visually"
+                popover="{{'explore.graph.visually.popover' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
                 ng-click="goToGraphsViz()">
-            Visual graph
+            {{'visual.graph.label' | translate}}
         </button>
 
     </div>
@@ -99,7 +99,7 @@
             <li ng-repeat="roleVar in roles" class="nav-item">
                 <a class="nav-link" href ng-click="changeRole(roleVar)"
                    ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading">
-                    {{roleVar}}
+                    {{roleVar | translate}}
                 </a>
             </li>
         </ul>

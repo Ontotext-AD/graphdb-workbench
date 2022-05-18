@@ -22,11 +22,11 @@
 	<div id="wb-monitoringResources" class="ot-owlim-resources">
 		<div class="row ng-scope" ng-show="!loader && error">
 			<p class="alert alert-danger">
-				Error: {{error}}.
+                {{'common.error' | translate}}: {{error}}.
 				<br/>
-				Refresh the page to retry.
+                {{'refresh.to.retry' | translate}}
 			</p>
-		</div>e
+		</div>
 
 		<div>
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
@@ -35,19 +35,19 @@
 				<div class="container graphics row">
 					<div class="tabbable">
 					   <ul class="nav nav-tabs">
-						  <li class="tab1Li nav-item" ><span class="nav-link" ng-click="activeTab = 'memory'" ng-class="activeTab == 'memory' ? 'active':''">Memory</span></li>
-						  <li class="tab2Li nav-item" ><span class="nav-link" ng-click="activeTab = 'threads'" ng-class="activeTab == 'threads' ? 'active':''">Threads</span></li>
-						  <li class="tab3Li nav-item" ><span class="nav-link" ng-click="activeTab = 'cpu'" ng-class="activeTab == 'cpu' ? 'active':''">CPU</span></li>
-						  <li class="tab4Li nav-item" ><span class="nav-link" ng-click="activeTab = 'classes'" ng-class="activeTab == 'classes' ? 'active':''">Classes</span></li>
+						  <li class="tab1Li nav-item" ><span class="nav-link" ng-click="activeTab = 'memory'" ng-class="activeTab == 'memory' ? 'active':''">{{'memory.label' | translate}}</span></li>
+						  <li class="tab2Li nav-item" ><span class="nav-link" ng-click="activeTab = 'threads'" ng-class="activeTab == 'threads' ? 'active':''">{{'threads.label' | translate}}</span></li>
+						  <li class="tab3Li nav-item" ><span class="nav-link" ng-click="activeTab = 'cpu'" ng-class="activeTab == 'cpu' ? 'active':''">{{'cpu.label' | translate}}</span></li>
+						  <li class="tab4Li nav-item" ><span class="nav-link" ng-click="activeTab = 'classes'" ng-class="activeTab == 'classes' ? 'active':''">{{'classes.label' | translate}}</span></li>
 					   </ul>
 					   <div class="tab-content">
 						  <div class="tab-pane fade in" ng-class="activeTab == 'memory' ? 'active':''" id="tab1">
 							<div id="heapMemoryGraphic">
 								<br>
-								<h2 class="pull-left">Heap Memory Usage</h2>
+								<h2 class="pull-left">{{'heap.memory.usage' | translate}}</h2>
 
 								<div class="pull-right">
-									<a id="wb-monitoringQueries-garbadgeCollector" ng-click="garbadgeCollector()" ng-hide="garbadgeCollectorLoader" class="btn btn-sm btn-primary performGC" href>Perform GC</a>
+									<a id="wb-monitoringQueries-garbadgeCollector" ng-click="garbadgeCollector()" ng-hide="garbadgeCollectorLoader" class="btn btn-sm btn-primary performGC" href>{{'perform.gc' | translate}}</a>
 								</div>
 
 								<div onto-loader size="31" ng-show="garbadgeCollectorLoader" class=" ot-loader onto-loader-performGC"></div>
@@ -58,21 +58,21 @@
 						  <div class="tab-pane fade in" ng-class="activeTab == 'threads' ? 'active':''" id="tab2">
 							<div id="threadsGraphic">
 								<br>
-								<h2>Threads</h2>
+								<h2>{{'threads.label' | translate}}</h2>
 								<div nvd3 options="chartOptions" data="data.threadCount" config="chartConfig" style="height: 500px;"></div>
 							</div>
 						  </div>
 						  <div class="tab-pane fade in" ng-class="activeTab == 'cpu' ? 'active':''" id="tab3">
 							<div id="CPUUsageGraphic">
 								<br>
-								<h2>System CPU Load</h2>
+								<h2>{{'system.cpu.load' | translate}}</h2>
 								<div nvd3 options="chartCPUOptions" data="data.cpuLoad" config="chartConfig" style="height: 500px;"></div>
 							</div>
 						  </div>
 						  <div class="tab-pane fade in" ng-class="activeTab == 'classes' ? 'active':''" id="tab4">
 							<div id="classesGraphic">
 								<br>
-								<h2>Loaded Classes Count</h2>
+								<h2>{{'loaded.classes.count' | translate}}</h2>
 								<div nvd3 options="chartOptions" data="data.classCount" config="chartConfig" style="height: 500px;"></div>
 							</div>
 						  </div>

@@ -2,26 +2,28 @@
 
 <div class="modal-header">
 	<button class="close" ng-click="cancel();" aria-hidden="true"></button>
-	<h3 class="modal-title">Upload Repository Configuration</h3>
+	<h3 class="modal-title">{{'upload.repo.config.header' | translate}}</h3>
 </div>
 <div class="modal-body">
 	<div class="btn btn-outline-primary btn-lg btn-block" ng-if="!editRepoPage">
 		<a ngf-select ngf-change="upload($files)" ngf-multiple="false" class="selectFiles pointer clearfix"
-		   accept=".ttl" tooltip="Click to select a configuration file from which to create a new repository."  tooltip-trigger="mouseenter">
+		   accept=".ttl" tooltip="{{'select.repo.config.tooltip' | translate}}"  tooltip-trigger="mouseenter">
 			<em class="icon-upload icon-lg pull-left" tooltip="Select files" tooltip-trigger="mouseenter" tooltip-append-to-body="true"></em>
 			<div class="pull-left">
-				<span>Click here to upload a .ttl file</span>
+				<span>{{'upload.ttl.file.btn' | translate}}</span>
 				<br>
-				<small ng-hide="uploadFile" class="text-muted">No file selected</small>
-				<small ng-show="uploadFile" class="text-muted">Selected: {{uploadFile.name}}</small>
+				<small ng-hide="uploadFile" class="text-muted">{{'no.file.selected.error' | translate}}</small>
+				<small ng-show="uploadFile" class="text-muted"
+                   translate="selected.file.msg"
+                   translate-value-name="{{uploadFile.name}}"></small>
 			</div>
 			<div ng-show="uploadFileLoader" onto-loader size="48" class="ot-loader pull-right"></div>
 		</a>
 	</div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary" ng-click="ok()">Create</button>
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button class="btn btn-primary" ng-click="ok()">{{'common.create.btn' | translate}}</button>
 </div>
 
 <!-- End editLocation.html -->

@@ -3,7 +3,7 @@
 </div>
 <div ng-class="beingBuiltConnector.inline ? 'card' : 'modal-body'">
 	<div ng-class="beingBuiltConnector.inline ? 'card-block' : ''">
-		<h4 ng-show="beingBuiltConnector.inline" class="card-title">{{beingBuiltConnector.actionName}} connector <strong>{{beingBuiltConnector.name}}</strong>...</h4>
+		<h4 ng-show="beingBuiltConnector.inline" class="card-title">{{beingBuiltConnector.actionName}} {{'connector.label' | translate}} <strong>{{beingBuiltConnector.name}}</strong>...</h4>
 
 		<div class="progress">
 			<div class="progress-bar progress-bar-success" role="progressbar" style="width:{{beingBuiltConnector.percentDone}}%">
@@ -12,20 +12,20 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-3">ETA:</div>
+			<div class="col-md-3">{{'eta.label' | translate}}</div>
 			<div class="col-md-9">{{beingBuiltConnector.eta}}</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">Processed entities:</div>
-			<div class="col-md-9">{{beingBuiltConnector.status.processedEntities | currency:'':0}} of {{beingBuiltConnector.status.estimatedEntities | currency:'':0}} (estimated)</div>
+			<div class="col-md-3">{{'processed.entities' | translate}}</div>
+			<div class="col-md-9">{{beingBuiltConnector.status.processedEntities | currency:'':0}} {{'of' | translate}} {{beingBuiltConnector.status.estimatedEntities | currency:'':0}} {{'estimated.in.brackets' | translate}}</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">Indexed entities:</div>
+			<div class="col-md-3">{{'indexed.entities' | translate}}</div>
 			<div class="col-md-9">{{beingBuiltConnector.status.indexedEntities | currency:'':0}}</div>
 		</div>
 		<div class="row">
-			<div class="col-md-3">Speed:</div>
-			<div class="col-md-9">{{beingBuiltConnector.status.entitiesPerSecond | currency:'':0}} entities/second</div>
+			<div class="col-md-3">{{'speed.label' | translate}}</div>
+			<div class="col-md-9">{{beingBuiltConnector.status.entitiesPerSecond | currency:'':0}} {{'entities.per.second' | translate}}</div>
 		</div>
 	</div>
 </div>

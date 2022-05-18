@@ -1,4 +1,5 @@
 import "angular/import/controllers";
+import {bundle} from "../test-main";
 
 beforeEach(angular.mock.module('graphdb.framework.impex.import.controllers', function ($provide) {
     $provide.constant("productInfo", {
@@ -14,16 +15,28 @@ describe('==> Import module controllers tests', function () {
             $repositories,
             $scope,
             getFilesListHttp;
+            let $translate;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, $rootScope, _$repositories_) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, $rootScope, _$repositories_, _$translate_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $repositories = _$repositories_;
+            $translate = _$translate_;
+
+            $translate.instant = function (key, modification) {
+                if (modification) {
+                    let modKey = Object.keys(modification)[0];
+                    return bundle[key].replace(`{{${modKey}}}`, modification[modKey]);
+                }
+                return bundle[key];
+            };
+
             //new a $scope
             $scope = $rootScope.$new();
             var controller = $controller('CommonCtrl', {
                 $scope: $scope,
+                $translate: $translate,
                 ModalService: {
                     openSimpleModal: function () {
                         return this;
@@ -54,12 +67,12 @@ describe('==> Import module controllers tests', function () {
                 overrideAuth: {enabled: false}
             });
             $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-            $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+            $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                 username: 'admin',
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
             });
-
+            $httpBackend.when('GET', 'rest/locations', {}).respond(200);
         }));
 
         describe('$scope.updateListHttp() tests', function () {

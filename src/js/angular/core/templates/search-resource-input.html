@@ -3,29 +3,29 @@
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
     <button ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon"
-          tooltip="Clear" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+          tooltip="{{'clear.tooltip' | translate}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
         <i class="icon-close" aria-hidden="true" ng-click="clearInput()"></i>
     </button>
     <span ng-if="!radioButtons" class="input-group-btn">
         <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">
-            {{textButtonLabel}}
+            {{textButtonLabel | translate}}
         </button>
     </span>
     <span ng-if="!radioButtons" class="input-group-btn show-btn">
         <button ng-if="visualButton !== ''" type="button" class="btn btn-primary autocomplete-visual-btn" ng-click="checkIfValidAndSearchVisual()">
-            {{visualButtonLabel}}
+            {{visualButtonLabel | translate}}
         </button>
     </span>
     <span ng-if="radioButtons" class="input-group-btn">
         <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
-            {{textButtonLabel}}
+            {{textButtonLabel | translate}}
         </button>
         <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
-            {{visualButtonLabel}}
+            {{visualButtonLabel | translate}}
         </button>
     </span>
 </div>
-<span class="autocomplete-hint">Hint: "ab c" matches "abC*", "ab c*" and "ab-c*"</span>
+<span class="autocomplete-hint">{{'query.editor.autocomplete.hint' | translate}}</span>
 <div id="auto-complete-results-wrapper">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          id="{{'auto_' + $index}}"

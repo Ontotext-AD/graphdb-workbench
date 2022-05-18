@@ -23,8 +23,8 @@
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
         <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
              tooltip="{{getLicense().message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
-            <span class="icon-warning"></span> No valid license
-            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
+            <span class="icon-warning"></span> {{'no.valid.license.warning' | translate}}
+            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">{{'set.label' | translate}}</a>
         </div>
         <div class="btn btn-info imports-queries"
                 ng-if="queryCount > 0 || numberOfActiveImports > 0">
@@ -54,25 +54,25 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <a dropdown-toggle>
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
+                          popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
-                        {{getActiveRepository()}}
+                        {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
                     </span>
-                    <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">Choose repository</span>
-                    <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">No accessible repositories</span>
+                    <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
+                    <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['type === \'system\'', 'id']"
-                    ng-if="repository.id !== getActiveRepository()"
+                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
+                    ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
-                    popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository.id)">
+                    popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                    <a class="dropdown-item" ng-click="setRepository(repository)">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>
 						    {{repository.id}} <br/>
-						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn())">{{getActiveLocation().label}}</small>
+						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn() || isFreeAccessEnabled())">{{repository.location ? repository.location : 'Local'}}</small>
 					    </span>
                     </a>
                 </li>
@@ -85,21 +85,22 @@
                 {{principal().username}}
             </button>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
-                <a class="dropdown-item" href="settings">My settings</a>
-                <a class="dropdown-item" ng-click="logout()" title="Sign out" ng-href="./login" ng-if="!hasExternalAuthUser()">Logout</a>
+                <a class="dropdown-item" href="settings">{{'menu.my.settings.label' | translate}}</a>
+                <a class="dropdown-item" ng-click="logout()" title="{{'sign.out.label' | translate}}" ng-href="./login" ng-if="!hasExternalAuthUser()">{{'logout.label' | translate}}</a>
             </div>
         </div>
         <div class="btn-group" ng-show="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">
             <a class="btn btn-lg btn-secondary" href="./login" ng-href="./login">
-                <span class="icon-arrow-right text-primary"></span> Login
+                <span class="icon-arrow-right text-primary"></span> {{'view.login.title' | translate}}
             </a>
         </div>
+        <language-selector></language-selector>
     </div>
 </div>
 
 <ul class="main-menu" ng-cloak ng-show="!embedded">
     <li class="brand">
-        <span class="toggle-menu" title="Collapse menu" ng-click="toggleNavigation()">
+        <span class="toggle-menu" title="{{'collapse.menu.title' | translate}}" ng-click="toggleNavigation()">
             <em class="icon-caret-left"></em>
         </span>
         <a class="menu-element-root" ng-href="./" href="./" ng-click="selected = -1">
@@ -125,9 +126,9 @@
             <li ng-repeat="submenu in item.children track by $index"
                 class="sub-menu-item"
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
-                ng-if="checkForWrite(submenu.role, getActiveLocation(), getActiveRepository()) && checkEdition(submenu.editions)">
+                ng-if="checkForWrite(submenu.role, getActiveRepositoryObject()) && checkEdition(submenu.editions)">
                 <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
-                  <span ng-if="submenu.icon" title="Open external page" ng-class=submenu.icon class="text-muted"></span>
+                  <span ng-if="submenu.icon" title="{{'open.external.page' | translate}}" ng-class=submenu.icon class="text-muted"></span>
                 </a>
             </li>
         </ul>
@@ -136,9 +137,9 @@
 <div ng-cloak >
     <div class="container-fluid main-container" ng-if="!hasPermission()">
         <p class="alert alert-danger">
-            You have no permission to access this functionality with your current credentials.
+            {{'no.access.permission.to.functionality.error' | translate}}
             <br>
-            Please choose another menu item or login as a different user.
+            {{'change.menu.or.user.warning' | translate}}
         </p>
     </div>
 
@@ -152,8 +153,7 @@
             <p>
                 <a href="http://graphdb.ontotext.com" target="_blank" rel="noopener noreferrer">GraphDB</a> {{graphdbVersion}} &bull; <a
                     href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J</a>
-                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; Workbench {{workbenchVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>. All
-                rights reserved.
+                {{sesameVersion}} &bull; Connectors {{connectorsVersion}} &bull; Workbench {{workbenchVersion}} &bull; &copy; {{previousYear}}&ndash;{{currentYear}} <a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext AD</a>. {{'all.rights.reserved.label' | translate}}
             </p>
         </div>
     </footer>
@@ -161,8 +161,8 @@
 <div class="show-ng-cloak ot-splash" style="display: none;">
     <object data="img/graphdb-splash.svg"></object>
     <div>GraphDB Workbench is loading...</div>
+    <div>GraphDB Workbench se charge...</div>
 </div>
-
 </body>
 
 </html>

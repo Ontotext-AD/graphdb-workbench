@@ -10,7 +10,7 @@ angular
 sparqlTabDirective.$inject = ['$rootScope', 'LocalStorageAdapter', 'LSKeys', 'ModalService'];
 
 function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalService) {
-    const SparqlTabCtrl = ['$scope', '$element', '$rootScope', 'ModalService', 'toastr', function ($scope, $element, $rootScope, ModalService, toastr) {
+    const SparqlTabCtrl = ['$scope', '$element', '$rootScope', 'ModalService', 'toastr', '$translate', function ($scope, $element, $rootScope, ModalService, toastr, $translate) {
         $scope.state = {};
 
         function getQueryID(element) {
@@ -51,7 +51,7 @@ function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalServic
             e.stopPropagation();
 
             if ($scope.tabs.length < 2) {
-                toastr.warning('Last tab must remain open.');
+                toastr.warning($translate.instant('sparql.tab.directive.close.last.warning'));
                 return;
             }
 
@@ -59,8 +59,8 @@ function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalServic
                 $scope.state.selectedTabId = getQueryID($element);
 
                 ModalService.openSimpleModal({
-                    title: 'Confirm',
-                    message: 'Are you sure you want to delete all query tabs except selected tab?',
+                    title: $translate.instant('common.confirm'),
+                    message: $translate.instant('sparql.tab.directive.delete.all.tabs.warning'),
                     warning: true
                 }).result.then(function () {
                     deleteAllTabsExceptSelected($scope.state.selectedTabId);
@@ -69,8 +69,8 @@ function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalServic
                 $scope.state.idForDelete = getQueryID($element);
 
                 ModalService.openSimpleModal({
-                    title: 'Confirm',
-                    message: 'Are you sure you want to close this query tab?',
+                    title: $translate.instant('common.confirm'),
+                    message: $translate.instant('sparql.tab.directive.close.tab.warning'),
                     warning: true
                 }).result.then(function () {
                     deleteTabByID($scope.state.idForDelete);
@@ -136,7 +136,7 @@ function sparqlTabDirective($rootScope, LocalStorageAdapter, LSKeys, ModalServic
     return {
         restrict: 'AE',
         // for some reason when you extract this template in a file and use templateUrl it selects all tabs when editing the tab name, not only the currently selected one
-        template: '<a class="nav-link" role="tab" data-toggle="tab" blur="submit" editable-text="tab.name" e-form="editCurrentlySelectedOnly" ng-click="selectThisTab($event)" ng-dblclick="editCurrentTab()" ><span ng-class="{\'text-muted\': !tab.name}">{{ tab.name || \'Unnamed\'}}</span><button type="button" ng-click="deleteTab($event)" class="btn btn-link btn-sm secondary delete-sparql-tab-btn" title="Delete tab"><i class="icon-close"></i></button></a>',
+        template: '<a class="nav-link" role="tab" data-toggle="tab" blur="submit" editable-text="tab.name" e-form="editCurrentlySelectedOnly" ng-click="selectThisTab($event)" ng-dblclick="editCurrentTab()" ><span ng-class="{\'text-muted\': !tab.name}">{{ tab.name || \'sparql.tab.directive.unnamed.tab.title\' | translate}}</span><button type="button" ng-click="deleteTab($event)" class="btn btn-link btn-sm secondary delete-sparql-tab-btn" title="Delete tab"><i class="icon-close"></i></button></a>',
         replace: true,
         controller: SparqlTabCtrl
     };

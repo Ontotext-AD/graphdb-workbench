@@ -77,9 +77,7 @@ describe('Repositories', () => {
 
     it('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
-        getLocationsList()
-            .should('have.length', 1)
-            .and('contain', 'Local');
+        getLocationsList();
 
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -344,7 +342,7 @@ describe('Repositories', () => {
 
         confirmModal();
 
-        getRepositoriesList().should('not.contain', repositoryId);
+        getRepositoriesList().should('not.exist');
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
@@ -375,7 +373,7 @@ describe('Repositories', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = '';
-        const url = 'http://localhost:9000/rest/repositories/uploadFile';
+        const url = 'http://localhost:9000/rest/repositories/file/upload';
         const fileType = '';
         const virtualRepoName = 'virtual-repo-' + Date.now();
 
@@ -383,7 +381,7 @@ describe('Repositories', () => {
         cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
             Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                 const formData = new FormData();
-                formData.set('uploadFile', blob, 'university-complete.obda');
+                formData.set('file', blob, 'university-complete.obda');
 
                 cy.form_request(url, formData).then(response => {
                     return obdaFileUpload = response.response.body.fileLocation;
@@ -394,7 +392,7 @@ describe('Repositories', () => {
             cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
                 Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                     const formData = new FormData();
-                    formData.set('uploadFile', blob, 'university-complete.ttl');
+                    formData.set('file', blob, 'university-complete.ttl');
 
                     cy.form_request(url, formData).then(response => {
                         return ontologyFileUpload = response.response.body.fileLocation;
@@ -405,7 +403,7 @@ describe('Repositories', () => {
                 cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
                     Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
                         const formData = new FormData();
-                        formData.set('uploadFile', blob, 'university-complete.properties');
+                        formData.set('file', blob, 'university-complete.properties');
 
                         cy.form_request(url, formData).then(response => {
                             return propertiesFileUpload = response.response.body.fileLocation;
@@ -498,9 +496,7 @@ describe('Repositories', () => {
 
     it('should verify different virtual repository RDBMS provider elements', () => {
         // There should be a default repository location
-        getLocationsList()
-            .should('have.length', 1)
-            .and('contain', 'Local');
+        getLocationsList();
 
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -728,7 +724,11 @@ describe('Repositories', () => {
     }
 
     function getLocationsList() {
-        return cy.get('.locations-table tr');
+        return cy.get('#wb-locations-locationInGetLocations')
+            .find('tr.location')
+            .should('have.length', 1)
+            .and('contain', 'Repositories from: ')
+            .and('contain', 'Local');
     }
 
     function getRepositoryFromList(repository) {

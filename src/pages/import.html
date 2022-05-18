@@ -13,21 +13,21 @@
     <div ng-controller="TabCtrl" ng-show="!isRestricted && canWriteActiveRepo()">
 
         <button type="button" ng-click="isCollapsed = !isCollapsed" class="btn btn-link pull-right"><span
-                class="icon-help"></span> Help
+                class="icon-help"></span> {{'menu.help.label' | translate}}
         </button>
 
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item" id="wb-import-tabUpload" ng-click="changeHelpTemplate('uploadInfo.html')"><a
                     class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="viewType = 'user'"
-                    data-toggle="tab">User data</a></li>
+                    data-toggle="tab">{{'user.data' | translate}}</a></li>
             <li class="nav-item" id="wb-import-tabServer" ng-hide="isS4()"
-                ng-click="changeHelpTemplate('importInfo.html')"><a class="nav-link"
-                                                                    ng-class="viewType == 'server' ? 'active' : ''" href
-                                                                    ng-click="viewType = 'server'" data-toggle="tab">Server
-                files</a></li>
+                ng-click="changeHelpTemplate('importInfo.html')">
+                <a class="nav-link"
+                    ng-class="viewType == 'server' ? 'active' : ''" href
+                    ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a></li>
         </ul>
         <div collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
-            <button type="button" ng-click="isCollapsed = false" tooltip="Close" class="close"
+            <button type="button" ng-click="isCollapsed = false" tooltip="{{'common.close' | translate}}" class="close"
                     aria-label="Close"></button>
             <div ng-include="templateUrl"></div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="row mb-2 upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
-                             popover="The supported RDF formats are {{fileFormatsHuman}}"
+                             popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                             <a id="wb-import-uploadFile" ngf-select="showToast(rejFiles)" ng-model="currentFiles"
@@ -49,37 +49,37 @@
                                ngf-max-size="maxUploadFileSizeMB + 'MB'">
                                 <em class="icon-upload icon-lg pull-left"></em>
                                 <div>
-                                    <span>Upload RDF files</span>
+                                    <span>{{'upload.rdf.files.label' | translate}}</span>
                                     <br>
-                                    <small class="text-muted">All RDF formats, up to {{maxUploadFileSizeMB | number}} MB</small>
+                                    <small class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}} {{maxUploadFileSizeMB | number}} MB</small>
                                 </div>
                             </a>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()"
-                             popover="The supported RDF formats are {{fileFormatsHuman}}"
+                             popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                             <em class="icon-link icon-lg pull-left"></em>
                             <div>
-                                <span>Get RDF data from a URL</span>
+                                <span>{{'rdf.data.from.url.label' | translate}}</span>
                                 <br>
-                                <small class="text-muted">All RDF formats</span>
+                                <small class="text-muted">{{'all.rdf.formats.label' | translate}}</span>
                                 </small>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()"
-                             popover="The supported RDF formats are {{textFileFormatsHuman}}"
+                             popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                         <em class="icon-edit icon-lg pull-left"></em>
                             <div>
-                                <span>Import RDF text snippet</span>
+                                <span>{{'import.rdf.text.snippet.label' | translate}}</span>
                                 <br>
-                                <small class="text-muted">Type or paste RDF data</span>
+                                <small class="text-muted">{{'type.paste.data.label' | translate}}</span>
                                 </small>
                             </div>
                         </div>

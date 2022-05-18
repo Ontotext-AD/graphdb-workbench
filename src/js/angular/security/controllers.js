@@ -19,6 +19,13 @@ const modules = [
     'toastr'
 ];
 
+const createUniqueKey = function (repository) {
+    if (repository.location) {
+        return `${repository.id}@${repository.location}`;
+    }
+    return repository.id;
+}
+
 const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
 
 const setGrantedAuthorities = function ($scope) {
@@ -96,8 +103,8 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
         $scope.username = '';
         $scope.password = '';
 
@@ -106,9 +113,9 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
 
         if ($location.search().noaccess) {
-            toastr.error('User has no access rights or configuration error.', 'Login error');
+            toastr.error($translate.instant('security.no.rights.config.error'), $translate.instant('security.login.error'));
         } else if ($location.search().expired) {
-            toastr.error('Your authentication token has expired. Please login again.', 'Login error');
+            toastr.error($translate.instant('security.auth.token.expired'), $translate.instant('security.login.error'));
         }
 
         $scope.isGDBLoginEnabled = function() {
@@ -139,7 +146,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                     });
             }).error(function (data, status) {
                 if (status === 401) {
-                    toastr.error('Wrong credentials!', 'Error');
+                    toastr.error($translate.instant('security.wrong.credentials'), $translate.instant('common.error'));
                     $scope.wrongCredentials = true;
                     $scope.username = '';
                     $scope.password = '';
@@ -151,8 +158,8 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
-    function ($scope, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
+securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
+    function ($scope, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService, $translate) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -180,7 +187,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                     $scope.loader = false;
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
                 });
         };
@@ -227,7 +234,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                                         };
                                         // We might have old (no longer existing) repositories so we have to check that
                                         const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
-                                            return r.id;
+                                            return createUniqueKey(r);
                                         });
                                         _.each(authorities, function (a) {
                                             // indexOf works in IE 11, startsWith doesn't
@@ -265,8 +272,8 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
 
         $scope.removeUser = function (username) {
             ModalService.openSimpleModal({
-                title: 'Confirm delete',
-                message: 'Are you sure you want to delete the user \'' + username + '\'?',
+                title: $translate.instant('common.confirm.delete'),
+                message: $translate.instant('security.confirm.delete.user', {name: username}),
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
@@ -274,7 +281,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                     $scope.getUsers();
                 }).error(function (data) {
                     const msg = getError(data);
-                    toastr.error(msg, 'Error');
+                    toastr.error(msg, $translate.instant('common.error'));
 
                     $scope.loader = false;
                 });
@@ -327,11 +334,19 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
+
+        $scope.createUniqueKey = function (repository) {
+            return createUniqueKey(repository);
+        }
     }]);
 
-securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth) {
-
+securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
+    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+        $rootScope.$on('$translateChangeSuccess', function () {
+            $scope.saveButtonText = $translate.instant('common.create.btn');
+            $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
+            $scope.pageTitle = $translate.instant('view.create.user.title');
+        });
         $scope.isAdmin = function () {
             return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
         };
@@ -351,31 +366,37 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             setGrantedAuthorities($scope);
         };
 
-        $scope.hasReadPermission = function (repositoryId) {
+        $scope.hasReadPermission = function (repository) {
+            let uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || $scope.grantedAuthorities.READ_REPO[repositoryId]
-                || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== SYSTEM_REPO
-                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*']);
+                || repository.id !== SYSTEM_REPO
+                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'])
+                || $scope.grantedAuthorities.READ_REPO[uniqueKey]
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.hasWritePermission = function (repositoryId) {
+        $scope.hasWritePermission = function (repoOrWildCard) {
+            let uniqueKey = createUniqueKey(repoOrWildCard);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || $scope.grantedAuthorities.WRITE_REPO[repositoryId]
-                || repositoryId !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*'];
+                || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.readCheckDisabled = function (repositoryId) {
-            return $scope.hasWritePermission(repositoryId)
-                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.READ_REPO['*']
+        $scope.readCheckDisabled = function (repoOrWildCard) {
+            return $scope.hasWritePermission(repoOrWildCard)
+                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.writeCheckDisabled = function (repositoryId) {
+        $scope.writeCheckDisabled = function (repoOrWildCard) {
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repositoryId !== SYSTEM_REPO && repositoryId !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
+                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
+
+        $scope.createUniqueKey = function (repository) {
+            return createUniqueKey(repository);
+        }
 
         $scope.userType = UserType.USER;
         $scope.grantedAuthorities = {
@@ -391,11 +412,11 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
             }
             if ($scope.user.password !== $scope.user.confirmpassword) {
                 if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
+                    $scope.passwordError = $translate.instant('security.enter.password');
                     $scope.confirmPasswordError = '';
                 } else {
                     $scope.passwordError = '';
-                    $scope.confirmPasswordError = 'Confirm password!';
+                    $scope.confirmPasswordError = $translate.instant('security.confirm.password');
                 }
                 return false;
             } else {
@@ -433,13 +454,13 @@ securityCtrl.controller('CommonUserCtrl', ['$scope', '$http', 'toastr', '$window
         }
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
+securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
 
         $scope.mode = 'add';
-        $scope.saveButtonText = 'Create';
+        $scope.saveButtonText = $translate.instant('common.create.btn');
         $scope.goBack = function () {
             const timer = $timeout(function () {
                 $window.history.back();
@@ -448,8 +469,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 $timeout.cancel(timer);
             });
         };
-        $scope.pageTitle = 'Create new user';
-        $scope.passwordPlaceholder = 'Password';
+        $scope.pageTitle = $translate.instant('view.create.user.title');
+        $scope.passwordPlaceholder = $translate.instant('security.password.placeholder');
 
         $scope.user = {
             'username': '',
@@ -468,9 +489,8 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         $scope.submit = function () {
                 if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
                     ModalService.openSimpleModal({
-                        title: 'Create administrator',
-                        message: 'If the password is unset and security is enabled, this administrator will not be ' +
-                            'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                        title: $translate.instant('security.create.admin'),
+                        message: $translate.instant('security.admin.login.warning'),
                         warning: true
                     }).result.then(function () {
                         $scope.createUser();
@@ -488,7 +508,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
-                toastr.success('The user ' + $scope.user.username + ' has been created.');
+                toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
@@ -499,7 +519,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
             }).error(function (data) {
                 const msg = getError(data);
                 $scope.loader = false;
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
@@ -516,7 +536,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         $scope.validateForm = function () {
             let result = true;
             if (!$scope.user.username) {
-                $scope.usernameError = 'Enter username!';
+                $scope.usernameError = $translate.instant('security.enter.username');
                 result = false;
             } else {
                 $scope.usernameError = '';
@@ -526,13 +546,13 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 $scope.confirmPasswordError = '';
             } else {
                 if (!$scope.user.password) {
-                    $scope.passwordError = 'Enter password!';
+                    $scope.passwordError = $translate.instant('security.enter.password');
                     result = false;
                 } else {
                     $scope.passwordError = '';
                 }
                 if (!$scope.user.confirmpassword || $scope.user.password !== $scope.user.confirmpassword) {
-                    $scope.confirmPasswordError = 'Confirm password!';
+                    $scope.confirmPasswordError = $translate.instant('security.confirm.password');
                     result = false;
                 } else {
                     $scope.confirmPasswordError = '';
@@ -543,13 +563,13 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService) {
+securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
         $scope.mode = 'edit';
-        $scope.saveButtonText = 'Save';
+        $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function () {
             const timer = $timeout(function () {
                 $window.history.back();
@@ -559,8 +579,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             });
         };
         $scope.params = $routeParams;
-        $scope.pageTitle = 'Edit user: ' + $scope.params.userId;
-        $scope.passwordPlaceholder = 'New password';
+        $scope.pageTitle = $translate.instant('view.edit.user.title', {userId: $scope.params.userId});
+        $scope.passwordPlaceholder = $translate.instant('security.new.password');
         $scope.userType = UserType.USER;
         const defaultUserSettings = {
             'DEFAULT_SAMEAS': true,
@@ -587,7 +607,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 $scope.grantedAuthorities = pa.grantedAuthorities;
             }).error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
@@ -596,9 +616,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.submit = function () {
             if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
-                    title: 'Save administrator settings',
-                    message: 'If you unset the password and then enable security, this administrator will not be ' +
-                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                    title: $translate.instant('security.save.admin.settings'),
+                    message: $translate.instant('security.admin.pass.unset'),
                     warning: true
                 }).result.then(function () {
                     $scope.updateUser();
@@ -616,7 +635,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
             }).success(function () {
-                toastr.success('The user ' + $scope.user.username + ' was updated.');
+                toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
@@ -631,7 +650,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
             }).error(function (data) {
                 const msg = getError(data);
                 $scope.loader = false;
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
@@ -640,8 +659,8 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService',
-    function ($scope, toastr, SecurityRestService) {
+securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
+    function ($scope, toastr, SecurityRestService, $translate) {
 
     $scope.debugMapping = function (role, mapping) {
         const method = mapping.split(':');
@@ -670,7 +689,7 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
             .error(function (data) {
                 const msg = getError(data);
                 $scope.loader = false;
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
     };
 
@@ -679,16 +698,16 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate) {
 
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope}));
+        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
         $scope.mode = 'settings';
         $scope.hasEditRestrictions = function () {
             return true;
         };
-        $scope.saveButtonText = 'Save';
+        $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function () {
             const timer = $timeout(function () {
                 $window.history.back();
@@ -712,8 +731,8 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             }
         };
 
-        $scope.pageTitle = 'Settings';
-        $scope.passwordPlaceholder = 'New password';
+        $scope.pageTitle = $translate.instant('view.settings.title');
+        $scope.passwordPlaceholder = $translate.instant('security.new.password');
         $scope.grantedAuthorities = {
             [READ_REPO]: {},
             [WRITE_REPO]: {}
@@ -751,9 +770,8 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.submit = function () {
             if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
-                    title: 'Save administrator settings',
-                    message: 'If you unset the password and then enable security, this administrator will not be ' +
-                        'able to log into GraphDB through the workbench. Are you sure that you want to continue?',
+                    title: $translate.instant('security.save.admin.settings'),
+                    message: $translate.instant('security.admin.pass.unset'),
                     warning: true
                 }).result.then(function () {
                     $scope.updateUser();
@@ -771,7 +789,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 appSettings: $scope.user.appSettings
             }).success(function () {
                 $scope.updateCurrentUserData();
-                toastr.success('The user ' + $scope.user.username + ' was updated.');
+                toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
                     $window.history.back();
@@ -782,7 +800,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             }).error(function (data) {
                 const msg = getError(data);
                 $scope.loader = false;
-                toastr.error(msg, 'Error');
+                toastr.error(msg, $translate.instant('common.error'));
             });
         };
 

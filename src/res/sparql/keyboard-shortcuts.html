@@ -2,11 +2,11 @@
 
 <div>
     <!-- massively taken from https://github.com/chieffancypants/angular-hotkeys -->
-    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">keyboard shortcuts</button>
+    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">{{'sparql.shortcuts' | translate}}</button>
     <div class="hotkeys-container fade" ng-class="{in: shortcutsVisible}">
         <div class="hotkeys">
            	<div class="close" ng-click="toggleCheatSheet()"></div>
-            <h3 class="text-xs-center">Keyboard shortcuts</h3>
+            <h3 class="text-xs-center">{{'sparql.shortcuts.capital' | translate}}</h3>
 
             <table>
                 <tbody>
@@ -14,25 +14,25 @@
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Space|Alt-Enter</kbd>
                         </td>
-                        <td class="hotkeys-text">Trigger Autocompletion</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.trigger.autocomplete' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-D</kbd>
                         </td>
-                        <td class="hotkeys-text">Delete current/selected line(s)</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.delete.line' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-/</kbd>
                         </td>
-                        <td class="hotkeys-text">Comment or uncomment current/selected line(s)</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.comment.uncomment.line' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Alt-Down</kbd>
                         </td>
-                        <td class="hotkeys-text">Copy line down</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.copy.line.down' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
@@ -44,66 +44,66 @@
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Shift-F</kbd>
                         </td>
-                        <td class="hotkeys-text">Auto-format/indent selected lines</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.auto.format.indent.lines' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-]</kbd>
                         </td>
-                        <td class="hotkeys-text">Indent current/selected line(s) more</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.auto.indent.lines.more' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-[</kbd>
                         </td>
-                        <td class="hotkeys-text">Indent current/selected line(s) less</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.auto.indent.lines.less' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Enter</kbd>
                         </td>
-                        <td class="hotkeys-text">Execute query or update</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.execute.query.update' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>Shift-[Ctrl|Cmd]-Enter</kbd>
                         </td>
-                        <td class="hotkeys-text">Execute explain plan for query</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.execute.explain.plan' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Alt-T</kbd>
                         </td>
-                        <td class="hotkeys-text">Create a new unnamed tab</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.create.new.tab' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-S</kbd>
                         </td>
-                        <td class="hotkeys-text">Create a saved query from the current state</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.create.saved.query' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Alt-Right</kbd>
                         </td>
-                        <td class="hotkeys-text">Switch to next tab</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.switch.next.tab' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>[Ctrl|Cmd]-Alt-Left</kbd>
                         </td>
-                        <td class="hotkeys-text">Switch to previous tab</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.switch.prev.tab' | translate}}</td>
                     </tr>
                     <tr>
                         <td class="hotkeys-keys">
                             <kbd>Shift-Left-Mouse</kbd>
                         </td>
-                        <td class="hotkeys-text">Click at close tab icon closes all the tabs except the clicked one</td>
+                        <td class="hotkeys-text">{{'sparql.shortcuts.close.all.tabs.except.selected' | translate}}</td>
                     </tr>
                 </tbody>
             </table>
 
-            
+
         </div>
     </div>
 </div>

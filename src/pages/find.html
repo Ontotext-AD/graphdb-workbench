@@ -11,12 +11,12 @@
 	</h1>
     <div core-errors></div>
     <form class="form-horizontal" name="form" novalidate ng-submit="submit()" ng-show="getActiveRepository()">
-        <p class="lead">Enter resource URI</p>
+        <p class="lead">{{'find.enter.resource.iri' | translate}}</p>
 		<div class="form-group pos-r">
 			<input type="submit" value="Go" class="btn btn-primary pull-right search-button"/>
 			<div angucomplete-alt-onto
 				 id="resources_finder"
-				 placeholder="Search RDF Resources"
+				 placeholder="{{'search.resources.msg' | translate}}"
 				 text-searching="false"
 				 text-no-results="false"
 				 pause="150"

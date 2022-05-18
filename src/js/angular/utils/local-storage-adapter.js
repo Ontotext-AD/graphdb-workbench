@@ -21,7 +21,8 @@ angular
         'RDF_SEARCH_TYPE': 'rdf-search.search-type',
         'RDF_SEARCH_INPUT': 'rdf-search.search-input',
         'RDF_SEARCH_EXPANDED_URI': 'rdf-search.search-expanded-uri',
-        'RDF_RESOURCE_DESCRIPTION': 'rdf-search.resource-description'
+        'RDF_RESOURCE_DESCRIPTION': 'rdf-search.resource-description',
+        'PREFERRED_LANG': 'preferred-language'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];

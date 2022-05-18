@@ -20,63 +20,63 @@
     <div core-errors></div>
     <div system-repo-warning></div>
     <div class="alert alert-danger" ng-show="repositoryError">
-        <p>The currently selected repository cannot be used for queries due to an error:</p>
+        <p>{{'not.usable.active.repo.error' | translate}}</p>
 
         <p>{{repositoryError}}</p>
     </div>
 
     <div class="card mb-2 sql-table-config">
         <div class="card-block pt-1">
-            <p class="lead">Table name</p>
+            <p class="lead">{{'table.name' | translate}}</p>
             <div class="table-group table-group-lg">
-                <input required class="form-control sql-table-name" type="text" placeholder="SQL table name (required)"
+                <input required class="form-control sql-table-name" type="text" placeholder="{{'table.name.placeholder.required' | translate}}"
                        ng-model="currentQuery.name" ng-disabled="!currentQuery.isNewConfiguration" >
             </div>
 
             <ul class="nav nav-tabs pt-1">
                 <li class="nav-item">
                     <a ng-class="page === 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
-                        Data query
+                        {{'data.query.label' | translate}}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a ng-class="page === 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
-                        Column types
+                        {{'jdbc.column.types' | translate}}
                     </a>
                 </li>
             </ul>
 
             <div ng-show="page === 2 && !currentQuery.columns.length" class="mt-2">
-                No columns are defined. Please start with a data query and come back to this tab to review the column definitions.
+                {{'jdbc.no.columns.defined.warning' | translate}}
             </div>
             <div ng-show="page === 2 && currentQuery.columns.length">
                 <div class="form-group row pt-1">
-                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>Column name</strong></label>
+                    <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>{{'jdbc.column.name' | translate}}</strong></label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <label class="col-form-label"><strong>SQL type</strong></label>
+                        <label class="col-form-label"><strong>{{'jdbc.sql.type.label' | translate}}</strong></label>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <label class="col-form-label"><strong>Precision</strong></label>
+                        <label class="col-form-label"><strong>{{'precision.label' | translate}}</strong></label>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <label class="col-form-label"><strong>Scale</strong></label>
+                        <label class="col-form-label"><strong>{{'scale.label' | translate}}</strong></label>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
-                        <label class="col-form-label"><strong>Nullable</strong></label>
+                        <label class="col-form-label"><strong>{{'nullable.label' | translate}}</strong></label>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4" ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
-                        <label class="col-form-label"><strong>Literal type or language tag for SPARQL FILTER</strong></label>
+                        <label class="col-form-label"><strong>{{'literal.type.language.tag.label' | translate}}</strong></label>
                     </div>
                 </div>
                 <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">
-                        <span tooltip="The column names are derived from the projection variables of the SPARQL query."
+                        <span tooltip="{{'jdbc.column.names.hint' | translate}}"
                               tooltip-placement="top" tooltip-trigger="mouseenter">
                             {{column.column_name | uppercase}}
                         </span>
                     </label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <select tooltip="Sets the SQL type. VARCHAR's variants IRI and String are the same on the SQL side but handled differently on the SPARQL side."
+                        <select tooltip="{{'jdbc.sql.type.hint' | translate}}"
                                 tooltip-placement="top" tooltip-trigger="mouseenter"
                                 class="form-control" id="sql-type" ng-model="column.column_type"
                                 ng-options="type as getTypeLabel(type) for type in sqlTypes track by type"
@@ -84,30 +84,30 @@
                                 ng-disabled="!canWriteActiveRepo()"></select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <input tooltip="Sets the precision of the SQL type. For VARCHAR it is only informational and will not be enforced in any way."
+                        <input tooltip="{{'jdbc.sql.type.precision.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <input tooltip="Sets the scale of the SQL type, e.g. DECIMAL(10, 2)."
+                        <input tooltip="{{'jdbc.sql.type.scale.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <div class="form-control b-0">
-                            <input tooltip="If unchecked the column will be defined as NOT NULL. Nullability is only informational and not enforced in any way."
+                            <input tooltip="{{'jdbc.not.null.check.hint' | translate}}"
                                    tooltip-placement="top" tooltip-trigger="mouseenter"
                                    type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isLiteral(column.column_type) ? '' : 'hidden'"  ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
-                        <input tooltip="Controls how literals are created for filtering on the SPARQL side. Leave empty for a plain literal, enter an IRI for a typed literal, or enter a language tag prefixed by @ for a language-tagged literal."
+                        <input tooltip="{{'jdbc.literal.creation.and.filtering.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"
-                                class="btn btn-link delete-column-btn" tooltip="Delete column" ng-if="canWriteActiveRepo()"><span
+                                class="btn btn-link delete-column-btn" tooltip="{{'jdbc.delete.column' | translate}}" ng-if="canWriteActiveRepo()"><span
                             class="icon-trash"></span>
                         </button>
                     </div>
@@ -117,10 +117,10 @@
             <div class="clearfix">
                 <div class="pull-right">
                     <button ng-if="page === 2 && canWriteActiveRepo()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
-                            popover="Get columns suggestions"
+                            popover="{{'jdbc.column.suggestions' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
-                        Suggest
+                        {{'common.suggest' | translate}}
                     </button>
                 </div>
             </div>
@@ -135,32 +135,32 @@
         </div>
     </div>
     <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
-            popover="Save SQL configuration"
+            popover="{{'jdbc.save.configuration' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter"
             ng-if="canWriteActiveRepo()">
-        Save
+        {{'common.save.btn' | translate}}
     </button>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="Cancel SQL configuration"
+       popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
-        Cancel
+        {{'common.cancel.btn' | translate}}
     </a>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary"
-       popover="Cancel SQL configuration"
+       popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">
-        Close
+        {{'common.close' | translate}}
     </a>
     <div class="pull-right">
         <button class="btn btn-lg preview-btn" ng-click="getPreview()"
-                popover="Preview SQL configuration table"
+                popover="{{'jdbc.preview.configuration' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter">
-            Preview
+            {{'common.preview' | translate}}
         </button>
     </div>
     <br/><br/><br/>

@@ -1,33 +1,33 @@
 <script type="text/ng-template" id="popover-content-user.html">
-	<h5>User may:</h5>
+	<h5>{{'security.user.may' | translate}}</h5>
 	<ul>
-        <li>Use GraphDB</li>
-	    <li>Be granted read access to a repository</li>
-		<li>Be granted read/write access to a repository</li>
+        <li>{{'security.use.gdb' | translate}}</li>
+	    <li>{{'security.grant.read.access' | translate}}</li>
+		<li>{{'security.grant.read.write.access' | translate}}</li>
     </ul>
 </script>
 
 <script type="text/ng-template" id="popover-content-repo-manager.html">
-	<h5>Repository manager may:</h5>
+	<h5>{{'security.repo.manager.may' | translate}}</h5>
 	<ul>
-		<li>Use GraphDB</li>
-		<li>Read and write all repositories</li>
-		<li>Create, edit and delete repositories</li>
-		<li>Access monitoring</li>
+		<li>{{'security.use.gdb' | translate}}</li>
+		<li>{{'security.read.write.all.repos' | translate}}</li>
+		<li>{{'security.create.edit.delete.repos' | translate}}</li>
+		<li>{{'security.access.monitoring' | translate}}</li>
 	</ul>
 </script>
 
 <script type="text/ng-template" id="popover-content-admin.html">
-	<h5>Administrator may:</h5>
+	<h5>{{'security.admin.may' | translate}}</h5>
 	<ul>
-		<li>Use GraphDB</li>
-		<li>Read and write all repositories</li>
-		<li>Create, edit and delete repositories</li>
-		<li>Access monitoring</li>
-		<li>Attach remote locations</li>
-		<li>Manage Users and Access</li>
-		<li>Manage the cluster</li>
-		<li>View system information</li>
+		<li>{{'security.use.gdb' | translate}}</li>
+		<li>{{'security.read.write.all.repos' | translate}}</li>
+		<li>{{'security.create.edit.delete.repos' | translate}}</li>
+		<li>{{'security.access.monitoring' | translate}}</li>
+		<li>{{'security.attach.remote.locations' | translate}}</li>
+		<li>{{'security.manage.users.access' | translate}}</li>
+		<li>{{'security.manage.cluster' | translate}}</li>
+		<li>{{'security.view.sys.info' | translate}}</li>
 	</ul>
 </script>
 
@@ -39,34 +39,34 @@
 			<div class="col-md-6">
 				<div class="card login-credentials" ng-hide="isOverrideAuth() || !isLocalAuthentication()">
 					<div class="card-block">
-						<h3>Login</h3>
+						<h3>{{'view.login.title' | translate}}</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
-								<input id="wb-user-username" placeholder="User name" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
+								<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+								<input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
-								<span ng-show="user.external || hasExternalAuthUser()">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
+								<span class="input-group-addon" tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<input id="wb-user-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
+								<span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
 							</div>
 							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
-								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
+								<span class="input-group-addon" tooltip="{{'security.password.confirm' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
 						</div>
                         <div>
                             <label class="d-block">
                                 <input type="checkbox" id="noPassword" ng-model="noPassword" ng-change="setNoPassword()">
-                                <span ng-show="mode === 'add'">Don't set a password </span>
-                                <span ng-show="mode !== 'add'">Unset password </span>
+                                <span ng-show="mode === 'add'">{{'security.dont.set.password' | translate}} </span>
+                                <span ng-show="mode !== 'add'">{{'security.unset.password' | translate}} </span>
                             </label>
                         </div>
 					</div>
@@ -74,64 +74,64 @@
 
 				<div class="card sparql-editor-settings" id="user-settings">
 					<div class="card-block">
-						<h3>User settings</h3>
+						<h3>{{'security.user.settings' | translate}}</h3>
 
 						<div id="sameas-on" class="mb-1">
 							<span class="sameas-label">
-								Expand results over owl:SameAs is
+								{{'security.expand.sameAs.is' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_SAMEAS ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_SAMEAS ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_SAMEAS ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
-							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
 								  class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_SAMEAS"/>
 								<label for="sameas-on"></label>
 							</span>
-							by default in SPARQL editor and visual graph
+							{{'security.default.editor.graph' | translate}}
 						</div>
 
 						<div id="inference-on" class="mb-1">
 							<span class="inference-label">
-								Inference is
+								{{'security.inference.is' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_INFERENCE ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_INFERENCE ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_INFERENCE ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
-							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
 								  class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
 								<label for="inference-on"></label>
 							</span>
-                            by default in SPARQL editor and visual graph
+                            {{'security.default.editor.graph' | translate}}
 						</div>
 
                         <div id="schema-on" class="mb-1">
 							<span class="schema-label">
-								Show schema
+								{{'security.show.schema' | translate}}
 								<span class="tag {{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'tag-primary' : 'tag-default'}}">
-									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'ON' : 'OFF'}}
+									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
-                                <span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                <span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
                                       ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"
                                       class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
 								<label for="schema-on"></label>
 							</span>
-                                by default in visual graph
+                                {{'security.default.visual.graph' |  translate}}
 							</span>
                         </div>
 
 						<label class="d-block">
 							<input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
-							Count total results in SPARQL editor
+							{{'security.count.total.results' | translate}}
 						</label>
 
 						<label class="d-block">
 							<input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
-							Ignore shared saved queries in SPARQL editor
+							{{'security.ignore.shared.queries' | translate}}
 						</label>
 
 					</div>
@@ -142,50 +142,50 @@
 			<div class="col-md-6" ng-hide="!isLocalAuthentication()">
 				<div class="card user-role" id="user-roles">
 					<div class="card-block">
-						<h3>User role</h3>
+						<h3>{{'security.user.role' | translate}}</h3>
 						<label class="mr-1"
 							   popover-template="'popover-content-user.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="hasEditRestrictions()" >
-							User
+							{{'security.user.label' | translate}}
 						</label>
 						<label class="mr-1"
 							   popover-template="'popover-content-repo-manager.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="hasEditRestrictions()">
-							Repository manager
+							{{'security.repo.manager.label' | translate}}
 						</label>
 						<label popover-template="'popover-content-admin.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="hasEditRestrictions()">
-							Administrator
+							{{'security.admin.label' | translate}}
 						</label>
 					</div>
 				</div>
 
 				<div id="user-repos"  class="card user-repositories">
 					<div class="card-block">
-						<h3>Repository rights</h3>
+						<h3>{{'security.repo.rights' | translate}}</h3>
 						<div class="has-danger">
 							<p ng-show="repositoryCheckError" class="form-control-feedback">
-								Users should have rights to at least one repository!
+								{{'security.user.rights' | translate}}
 							</p>
 						</div>
 						<table class="table table-hover table-sm" aria-describedby="User rights table">
 							<thead>
 								<tr>
-									<th id="repositoryIdColumn">Repository</th>
-									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" tooltip="Read" tooltip-trigger="mouseenter"></em></th>
-									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" tooltip="Write" tooltip-trigger="mouseenter"></em></th>
+									<th id="repositoryIdColumn">{{'security.repository.title' | translate}}</th>
+									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" tooltip="{{'security.tooltip.read' | translate}}" tooltip-trigger="mouseenter"></em></th>
+									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" tooltip="{{'security.tooltip.write' | translate}}" tooltip-trigger="mouseenter"></em></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>Any data repository
-										<em class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></em>
+									<td>{{'security.any.data.repo' | translate}}
+										<em class="icon-info text-primary" tooltip="{{'security.data.repos' | translate}}"></em>
 									</td>
 									<td class="text-xs-center">
                                         <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">
@@ -194,21 +194,21 @@
                                         <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()">
                                     </td>
 								</tr>
-								<tr ng-repeat="repository in getReadableRepositories() | orderBy: 'id'">
-									<td class="repository-name">{{repository.id}}</td>
-									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[repository.id]"  ng-checked="hasReadPermission(repository.id)" ng-disabled="readCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
-									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[repository.id]" ng-checked="hasWritePermission(repository.id)" ng-disabled="writeCheckDisabled(repository.id)" ng-click="setGrantedAuthorities()"></td>
+								<tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
+									<td class="repository-name">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></td>
+									<td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
+									<td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
-			</div>
+            </div>
 		</div>
 
 		<div class="mb-3">
 			<button id="wb-user-submit" class="btn btn-primary" type="submit">{{saveButtonText}}</button>
-			<button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">Cancel</button>
+			<button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">{{'common.cancel.btn' | translate}}</button>
 		</div>
 	</form>
 </div>

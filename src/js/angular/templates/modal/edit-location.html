@@ -2,62 +2,61 @@
 
 <div class="modal-header">
 	<button type="button" class="close" ng-click="cancel();" aria-hidden="true"></button>
-	<h3 class="modal-title">Edit location</h3>
+	<h3 class="modal-title">{{'edit.location' | translate}}</h3>
 </div>
 <form id="addLocationForm" autocomplete="off" name="form">
 	<div class="modal-body">
         <div class="form-group row">
-            <label class="col-md-4 col-form-label">Authentication type</label>
+            <label class="col-md-4 col-form-label">{{'auth.type.header' | translate}}</label>
             <div class="col-md-8">
-                <label class="col-form-label" tooltip="No authentication used with remote location">
+                <label class="col-form-label" tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="none"/>
-                    None
+                    {{'auth.type.none' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" tooltip="Basic authentication with username/password">
+                <label class="col-form-label" tooltip="{{'basic.auth.type.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="basic"/>
-                    Basic auth
+                    {{'auth.type.basic' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" tooltip="Signature authentication with shared secret">
+                <label class="col-form-label" tooltip="{{'signature.auth.type.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="signature"/>
-                    Signature
+                    {{'auth.type.signature' | translate}}
                 </label>
             </div>
         </div>
         <div class="form-group row" ng-if="editedLocation.authType === 'none'">
-            <div class="col-md-12">No authentication will be used with this location.</div>
+            <div class="col-md-12">{{'remote.location.no.auth.used.header' | translate}}</div>
         </div>
         <div  ng-if="editedLocation.authType === 'basic'">
             <div class="form-group row">
-                <div class="col-md-12">Basic authentication requires a username and a password.</div>
+                <div class="col-md-12">{{'basic.auth.type.constraint' | translate}}</div>
             </div>
             <div class="form-group row">
-                <label for="username" class="col-md-4 col-form-label">Username*</label>
+                <label for="username" class="col-md-4 col-form-label">{{'username.required' | translate}}</label>
                 <div class="col-md-8">
-                    <input id="username" ng-model="editedLocation.username" name="locationUsername" placeholder="my-user"
+                    <input id="username" ng-model="editedLocation.username" name="locationUsername" placeholder="{{'my.user.placeholder' | translate}}"
                            class="form-control" ng-required="editedLocation.authType === 'basic'"/>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="password" class="col-md-4 col-form-label">Password*</label>
+                <label for="password" class="col-md-4 col-form-label">{{'password.required' | translate}}</label>
                 <div class="col-md-8">
-                    <input id="password" ng-model="editedLocation.password" name="locationPassword" placeholder="my-password"
+                    <input id="password" ng-model="editedLocation.password" name="locationPassword" placeholder="{{'my.password.placeholder' | translate}}"
                            type="password" class="form-control" ng-required="editedLocation.authType === 'basic'"/>
                 </div>
             </div>
         </div>
         <div class="form-group row" ng-if="editedLocation.authType === 'signature'">
             <div class="col-md-12">
-                Signature authentication uses the token secret, which must be the same on both GraphDB instances.
-                For more information on configuring the token secret, please refer to <a href="{{docBase}}/access-control.html#gdb-authentication"
-                                                                                         rel="noopener" target="_blank">Access Control / GDB authentication</a> in the documentation.
+                {{'signature.auth.info' | translate}}<a href="{{docBase}}/access-control.html#gdb-authentication"
+                                                        rel="noopener" target="_blank">Access Control / GDB authentication</a>{{'signature.auth.info.last' | translate}}
             </div>
         </div>
     </div>
 	<div class="modal-footer">
-		<button type="button" ng-click="cancel();" class="btn btn-secondary">Cancel</button>
-		<button ng-click="ok();" class="btn btn-primary" ng-disabled="form.$invalid">Save</button>
+		<button type="button" ng-click="cancel();" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
+		<button ng-click="ok();" class="btn btn-primary" ng-disabled="form.$invalid">{{'common.save.btn' | translate}}</button>
 	</div>
 </form>
 

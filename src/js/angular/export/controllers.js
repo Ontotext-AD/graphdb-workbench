@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'ngCookies',
@@ -15,8 +16,8 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes',
-        function ($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes) {
+    ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes', '$translate',
+        function ($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes, $translate) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -64,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',
-                                value: 'The default graph'
+                                value: 'import.default.graph'
                             }
                         });
                         $scope.graphsByValue = {};
@@ -95,7 +96,7 @@ exportCtrl.controller('ExportCtrl',
                         const msg = getError(data, status);
                         if (msg === 'There is no active location!') {
                             $repositories.setRepository('');
-                            toastr.error(msg, 'Error');
+                            toastr.error(msg, $translate.instant('common.error'));
                         }
                         $scope.loader = false;
                     });
@@ -154,8 +155,8 @@ exportCtrl.controller('ExportCtrl',
             $scope.exportRepo = function (format, contextID) {
                 if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
                     ModalService.openSimpleModal({
-                        title: 'Warning',
-                        message: 'This format does not support graphs.<br>Graph information will not be available in the export.',
+                        title: $translate.instant('common.warning'),
+                        message: decodeHTML($translate.instant('export.format.warning.msg')),
                         warning: true
                     }).result
                         .then(function () {
@@ -207,8 +208,8 @@ exportCtrl.controller('ExportCtrl',
 
                     if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
                         ModalService.openSimpleModal({
-                            title: 'Warning',
-                            message: 'This format does not support graphs.<br>Graph information will not be available in the export.',
+                            title: $translate.instant('common.warning'),
+                            message: decodeHTML($translate.instant('export.format.warning.msg')),
                             warning: true
                         }).result
                             .then(function () {
@@ -219,8 +220,8 @@ exportCtrl.controller('ExportCtrl',
                     }
                 } else {
                     ModalService.openSimpleModal({
-                        title: 'Multiple graph export',
-                        message: 'Check graphs you want to export first.',
+                        title: $translate.instant('export.multiple.graph'),
+                        message: $translate.instant('export.check.graphs.msg'),
                         warning: true
                     });
                 }
@@ -287,8 +288,8 @@ exportCtrl.controller('ExportCtrl',
                 $scope.deleting['*'] = true;
 
                 ModalService.openSimpleModal({
-                    title: 'Confirm clear repository',
-                    message: 'Are you sure you want to clear repository ' + $repositories.getActiveRepository() + '?',
+                    title: $translate.instant('export.confirm.clear.msg'),
+                    message: $translate.instant('export.warning.clear.repo.msg', {repo: $repositories.getActiveRepository()}),
                     warning: true
                 }).result
                     .then(function () {
@@ -296,15 +297,16 @@ exportCtrl.controller('ExportCtrl',
                             RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), 'update=CLEAR ALL')
                                 .then(function () {
                                     $scope.deleting['*'] = false;
-                                    toastr.success('Cleared repository ' + $repositories.getActiveRepository());
+                                    toastr.success($translate.instant('export.cleared.repo', {repo:$repositories.getActiveRepository()}));
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
-                                    if (typeof err.data == "string" && err.data.indexOf("Clearing all statements in the " +
+                                    const errMsg = err.data;
+                                    if (typeof errMsg == "string" && errMsg.indexOf("Clearing all statements in the " +
                                         "repository is incompatible with collecting history") > -1) {
-                                        toastr.error(err.data);
+                                        toastr.error($translate.instant('export.clearing.statements.warning'));
                                     } else {
-                                        toastr.error('Failed to clear repository ' + $repositories.getActiveRepository(), err);
+                                        toastr.error($translate.instant('export.cleared.repo.failed.msg', {repo:$repositories.getActiveRepository()}), err);
                                     }
                                 });
                         }, 100);
@@ -315,8 +317,8 @@ exportCtrl.controller('ExportCtrl',
                 const longName = ctx.contextID.longName;
                 $scope.deleting[ctx] = true;
                 ModalService.openSimpleModal({
-                    title: 'Confirm clear graph',
-                    message: 'Are you sure you want to clear the ' + longName + '?',
+                    title: $translate.instant('export.confirm.clear.graph'),
+                    message: $translate.instant('export.clear.graph.warning', {longName: longName}),
                     warning: true
                 }).result
                     .then(function () {
@@ -325,7 +327,7 @@ exportCtrl.controller('ExportCtrl',
                             RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), data)
                                 .then(function () {
                                     $scope.deleting[ctx] = false;
-                                    toastr.success('Cleared the ' + longName);
+                                    toastr.success($translate.instant('export.cleared.graph', {longName: longName}));
                                     $scope.getGraphs();
                                     $scope.exportFilter = '';
                                     $scope.filteredGraphs.length = 0;
@@ -333,7 +335,7 @@ exportCtrl.controller('ExportCtrl',
                                     $scope.changePageSize($scope.pageSize);
                                 }, function (err) {
                                     $scope.deleting[ctx] = false;
-                                    toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                    toastr.error($translate.instant('export.clear.graph.msg', {longName: longName}), getError(err, err.status));
                                 });
                         }, 100);
                     }, function () {
@@ -352,8 +354,8 @@ exportCtrl.controller('ExportCtrl',
                 if (selectedGraphsForDelete.length > 0) {
                     $scope.deleting[ctx] = true;
                     ModalService.openSimpleModal({
-                        title: 'Confirm clear graphs',
-                        message: 'Are you sure you want to clear the selected graphs?',
+                        title: $translate.instant('export.confirm.clear.graph'),
+                        message: $translate.instant('export.warning.clear.graph.msg'),
                         warning: true
                     }).result.then(function () {
                         $timeout(function () {
@@ -373,12 +375,12 @@ exportCtrl.controller('ExportCtrl',
                                             $scope.getGraphs();
                                             $scope.updateResults();
                                             $scope.changePageSize($scope.pageSize);
-                                            toastr.success('Cleared the selected graphs');
+                                            toastr.success($translate.instant('export.cleared.graph.msg'));
                                             $scope.loader = false;
                                         }
                                     }, function (err) {
                                         const longName = $scope.graphsByValue[contextID].longName;
-                                        toastr.error('Failed to clear the ' + longName, getError(err, err.status));
+                                        toastr.error($translate.instant('export.clear.graph.msg', {longName: longName}), getError(err, err.status));
                                         $scope.selectedAll = false;
                                     });
                             });

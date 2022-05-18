@@ -65,8 +65,10 @@ describe('Setup / Connectors - Lucene', () => {
                     .click();
                 getConfirmConnectorDeletebutton()
                     .should('be.visible')
-                    .click();
-                verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
+                    .click()
+                    .then(() => {
+                        verifyStatusToastMessage(connectorDeleteToastMessage + '-copy');
+                    });
             });
     });
 
@@ -136,6 +138,6 @@ describe('Setup / Connectors - Lucene', () => {
      */
     function hideToastContainer() {
         cy.get('.toast-success')
-            .then(toastContainer => toastContainer.hide());
+            .then(toastContainer => toastContainer && toastContainer.remove());
     }
 });

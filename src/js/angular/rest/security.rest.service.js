@@ -5,9 +5,9 @@ angular
 SecurityRestService.$inject = ['$http'];
 
 const SECURITY_ENDPOINT = 'rest/security';
-const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/user`;
-const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticatedUser`;
-const SECURITY_FREEACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/freeaccess`;
+const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
+const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticated-user`;
+const SECURITY_FREE_ACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/free-access`;
 const ROLES_ENDPOINT = 'rest/roles';
 
 function SecurityRestService($http) {
@@ -29,7 +29,7 @@ function SecurityRestService($http) {
     };
 
     function getUser(username) {
-        return $http.get(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
+        return $http.get(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
     }
 
     function getAuthenticatedUser() {
@@ -47,11 +47,9 @@ function SecurityRestService($http) {
     function createUser(data) {
         return $http({
             method: 'POST',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
+                password: data.pass,
                 appSettings: data.appSettings,
                 grantedAuthorities: data.grantedAuthorities
             }
@@ -61,11 +59,9 @@ function SecurityRestService($http) {
     function updateUser(data) {
         return $http({
             method: 'PUT',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
+                password: data.pass,
                 appSettings: data.appSettings,
                 grantedAuthorities: data.grantedAuthorities
             }
@@ -75,26 +71,24 @@ function SecurityRestService($http) {
     function updateUserData(data) {
         return $http({
             method: 'PATCH',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
-            headers: {
-                'X-GraphDB-Password': data.pass
-            },
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
+                password: data.pass,
                 appSettings: data.appSettings
             }
         });
     }
 
     function deleteUser(username) {
-        return $http.delete(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
+        return $http.delete(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
     }
 
     function getFreeAccess() {
-        return $http.get(SECURITY_FREEACCESS_ENDPOINT);
+        return $http.get(SECURITY_FREE_ACCESS_ENDPOINT);
     }
 
     function setFreeAccess(data) {
-        return $http.post(SECURITY_FREEACCESS_ENDPOINT, data);
+        return $http.post(SECURITY_FREE_ACCESS_ENDPOINT, data);
     }
 
     function getSecurityConfig() {
@@ -111,5 +105,17 @@ function SecurityRestService($http) {
 
     function getRolesMapping(params) {
         return $http.get(`${ROLES_ENDPOINT}/mapping`, {params});
+    }
+
+    /**
+     * Path string variable can contain characters which encodeURIComponent() can have problems encoding.
+     * These characters are replaced in this method.
+     * @param str - a component of URI
+     * @returns {string} The provided string encoded as a URI component.
+     */
+    function fixedEncodeURIComponent(str) {
+        return encodeURIComponent(str).replace(/[.!'()*]/g, function (c) {
+            return '%' + c.charCodeAt(0).toString(16);
+        });
     }
 }

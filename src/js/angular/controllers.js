@@ -13,7 +13,9 @@ import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
+import {decodeHTML} from "../../app";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -34,7 +36,8 @@ angular
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
-        'graphdb.framework.core.services.autocompleteStatus'
+        'graphdb.framework.core.services.autocompleteStatus',
+        'graphdb.framework.utils.uriutils'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -46,7 +49,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     $scope.doClear = false;
 
     $scope.getActiveRepositorySize = function () {
-        const repo = $repositories.getActiveRepository();
+        const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
         }
@@ -107,13 +110,13 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
-                    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-                    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys'];
+    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys) {
-    $scope.descr = 'An application for searching, exploring and managing GraphDB semantic repositories.';
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils) {
+    $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
     $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
@@ -142,6 +145,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.menu.forEach(function (menu) {
+            menu.label = $translate.instant(menu.labelKey);
+            if (menu.children) {
+                menu.children.forEach(function (child) {
+                    child.label = $translate.instant(child.labelKey);
+                });
+            }
+        });
+
+        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
+        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
+        $scope.initTutorial();
+    });
+
     $scope.checkMenu = function () {
         return $('.main-menu').hasClass('collapsed');
     };
@@ -155,9 +173,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $location.path('/repository/create').search({previous: 'home'});
     };
 
-    $scope.goToEditRepo = function (repoName) {
-        $location.path('repository/edit/' + repoName).search({previous: 'home'});
+    $scope.goToEditRepo = function (repository) {
+        $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
     };
+
+    $scope.getLocationFromUri = function (location) {
+        return $repositories.getLocationFromUri(location);
+    }
 
     $scope.$on("$locationChangeSuccess", function () {
         $scope.showFooter = $location.url() === '/';
@@ -303,21 +325,34 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getActiveRepository();
     };
 
-    $scope.canWriteRepoInActiveLocation = function (repository) {
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), repository);
+    $scope.canWriteRepoInLocation = function (repository) {
+        return $jwtAuth.canWriteRepo(repository);
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {
-        const activeRepository = $repositories.getActiveRepository();
-        // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-        return $jwtAuth.canWriteRepo($repositories.getActiveLocation(), activeRepository)
-            && (activeRepository !== 'SYSTEM' || !noSystem);
+        const activeRepository = $repositories.getActiveRepositoryObject();
+        if (activeRepository) {
+            // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
+            return $jwtAuth.canWriteRepo(activeRepository)
+                && (activeRepository.id !== 'SYSTEM' || !noSystem);
+        }
+        return false;
     };
 
     $scope.getActiveRepositoryObject = function () {
-        return _.find($scope.getRepositories(), function (repo) {
-            return repo.id === $scope.getActiveRepository();
-        });
+        return $repositories.getActiveRepositoryObject();
+    };
+
+    $scope.getActiveRepositoryShortLocation = function () {
+        const repo = $repositories.getActiveRepositoryObject();
+        if (repo) {
+            const location = repo.location;
+            if (location) {
+                return '@' + UriUtils.shortenIri(location);
+            }
+        }
+
+        return '';
     };
 
     $scope.isActiveRepoOntopType = function () {
@@ -372,8 +407,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.setRepository = function (id) {
-        $repositories.setRepository(id);
+    $scope.setRepository = function (repository) {
+        $repositories.setRepository(repository);
     };
 
     $scope.principal = function () {
@@ -416,23 +451,27 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $rootScope.hasPermission();
     };
 
-    $scope.canReadRepo = function (location, repo) {
-        return $jwtAuth.canReadRepo(location, repo);
+    $scope.canReadRepo = function (repo) {
+        return $jwtAuth.canReadRepo(repo);
     };
 
-    $scope.checkForWrite = function (role, location, repo) {
-        return $jwtAuth.checkForWrite(role, location, repo);
+    $scope.checkForWrite = function (role, repo) {
+        return $jwtAuth.checkForWrite(role, repo);
     };
 
     $scope.setPopoverRepo = function (repository) {
         $scope.popoverRepo = repository;
     };
 
+    $scope.isRepoActive = function (repository) {
+        return $repositories.isRepoActive(repository);
+    }
+
     $scope.getRepositorySize = function () {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo.id).then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo).then(function (res) {
                 $scope.repositorySize = res.data;
             });
         }
@@ -453,7 +492,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             })
             .error(function (data) {
                 const msg = getError(data);
-                toastr.error(msg, 'Error! Could not get saved queries');
+                toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
             });
     };
 
@@ -475,46 +514,24 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
         $scope.tutorialInfo = [
             {
-                "title": "Welcome to GraphDB",
-                "info": "GraphDB is a graph database compliant with RDF and SPARQL specifications. " +
-                "It supports open APIs based on RDF4J (ex-Sesame) project and enables fast publishing of linked data on the web. " +
-                "The Workbench is used for searching, exploring and managing GraphDB semantic repositories. " +
-                "This quick tutorial will guide you through the basics: <br>" +
-                "<ul>" +
-                "<li>(1) Create a repository</li>" +
-                "<li>(2) Load a sample dataset</li>" +
-                "<li>(3) Run a SPARQL query</li>" +
-                "</ul>" +
-                "You can always come back to this tutorial by pressing the GraphDB icon in the top left corner."
+                "title": $translate.instant("main.info.title.welcome.page"),
+                "info": decodeHTML($translate.instant('main.info.welcome.page'))
             },
             {
-                "title": "Create a repository",
-                "info": "Now let’s create your first repository. Go to Setup > Repositories and press Create new repository button. " +
-                "Fill the field Repository ID and press enter. The default repository parameters are optimized for datasets up to 100 million " +
-                "RDF statements. If you plan to load more check for more information: " +
-                "<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">Configuring a repository</a>"
+                "title": $translate.instant('main.info.title.create.repo.page'),
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">"}))
             },
             {
-                "title": "Load a sample dataset",
-                "info": "GraphDB includes a sample dataset in the distribution under the directory examples/data/news. " +
-                "The dataset represents new articles semantically enriched with structured information from Wikipedia. " +
-                "To load the data go to Import > RDF and select the local files. "
+                "title": $translate.instant('main.info.title.load.sample.dataset'),
+                "info": $translate.instant('main.info.load.sample.dataset')
             },
             {
-                "title": "Run a SPARQL query",
-                "info": "You can find a list of sample SPARQL queries under examples/data/news/queries.txt demonstrating how to find " +
-                "interesting searches of news articles and the mentioned entities like: <br>" +
-                "<ul>" +
-                "<li>(1) Give me articles about persons born in New York</li>" +
-                "<li>(2) Show me all occupations of every person in the news</li>" +
-                "<li>(3) List me the members of a specific political party</li>" +
-                "</ul>"
+                "title": $translate.instant('main.info.title.run.sparql.query'),
+                "info": decodeHTML($translate.instant('main.info.run.sparql.query'))
             },
             {
-                "title": "REST API",
-                "info": "GraphDB allows you to perform every operation also via a REST API or by using language specific RDF4J client application. " +
-                "To see the full list of supported functionality go to Help > REST API or check the sample code under examples/developer-getting-started/\n" +
-                "Have fun!"
+                "title": $translate.instant('menu.rest.api.label'),
+                "info": decodeHTML($translate.instant('main.info.rest.api'))
             }
         ];
         $scope.activePage = 0;
@@ -680,7 +697,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.getNumberOfActiveImportsRunning = true;
         $http({
             method: 'GET',
-            url: 'rest/data/import/active/' + $scope.getActiveRepository(),
+            url: 'rest/repositories/' + $scope.getActiveRepository() + '/import/active',
             timeout: 10000
         }).success(function (data) {
             $scope.numberOfActiveImports = data;
@@ -852,22 +869,22 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const now = Date.now();
         const delta = (now - time) / 1000;
         if (delta < 60) {
-            return "moments ago";
+            return $translate.instant('timestamp.moments.ago');
         } else if (delta < 600) {
-            return "minutes ago";
+            return $translate.instant('timestamp.minutes.ago');
         } else {
             const dNow = new Date(now);
             const dTime = new Date(time);
             if (dNow.getYear() === dTime.getYear() && dNow.getMonth() === dTime.getMonth() && dNow.getDate() === dTime.getDate()) {
                 // today
-                return $filter('date')(time, "'today at' HH:mm");
+                return $filter('date')(time, "'" + $translate.instant('timestamp.today.at') + "' HH:mm");
             } else if (delta < 86400) {
                 // yesterday
-                return $filter('date')(time, "'yesterday at' HH:mm");
+                return $filter('date')(time, "'" + $translate.instant('timestamp.yesterday.at') + "' HH:mm");
             }
         }
 
-        return $filter('date')(time, "'on' yyyy-MM-dd 'at' HH:mm");
+        return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
 }
 

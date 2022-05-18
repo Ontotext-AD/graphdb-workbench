@@ -22,19 +22,19 @@
                 <div class="form-group" style="width: 130px;">
                     <input id="wb-namespaces-prefix"
                            type="text" ng-model="namespace.prefix" placeholder="examplePrefix"
-                           class="form-control" tooltip-trigger="mouseenter" tooltip="Prefix" style="width: 130px;"/>
+                           class="form-control" tooltip-trigger="mouseenter" tooltip="{{'prefix.label' | translate}}" style="width: 130px;"/>
                 </div>
                 <div class="form-group" style="width: 260px;">
                     <input required id="wb-namespaces-namespace"
                            type="url" ng-model="namespace.namespace"
                            placeholder="http://example.com/data#" class="form-control"
-                           tooltip-trigger="mouseenter" tooltip="Namespace" style="width: 260px;"/>
+                           tooltip-trigger="mouseenter" tooltip="{{'namespace.label' | translate}}" style="width: 260px;"/>
                 </div>
                 <button id="wb-namespaces-addNamespace" type="submit" ng-click="addNamespace()"
                         class="btn btn-primary add-namespace"
-                        tooltip-trigger="mouseenter" tooltip="Add namespace">
+                        tooltip-trigger="mouseenter" tooltip="{{'add.namespace.label' | translate}}">
                     <span class="icon-plus"></span>
-                    Add namespace
+                    {{'add.namespace.label' | translate}}
                 </button>
             </form>
         </div>
@@ -43,27 +43,27 @@
                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
                         ng-disabled="disabled">
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) > -1">{{pageSize}}</span>
-                    <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) === -1">All</span>
+                    <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) === -1">{{'all.label' | translate}}</span>
                 </button>
                 <ul class="dropdown-menu small">
                     <li ng-repeat="size in pageSizeOptions" ng-if="size < matchedElements.length">
                         <span class="dropdown-item page-size-option" ng-click="changePageSize(size)">{{size}}</span>
                     </li>
                     <li>
-                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)">All</span>
+                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)">{{'all.label' | translate}}</span>
                     </li>
                 </ul>
             </div>
-            <span class="pull-right mr-1">Namespaces per page:</span>
+            <span class="pull-right mr-1">{{'namespaces.per.page.label' | translate}}</span>
         </div>
         <div ng-show="namespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-result-header">
             <span class="pull-left">
-                <input type="text" class="form-control namespaces-filter" placeholder="Search namespaces"
-                       ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="Search"
+                <input type="text" class="form-control namespaces-filter" placeholder="{{'search.namespaces.label' | translate}}"
+                       ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="{{'common.search.btn' | translate}}"
                        ng-change="onNamespaceSearch()">
             </span>
             <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
-            <span class="showing-info-namespaces pull-right">Showing {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} results</span>
+            <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} {{'results.label' | translate}}</span>
         </div>
         <table ng-show="displayedNamespaces.length > 0" id="wb-namespaces-namespaceInNamespaces"
                class="table table-striped table-hover" aria-describedby="Namespaces table">
@@ -76,10 +76,10 @@
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
-                            tooltip="Delete selected"><span class="icon-trash"></span></button>
+                            tooltip="{{'delete.selected' | translate}}"><span class="icon-trash"></span></button>
                 </th>
-                <th id="prefixColumn" style="width: 20%">Prefix</th>
-                <th id="uriColumn">URI</th>
+                <th id="prefixColumn" style="width: 20%">{{'prefix.label' | translate}}</th>
+                <th id="uriColumn">{{'iri.label' | translate}}</th>
                 <th id="actionsColumn" style="width: 100px"></th>
             </tr>
             </thead>
@@ -110,27 +110,27 @@
                           ng-show="rowform.$visible" class="d-inline-block"
                           shown="inserted === namespace">
                         <button type="submit" class="btn btn-primary" ng-disabled="rowform.$waiting"
-                                tooltip-trigger="mouseenter" tooltip="Save"><span class="icon-save"></span></button>
+                                tooltip-trigger="mouseenter" tooltip="{{'common.save.btn' | translate}}"><span class="icon-save"></span></button>
                         <button type="button" class="btn btn-secondary" ng-disabled="rowform.$waiting"
-                                ng-click="rowform.$cancel()" tooltip-trigger="mouseenter" tooltip="Cancel"><span
+                                ng-click="rowform.$cancel()" tooltip-trigger="mouseenter" tooltip="{{'common.cancel.btn' | translate}}"><span
                                 class="icon-close"></span></button>
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
                     <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
-                            tooltip="Edit namespace"><span class="icon-edit"></span></button>
+                            tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
-                            ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" tooltip="Delete namespace">
+                            ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" tooltip="{{'delete.namespace' | translate}}">
                         <span class="icon-trash"></span></button>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="alert alert-info no-namespaces-match-alert" ng-show="displayedNamespaces.length === 0 && namespaces.length > 0">
-            <p>No namespaces match this filter.</p>
+            <p>{{'no.namespaces.match.filter' | translate}}</p>
         </div>
         <div class="alert alert-warning no-namespaces-alert" ng-show="namespaces.length === 0">
-            <p>There are no added namespaces on this repository.</p>
+            <p>{{'no.namespaces.in.repo' | translate}}</p>
         </div>
         <div ng-show="displayedNamespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-pagination">
             <div paginations class="ot-export-pagination pull-right"></div>
