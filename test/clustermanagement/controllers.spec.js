@@ -239,26 +239,6 @@ describe('==> Cluster management module controllers tests', function () {
                 expect($scope.currentNode).toBeDefined();
                 expect($scope.currentNode.address).toEqual('yordan:7300');
             });
-
-            it('getLocations()', function () {
-                $httpBackend.flush();
-                $httpBackend.expectGET('rest/locations');
-                $httpBackend.expectGET('rest/info/rpc-address?location=http:%2F%2Fyordan:7205');
-                $httpBackend.expectGET('rest/info/rpc-address?location=http:%2F%2Fyordan:7202');
-                $httpBackend.expectGET('rest/info/rpc-address?location=http:%2F%2Fyordan:7204');
-                $httpBackend.expectGET('rest/info/rpc-address?location=http:%2F%2Fyordan:7203');
-                $httpBackend.expectGET('rest/info/rpc-address?location=http:%2F%2Fyordan:7201');
-
-                $scope.getLocationsWithRpcAddresses();
-                $httpBackend.flush();
-
-                expect($scope.clusterModel.locations).toBeDefined();
-                expect($scope.clusterModel.locations.length).toEqual(6);
-
-                const locationsRpcAddresses = $scope.clusterModel.locations.map((location) => location.rpcAddress).filter(
-                    (location) => !!location);
-                expect(locationsRpcAddresses.length).toEqual(6);
-            });
         });
     });
 });
