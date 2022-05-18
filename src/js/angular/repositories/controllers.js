@@ -331,7 +331,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
      */
 
     $scope.getRepositoryDownloadLink = function (repository) {
-        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/downloadZip': '/download')}?location=${repository.location}`;
+        let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/download-zip': '/download-ttl')}?location=${repository.location}`;
         const token = $jwtAuth.getAuthToken();
         if (token) {
             url = `${url}&authToken=${encodeURIComponent(token)}`;
@@ -599,7 +599,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.uploadFile = files[0];
             $scope.uploadFileLoader = true;
             Upload.upload({
-                url: 'rest/repositories/uploadRuleSet',
+                url: 'rest/repositories/ruleset/upload',
                 data: {ruleset: $scope.uploadFile, location: $scope.repositoryInfo.location}
             }).progress(function (evt) {
                 /*						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);

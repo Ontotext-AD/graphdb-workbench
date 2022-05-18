@@ -30,7 +30,7 @@ function RdfRankRestService($http) {
     }
 
     function checkRdfRankPluginEnabled() {
-        return $http.get(`${RDFRANK_ENDPOINT}/pluginFound`);
+        return $http.get(`${RDFRANK_ENDPOINT}/plugin-found`);
     }
 
     function checkFilteringEnabled() {
@@ -57,19 +57,19 @@ function RdfRankRestService($http) {
     }
 
     function includeExplicit() {
-        return $http.get(`${RDFRANK_ENDPOINT}/includeExplicit`);
+        return $http.get(`${RDFRANK_ENDPOINT}/include-explicit`);
     }
 
     function toggleIncludeExplicit(enable) {
-        return $http.post(`${RDFRANK_ENDPOINT}/includeExplicit?enabled=` + enable);
+        return $http.post(`${RDFRANK_ENDPOINT}/include-explicit?enabled=` + enable);
     }
 
     function includeImplicit() {
-        return $http.get(`${RDFRANK_ENDPOINT}/includeImplicit`);
+        return $http.get(`${RDFRANK_ENDPOINT}/include-implicit`);
     }
 
     function toggleIncludeImplicit(enable) {
-        return $http.post(`${RDFRANK_ENDPOINT}/includeImplicit?enabled=` + enable);
+        return $http.post(`${RDFRANK_ENDPOINT}/include-implicit?enabled=` + enable);
     }
 
     function compute() {
@@ -77,7 +77,7 @@ function RdfRankRestService($http) {
     }
 
     function computeIncremental() {
-        return $http.post(`${RDFRANK_ENDPOINT}/computeIncremental`);
+        return $http.post(`${RDFRANK_ENDPOINT}/compute-incremental`);
     }
 
     function interrupt() {
