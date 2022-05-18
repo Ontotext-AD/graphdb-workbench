@@ -28,8 +28,18 @@
                 tooltip-placement="bottom">
             <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
         </button>
+        <button type="button" class="btn btn-primary add-node-btn" ng-if="currentNode.nodeState === NodeState.LEADER"
+                ng-click="showAddNodeToClusterDialog()"
+                tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+            <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary remove-node-btn mr-2" ng-if="currentNode.nodeState === NodeState.LEADER"
+                ng-click="showRemoveNodesFromClusterDialog()"
+                tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+            <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
+        </button>
     </div>
-    <button class="btn btn-link"
+    <button class="btn btn-link pull-right"
             ng-click="toggleSidePanel()"
             tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
