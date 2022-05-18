@@ -8,7 +8,7 @@ Cypress.Commands.add('setDefaultUserData', () => {
     };
     cy.request({
         method: 'PATCH',
-        url: `rest/security/user/${encodeURIComponent('admin')}`,
+        url: `rest/security/users/${encodeURIComponent('admin')}`,
         headers: {
             'X-GraphDB-Password': 'root'
         },

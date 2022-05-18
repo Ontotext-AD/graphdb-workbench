@@ -51,7 +51,7 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
 
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -138,7 +138,7 @@ describe('==> Controllers tests', function () {
                 }
             });
 
-            httpGetUsers = $httpBackend.when('GET', 'rest/security/user').respond(200, []);
+            httpGetUsers = $httpBackend.when('GET', 'rest/security/users').respond(200, []);
 
             var httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
                 enabled: true,
@@ -147,8 +147,8 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/freeaccess').respond(200, {enabled: false});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/free-access').respond(200, {enabled: false});
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -158,7 +158,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.getUsers tests', function () {
             it('load users data correct', function () {
-                $httpBackend.expectGET('rest/security/user');
+                $httpBackend.expectGET('rest/security/users');
                 $httpBackend.flush();
 
                 expect($scope.users).toEqual([]);
@@ -168,7 +168,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.toggleSecurity', function () {
             it('should reload location when toggle to true', function () {
-                $httpBackend.expectGET('rest/security/user');
+                $httpBackend.expectGET('rest/security/users');
                 $httpBackend.flush();
                 $jwtAuth.toggleSecurity = function () {
                     return;
@@ -200,7 +200,7 @@ describe('==> Controllers tests', function () {
             });
 
             it('should open $modal and call $jwtAuth.toggleFreeAccess() on $modal.close', function () {
-                $httpBackend.expectGET('rest/security/freeaccess');
+                $httpBackend.expectGET('rest/security/free-access');
                 $jwtAuth.isFreeAccessEnabled = function () {
                     return false;
                 };
@@ -219,7 +219,7 @@ describe('==> Controllers tests', function () {
         describe('$scope.removeUser()', function () {
             it('should open $modal and call $http.delete on $modal.close', function () {
                 $httpBackend.flush();
-                $httpBackend.expectDELETE('rest/security/user/username').respond(200, '');
+                $httpBackend.expectDELETE('rest/security/users/username').respond(200, '');
                 $scope.getUsers = jasmine.createSpy('scope.getUsers');
 
                 $scope.removeUser('username');
@@ -345,11 +345,10 @@ describe('==> Controllers tests', function () {
                 return bundle[key];
             };
 
-            httpCreateUser = $httpBackend.when('POST', "rest/security/user/testov", {
+            httpCreateUser = $httpBackend.when('POST', "rest/security/users/testov", {
+                "password": "testova",
                 "grantedAuthorities": [],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true, 'IGNORE_SHARED_QUERIES': false, 'DEFAULT_VIS_GRAPH_SCHEMA': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === 'testova';
             }).respond(201, '');
 
             windowMock = {history: {back: jasmine.createSpy('windowMock.history.back')}};
@@ -370,7 +369,7 @@ describe('==> Controllers tests', function () {
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
 
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
 
             $scope.user.username = 'testov';
             $scope.user.password = 'testova';
@@ -422,7 +421,7 @@ describe('==> Controllers tests', function () {
             it('should make window.history.back after successful registration', function () {
                 $httpBackend.flush();
                 $scope.createUserHttp();
-                $httpBackend.expectPOST("rest/security/user/testov");
+                $httpBackend.expectPOST("rest/security/users/testov");
                 $httpBackend.flush();
                 $timeout.flush();
                 expect(windowMock.history.back).toHaveBeenCalled();
@@ -503,7 +502,7 @@ describe('==> Controllers tests', function () {
                 return bundle[key];
             };
 
-            httpGetUserData = $httpBackend.when('GET', "rest/security/user/editedUser")
+            httpGetUserData = $httpBackend.when('GET', "rest/security/users/editedUser")
                 .respond(200, {
                     "username": "editedUser",
                     "password": "",
@@ -513,11 +512,9 @@ describe('==> Controllers tests', function () {
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 });
 
-            httpEditUser = $httpBackend.when('PUT', "rest/security/user/editedUser", {
+            httpEditUser = $httpBackend.when('PUT', "rest/security/users/editedUser", {
                 "grantedAuthorities": ['ROLE_ADMIN'],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === undefined;
             }).respond(200, '');
 
             windowMock = {history: {back: jasmine.createSpy('windowMock.history.back')}};
@@ -559,7 +556,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -569,7 +566,7 @@ describe('==> Controllers tests', function () {
 
         describe('$scope.getUserData', function () {
             it('should set admin user data correct', function () {
-                $httpBackend.expectGET("rest/security/user/editedUser");
+                $httpBackend.expectGET("rest/security/users/editedUser");
                 $httpBackend.flush();
                 expect($scope.mode).toEqual("edit");
                 expect($scope.userData).toEqual({
@@ -600,7 +597,7 @@ describe('==> Controllers tests', function () {
                     "external": false,
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 });
-                $httpBackend.expectGET("rest/security/user/editedUser");
+                $httpBackend.expectGET("rest/security/users/editedUser");
                 $httpBackend.flush();
                 expect($scope.userData).toEqual({
                     "username": "editedUser",
@@ -625,7 +622,7 @@ describe('==> Controllers tests', function () {
                     "external": false,
                     "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
                 };
-                $httpBackend.expectPUT("rest/security/user/editedUser");
+                $httpBackend.expectPUT("rest/security/users/editedUser");
                 $scope.updateUserHttp();
                 $httpBackend.flush();
                 $timeout.flush();
@@ -733,7 +730,7 @@ describe('==> Controllers tests', function () {
             });
             var httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             var httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
-            $httpBackend.when('GET', 'rest/security/authenticatedUser').respond(401, 'Authentication required');
+            $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         }));
 
         afterEach(function () {
@@ -749,10 +746,9 @@ describe('==> Controllers tests', function () {
                 "authorities": ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
             };
-            $httpBackend.expectPATCH("rest/security/user/username", {
+            $httpBackend.expectPATCH("rest/security/users/username", {
+                "password": "newPassword",
                 "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-            }, function (headers) {
-                return headers['X-GraphDB-Password'] === 'newPassword';
             }).respond(200, '');
             $scope.updateUserHttp();
             $httpBackend.flush();

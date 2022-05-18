@@ -64,7 +64,7 @@ describe('==> Repository module controllers tests', function () {
                 overrideAuth: {enabled: false},
                 freeAccess: {enabled: false}
             });
-            httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+            httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                 username: 'admin',
                 appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                 authorities: ['ROLE_ADMIN']
@@ -219,7 +219,7 @@ describe('==> Repository module controllers tests', function () {
 
                 createController();
 
-                httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+                httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                     username: 'admin',
                     appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                     authorities: ['ROLE_ADMIN']
@@ -238,18 +238,13 @@ describe('==> Repository module controllers tests', function () {
 
             it('should call $scope.getConfig with "graphdb" when isEnterprise()', function () {
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/graphdb').respond(200, {
+                $httpBackend.when('GET', 'rest/repositories/default-config/graphdb').respond(200, {
                     params: { param1: 'param1'},
                     type: 'graphdb'
                 });
 
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
-                // TODO: we should define expectation for this request as well but for some reason we get error for unsatisfied request
-                // $httpBackend.expectGET('rest/repositories/defaultConfig/worker').respond(200, {
-                //     params: { param1: 'param1'},
-                //     type: 'worker'
-                // });
 
                 $httpBackend.flush();
 
@@ -261,7 +256,7 @@ describe('==> Repository module controllers tests', function () {
             it('should show notification if getting configuration fails', () => {
                 spyOn(toastr, 'error');
                 $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/defaultConfig/graphdb').respond(500, {
+                $httpBackend.when('GET', 'rest/repositories/default-config/graphdb').respond(500, {
                     error: {
                         message: 'Get repo config error!'
                     }
@@ -275,7 +270,7 @@ describe('==> Repository module controllers tests', function () {
 
             it('$scope.createRepoHttp() should call $repositories.init() and change location to /repository', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/graphdb').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/default-config/graphdb').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 $httpBackend.flush();
                 $scope.repositoryInfo = {};
@@ -321,7 +316,7 @@ describe('==> Repository module controllers tests', function () {
                     $scope: $scope,
                     $routeParams: routeParamsMock
                 });
-                httpDefaultUser = $httpBackend.when('GET', 'rest/security/user/admin').respond(200, {
+                httpDefaultUser = $httpBackend.when('GET', 'rest/security/users/admin').respond(200, {
                     username: 'admin',
                     appSettings: {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true},
                     authorities: ['ROLE_ADMIN']
@@ -341,7 +336,7 @@ describe('==> Repository module controllers tests', function () {
 
             it('should call $scope.getConfig with "graphdb" when !isEnterprise()', function () {
                 $httpBackend.expectGET('rest/security/all');
-                $httpBackend.expectGET('rest/repositories/defaultConfig/graphdb').respond(200, '');
+                $httpBackend.expectGET('rest/repositories/default-config/graphdb').respond(200, '');
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
                 expect($httpBackend.flush).not.toThrow();
             });

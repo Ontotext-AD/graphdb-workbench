@@ -30,7 +30,7 @@ function SparqlRestService($http) {
     }
 
     function addKnownPrefixes(prefixes) {
-        return $http.post(`${SPARQL_ENDPOINT}/addKnownPrefixes`, prefixes);
+        return $http.post(`${SPARQL_ENDPOINT}/add-known-prefixes`, prefixes);
     }
 
     function editSavedQuery(query) {
