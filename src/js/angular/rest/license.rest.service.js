@@ -47,7 +47,7 @@ function LicenseRestService($http, Upload) {
     // read license file on backend and send string content back
     function extractFromLicenseFile(file) {
         return Upload.upload({
-            url: `${LICENSE_INFO_ENDPOINT}toBase64`,
+            url: `${LICENSE_INFO_ENDPOINT}to-base-64`,
             file,
             headers: {
                 'Accept': 'text/plain'

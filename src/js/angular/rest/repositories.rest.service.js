@@ -72,7 +72,7 @@ function RepositoriesRestService($http) {
     }
 
     function getRepositoryConfiguration(repositoryType) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/defaultConfig/${repositoryType}`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/default-config/${repositoryType}`);
     }
 
     function getSize(repository) {
@@ -92,11 +92,11 @@ function RepositoriesRestService($http) {
     }
 
     function getRepositoryFileContent(file) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/getFileContent`, {params: {fileLocation: file}});
+        return $http.get(`${REPOSITORIES_ENDPOINT}/file`, {params: {fileLocation: file}});
     }
 
     function updateRepositoryFileContent(fileLocation, content, location) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/updateFile`, JSON.stringify(content), {
+        return $http.post(`${REPOSITORIES_ENDPOINT}/file/update`, JSON.stringify(content), {
             params: {
                 fileLocation: fileLocation,
                 location: location

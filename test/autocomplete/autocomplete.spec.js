@@ -97,7 +97,7 @@ describe('Autocomplete', function () {
             $httpBackend.when('POST', 'rest/autocomplete/iris?enabled=true').respond(200);
             $httpBackend.when('POST', 'rest/autocomplete/iris?enabled=false').respond(200);
 
-            $httpBackend.when('POST', 'rest/autocomplete/reIndex').respond(200);
+            $httpBackend.when('POST', 'rest/autocomplete/reindex').respond(200);
 
             $httpBackend.when('POST', 'rest/autocomplete/interrupt').respond(200);
 
@@ -306,7 +306,7 @@ describe('Autocomplete', function () {
         describe('buildIndex', () => {
             it('should trigger index rebuilding', () => {
                 $scope.indexStatus = undefined;
-                $httpBackend.expectPOST('rest/autocomplete/reIndex').respond(200);
+                $httpBackend.expectPOST('rest/autocomplete/reindex').respond(200);
 
                 $scope.buildIndex();
 
@@ -323,7 +323,7 @@ describe('Autocomplete', function () {
             it('should show notification on error', () => {
                 $scope.indexStatus = undefined;
                 spyOn(toastr, 'error');
-                $httpBackend.expectPOST('rest/autocomplete/reIndex').respond(500, {
+                $httpBackend.expectPOST('rest/autocomplete/reindex').respond(500, {
                     error: {
                         message: 'Index rebuilding error!'
                     }
@@ -550,9 +550,9 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, true);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
@@ -589,9 +589,9 @@ describe('Autocomplete', function () {
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, true);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
@@ -620,9 +620,9 @@ describe('Autocomplete', function () {
                 $scope.pluginFound = false;
                 $scope.autocompleteEnabled = false;
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(200, false);
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, false);
                 // should check for the plugin
-                $httpBackend.expectGET('rest/autocomplete/pluginFound');
+                $httpBackend.expectGET('rest/autocomplete/plugin-found');
 
                 createController();
                 $httpBackend.flush();
@@ -638,7 +638,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 spyOn(toastr, 'error');
                 spyOn($repositories, 'getActiveRepository').and.returnValue('repo');
-                $httpBackend.when('GET', 'rest/autocomplete/pluginFound').respond(500, {
+                $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(500, {
                     error: {
                         message: 'Plugin check failed!'
                     }
