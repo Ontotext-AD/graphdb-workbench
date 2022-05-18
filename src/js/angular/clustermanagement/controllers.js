@@ -15,7 +15,8 @@ angular
     .controller('ClusterManagementCtrl', ClusterManagementCtrl)
     .controller('CreateClusterCtrl', CreateClusterCtrl)
     .controller('DeleteClusterCtrl', DeleteClusterCtrl)
-    .controller('AddLocationCtrl', AddLocationCtrl);
+    .controller('AddLocationCtrl', AddLocationCtrl)
+    .factory('RemoteLocationsService', RemoteLocationsService);
 
 export const NodeState = {
     LEADER: 'LEADER',
@@ -25,7 +26,8 @@ export const NodeState = {
     NO_CONNECTION: 'NO_CONNECTION',
     READ_ONLY: 'READ_ONLY',
     RESTRICTED: 'RESTRICTED',
-    NO_CLUSTER: 'NO_CLUSTER'
+    NO_CLUSTER: 'NO_CLUSTER',
+    DELETED: 'DELETED'
 };
 export const LinkState = {
     IN_SYNC: 'IN_SYNC',
@@ -35,10 +37,10 @@ export const LinkState = {
 };
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'LocationsRestService'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, LocationsRestService) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService) {
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
@@ -130,7 +132,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         return ClusterRestService.getClusterStatus()
             .then(function (response) {
                 const nodes = response.data.slice();
-                const leader = response.data.find((node) => node.nodeState === NodeState.LEADER);
+                const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
                 const links = [];
                 if (leader) {
                     Object.keys(leader.syncStatus).forEach((node) => {
@@ -174,7 +176,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         });
 
         modalInstance.result.finally(function () {
-            getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations));
+            getLocationsWithRpcAddresses();
             updateCluster();
         });
     };
@@ -190,7 +192,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(forceDelete)
                 .then((response) => {
-                    const allNodesDeleted = Object.values(response.data).every((node) => node === 'DELETED');
+                    const allNodesDeleted = Object.values(response.data).every((nodeState) => nodeState === NodeState.DELETED);
                     if (allNodesDeleted) {
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
@@ -225,51 +227,19 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 $scope.currentNode = error.data;
                 $scope.clusterModel.hasCluster = false;
             })
-            .then(() => $scope.getLocationsWithRpcAddresses());
+            .then(() => getLocationsWithRpcAddresses());
     };
 
-    $scope.getLocationsWithRpcAddresses = () => {
-        return getLocations().then(() => getRemoteLocationsRpcAddresses($scope.clusterModel.locations));
-    };
-
-    function getLocations() {
-        return LocationsRestService.getLocations()
-            .then(function (response) {
-                const localNode = response.data.find((location) => location.local);
-                localNode.uri = $scope.currentNode.endpoint;
-                localNode.rpcAddress = $scope.currentNode.address;
-
-                $scope.clusterModel.locations = response.data.map((loc) => {
-                    return {
-                        isLocal: loc.local,
-                        endpoint: loc.uri,
-                        rpcAddress: loc.rpcAddress || ''
-                    };
-                });
-            })
-            .catch(function (error) {
-                const msg = getError(error.data, error.status);
-                toastr.error(msg, $translate.instant('common.error'));
+    function getLocationsWithRpcAddresses() {
+        return RemoteLocationsService.getLocationsWithRpcAddresses()
+            .then((locations) => {
+                const localNode = locations.find((location) => location.isLocal);
+                if (localNode) {
+                    localNode.endpoint = $scope.currentNode.endpoint;
+                    localNode.rpcAddress = $scope.currentNode.address;
+                }
+                $scope.clusterModel.locations = locations;
             });
-    }
-
-    function getRemoteLocationsRpcAddresses(locations) {
-        const rpcAddressFetchers = locations.filter((location) => !location.isLocal).map((location) => {
-            return getNodeRpcAddress(location.endpoint)
-                .then((response) => {
-                    location.rpcAddress = response.data;
-                    location.isAvailable = true;
-                })
-                .catch((error) => {
-                    location.isAvailable = false;
-                    location.error = error.data;
-                });
-        });
-        return Promise.allSettled(rpcAddressFetchers);
-    }
-
-    function getNodeRpcAddress(remoteLocation) {
-        return LocationsRestService.getLocationRpcAddress(remoteLocation);
     }
 
     initialize()
@@ -317,19 +287,19 @@ const getAdvancedOptionsClass = function () {
 };
 
 CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data', '$modal',
-    'LocationsRestService'];
+    'RemoteLocationsService'];
 
-function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, LocationsRestService) {
+function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, RemoteLocationsService) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
     $scope.clusterConfiguration = {
-        electionMinTimeout: 7000,
-        electionRangeTimeout: 5000,
+        electionMinTimeout: 20000,
+        electionRangeTimeout: 10000,
         heartbeatInterval: 2000,
         messageSizeKB: 64,
-        nodes: [],
-        verificationTimeout: 1500
+        verificationTimeout: 1500,
+        nodes: []
     };
 
     $scope.locations = data.clusterModel.locations.filter((location) => !location.isLocal);
@@ -398,40 +368,12 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
     };
 
     $scope.addLocation = function () {
-        let newLocationData;
-        $modal.open({
-            templateUrl: 'js/angular/templates/modal/add-location.html',
-            windowClass: 'addLocationDialog',
-            controller: 'AddLocationCtrl'
-        }).result
-            .then((dataAddLocation) => {
-                newLocationData = dataAddLocation;
-                return $scope.addLocationHttp(dataAddLocation);
-            })
-            .then((response) => {
-                if (!response) {
-                    return;
+        RemoteLocationsService.addLocation()
+            .then((newLocation) => {
+                if (newLocation) {
+                    $scope.locations.push(newLocation);
                 }
-                newLocationData.rpcAddress = response;
             });
-    };
-
-    $scope.addLocationHttp = function (dataAddLocation) {
-        $scope.loader = true;
-        return LocationsRestService.addLocation(dataAddLocation)
-            .then(() => {
-                const location = {
-                    isLocal: dataAddLocation.local,
-                    endpoint: dataAddLocation.uri
-                };
-                $scope.locations.push(location);
-                return LocationsRestService.getLocationRpcAddress(dataAddLocation.uri);
-            })
-            .catch((error) => {
-                const msg = getError(error.data, error.status);
-                toastr.error(msg, $translate.instant('common.error'));
-            })
-            .finally(() => $scope.loader = false);
     };
 
     $scope.ok = function () {
@@ -459,6 +401,116 @@ function DeleteClusterCtrl($scope, $modalInstance) {
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+}
+
+RemoteLocationsService.$inject = ['$http', 'toastr', '$modal', 'LocationsRestService', '$translate'];
+
+function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $translate) {
+    return {
+        addLocation: addLocation,
+        getLocationsWithRpcAddresses: getLocationsWithRpcAddresses
+    };
+
+    function getLocationsWithRpcAddresses() {
+        return getLocations()
+            .then((locations) => {
+                if (locations) {
+                    return getRemoteLocationsRpcAddresses(locations);
+                }
+            });
+    }
+
+    /**
+     * Sets multiple remote locations' rpc addresses. Skips local location and locations with errors
+     * @param {any[]} locationsArray
+     * @return {Promise<[]>} locationArray with filled rpc addresses
+     */
+    function getRemoteLocationsRpcAddresses(locationsArray) {
+        const rpcAddressFetchers = locationsArray.filter((location) => !location.isLocal && !location.error).map((location) => {
+            return getLocationRpcAddress(location)
+                .then((response) => {
+                    location.rpcAddress = response.data;
+                    location.isAvailable = true;
+                    return location;
+                })
+                .catch((error) => {
+                    location.isAvailable = false;
+                    location.error = getError(error.data, error.status);
+                });
+        });
+        return Promise.allSettled(rpcAddressFetchers).then(() => locationsArray);
+    }
+
+    /**
+     * Fetch locations and map them to a location model
+     *
+     * @return {*} all remote locations mapped to a location model
+     */
+    function getLocations() {
+        return LocationsRestService.getLocations()
+            .then(function (response) {
+                return response.data.map((loc) => {
+                    return {
+                        isLocal: loc.local,
+                        endpoint: loc.uri,
+                        rpcAddress: loc.rpcAddress || '',
+                        error: loc.errorMsg
+                    };
+                });
+            })
+            .catch(function (error) {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
+    }
+
+    /**
+     * Fetch rpc address of a remote location
+     * @param {*} location the remote location
+     * @return {Promise<String>} the rpc address of the location
+     */
+    function getLocationRpcAddress(location) {
+        return LocationsRestService.getLocationRpcAddress(location.endpoint);
+
+    }
+
+    function addLocation() {
+        let newLocation;
+        return $modal.open({
+            templateUrl: 'js/angular/templates/modal/add-location.html',
+            windowClass: 'addLocationDialog',
+            controller: 'AddLocationCtrl'
+        }).result
+            .then((dataAddLocation) => {
+                newLocation = dataAddLocation;
+                newLocation.isLocal = false;
+                newLocation.endpoint = newLocation.uri;
+                return addLocationHttp(newLocation);
+            });
+    }
+
+    function addLocationHttp(locationData) {
+        let newLocation;
+        return LocationsRestService.addLocation(locationData)
+            .catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+                return false;
+            })
+            .then((locationAdded) => {
+                if (locationAdded) {
+                    return getLocationsWithRpcAddresses();
+                }
+                return false;
+            })
+            .then((locations) => {
+                if (locations === false) {
+                    return;
+                }
+                newLocation = locations.find((location) => location.endpoint === locationData.uri);
+                return newLocation;
+            });
+    }
 }
 
 AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];

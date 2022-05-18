@@ -418,6 +418,7 @@ div.nodetooltip {
   border: 1px solid;
   min-height:8rem;
   max-height: 18rem;
+  overflow: auto;
 }
 
 .location-item {
