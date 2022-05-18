@@ -693,6 +693,7 @@ function RemoveNodesDialogCtrl($scope, $modalInstance, data) {
     $scope.clusterNodes = clusterModel.nodes;
     $scope.clusterNodes.forEach((node) => node.shouldRemove = false);
     $scope.nodesToRemoveCount = 0;
+    $scope.leftNodesLessThanTwo = false;
 
     $scope.toggleNode = function (index, node) {
         node.shouldRemove = !node.shouldRemove;
@@ -701,6 +702,7 @@ function RemoveNodesDialogCtrl($scope, $modalInstance, data) {
         } else {
             $scope.nodesToRemoveCount--;
         }
+        $scope.leftNodesLessThanTwo = $scope.clusterNodes.length - $scope.nodesToRemoveCount < 2;
     };
 
     $scope.ok = function () {
