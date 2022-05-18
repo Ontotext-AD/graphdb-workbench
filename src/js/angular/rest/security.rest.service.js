@@ -29,7 +29,7 @@ function SecurityRestService($http) {
     };
 
     function getUser(username) {
-        return $http.get(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
+        return $http.get(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
     }
 
     function getAuthenticatedUser() {
@@ -47,7 +47,7 @@ function SecurityRestService($http) {
     function createUser(data) {
         return $http({
             method: 'POST',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
@@ -59,7 +59,7 @@ function SecurityRestService($http) {
     function updateUser(data) {
         return $http({
             method: 'PUT',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
@@ -71,7 +71,7 @@ function SecurityRestService($http) {
     function updateUserData(data) {
         return $http({
             method: 'PATCH',
-            url: `${SECURITY_USER_ENDPOINT}/${encodeURIComponent(data.username)}`,
+            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
                 password: data.pass,
                 appSettings: data.appSettings
@@ -80,7 +80,7 @@ function SecurityRestService($http) {
     }
 
     function deleteUser(username) {
-        return $http.delete(`${SECURITY_USER_ENDPOINT}/${encodeURIComponent(username)}`);
+        return $http.delete(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
     }
 
     function getFreeAccess() {
@@ -105,5 +105,17 @@ function SecurityRestService($http) {
 
     function getRolesMapping(params) {
         return $http.get(`${ROLES_ENDPOINT}/mapping`, {params});
+    }
+
+    /**
+     * Path string variable can contain characters which encodeURIComponent() can have problems encoding.
+     * These characters are replaced in this method.
+     * @param str - a component of URI
+     * @returns {string} The provided string encoded as a URI component.
+     */
+    function fixedEncodeURIComponent(str) {
+        return encodeURIComponent(str).replace(/[.!'()*]/g, function (c) {
+            return '%' + c.charCodeAt(0).toString(16);
+        });
     }
 }
