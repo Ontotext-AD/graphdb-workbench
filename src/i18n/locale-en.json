@@ -63,7 +63,7 @@
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
-                "no_rpc_address": "Error retrieving RCP address: {{error}}",
+                "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "node_in_list": "Node is already in the list",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {

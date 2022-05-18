@@ -30,10 +30,10 @@
                 </div>
                 <div class="col-lg-6">
                     <h4>{{'cluster_management.cluster_page.remote_locations' | translate}}</h4>
-                    <div class="pre-scrollable locations-list mb-1">
+                    <div class="locations-list mb-1">
                         <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
-                             ng-class="!location.rpcAddress ? 'alert-danger' : ''"
-                             tooltip="{{location.rpcAddress ? '' : 'cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error} }}"
+                             ng-class="location.error ? 'alert-danger' : ''"
+                             tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
                              ng-click="addNodeToList(location)">
                             <div class="logo-image"></div>
                             {{location.endpoint}}
