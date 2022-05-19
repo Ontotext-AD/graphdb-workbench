@@ -43,7 +43,7 @@
                             <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
                             <strong>{{repository.id}}</strong></span>
                             <span class="small" ng-if="showRemoteLocations">
-                                <small>@ {{repository.location ? repository.location : 'Local'}}</small>
+                                <small>@ {{repository.location ? repository.location : 'core.errors.location.local.label' | translate}}</small>
                             </span>
                         </div>
                     </li>
