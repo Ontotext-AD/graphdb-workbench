@@ -16,6 +16,7 @@ const modules = [
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
+    'graphdb.framework.utils.localstorageadapter',
     'toastr'
 ];
 
