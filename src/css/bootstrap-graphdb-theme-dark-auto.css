@@ -9,18 +9,6 @@
     --checkbox-filter-dark: invert(100%) hue-rotate(180deg);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root:not(.light) {
-        color-scheme: var(--color-scheme-dark);
-        --body-filter: var(--body-filter-dark);
-        --html-background: var(--html-background-dark);
-        --media-filter: var(--media-filter-dark);
-        --alert-filter: var(--alert-filter-dark);
-        --toast-filter: var(--toast-filter-dark);
-        --checkbox-filter: var(--checkbox-filter-dark);
-    }
-}
-
 :root.dark {
     color-scheme: var(--color-scheme-dark);
     --body-filter: var(--body-filter-dark);

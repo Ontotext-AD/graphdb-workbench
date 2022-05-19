@@ -343,9 +343,7 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
 securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         $rootScope.$on('$translateChangeSuccess', function () {
-            $scope.saveButtonText = $translate.instant('common.create.btn');
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
-            $scope.pageTitle = $translate.instant('view.create.user.title');
         });
         $scope.isAdmin = function () {
             return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
@@ -367,7 +365,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         };
 
         $scope.hasReadPermission = function (repository) {
-            let uniqueKey = createUniqueKey(repository);
+            const uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || repository.id !== SYSTEM_REPO
                 && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'])
@@ -376,7 +374,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         };
 
         $scope.hasWritePermission = function (repoOrWildCard) {
-            let uniqueKey = createUniqueKey(repoOrWildCard);
+            const uniqueKey = createUniqueKey(repoOrWildCard);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
@@ -614,7 +612,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         $scope.getUserData();
 
         $scope.submit = function () {
-            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
                     title: $translate.instant('security.save.admin.settings'),
                     message: $translate.instant('security.admin.pass.unset'),
@@ -698,8 +696,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'LocalStorageAdapter', 'LSKeys',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, LocalStorageAdapter, LSKeys) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -719,6 +717,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.currentUserData = function () {
             return $jwtAuth.getPrincipal();
         };
+        $scope.showWorkbenchSettings = true;
 
         $scope.updateCurrentUserData = function () {
             _.assign($jwtAuth.getPrincipal(), $scope.userData);
@@ -768,7 +767,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
 
         $scope.submit = function () {
-            if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
                     title: $translate.instant('security.save.admin.settings'),
                     message: $translate.instant('security.admin.pass.unset'),
@@ -779,7 +778,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             } else {
                 $scope.updateUser();
             }
-        }
+        };
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
@@ -794,6 +793,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                     $scope.loader = false;
                     $window.history.back();
                 }, 2000);
+                LocalStorageAdapter.set(LSKeys.WORKBENCH_SETTINGS, $scope.workbenchSettings);
                 $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
@@ -815,6 +815,33 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.validateForm = function () {
             return $scope.validatePassword();
         };
+
+        $scope.setWorkbenchTheme = function () {
+            const rootElement = document.querySelector(':root');
+            if ($scope.workbenchSettings.theme === 'dark') {
+                rootElement.classList.add("dark");
+            } else {
+                rootElement.classList.remove("dark");
+            }
+        };
+
+        $scope.workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
+        if (!$scope.workbenchSettings) {
+            $scope.workbenchSettings = {
+                theme: 'light'
+            };
+        }
+        $scope.setWorkbenchTheme();
+
+        $scope.$on("$destroy", function () {
+            const workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
+            const rootElement = document.querySelector(':root');
+            if (workbenchSettings && workbenchSettings.theme === 'dark') {
+                rootElement.classList.add("dark");
+            } else {
+                rootElement.classList.remove("dark");
+            }
+        });
     }]);
 
 securityCtrl.controller('DeleteUserCtrl', ['$scope', '$modalInstance', 'username', function ($scope, $modalInstance, username) {
