@@ -18,11 +18,11 @@
                         <label for="locations" class="col-md-3 col-lg-2 col-form-label">
                             {{'repo.page.location.label' | translate}}
                         </label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repo.page.location.input.field.tooltip' | translate}}" tooltip-trigger="mouseenter">
-                            <select ng-disabled="editRepoPage" class="form-control" id="locations"
+                        <div class="col-md-7 col-lg-6 col-xl-5" tooltip="{{'repo.page.location.input.field.tooltip' | translate}}" tooltip-trigger="mouseenter">??
+                            <select class="form-control" id="locations"
                                     ng-model="repositoryInfo.location"
-                                    ng-change="changedLocation()"
-                                    ng-options="location.uri as location.label for location in locations | orderBy: 'uri'">
+                                    ng-change="changedLocation()">
+                                <option ng-repeat="location in locations | orderBy: 'uri'" value="{{location.uri}}">{{location.label}}</option>
                             </select>
                         </div>
                     </div>
