@@ -160,7 +160,7 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', function ($rootScope, $route, toastr, $sce, $translate) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'LocalStorageAdapter', 'LSKeys', function ($rootScope, $route, toastr, $sce, $translate, LocalStorageAdapter, LSKeys) {
         $rootScope.$on('$routeChangeSuccess', function () {
             updateTitleAndHelpInfo();
 
@@ -180,6 +180,15 @@ const moduleDefinition = function (productInfo) {
 
             $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
             $rootScope.title = decodeHTML($translate.instant($route.current.title));
+        }
+
+        // Check if theme is set in local storage workbench settings and apply
+        const workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
+        if (workbenchSettings && workbenchSettings.theme) {
+            const rootElement = document.querySelector(':root');
+            if (workbenchSettings.theme === 'dark') {
+                rootElement.classList.add("dark");
+            }
         }
     }]);
 
