@@ -1,4 +1,5 @@
 import ImportSteps from '../../steps/import-steps';
+import SparqlSteps from '../../steps/sparql-steps';
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const RDF_STAR_FILE_TO_IMPORT = 'turtlestar-data.ttls';
@@ -62,73 +63,25 @@ describe('SPARQL screen validation', () => {
         '   inst:gateService :dropService "".\n' +
         '}';
 
-    function createRepoAndVisit(repoOptions = {}) {
-        createRepository(repoOptions);
-        visitSparql(true);
-    }
-
-    function createRepository(repoOptions = {}) {
-        repositoryId = 'sparql-' + Date.now();
-        repoOptions.id = repositoryId;
-        cy.createRepository(repoOptions);
-        cy.initializeRepository(repositoryId);
-    }
-
-    function visitSparql(resetLocalStorage) {
-        cy.visit('/sparql', {
-            onBeforeLoad: (win) => {
-                if (resetLocalStorage) {
-                    // Needed because the workbench app is very persistent with its local storage (it's hooked on before unload event)
-                    // TODO: Add a test that tests this !
-                    if (win.localStorage) {
-                        win.localStorage.clear();
-                    }
-                    if (win.sessionStorage) {
-                        win.sessionStorage.clear();
-                    }
-                }
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
-            }
-        });
-        waitUntilSparqlPageIsLoaded();
-    }
-
-    function waitUntilSparqlPageIsLoaded() {
-        cy.window();
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        // Run query button should be clickable
-        getRunQueryButton().should('be.visible').and('not.be.disabled');
-
-        cy.waitUntilQueryIsVisible();
-
-        // Run query button should be clickable
-        getRunQueryButton().should('be.visible').and('not.be.disabled');
-
-        // Editor should have a visible tab
-        getTabs().find('.nav-link').should('be.visible');
-
-        // No active loader
-        getLoader().should('not.exist');
-    }
-
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
     context('SPARQL queries & filtering', () => {
-        beforeEach(() => createRepoAndVisit());
+        beforeEach(() => {
+            repositoryId = 'sparql-' + Date.now();
+            SparqlSteps.createRepoAndVisit(repositoryId)
+        });
 
         it('Test execute default query', () => {
-            getTabs().should('have.length', 1);
+            SparqlSteps.getTabs().should('have.length', 1);
 
             verifyQueryAreaEquals(DEFAULT_QUERY);
 
             // No queries should have been run for this tab
             getNoQueryRun().should('be.visible');
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             verifyResultsPageLength(70);
         });
@@ -142,7 +95,7 @@ describe('SPARQL screen validation', () => {
             // Verify pasting also works
             cy.pasteQuery(DEFAULT_QUERY_MODIFIED);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 2);
 
@@ -160,7 +113,7 @@ describe('SPARQL screen validation', () => {
 
             verifyQueryAreaEquals(SPARQL_STAR_QUERY);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 1);
 
@@ -180,7 +133,7 @@ describe('SPARQL screen validation', () => {
 
             verifyQueryAreaEquals(selectQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 1);
 
@@ -200,7 +153,7 @@ describe('SPARQL screen validation', () => {
 
             verifyQueryAreaEquals(insertQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getUpdateMessage()
                 .should('be.visible')
@@ -213,13 +166,13 @@ describe('SPARQL screen validation', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
             let selectQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
-                     "select * where {<<bd:bob foaf:mbox <mailto:bob@home>>> ?p ?o .}";
+                "select * where {<<bd:bob foaf:mbox <mailto:bob@home>>> ?p ?o .}";
 
             typeQuery(selectQuery);
 
             verifyQueryAreaEquals(selectQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 1);
 
@@ -232,14 +185,14 @@ describe('SPARQL screen validation', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
             let deleteQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
-                                "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
-                                    "delete data {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
+                "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
+                "delete data {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
             typeQuery(deleteQuery);
 
             verifyQueryAreaEquals(deleteQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getUpdateMessage()
                 .should('be.visible')
@@ -248,14 +201,14 @@ describe('SPARQL screen validation', () => {
             getResultPages().should('have.length', 1);
 
             let selectQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
-                                                                          "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
-                                                                              "select * where {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
+                "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
+                "select * where {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
             typeQuery(selectQuery);
 
             verifyQueryAreaEquals(selectQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 1);
 
@@ -274,7 +227,7 @@ describe('SPARQL screen validation', () => {
 
             cy.pasteQuery(describeQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             cy.verifyResultsMessage('Showing results');
             cy.verifyResultsMessage('Query took');
@@ -303,7 +256,7 @@ describe('SPARQL screen validation', () => {
 
             verifyQueryAreaEquals(SPARQL_STAR_QUERY);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultPages().should('have.length', 1);
 
@@ -318,7 +271,7 @@ describe('SPARQL screen validation', () => {
         it('Test filter query results', () => {
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             // In the search field below the SPARQL editor enter 'White'
             getResultFilterField()
@@ -342,7 +295,7 @@ describe('SPARQL screen validation', () => {
             verifyQueryAreaContains('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>');
             verifyQueryAreaContains('PREFIX owl: <http://www.w3.org/2002/07/owl#>');
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             cy.getResultsMessage();
             getResultsWrapper()
@@ -354,7 +307,7 @@ describe('SPARQL screen validation', () => {
 
             cy.pasteQuery(describeQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             cy.verifyResultsMessage('Showing results')
             cy.verifyResultsMessage('Query took');
@@ -380,7 +333,7 @@ describe('SPARQL screen validation', () => {
             let askQuery = 'ASK WHERE { ?s ?p ?o .FILTER (regex(?o, "ontotext.com")) }';
 
             cy.pasteQuery(askQuery);
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             // Confirm that all tabs (Table, Pivot Table, Google chart) are disabled
             getTableResponseButton().should('not.be.visible');
@@ -396,7 +349,7 @@ describe('SPARQL screen validation', () => {
                 cy.pasteQuery(constructQuery);
             });
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             cy.getResultsMessage();
             getResultsWrapper()
@@ -416,7 +369,7 @@ describe('SPARQL screen validation', () => {
             let insertQuery = 'INSERT DATA { <urn:a> <http://a/b> <urn:b> . <urn:b> <http://a/b> <urn:c> . }';
 
             cy.pasteQuery(insertQuery);
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getUpdateMessage().should('be.visible');
             getResultsWrapper().should('not.be.visible');
@@ -427,7 +380,7 @@ describe('SPARQL screen validation', () => {
                 .should('be.visible');
 
             cy.pasteQuery(DEFAULT_QUERY);
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             // Confirm that all statements are available (70 from ruleset, 2 explicit and 2 inferred)
             getResultsWrapper().should('be.visible');
@@ -442,7 +395,7 @@ describe('SPARQL screen validation', () => {
                     cy.get('.icon-inferred-off').should('be.visible'));
 
             // Confirm that only inferred statements (only 2) are available
-            executeQuery();
+            SparqlSteps.executeQuery();
             verifyResultsPageLength(2);
         });
 
@@ -471,7 +424,7 @@ describe('SPARQL screen validation', () => {
     });
 
     context('SPARQL queries with OWL-Horst Optimized', () => {
-        beforeEach(() => createRepoAndVisit({
+        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId, {
             params: {
                 ruleset: {
                     value: 'owl-horst-optimized'
@@ -490,7 +443,7 @@ describe('SPARQL screen validation', () => {
                 '}';
 
             cy.pasteQuery(defaultQueryWithoutLimit);
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             cy.verifyResultsMessage('1,000 of 7,065');
             getResultsWrapper()
@@ -503,7 +456,7 @@ describe('SPARQL screen validation', () => {
                     .then(infBtn => infBtn && cy.wrap(infBtn).click()))
                 .then(() =>
                     cy.get('.icon-inferred-off').should('be.visible'));
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             // Verify that there are 1,839 results
             cy.verifyResultsMessage('1,000 of 1,839');
@@ -524,7 +477,7 @@ describe('SPARQL screen validation', () => {
                 '}';
 
             cy.pasteQuery(updateToExecute);
-            executeQuery();
+            SparqlSteps.executeQuery();
             getUpdateMessage()
                 .should('be.visible')
                 .and('contain', 'Added 1 statements');
@@ -535,7 +488,7 @@ describe('SPARQL screen validation', () => {
                 .should('be.visible');
 
             cy.pasteQuery(selectQuery);
-            executeQuery();
+            SparqlSteps.executeQuery();
             verifyResultsPageLength(2);
 
             getSameAsButton()
@@ -543,19 +496,19 @@ describe('SPARQL screen validation', () => {
                 .find('.icon-sameas-off')
                 .should('be.visible');
 
-            executeQuery();
+            SparqlSteps.executeQuery();
             verifyResultsPageLength(1);
         });
     });
 
     context('SPARQL view & download', () => {
-        beforeEach(() => createRepoAndVisit());
+        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId));
 
         it('Test open a new tab', () => {
             getNewTabButton().click();
 
             // Verify that as result of clicking addNewTab button we've opened one more tab
-            getTabs().should('have.length', 2);
+            SparqlSteps.getTabs().should('have.length', 2);
 
             getLastTab()
                 .should('have.class', 'active')
@@ -575,7 +528,7 @@ describe('SPARQL screen validation', () => {
             renameTab(1, firstTabName);
 
             // Still one after renaming
-            getTabs().should('have.length', 1);
+            SparqlSteps.getTabs().should('have.length', 1);
 
             addTab();
 
@@ -584,7 +537,7 @@ describe('SPARQL screen validation', () => {
             // TODO: Add spec/steps for cancelling rename
 
             // Still two after renaming
-            getTabs().should('have.length', 2);
+            SparqlSteps.getTabs().should('have.length', 2);
             verifyTabName(1, firstTabName);
             verifyTabName(2, secondTabName);
 
@@ -592,10 +545,10 @@ describe('SPARQL screen validation', () => {
             ImportSteps.visitUserImport();
 
             cy.visit("/sparql");
-            waitUntilSparqlPageIsLoaded();
+            SparqlSteps.waitUntilSparqlPageIsLoaded();
 
             // Still two after navigation
-            getTabs().should('have.length', 2);
+            SparqlSteps.getTabs().should('have.length', 2);
             verifyTabName(1, firstTabName);
             verifyTabName(2, secondTabName);
         });
@@ -618,7 +571,7 @@ describe('SPARQL screen validation', () => {
             confirmModal();
             getModal().should('not.exist');
 
-            getTabs().should('have.length', 2);
+            SparqlSteps.getTabs().should('have.length', 2);
 
             verifyTabName(1, 'Tab 1');
             verifyTabName(2, 'Tab 3');
@@ -640,12 +593,12 @@ describe('SPARQL screen validation', () => {
             confirmModal();
             getModal().should('not.exist');
 
-            getTabs().should('have.length', 1);
+            SparqlSteps.getTabs().should('have.length', 1);
             verifyTabName(1, 'Tab 3');
         });
 
         it('Test download query results in Supported formats', () => {
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             // Wait until results are visible before verifying the download menu
             getResultsWrapper().should('be.visible');
@@ -664,7 +617,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('Test switch result format tabs', () => {
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             openRawResponse();
             getResultsWrapper()
@@ -722,7 +675,7 @@ describe('SPARQL screen validation', () => {
             cy.get(YASR_SELECTOR).should('have.class', 'vertical');
 
             // Run the default query on vertical mode
-            executeQuery();
+            SparqlSteps.executeQuery();
             // Verify that all results are properly scaled/displayed
             verifyResultsPageLength(70);
 
@@ -735,7 +688,7 @@ describe('SPARQL screen validation', () => {
     });
 
     context('Saved queries & links', () => {
-        beforeEach(() => createRepoAndVisit());
+        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId));
 
         const QUERY_FOR_SAVING = 'select (count (*) as ?cnt)\n' +
             'where {\n' +
@@ -771,8 +724,8 @@ describe('SPARQL screen validation', () => {
             getSavedQueryForm().should('not.exist');
 
             // Verify that the query is saved
-            openSavedQueriesPopup();
-            getPopover()
+            SparqlSteps.openSavedQueriesPopup();
+            SparqlSteps.getPopover()
                 .should('be.visible')
                 .and('contain', savedQueryName);
 
@@ -796,8 +749,8 @@ describe('SPARQL screen validation', () => {
 
             // Verify that the query is edited.
             // Select the query from the saved queries again
-            openSavedQueriesPopup();
-            getPopover()
+            SparqlSteps.openSavedQueriesPopup();
+            SparqlSteps.getPopover()
                 .should('be.visible')
                 .and('contain', savedQueryName);
 
@@ -812,8 +765,8 @@ describe('SPARQL screen validation', () => {
             submitSavedQuery();
 
             // Click on the saved queries icon
-            openSavedQueriesPopup();
-            getPopover()
+            SparqlSteps.openSavedQueriesPopup();
+            SparqlSteps.getPopover()
                 .should('be.visible')
                 .and('contain', savedQueryName);
 
@@ -826,8 +779,8 @@ describe('SPARQL screen validation', () => {
             cy.get('.popover').should('not.exist');
 
             // Verify that the query is deleted
-            openSavedQueriesPopup();
-            getPopover()
+            SparqlSteps.openSavedQueriesPopup();
+            SparqlSteps.getPopover()
                 .should('be.visible')
                 .and('not.contain', savedQueryName);
         });
@@ -880,42 +833,42 @@ describe('SPARQL screen validation', () => {
             // Execute all default saved queries
 
             // Execute the default sample Add Statements
-            selectSavedQuery('Add statements');
-            getTabs().should('have.length', 2);
+            SparqlSteps.selectSavedQuery('Add statements');
+            SparqlSteps.getTabs().should('have.length', 2);
             getActiveTabLink().should('have.text', 'Add statements');
-            getQueryArea().should('contain', 'INSERT DATA');
-            executeQuery();
+            SparqlSteps.getQueryArea().should('contain', 'INSERT DATA');
+            SparqlSteps.executeQuery();
             // Verify query information: “Added 2 statements”
             getUpdateMessage()
                 .should('contain', 'Added 2 statements.')
                 .and('contain', 'Update took');
 
             // Execute the default sample Remove statements
-            selectSavedQuery('Remove statements');
-            getTabs().should('have.length', 3);
+            SparqlSteps.selectSavedQuery('Remove statements');
+            SparqlSteps.getTabs().should('have.length', 3);
             getActiveTabLink().should('have.text', 'Remove statements');
-            getQueryArea().should('contain', 'DELETE DATA');
-            executeQuery();
+            SparqlSteps.getQueryArea().should('contain', 'DELETE DATA');
+            SparqlSteps.executeQuery();
             getUpdateMessage()
                 .should('contain', 'Removed 2 statements.')
                 .and('contain', 'Update took');
 
             // Execute the default sample Clear Graph
-            selectSavedQuery('Clear graph');
-            getTabs().should('have.length', 4);
+            SparqlSteps.selectSavedQuery('Clear graph');
+            SparqlSteps.getTabs().should('have.length', 4);
             getActiveTabLink().should('have.text', 'Clear graph');
-            getQueryArea().should('contain', 'CLEAR GRAPH');
-            executeQuery();
+            SparqlSteps.getQueryArea().should('contain', 'CLEAR GRAPH');
+            SparqlSteps.executeQuery();
             getUpdateMessage()
                 .should('contain', 'The number of statements did not change.')
                 .and('contain', 'Update took');
 
             // Execute the default SPARQL Select template
-            selectSavedQuery('SPARQL Select template');
-            getTabs().should('have.length', 5);
+            SparqlSteps.selectSavedQuery('SPARQL Select template');
+            SparqlSteps.getTabs().should('have.length', 5);
             getActiveTabLink().should('have.text', 'SPARQL Select template');
-            getQueryArea().should('contain', 'SELECT');
-            executeQuery();
+            SparqlSteps.getQueryArea().should('contain', 'SELECT');
+            SparqlSteps.executeQuery();
             getUpdateMessage().should('not.be.visible');
             cy.verifyResultsMessage('Showing results from 1 to 74 of 74');
             cy.verifyResultsMessage('Query took');
@@ -925,8 +878,8 @@ describe('SPARQL screen validation', () => {
 
         it('Test saved query link', () => {
             const queryName = 'Add statements';
-            openSavedQueriesPopup();
-            getPopover().should('be.visible');
+            SparqlSteps.openSavedQueriesPopup();
+            SparqlSteps.getPopover().should('be.visible');
 
             executeSavedQueryCommand(queryName, OPEN_SAVED_QUERY_COMMAND);
 
@@ -939,13 +892,13 @@ describe('SPARQL screen validation', () => {
 
             // Visit performs full page load
             cy.visit(expectedUrl);
-            waitUntilSparqlPageIsLoaded();
+            SparqlSteps.waitUntilSparqlPageIsLoaded();
 
-            getTabs().should('have.length', 2);
+            SparqlSteps.getTabs().should('have.length', 2);
             getActiveTabLink().should('have.text', queryName);
 
             // Wait until editor is initialized with the query and then assert the whole query
-            getQueryArea().should('contain', 'INSERT DATA');
+            SparqlSteps.getQueryArea().should('contain', 'INSERT DATA');
             cy.fixture('queries/add-statement.txt').then((query) => {
                 // Convert new line symbols to \n regardless of OS. Query in SPARQL editor uses \n for new line.
                 const EOLregex = /(\r\n|\r|\n)/g;
@@ -975,11 +928,11 @@ describe('SPARQL screen validation', () => {
 
             // Visit performs full page load
             cy.visit(expectedUrl);
-            waitUntilSparqlPageIsLoaded();
-            getTabs().should('have.length', 1);
+            SparqlSteps.waitUntilSparqlPageIsLoaded();
+            SparqlSteps.getTabs().should('have.length', 1);
 
             // Wait until editor is initialized with the query and then assert the whole query
-            getQueryArea().should('contain', 'SELECT');
+            SparqlSteps.getQueryArea().should('contain', 'SELECT');
             verifyQueryAreaEquals(query);
         });
     });
@@ -990,12 +943,12 @@ describe('SPARQL screen validation', () => {
         const wineUri = '<http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#CorbansDryWhiteRiesling>';
 
         it('should suggest resources in the "SPARQL" editor when autocomplete is enabled', () => {
-            createRepository();
+            SparqlSteps.createRepository(repositoryId);
 
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
             cy.enableAutocomplete(repositoryId);
-            visitSparql(true);
+            SparqlSteps.visitSparql(true, repositoryId);
 
             const expectedQuery = queryBegin + wineUri + queryEnd;
 
@@ -1016,7 +969,7 @@ describe('SPARQL screen validation', () => {
 
             verifyQueryAreaEquals(expectedQuery);
 
-            executeQuery();
+            SparqlSteps.executeQuery();
 
             getResultsWrapper().should('be.visible');
 
@@ -1024,7 +977,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('should not suggests resources in the "SPARQL" editor if the autocomplete is NOT enabled', () => {
-            createRepoAndVisit();
+            SparqlSteps.createRepoAndVisit(repositoryId);
 
             clearQuery();
 
@@ -1044,26 +997,6 @@ describe('SPARQL screen validation', () => {
     const EDITOR_SELECTOR = '#queryEditor';
     const YASR_SELECTOR = '#yasr';
     const YASR_INNER_SELECTOR = '#yasr-inner';
-
-    function executeQuery() {
-        getRunQueryButton().click();
-        getLoader().should('not.exist');
-    }
-
-    function getLoader() {
-        return cy.get('.ot-loader-new-content');
-    }
-
-    function getPopover() {
-        return cy.get('.popover')
-            .should('not.have.class', 'ng-animate')
-            .and('not.have.class', 'in-add')
-            .and('not.have.class', 'in-add-active');
-    }
-
-    function getRunQueryButton() {
-        return cy.get('#wb-sparql-runQuery');
-    }
 
     function getTableResultRows() {
         return getResultsWrapper().find('.resultsTable tbody tr');
@@ -1097,10 +1030,6 @@ describe('SPARQL screen validation', () => {
             .click();
     }
 
-    function getTabs() {
-        return cy.get(TABS_SELECTOR);
-    }
-
     function getActiveTabLink() {
         return cy.get(TABS_SELECTOR + '.active .nav-link');
     }
@@ -1114,13 +1043,13 @@ describe('SPARQL screen validation', () => {
     }
 
     function getLastTab() {
-        return getTabs().last();
+        return SparqlSteps.getTabs().last();
     }
 
     function renameTab(position, newName) {
-        getTabs().eq(position - 1).then(tab => {
+        SparqlSteps.getTabs().eq(position - 1).then(tab => {
             cy.wrap(tab)
-            // First click is to focus it in case it's not the active tab
+                // First click is to focus it in case it's not the active tab
                 .click()
                 .find('.nav-link')
                 .dblclick();
@@ -1136,14 +1065,14 @@ describe('SPARQL screen validation', () => {
     }
 
     function verifyTabName(position, name) {
-        getTabs().eq(position - 1)
+        SparqlSteps.getTabs().eq(position - 1)
             .should('be.visible')
             .find('.nav-link')
             .should('have.text', name);
     }
 
     function getTabCloseBtn(position) {
-        return getTabs().eq(position - 1).find('.delete-sparql-tab-btn');
+        return SparqlSteps.getTabs().eq(position - 1).find('.delete-sparql-tab-btn');
     }
 
     function closeTab(position) {
@@ -1153,24 +1082,20 @@ describe('SPARQL screen validation', () => {
     function verifyQueryAreaContains(query) {
         // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
         cy.waitUntil(() =>
-            getQueryArea()
+            SparqlSteps.getQueryArea()
                 .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().includes(query)));
     }
 
     function verifyQueryAreaEquals(query) {
         // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-        getQueryArea().should(codeMirrorEl => {
+        SparqlSteps.getQueryArea().should(codeMirrorEl => {
             const cm = codeMirrorEl[0].CodeMirror;
             expect(cm.getValue().trim()).to.equal(query.trim());
         });
     }
 
-    function getQueryArea() {
-        return cy.get('#queryEditor .CodeMirror');
-    }
-
     function getQueryTextArea() {
-        return getQueryArea().find('textarea');
+        return SparqlSteps.getQueryArea().find('textarea');
     }
 
     function getNoQueryRun() {
@@ -1192,7 +1117,7 @@ describe('SPARQL screen validation', () => {
 
     function goToPage(page) {
         getResultPages().contains(page).click();
-        getLoader().should('not.exist');
+        SparqlSteps.getLoader().should('not.exist');
     }
 
     function getResultFilterField() {
@@ -1291,33 +1216,10 @@ describe('SPARQL screen validation', () => {
         return cy.get('#wb-sparql-sampleValue');
     }
 
-    function getSavedQueriesPopupBtn() {
-        return cy.get('#wb-sparql-toggleSampleQueries');
-    }
-
-    function openSavedQueriesPopup() {
-        getSavedQueriesPopupBtn().click();
-    }
-
-    function getSavedQueryFromPopup(savedQueryName) {
-        return cy.get('#wb-sparql-queryInSampleQueries')
-            .contains(savedQueryName)
-            .closest('.saved-query');
-    }
-
-    function selectSavedQuery(savedQueryName) {
-        openSavedQueriesPopup();
-        getPopover().should('be.visible');
-        getSavedQueryFromPopup(savedQueryName)
-            .find('a')
-            // the popup is opened and the link with the text is visible but cypress think it's 0x0px width/height
-            .click({force: true});
-    }
-
     function executeSavedQueryCommand(savedQueryName, commandSelector) {
-        getSavedQueryFromPopup(savedQueryName)
-        // Current implementation of the saved queries popup always render the action bar next to
-        // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
+        SparqlSteps.getSavedQueryFromPopup(savedQueryName)
+            // Current implementation of the saved queries popup always render the action bar next to
+            // each query item but it's just hidden with opacity: 0. So IMO it's safe to force it here.
             .trigger('mouseover', {force: true})
             .find('.actions-bar')
             .find(commandSelector)
