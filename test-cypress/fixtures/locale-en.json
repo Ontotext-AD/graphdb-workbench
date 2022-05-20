@@ -4,7 +4,12 @@
             "create_cluster": "Create cluster",
             "create_cluster_tooltip": "Create a new cluster ",
             "delete_cluster": "Delete cluster",
-            "delete_cluster_tooltip": "Delete existing cluster"
+            "delete_cluster_tooltip": "Delete existing cluster",
+            "show_cluster_settings_tooltip": "Show cluster settings",
+            "add_nodes_btn": "Add nodes",
+            "add_nodes_btn_tooltip": "Add nodes to existing cluster",
+            "remove_nodes_btn": "Remove nodes",
+            "remove_nodes_btn_tooltip": "Remove nodes from existing cluster"
         },
         "no_cluster_configured": "No cluster is configured",
         "cluster_configuration": {
@@ -17,10 +22,12 @@
             "leader": "Leader",
             "followers": "Followers",
             "node": {
-                "address": "Address",
+                "rpc_address": "RPC address",
                 "endpoint": "Endpoint",
-                "state": "State",
-                "term": "Term"
+                "state": "Node state",
+                "term": "Term",
+                "last_log_term": "Last log term",
+                "last_log_index": "Last log index"
             },
             "election": {
                 "label": "Election in progress",
@@ -43,21 +50,26 @@
             "create_page_title": "Create cluster",
             "edit_page_title": "Edit cluster",
             "creating_cluster_loader": "Creating cluster...",
+            "add_nodes_loader": "Adding nodes to cluster...",
+            "remove_nodes_loader": "Removing nodes from cluster...",
             "create_form_legend": "Cluster properties",
             "cluster_nodes_list": "Cluster nodes list",
+            "remote_locations": "Remote locations",
             "manual_node_add": "Add node by address",
             "node_address": "Node RPC address",
             "node_address_placeholder": "Enter node address",
             "node_address_tooltip": "Node RPC address",
             "add_node_btn": "Add node",
             "add_node_btn_tooltip": "Add node to cluster",
-            "remove_node_btn_tooltip": "Remove node from cluster",
+            "remove_node_btn_tooltip": "Remove node",
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
+            "select_from_locations_hint": "Select nodes from remote locations",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
+                "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "node_in_list": "Node is already in the list",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
@@ -75,7 +87,11 @@
                 "create_failed": "Cluster creation failed",
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
-                "form_invalid": "The form data is invalid"
+                "form_invalid": "The form data is invalid",
+                "add_nodes_success": "Nodes added successfully",
+                "add_nodes_fail": "Adding nodes failed",
+                "remove_nodes_success": "Nodes removed successfully",
+                "remove_nodes_fail": "Removing nodes failed"
             }
         },
         "delete_cluster_dialog": {
@@ -88,6 +104,21 @@
                 "success_delete": "Cluster deleted successfully",
                 "success_delete_partial": "Not all nodes are deleted",
                 "fail_delete": "Can not delete cluster"
+            }
+        },
+        "add_nodes_dialog": {
+            "title": "Add nodes to cluster",
+            "nodes_to_add_label": "Nodes to add to cluster",
+            "errors": {
+                "at_least_one_node": "Must add at least one node"
+            }
+        },
+        "remove_nodes_dialog": {
+            "title": "Remove nodes from cluster",
+            "content": "Select nodes to be removed from existing cluster",
+            "errors": {
+                "at_least_one_node": "Must add at least one node",
+                "node_in_cluster": "Node is already in the existing cluster"
             }
         },
         "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",
@@ -636,7 +667,7 @@
     "openid.auth.cannot.retrieve.token.msg": "Cannot retrieve token after login; {{error}}",
     "openid.auth.cannot.refresh.token.msg": "Could not refresh OpenID token; {{error}}",
     "repositories.service.error.loading.location": "Error loading location",
-    "repositories.service.different.gdb.version": "The remote location is running a different GraphDB version.",
+    "repositories.service.different.gdb.version": "The remote location {{location}} is running a different GraphDB version.",
     "repositories.service.no.active.location": "There is no active location",
     "repositories.service.restarting.repo": "Restarting repository {{repositoryId}}",
     "no.license.set.msg": "No license was set.",
@@ -784,6 +815,9 @@
     "core.errors.writable": "writable ",
     "core.errors.repositories": "repositories",
     "core.errors.create.repository.warning.msg": ". You can create a new repository",
+    "core.errors.show.remote.locations.btn": "Show remote locations",
+    "core.errors.hide.remote.locations.btn": "Hide remote locations",
+    "core.errors.location.local.label": "Local",
     "core.loading.longer.than.usual.warning": "GraphDB Workbench is still loading but it's taking longer than usual, please wait...",
     "core.loading.refresh.warning": "If the Workbench hasn't loaded yet, please try to clear your browser cache and reload the page.",
     "copy.to.clipboard.modal.paragraph": "Copy URL to clipboard",
@@ -911,6 +945,7 @@
     "location.confirm.detach.warning": "Are you sure you want to detach the location '{{uri}}'?",
     "location.change.confirm": "Confirm location change",
     "location.change.confirm.warning": "Are you sure you want to change the location?",
+    "location.label": "Location:",
     "delete.repo.warning.msg": "<p>Are you sure you want to delete the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: #d54a33\"/>All data in the repository will be lost.</p>",
     "confirm.restart.repo": "Confirm restart",
     "confirm.restart.repo.warning.msg": "<p>Are you sure you want to restart the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: #d54a33\"/>The repository will be shut down immediately and all running queries and updates will be cancelled.</p>",
@@ -1005,7 +1040,7 @@
     "repos.edit.common.settings": "Edit common settings for these repositories",
     "repos.view.update.licenses": "View or update license for these repositories",
     "repos.refresh.page.msg": " Refresh the page to retry.",
-    "no.repos.in.current.location": "There are no repositories in the active location",
+    "no.repos.in.current.location": "There are no repositories in the current location",
     "connect.repo": "Connect repository",
     "connected.tooltip": "Connected",
     "copy.repo.url": "Copy repository URL to clipboard",
@@ -1601,6 +1636,9 @@
     "object": "object",
     "context": "context",
     "all": "all",
+    "clear.tooltip": "Clear",
+    "repo.page.location.label": "Location",
+    "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
 
     "menu.btn.translate.en": "English",
     "menu.btn.translate.fr": "French"
