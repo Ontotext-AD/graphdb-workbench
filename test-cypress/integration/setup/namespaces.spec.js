@@ -208,7 +208,7 @@ describe('Namespaces', () => {
 
         selectNamespace('rdf');
         selectNamespace('rdfs');
-        getDeleteNamespacesButton().click();
+        clickDeleteNamespacesButton();
         confirmModal();
 
         updatedCount = updatedCount - 2;
@@ -218,7 +218,7 @@ describe('Namespaces', () => {
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         getSelectAllNamespacesCheckbox().click();
-        getDeleteNamespacesButton().click();
+        clickDeleteNamespacesButton();
         confirmModal();
 
         getNamespacesTable().should('not.be.visible');
@@ -316,8 +316,10 @@ describe('Namespaces', () => {
         return getNamespacesTable().find('.select-all-namespaces');
     }
 
-    function getDeleteNamespacesButton() {
-        return getNamespacesTable().find('.delete-namespaces-btn');
+    function clickDeleteNamespacesButton() {
+        cy.waitUntil(() =>
+            cy.get('.delete-namespaces-btn')
+                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')));
     }
 
     function getNamespaces() {
