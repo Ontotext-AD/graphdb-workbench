@@ -7,15 +7,21 @@ const ALL_GRAPHS = 'All graphs';
 const NEWS_GRAPH = 'http://example.org/news';
 
 Object.defineProperty(global, 'GRAPH_FILE', {
-    get: () => {return GRAPH_FILE;}
+    get: () => {
+        return GRAPH_FILE;
+    }
 });
 
 Object.defineProperty(global, 'ALL_GRAPHS', {
-    get: () => {return ALL_GRAPHS;}
+    get: () => {
+        return ALL_GRAPHS;
+    }
 });
 
 Object.defineProperty(global, 'NEWS_GRAPH', {
-    get: () => {return NEWS_GRAPH;}
+    get: () => {
+        return NEWS_GRAPH;
+    }
 });
 
 class ClassViewsSteps {
@@ -52,8 +58,11 @@ class ClassViewsSteps {
     }
 
     static confirmReload() {
-        cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.exist');
+        cy.get('.modal-footer .confirm-btn')
+            .click()
+            .then(() => {
+                cy.get('.modal').should('not.exist');
+            });
     }
 
     static reloadDiagram() {

@@ -41,6 +41,10 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.pageSize = $scope.pageSizeOptions[0];
         $scope.displayedNamespaces = [];
 
+        $scope.isLicenseValid = function() {
+            return $licenseService.isLicenseValid();
+        }
+
         $scope.getNamespaces = function () {
             if (!$repositories.getActiveRepository()) {
                 return;
@@ -85,10 +89,6 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                     $scope.loader = false;
                 });
         };
-
-        $scope.isLicenseValid = function() {
-            return $licenseService.isLicenseValid();
-        }
 
         $scope.changePagination = function () {
             if (angular.isDefined($scope.namespaces)) {

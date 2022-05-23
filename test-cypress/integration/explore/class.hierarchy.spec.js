@@ -183,6 +183,7 @@ describe('Class hierarchy screen validation', () => {
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
         cy.visit('/hierarchy#1');
+        cy.window();
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
         ClassViewsSteps.clickGraphBtn();
         ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
