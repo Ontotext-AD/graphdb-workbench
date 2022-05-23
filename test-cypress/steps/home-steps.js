@@ -160,5 +160,21 @@ class HomeSteps {
             .and('be.focused');
     }
 
+    static getViewResourceAsLabel() {
+        return cy.get('#view-resource-label-home');
+    }
+
+    static getActiveRepoAsLabel() {
+        return cy.get('#active-repo-label-home');
+    }
+
+    static getSavedSparqlQueriesAsLabel() {
+        return cy.get('#saved-queries-label-home');
+    }
+
+    static getLicenseAsLabel() {
+        return cy.get('#license-label-home');
+    }
+
 }
 export default HomeSteps;

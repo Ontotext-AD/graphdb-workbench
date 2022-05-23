@@ -9,27 +9,28 @@ describe('YASQE and YASR language change validation', () => {
     });
 
     afterEach(() => {
-        cy.deleteRepository(repositoryId);
         // Change the language back to English
         SparqlSteps.changeLanguage('Anglais');
+
+        cy.deleteRepository(repositoryId);
     })
 
     context('Default language should be active and language change should affect labels', () => {
         it('should change labels in SPARQL view', () => {
 
             // Check some labels are in default language
-            cy.contains('SPARQL Query & Update');
-            cy.contains('Download as');
-            cy.contains('Editor and results');
-            cy.contains('Results only');
+            SparqlSteps.getSparqlQueryUpdateLabel().should('contain', 'SPARQL Query & Update');
+            SparqlSteps.getDownloadBtn().should('contain', 'Download as');
+            SparqlSteps.getEditorAndResultsBtn().should('contain', 'Editor and results');
+            SparqlSteps.getResultsOnlyBtn().should('contain', 'Results only');
 
             SparqlSteps.changeLanguage('French');
 
             // The text in the labels should change
-            cy.contains('Requête et mise à jour SPARQL');
-            cy.contains('Téléchargement');
-            cy.contains('Éditeur et résultats');
-            cy.contains('Résultats seulement');
+            SparqlSteps.getSparqlQueryUpdateLabel().should('contain', 'Requête et mise à jour SPARQL');
+            SparqlSteps.getDownloadBtn().should('contain', 'Téléchargement');
+            SparqlSteps.getEditorAndResultsBtn().should('contain', 'Éditeur et résultats');
+            SparqlSteps.getResultsOnlyBtn().should('contain', 'Résultats seulement');
         });
 
         it('should change labels in SPARQL results view', function () {
@@ -39,23 +40,23 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.executeQuery();
 
             // Go to Results only view
-            cy.contains('Results only').click();
+            SparqlSteps.getResultsOnlyBtn().click();
 
             // Check some labels are in default language
-            cy.contains('Table');
-            cy.contains('Raw Response');
-            cy.contains('Pivot Table');
-            cy.contains('Google Chart');
-            cy.get('input[placeholder=\"Filter query results\"]').should('be.visible');
+            SparqlSteps.getTabWithTableText().should('contain', 'Table');
+            SparqlSteps.getTabWithRawResponseText().should('contain', 'Raw Response');
+            SparqlSteps.getTabWithPivotTableText().should('contain', 'Pivot Table');
+            SparqlSteps.getTabWithGoogleChartText().should('contain', 'Google Chart');
+            SparqlSteps.getResultsDescription().should('contain', 'Showing results from');
 
             SparqlSteps.changeLanguage('French');
 
             // The text in the labels should change
-            cy.contains('Tableau');
-            cy.contains('Réponse brute');
-            cy.contains('Table de pivotement');
-            cy.contains('Graphique Google');
-            cy.get('input[placeholder=\"Filtrer les résultats des requêtes\"]').should('be.visible');
+            SparqlSteps.getTabWithTableText().should('contain', 'Tableau');
+            SparqlSteps.getTabWithRawResponseText().should('contain', 'Réponse brute');
+            SparqlSteps.getTabWithPivotTableText().should('contain', 'Table de pivotement');
+            SparqlSteps.getTabWithGoogleChartText().should('contain', 'Graphique Google');
+            SparqlSteps.getResultsDescription().should('contain', 'Liste de résultats de');
         });
     });
 })

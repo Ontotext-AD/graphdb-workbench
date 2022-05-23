@@ -5,13 +5,13 @@ describe('Home screen language validation', () => {
     let repositoryId;
 
     beforeEach(() => {
-        cy.viewport(1280, 1000);
         HomeSteps.visitAndWaitLoader();
         repositoryId = '23repo' + Date.now();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
+
         // Change the language back to English
         SparqlSteps.changeLanguage('Anglais');
     });
@@ -23,22 +23,23 @@ describe('Home screen language validation', () => {
             cy.enableAutocomplete(repositoryId);
             cy.presetRepository(repositoryId);
 
+            HomeSteps.declineTutorial();
+
             // When I visit home page with selected repository
             HomeSteps.visitAndWaitLoader();
             // Check some labels are in default language
-            cy.contains('View resource');
-            cy.contains('Active repository');
-            cy.contains('Saved SPARQL queries');
-            cy.contains('License');
+            HomeSteps.getViewResourceAsLabel().should('have.text', 'View resource');
+            HomeSteps.getActiveRepoAsLabel().should('have.text', 'Active repository');
+            HomeSteps.getSavedSparqlQueriesAsLabel().should('have.text', 'Saved SPARQL queries');
+            HomeSteps.getLicenseAsLabel().should('have.text', 'License');
+
             SparqlSteps.changeLanguage('French');
 
             // The text in the labels should change
-            cy.contains('Voir la ressource');
-            cy.contains('Répertoire actif');
-            cy.contains('Requêtes SPARQL sauvegardées');
-            cy.contains('Licence');
-
-            cy.deleteRepository(repositoryId);
+            HomeSteps.getViewResourceAsLabel().should('have.text', 'Voir la ressource');
+            HomeSteps.getActiveRepoAsLabel().should('have.text', 'Répertoire actif');
+            HomeSteps.getSavedSparqlQueriesAsLabel().should('have.text', 'Requêtes SPARQL sauvegardées');
+            HomeSteps.getLicenseAsLabel().should('have.text', 'Licence');
         });
     });
 })

@@ -114,6 +114,42 @@ class SparqlSteps {
             // the popup is opened and the link with the text is visible but cypress think it's 0x0px width/height
             .click({force: true});
     }
+
+    static getSparqlQueryUpdateLabel() {
+        return cy.get('#sparql-query-update-title-label');
+    }
+
+    static getDownloadBtn() {
+        return cy.get('#saveAsBtn');
+    }
+
+    static getEditorAndResultsBtn() {
+        return cy.get('.editor-and-results-btn');
+    }
+
+    static getResultsOnlyBtn() {
+        return cy.get('.results-only-btn');
+    }
+
+    static getTabWithTableText() {
+        return cy.get('.select_table');
+    }
+
+    static getTabWithRawResponseText() {
+        return cy.get('.select_rawResponse');
+    }
+
+    static getTabWithPivotTableText() {
+        return cy.get('.select_pivot');
+    }
+
+    static getTabWithGoogleChartText() {
+        return cy.get('.select_gchart');
+    }
+
+    static getResultsDescription() {
+        return cy.get('.results-description');
+    }
 }
 
 export default SparqlSteps;
