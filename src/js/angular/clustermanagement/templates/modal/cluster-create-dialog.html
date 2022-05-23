@@ -32,7 +32,7 @@
                     <h4>{{'cluster_management.cluster_page.remote_locations' | translate}}</h4>
                     <div class="locations-list mb-1">
                         <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
-                             ng-class="location.error ? 'alert-danger' : ''"
+                             ng-class="location.error ? 'list-group-item-danger' : ''"
                              tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
                              ng-click="addNodeToList(location)">
                             <div class="logo-image"></div>

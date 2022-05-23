@@ -301,7 +301,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     $scope.setLoader(false);
                     updateCluster(true);
                 });
-        });
+        })
+            .finally(() => getLocationsWithRpcAddresses());
     };
 
     $scope.showRemoveNodesFromClusterDialog = () => {
