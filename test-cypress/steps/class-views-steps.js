@@ -42,7 +42,7 @@ class ClassViewsSteps {
     }
 
     static clickGraphBtn() {
-        cy.waitUntil(() =>
+        return cy.waitUntil(() =>
             cy.get('#graphsBtnGroup')
                 .then(graphsBtn => graphsBtn && Cypress.dom.isAttached(graphsBtn) && graphsBtn.trigger('click')));
     }

@@ -10,16 +10,18 @@ const CLASS_HIERARCHY = 'class hierarchy';
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
-    beforeEach(() => {
+    before(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
-
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        waitUntilPageIsLoaded();
     });
 
+    beforeEach(() => {
+        waitUntilPageIsLoaded();
+    })
+
     function waitUntilPageIsLoaded() {
+        cy.presetRepository(repositoryId);
         cy.visit('/hierarchy');
         cy.window();
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
@@ -30,7 +32,7 @@ describe('Class hierarchy screen validation', () => {
         });
     }
 
-    afterEach(() => {
+    after(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -186,13 +188,14 @@ describe('Class hierarchy screen validation', () => {
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
         cy.visit('/hierarchy#1');
-        waitUntilPageIsLoaded();
         ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
-        ClassViewsSteps.clickGraphBtn();
-        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
-        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
-        verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+        ClassViewsSteps.clickGraphBtn()
+            .then(() => {
+                ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
+                ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
+                verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+            });
     });
 
     function getDomainRangeGraphButton() {
