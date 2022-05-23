@@ -52,12 +52,14 @@ describe('Namespaces', () => {
             // Should show all namespaces by default (they are only 6 so they can be visualized all at once)
             cy.get('.dropdown-toggle')
                 .should('contain', 'All')
-                .click();
-            cy.get('.page-size-option')
-                .should('have.length', 1)
-                .and('contain', 'All');
-            // Close the menu to avoid overlapping other elements
-            cy.get('.dropdown-toggle').click();
+                .click()
+                .then(() => {
+                    cy.get('.page-size-option')
+                        .should('have.length', 1)
+                        .and('contain', 'All');
+                    // Close the menu to avoid overlapping other elements
+                    cy.get('.dropdown-toggle').click();
+                });
         });
 
         // Should show summary of results
@@ -121,20 +123,24 @@ describe('Namespaces', () => {
     it('should filter existing namespaces', () => {
         getNamespacesFilterField()
             .should('have.value', '')
-            .type('owl')
-            .should('have.value', 'owl');
-        getNamespaces()
-            .should('have.length', 1)
-            .and('contain', DEFAULT_NAMESPACES['owl']);
-        getNamespacesHeaderPaginationInfo()
-            .should('be.visible')
-            .and('contain', 'Showing 1 - 1 of 1 results');
+            .then((el) => {
+                cy.wrap(el).type('owl');
+            }).then(() => {
+                getNamespacesFilterField()
+                    .should('have.value', 'owl');
+                getNamespaces()
+                    .should('have.length', 1)
+                    .and('contain', DEFAULT_NAMESPACES['owl']);
+                getNamespacesHeaderPaginationInfo()
+                    .should('be.visible')
+                    .and('contain', 'Showing 1 - 1 of 1 results');
 
-        getNamespacesFilterField()
-            .clear()
-            .type('missing_prefix');
-        getNamespacesTable().should('not.be.visible');
-        getNoNamespacesMatchAlert().should('be.visible');
+                getNamespacesFilterField()
+                    .clear()
+                    .type('missing_prefix');
+                getNamespacesTable().should('not.be.visible');
+                getNoNamespacesMatchAlert().should('be.visible');
+        });
     });
 
     it('should allow to add new namespace', () => {

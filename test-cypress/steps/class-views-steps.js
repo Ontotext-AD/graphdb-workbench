@@ -60,10 +60,10 @@ class ClassViewsSteps {
     }
 
     static confirmReload() {
-        cy.get('.modal-footer .confirm-btn')
+        return cy.get('.modal-footer .confirm-btn')
             .click()
             .then(() => {
-                cy.get('.modal').should('not.exist');
+                return cy.get('.modal').should('not.exist');
             });
     }
 

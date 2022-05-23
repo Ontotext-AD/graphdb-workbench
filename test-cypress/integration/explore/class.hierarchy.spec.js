@@ -181,14 +181,16 @@ describe('Class hierarchy screen validation', () => {
         ClassViewsSteps.reloadDiagram();
 
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
-        ClassViewsSteps.confirmReload();
-        // No active loader
-        cy.get('.ot-loader-new-content').should('not.exist');
-        verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
-        ClassViewsSteps.clickGraphBtn();
-        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
-        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
-        verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+        ClassViewsSteps.confirmReload()
+            .then(() => {
+                // No active loader
+                cy.get('.ot-loader-new-content').should('not.exist');
+                verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
+                ClassViewsSteps.clickGraphBtn();
+                ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
+                ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
+                verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+            });
     });
 
     function getDomainRangeGraphButton() {
