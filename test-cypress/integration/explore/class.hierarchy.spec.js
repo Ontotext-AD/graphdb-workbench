@@ -182,6 +182,8 @@ describe('Class hierarchy screen validation', () => {
 
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
+        // No active loader
+        cy.get('.ot-loader-new-content').should('not.exist');
         cy.visit('/hierarchy#1');
         cy.window();
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
