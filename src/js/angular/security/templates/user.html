@@ -137,6 +137,27 @@
 					</div>
 				</div>
 
+				<div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
+					<div class="card-block">
+						<h3>{{'security.workbench.settings.title' | translate}}
+							<em class="icon-info text-primary small" tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
+
+						<div class="mb-1">
+							<label class="col-lg-5">{{'security.workbench.settings.theme.label' | translate}}</label>
+							<div class="radio">
+								<label class="px-1">
+									<input type="radio" value="light" ng-model="workbenchSettings.theme" ng-change="setWorkbenchTheme()"/>
+									{{'security.workbench.settings.theme.light' | translate}}
+								</label>
+								<label class="px-1">
+									<input type="radio" value="dark" ng-model="workbenchSettings.theme" ng-change="setWorkbenchTheme()"/>
+									{{'security.workbench.settings.theme.dark' | translate}}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 
 			<div class="col-md-6" ng-hide="!isLocalAuthentication()">
