@@ -6,7 +6,7 @@ describe('Class relations screen validation', () => {
 
     let repositoryId;
 
-    beforeEach(() => {
+    before(() => {
         repositoryId = 'class-relations-repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
@@ -20,7 +20,7 @@ describe('Class relations screen validation', () => {
         cy.get('#wb-dependencies-classInClasses').should('be.visible');
     });
 
-    afterEach(() => {
+    after(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -65,6 +65,7 @@ describe('Class relations screen validation', () => {
 
     it('Test class relationships for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
+        cy.presetRepository(repositoryId);
         // Should re-enter page to display Graph dropdown
         cy.visit('/relationships');
         ClassViewsSteps.verifyDataChangedWarning();

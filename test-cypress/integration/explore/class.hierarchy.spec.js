@@ -187,7 +187,7 @@ describe('Class hierarchy screen validation', () => {
 
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
-        cy.visit('/hierarchy#1');
+        cy.url().should('contain', `${Cypress.config('baseUrl')}/hierarchy#1`);
         ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
         ClassViewsSteps.clickGraphBtn()
