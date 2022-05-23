@@ -60,6 +60,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
         $scope.shouldShowClusterSettingsPanel = !$scope.shouldShowClusterSettingsPanel;
     };
 
+    $scope.toggleLegend = () => {
+        if ($scope.childContext.toggleLegend) {
+            $scope.childContext.toggleLegend();
+        }
+    };
+
     // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
     $scope.setLoader = function (loader, message) {
         $scope.loader = loader;

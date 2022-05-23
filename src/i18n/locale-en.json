@@ -69,6 +69,7 @@
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
             "select_from_locations_hint": "Select nodes from remote locations",
+            "toggle_legend_btn": "Toggle legend",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
