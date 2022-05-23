@@ -492,9 +492,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         return $scope.getSelGraphValue() === 'all.graphs.label'
     }
 
-    window.addEventListener('load', initView);
+    initView();
 
-    $scope.$on('$destroy', function (event) {
-        window.removeEventListener('load', initView);
+    $scope.$watch('direction', function () {
+        initView();
     });
 }
