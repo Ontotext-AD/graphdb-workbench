@@ -58,11 +58,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     };
 
     const initView = function () {
-        if (!$scope.getActiveRepository()) {
-            return;
-        }
-
-        if (!$licenseService.isLicenseValid()) {
+        if (!$scope.getActiveRepository() ||
+                !$licenseService.isLicenseValid()) {
             return;
         }
         return RDF4JRepositoriesRestService.resolveGraphs()

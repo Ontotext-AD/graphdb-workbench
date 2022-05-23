@@ -36,8 +36,9 @@ class ClassViewsSteps {
     }
 
     static verifyGraphIsDisplayed(graph) {
-        cy.get('#selectGraphDropdown').should('be.visible')
-            .and('contain', graph);
+        cy.waitUntil(() =>
+            cy.get('#selectGraphDropdown')
+                .then(dropDown => dropDown && Cypress.dom.isAttached(dropDown) && dropDown.text().indexOf(graph) !== -1));
     }
 
     static clickGraphBtn() {
@@ -60,10 +61,10 @@ class ClassViewsSteps {
     }
 
     static confirmReload() {
-        return cy.get('.modal-footer .confirm-btn')
+        cy.get('.modal-footer .confirm-btn')
             .click()
             .then(() => {
-                return cy.get('.modal').should('not.exist');
+                cy.get('.modal').should('not.exist');
             });
     }
 
