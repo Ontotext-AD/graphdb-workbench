@@ -419,4 +419,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 that.init();
             }
         });
+
+        window.addEventListener('load', function () {
+            that.repository = {
+                id: localStorage.getItem(that.repositoryStorageName) || '',
+                location: localStorage.getItem(that.repositoryStorageLocationName) || ''
+            };
+        });
     }]);

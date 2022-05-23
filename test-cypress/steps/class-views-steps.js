@@ -27,7 +27,8 @@ Object.defineProperty(global, 'NEWS_GRAPH', {
 class ClassViewsSteps {
 
     static selectGraphFromDropDown(graph) {
-        cy.get('#selectGraphDropdown .dropdown-item')
+        cy.get('#selectGraphDropdown')
+            .find('.dropdown-item')
             .each(($el, index, $list) => {
                 if ($el.text().trim() === graph) {
                     cy.wrap($el).click();

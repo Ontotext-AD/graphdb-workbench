@@ -72,6 +72,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             });
     };
 
+    initView();
+
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
         if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
@@ -492,9 +494,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         return $scope.getSelGraphValue() === 'all.graphs.label'
     }
 
-    initView();
+    window.addEventListener('load', initView);
 
-    $scope.$watch('direction', function () {
-        initView();
+    $scope.$on('$destroy', function (event) {
+        window.removeEventListener('load', initView);
     });
 }
