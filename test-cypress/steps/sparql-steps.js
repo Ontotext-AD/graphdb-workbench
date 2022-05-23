@@ -2,9 +2,8 @@ class SparqlSteps {
 
     static changeLanguage(language) {
         // Change the language
-        cy.get('#languageGroupDrop').should('be.visible').click().then(() => {
-            cy.get('.dropdown-menu .dropdown-item').contains(language).click();
-        })
+        cy.get('#languageGroupDrop').should('be.visible').click();
+        cy.get('.dropdown-menu .dropdown-item').contains(language).click();
     }
 
     static createRepoAndVisit(repositoryId, repoOptions = {}) {
