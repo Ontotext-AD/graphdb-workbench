@@ -432,12 +432,12 @@ div.nodetooltip {
   justify-content: flex-start;
 }
 
-.location-item.hoverable:not(.alert-danger):hover {
+.location-item.hoverable:not(.list-group-item-danger):hover {
   background-color: rgba(0,0,0,.05);
   cursor: pointer;
 }
 
-.location-item.hoverable.alert-danger:hover {
+.location-item.hoverable.list-group-item-danger:hover {
   cursor: not-allowed;
 }
 
