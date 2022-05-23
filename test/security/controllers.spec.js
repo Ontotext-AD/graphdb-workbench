@@ -672,13 +672,17 @@ describe('==> Controllers tests', function () {
             locationMock,
             jwtMock,
             windowMock;
-        let $translate;
+        let $translate,
+            LocalStorageAdapter,
+            LSKeys;
 
-        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope, _$translate_) {
+        beforeEach(angular.mock.inject(function (_$controller_, _$httpBackend_, _$timeout_, $rootScope, _$translate_, _LocalStorageAdapter_, _LSKeys_) {
             $controller = _$controller_;
             $httpBackend = _$httpBackend_;
             $timeout = _$timeout_;
             $translate = _$translate_;
+            LocalStorageAdapter = _LocalStorageAdapter_;
+            LSKeys = _LSKeys_;
 
             $translate.instant = function (key, modification) {
                 if (modification) {
@@ -721,7 +725,9 @@ describe('==> Controllers tests', function () {
                     $scope: $scope,
                     $location: locationMock,
                     $window: windowMock,
-                    $jwtAuth: jwtMock
+                    $jwtAuth: jwtMock,
+                    LocalStorageAdapter,
+                    LSKeys
                 });
             var httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
                 enabled: true,

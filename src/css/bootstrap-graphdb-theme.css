@@ -1235,22 +1235,39 @@ footer.footer .container-fluid.main-container p {
     padding: 1em;
 }
 
+.alert-warning, .alert-info, .alert-help, .alert-danger, .alert-success {
+    color: #000000A8;
+}
+
 .alert-warning {
-    color: #C4781E;
+    background-color: #f9e6c0;
 }
 
-.alert-info, .alert-help {
-    background-color: rgba(45, 186, 171, 0.15);
-    color: #0a6d63;
+.alert-info {
+    background-color: #cfefec;
 }
 
-.alert-info, .alert-warning, .alert-help {
+.alert-help {
+    background-color: #e7f7f5;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+}
+
+.alert-danger {
+    background-color: #fbdbd5;
+}
+
+.alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
     padding-left: 3em;
 }
 
 .alert-info:before,
 .alert-warning:before,
-.alert-help:before {
+.alert-help:before,
+.alert-danger:before,
+.alert-success:before {
     font-family: 'icomoon', sans-serif !important;
     font-size: 1.6em;
     vertical-align: middle;
@@ -1258,6 +1275,7 @@ footer.footer .container-fluid.main-container p {
     position: absolute;
     left: 0.6em;
     top: 0.6em;
+    color: #00000080;
 }
 
 .alert-info:before {
@@ -1265,11 +1283,19 @@ footer.footer .container-fluid.main-container p {
 }
 
 .alert-warning:before {
-    content: "\e920";
+    content: "\e930";
 }
 
 .alert-help:before {
     content: "\e929";
+}
+
+.alert-danger:before {
+    content: "\e920";
+}
+
+.alert-success:before {
+    content: "\e914";
 }
 
 .no-icon {
@@ -2041,6 +2067,10 @@ code {
 
 .list-group.repos li {
     cursor: pointer;
+}
+
+li.remote {
+    background: #0000000A;
 }
 
 /*-------------------------------------------------------------

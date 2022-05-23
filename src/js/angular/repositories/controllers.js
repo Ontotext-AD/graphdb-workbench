@@ -107,21 +107,24 @@ const checkInvalidValues = function(invalidValues, $translate) {
 
 const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
-}
-const filterLocations =  function (result) {
-    return result.filter(location => !location.errorMsg && !location.degradedReason);
-}
+};
+const filterLocations = function (result) {
+    return result.filter((location) => !location.errorMsg && !location.degradedReason);
+};
+/**
+ * Gets the remote locations that are error free and without degraded reason
+ * @param {*} $repositories the repositories service
+ * @return {[] | Promise} returns the locations as array or a promise of the array
+ */
 const getLocations = function ($repositories) {
     // Don't allow the user to create repository on location with error or degradeded reason
     const result = $repositories.getLocations();
     if (Array.isArray(result)) {
         return filterLocations(result);
     } else {
-        result.success(function (locations) {
-            return filterLocations(locations);
-        })
+        return result.then((response) => filterLocations(response.data));
     }
-}
+};
 
 const modules = [
     'ngCookies',
@@ -505,17 +508,18 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidValidationResultsLimitTotal : false
     };
 
-    $scope.locations = [];
-
-    $scope.$watch($scope.hasActiveLocation, function () {
-        if ($scope.hasActiveLocation) {
-            $scope.locations = getLocations($repositories);
-        }
-    });
+    const locations = getLocations($repositories);
+    if (Array.isArray(locations)) {
+        $scope.locations = locations;
+    } else {
+        locations.then((response) => {
+            $scope.locations = response;
+        });
+    }
 
     $scope.changedLocation = function () {
         $scope.$broadcast('changedLocation');
-    }
+    };
 
     function isValidEERepository(repositoryType) {
         return $scope.isEnterprise() && (repositoryType === REPOSITORY_TYPES.graphdbRepo);
@@ -555,7 +559,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
                 break;
         }
     }
-
     $scope.getConfig = function (repoType) {
         RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
             $scope.repositoryInfo.params = data.params;

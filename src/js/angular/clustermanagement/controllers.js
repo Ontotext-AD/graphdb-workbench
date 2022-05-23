@@ -15,7 +15,10 @@ angular
     .controller('ClusterManagementCtrl', ClusterManagementCtrl)
     .controller('CreateClusterCtrl', CreateClusterCtrl)
     .controller('DeleteClusterCtrl', DeleteClusterCtrl)
-    .controller('AddLocationCtrl', AddLocationCtrl)
+    .controller('EditClusterCtrl', EditClusterCtrl)
+    .controller('AddLocationFromClusterCtrl', AddLocationFromClusterCtrl)
+    .controller('AddNodesDialogCtrl', AddNodesDialogCtrl)
+    .controller('RemoveNodesDialogCtrl', RemoveNodesDialogCtrl)
     .factory('RemoteLocationsService', RemoteLocationsService);
 
 export const NodeState = {
@@ -45,6 +48,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.isLeader = false;
     $scope.currentNode = null;
     $scope.clusterModel = {};
+    $scope.NodeState = NodeState;
 
     // Holds child context
     $scope.childContext = {};
@@ -96,10 +100,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
     }
 
-    function updateCluster() {
+    function updateCluster(force) {
         $scope.getClusterStatus()
             .then(() => {
-                if (!$scope.clusterConfiguration) {
+                if (force || !$scope.clusterConfiguration) {
                     return $scope.getClusterConfiguration();
                 }
             })
@@ -133,6 +137,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             .then(function (response) {
                 const nodes = response.data.slice();
                 const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
+                $scope.currentNode = nodes.find((node) => node.address === $scope.currentNode.address);
+
                 const links = [];
                 if (leader) {
                     Object.keys(leader.syncStatus).forEach((node) => {
@@ -177,7 +183,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
         modalInstance.result.finally(function () {
             getLocationsWithRpcAddresses();
-            updateCluster();
+            updateCluster(true);
         });
     };
 
@@ -213,8 +219,27 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 })
                 .finally(() => {
                     $scope.setLoader(false);
-                    updateCluster();
+                    updateCluster(true);
                 });
+        });
+    };
+
+    $scope.showEditConfigurationDialog = () => {
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-edit-dialog.html',
+            controller: 'EditClusterCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        clusterConfiguration: $scope.clusterConfiguration
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.finally(function (forceDelete) {
+            updateCluster(true);
         });
     };
 
@@ -240,6 +265,95 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 }
                 $scope.clusterModel.locations = locations;
             });
+    }
+
+    $scope.showAddNodeToClusterDialog = () => {
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/add-nodes-dialog.html',
+            controller: 'AddNodesDialogCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        clusterModel: $scope.clusterModel,
+                        clusterConfiguration: $scope.clusterConfiguration
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function (nodes) {
+            const loaderMessage = $translate.instant('cluster_management.cluster_page.add_nodes_loader');
+            $scope.setLoader(true, loaderMessage);
+
+            const nodesRpcAddress = nodes.map((node) => node.rpcAddress);
+            ClusterRestService.addNodesToCluster(nodesRpcAddress)
+                .then(() => {
+                    const successMessage = $translate.instant(
+                        'cluster_management.cluster_page.notifications.add_nodes_success');
+                    onAddRemoveSuccess(successMessage);
+                })
+                .catch((data, status) => {
+                    const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.add_nodes_fail');
+                    handleAddRemoveErrors(data, status, failMessageTitle);
+                })
+                .finally(() => {
+                    $scope.setLoader(false);
+                    updateCluster(true);
+                });
+        });
+    };
+
+    $scope.showRemoveNodesFromClusterDialog = () => {
+        const modalInstance = $modal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/remove-nodes-dialog.html',
+            controller: 'RemoveNodesDialogCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        clusterModel: $scope.clusterModel
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function (nodes) {
+            const loaderMessage = $translate.instant('cluster_management.cluster_page.remove_nodes_loader');
+            $scope.setLoader(true, loaderMessage);
+
+            const nodesRpcAddress = nodes.map((node) => node.address);
+            ClusterRestService.removeNodesFromCluster(nodesRpcAddress)
+                .then(() => {
+                    const successMessage = $translate.instant('cluster_management.cluster_page.notifications.remove_nodes_success');
+                    onAddRemoveSuccess(successMessage);
+                })
+                .catch((data, status) => {
+                    const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.remove_nodes_fail');
+                    handleAddRemoveErrors(data, status, failMessageTitle);
+                })
+                .finally(() => {
+                    $scope.setLoader(false);
+                    updateCluster(true);
+                });
+        });
+    };
+
+    function onAddRemoveSuccess(message) {
+        toastr.success(message);
+        $scope.getClusterConfiguration();
+    }
+
+    function handleAddRemoveErrors(data, status, title) {
+        let failMessage = data.message || data;
+
+        if (status === 400 && Array.isArray(data)) {
+            failMessage = data.reduce((acc, error) => acc += `<div>${error}</div>`, '');
+        } else if (status === 412) {
+            failMessage = Object.keys(data)
+                .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
+        }
+        toastr.error(failMessage, title, {allowHtml: true});
     }
 
     initialize()
@@ -479,7 +593,7 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
         return $modal.open({
             templateUrl: 'js/angular/templates/modal/add-location.html',
             windowClass: 'addLocationDialog',
-            controller: 'AddLocationCtrl'
+            controller: 'AddLocationFromClusterCtrl'
         }).result
             .then((dataAddLocation) => {
                 newLocation = dataAddLocation;
@@ -513,9 +627,9 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
     }
 }
 
-AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
+AddLocationFromClusterCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
 
-function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
+function AddLocationFromClusterCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
     //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
     $scope.newLocation = {
         'uri': '',
@@ -545,6 +659,142 @@ function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate
     };
 }
 
+EditClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data'];
+
+function EditClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data) {
+    $scope.pageTitle = $translate.instant('cluster_management.cluster_page.edit_page_title');
+    $scope.errors = [];
+    $scope.clusterConfiguration = angular.copy(data.clusterConfiguration);
+    $scope.loader = false;
+
+    $scope.updateCluster = function () {
+        $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.updating_cluster_loader'));
+        return ClusterRestService.updateCluster($scope.clusterConfiguration)
+            .then(() => {
+                toastr.success($translate.instant('cluster_management.cluster_page.notifications.update_success'));
+                $modalInstance.close();
+            })
+            .catch(function (response) {
+                handleErrors(response.data, response.status);
+            })
+            .finally(() => $scope.setLoader(false));
+    };
+
+    function handleErrors(data, status) {
+        delete $scope.preconditionErrors;
+        toastr.error($translate.instant('cluster_management.cluster_page.notifications.update_failed'));
+        $scope.errors.splice(0);
+
+        if (status === 409 || typeof data === 'string') {
+            $scope.errors.push(data);
+        } else if (status === 412) {
+            $scope.preconditionErrors = Object.keys(data).map((key) => `${key} - ${data[key]}`);
+        } else if (status === 400) {
+            $scope.errors.push(...data);
+        }
+    }
+
+    $scope.isClusterConfigurationValid = () => {
+        return !$scope.clusterConfigurationForm.$invalid;
+    };
+
+    $scope.setLoader = function (loader, message) {
+        $timeout.cancel($scope.loaderTimeout);
+        if (loader) {
+            $scope.loaderTimeout = $timeout(function () {
+                $scope.loader = loader;
+                $scope.loaderMessage = message;
+            }, 300);
+        } else {
+            $scope.loader = false;
+        }
+    };
+
+    $scope.ok = function () {
+        if (!$scope.isClusterConfigurationValid()) {
+            toastr.warning($translate.instant('cluster_management.cluster_page.notifications.form_invalid'));
+            return;
+        }
+        $scope.updateCluster();
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}
+
 const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
 };
+
+AddNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data', '$modal', 'RemoteLocationsService'];
+
+function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, RemoteLocationsService) {
+    const clusterConfiguration = angular.copy(data.clusterConfiguration);
+    const clusterModel = angular.copy(data.clusterModel);
+    $scope.nodes = [];
+
+    $scope.clusterNodes = clusterModel.locations.filter((location) => clusterConfiguration.nodes.includes(location.rpcAddress));
+    $scope.locations = clusterModel.locations.filter((location) => !$scope.clusterNodes.includes(location));
+    $scope.locations.forEach((location) => location.isNew = true);
+
+    $scope.addNodeToList = function (location) {
+        if (!location.rpcAddress) {
+            return;
+        }
+        $scope.nodes.push(location);
+        $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint);
+    };
+
+    $scope.removeNodeFromList = function (index, node) {
+        $scope.nodes.splice(index, 1);
+        $scope.locations.push(node);
+    };
+
+    $scope.addLocation = function () {
+        RemoteLocationsService.addLocation()
+            .then((newLocation) => {
+                if (newLocation) {
+                    $scope.locations.push(newLocation);
+                }
+            });
+    };
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.nodes);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}
+
+RemoveNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+
+function RemoveNodesDialogCtrl($scope, $modalInstance, data) {
+    const clusterModel = angular.copy(data.clusterModel);
+
+    $scope.clusterNodes = clusterModel.nodes;
+    $scope.clusterNodes.forEach((node) => node.shouldRemove = false);
+    $scope.nodesToRemoveCount = 0;
+    $scope.leftNodesLessThanTwo = false;
+
+    $scope.toggleNode = function (index, node) {
+        node.shouldRemove = !node.shouldRemove;
+        if (node.shouldRemove) {
+            $scope.nodesToRemoveCount++;
+        } else {
+            $scope.nodesToRemoveCount--;
+        }
+        $scope.leftNodesLessThanTwo = $scope.clusterNodes.length - $scope.nodesToRemoveCount < 2;
+    };
+
+    $scope.ok = function () {
+        const nodesToRemove = $scope.clusterNodes.filter((node) => node.shouldRemove);
+        $modalInstance.close(nodesToRemove);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}

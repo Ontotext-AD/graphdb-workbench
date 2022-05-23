@@ -1,0 +1,63 @@
+:root {
+    /* Lets the browser know we support both light and dark so some things get the dark mode from the browser */
+    --color-scheme-dark: light dark;
+    --body-filter-dark: invert(95%) hue-rotate(180deg);
+    --html-background-dark: #0d0d0d;
+    --media-filter-dark: invert(100%) hue-rotate(180deg);
+    --alert-filter-dark: brightness(0.8);
+    --toast-filter-dark: invert(90%) hue-rotate(180deg) contrast(1.5);
+    --checkbox-filter-dark: invert(100%) hue-rotate(180deg);
+}
+
+:root.dark {
+    color-scheme: var(--color-scheme-dark);
+    --body-filter: var(--body-filter-dark);
+    --html-background: var(--html-background-dark);
+    --media-filter: var(--media-filter-dark);
+    --alert-filter: var(--alert-filter-dark);
+    --toast-filter: var(--toast-filter-dark);
+    --checkbox-filter: var(--checkbox-filter-dark);
+}
+
+/* Invert all elements on the root while attempting to not alter the hue substantially. */
+:root {
+    filter: var(--body-filter);
+}
+
+/* Firefox workaround: Set the background colour for the html
+   element separately because, unlike other browsers, Firefox
+   doesn’t apply the filter to the root element’s background. */
+@supports (-moz-appearance:none) {
+    html {
+        /* This must be white (#fff) inverted as many % as in the body filter */
+        background-color: var(--html-background);
+    }
+}
+
+/* Do not invert media (revert the invert) - since the body invert is 95% we can't revert it perfectly
+   (we could if the body invert was 100%) but it's close enough */
+img, video, .brand {
+    filter: var(--media-filter);
+}
+
+/* Additional adjustment for the img inside the logo because it gets inverted twice,
+   this rule is good regardless of the theme */
+.brand img {
+    filter: none;
+}
+
+/* Make the alert boxes slightly more visible */
+.alert {
+    filter: var(--alert-filter);
+}
+
+/* Make the toastr boxes more close to the light theme so they stand out */
+.toast {
+    filter: var(--toast-filter);
+}
+
+/* Revert the change on checkboxes and let the browser apply its dark theme there */
+input[type="checkbox"] {
+    filter: var(--checkbox-filter);
+}
+

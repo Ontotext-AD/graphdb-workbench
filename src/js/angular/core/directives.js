@@ -135,11 +135,21 @@ function coreErrors($timeout) {
 
             let previousElement;
 
+            scope.showRemoteLocations = false;
+
+            scope.toggleShowRemoteLocations = () => {
+                scope.showRemoteLocations = !scope.showRemoteLocations;
+            };
+
             scope.getAccessibleRepositories = function () {
+                let remoteLocationsFilter = (repo) => true;
+                if (!scope.showRemoteLocations) {
+                    remoteLocationsFilter = (repo) => repo.local;
+                }
                 if (scope.isRestricted) {
-                    return scope.getWritableRepositories();
+                    return scope.getWritableRepositories().filter(remoteLocationsFilter);
                 } else {
-                    return scope.getReadableRepositories();
+                    return scope.getReadableRepositories().filter(remoteLocationsFilter);
                 }
             };
 
@@ -291,7 +301,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
             $scope.searchInput = "";
 
-            $scope.changeSearchType = function(type) {
+            $scope.changeSearchType = function (type) {
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
@@ -303,7 +313,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.checkIfValidAndSearchText();
             });
 
-            $scope.clearInput = function() {
+            $scope.clearInput = function () {
                 $scope.searchInput = '';
                 $scope.selectedElementIndex = -1;
                 $scope.autoCompleteUriResults = [];
@@ -421,7 +431,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.preserveInput = attrs.$attr.preserveInput;
             }
 
-            $scope.getResultItemHtml = function(resultItem) {
+            $scope.getResultItemHtml = function (resultItem) {
                 return $sce.trustAsHtml(resultItem.description);
             };
 
@@ -590,7 +600,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                             rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
                             rect.right <= (window.innerWidth || document.documentElement.clientWidth));
                     });
-                })
+                });
             }
 
             function scrollToPreviouslySelectedEl() {
@@ -599,7 +609,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 dropDown.animate({
                     scrollTop: automaticScroll.offset().top - dropDown.offset().top +
                         dropDown.scrollTop()
-                })
+                });
             }
 
             function loadStoredSearchData() {
@@ -635,7 +645,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 loadStoredSearchData()
                     .then(function () {
                         findPreviousSearchResultIndex();
-                    })
+                    });
             }
 
             $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
@@ -789,15 +799,17 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
 
         link: linkFunc
     };
+
     function linkFunc($scope) {
         $scope.pluginIsActive = true;
+
         function checkPluginIsActive() {
             // Should not check if plugin is active if no valid license is set,
             // or there isn't active repository, or repository is of type ontop or fedx
             if (!$licenseService.isLicenseValid() ||
-                    !$repositories.getActiveRepository() ||
-                        $repositories.isActiveRepoOntopType() ||
-                            $repositories.isActiveRepoFedXType()) {
+                !$repositories.getActiveRepository() ||
+                $repositories.isActiveRepoOntopType() ||
+                $repositories.isActiveRepoFedXType()) {
                 return;
             }
             return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
