@@ -74,10 +74,11 @@ export function moveElement(element, x, y) {
     });
 }
 
-export function createNodes(nodesDataBinding, nodeRadius) {
+export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
     const nodeGroup = nodesDataBinding.enter()
         .append('g')
-        .attr('id', 'node-group');
+        .attr('id', 'node-group')
+        .classed('legend', isLegend);
 
     createHexagon(nodeGroup, nodeRadius);
     nodesDataBinding.exit().remove();
@@ -104,10 +105,10 @@ function addHostnameToNodes(nodeElements, nodeRadius) {
         .style('text-anchor', 'middle');
 }
 
-export function updateNodes(nodes) {
+export function updateNodes(nodes, customText) {
     updateNodesIcon(nodes);
     updateNodesClasses(nodes);
-    updateNodesHostnameText(nodes);
+    updateNodesHostnameText(nodes, customText);
 }
 
 function updateNodesClasses(nodes) {
@@ -148,7 +149,7 @@ function getNodeIconType(node) {
     return '';
 }
 
-function updateNodesHostnameText(nodes) {
+function updateNodesHostnameText(nodes, customText) {
     const parser = document.createElement('a');
 
     nodes
@@ -157,6 +158,9 @@ function updateNodesHostnameText(nodes) {
             d.labelNode = this;
         })
         .text(function (d) {
+            if (customText) {
+                return d.customText;
+            }
             if (!d.endpoint) {
                 // TODO: remove this check when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/2137 is merged
                 return 'Missing endpoint';
@@ -198,19 +202,21 @@ export function createLinks(linksDataBinding) {
 
 export function updateLinks(linksDataBinding, nodes) {
     linksDataBinding
-        .attr('stroke', (link) => {
-            if (link.status === LinkState.IN_SYNC || link.status === LinkState.SYNCING) {
-                return clusterColors.ontoGreen;
-            } else if (link.status === LinkState.OUT_OF_SYNC) {
-                return clusterColors.ontoGrey;
-            }
-            return 'none';
-        })
+        .attr('stroke', setLinkColor)
         .style('stroke-dasharray', setLinkStyle)
         .attr('d', (link) => getLinkCoordinates(link, nodes));
 }
 
-function setLinkStyle(link) {
+export function setLinkColor(link) {
+    if (link.status === LinkState.IN_SYNC || link.status === LinkState.SYNCING) {
+        return clusterColors.ontoGreen;
+    } else if (link.status === LinkState.OUT_OF_SYNC) {
+        return clusterColors.ontoGrey;
+    }
+    return 'none';
+}
+
+export function setLinkStyle(link) {
     if (link.status === LinkState.OUT_OF_SYNC || link.status === LinkState.SYNCING) {
         return '10 10';
     }
@@ -251,14 +257,15 @@ export function positionNodesOnClusterZone(nodes, clusterZoneX, clusterZoneY, cl
         });
 }
 
-function createHexagon(node, A) {
+function createHexagon(nodeGroup, radius) {
     const _s32 = (Math.sqrt(3) / 2);
     const xDiff = 0;
     const yDiff = 0;
-    var points = [[A + xDiff, yDiff], [A / 2 + xDiff, A * _s32 + yDiff], [-A / 2 + xDiff, A * _s32 + yDiff],
-        [-A + xDiff, yDiff],
-        [-A / 2 + xDiff, -A * _s32 + yDiff], [A / 2 + xDiff, -A * _s32 + yDiff], [A + xDiff, yDiff], [A / 2 + xDiff, A * _s32 + yDiff]];
-    return node
+    const points = [[radius + xDiff, yDiff], [radius / 2 + xDiff, radius * _s32 + yDiff], [-radius / 2 + xDiff, radius * _s32 + yDiff],
+        [-radius + xDiff, yDiff],
+        [-radius / 2 + xDiff, -radius * _s32 + yDiff], [radius / 2 + xDiff, -radius * _s32 + yDiff], [radius + xDiff, yDiff],
+        [radius / 2 + xDiff, radius * _s32 + yDiff]];
+    return nodeGroup
         .selectAll("path.area")
         .data([points])
         .enter()

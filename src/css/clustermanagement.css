@@ -199,6 +199,10 @@ path.REPLICATION_CLIENT {
   font-size: 56px !important;
 }
 
+.toggle-legend-icon {
+  font-size: 40px !important;
+}
+
 path.dragline {
   pointer-events: none;
   stroke: #999;
@@ -229,6 +233,27 @@ line.link {
 }
 .node.other {
   fill: #97999C
+}
+
+#node-group.legend .node{
+  cursor: default;
+}
+
+#node-group.legend .node-icon {
+  font-size: 25px;
+}
+
+.legend text.id {
+  font-size: 9px;
+}
+
+.toggle-legend-btn {
+  position: absolute;
+  bottom: 0;
+}
+
+#legend-nodes-group.hidden {
+  display: none;
 }
 
 text.node-icon {

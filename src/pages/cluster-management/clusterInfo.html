@@ -39,7 +39,7 @@
             <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
         </button>
     </div>
-    <button class="btn btn-link pull-right"
+    <button class="btn btn-link"
             ng-click="toggleSidePanel()"
             tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
@@ -72,6 +72,14 @@
 
 <div ng-if="!loader" class="nodes">
     <div cluster-graphical-view></div>
+    <div id="toggle-legend-button" class="toggle-legend-btn">
+        <button class="btn btn-link"
+                ng-click="toggleLegend()"
+                tooltip="{{'cluster_management.cluster_page.toggle_legend_btn' | translate}}"
+                tooltip-placement="right">
+            <span class="icon-help toggle-legend-icon"></span>
+        </button>
+    </div>
 </div>
 
 <pageslide ng-show="clusterConfiguration"
