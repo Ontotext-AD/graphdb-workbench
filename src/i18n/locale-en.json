@@ -1,8 +1,6 @@
 {
     "cluster_management": {
         "buttons": {
-            "create_cluster": "Create cluster",
-            "create_cluster_tooltip": "Create a new cluster ",
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
             "add_nodes_btn": "Add nodes",
@@ -13,27 +11,34 @@
             "edit_cluster_tooltip": "Edit cluster configuration",
             "show_cluster_settings_tooltip": "Show cluster configuration"
         },
-        "no_cluster_configured": "No cluster is configured",
+        "cluster_graphical_view": {
+            "no_cluster_configured": "No cluster is configured",
+            "create_cluster_btn": "Click here to create a cluster",
+            "legend_node_state": "NODE STATE",
+            "legend_link_state": "LINK STATE",
+            "node_state_leader": "Leader",
+            "node_state_follower": "Follower",
+            "node_state_candidate": "Candidate",
+            "node_state_no_cluster": "No cluster",
+            "node_state_out_of_sync": "Out of sync",
+            "node_state_no_connection": "No connection",
+            "node_state_read_only": "Read only",
+            "node_state_restricted": "Restricted",
+            "link_state_in_sync": "In sync",
+            "link_state_syncing": "Syncing",
+            "link_state_out_of_sync": "Out of sync"
+        },
         "cluster_configuration": {
             "label": "Cluster configuration",
-            "configuration_label": "Configuration",
             "nodes_list_label": "Nodes list"
         },
         "cluster_status": {
-            "label": "Cluster status",
-            "leader": "Leader",
-            "followers": "Followers",
             "node": {
                 "rpc_address": "RPC address",
-                "endpoint": "Endpoint",
                 "state": "Node state",
                 "term": "Term",
                 "last_log_term": "Last log term",
                 "last_log_index": "Last log index"
-            },
-            "election": {
-                "label": "Election in progress",
-                "nodes_status": "Nodes status"
             }
         },
         "cluster_configuration_properties": {
@@ -55,15 +60,8 @@
             "add_nodes_loader": "Adding nodes to cluster...",
             "remove_nodes_loader": "Removing nodes from cluster...",
             "updating_cluster_loader": "Updating cluster...",
-            "create_form_legend": "Cluster properties",
             "cluster_nodes_list": "Cluster nodes list",
             "remote_locations": "Remote locations",
-            "manual_node_add": "Add node by address",
-            "node_address": "Node RPC address",
-            "node_address_placeholder": "Enter node address",
-            "node_address_tooltip": "Node RPC address",
-            "add_node_btn": "Add node",
-            "add_node_btn_tooltip": "Add node to cluster",
             "remove_node_btn_tooltip": "Remove node",
             "current_node": "Current node",
             "advanced_options": "Advanced options",
@@ -74,7 +72,6 @@
                 "only_positive_integers": "Enter only positive integers",
                 "at_least_two_nodes": "Must have at least two nodes",
                 "no_rpc_address": "Error retrieving RPC address: {{error}}",
-                "node_in_list": "Node is already in the list",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
                     "label": "Some of the preconditions for creating a cluster are not met!",
@@ -112,50 +109,11 @@
         },
         "add_nodes_dialog": {
             "title": "Add nodes to cluster",
-            "nodes_to_add_label": "Nodes to add to cluster",
-            "errors": {
-                "at_least_one_node": "Must add at least one node"
-            }
+            "nodes_to_add_label": "Nodes to add to cluster"
         },
         "remove_nodes_dialog": {
             "title": "Remove nodes from cluster",
-            "content": "Select nodes to be removed from existing cluster",
-            "errors": {
-                "at_least_one_node": "Must add at least one node",
-                "node_in_cluster": "Node is already in the existing cluster"
-            }
-        },
-        "no.repos.reachable": "No repositories are reachable.\nCluster management shows all enterprise repositories from the active location and all remote locations.\nPlease go to",
-        "locations.and.repos": "Locations and Repositories",
-        "to.activate.add.locations": "to activate or add your locations.",
-        "average.task.time": "Average task time",
-        "running.tasks": "Running tasks",
-        "completed.tasks": "Completed tasks",
-        "failed.tasks": "Failed tasks",
-        "clone.to.another.location": "Clone to another location",
-        "read.only.label.simple": "Read only",
-        "mode.label": "Mode",
-        "normal.label": "Normal",
-        "mute.label": "Mute",
-        "avg.read.time": "Average read time",
-        "completed.read.writes": "Completed reads/writes",
-        "failed.read.writes": "Failed reads/writes",
-        "running.read.writes": "Running reads/writes",
-        "pending.writes": "Pending writes",
-        "drag.drop.nodes": "Drag and drop nodes to connect them or click to get additional information.",
-        "click.link.to.disconnect": "Click link to disconnect the nodes",
-        "master.is.peer": "This master is a peer to the other master but not vice versa, drag and drop the masters to fix it.",
-        "link_status": {
-            "on": "ON",
-            "off": "OFF",
-            "out.of.sync": "OUT OF SYNC",
-            "out.of.sync.forced": "OUT OF SYNC FORCED",
-            "writing.label": "WRITING",
-            "writing.copy": "WRITING COPY",
-            "waiting.write": "WAITING WRITE",
-            "replication.server": "REPLICATION SERVER",
-            "replication.client": "REPLICATION CLIENT",
-            "unknown.label": "UNKNOWN"
+            "content": "Select nodes to be removed from existing cluster"
         }
     },
     "config.name.label": "Config name",
