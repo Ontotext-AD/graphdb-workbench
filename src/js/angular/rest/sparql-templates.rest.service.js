@@ -44,7 +44,7 @@ function SparqlTemplatesRestService($http) {
                     'templateID': template.templateID
                 },
                 headers: {
-                    'Content-Type': 'text/html'
+                    'Content-Type': 'text/plain'
                 }
             });
     }
