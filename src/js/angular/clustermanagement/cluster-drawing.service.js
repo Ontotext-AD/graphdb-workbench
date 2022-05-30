@@ -7,21 +7,6 @@ export const clusterColors = {
     ontoGrey: '#97999C'
 };
 
-function containsIPV4(ip) {
-    const blocks = ip.split(".");
-    for (let i = 0, sequence = 0; i < blocks.length; i++) {
-        if (parseInt(blocks[i], 10) >= 0 && parseInt(blocks[i], 10) <= 255) {
-            sequence++;
-        } else {
-            sequence = 0;
-        }
-        if (sequence === 4) {
-            return true;
-        }
-    }
-    return false;
-}
-
 export function createClusterSvgElement(element) {
     return d3.select(element)
         .append('svg');
@@ -37,7 +22,7 @@ export function createClusterZone(parent) {
     return clusterZone;
 }
 
-export function setCreateClusterZone(hasCluster, clusterZone) {
+export function setCreateClusterZone(hasCluster, clusterZone, translationsMap) {
     clusterZone
         .select('.cluster-zone')
         .classed('no-cluster', !hasCluster);
@@ -50,13 +35,15 @@ export function setCreateClusterZone(hasCluster, clusterZone) {
             .attr("id", "no-cluster-zone");
         textGroup
             .append('text')
-            .text('No cluster group configured')
+            .attr('id', 'no-cluster-label')
+            .text(translationsMap.no_cluster_configured || 'No cluster group configured')
             .attr('y', -50)
             .classed('h2', true)
             .style('text-anchor', "middle");
         textGroup.append('text')
+            .attr('id', 'create-cluster-label')
             .classed('h3', true)
-            .text('Click here to create a cluster')
+            .text(translationsMap.create_cluster_btn || 'Click here to create a cluster')
             .style('text-anchor', "middle");
         textGroup.append('text')
             .attr('y', 130)
@@ -66,6 +53,16 @@ export function setCreateClusterZone(hasCluster, clusterZone) {
             .classed('settings-icon', true)
             .text("\ue92b");
     }
+}
+
+export function updateClusterZoneLabels(hasCluster, clusterZone, translationsMap) {
+    if (hasCluster) {
+        return;
+    }
+    clusterZone.select('#no-cluster-zone #no-cluster-label')
+        .text(translationsMap.no_cluster_configured);
+    clusterZone.select('#no-cluster-zone #create-cluster-label')
+        .text(translationsMap.create_cluster_btn);
 }
 
 export function moveElement(element, x, y) {
@@ -87,28 +84,38 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .append('text')
         .attr('class', 'icon-any node-icon');
 
-    addHostnameToNodes(nodeGroup, nodeRadius);
+    addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
 }
 
-function addHostnameToNodes(nodeElements, nodeRadius) {
+function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
     const nodeTextHost = nodeElements.append('g');
 
-    nodeTextHost
-        .append('rect')
-        .attr('class', 'id-host-background')
-        .attr('rx', 6);
+    if (isLegend) {
+        nodeTextHost.append('foreignObject')
+            .attr('y', nodeRadius)
+            .attr('x', -nodeRadius)
+            .attr('width', nodeRadius * 2)
+            .attr('height', 10)
+            .append('xhtml:div')
+            .attr('class', 'id id-host');
+    } else {
+        nodeTextHost
+            .append('rect')
+            .attr('class', 'id-host-background')
+            .attr('rx', 6);
 
-    nodeTextHost
-        .append('text')
-        .attr('y', nodeRadius + 10)
-        .attr('class', 'id id-host')
-        .style('text-anchor', 'middle');
+        nodeTextHost
+            .append('text')
+            .attr('y', nodeRadius + 10)
+            .attr('class', 'id id-host')
+            .style('text-anchor', 'middle');
+    }
 }
 
-export function updateNodes(nodes, customText) {
+export function updateNodes(nodes) {
     updateNodesIcon(nodes);
     updateNodesClasses(nodes);
-    updateNodesHostnameText(nodes, customText);
+    updateNodesHostnameText(nodes);
 }
 
 function updateNodesClasses(nodes) {
@@ -149,29 +156,14 @@ function getNodeIconType(node) {
     return '';
 }
 
-function updateNodesHostnameText(nodes, customText) {
-    const parser = document.createElement('a');
-
+function updateNodesHostnameText(nodes) {
     nodes
         .select('.id.id-host')
         .each(function (d) {
             d.labelNode = this;
         })
         .text(function (d) {
-            if (customText) {
-                return d.customText;
-            }
-            if (!d.endpoint) {
-                // TODO: remove this check when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/2137 is merged
-                return 'Missing endpoint';
-            } else {
-                parser.href = d.endpoint;
-                let hostname = parser.hostname;
-                if (!containsIPV4(parser.hostname)) {
-                    hostname = parser.hostname.split('.')[0];
-                }
-                return hostname + ":" + parser.port;
-            }
+            return d.hostname;
         });
 
     // Add padding styling to text background. left/right +5. top/bottom +1
