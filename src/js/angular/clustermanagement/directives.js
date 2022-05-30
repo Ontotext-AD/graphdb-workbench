@@ -69,6 +69,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 let legendNodesGroup;
                 let legendWidth;
                 let legendHeight;
+                const legendPadding = 10;
 
                 let width = getWindowWidth();
                 let height = getWindowHeight();
@@ -108,7 +109,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         node.toolTip = node.hostname = translationsMap[node.customText];
                     });
                     legendLinks.forEach((link) => {
-                        link.toolTip = link.linkTypeText = translationsMap[link.linkTypeKey] + translationsMap[link.linkTypeKey];
+                        link.toolTip = link.linkTypeText = translationsMap[link.linkTypeKey];
                     });
                 }
 
@@ -165,7 +166,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 };
 
                 function createClusterLegend() {
-                    const legendPadding = 10;
                     const nodeLinkStateTextHeight = 14;
 
                     const nodeStateLabelY = legendPadding + nodeLinkStateTextHeight;
@@ -290,6 +290,10 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .attr('width', legendWidth + legendPadding * 2)
                         .attr('rx', '6');
 
+                    positionLegend();
+                }
+
+                function positionLegend() {
                     const y = height - (legendHeight + legendPadding * 3 + 50);
                     CDS.moveElement(legendNodesGroup, 0, y);
                 }
@@ -335,6 +339,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     svg.attr("width", width);
                     svg.attr("height", height);
                     plot();
+                    positionLegend();
                 };
                 scope.childContext.toggleLegend = () => {
                     scope.showLegend = !scope.showLegend;
