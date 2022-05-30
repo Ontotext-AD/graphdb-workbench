@@ -253,7 +253,7 @@ line.link {
 }
 
 #legend-nodes-group.hidden {
-  display: none;
+  visibility: hidden;
 }
 
 text.node-icon {
