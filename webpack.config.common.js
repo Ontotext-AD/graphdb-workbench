@@ -112,8 +112,7 @@ module.exports = {
             },
             {
                 from: 'src/i18n',
-                to: 'i18n',
-                transform: replaceVersion
+                to: 'i18n'
             },
             {
                 from: 'src/js/angular/repositories/templates',

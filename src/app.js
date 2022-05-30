@@ -58,7 +58,7 @@ const moduleDefinition = function (productInfo) {
             // configures staticFilesLoader
             $translateProvider.useStaticFilesLoader({
                 prefix: 'i18n/locale-',
-                suffix: '.json'
+                suffix: '.json?v=[AIV]{version}[/AIV]'
             });
             // load 'en' table on startup
             $translateProvider.preferredLanguage('en');
