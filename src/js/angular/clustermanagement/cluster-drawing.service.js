@@ -84,22 +84,32 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .append('text')
         .attr('class', 'icon-any node-icon');
 
-    addHostnameToNodes(nodeGroup, nodeRadius);
+    addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
 }
 
-function addHostnameToNodes(nodeElements, nodeRadius) {
+function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
     const nodeTextHost = nodeElements.append('g');
 
-    nodeTextHost
-        .append('rect')
-        .attr('class', 'id-host-background')
-        .attr('rx', 6);
+    if (isLegend) {
+        nodeTextHost.append('foreignObject')
+            .attr('y', nodeRadius)
+            .attr('x', -nodeRadius)
+            .attr('width', nodeRadius * 2)
+            .attr('height', 10)
+            .append('xhtml:div')
+            .attr('class', 'id id-host');
+    } else {
+        nodeTextHost
+            .append('rect')
+            .attr('class', 'id-host-background')
+            .attr('rx', 6);
 
-    nodeTextHost
-        .append('text')
-        .attr('y', nodeRadius + 10)
-        .attr('class', 'id id-host')
-        .style('text-anchor', 'middle');
+        nodeTextHost
+            .append('text')
+            .attr('y', nodeRadius + 10)
+            .attr('class', 'id id-host')
+            .style('text-anchor', 'middle');
+    }
 }
 
 export function updateNodes(nodes) {

@@ -104,26 +104,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function translateLegendLinksAndNodes(legendNodes, legendLinks) {
-                    const maxLabelLength = 13;
-
                     legendNodes.forEach((node) => {
-                        node.fullLabel = translationsMap[node.customText];
-                        node.hostname = node.fullLabel;
-                        if (node.fullLabel && node.fullLabel.length > maxLabelLength) {
-                            const end = maxLabelLength + 3 > node.fullLabel.length ? node.fullLabel.length : maxLabelLength;
-                            node.hostname = node.fullLabel.substring(0, end - 4) + '...';
-                            node.shortened = true;
-                        }
+                        node.toolTip = node.hostname = translationsMap[node.customText];
                     });
                     legendLinks.forEach((link) => {
-                        link.linkTypeText = translationsMap[link.linkTypeKey];
-                        link.fullLabel = translationsMap[link.linkTypeKey];
-                        link.linkTypeText = link.fullLabel;
-                        if (link.fullLabel && link.fullLabel.length > maxLabelLength) {
-                            const end = maxLabelLength + 3 > link.fullLabel.length ? link.fullLabel.length : maxLabelLength;
-                            link.linkTypeText = link.fullLabel.substring(0, end - 4) + '...';
-                            link.shortened = true;
-                        }
+                        link.toolTip = link.linkTypeText = translationsMap[link.linkTypeKey] + translationsMap[link.linkTypeKey];
                     });
                 }
 
@@ -131,6 +116,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const labelKey = idTranslationKeyMap[elementId];
                     return translationsMap[labelKey];
                 }
+
                 function initialize() {
                     updateTranslations();
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
@@ -158,17 +144,17 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     .customPosition(function () {
                         const bbox = tooltipElement.getBoundingClientRect();
                         return {
-                            top: (bbox.top - 30) + 'px',
-                            left: (bbox.left - 30) + 'px'
+                            left: bbox.left + 'px',
+                            top: (bbox.top - 30) + 'px'
                         };
                     })
                     .html(function (d) {
-                        return d.fullLabel;
+                        return d.toolTip;
                     });
 
                 // Shows tooltip with legend node or link state
-                const showLegendTooltip = function (d) {
-                    tooltipElement = d3.event.target;
+                const showLegendTooltip = function (d, element) {
+                    tooltipElement = element;
                     legendTooltip.show(d, tooltipElement);
                 };
 
@@ -216,23 +202,22 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     const legendNodeData = legendNodesGroup.selectAll('#node-group').data(legendNodes);
                     CDS.createNodes(legendNodeData, legendNodeRadius, true);
-                       CDS.updateNodes(legendNodeData);
+                    CDS.updateNodes(legendNodeData);
 
-                       legendNodeData.select('.node.member')
-                           .on("mouseover", function (d) {
-                               d3.event.stopPropagation();
-                               if (d.shortened) {
-                                   showLegendTooltip(d);
-                               }
-                           })
-                           .on('mouseout', hideLegendTooltip);
+                    legendNodeData.select('.node.member')
+                        .on("mouseover", function (d) {
+                            d3.event.stopPropagation();
+                            showLegendTooltip(d, this);
+                        })
+                        .on('mouseout', hideLegendTooltip);
 
                     legendNodeData
                         .attr('transform', function (d) {
                             const row = Math.floor(d.id / legendColumns);
                             const column = d.id % legendColumns;
                             const x = legendPadding + legendNodeRadius + (nodesXPadding + legendNodeRadius * 2) * column;
-                            const y = legendPadding * 2 + nodeLinkStateTextHeight + legendNodeRadius + (nodesYPadding + legendNodeRadius * 2) * row;
+                            const y = legendPadding * 2 + nodeLinkStateTextHeight + legendNodeRadius + (nodesYPadding + legendNodeRadius
+                                * 2) * row;
                             return `translate(${x}, ${y})`;
                         });
 
@@ -267,10 +252,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             });
 
                         linkG
-                            .append('rect')
-                            .attr('class', 'id-host-background');
-
-                        linkG
                             .append('path')
                             .classed('link', true)
                             .attr('stroke-dasharray', () => CDS.setLinkStyle(link))
@@ -279,38 +260,20 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                                 return `M${startX},0,${endX},0`;
                             });
 
-                        linkG
-                            .append('text')
-                            .attr('x', linkWidth / 2)
-                            .attr('y', 15)
+                        linkG.append('foreignObject')
+                            .attr('y', 10)
+                            .attr('x', 5)
+                            .attr('width', linkWidth - 10)
+                            .attr('height', 10)
+                            .append('xhtml:div')
                             .attr('class', 'id id-host')
-                            .call(function () {
-                                link.labelNode = this;
-                            })
-                            .text(link.linkTypeText);
-
-                        linkG
-                            .select('.id-host-background')
-                            .attr('width', function (d) {
-                                return link.labelNode.node().getBBox().width;
-                            })
-                            .attr('height', function (d) {
-                                return link.labelNode.node().getBBox().height;
-                            })
-                            .attr('x', function (d) {
-                                return link.labelNode.node().getBBox().x;
-                            })
-                            .attr('y', function (d) {
-                                return link.labelNode.node().getBBox().y;
-                            })
-                            .attr('fill', 'transparent');
+                            .style("font-size", "9px")
+                            .html(link.linkTypeText);
 
                         linkG
                             .on('mouseover', function () {
                                 d3.event.stopPropagation();
-                                if (link.shortened) {
-                                    showLegendTooltip(link);
-                                }
+                                showLegendTooltip(link, this);
                             })
                             .on('mouseout', hideLegendTooltip);
                     });
@@ -323,7 +286,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         });
 
                     legendNodesGroup.select('.legend-background')
-                        .attr('height', legendHeight + legendPadding * 3)
+                        .attr('height', legendHeight + legendPadding * 4)
                         .attr('width', legendWidth + legendPadding * 2)
                         .attr('rx', '6');
 
