@@ -61,7 +61,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             name: plugin.s.value,
             enabled: plugin.o.value === 'true'
         })).filter(function (plugin) {
-            return plugin.name !== 'plugincontrol';
+            return plugin.name !== 'plugincontrol' && plugin.name !== 'literals-index';
         }).sort(function (a, b) {
             const textA = a.name.toLowerCase();
             const textB = b.name.toLowerCase();
