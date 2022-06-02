@@ -28,7 +28,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         initPlugins();
         timer = $interval(function () {
             initPlugins();
-        }, 100000);
+        }, 100);
     };
     const initPlugins = function () {
             PluginsRestService.getPlugins($scope.getActiveRepository())
