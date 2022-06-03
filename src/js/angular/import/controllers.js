@@ -357,7 +357,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
 
             $http({
                 method: 'GET',
-                url: 'rest/repositories/repo-id/import/settings/default'
+                url: 'rest/repositories/' + $repositories.getActiveRepository() + '/import/settings/default'
             }).success(function (data) {
                 $scope.defaultSettings = data;
             }).error(function (data) {
