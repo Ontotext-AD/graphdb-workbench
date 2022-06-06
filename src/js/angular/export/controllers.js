@@ -105,13 +105,13 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.onGraphSearch = function() {
+            $scope.onGraphSearch = function () {
                 $scope.matchedElements = [];
                 $scope.deselectAll();
                 $scope.filterResults();
             };
 
-            $scope.filterResults = function() {
+            $scope.filterResults = function () {
                 angular.forEach($scope.graphs, function (item) {
                     if (item.contextID.value.indexOf($scope.exportFilter) !== -1) {
                         $scope.matchedElements.push(item);
@@ -170,10 +170,11 @@ exportCtrl.controller('ExportCtrl',
             $scope.startDownload = function (format, contextID) {
                 //If it's graph set the url for ?context=
                 let downloadUrl;
+                const repo = $repositories.getActiveRepositoryObject();
                 if (contextID) {
-                    downloadUrl = 'repositories/' + $scope.getActiveRepository() + '/statements?infer=false&context=' + $scope.graphsByValue[contextID.value].exportUri;
+                    downloadUrl = `repositories/${repo.id}/statements?infer=false&context=${$scope.graphsByValue[contextID.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
                 } else {
-                    downloadUrl = 'repositories/' + $scope.getActiveRepository() + '/statements?infer=false';
+                    downloadUrl = `repositories/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
                 }
                 $scope.downloadExport(downloadUrl, format);
             };
@@ -297,7 +298,7 @@ exportCtrl.controller('ExportCtrl',
                             RDF4JRepositoriesRestService.addStatements($repositories.getActiveRepository(), 'update=CLEAR ALL')
                                 .then(function () {
                                     $scope.deleting['*'] = false;
-                                    toastr.success($translate.instant('export.cleared.repo', {repo:$repositories.getActiveRepository()}));
+                                    toastr.success($translate.instant('export.cleared.repo', {repo: $repositories.getActiveRepository()}));
                                     $scope.getGraphs();
                                 }, function (err) {
                                     $scope.deleting['*'] = false;
@@ -306,7 +307,7 @@ exportCtrl.controller('ExportCtrl',
                                         "repository is incompatible with collecting history") > -1) {
                                         toastr.error($translate.instant('export.clearing.statements.warning'));
                                     } else {
-                                        toastr.error($translate.instant('export.cleared.repo.failed.msg', {repo:$repositories.getActiveRepository()}), err);
+                                        toastr.error($translate.instant('export.cleared.repo.failed.msg', {repo: $repositories.getActiveRepository()}), err);
                                     }
                                 });
                         }, 100);
