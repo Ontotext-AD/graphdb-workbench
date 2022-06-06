@@ -149,7 +149,7 @@ function getNodeIconType(node) {
     } else if (node.nodeState === NodeState.OUT_OF_SYNC) {
         return '\ue920';
     } else if (node.nodeState === NodeState.READ_ONLY) {
-        return '\ue923';
+        return '\ue95c';
     } else if (node.nodeState === NodeState.RESTRICTED) {
         return '\ue933';
     }
