@@ -47,7 +47,7 @@
                         </div>
                         <div ng-if="isAdmin() && !location.local" class="actions-bar-inline pull-right">
                             <button class="btn btn-link p-0"
-                                    tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                    tooltip="{{'edit.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
                                     ng-click="editLocation(location)">
                                 <em class="icon-edit"></em>
                             </button>
