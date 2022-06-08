@@ -471,6 +471,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.params = $routeParams;
     $scope.repositoryType = $routeParams.repositoryType;
     $scope.enable = true;
+    $scope.locations = filterLocations($repositories.getLoadedLocations());
 
     $scope.loader = true;
     $scope.pageTitle = $translate.instant('view.create.repo.title');
@@ -491,10 +492,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidUnionWorkerThreads : false,
         isInvalidValidationResultsLimitPerConstraint : false,
         isInvalidValidationResultsLimitTotal : false
-    };
-
-    $scope.getLocations = function () {
-        $scope.locations = filterLocations($repositories.getLoadedLocations());
     };
 
     $scope.changedLocation = function () {
@@ -751,13 +748,10 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         return $repositories.hasActiveLocation();
     };
 
-    $scope.getLocations = function () {
-        $scope.locations = filterLocations($repositories.getLoadedLocations());
-    };
-
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
+            $scope.locations = filterLocations($repositories.getLoadedLocations());
             RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {

@@ -187,7 +187,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 this.locationsShouldReload = false;
                 this.locations = [this.location];
                 const that = this;
-                LocationsRestService.getLocations()
+                return LocationsRestService.getLocations()
                     .success(function (data) {
                         that.locations = data;
                     })
