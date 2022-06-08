@@ -20,11 +20,11 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             $scope.languages = [
                 {
                     key: 'en',
-                    translation: 'menu.btn.translate.en'
+                    name: 'English'
                 },
                 {
                     key: 'fr',
-                    translation: 'menu.btn.translate.fr'
+                    name: 'Français'
             }];
 
             // If some keys in i18n folder are not
@@ -37,6 +37,14 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 LocalStorageAdapter.set(LSKeys.PREFERRED_LANG, lang.key);
                 $languageService.setLanguage($scope.selectedLang.key);
                 $scope.$broadcast('language-changed', {locale: lang.key});
+            };
+
+            $scope.getLanguageTooltip = function (lang) {
+                if ($scope.selectedLang.key !== lang.key) {
+                    return $translate.instant('change.language.tooltip', {}, undefined, lang.key) + ' ' + lang.name;
+                } else {
+                    return $translate.instant('current.language.tooltip', {}, undefined, lang.key);
+                }
             };
 
             function getPreferredLanguage() {

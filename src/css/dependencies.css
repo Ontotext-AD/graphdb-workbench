@@ -7,7 +7,7 @@
 }
 
 #download-svg:hover {
-    color: #f04e23;
+    color: var(--onto-orange);
 }
 
 #circle:hover path.fade {
@@ -124,7 +124,7 @@ div.tooltip {
     border-left: 1pt solid #ffffff !important;
     border-top: 0.5pt solid #ffffff !important;
     border-right: 1pt solid #ffffff !important;
-    background-color: rgba(17, 176, 161, 0.30) !important;
+    background-color: rgba(var(--onto-green-rgb), 0.30) !important;
 }
 
 
@@ -157,7 +157,7 @@ div.tooltip {
 }
 
 .direction-filter-header {
-    color: #003663;
+    color: var(--onto-blue);
     font-size: 18px;
 }
 

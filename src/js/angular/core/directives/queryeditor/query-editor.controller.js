@@ -793,7 +793,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         // colors contains the colors to set to the tab name,
         // while times defines the times in milliseconds to keep each color.
         // Once we cycle through the arrays we restore the default color.
-        const colors = ['#ED4F2F', '', '#ED4F2F'];
+        const colors = ['var(--onto-orange)', '', 'var(--onto-orange)'];
         const times = [400, 400, 400];
         if ($scope.highlightNextTabChange) {
             $scope.highlightNextTabChange = false;

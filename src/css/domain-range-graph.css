@@ -34,7 +34,7 @@
 }
 
 .link, .loop-link, .property-arrow, .implicit-property-arrow, .collapsed-property-arrow, .property-type-list-item-legend {
-    stroke: #003663;
+    stroke: var(--onto-blue);
 }
 
 .legend-class-node {
@@ -73,7 +73,7 @@
 }
 
 .rdf-class-label {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: var(--main-font);
     text-shadow: 0 0 3px #000000;
     text-anchor: middle;
     dominant-baseline: middle;
@@ -92,7 +92,7 @@
 }
 
 .property-name:hover, .loop-link-property-name:hover, .left-class-label:hover, .right-class-label:hover, .rdf-class-label:hover {
-    fill: #003663;
+    fill: var(--onto-blue);
 }
 
 .left-class-label {

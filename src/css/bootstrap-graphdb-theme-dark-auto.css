@@ -17,6 +17,10 @@
     --alert-filter: var(--alert-filter-dark);
     --toast-filter: var(--toast-filter-dark);
     --checkbox-filter: var(--checkbox-filter-dark);
+    /* This results in a more subdued orange in the dark theme, easier on the eyes */
+    --onto-orange-rgb: 232, 126, 96;
+    --onto-orange: #e87e60;
+    --onto-orange-dark: #d07156;
 }
 
 /* Invert all elements on the root while attempting to not alter the hue substantially. */

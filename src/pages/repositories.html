@@ -93,10 +93,9 @@
                                                   popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
                                                 <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
                                                 <strong class="repository-id">{{repository.id}}</strong></span>
-                                            <span class="repository-status" class="small"><small> &middot; <span
-                                                class="text-secondary">{{repository.state}}</span></small></span>
-                                            <span class="small"
-                                                  ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+                                            <span class="repository-status"> &middot; <span
+                                                class="text-secondary">{{repository.state}}</span></span>
+                                            <span ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
                                         </div>
                                     </td>
                                     <td width="150" class="text-nowrap repository-actions">

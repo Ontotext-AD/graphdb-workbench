@@ -44,24 +44,24 @@ path.link {
 
 .node {
   cursor: pointer;
-  fill: #97999C;
+  fill: var(--onto-grey);
   stroke: black;
 }
 
 .node.leader {
-  fill: #ED4F2F
+  fill: var(--onto-orange)
 }
 
 .node.follower {
-  fill: #04355E
+  fill: var(--onto-blue)
 }
 
 .node.candidate {
-  fill: #0CB0A0
+  fill: var(--onto-green)
 }
 
 .node.other {
-  fill: #97999C
+  fill: var(--onto-grey)
 }
 
 #node-group.legend .node {
@@ -100,7 +100,7 @@ text.node-icon {
 }
 
 text {
-  font-family: 'RubikWeb', -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif !important;
+  font-family: var(--main-font) !important;
   font-size: 12px;
   pointer-events: none;
 }

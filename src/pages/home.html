@@ -75,10 +75,12 @@
                                 ng-click="getActiveRepositorySize()"><span class="icon-reload"></span>
                         </button>
                     </div>
-                    <h3 class="card-title ellipsis-block">
+                    <h3 class="card-title ellipsis-block repo-info-home">
                         <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
                            tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
-                        {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
+                        <div>
+                            {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
+                        </div>
                     </h3>
                     <div ng-if="activeRepositorySize && !activeRepositorySizeError">
                         <div class="container-fluid">
@@ -134,7 +136,7 @@
                     <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries() && query.owner != null" class="list-group-item list-group-item-action">
                             <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="icon-caret-right"></span></span>
-                            <samp class="h5">{{query.name}}</samp>
+                            <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>
                     </ul>

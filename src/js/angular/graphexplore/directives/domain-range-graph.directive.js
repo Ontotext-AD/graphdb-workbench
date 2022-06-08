@@ -7,9 +7,9 @@ angular
         'graphdb.framework.graphexplore.controllers.domainrange',
         'graphdb.framework.utils.localstorageadapter'
     ])
-    .constant('ONTO_RED', '#F04E23')
-    .constant('ONTO_GREEN', '#0CB0A0')
-    .constant('ONTO_BLUE', '#003663')
+    .constant('ONTO_RED', 'var(--onto-orange)')
+    .constant('ONTO_GREEN', 'var(--onto-green)')
+    .constant('ONTO_BLUE', 'var(--onto-blue)')
     .constant('NON_COLLAPSED_REFLEXIVE_LINK_LIMIT', 6)
     .directive('domainRangeGraph', domainRangeGraphDirective);
 

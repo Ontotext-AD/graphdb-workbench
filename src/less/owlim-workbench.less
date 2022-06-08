@@ -1,11 +1,3 @@
-@primary-color-light: #ffe6df;
-@primary-color: #ff683f;
-@primary-color-dark: #ff410f;
-
-@secondary-color-light: #dce6f5;
-@secondary-color: #003663;
-@secondary-color-dark: #122a50;
-
 @input-border: 3px;
 
 @xx-small-font: 10px;
@@ -41,7 +33,7 @@ a.navbar-brand {
 }
 
 .navbar-inverse, .navbar-inverse .dropdown-menu {
-	background-color: @secondary-color;
+	background-color: var(--onto-blue);
 }
 
 #repositorySelectDropdown {
@@ -126,11 +118,11 @@ a.navbar-brand {
 }
 
 .navbar-inverse .navbar-nav li a:hover, .navbar-nav .open a:hover {
-    background-color: #0cb0a0;
+    background-color: var(--onto-green);
 }
 
 .navbar-inverse .navbar-nav .open a:focus, .navbar-inverse .navbar-nav li a:focus {
-    background-color: #0cb0a0;
+    background-color: var(--onto-green);
 }
 
 // Change the z-index to show the popovers above the navigation bars
@@ -170,7 +162,7 @@ td .editable-wrap {
 }
 .navbar-fixed-top .navbar-nav .open .dropdown-menu {
   position: absolute;
-  background-color: #003663;
+  background-color: var(--onto-blue);
 }
 .navbar-fixed-top .navbar-nav > li > a {
   padding-top: 12px;
@@ -191,14 +183,14 @@ td .editable-wrap {
     padding-top: 12px !important;
     padding-bottom: 12px !important;
     text-decoration: none;
-    background-color: #003663;
+    background-color: var(--onto-blue);
     display: inline-block !important;
     margin-left: 7px;
 }
 
 .navbar-button:hover {
     text-decoration: none;
-    background-color: #0cb0a0;
+    background-color: var(--onto-green);
 }
 
 .autocomplete-toast a, .autocomplete-toast a:hover {

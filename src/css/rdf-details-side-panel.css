@@ -112,7 +112,7 @@
     padding: 0 0.3em;
 }
 .toggle-sidepanel:hover {
-	background-color: #ED4F2F;
+	background-color: var(--onto-orange);
 	color: #fff;
 }
 
