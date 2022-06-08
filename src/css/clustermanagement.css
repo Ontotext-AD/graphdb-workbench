@@ -218,3 +218,7 @@ div.nodetooltip {
 .action-buttons {
   flex-grow: 1;
 }
+
+.advanced-options-toggle {
+  margin-right: 6px;
+}

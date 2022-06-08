@@ -28,16 +28,18 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         initPlugins();
         timer = $interval(function () {
             initPlugins();
+            $scope.filterResults();
         }, 5000);
     };
     const initPlugins = function () {
             PluginsRestService.getPlugins($scope.getActiveRepository())
                 .success(function (data) {
                     $scope.plugins = $scope.buildPluginsArray(data.results.bindings);
+                    $scope.matchedElements = [];
                     if (angular.isDefined($scope.plugins)) {
                         $scope.displayedPlugins = $scope.plugins;
                     }
-                    $scope.matchedElements = $scope.plugins;
+                    $scope.filterResults();
                 }).error(function (data) {
                 toastr.error(getError(data));
             }).finally(function () {
@@ -52,7 +54,6 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             $repositories.isActiveRepoFedXType()) {
             return;
         }
-        $scope.searchPlugins = '';
         getPlugins();
     };
 
@@ -129,7 +130,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
 
     //for searchbox
     $scope.$watch('matchedElements', function () {
-        if (angular.isDefined($scope.matchedElements)) {
+        if (angular.isDefined($scope.matchedElements) && angular.isDefined($scope.searchPlugins)) {
             $scope.displayedPlugins = $scope.matchedElements;
         }
     });
