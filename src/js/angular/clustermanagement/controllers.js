@@ -141,6 +141,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
 
     function isLeaderChanged(currentLeader, newLeader) {
         if (!newLeader) {
+            // If election is in place and there is no leader yet, consider it as leader change
             return true;
         }
         return !currentLeader || currentLeader.address !== newLeader.address;
