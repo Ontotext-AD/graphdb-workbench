@@ -35,13 +35,13 @@ const parseNumberParamsIfNeeded = function (params) {
             params.unionWorkerThreads.value = parseInt(params.unionWorkerThreads.value);
         }
     }
-}
+};
 
 const parseMemberParamIfNeeded = function(param) {
     if (param && param.member) {
         param.member.value = [];
     }
-}
+};
 
 const getShaclOptionsClass = function () {
     const optionsModule = document.getElementById('shaclOptions');
@@ -53,7 +53,7 @@ const getShaclOptionsClass = function () {
         }
     }
     return 'fa fa-angle-right';
-}
+};
 
 const validateNumberFields = function (params, invalidValues) {
     if (params.queryTimeout) {
@@ -63,18 +63,17 @@ const validateNumberFields = function (params, invalidValues) {
         invalidValues.isInvalidValidationResultsLimitTotal = !NUMBER_PATTERN.test(params.validationResultsLimitTotal.value);
         invalidValues.isInvalidValidationResultsLimitPerConstraint = !NUMBER_PATTERN.test(params.validationResultsLimitPerConstraint.value);
         invalidValues.isInvalidQueryLimit = !NUMBER_PATTERN.test(params.queryLimitResults.value);
-    }
-    else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
+    } else if (params.leftJoinWorkerThreads && params.boundJoinBlockSize && params.joinWorkerThreads
         && params.unionWorkerThreads) {
         invalidValues.isInvalidLeftJoinWorkerThreads = !NUMBER_PATTERN.test(params.leftJoinWorkerThreads.value);
         invalidValues.isInvalidBoundJoinBlockSize = !NUMBER_PATTERN.test(params.boundJoinBlockSize.value);
         invalidValues.isInvalidJoinWorkerThreads = !NUMBER_PATTERN.test(params.joinWorkerThreads.value);
         invalidValues.isInvalidUnionWorkerThreads = !NUMBER_PATTERN.test(params.unionWorkerThreads.value);
     }
-}
+};
 
 const getInvalidParameterErrorMessage = function(param, $translate) {
-    if(param === "isInvalidQueryLimit") {
+    if (param === "isInvalidQueryLimit") {
         return $translate.instant('invalid.query.limit');
     } else if (param === "isInvalidQueryTimeout") {
         return $translate.instant('invalid.query.timeout');
@@ -91,11 +90,11 @@ const getInvalidParameterErrorMessage = function(param, $translate) {
     } else if (param === "isInvalidBoundJoinBlockSize") {
         return $translate.instant('invalid.bound.join.block.size');
     }
-}
+};
 
 const checkInvalidValues = function(invalidValues, $translate) {
-    let invalidValuesKeys = Object.keys(invalidValues);
-    let invalidValuesVal = Object.values(invalidValues);
+    const invalidValuesKeys = Object.keys(invalidValues);
+    const invalidValuesVal = Object.values(invalidValues);
 
     for (let i = 0; i < invalidValuesKeys.length; i++) {
         if (invalidValuesVal[i]) {
@@ -103,27 +102,13 @@ const checkInvalidValues = function(invalidValues, $translate) {
         }
     }
     return '';
-}
+};
 
 const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
 };
 const filterLocations = function (result) {
     return result.filter((location) => !location.errorMsg && !location.degradedReason);
-};
-/**
- * Gets the remote locations that are error free and without degraded reason
- * @param {*} $repositories the repositories service
- * @return {[] | Promise} returns the locations as array or a promise of the array
- */
-const getLocations = function ($repositories) {
-    // Don't allow the user to create repository on location with error or degradeded reason
-    const result = $repositories.getLocations();
-    if (Array.isArray(result)) {
-        return filterLocations(result);
-    } else {
-        return result.then((response) => filterLocations(response.data));
-    }
 };
 
 const modules = [
@@ -180,15 +165,15 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     $scope.getLocationsLabels = function () {
         let locationsLabels = '';
-        $repositories.getLocations().forEach(location => {
+        $repositories.getLocations().forEach((location) => {
             locationsLabels += `${location.label}, `;
-        })
+        });
         return locationsLabels;
     };
 
     $scope.isRepoActive = function (repo) {
         return $repositories.isRepoActive(repo);
-    }
+    };
 
     //Delete location
     $scope.deleteLocation = function (uri) {
@@ -294,7 +279,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
                 $scope.loader = true;
                 $repositories.restartRepository(repository);
             });
-    }
+    };
 
     $scope.toggleDefaultRepository = function (repositoryId) {
         if ($scope.getDefaultRepository() === repositoryId) {
@@ -387,7 +372,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     $scope.getRepositoriesFromLocation = function (locationId) {
         return $repositories.getRepositoriesFromLocation(locationId);
-    }
+    };
 }
 
 UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toastr', '$translate'];
@@ -508,14 +493,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidValidationResultsLimitTotal : false
     };
 
-    const locations = getLocations($repositories);
-    if (Array.isArray(locations)) {
-        $scope.locations = locations;
-    } else {
-        locations.then((response) => {
-            $scope.locations = response;
-        });
-    }
+    $scope.getLocations = function () {
+        $scope.locations = filterLocations($repositories.getLoadedLocations());
+    };
 
     $scope.changedLocation = function () {
         $scope.$broadcast('changedLocation');
@@ -702,11 +682,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     $scope.validateNumberInput = function () {
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
-    }
+    };
 
     $scope.getShaclOptionsClass = function () {
         return getShaclOptionsClass();
-    }
+    };
     //TODO - check if repositoryID exist
 
     // Request auto-focus of the ID input when creating a repo (but not when editing)
@@ -771,10 +751,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         return $repositories.hasActiveLocation();
     };
 
+    $scope.getLocations = function () {
+        $scope.locations = filterLocations($repositories.getLoadedLocations());
+    };
+
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
-            $scope.locations = getLocations($repositories);
             RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {
@@ -785,7 +768,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                             }
                         });
                         if (data.params.ruleset && !ifRulesetExists) {
-                            let name = getFileName(data.params.ruleset.value);
+                            const name = getFileName(data.params.ruleset.value);
                             $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
                         }
                     }
@@ -853,7 +836,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
             toastr.error($translate.instant('wrong.repo.name.error'));
         } else if ($scope.repositoryType === "fedx" && $scope.repositoryInfo.params.member.value.length === 0) {
             $scope.noMembersError();
-        } else if(invalidValues) {
+        } else if (invalidValues) {
             toastr.error(invalidValues);
         } else {
             ModalService.openSimpleModal({
@@ -865,7 +848,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.editRepoHttp();
                 });
         }
-    }
+    };
 
     $scope.editRepositoryId = function () {
         let msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
@@ -892,9 +875,9 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
 
     $scope.validateNumberInput = function () {
         validateNumberFields($scope.repositoryInfo.params, $scope.invalidValues);
-    }
+    };
 
     $scope.getShaclOptionsClass = function () {
         return getShaclOptionsClass();
-    }
+    };
 }
