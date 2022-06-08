@@ -111,6 +111,22 @@ const filterLocations = function (result) {
     return result.filter((location) => !location.errorMsg && !location.degradedReason);
 };
 
+/**
+ * Gets the remote locations that are error free and without degraded reason
+ * @param {*} $repositories the repositories service
+ * @return {[] | Promise} returns the locations as array or a promise of the array
+ */
+const getLocations = function ($repositories) {
+    $repositories.doNotReloadOfLocations();
+    // Don't allow the user to create repository on location with error or degradeded reason
+    const result = $repositories.getLocations();
+    if (Array.isArray(result)) {
+        return filterLocations(result);
+    } else {
+        return result.then((response) => filterLocations(response.data));
+    }
+};
+
 const modules = [
     'ngCookies',
     'ui.bootstrap',
@@ -471,7 +487,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.params = $routeParams;
     $scope.repositoryType = $routeParams.repositoryType;
     $scope.enable = true;
-    $scope.locations = filterLocations($repositories.getLoadedLocations());
 
     $scope.loader = true;
     $scope.pageTitle = $translate.instant('view.create.repo.title');
@@ -493,6 +508,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         isInvalidValidationResultsLimitPerConstraint : false,
         isInvalidValidationResultsLimitTotal : false
     };
+
+    const locations = getLocations($repositories);
+    if (Array.isArray(locations)) {
+        $scope.locations = locations;
+    } else {
+        locations.then((response) => {
+            $scope.locations = response;
+        });
+    }
 
     $scope.changedLocation = function () {
         $scope.$broadcast('changedLocation');
@@ -751,7 +775,14 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
-            $scope.locations = filterLocations($repositories.getLoadedLocations());
+            const locations = getLocations($repositories);
+            if (Array.isArray(locations)) {
+                $scope.locations = locations;
+            } else {
+                locations.then((response) => {
+                    $scope.locations = response;
+                });
+            }
             RepositoriesRestService.getRepository($scope.repositoryInfo)
                 .success(function (data) {
                     if (angular.isDefined(data.params.ruleset)) {

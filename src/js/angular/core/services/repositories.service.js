@@ -203,6 +203,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         that.getLocations();
 
+        /**
+         * Fixes concurrency issue in repository create/edit view
+         */
+        this.doNotReloadOfLocations = function () {
+            that.locationsShouldReload = false;
+        }
+
         // eslint-disable-next-line valid-jsdoc
         /**
          * When refresh we invoke getLocations() to avoid issue (call getLocations() second time)

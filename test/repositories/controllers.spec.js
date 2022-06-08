@@ -363,8 +363,10 @@ describe('==> Repository module controllers tests', function () {
                     init = true;
                     callback();
                 },
-                getLoadedLocations: function () {
+                getLocations: function () {
                     return [{uri: '', local: true}]
+                },
+                doNotReloadOfLocations: function () {
                 }
             };
 
