@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-4 col-lg-3 col-xl-3 mb-1">
             <div class="attached-header">{{'fedx.repo.local.attached.header' | translate}}</div>
-            <div class="form-local-repos pre-scrollable locations-list mb-1">
+            <div class="form-local-repos pre-scrollable locations-list">
                 <div class="location-item hoverable"
                      ng-repeat="repository in knownRepos | orderBy: ['type === \'system\'', 'location', 'id']"
                      ng-if="repository.type !== 'fedx'"
@@ -54,7 +54,10 @@
                     </a>
                 </div>
             </div>
-            <button type="button" id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span>{{'attach.remote.location' | translate}}</button>
+            <button type="button" id="addFedXRepository" ng-click="addRemoteMember()" class="btn btn-primary">
+                <span class="icon-plus"></span>
+                {{'fedx.repo.add.remote' | translate}}
+            </button>
         </div>
     </div>
     <div id="fedx-options">
