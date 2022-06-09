@@ -118,6 +118,7 @@ form div label.error {
     border: 1px solid;
     height:8rem;
     font-size: 1.3em;
+    margin-bottom: 0.5rem;
 }
 
 .form-repo-members {

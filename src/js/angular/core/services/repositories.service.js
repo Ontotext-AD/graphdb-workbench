@@ -203,6 +203,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         that.getLocations();
 
+        // eslint-disable-next-line valid-jsdoc
+        /**
+         * When refresh we invoke getLocations() to avoid issue (call getLocations() second time)
+         */
+        this.getLoadedLocations = function () {
+            return this.locations;
+        };
+
         this.getActiveLocation = function () {
             return this.location;
         };
