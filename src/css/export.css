@@ -35,7 +35,7 @@
 .ot-owlim-ctrl .pagination > .active > a {
     background-color: #EBEBEB;
     border-color: #EBEBEB;
-    color: #04355E;
+    color: var(--onto-blue);
 }
 
 .ot-page-size .dropdown-menu {
@@ -65,8 +65,8 @@
   top: 3px;
 }
 .ot-owlim-ctrl .btn-primary[disabled] {
-	background-color: #003663;
-	border-color: #003663;
+	background-color: var(--onto-blue);
+	border-color: var(--onto-blue);
 	color: #fff;
 }
 
@@ -93,7 +93,7 @@
 }
 
 .arrows-up-down i.fa{
-    color: #0cb0a0;
+    color: var(--onto-green);
     font-size: 26px;
 }
 
@@ -118,8 +118,8 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    background-color: #003663;
-    border-color: #003663;
+    background-color: var(--onto-blue);
+    border-color: var(--onto-blue);
     display: none;
 }
 
@@ -137,7 +137,7 @@
 
 .formats-list > li:hover{
     cursor: pointer;
-    background-color: #0cb0a0;
+    background-color: var(--onto-green);
 }
 
 .arrow-up {
@@ -145,7 +145,7 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #003663;
+    border-bottom: 8px solid var(--onto-blue);
     position: absolute;
     bottom: 0;
     left: 40px;
@@ -208,7 +208,7 @@
 #export-graphs .arrow-up{
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid #003663;
+    border-bottom: 5px solid var(--onto-blue);
     bottom: -2px;
     left: 19px;
 }

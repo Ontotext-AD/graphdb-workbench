@@ -66,7 +66,7 @@ describe('Repositories', () => {
         cy.url().should('include', '/repository/create');
 
         cy.get('.create-buttons')
-            .find('.h3.repo-type')
+            .find('.repo-type')
             .should('have.length', 3)
             .then((repoTypes) => {
                 repoTypes.each(($index, $repoType) => {

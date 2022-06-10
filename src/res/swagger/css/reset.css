@@ -84,9 +84,8 @@ video {
   padding: 0;
   border: 0;
   font-size: 100%;
-    font-family: 'RubikWeb', -apple-system,'BlinkMacSystemFont','Segoe UI','Roboto','Helvetica Neue','Arial',sans-serif !important;
   vertical-align: baseline;
-    font-weight: normal !important;
+  font-weight: normal !important;
 }
 /* HTML5 display-role reset for older browsers */
 article,

@@ -1,5 +1,5 @@
 b {
-    color: #f04e23;
+    color: var(--autocomplete-match);
 }
 .angucomplete-dropdown {
     overflow-y: auto;
@@ -14,8 +14,7 @@ b {
 }
 
 .angucomplete-selected-row {
-    background-color: #3385ff;
-    color: white;
+    background-color: var(--autocomplete-background);
     cursor: pointer;
 }
 

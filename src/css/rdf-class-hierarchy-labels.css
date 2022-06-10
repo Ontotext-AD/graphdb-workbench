@@ -1,5 +1,5 @@
 .label {
-  	font: 20px "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	font: 20px var(--main-font);
   	text-anchor: middle;
   	alignment-baseline: middle;
 	pointer-events: none;

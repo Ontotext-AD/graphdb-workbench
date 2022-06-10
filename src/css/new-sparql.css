@@ -65,12 +65,21 @@
 .CodeMirror {
     border: 1px solid #ddd;
 	border-top: none;
-    font-family: Menlo, Consolas, "Ubuntu Mono", monospace !important;
+    font-family: var(--mono-font) !important;
     background: #fff;
 }
 
 .CodeMirror pre, .CodeMirror-gutter-text {
     line-height: 130%;
+}
+
+li.CodeMirror-hint-active {
+    background: var(--autocomplete-background);
+    color: inherit;
+}
+
+.CodeMirror-hint b, .CodeMirror-hint-active b {
+    color: var(--autocomplete-match);
 }
 
 .collapsing.width {

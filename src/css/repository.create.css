@@ -10,19 +10,29 @@
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #04355E;
+  color: var(--onto-blue);
   border-radius: 20px;
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   max-width: 380px;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
 }
 
 .repository-heading {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  width: 100%;
+  align-self: center;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.repository-heading .repo-type {
+  align-self: center;
+  font-size: 1.75rem;
+}
+
+.repository-heading i {
+    color: var(--onto-orange);
 }
 
 .repo-description {

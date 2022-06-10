@@ -2,7 +2,7 @@
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
-                <div class="alert alert-warning lead">
+                <div class="alert lead" ng-class="!getActiveRepository() ? 'alert-info' : 'alert-warning'">
                     <div ng-if="!getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
                     <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">{{'core.errors.restricted.warning.msg' | translate}}
                         <span ng-if="!isLicenseValid()">{{'core.errors.not.valid.license.warning.msg' | translate}}

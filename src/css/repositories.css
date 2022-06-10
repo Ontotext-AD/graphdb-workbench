@@ -200,7 +200,7 @@ span.required {
     padding-top: 5px;
     font-size: 20px;
     background-color: #D1D1D1;
-    color: #f04e23
+    color: var(--onto-orange);
 }
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div {
@@ -215,7 +215,7 @@ span.required {
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div.iconsContainer div i {
     cursor: pointer;
     font-size: 16px;
-    color: #f04e23;
+    color: var(--onto-orange);
     margin-left: 5px
 }
 
@@ -369,11 +369,11 @@ span.label {
 }
 
 .fedx-repo-member-icon {
-    color:#04355E
+    color:var(--onto-blue)
 }
 
 .icon-import.active {
-    color:#11b0a1
+    color:var(--onto-green)
 }
 .checkbox-param-include-inferred {
     position: relative;
@@ -448,4 +448,9 @@ span.label {
 
 .attached-header {
     margin-bottom: 0.5em;
+}
+
+.repository-status {
+    font-weight: bolder;
+    font-variant-caps: all-small-caps;
 }

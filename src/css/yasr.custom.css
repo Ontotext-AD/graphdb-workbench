@@ -4,6 +4,10 @@
   text-align: center;
 }
 
+.yasr table.dataTable thead th {
+  background-color: rgba(var(--onto-green-rgb), 0.1) !important;
+}
+
 .yasr table.dataTable thead th, .yasr table.dataTable thead td {
   border-bottom: none;
 }
@@ -17,8 +21,12 @@
 }
 
 .yasr a {
-  color: #018ae1;
+  color: var(--onto-blue-light);
   text-decoration: none;
+}
+
+.yasr a:hover {
+  color: var(--onto-blue);
 }
 
 .yasr table.dataTable tr td:first-child {
@@ -75,10 +83,12 @@
 
 .yasr .yasr_results .nonUri sup {
   font-size: 75%;
+  color: #666666;
 }
 
 .yasr .nonUri {
   border: none;
+  color: var(--onto-blue);
   background-color: transparent;
   padding: 0;
   margin: 0;
@@ -196,5 +206,5 @@
 }
 
 #highlighted_output {
-    font-family: Menlo, Consolas, "Ubuntu Mono", monospace;
+    font-family: var(--mono-font);
 }

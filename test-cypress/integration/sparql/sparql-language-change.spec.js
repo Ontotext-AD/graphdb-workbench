@@ -10,7 +10,7 @@ describe('YASQE and YASR language change validation', () => {
 
     afterEach(() => {
         // Change the language back to English
-        SparqlSteps.changeLanguage('Anglais');
+        SparqlSteps.changeLanguage('en');
 
         cy.deleteRepository(repositoryId);
     })
@@ -24,7 +24,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getEditorAndResultsBtn().should('contain', 'Editor and results');
             SparqlSteps.getResultsOnlyBtn().should('contain', 'Results only');
 
-            SparqlSteps.changeLanguage('French');
+            SparqlSteps.changeLanguage('fr');
 
             // The text in the labels should change
             SparqlSteps.getSparqlQueryUpdateLabel().should('contain', 'Requête et mise à jour SPARQL');
@@ -49,7 +49,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getTabWithGoogleChartText().should('contain', 'Google Chart');
             SparqlSteps.getResultsDescription().should('contain', 'Showing results from');
 
-            SparqlSteps.changeLanguage('French');
+            SparqlSteps.changeLanguage('fr');
 
             // The text in the labels should change
             SparqlSteps.getTabWithTableText().should('contain', 'Tableau');

@@ -1,10 +1,10 @@
 import {LinkState, NodeState} from "./controllers";
 
 export const clusterColors = {
-    ontoOrange: '#ED4F2F',
-    ontoBlue: '#04355E',
-    ontoGreen: '#0CB0A0',
-    ontoGrey: '#97999C'
+    ontoOrange: 'var(--onto-orange)',
+    ontoBlue: 'var(--onto-blue)',
+    ontoGreen: 'var(--onto-green)',
+    ontoGrey: 'var(--onto-grey)'
 };
 
 export function createClusterSvgElement(element) {

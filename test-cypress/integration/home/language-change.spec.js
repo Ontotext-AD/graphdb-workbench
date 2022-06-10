@@ -13,7 +13,7 @@ describe('Home screen language validation', () => {
         cy.deleteRepository(repositoryId);
 
         // Change the language back to English
-        SparqlSteps.changeLanguage('Anglais');
+        SparqlSteps.changeLanguage('en');
     });
 
     context('Language change label checks', () => {
@@ -33,7 +33,7 @@ describe('Home screen language validation', () => {
             HomeSteps.getSavedSparqlQueriesAsLabel().should('have.text', 'Saved SPARQL queries');
             HomeSteps.getLicenseAsLabel().should('have.text', 'License');
 
-            SparqlSteps.changeLanguage('French');
+            SparqlSteps.changeLanguage('fr');
 
             // The text in the labels should change
             HomeSteps.getViewResourceAsLabel().should('have.text', 'Voir la ressource');
