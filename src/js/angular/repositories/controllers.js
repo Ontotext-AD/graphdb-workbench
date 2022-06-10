@@ -192,7 +192,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteLocation(uri);
+                $repositories.deleteLocation(uri).finally(() => $scope.loader = false);
             });
     };
 
@@ -209,9 +209,8 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             .error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
-
-                $scope.loader = false;
-            });
+            })
+            .finally(() => $scope.loader = false);
     };
 
     $scope.addLocation = function () {
@@ -237,8 +236,8 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
             .error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
-                $scope.loader = false;
-            });
+            })
+            .finally(() => $scope.loader = false);
     };
 
     $scope.editLocation = function (location) {
@@ -272,7 +271,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteRepository(repository);
+                $repositories.deleteRepository(repository).finally(() => $scope.loader = false);
                 removeCachedGraphsOnDelete(repository);
             });
     };
@@ -285,7 +284,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.restartRepository(repository);
+                $repositories.restartRepository(repository).finally(() => $scope.loader = false);
             });
     };
 
