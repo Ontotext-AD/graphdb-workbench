@@ -793,18 +793,25 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 .catch(function (response) {
                     const data = response.data;
                     const status = response.status;
-                    if (status === 404 && $routeParams.repositoryId !== 'system') {
-                        toastr.error('Repo with name ' + '<b>' + $routeParams.repositoryId + '</b>' + ' doesn\'t exists', 'Error',
-                            {allowHtml: true});
-                        $scope.loader = false;
-                        $location.path('repository');
-                    } else if (status === 404 && $routeParams.repositoryId === 'system') {
-                        toastr.error($translate.instant('edit.system.repo.warning'), $translate.instant('common.error'), {allowHtml: true});
-                        $scope.loader = false;
-                        $location.path('repository');
+                    const repositoryId = $routeParams.repositoryId;
+                    let toastrMsg;
+
+                    if (status === 404 && repositoryId !== 'system') {
+                        toastrMsg = decodeHTML($translate.instant('edit.repo.error.not.exists', {repositoryId}));
+                    } else if (status === 404 && repositoryId === 'system') {
+                        toastrMsg = decodeHTML($translate.instant('edit.system.repo.warning'));
                     } else {
-                        const msg = getError(data);
-                        toastr.error(msg, $translate.instant('common.error'));
+                        toastrMsg = getError(data);
+                    }
+
+                    toastr.error(toastrMsg, $translate.instant('common.error'), {allowHtml: true});
+
+                    if (status === 404) {
+                        setTimeout(function () {
+                            $scope.loader = false;
+                            $location.path('repository');
+                        }, 1000);
+                    } else {
                         $scope.loader = false;
                     }
                 });

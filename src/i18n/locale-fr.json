@@ -925,6 +925,7 @@
     "invalid.ruleset.file.error": "Fichier de jeu de règles invalide. Veuillez en télécharger un valide.",
     "wrong.repo.name.error": "Mauvais nom de repo",
     "edit.system.repo.warning": "Le répertoire <b>System</b> ne peut pas être modifié.",
+    "edit.repo.error.not.exists": "Le répertoire <b>{{repositoryId}}</b> n'existe pas",
     "edit.repo.success.msg": "Le répertoire {{saveId}} a été édité.",
     "edit.repo.save.changes.msg": "Enregistrer les modifications au répertoire <strong> {{repoId}} </strong>? <br> <br>",
     "edit.repo.rename.changes.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--onto-orange-dark)\"/>Le répertoire sera arrêté et renommé.",
