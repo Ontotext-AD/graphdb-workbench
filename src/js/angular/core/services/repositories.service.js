@@ -16,9 +16,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q',
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-              RepositoriesRestService, LocationsRestService, LicenseRestService, $translate) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
@@ -69,7 +69,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
                 }
             } else {
-                this.setRepository(this.location.defaultRepository ? {id: this.location.defaultRepository, location: this.location.uri} : '');
+                this.setRepository(
+                    this.location.defaultRepository ? {id: this.location.defaultRepository, location: this.location.uri} : '');
             }
         };
 
@@ -90,11 +91,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                         if (typeof res === 'object') {
                             // New style, check version and product
                             if (res.productVersion !== productInfo.productVersion) {
-                                currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
+                                currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version',
+                                    {location: currentLocation.name});
                             }
                         } else {
                             // Pre 7.1 style
-                            currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version', {location: currentLocation.name});
+                            currentLocation.degradedReason = $translate.instant('repositories.service.different.gdb.version',
+                                {location: currentLocation.name});
                         }
                     })
                     .error(function (error) {
@@ -119,7 +122,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (location && location.errorMsg) {
                 location.errorMsg = null;
             }
-        }
+        };
 
         this.initQuick = function () {
             // Quick mode - used to refresh the repo list and states, skip loading if no active location
@@ -182,34 +185,44 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 });
         };
 
+        let locationsRequestPromise;
+
         this.getLocations = function () {
-            if (this.locationsShouldReload) {
-                this.locationsShouldReload = false;
-                this.locations = [this.location];
-                const that = this;
-                return LocationsRestService.getLocations()
-                    .success(function (data) {
-                        that.locations = data;
-                    })
-                    .error(function () {
-                        // if there is an error clear the flag after some time to trigger another attempt
-                        $timeout(function () {
-                            that.locationsShouldReload = true;
-                        }, 2000);
-                    });
+            if (that.locationsShouldReload) {
+                if (!locationsRequestPromise) {
+                    this.locationsShouldReload = false;
+                    this.locations = [this.location];
+                    const that = this;
+                    locationsRequestPromise = LocationsRestService.getLocations()
+                        .then((data) => {
+                            this.locations = data.data;
+                            return this.locations;
+                        })
+                        .catch(function () {
+                            // if there is an error clear the flag after some time to trigger another attempt
+                            $timeout(function () {
+                                that.locationsShouldReload = true;
+                            }, 2000);
+                        })
+                        .finally(() => {
+                            // when request finishes, clear the variable
+                            locationsRequestPromise = null;
+                        });
+                }
+                return locationsRequestPromise;
             }
-            return this.locations;
+
+            // if request is in progress, return its promise, else return a promise and resolve it with locations
+            if (locationsRequestPromise) {
+                return locationsRequestPromise;
+            } else {
+                const deferred = $q.defer();
+                deferred.resolve(this.locations);
+                return deferred.promise;
+            }
         };
 
         that.getLocations();
-
-        // eslint-disable-next-line valid-jsdoc
-        /**
-         * When refresh we invoke getLocations() to avoid issue (call getLocations() second time)
-         */
-        this.getLoadedLocations = function () {
-            return this.locations;
-        };
 
         this.getActiveLocation = function () {
             return this.location;
@@ -239,7 +252,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canReadRepo(repo)
+                return $jwtAuth.canReadRepo(repo);
             });
         };
 
@@ -284,9 +297,9 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             // so return the following check to ensure that repositories will
             // be loaded first repo type will be evaluated properly afterwards
             return typeof activeRepo === "undefined";
-        }
+        };
 
-        this.isActiveRepoFedXType = function() {
+        this.isActiveRepoFedXType = function () {
             const that = this;
             let repo = that.getActiveRepositoryObject();
             let activeRepo;
@@ -301,11 +314,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             // so return the following check to ensure that repositories will
             // be loaded first repo type will be evaluated properly afterwards
             return typeof activeRepo === "undefined";
-        }
+        };
 
         this.getLocationFromUri = function (locationUri) {
             return this.locations.find((location) => location.uri === locationUri);
-        }
+        };
 
         this.setRepositoryHeaders = function () {
             $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
@@ -362,7 +375,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.deleteLocation = function (uri) {
-            LocationsRestService.deleteLocation(encodeURIComponent(uri))
+            return LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
                     let activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
@@ -378,21 +391,23 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.deleteRepository = function (repo) {
-            RepositoriesRestService.deleteRepository(repo)
+            return RepositoriesRestService.deleteRepository(repo)
                 .success(function () {
                     that.init();
                 }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.error'));
-            });
-            let activeRepo = that.getActiveRepositoryObject();
-            if (activeRepo.id === repo.id && activeRepo.location === repo.location) {
-                that.setRepository('');
-            }
+                    const msg = getError(data);
+                    toastr.error(msg, $translate.instant('common.error'));
+                })
+                .finally(() => {
+                    const activeRepo = that.getActiveRepositoryObject();
+                    if (activeRepo && activeRepo.id === repo.id && activeRepo.location === repo.location) {
+                        that.setRepository('');
+                    }
+                });
         };
 
         this.restartRepository = function (repository) {
-            RepositoriesRestService.restartRepository(repository)
+            return RepositoriesRestService.restartRepository(repository)
                 .success(function () {
                     toastr.success($translate.instant('repositories.service.restarting.repo', {repositoryId: repository.id}));
                     // This provides immediate visual feedback by updating the status
@@ -416,11 +431,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 return repo.id === this.repository.id && repo.location === this.repository.location;
             }
             return false;
-        }
+        };
 
         this.getRepositoriesFromLocation = function (locationId) {
             return this.repositories.get(locationId);
-        }
+        };
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             if (!securityEnabled || userLoggedIn || freeAccess) {

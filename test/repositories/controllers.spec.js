@@ -25,8 +25,9 @@ describe('==> Repository module controllers tests', function () {
         let httpSecurity;
         let httpDefaultUser;
         let $translate;
+        let $q;
 
-        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q, _$translate_) {
+        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$q_, _$translate_) {
             $repositories = _$repositories_;
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -34,6 +35,7 @@ describe('==> Repository module controllers tests', function () {
             $window = _$window_;
             $timeout = _$timeout_;
             $translate = _$translate_;
+            $q = _$q_;
 
             modalInstance = new FakeModal($q, $rootScope);
 
@@ -53,7 +55,8 @@ describe('==> Repository module controllers tests', function () {
                 $modal: modalInstance,
                 ModalService: modalInstance,
                 $jwtAuth: jwtAuthMock,
-                $translate: $translate
+                $translate: $translate,
+                $q: $q
             });
 
             httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
@@ -110,7 +113,9 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend.flush();
                 var deleteLocation = '';
                 $repositories.deleteLocation = function (uri) {
-                    deleteLocation = uri;
+                    const deferred = $q.defer();
+                    deferred.resolve(uri);
+                    return deferred.promise.then(() => deleteLocation = uri);
                 };
                 $scope.deleteLocation('uri');
                 modalInstance.close();
@@ -164,7 +169,7 @@ describe('==> Repository module controllers tests', function () {
                 modalInstance.close();
                 $httpBackend.flush();
 
-                expect($scope.loader).toEqual(true);
+                expect($scope.loader).toEqual(false);
             });
         });
     });
@@ -353,7 +358,7 @@ describe('==> Repository module controllers tests', function () {
             isFreeEdition,
             init = false;
 
-        beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope, $q) {
             $httpBackend = _$httpBackend_;
             $controller = _$controller_;
             repositoriesMock = {
@@ -363,8 +368,10 @@ describe('==> Repository module controllers tests', function () {
                     init = true;
                     callback();
                 },
-                getLoadedLocations: function () {
-                    return [{uri: '', local: true}]
+                getLocations: function () {
+                    const deferred = $q.defer();
+                    deferred.resolve([{uri: '', local: true}]);
+                    return deferred.promise;
                 }
             };
 

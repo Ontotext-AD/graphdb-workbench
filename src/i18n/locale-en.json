@@ -923,6 +923,7 @@
     "invalid.ruleset.file.error": "Invalid rule-set file. Please upload a valid one.",
     "wrong.repo.name.error": "Wrong repo name",
     "edit.system.repo.warning": "<b>System</b> repository can't be edited",
+    "edit.repo.error.not.exists": "Repo with name <b>{{repositoryId}}</b> doesn't exists",
     "edit.repo.success.msg": "The repository {{saveId}} has been edited.",
     "edit.repo.save.changes.msg": "Save changes to repository <strong>{{repoId}}</strong>?<br><br>",
     "edit.repo.rename.changes.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--onto-orange-dark)\"/>The repository will be stopped and renamed.",

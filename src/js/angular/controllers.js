@@ -293,10 +293,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $scope.userLoggedIn;
     };
 
-    $scope.getLocations = function () {
-        return $repositories.getLocations();
-    };
-
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };

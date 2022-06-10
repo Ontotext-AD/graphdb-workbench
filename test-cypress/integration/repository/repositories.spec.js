@@ -732,6 +732,7 @@ describe('Repositories', () => {
     }
 
     function getRepositoryFromList(repository) {
+        waitLoader();
         return getRepositoriesList()
             .find('.repository')
             .contains(repository)
