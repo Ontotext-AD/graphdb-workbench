@@ -353,7 +353,7 @@ describe('==> Repository module controllers tests', function () {
             isFreeEdition,
             init = false;
 
-        beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope) {
+        beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope, $q) {
             $httpBackend = _$httpBackend_;
             $controller = _$controller_;
             repositoriesMock = {
@@ -364,7 +364,9 @@ describe('==> Repository module controllers tests', function () {
                     callback();
                 },
                 getLocations: function () {
-                    return [{uri: '', local: true}]
+                    const deferred = $q.defer();
+                    deferred.resolve([{uri: '', local: true}]);
+                    return deferred.promise;
                 }
             };
 
