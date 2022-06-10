@@ -16,9 +16,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate',
+                                        'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q',
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-              RepositoriesRestService, LocationsRestService, LicenseRestService, $translate) {
+              RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
@@ -182,41 +182,44 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 });
         };
 
+        let locationsRequestPromise;
+
         this.getLocations = function () {
-            if (this.locationsShouldReload) {
-                this.locationsShouldReload = false;
-                this.locations = [this.location];
-                const that = this;
-                return LocationsRestService.getLocations()
-                    .success(function (data) {
-                        that.locations = data;
-                    })
-                    .error(function () {
-                        // if there is an error clear the flag after some time to trigger another attempt
-                        $timeout(function () {
-                            that.locationsShouldReload = true;
-                        }, 2000);
-                    });
+            if (that.locationsShouldReload) {
+                if (!locationsRequestPromise) {
+                    this.locationsShouldReload = false;
+                    this.locations = [this.location];
+                    const that = this;
+                    locationsRequestPromise = LocationsRestService.getLocations()
+                        .then((data) => {
+                            this.locations = data.data;
+                            return this.locations;
+                        })
+                        .catch(function () {
+                            // if there is an error clear the flag after some time to trigger another attempt
+                            $timeout(function () {
+                                that.locationsShouldReload = true;
+                            }, 2000);
+                        })
+                        .finally(() => {
+                            // when request finishes, clear the variable
+                            locationsRequestPromise = null;
+                        });
+                }
+                return locationsRequestPromise;
             }
-            return this.locations;
+
+            // if request is in progress, return its promise, else return a promise and resolve it with locations
+            if (locationsRequestPromise) {
+                return locationsRequestPromise;
+            } else {
+                const deferred = $q.defer();
+                deferred.resolve(this.locations);
+                return deferred.promise;
+            }
         };
 
         that.getLocations();
-
-        /**
-         * Fixes concurrency issue in repository create/edit view
-         */
-        this.doNotReloadOfLocations = function () {
-            that.locationsShouldReload = false;
-        }
-
-        // eslint-disable-next-line valid-jsdoc
-        /**
-         * When refresh we invoke getLocations() to avoid issue (call getLocations() second time)
-         */
-        this.getLoadedLocations = function () {
-            return this.locations;
-        };
 
         this.getActiveLocation = function () {
             return this.location;
