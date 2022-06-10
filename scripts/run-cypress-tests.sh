@@ -80,6 +80,7 @@ if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
     -p "$GDB_TMPDIR/graphdb.pid" \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
+    -Dgraphdb.stats.default=disabled \
     -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" ]; then
     echo "Unable to start GraphDB"
     cleanup 1

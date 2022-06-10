@@ -7,6 +7,7 @@ services:
     environment:
       GDB_JAVA_OPTS: >-
         -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
+        -Dgraphdb.stats.default=disabled
     expose:
       - 7200
     volumes:
