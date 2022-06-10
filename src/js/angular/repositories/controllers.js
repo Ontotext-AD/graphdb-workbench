@@ -153,9 +153,11 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     };
 
     //Get locations
-    $repositories.getLocations().then((locations) => {
-        $scope.locations = locations;
-    });
+    $repositories.getLocations()
+        .then((locations) => {
+            $scope.locations = locations;
+        })
+        .finally(() => $scope.loader = false);
 
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
