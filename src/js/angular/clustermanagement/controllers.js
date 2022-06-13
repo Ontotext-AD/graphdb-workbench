@@ -107,8 +107,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
             });
     }
 
+    let updateRequest;
     function updateCluster(force) {
-        $scope.getClusterStatus()
+        if (updateRequest) {
+            return;
+        }
+
+        updateRequest = $scope.getClusterStatus()
             .then(() => {
                 if (force || !$scope.clusterConfiguration) {
                     return $scope.getClusterConfiguration();
@@ -119,7 +124,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     return $scope.getCurrentNodeStatus();
                 }
             })
-            .finally(() => $scope.childContext.redraw());
+            .finally(() => {
+                updateRequest = null;
+                $scope.childContext.redraw();
+            });
     }
 
     $scope.getLoaderMessage = function () {
