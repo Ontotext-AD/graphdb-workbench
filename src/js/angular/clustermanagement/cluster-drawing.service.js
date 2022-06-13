@@ -96,6 +96,7 @@ function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
             .attr('x', -nodeRadius)
             .attr('width', nodeRadius * 2)
             .attr('height', 10)
+            .attr('class', 'label-wrapper')
             .append('xhtml:div')
             .attr('class', 'id id-host');
     } else {
