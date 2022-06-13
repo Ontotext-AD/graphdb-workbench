@@ -120,7 +120,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
                 $scope.uploadFileLoader = true;
                 Upload.upload({
                     url: 'rest/repositories/file/upload',
-                    data: {uploadFile: $scope.uploadFile, location: $scope.repositoryInfo.location}
+                    data: {file: $scope.uploadFile, location: $scope.repositoryInfo.location}
                 })
                     .success(function (data) {
                         if (!data.success) {
