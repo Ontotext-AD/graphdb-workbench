@@ -203,6 +203,7 @@ const moduleDefinition = function (productInfo) {
 };
 
 $.get('rest/info/version?local=1', function (data) {
+    // Extract major.minor version as short version
     const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
     if (versionArray.length) {
         data.productShortVersion = versionArray[1];
@@ -210,6 +211,12 @@ $.get('rest/info/version?local=1', function (data) {
         data.productShortVersion = data.productVersion;
     }
 
+    // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+    // the first attribute is M3 so the short version will be 10.0-M3.
+    const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+    if (attributeArray.length) {
+        data.productShortVersion = data.productShortVersion + attributeArray[1];
+    }
 
     moduleDefinition(data);
 });

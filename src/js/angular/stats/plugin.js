@@ -53,10 +53,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'icon-external',
             hrefFun: function (productInfo) {
-                if (productInfo.productType) {
-                    return DOCUMENTATION_URL + productInfo.productShortVersion + '/graphdb/';
-                }
-                return DOCUMENTATION_URL;
+                return DOCUMENTATION_URL + productInfo.productShortVersion + '/';
             }
         }, {
             label: 'Developer Hub',
@@ -65,10 +62,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'icon-external',
             hrefFun: function (productInfo) {
-                if (productInfo.productType) {
-                    return DOCUMENTATION_URL + productInfo.productShortVersion + '/graphdb/devhub/';
-                }
-                return DOCUMENTATION_URL + 'graphdb/devhub/';
+                return DOCUMENTATION_URL + productInfo.productShortVersion + '/devhub/';
             }
         }, {
             label: 'Support',
@@ -77,10 +71,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'icon-external',
             hrefFun: function (productInfo) {
-                if (productInfo.productType) {
-                    return DOCUMENTATION_URL + productInfo.productShortVersion + '/graphdb/support.html';
-                }
-                return DOCUMENTATION_URL + 'graphdb/support.html';
+                return DOCUMENTATION_URL + productInfo.productShortVersion + '/support.html';
             }
         }
     ]

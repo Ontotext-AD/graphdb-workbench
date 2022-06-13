@@ -515,7 +515,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             },
             {
                 "title": $translate.instant('main.info.title.create.repo.page'),
-                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + $scope.getProductType() + "/configuring-a-repository.html\" target=\"_blank\">"}))
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
             },
             {
                 "title": $translate.instant('main.info.title.load.sample.dataset'),
