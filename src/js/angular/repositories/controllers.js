@@ -105,7 +105,7 @@ const checkInvalidValues = function (invalidValues, $translate) {
 };
 
 const getDocBase = function (productInfo) {
-    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
+    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
 };
 const filterLocations = function (result) {
     return result.filter((location) => !location.errorMsg && !location.degradedReason);

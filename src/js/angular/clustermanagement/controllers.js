@@ -746,7 +746,7 @@ function EditClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, t
 }
 
 const getDocBase = function (productInfo) {
-    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}/${productInfo.productType}`;
+    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
 };
 
 AddNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data', '$modal', 'RemoteLocationsService'];
