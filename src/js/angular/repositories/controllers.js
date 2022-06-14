@@ -153,11 +153,13 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     };
 
     //Get locations
-    $repositories.getLocations()
-        .then((locations) => {
-            $scope.locations = locations;
-        })
-        .finally(() => $scope.loader = false);
+    function getLocations() {
+        return $repositories.getLocations()
+            .then((locations) => {
+                $scope.locations = locations;
+            })
+            .finally(() => $scope.loader = false);
+    }
 
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -192,7 +194,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteLocation(uri).finally(() => $scope.loader = false);
+                $repositories.deleteLocation(uri).finally(() => getLocations());
             });
     };
 
@@ -201,8 +203,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
         LocationsRestService.addLocation(dataAddLocation)
-            .success(function (data) {
-                $scope.locations = data;
+            .success(function () {
                 //Reload locations and repositories
                 $repositories.init();
             })
@@ -210,7 +211,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
-            .finally(() => $scope.loader = false);
+            .finally(() => getLocations());
     };
 
     $scope.addLocation = function () {
@@ -228,8 +229,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
     $scope.editLocationHttp = function (dataEditLocation) {
         $scope.loader = true;
         LocationsRestService.editLocation(dataEditLocation)
-            .success(function (data) {
-                $scope.locations = data;
+            .success(function () {
                 //Reload locations and repositories
                 $repositories.init();
             })
@@ -237,7 +237,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
-            .finally(() => $scope.loader = false);
+            .finally(() => getLocations());
     };
 
     $scope.editLocation = function (location) {
@@ -284,7 +284,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.restartRepository(repository).finally(() => $scope.loader = false);
+                $repositories.restartRepository(repository).finally(() => getLocations());
             });
     };
 
@@ -358,9 +358,11 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         });
     };
 
+    getLocations();
     const timer = $interval(function () {
         // Update repositories state
         $repositories.initQuick();
+        getLocations();
     }, 5000);
 
     $scope.$on('$destroy', function () {
