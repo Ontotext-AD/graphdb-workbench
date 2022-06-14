@@ -101,6 +101,7 @@ describe('==> Repository module controllers tests', function () {
                     test = true
                 };
                 $httpBackend.expectPUT('rest/locations', {}).respond(200, {locations: ['some new location']});
+                $httpBackend.expectGET('rest/locations').respond(200, {locations: ['some new location']});
                 $scope.editLocationHttp({});
                 $httpBackend.flush();
                 expect($scope.locations).toEqual({locations: ['some new location']});
@@ -110,7 +111,6 @@ describe('==> Repository module controllers tests', function () {
 
         describe('$scope.deleteLocation()', function () {
             it('should call $repositories.deleteLocation on modal confirm', function () {
-                $httpBackend.flush();
                 var deleteLocation = '';
                 $repositories.deleteLocation = function (uri) {
                     const deferred = $q.defer();
@@ -119,6 +119,7 @@ describe('==> Repository module controllers tests', function () {
                 };
                 $scope.deleteLocation('uri');
                 modalInstance.close();
+                $httpBackend.flush();
                 expect(deleteLocation).toEqual('uri');
             })
         });
