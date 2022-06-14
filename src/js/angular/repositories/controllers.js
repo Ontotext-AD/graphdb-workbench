@@ -154,7 +154,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     //Get locations
     function getLocations() {
-        $repositories.getLocations()
+        return $repositories.getLocations()
             .then((locations) => {
                 $scope.locations = locations;
             })
