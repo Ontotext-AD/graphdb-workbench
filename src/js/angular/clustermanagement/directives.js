@@ -100,7 +100,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     if (legendNodesGroup) {
                         legendNodesGroup.remove();
                     }
-                    legendNodesGroup = svg.append('g').attr('id', 'legend-nodes-group').classed('hidden', !scope.showLegend);
+                    createLegendGroup();
                     createClusterLegend();
                 }
 
@@ -136,7 +136,13 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     linksGroup = svg.append('g').attr('id', 'links-group');
                     nodesGroup = svg.append('g').attr('id', 'nodes-group');
-                    legendNodesGroup = svg.append('g').attr('id', 'legend-nodes-group').classed('hidden', !scope.showLegend);
+                    createLegendGroup();
+                }
+
+                function createLegendGroup() {
+                    legendNodesGroup = svg.append('g').attr('id', 'legend-group')
+                        .classed('hidden', !scope.showLegend)
+                        .classed('legend-group', true);
                 }
 
                 let tooltipElement;
@@ -265,6 +271,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             .attr('x', 5)
                             .attr('width', linkWidth - 10)
                             .attr('height', 10)
+                            .attr('class', 'label-wrapper')
                             .append('xhtml:div')
                             .attr('class', 'id id-host')
                             .style("font-size", "9px")

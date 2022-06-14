@@ -83,12 +83,16 @@ path.link {
   color: black;
 }
 
+.legend-group .label-wrapper {
+  overflow: visible;
+}
+
 .toggle-legend-btn {
   position: absolute;
   bottom: 0;
 }
 
-#legend-nodes-group.hidden {
+.legend-group.hidden {
   visibility: hidden;
 }
 
