@@ -149,6 +149,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             toastr.error('Cannot execute autocomplete query. ' + getError(data));
         };
 
+        window.editor.on("update", function () {
+            angular.element('.parseErrorIcon').parent().css('z-index', '10');
+        });
+
         window.editor.on("changes", function () {
             angular.element('.CodeMirror-linenumbers').css('width', '1px');
             angular.element('.CodeMirror-sizer').css('margin-left', '0px');
