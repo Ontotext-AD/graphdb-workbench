@@ -74,7 +74,7 @@ describe('QueryEditor', function () {
         }));
 
         describe('initTabs', function () {
-            it('should set default tab and delete cached sparql results', function () {
+            it('should set default tab and delete cached sparql results', async function () {
                 spyOn(LocalStorageAdapter, 'get').and.returnValue(null);
                 spyOn($jwtAuth, 'getPrincipal').and.returnValue({
                     appSettings: {
@@ -86,6 +86,7 @@ describe('QueryEditor', function () {
                 });
 
                 createController();
+                await $scope.getPrincipal();
 
                 expect($scope.skipCountQuery).toEqual(false);
                 expect($scope.ignoreSharedQueries).toEqual(true);
@@ -103,7 +104,7 @@ describe('QueryEditor', function () {
                 expect($scope.tabsData).toEqual(expectedTabs);
             });
 
-            it('should load cached tabs and delete cached sparql results', function () {
+            it('should load cached tabs and delete cached sparql results', async function () {
                 spyOn(LocalStorageAdapter, 'get').and.callFake(function (key) {
                     if (key === LSKeys.TABS_STATE) {
                         return [
@@ -123,6 +124,7 @@ describe('QueryEditor', function () {
                 });
 
                 createController();
+                await $scope.getPrincipal();
 
                 expect($scope.skipCountQuery).toEqual(false);
                 expect($scope.ignoreSharedQueries).toEqual(true);
@@ -209,7 +211,7 @@ describe('QueryEditor', function () {
                 expect(elementMock.tab).toHaveBeenCalledWith('show');
             });
 
-            it('should add new tab', () => {
+            it('should add new tab', async () => {
                 $scope.showSampleQueries = true;
                 let elementMock = {
                     collapse: jasmine.createSpy(),
@@ -230,6 +232,7 @@ describe('QueryEditor', function () {
                 $httpBackend.when('GET', 'rest/locations').respond(200);
 
                 createController();
+                await $scope.getPrincipal();
                 $scope.tabsData = [
                     {id: 'tab-0', name: 'first tab', query: 'query-0', inference: false, sameAs: false},
                     {id: 'tab-1', name: 'second tab', query: 'query-1', inference: false, sameAs: false}

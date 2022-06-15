@@ -121,13 +121,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         }
                     }
                 });
-            }
+            };
 
+            let securityConfigRequestPromise;
             this.initSecurity = function () {
                 this.securityInitialized = false;
                 this.auth = localStorage.getItem(this.authStorageName);
 
-                SecurityRestService.getSecurityConfig().then(function (res) {
+                securityConfigRequestPromise = SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -191,13 +192,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
-                            SecurityRestService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities}
+                            return SecurityRestService.getAdminUser().then(function (res) {
+                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
                     }
-                });
+                })
+                    .finally(() => securityConfigRequestPromise = null);
             };
 
             this.initSecurity();
@@ -335,6 +337,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.getPrincipal = function () {
+                if (securityConfigRequestPromise) {
+                    return securityConfigRequestPromise.then(() => this.principal);
+                }
                 return this.principal;
             };
 
