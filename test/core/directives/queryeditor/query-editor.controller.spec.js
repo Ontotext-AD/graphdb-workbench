@@ -76,14 +76,14 @@ describe('QueryEditor', function () {
         describe('initTabs', function () {
             it('should set default tab and delete cached sparql results', async function () {
                 spyOn(LocalStorageAdapter, 'get').and.returnValue(null);
-                spyOn($jwtAuth, 'getPrincipal').and.returnValue({
+                spyOn($jwtAuth, 'getPrincipal').and.returnValue(Promise.resolve({
                     appSettings: {
                         DEFAULT_INFERENCE: false,
                         DEFAULT_SAMEAS: false,
                         EXECUTE_COUNT: true,
                         IGNORE_SHARED_QUERIES: true
                     }
-                });
+                }));
 
                 createController();
                 await $scope.getPrincipal();
@@ -114,14 +114,14 @@ describe('QueryEditor', function () {
                     }
                     return null;
                 });
-                spyOn($jwtAuth, 'getPrincipal').and.returnValue({
+                spyOn($jwtAuth, 'getPrincipal').and.returnValue(Promise.resolve({
                     appSettings: {
                         DEFAULT_INFERENCE: false,
                         DEFAULT_SAMEAS: false,
                         EXECUTE_COUNT: true,
                         IGNORE_SHARED_QUERIES: true
                     }
-                });
+                }));
 
                 createController();
                 await $scope.getPrincipal();
@@ -219,14 +219,14 @@ describe('QueryEditor', function () {
                     mouseup: jasmine.createSpy()
                 };
                 spyOn(window, '$').and.returnValue(elementMock);
-                spyOn($jwtAuth, 'getPrincipal').and.returnValue({
+                spyOn($jwtAuth, 'getPrincipal').and.returnValue(Promise.resolve({
                     appSettings: {
                         DEFAULT_INFERENCE: false,
                         DEFAULT_SAMEAS: false,
                         EXECUTE_COUNT: true,
                         IGNORE_SHARED_QUERIES: true
                     }
-                });
+                }));
                 $httpBackend.when('GET', 'rest/security/all').respond(200);
                 $httpBackend.when('GET', 'rest/sparql/saved-queries').respond(200);
                 $httpBackend.when('GET', 'rest/locations').respond(200);

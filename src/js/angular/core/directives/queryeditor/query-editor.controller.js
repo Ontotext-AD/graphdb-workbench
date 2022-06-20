@@ -24,12 +24,16 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     };
 
     let principal;
-    $scope.getPrincipal = function() {
-        return Promise.resolve($jwtAuth.getPrincipal()).then((response) => principal = response);
+    // Wrapped in function for ease of testing
+    $scope.getPrincipal = function () {
+        return $jwtAuth.getPrincipal()
+            .then((response) => {
+                principal = response;
+                initTabs($scope, principal);
+            });
     };
 
-    $scope.getPrincipal().then(() => initTabs($scope, principal));
-
+    $scope.getPrincipal();
     let checkQueryIntervalId;
 
     function initTabs(scope, principal) {

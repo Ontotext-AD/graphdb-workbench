@@ -111,11 +111,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -407,13 +407,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $repositories.setRepository(repository);
     };
 
-    $scope.principal = function () {
-        return $jwtAuth.getPrincipal();
-    };
-
-    $scope.isIgnoreSharedQueries = function () {
-        return $jwtAuth.getPrincipal() && $jwtAuth.getPrincipal().appSettings.IGNORE_SHARED_QUERIES;
-    };
+    // Using $q.when to proper set values in view
+    $q.when($jwtAuth.getPrincipal())
+        .then((principal) => {
+            $scope.principal = principal;
+            $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
+        });
 
     $scope.logout = function () {
         $jwtAuth.clearAuthentication();

@@ -524,14 +524,14 @@ describe('==> Controllers tests', function () {
                     return false
                 },
                 getPrincipal: function () {
-                    return {
+                    return Promise.resolve({
                         "username": "user",
                         "password": "",
                         "confirmpassword": "",
                         "external": false,
                         "authorities": ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
                         "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-                    }
+                    });
                 }
             };
 
@@ -701,13 +701,13 @@ describe('==> Controllers tests', function () {
                     return false
                 },
                 getPrincipal: function () {
-                    return {
+                    return Promise.resolve({
                         "username": "user",
                         "password": "",
                         "confirmpassword": "",
                         "authorities": ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo'],
                         "appSettings": {'DEFAULT_INFERENCE': true, 'DEFAULT_SAMEAS': true, 'EXECUTE_COUNT': true}
-                    }
+                    });
                 },
                 isSecurityEnabled: function () {
                     return true;
@@ -763,8 +763,10 @@ describe('==> Controllers tests', function () {
         });
 
         describe('$scope.validateForm', function () {
-            it('should return correct value', function () {
+            it('should return correct value', async function () {
                 $httpBackend.flush();
+                await $scope.getPrincipal();
+
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
 
