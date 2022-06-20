@@ -22,7 +22,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {uri: '', label: 'Local'};
+        this.location = {uri: '', label: 'Local', local: true};
         this.locationError = '';
         this.loading = true;
         this.repository = {
@@ -222,7 +222,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
-        that.getLocations();
 
         this.getActiveLocation = function () {
             return this.location;

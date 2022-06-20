@@ -10,7 +10,7 @@ describe('==> Repository module services tests', function () {
 
     describe('=> $repositories tests', function () {
 
-        var $repositories, $httpBackend, $http, $jwtAuth, httpGetLocations, httpGetActiveLocation, httpGetRepositories, httpSecurity, httpDefaultUser;
+        var $repositories, $httpBackend, $http, $jwtAuth, httpGetActiveLocation, httpGetRepositories, httpSecurity, httpDefaultUser;
 
         beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$http_, _$jwtAuth_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
@@ -22,8 +22,6 @@ describe('==> Repository module services tests', function () {
             $jwtAuth.canReadRepo = function () {
                 return true;
             };
-
-            httpGetLocations = $httpBackend.when('GET', 'rest/locations').respond(200, [{uri: "C:\\temp\\ee\\test", "local": true}]);
 
             httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {
                 "uri": "C:\\temp\\ee\\test",
@@ -73,7 +71,6 @@ describe('==> Repository module services tests', function () {
 
         describe('$repositories.init tests', function () {
             it('should not set activeRepository when there is no active location', function () {
-                httpGetLocations.respond(200, []);
                 //If there is no active location
                 httpGetActiveLocation.respond(200);
                 $httpBackend.expectGET('rest/security/all');
@@ -83,7 +80,7 @@ describe('==> Repository module services tests', function () {
                 expect($repositories.repositories).toEqual(new Map());
                 expect($repositories.repository).toEqual('');
                 expect($repositories.location).toEqual('');
-                expect($repositories.locations).toEqual([]);
+                expect($repositories.locations).toEqual([{ uri: '', label: 'Local', local: true }]);
                 expect($repositories.getActiveLocation()).toEqual('');
                 expect($repositories.hasActiveLocation()).toEqual(false);
                 expect($repositories.getActiveRepository()).toBeUndefined();
