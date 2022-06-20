@@ -13,6 +13,9 @@ describe('mainCtrl', function () {
             this.initSecurity = jasmine.createSpy('initSecurity').and.callFake(function() {
                 // do nothing
             });
+            this.getPrincipal = jasmine.createSpy('initSecurity').and.callFake(function() {
+                // do nothing
+            });
         });
     }));
 

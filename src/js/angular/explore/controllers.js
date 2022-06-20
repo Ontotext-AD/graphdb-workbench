@@ -21,12 +21,20 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService'];
+ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService', '$q'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService) {
+function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService, $q) {
 
+    let principalRequestPromise;
     // We need to get sameAs and inference for the current user
-    const principal = $jwtAuth.getPrincipal();
+    // Using $q.when to proper set values in view
+    $q.when($jwtAuth.getPrincipal())
+        .then((principal) => {
+            // Get the predefined settings for sameAs and inference per user
+            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] ? 'all' : 'explicit';
+            $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
+        });
+
     $scope.loading = false;
 
     $scope.getActiveRepository = function () {
@@ -67,10 +75,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.blanks = true;
-
-    // Get the predefined settings for sameAs and inference per user
-    $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] ? 'all' : 'explicit';
-    $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
 
     $scope.formats = FileTypes;
 
@@ -185,6 +189,12 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         if ($routeParams.context != null) {
             $scope.context = $routeParams.context;
         }
+        // wait for principal request if it has not finished and then fetch graph
+        Promise.resolve(principalRequestPromise)
+            .then(() => getGraph());
+    };
+
+    function getGraph() {
         const headers = {Accept: 'application/x-graphdb-table-results+json'};
         $.ajax({
             method: 'GET',
@@ -207,7 +217,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
             toggleOntoLoader(false);
         });
-    };
+    }
 
     $scope.downloadExport = function (format) {
         let param;
