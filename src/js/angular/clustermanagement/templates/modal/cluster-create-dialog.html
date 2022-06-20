@@ -19,9 +19,6 @@
                                     <div class="logo-image"></div>
                                     {{node.endpoint}}
                                 </div>
-                                <button type="button" ng-if="!node.isLocal" class="btn btn-link remove-node-btn">
-                                    <span class="icon-minus"></span>
-                                </button>
                                 <div ng-if="node.isLocal">
                                     {{'cluster_management.cluster_page.current_node' | translate}}
                                 </div>
