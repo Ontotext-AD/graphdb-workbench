@@ -643,9 +643,11 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                     $timeout.cancel(timer);
                 });
                 // if we update the settings of the currently logged user, update the principal
-                if ($scope.user.username === $jwtAuth.getPrincipal().username) {
-                    $jwtAuth.getPrincipal().appSettings = $scope.user.appSettings;
-                }
+                $jwtAuth.getPrincipal().then((principal) => {
+                    if ($scope.user.username === principal.username) {
+                        principal.appSettings = $scope.user.appSettings;
+                    }
+                });
             }).error(function (data) {
                 const msg = getError(data);
                 $scope.loader = false;
@@ -697,8 +699,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'LocalStorageAdapter', 'LSKeys',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, LocalStorageAdapter, LSKeys) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'LocalStorageAdapter', 'LSKeys', '$q',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, LocalStorageAdapter, LSKeys, $q) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -715,18 +717,30 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 $timeout.cancel(timer);
             });
         };
-        $scope.currentUserData = function () {
-            return $jwtAuth.getPrincipal();
+        // Wrapped in a scope function for ease of testing
+        $scope.getPrincipal = function () {
+            return $jwtAuth.getPrincipal()
+                .then((principal) => {
+                    $scope.currentUserData = angular.copy(principal);
+                });
         };
+
+        $scope.getPrincipal().then(() => {
+            $scope.redirectAdmin();
+            initUserData($scope);
+        });
+
         $scope.showWorkbenchSettings = true;
 
         $scope.updateCurrentUserData = function () {
-            _.assign($jwtAuth.getPrincipal(), $scope.userData);
+            // Using $q.when to proper set values in view
+            $q.when($jwtAuth.getPrincipal())
+                .then((principal) => _.assign(principal, $scope.userData));
         };
 
         //call it as a function so I can make test on it
         $scope.redirectAdmin = function () {
-            if (!$scope.currentUserData()) {
+            if (!$scope.currentUserData) {
                 $rootScope.redirectToLogin();
             }
         };
@@ -740,7 +754,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
 
         const initUserData = function (scope) {
             // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-            scope.userData = angular.copy(scope.currentUserData());
+            scope.userData = angular.copy(scope.currentUserData);
             scope.user = {username: scope.userData.username};
             scope.user.password = '';
             scope.user.confirmpassword = '';
@@ -755,15 +769,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.userType = pa.userType;
             $scope.grantedAuthorities = pa.grantedAuthorities;
         };
-
-        if ($scope.currentUserData()) {
-            initUserData($scope);
-        } else {
-            $scope.$on('securityInit', function (scope) {
-                scope.currentScope.redirectAdmin();
-                initUserData(scope.currentScope);
-            });
-        }
 
         $scope.loader = false;
 

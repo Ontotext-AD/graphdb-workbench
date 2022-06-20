@@ -23,17 +23,18 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         sameAs: true
     };
 
-    let principal = $jwtAuth.getPrincipal();
+    let principal;
+    // Wrapped in function for ease of testing
+    $scope.getPrincipal = function () {
+        return $jwtAuth.getPrincipal()
+            .then((response) => {
+                principal = response;
+                initTabs($scope, principal);
+            });
+    };
+
+    $scope.getPrincipal();
     let checkQueryIntervalId;
-    if (principal) {
-        initTabs($scope, principal);
-        // principal is not yet set, wait for its initialization
-    } else {
-        $scope.$on('securityInit', function (scope) {
-            principal = $jwtAuth.getPrincipal();
-            initTabs(scope.currentScope, principal);
-        });
-    }
 
     function initTabs(scope, principal) {
         defaultTabConfig.inference = principal.appSettings.DEFAULT_INFERENCE;

@@ -262,8 +262,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         // New style settings from principal
         $scope.defaultSettings.includeInferred = settingsFromPrincipal['DEFAULT_INFERENCE'];
-        $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'],
-            $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
+        $scope.defaultSettings.sameAsState = settingsFromPrincipal['DEFAULT_INFERENCE'] && settingsFromPrincipal['DEFAULT_SAMEAS'];
+        $scope.defaultSettings.includeSchema = settingsFromPrincipal['DEFAULT_VIS_GRAPH_SCHEMA'];
 
         const localStorageSettings = LocalStorageAdapter.get(LSKeys.GRAPHS_VIZ);
         if (localStorageSettings && typeof localStorageSettings === 'object') {
@@ -284,17 +284,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
     }
 
-    // Resolves race condition with security init if this is the first loaded page
-    const principal = $jwtAuth.getPrincipal();
-    if (principal) {
-        // We already got a principal, safe to call initSettings
-        initSettings(principal);
-    } else {
-        // No principal yet, delegate to the securityInit event to do call initSettings for us
-        $scope.$on('securityInit', function () {
-            initSettings($jwtAuth.getPrincipal());
-        });
-    }
+    // Using $q.when to proper set values in view
+    $q.when($jwtAuth.getPrincipal())
+        .then((principal) => initSettings(principal));
 
     function renderSettings() {
         $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {

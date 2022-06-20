@@ -8,8 +8,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.rest.security.service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -121,13 +121,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         }
                     }
                 });
-            }
+            };
 
+            let securityConfigRequestPromise;
             this.initSecurity = function () {
                 this.securityInitialized = false;
                 this.auth = localStorage.getItem(this.authStorageName);
 
-                SecurityRestService.getSecurityConfig().then(function (res) {
+                securityConfigRequestPromise = SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -191,13 +192,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
-                            SecurityRestService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities}
+                            return SecurityRestService.getAdminUser().then(function (res) {
+                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
                     }
-                });
+                })
+                    .finally(() => securityConfigRequestPromise = null);
             };
 
             this.initSecurity();
@@ -334,8 +336,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.auth != null || this.externalAuthUser;
             };
 
+            // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
             this.getPrincipal = function () {
-                return this.principal;
+                if (this.principal) {
+                    return Promise.resolve(this.principal);
+                }
+                const deferred = $q.defer();
+                $rootScope.$on('securityInit', () => {
+                    deferred.resolve(this.principal);
+                });
+                return deferred.promise;
             };
 
             this.clearAuthenticationInternal = function () {
