@@ -12,19 +12,20 @@
                 <div class="col-lg-6">
                     <h4>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h4>
                     <ul ng-if="selectedLocations && selectedLocations.length" class="list-group nodes-list">
-                        <li ng-repeat="node in selectedLocations" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center node">
-                            <div class="location-item">
-                                <div class="logo-image"></div>
-                                {{node.endpoint}}
-                            </div>
-                            <button type="button" ng-click="removeNodeFromList($index, node)" ng-if="!node.isLocal"
-                                    tooltip="{{'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top"
-                                    class="btn btn-link remove-node-btn">
-                                <span class="icon-minus"></span>
-                            </button>
-                            <div ng-if="node.isLocal">
-                                {{'cluster_management.cluster_page.current_node' | translate}}
-                            </div>
+                        <li ng-repeat="node in selectedLocations" class="list-group-item list-group-item-action" ng-class="{'list-group-item-node': !node.isLocal}">
+                            <a ng-click="removeNodeFromList($index, node)" class="d-flex justify-content-between align-items-center"
+                               tooltip="{{node.isLocal ? '' : 'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top">
+                                <div class="location-item">
+                                    <div class="logo-image"></div>
+                                    {{node.endpoint}}
+                                </div>
+                                <button type="button" ng-if="!node.isLocal" class="btn btn-link remove-node-btn">
+                                    <span class="icon-minus"></span>
+                                </button>
+                                <div ng-if="node.isLocal">
+                                    {{'cluster_management.cluster_page.current_node' | translate}}
+                                </div>
+                            </a>
                         </li>
                     </ul>
                 </div>

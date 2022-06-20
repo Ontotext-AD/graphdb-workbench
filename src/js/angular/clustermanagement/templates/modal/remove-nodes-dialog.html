@@ -9,15 +9,17 @@
             <div class="col-xs-12 mb-1 mt-1">
                 <h5>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h5>
                 <ul ng-if="clusterNodes.length" class="list-group nodes-list">
-                    <li ng-repeat="node in clusterNodes" ng-class="{'list-group-item-danger': node.shouldRemove}" ng-click="toggleNode($index, node)"
-                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center node">
-                        <div class="location-item">
-                            <div class="logo-image"></div>
-                            {{node.endpoint}}
-                        </div>
-                        <button type="button"  class="btn btn-link toggle-node-btn">
-                            <span ng-class="node.shouldRemove ? 'icon-check' : 'icon-minus'"></span>
-                        </button>
+                    <li ng-repeat="node in clusterNodes" ng-class="{'list-group-item-danger': node.shouldRemove}"
+                        class="list-group-item list-group-item-action list-group-item-node">
+                        <a ng-click="toggleNode($index, node)" class="d-flex justify-content-between align-items-center">
+                            <div class="location-item">
+                                <div class="logo-image"></div>
+                                {{node.endpoint}}
+                            </div>
+                            <button type="button" class="btn btn-link toggle-node-btn">
+                                <span ng-class="node.shouldRemove ? 'icon-check' : 'icon-minus'"></span>
+                            </button>
+                        </a>
                     </li>
                 </ul>
                 <div class="row">
