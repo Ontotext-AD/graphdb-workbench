@@ -507,6 +507,9 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
     };
 
     $scope.removeNodeFromList = function (index, node) {
+        if (node.isLocal) {
+            return;
+        }
         $scope.selectedLocations.splice(index, 1);
         $scope.locations.push(node);
     };
