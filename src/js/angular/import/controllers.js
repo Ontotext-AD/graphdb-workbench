@@ -421,7 +421,7 @@ importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller',
     $scope.init();
 }]);
 
-importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$modal', function ($scope, Upload, $http, toastr, $controller, $modal) {
+importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$modal', '$translate', function ($scope, Upload, $http, toastr, $controller, $modal, $translate) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'upload';
@@ -712,8 +712,8 @@ importCtrl.controller('TabCtrl', ['$scope', '$location', function ($scope, $loca
     $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
 }]);
 
-importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple',
-    function ($scope, $modalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple) {
+importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate',
+    function ($scope, $modalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, $translate) {
     $scope.hasError = function (error, input) {
         return _.find(error, function (o) {
             return input === o['$name'];
