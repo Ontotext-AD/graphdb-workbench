@@ -4,8 +4,8 @@
 	<button type="button" class="close" ng-click="cancel();" aria-hidden="true"></button>
 	<h3 class="modal-title">{{'edit.location' | translate}}</h3>
 </div>
-<form id="addLocationForm" autocomplete="off" name="form">
-	<div class="modal-body">
+<div class="modal-body">
+    <form id="addLocationForm" autocomplete="off" name="form">
         <div class="form-group row">
             <label class="col-md-4 col-form-label">{{'auth.type.header' | translate}}</label>
             <div class="col-md-8">
@@ -53,11 +53,11 @@
                                                         rel="noopener" target="_blank">Access Control / GDB authentication</a>{{'signature.auth.info.last' | translate}}
             </div>
         </div>
-    </div>
-	<div class="modal-footer">
-		<button type="button" ng-click="cancel();" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
-		<button ng-click="ok();" class="btn btn-primary" ng-disabled="form.$invalid">{{'common.save.btn' | translate}}</button>
-	</div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" ng-click="cancel();" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
+    <button ng-click="ok();" class="btn btn-primary" ng-disabled="form.$invalid">{{'common.save.btn' | translate}}</button>
+</div>
 
 <!-- End editLocation.html -->

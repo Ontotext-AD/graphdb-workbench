@@ -2,8 +2,8 @@
     <button type="button" class="close" ng-click="cancel()"></button>
     <h3 class="modal-title">{{'cluster_management.add_nodes_dialog.title' | translate}}</h3>
 </div>
-<form ng-submit="ok()" name="form">
-    <div class="modal-body">
+<div class="modal-body">
+    <form name="form">
         <div class="row">
             <div class="col-lg-6">
                 <h4>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h4>
@@ -32,7 +32,7 @@
                 </div>
                 <button type="button" id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span>{{'attach.remote.location' | translate}}</button>
             </div>
-        </div>
+            </div>
         <div class="row">
             <div class="col-xs-12 mb-1 mt-1">
                 <h5>{{'cluster_management.add_nodes_dialog.nodes_to_add_label' | translate}}</h5>
@@ -52,9 +52,9 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button id="wb-add-nodes-to-cluster-submit" class="btn btn-primary" ng-disabled="!nodes.length" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
-    </div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button id="wb-add-nodes-to-cluster-submit" class="btn btn-primary" ng-disabled="!nodes.length" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
+</div>
