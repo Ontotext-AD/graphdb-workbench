@@ -6,7 +6,7 @@
 </div>
 
 <div class="modal-body">
-    <form novalidate id="cluster-configuration-form" name="clusterConfigurationForm">
+    <form novalidate id="clusterConfigurationForm" name="clusterConfigurationForm">
         <div class="form-horizontal">
             <div class="form-group">
                 <div>
@@ -102,6 +102,6 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button type="submit" ng-click="ok()" ng-disabled="!isClusterConfigurationValid()"
+    <button type="submit" ng-click="ok()" ng-disabled="!isClusterConfigurationValid()" form="clusterConfigurationForm"
             class="btn btn-primary create-connector-btn">{{'cluster_management.cluster_page.save_btn' | translate}}</button>
 </div>

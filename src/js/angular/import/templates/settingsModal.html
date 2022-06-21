@@ -3,7 +3,7 @@
     <h4 class="modal-title">{{'import.settings' | translate}}</h4>
 </div>
 <div class="modal-body">
-    <form name="settingsForm" class="settings-form">
+    <form name="settingsForm" id="settingsForm" class="settings-form">
         <div class="form-horizontal">
         <div class="form-group row">
             <label class="col-lg-3 col-form-label">
@@ -264,5 +264,5 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-link pull-left" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
     <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button type="submit" class="btn btn-primary import-settings-import-button" ng-click="ok()"><span class="import"></span> {{'common.import' | translate}}</button>
+    <button type="submit" class="btn btn-primary import-settings-import-button" form="settingsForm" ng-click="ok()"><span class="import"></span> {{'common.import' | translate}}</button>
 </div>

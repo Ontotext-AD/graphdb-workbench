@@ -3,7 +3,7 @@
   <h3 class="modal-title">{{'cluster_management.delete_cluster_dialog.title' | translate}}</h3>
 </div>
 <div class="modal-body">
-  <form name="form">
+  <form name="form" id="clusterDeleteForm">
     <p>{{'cluster_management.delete_cluster_dialog.content' | translate}}</p>
 
     <div class="form-group row">
@@ -18,5 +18,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-  <button id="wb-delete-cluster-submit" class="btn btn-primary" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
+  <button id="wb-delete-cluster-submit" form="clusterDeleteForm" class="btn btn-primary" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
 </div>

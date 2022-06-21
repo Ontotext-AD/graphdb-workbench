@@ -1,12 +1,12 @@
 <!-- Start copyToClipboard.html -->
 <div class="modal-body">
-    <form novalidate class="form-horizontal" autocomplete="off">
+    <form novalidate class="form-horizontal" autocomplete="off" id="copyToClipboardForm">
         <p><strong>{{'copy.to.clipboard.modal.paragraph' | translate}}</strong></p>
         <input id="clipboardURI" type="text" ng-model="clipboardURI" class="form-control" autofocus value="value"/>
     </form>
 </div>
 <div class="modal-footer">
     <button class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button class="btn btn-primary" ng-click="ok()">{{'copy.to.clipboard.modal.ok.btn' | translate}}</button>
+    <button class="btn btn-primary" form="copyToClipboardForm" ng-click="ok()">{{'copy.to.clipboard.modal.ok.btn' | translate}}</button>
 </div>
 <!-- End copyToClipboard.html -->

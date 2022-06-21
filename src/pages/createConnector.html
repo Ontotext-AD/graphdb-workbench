@@ -3,7 +3,7 @@
     <h3 class="modal-title">Create new {{connector.key}} Connector</h3>
 </div>
 <div class="modal-body">
-    <form name="form" novalidate>
+    <form name="form" id="connectorForm" ng-submit="ok()" novalidate>
 
         <div class="form-horizontal">
 
@@ -141,5 +141,5 @@
 <div class="modal-footer">
         <button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">{{'view.sparql.query' | translate}}</button>
         <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button type="submit" class="btn btn-primary create-connector-btn" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
+        <button type="submit" form="connectorForm" class="btn btn-primary create-connector-btn" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
 </div>

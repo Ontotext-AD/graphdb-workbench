@@ -75,10 +75,10 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="submit" ng-click="ok();" class="btn btn-primary"
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
             ng-disabled="form.$invalid" ng-if="!model.editMode"> {{'common.add' | translate}}
     </button>
-    <button type="submit" ng-click="ok();" class="btn btn-primary"
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
             ng-disabled="form.$invalid" ng-if="model.editMode"> {{'edit' | translate}}
     </button>
     <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>

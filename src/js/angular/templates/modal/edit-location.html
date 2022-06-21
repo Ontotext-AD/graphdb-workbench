@@ -57,7 +57,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" ng-click="cancel();" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
-    <button ng-click="ok();" class="btn btn-primary" ng-disabled="form.$invalid">{{'common.save.btn' | translate}}</button>
+    <button ng-click="ok();" form="addLocationForm" class="btn btn-primary" ng-disabled="form.$invalid">{{'common.save.btn' | translate}}</button>
 </div>
 
 <!-- End editLocation.html -->
