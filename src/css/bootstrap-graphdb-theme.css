@@ -799,6 +799,7 @@ main menu height*/
 .main-menu.collapsed {
     width: 4.375rem;
     overflow: visible;
+    height: auto;
 }
 
 .main-menu.collapsed .menu-element.clicked .sub-menu {
@@ -1163,10 +1164,9 @@ footer.footer .container-fluid.main-container p {
     border-radius: 0;
     padding: 0;
     min-width: 100%;
-    display: block;
+    display: none;
     margin-top: -1em;
     opacity: 0;
-    visibility: hidden;
     -moz-transition: all 150ms ease-out; /* FF4+ */
     -o-transition: all 150ms ease-out; /* Opera 10.5+ */
     -webkit-transition: all 150ms ease-out; /* Saf3.2+, Chrome */
@@ -1175,7 +1175,7 @@ footer.footer .container-fluid.main-container p {
 
 .open > .dropdown-menu {
     opacity: 1;
-    visibility: visible;
+    display: block;
     margin-top: -1px;
 }
 
@@ -1451,10 +1451,24 @@ ul.style-arrow li:before {
 .modal-content {
     border-radius: 0;
     border: none;
+    max-height: 90vh;
+    flex-direction: column;
+    justify-content: space-between;
+    display: flex;
 }
 
 .modal-header .close {
     margin-top: 4px;
+}
+
+.modal-header, .modal-footer {
+    flex: 0 0 auto;
+}
+
+.modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
 }
 
 /*-------------------------------------------------------------

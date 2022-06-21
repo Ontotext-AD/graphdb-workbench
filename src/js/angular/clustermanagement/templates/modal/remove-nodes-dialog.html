@@ -2,8 +2,8 @@
     <button type="button" class="close" ng-click="cancel()"></button>
     <h3 class="modal-title">{{'cluster_management.remove_nodes_dialog.title' | translate}}</h3>
 </div>
-<form ng-submit="ok()" name="form">
-    <div class="modal-body">
+<div class="modal-body">
+    <form name="form" id="removeNodesForm">
         <h5>{{'cluster_management.remove_nodes_dialog.content' | translate}}</h5>
         <div class="row">
             <div class="col-xs-12 mb-1 mt-1">
@@ -28,12 +28,12 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button id="wb-remove-nodes-from-cluster-submit" class="btn btn-primary"
-                ng-disabled="!nodesToRemoveCount || leftNodesLessThanTwo"
-                ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}
-        </button>
-    </div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button id="wb-remove-nodes-from-cluster-submit" class="btn btn-primary"
+            ng-disabled="!nodesToRemoveCount || leftNodesLessThanTwo" form="removeNodesForm"
+            ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}
+    </button>
+</div>

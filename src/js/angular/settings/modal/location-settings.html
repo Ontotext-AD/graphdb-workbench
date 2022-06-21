@@ -3,13 +3,12 @@
     <h3 class="modal-title">{{'view.settings.title' | translate}}</h3>
 </div>
 
-
-<form id="settingsForm" class="form-horizontal" novalidate name="settingsForm">
-    <div class="modal-body">
-        <div ng-hide="supportsStatistics" class="alert alert-info">
-            {{'active.location.version.not.support.settings.warning' | translate}}
-        </div>
-        <div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
+<div class="modal-body">
+	<form id="settingsForm" class="form-horizontal" novalidate name="settingsForm">
+		<div ng-hide="supportsStatistics" class="alert alert-info">
+			{{'active.location.version.not.support.settings.warning' | translate}}
+		</div>
+		<div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
 
 			<div class="form-check">
 				<label tooltip="{{'click.to' | translate}} {{settings.statistics ? 'disable' : 'enable' | translate}} {{'this.setting' | translate}}"
@@ -19,10 +18,10 @@
 				</label>
 			</div>
 
-            <div class="clearfix">
+			<div class="clearfix">
 				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">{{'more.info' | translate}} <span class="icon-caret-down"></span></button>
 				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">{{'less.info' | translate}} <span class="icon-caret-up"></span></button>
-            </div>
+			</div>
 
 			<div id="statisticsInfo" ng-if="moreInfo">
 				<h4>{{'why.send.statistics' | translate}}</h4>
@@ -57,10 +56,10 @@
 					http://statistics.graphdb.ontotext.com.</p>
 				<p>{{'data.encryption.msg' | translate}}</p>
 			</div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
-        <button ng-click="submitForm();" class="btn btn-primary">{{'save.settings.btn' | translate}}</button>
-    </div>
-</form>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
+	<button ng-click="submitForm();" form="settingsForm" class="btn btn-primary">{{'save.settings.btn' | translate}}</button>
+</div>
