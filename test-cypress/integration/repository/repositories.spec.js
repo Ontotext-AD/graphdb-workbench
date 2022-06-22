@@ -41,8 +41,11 @@ describe('Repositories', () => {
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
+        cy.intercept('/rest/locations').as('getLocations');
 
         cy.visit('/repository');
+        waitLoader();
+        cy.wait('@getLocations');
         cy.window();
 
         waitUntilRepositoriesPageIsLoaded();
@@ -166,7 +169,7 @@ describe('Repositories', () => {
             .and('contain', 'Repository ID cannot be empty');
     });
 
-    it.skip('should allow creation of repositories with custom settings', () => {
+    it('should allow creation of repositories with custom settings', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
 
         createRepository();
@@ -214,7 +217,7 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it.skip('should allow to switch between repositories', () => {
+    it('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -222,6 +225,7 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
+        cy.wait('@getLocations');
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -275,6 +279,7 @@ describe('Repositories', () => {
         // The currently selected repository is kept in local storage
         cy.visit('/repository');
         cy.window();
+
         // Should automatically select the default repository
         getRepositoriesDropdown()
             .find('.active-repository')
@@ -286,7 +291,7 @@ describe('Repositories', () => {
             });
     });
 
-    it.skip('should allow to edit existing repository', () => {
+    it('should allow to edit existing repository', () => {
         const newTitle = 'Title edit';
 
         createRepository();
@@ -296,7 +301,7 @@ describe('Repositories', () => {
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
-
+        cy.wait('@getLocations');
         editRepository(repositoryId);
 
         // Some fields should be disabled
@@ -312,7 +317,7 @@ describe('Repositories', () => {
                 confirmModal();
                 waitLoader();
             });
-
+        cy.wait('@getLocations');
         // See the title is rendered in the repositories list
         getRepositoryFromList(repositoryId).should('contain', newTitle);
 
@@ -323,14 +328,14 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it.skip('should allow to delete existing repository', () => {
+    it('should allow to delete existing repository', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
 
         typeRepositoryId(repositoryId);
         saveRepository();
-
+        cy.wait('@getLocations');
         selectRepoFromDropdown(repositoryId);
 
         getRepositoryFromList(repositoryId)
@@ -607,7 +612,7 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
-    it.skip('should restart an existing repository', () => {
+    it('should restart an existing repository', () => {
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -673,7 +678,7 @@ describe('Repositories', () => {
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
-    it.skip('should create SHACL repo and test shapes validation', () => {
+    it('should create SHACL repo and test shapes validation', () => {
         //Prepare repository by enabling SHACL
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
