@@ -29,7 +29,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             id: localStorage.getItem(this.repositoryStorageName) || '',
             location: localStorage.getItem(this.repositoryStorageLocationName) || ''
         };
-        this.locations = [];
+        this.locations = [this.location];
         this.repositories = new Map();
         this.locationsShouldReload = true;
 
