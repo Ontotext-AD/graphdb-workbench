@@ -640,9 +640,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             delete $location.$$search.previous;
             $location.path('/');
         } else {
-            cy.log('go back to repository path')
             $location.path('/repository');
-            // $repositories.getLocations();
+            $repositories.getLocations();
         }
     };
 
@@ -651,7 +650,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         RepositoriesRestService.createRepository($scope.repositoryInfo).success(function () {
             toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
             $repositories.init($scope.goBackToPreviousLocation);
-            // $scope.loader = false;
+            $scope.loader = false;
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));

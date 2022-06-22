@@ -138,27 +138,22 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
             LocationsRestService.getActiveLocation().then(
                 function (res) {
-                    cy.log("GET active location : " + res.data);
                     if (res.data) {
                         const location = res.data;
                         if (location.active) {
                             RepositoriesRestService.getRepositories().then(function (result) {
-                                    cy.log("GET repositories : " + result);
                                     that.location = location;
-                                    cy.log('set location' + location);
                                     Object.entries(result.data).forEach(([key, value]) => {
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, value);
                                     });
                                     that.resetActiveRepository();
-                                    cy.log('reset active repository ');
                                     loadingDone();
                                     that.checkLocationsDegraded(quick);
                                     // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
                                     $rootScope.globalLocation = that.location;
                                     $rootScope.globalRepositories = that.getRepositories();
                                     if (successCallback) {
-                                        cy.log("call successCallback")
                                         successCallback();
                                     }
                                 },
