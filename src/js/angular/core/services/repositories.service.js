@@ -138,27 +138,27 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
             LocationsRestService.getActiveLocation().then(
                 function (res) {
-                    console.log("GET active location : " + res.data);
+                    cy.log("GET active location : " + res.data);
                     if (res.data) {
                         const location = res.data;
                         if (location.active) {
                             RepositoriesRestService.getRepositories().then(function (result) {
-                                    console.log("GET repositories : " + result);
+                                    cy.log("GET repositories : " + result);
                                     that.location = location;
-                                    console.log('set location' + location);
+                                    cy.log('set location' + location);
                                     Object.entries(result.data).forEach(([key, value]) => {
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, value);
                                     });
                                     that.resetActiveRepository();
-                                    console.log('reset active repository ');
+                                    cy.log('reset active repository ');
                                     loadingDone();
                                     that.checkLocationsDegraded(quick);
                                     // Hack to get the location and repositories into the scope, needed for DefaultAuthoritiesCtrl
                                     $rootScope.globalLocation = that.location;
                                     $rootScope.globalRepositories = that.getRepositories();
                                     if (successCallback) {
-                                        console.log("call successCallback")
+                                        cy.log("call successCallback")
                                         successCallback();
                                     }
                                 },

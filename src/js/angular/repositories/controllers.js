@@ -154,7 +154,7 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     //Get locations
     function getLocations() {
-        console.log('LOG GET LOCATIONS IN CONTROLLER')
+        cy.log('LOG GET LOCATIONS IN CONTROLLER')
         return $repositories.getLocations()
             .then((locations) => {
                 $scope.locations = locations;
@@ -640,7 +640,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             delete $location.$$search.previous;
             $location.path('/');
         } else {
-            console.log('go back to repository path')
+            cy.log('go back to repository path')
             $location.path('/repository');
             $repositories.getLocations();
         }
