@@ -222,6 +222,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
+        that.getLocations();
 
         this.getActiveLocation = function () {
             return this.location;
