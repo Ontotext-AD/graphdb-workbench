@@ -640,6 +640,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $location.path('/');
         } else {
             $location.path('/repository');
+            $repositories.getLocations();
         }
     };
 
@@ -648,6 +649,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         RepositoriesRestService.createRepository($scope.repositoryInfo).success(function () {
             toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
             $repositories.init($scope.goBackToPreviousLocation);
+            $scope.loader = false;
         }).error(function (data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));

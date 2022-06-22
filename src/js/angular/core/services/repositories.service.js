@@ -222,8 +222,6 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
         };
 
-        that.getLocations();
-
         this.getActiveLocation = function () {
             return this.location;
         };
@@ -439,6 +437,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             if (!securityEnabled || userLoggedIn || freeAccess) {
+                that.getLocations();
                 that.init();
             }
         });
