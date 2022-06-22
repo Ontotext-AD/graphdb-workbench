@@ -60,7 +60,7 @@ describe('Repositories', () => {
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
-    it('create repository page should list available repository types options', () => {
+    xit('create repository page should list available repository types options', () => {
         let expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -150,7 +150,7 @@ describe('Repositories', () => {
             });
     });
 
-    it('should disallow creation of repositories without mandatory settings', () => {
+    xit('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
@@ -214,7 +214,7 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it('should allow to switch between repositories', () => {
+    it.skip('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -286,7 +286,7 @@ describe('Repositories', () => {
             });
     });
 
-    it('should allow to edit existing repository', () => {
+    it.skip('should allow to edit existing repository', () => {
         const newTitle = 'Title edit';
 
         createRepository();
@@ -323,7 +323,7 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it('should allow to delete existing repository', () => {
+    it.skip('should allow to delete existing repository', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
@@ -351,7 +351,7 @@ describe('Repositories', () => {
     });
 
     //Check that 'Ontop' type repository is available and that the configuration fields are present and active.
-    it('should check if Ontop repository type is available', () => {
+    it.skip('should check if Ontop repository type is available', () => {
         getCreateRepositoryButton().click();
         getRepositoryTypeButton('ontop').should('be.visible');
         chooseRepositoryType('ontop');
@@ -494,7 +494,7 @@ describe('Repositories', () => {
         cy.deleteRepository(virtualRepoName);
     });
 
-    it('should verify different virtual repository RDBMS provider elements', () => {
+    it.skip('should verify different virtual repository RDBMS provider elements', () => {
         // There should be a default repository location
         getLocationsList();
 
@@ -607,7 +607,7 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
-    it('should restart an existing repository', () => {
+    it.skip('should restart an existing repository', () => {
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -673,7 +673,7 @@ describe('Repositories', () => {
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
-    it('should create SHACL repo and test shapes validation', () => {
+    it.skip('should create SHACL repo and test shapes validation', () => {
         //Prepare repository by enabling SHACL
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
