@@ -154,7 +154,6 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     //Get locations
     function getLocations() {
-        cy.log('LOG GET LOCATIONS IN CONTROLLER')
         return $repositories.getLocations()
             .then((locations) => {
                 $scope.locations = locations;
