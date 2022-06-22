@@ -24,3 +24,5 @@ import './commands';
 Cypress.env('modifierKey', Cypress.platform === 'darwin' ? '{cmd}' : '{ctrl}');
 
 require('cypress-failed-log');
+require('cypress-terminal-report/src/installLogsCollector')();
+

@@ -17,4 +17,13 @@ module.exports = (on, config) => {
     on('task', {
         failed: require('cypress-failed-log/src/failed')()
     });
+
+    require('cypress-terminal-report/src/installLogsPrinter')(on, {
+        logToFilesOnAfterRun: true,
+        printLogsToConsole: 'onFail',
+        outputRoot: config.projectRoot + '/logs/',
+        outputTarget: {
+            'cypress-logs|txt': 'txt'
+        }
+    });
 };
