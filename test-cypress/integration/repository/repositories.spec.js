@@ -166,7 +166,7 @@ describe('Repositories', () => {
             .and('contain', 'Repository ID cannot be empty');
     });
 
-    it.only('should allow creation of repositories with custom settings', () => {
+    it('should allow creation of repositories with custom settings', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
 
         createRepository();
