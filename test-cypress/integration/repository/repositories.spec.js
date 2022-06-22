@@ -60,7 +60,7 @@ describe('Repositories', () => {
         getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
 
-    it('create repository page should list available repository types options', () => {
+    it.skip('create repository page should list available repository types options', () => {
         let expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
         createRepository();
         cy.url().should('include', '/repository/create');
@@ -150,7 +150,7 @@ describe('Repositories', () => {
             });
     });
 
-    it.skip('should disallow creation of repositories without mandatory settings', () => {
+    it('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
