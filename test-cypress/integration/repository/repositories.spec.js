@@ -150,7 +150,7 @@ describe('Repositories', () => {
             });
     });
 
-    it('should disallow creation of repositories without mandatory settings', () => {
+    it.skip('should disallow creation of repositories without mandatory settings', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
