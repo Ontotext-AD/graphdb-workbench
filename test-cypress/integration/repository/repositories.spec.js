@@ -75,7 +75,7 @@ describe('Repositories', () => {
             });
     });
 
-    it.skip('should allow creation of repositories with default settings', () => {
+    it('should allow creation of repositories with default settings', () => {
         // There should be a default repository location
         getLocationsList();
 
