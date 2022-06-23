@@ -166,7 +166,7 @@ describe('Repositories', () => {
             .and('contain', 'Repository ID cannot be empty');
     });
 
-    it('should allow creation of repositories with custom settings', () => {
+    it.skip('should allow creation of repositories with custom settings', () => {
         const repoTitle = 'Repo title for ' + repositoryId;
 
         createRepository();
@@ -214,7 +214,7 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it('should allow to switch between repositories', () => {
+    it.skip('should allow to switch between repositories', () => {
         const secondRepoId = 'second-repo-' + Date.now();
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -286,7 +286,7 @@ describe('Repositories', () => {
             });
     });
 
-    it('should allow to edit existing repository', () => {
+    it.skip('should allow to edit existing repository', () => {
         const newTitle = 'Title edit';
 
         createRepository();
@@ -323,7 +323,7 @@ describe('Repositories', () => {
         getRepositoryContextIndexCheckbox().should('be.checked');
     });
 
-    it('should allow to delete existing repository', () => {
+    it.skip('should allow to delete existing repository', () => {
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
         cy.url().should('include', '/repository/create/');
@@ -607,7 +607,7 @@ describe('Repositories', () => {
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
     });
 
-    it('should restart an existing repository', () => {
+    it.skip('should restart an existing repository', () => {
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -673,7 +673,7 @@ describe('Repositories', () => {
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
-    it('should create SHACL repo and test shapes validation', () => {
+    it.skip('should create SHACL repo and test shapes validation', () => {
         //Prepare repository by enabling SHACL
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);

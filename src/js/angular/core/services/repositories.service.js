@@ -191,7 +191,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (that.locationsShouldReload) {
                 if (!locationsRequestPromise) {
                     this.locationsShouldReload = false;
-                    // this.locations = [this.location];
+                    this.locations = [this.location];
                     const that = this;
                     locationsRequestPromise = LocationsRestService.getLocations()
                         .then((data) => {
