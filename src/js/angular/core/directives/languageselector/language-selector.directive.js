@@ -40,6 +40,9 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             };
 
             $scope.getLanguageTooltip = function (lang) {
+                if (!lang || !$scope.selectedLang) {
+                    return '';
+                }
                 if ($scope.selectedLang.key !== lang.key) {
                     return $translate.instant('change.language.tooltip', {}, undefined, lang.key) + ' ' + lang.name;
                 } else {

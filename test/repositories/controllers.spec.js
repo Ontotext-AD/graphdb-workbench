@@ -188,14 +188,15 @@ describe('==> Repository module controllers tests', function () {
             let toastr;
             let createController;
             let $translate;
+            let $q;
 
-            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope, _$translate_) {
+            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope, _$translate_, _$q_) {
                 toastr = _toastr_;
                 $repositories = _$repositories_;
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
                 $translate = _$translate_;
-
+                $q = _$q_;
                 $translate.instant = function (key) {
                     return bundle[key];
                 };
@@ -282,9 +283,11 @@ describe('==> Repository module controllers tests', function () {
                 $scope.repositoryInfo = {};
                 $httpBackend.expectPOST('rest/repositories', {}).respond(200, '');
                 var init = false;
-                $repositories.init = function (callback) {
+                $repositories.init = function () {
                     init = true;
-                    callback();
+                    const deferred = $q.defer();
+                    deferred.resolve();
+                    return deferred.promise;
                 };
                 $scope.createRepoHttp();
                 $httpBackend.flush();
@@ -365,13 +368,15 @@ describe('==> Repository module controllers tests', function () {
             repositoriesMock = {
                 hasActiveLocation: function () {
                     return false;
-                }, init: function (callback) {
+                }, init: function () {
                     init = true;
-                    callback();
+                    const deferred = $q.defer();
+                    deferred.resolve();
+                    return deferred.promise;
                 },
                 getLocations: function () {
                     const deferred = $q.defer();
-                    deferred.resolve([{uri: '', local: true}]);
+                    deferred.resolve([{uri: '', label: 'Local', local: true}]);
                     return deferred.promise;
                 }
             };
