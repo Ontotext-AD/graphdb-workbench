@@ -128,12 +128,15 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
 
         $scope.login = function () {
+            const userLogin = {
+                'username': $scope.username,
+                'password': $scope.password
+            };
+
             return $http({
                 method: 'POST',
-                url: 'rest/login/' + encodeURIComponent($scope.username),
-                headers: {
-                    'X-GraphDB-Password': $scope.password
-                }
+                url: 'rest/login',
+                data: userLogin
             }).success(function (data, status, headers) {
                 $jwtAuth.authenticate(data, headers('Authorization'))
                     .then(() => {
@@ -141,7 +144,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
                             // go back to remembered url
                             $location.url($rootScope.returnToUrl);
                         } else {
-                            // no remembered url, go to home
+                            // don't have a remembered url, go home
                             $location.path('/');
                         }
                     });
