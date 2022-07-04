@@ -1,20 +1,12 @@
 describe('User and Access', () => {
 
-    let repositoryId;
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
     const ROLE_REPO_MANAGER = "#roleRepoAdmin";
     const ROLE_CUSTOM_ADMIN = "#roleAdmin";
     const DEFAULT_ADMIN_PASSWORD = "root";
 
-    before(() => {
-        repositoryId = 'setup-repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-    });
-
     beforeEach(() => {
-        cy.presetRepository(repositoryId);
-
         cy.visit('/users');
         cy.window();
         // Users table should be visible
@@ -33,7 +25,6 @@ describe('User and Access', () => {
                 }
             });
         });
-        cy.deleteRepository(repositoryId);
     });
 
     it('Initial state', () => {
