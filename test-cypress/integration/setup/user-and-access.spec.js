@@ -82,6 +82,8 @@ describe('User and Access', () => {
         if (!isAdmin) {
             cy.get('.alert-danger').should('contain',
                 'You have no permission to access this functionality with your current credentials.');
+        } else {
+            getUsersTable().should('be.visible');
         }
         logout();
         //login with the admin
@@ -91,7 +93,7 @@ describe('User and Access', () => {
         //delete new-user
         deleteUser(name);
         //disable security
-        getToggleSecuritySwitch().click();
+        getToggleSecuritySwitch().click({force: true});
     }
 
     it('Warn users when setting no password when creating new user admin', () => {
@@ -183,16 +185,21 @@ describe('User and Access', () => {
             });
         return cy.waitUntil(() =>
             cy.get('@deleteBtn')
-                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
+                .then((deleteBtn) => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
             .then(() => {
                 cy.get('.confirm-btn').click();
             });
     }
 
     function loginWithUser(username, password) {
-        cy.get('#wb-login-username').type(username);
-        cy.get('#wb-login-password').type(password);
-        cy.get('#wb-login-submitLogin').click();
+        do {
+            cy.get('#wb-login-username').type(username);
+            cy.get('#wb-login-password').type(password);
+            cy.get('#wb-login-submitLogin').click({force: true});
+            if (cy.url().toString().endsWith('/users')) return;
+        } while (cy.url().toString().endsWith('/login'));
+        //Sometimes after login we are redirected to home '/'
+        cy.visit('/users');
     }
 
     function logout() {
