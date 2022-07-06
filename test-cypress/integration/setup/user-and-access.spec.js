@@ -79,11 +79,11 @@ describe('User and Access', () => {
             loginWithUser(name, PASSWORD);
             //verify permissions
             cy.url().should('include', '/users');
-            if (!isAdmin) {
+            if (isAdmin) {
+                getUsersTable().should('be.visible');
+            } else {
                 cy.get('.alert-danger').should('contain',
                     'You have no permission to access this functionality with your current credentials.');
-            } else {
-                getUsersTable().should('be.visible');
             }
             logout();
             //login with the admin

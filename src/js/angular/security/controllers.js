@@ -25,7 +25,7 @@ const createUniqueKey = function (repository) {
         return `${repository.id}@${repository.location}`;
     }
     return repository.id;
-}
+};
 
 const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
 
@@ -128,15 +128,13 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
 
         $scope.login = function () {
-            const userLogin = {
-                'username': $scope.username,
-                'password': $scope.password
-            };
-
             return $http({
                 method: 'POST',
                 url: 'rest/login',
-                data: userLogin
+                data: {
+                    'username': $scope.username,
+                    'password': $scope.password
+                }
             }).success(function (data, status, headers) {
                 $jwtAuth.authenticate(data, headers('Authorization'))
                     .then(() => {
@@ -341,7 +339,7 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
 
         $scope.createUniqueKey = function (repository) {
             return createUniqueKey(repository);
-        }
+        };
     }]);
 
 securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
@@ -398,7 +396,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
 
         $scope.createUniqueKey = function (repository) {
             return createUniqueKey(repository);
-        }
+        };
 
         $scope.userType = UserType.USER;
         $scope.grantedAuthorities = {
@@ -453,7 +451,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
                 $scope.passwordError = '';
                 $scope.confirmPasswordError = '';
             }
-        }
+        };
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
@@ -489,7 +487,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
 
         $scope.submit = function () {
-                if ($scope.noPassword &&  $scope.userType === UserType.ADMIN) {
+                if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
                     ModalService.openSimpleModal({
                         title: $translate.instant('security.create.admin'),
                         message: $translate.instant('security.admin.login.warning'),
