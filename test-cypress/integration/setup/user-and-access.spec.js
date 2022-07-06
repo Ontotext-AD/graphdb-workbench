@@ -75,27 +75,28 @@ describe('User and Access', () => {
     function testForUser(name, isAdmin) {
         //enable security
         getToggleSecuritySwitch().click();
-        try {
-            loginWithUser(name, PASSWORD);
-            //verify permissions
-            cy.url().should('include', '/users');
-            if (isAdmin) {
-                getUsersTable().should('be.visible');
-            } else {
-                cy.get('.alert-danger').should('contain',
-                    'You have no permission to access this functionality with your current credentials.');
-            }
-            logout();
-            //login with the admin
-            loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-            cy.get('.ot-splash').should('not.be.visible');
+        //login new user
+        loginWithUser(name, PASSWORD);
+        //verify permissions
+        cy.url().should('include', '/users');
+        if (isAdmin) {
             getUsersTable().should('be.visible');
-            //delete new-user
-            deleteUser(name);
-        } finally {
-            //always disable security
-            getToggleSecuritySwitch().click({force: true});
+        } else {
+            cy.get('.alert-danger').should('contain',
+                'You have no permission to access this functionality with your current credentials.');
         }
+        logout();
+        //login with the admin
+        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        cy.get('.ot-splash').should('not.be.visible');
+        getUsersTable().should('be.visible');
+        //delete new-user
+        deleteUser(name);
+        //disable security
+        getToggleSecuritySwitch().click({force: true});
+        cy.get('#toggle-security').find('.security-switch-label').should('be.visible')
+            .and('contain', 'Security is OFF');
+        getUsersTable().should('be.visible');
     }
 
     it('Warn users when setting no password when creating new user admin', () => {
@@ -194,14 +195,9 @@ describe('User and Access', () => {
     }
 
     function loginWithUser(username, password) {
-        do {
-            cy.get('#wb-login-username').type(username);
-            cy.get('#wb-login-password').type(password);
-            cy.get('#wb-login-submitLogin').click({force: true});
-            if (cy.url().toString().endsWith('/users')) return;
-        } while (cy.url().toString().endsWith('/login'));
-        //Sometimes after login we are redirected to home '/'
-        cy.visit('/users');
+        cy.get('#wb-login-username').type(username);
+        cy.get('#wb-login-password').type(password);
+        cy.get('#wb-login-submitLogin').click();
     }
 
     function logout() {
