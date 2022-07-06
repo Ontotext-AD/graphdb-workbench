@@ -75,25 +75,27 @@ describe('User and Access', () => {
     function testForUser(name, isAdmin) {
         //enable security
         getToggleSecuritySwitch().click();
-
-        loginWithUser(name, PASSWORD);
-        //verify permissions
-        cy.url().should('include', '/users');
-        if (!isAdmin) {
-            cy.get('.alert-danger').should('contain',
-                'You have no permission to access this functionality with your current credentials.');
-        } else {
+        try {
+            loginWithUser(name, PASSWORD);
+            //verify permissions
+            cy.url().should('include', '/users');
+            if (!isAdmin) {
+                cy.get('.alert-danger').should('contain',
+                    'You have no permission to access this functionality with your current credentials.');
+            } else {
+                getUsersTable().should('be.visible');
+            }
+            logout();
+            //login with the admin
+            loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            cy.get('.ot-splash').should('not.be.visible');
             getUsersTable().should('be.visible');
+            //delete new-user
+            deleteUser(name);
+        } finally {
+            //always disable security
+            getToggleSecuritySwitch().click({force: true});
         }
-        logout();
-        //login with the admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
-        //delete new-user
-        deleteUser(name);
-        //disable security
-        getToggleSecuritySwitch().click({force: true});
     }
 
     it('Warn users when setting no password when creating new user admin', () => {
