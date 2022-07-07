@@ -1,20 +1,12 @@
 describe('User and Access', () => {
 
-    let repositoryId;
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
     const ROLE_REPO_MANAGER = "#roleRepoAdmin";
     const ROLE_CUSTOM_ADMIN = "#roleAdmin";
     const DEFAULT_ADMIN_PASSWORD = "root";
 
-    before(() => {
-        repositoryId = 'setup-repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-    });
-
     beforeEach(() => {
-        cy.presetRepository(repositoryId);
-
         cy.visit('/users');
         cy.window();
         // Users table should be visible
@@ -33,7 +25,6 @@ describe('User and Access', () => {
                 }
             });
         });
-        cy.deleteRepository(repositoryId);
     });
 
     it('Initial state', () => {
@@ -60,58 +51,54 @@ describe('User and Access', () => {
         cy.get('@user').find('.date-created').should('be.visible');
     });
 
-    it('Create users of each type', () => {
+    it('Create user', () => {
+        const name = "user";
         //create a normal read/write user
-        createUser("user", PASSWORD, ROLE_USER);
+        createUser(name, PASSWORD, ROLE_USER);
+        testForUser(name, false);
+    });
+
+    it('Create repo-manager', () => {
+        const name = "repo-manager";
+        //create a repo-manager
+        createUser(name, PASSWORD, ROLE_REPO_MANAGER);
+        testForUser(name, false);
+    });
+
+    it('Create second admin', () => {
+        const name = "second-admin";
+        //create a custom admin
+        createUser(name, PASSWORD, ROLE_CUSTOM_ADMIN);
+        testForUser(name, true);
+    });
+
+    function testForUser(name, isAdmin) {
         //enable security
         getToggleSecuritySwitch().click();
-        //login with the user
-        loginWithUser("user", PASSWORD);
-        cy.url().should('include', '/users');
-        //verify permissions
-        cy.get('.alert-danger').should('contain', 'You have no permission to access this functionality with your current credentials.');
-        logout();
-        //login with admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
-        //delete user
-        deleteUser("user");
-        //create repository manager
-        createUser("repo-manager", PASSWORD, ROLE_REPO_MANAGER);
-        logout();
-        //login with the repository manager
-        loginWithUser("repo-manager", PASSWORD);
+        //login new user
+        loginWithUser(name, PASSWORD);
         //verify permissions
         cy.url().should('include', '/users');
-        cy.get('.alert-danger').should('contain', 'You have no permission to access this functionality with your current credentials.');
+        if (isAdmin) {
+            getUsersTable().should('be.visible');
+        } else {
+            cy.get('.alert-danger').should('contain',
+                'You have no permission to access this functionality with your current credentials.');
+        }
         logout();
         //login with the admin
         loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
         cy.get('.ot-splash').should('not.be.visible');
         getUsersTable().should('be.visible');
-        //delete repository manager
-        deleteUser("repo-manager")
-            .then(() => {
-                //create a custom admin
-                createUser("second-admin", PASSWORD, ROLE_CUSTOM_ADMIN);
-                logout();
-                //login with custom admin
-                loginWithUser("second-admin", PASSWORD);
-                cy.url().should('include', '/users');
-                logout();
-                //login with admin
-                loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-                cy.get('.ot-splash').should('not.be.visible');
-                getUsersTable().should('be.visible');
-                //delete custom admin
-                deleteUser("second-admin")
-                    .then(() => {
-                        //disable security
-                        getToggleSecuritySwitch().click();
-                    });
-            });
-    });
+        //delete new-user
+        deleteUser(name);
+        //disable security
+        getToggleSecuritySwitch().click({force: true});
+        cy.get('#toggle-security').find('.security-switch-label').should('be.visible')
+            .and('contain', 'Security is OFF');
+        getUsersTable().should('be.visible');
+    }
+
     it('Warn users when setting no password when creating new user admin', () => {
         getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
@@ -201,7 +188,7 @@ describe('User and Access', () => {
             });
         return cy.waitUntil(() =>
             cy.get('@deleteBtn')
-                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
+                .then((deleteBtn) => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
             .then(() => {
                 cy.get('.confirm-btn').click();
             });

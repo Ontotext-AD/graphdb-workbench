@@ -39,8 +39,8 @@ describe('==> Controllers tests', function () {
             $scope = _$rootScope_.$new();
             var controller = $controller('LoginCtrl', {$scope: $scope});
 
-            httpLogin = $httpBackend.when('POST', 'rest/login/username', null, function (headers) {
-                return headers['X-GraphDB-Password'] === 'password';
+            httpLogin = $httpBackend.when('POST', 'rest/login', function (data) {
+                return data === '{"username":"username","password":"password"}';
             }).respond(200, '');
 
             var httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -61,7 +61,7 @@ describe('==> Controllers tests', function () {
 
         it('should redirect to home page on login', function () {
             $httpBackend.flush();
-            $httpBackend.expectPOST('rest/login/username');
+            $httpBackend.expectPOST('rest/login');
             $scope.username = 'username';
             $scope.password = 'password';
 
@@ -75,7 +75,7 @@ describe('==> Controllers tests', function () {
 
         it('should redirect to saved page on login', function () {
             $httpBackend.flush();
-            $httpBackend.expectPOST('rest/login/username');
+            $httpBackend.expectPOST('rest/login');
             $rootScope.returnToUrl = '/sparql';
             $scope.username = 'username';
             $scope.password = 'password';
@@ -92,7 +92,7 @@ describe('==> Controllers tests', function () {
         it('should clear login data on wrong credentials', function () {
             $httpBackend.flush();
             httpLogin.respond(401, {});
-            $httpBackend.expectPOST('rest/login/username');
+            $httpBackend.expectPOST('rest/login');
 
             $scope.username = 'username';
             $scope.password = 'password';
