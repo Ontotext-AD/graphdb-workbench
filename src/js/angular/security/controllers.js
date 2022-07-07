@@ -109,6 +109,9 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         $scope.username = '';
         $scope.password = '';
 
+        // Reinitialize security settings, if failed for some reason
+        $jwtAuth.reinitializeSecurity();
+
         $scope.loginWithOpenID = function() {
             $jwtAuth.loginOpenID();
         };
