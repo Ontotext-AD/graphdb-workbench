@@ -67,7 +67,9 @@ const moduleDefinition = function (productInfo) {
             // configure toastr
             angular.extend(toastrConfig, {
                 timeOut: 5000,
-                positionClass: 'toast-bottom-right'
+                positionClass: 'toast-bottom-right',
+                tapToDismiss: false,
+                extendedTimeOut: 5000
             });
 
 
