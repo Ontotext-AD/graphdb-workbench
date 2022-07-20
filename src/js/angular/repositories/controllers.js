@@ -141,20 +141,20 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService',
-    'LocalStorageAdapter', '$interval', '$translate'];
+    'LocalStorageAdapter', '$interval', '$translate', '$q'];
 
 function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService,
-    LocalStorageAdapter, $interval, $translate) {
+    LocalStorageAdapter, $interval, $translate, $q) {
     $scope.loader = true;
-
 
     $scope.isLocationInactive = function (location) {
         return !location.active || !$scope.hasActiveLocation();
     };
 
+    const getLocationsAbortRequestPromise = $q.defer();
     //Get locations
     function getLocations() {
-        return $repositories.getLocations()
+        return $repositories.getLocations(getLocationsAbortRequestPromise)
             .then((locations) => {
                 $scope.locations = locations;
             })
@@ -271,7 +271,9 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteRepository(repository).finally(() => $scope.loader = false);
+                $repositories.deleteRepository(repository).finally(() => {
+                    getLocations();
+                });
                 removeCachedGraphsOnDelete(repository);
             });
     };
@@ -367,6 +369,10 @@ function LocationsAndRepositoriesCtrl($scope, $modal, toastr, $repositories, Mod
 
     $scope.$on('$destroy', function () {
         $interval.cancel(timer);
+        // If there is a getLocations request in progress, abort it so the service can properly clear flags
+        if (getLocationsAbortRequestPromise) {
+            getLocationsAbortRequestPromise.resolve();
+        }
     });
 
     function removeCachedGraphsOnDelete(repo) {
@@ -645,14 +651,16 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     $scope.createRepoHttp = function () {
         $scope.loader = true;
-        RepositoriesRestService.createRepository($scope.repositoryInfo).success(function () {
-            toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
-            $repositories.init($scope.goBackToPreviousLocation);
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('common.error'));
-            $scope.loader = false;
-        });
+        RepositoriesRestService.createRepository($scope.repositoryInfo)
+            .then(function () {
+                toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
+                $repositories.init().finally(() => $scope.goBackToPreviousLocation());
+            })
+            .catch(function (error) {
+                const msg = getError(error.data);
+                toastr.error(msg, $translate.instant('common.error'));
+            })
+            .finally(() => $scope.loader = false);
     };
 
     $scope.createRepo = function () {
@@ -834,7 +842,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
             .success(function () {
                 toastr.success($translate.instant('edit.repo.success.msg', {saveId: $scope.repositoryInfo.saveId}));
-                $repositories.init($scope.goBackToPreviousLocation);
+                $repositories.init().finally(() => $scope.goBackToPreviousLocation());
                 if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
                     $repositories.restartRepository($scope.repositoryInfo.id);
                 }

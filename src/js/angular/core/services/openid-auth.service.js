@@ -5,6 +5,7 @@ const modules = [
 ];
 
 const openIDReqHeaders = {headers: {
+        'X-GraphDB-Repository-Location': undefined,
         'X-GraphDB-Repository': undefined,
         'X-Requested-With': undefined,
         'Authorization': undefined

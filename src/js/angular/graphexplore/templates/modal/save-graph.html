@@ -4,8 +4,8 @@
     <button type="button" class="close" ng-click="cancel()"></button>
     <h3 class="modal-title">{{title}}</h3>
 </div>
-<form novalidate ng-submit="ok()" name="form">
-    <div class="modal-body">
+<div class="modal-body">
+    <form novalidate name="form" id="saveGraphForm">
         <input id="wb-graphviz-savegraph-name" required type="text" ng-model="graph.name" class="form-control"
                ng-change="graphExists = false"
                placeholder="{{'save.graph.enter.name' | translate}}" ng-maxlength="100"/>
@@ -25,14 +25,13 @@
         <div ng-hide="form.$error.required.length" ng-if="graphExists" class="alert alert-danger"
              style="margin-top: 5px;">{{'save.graph.name' | translate}} <strong>&#39;{{graph.name}}&#39;</strong> {{'save.graph.exists' | translate}}
         </div>
-        <!-- <div ng-if="graphExists || overwrite"><label for="override-saved">Overwrite existing saved graph <input id="override-saved" type="checkbox" ng-model="overwrite"></label></div> -->
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary" ng-click="saveNew()" type="button">{{'save.graph.save.as' | translate}}</button>
-        <button id="wb-graphviz-savegraph-submit" class="btn btn-primary" ng-click="ok()" type="submit">{{okButtonText}}</button>
-    </div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary" ng-click="saveNew()" type="button">{{'save.graph.save.as' | translate}}</button>
+    <button id="wb-graphviz-savegraph-submit" form="saveGraphForm" class="btn btn-primary" ng-click="ok()" type="submit">{{okButtonText}}</button>
+</div>
 
 <!-- End save graph modal -->
 
