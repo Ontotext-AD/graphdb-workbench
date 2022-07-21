@@ -538,11 +538,11 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
             .success(function () {
                 toastr.success($translate.instant('query.editor.save.saved.query.success.msg', {name: query.name}));
             })
-            .error(function (data) {
+            .error(function (data, status) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('query.editor.create.saved.query.error'));
                 let queryExists = false;
-                if (msg === "Query '" + query.name + "' already exists!") {
+                if (status === 409) {
                     queryExists = true;
                 }
                 query.query = query.body;
