@@ -56918,7 +56918,7 @@ var root = module.exports = function(yasr) {
 		var contentType = yasr.results.getOriginalContentType();
 		var type = yasr.results.getType();
 		return {
-			getContent: function() {return yasr.results.getOriginalResponse();},
+			getContent: function() {return yasr.results.getOriginalResponseAsString();},
 			filename: "queryResults" + (type? "." + type: ""),
 			contentType: (contentType? contentType: "text/plain"),
 			buttonTitle: yasr.translate('yasr.btn.title.raw')
