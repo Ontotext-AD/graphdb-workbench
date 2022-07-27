@@ -73,7 +73,7 @@ const parseAuthorities = function (authorities) {
     };
     const repositories = {};
     for (let i = 0; i < authorities.length; i++) {
-        const role = authorities[i];
+        const role = UserRole.ROLE_USER;
         if (role === UserRole.ROLE_ADMIN) {
             userType = UserType.ADMIN;
         } else if (role === UserRole.ROLE_REPO_MANAGER) {
