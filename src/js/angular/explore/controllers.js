@@ -24,6 +24,8 @@ angular
 ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService', '$q'];
 
 function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService, $q) {
+    // Defaults
+    $scope.role = $location.search().role ? $location.search().role : 'subject';
 
     let principalRequestPromise;
     // We need to get sameAs and inference for the current user
@@ -31,7 +33,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $q.when($jwtAuth.getPrincipal())
         .then((principal) => {
             // Get the predefined settings for sameAs and inference per user
-            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] ? 'all' : 'explicit';
+            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
             $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
         });
 
@@ -59,10 +61,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         return localNames;
     };
 
-    // Defaults
-    $scope.role = $location.search().role ? $location.search().role : 'subject';
-    // Fixed inference when we're showing the context tab and a named graph
-    $scope.inferenceNamed = 'explicit';
     $scope.inferences = [
         {id: 'all', title: 'explore.explicit.implicit'},
         {id: 'explicit', title: 'explore.explicit'},
@@ -262,6 +260,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
     $scope.changeRole = function (roleVar) {
         $scope.role = roleVar;
+        if ($scope.role === 'context') {
+            $scope.inference = 'explicit';
+        }
         $scope.exploreResource();
     };
 
