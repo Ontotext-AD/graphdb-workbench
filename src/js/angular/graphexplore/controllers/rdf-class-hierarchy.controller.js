@@ -53,8 +53,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     let selectedGraph = allGraphs;
 
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
+
     const initView = function () {
-        if (!$scope.getActiveRepository()) {
+        if (!$scope.getActiveRepository() ||
+                !$licenseService.isLicenseValid()) {
             return;
         }
         return RDF4JRepositoriesRestService.resolveGraphs()
@@ -62,10 +67,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
             }).error(function (data) {
-            $scope.repositoryError = getError(data);
-            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
-        });
+                    $scope.repositoryError = getError(data);
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
+            });
     };
+
+    initView();
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
@@ -115,8 +122,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     $scope.instancesQueryObj.query = "";
     $scope.instancesFilterFunc = instancesFilterFunc;
 
-    initView();
-
     $scope.$watch('instancesObj.items', function () {
         if ($scope.instancesObj.items.length > 0) {
             $timeout(function () {
@@ -156,7 +161,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 toastr.warning($translate.instant('graphexplore.disabling.animations', {classLimit: classLimit}),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             } else {
-                toastr.warning($translate.instant('graphexplore.browser.performance', {browser: bowser.name, classLimit: classLimit}),
+                toastr.warning($translate.instant('graphexplore.browser.performance', {
+                        browser: bowser.name,
+                        classLimit: classLimit
+                    }),
                     $translate.instant('graphexplore.reducing.visual.effects'));
             }
         };
@@ -264,8 +272,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                         .search("name", name);
                 }
             }).error(function () {
-                toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
-            });
+            toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
+        });
     }
 
     function onGoToDomainRangeGraphView(event, selectedClass) {
@@ -317,7 +325,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 _.each(response, function (value, key) {
                     const obj = {};
                     // TODO extract in core function isTriple(str)
-                    obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple": "uri";
+                    obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple" : "uri";
                     obj.absUri = encodeURIComponent(value);
                     obj.absUriNonEncoded = value;
                     obj.resolvedUri = key;
@@ -426,10 +434,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     let currentActiveRepository = $repositories.getActiveRepository();
+
     function onRepositoryIsSet() {
-        if (!$licenseService.isLicenseValid()) {
-            return;
-        }
         if (currentActiveRepository === $repositories.getActiveRepository()) {
             return;
         } else {
@@ -445,10 +451,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function getClassHierarchyData() {
-
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
+        if (!$scope.isSystemRepository()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
@@ -472,11 +480,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
 
-    $scope.isLicenseValid = function () {
-        return $licenseService.isLicenseValid();
-    };
-
-
     $scope.chosenGraph = function (graph) {
         selectedGraph = graph;
         getClassHierarchyData();
@@ -490,4 +493,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     $scope.isAllGraphsSelected = function () {
         return $scope.getSelGraphValue() === 'all.graphs.label'
     }
+
+    window.addEventListener('load', initView);
+
+    $scope.$on('$destroy', function (event) {
+        window.removeEventListener('load', initView);
+    });
 }

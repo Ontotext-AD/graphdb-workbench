@@ -14,13 +14,11 @@ describe('Namespaces', () => {
                     DEFAULT_NAMESPACES[e.prefix.value] = e.namespace.value;
                 });
             }).then(() => {
+            cy.visit('/namespaces');
+            cy.window();
 
+            waitUntilPageIsLoaded();
         });
-
-        cy.visit('/namespaces');
-        cy.window();
-
-        waitUntilPageIsLoaded();
     });
 
     afterEach(() => {
@@ -46,7 +44,7 @@ describe('Namespaces', () => {
         getAddNamespaceButton().should('be.visible').and('not.be.disabled');
 
         // Should render a table with some default namespaces
-        getNamespacesTable().should('be.visible');
+        getNamespacesTable().scrollIntoView().should('be.visible');
         getNamespaces().should('have.length', getDefaultNamespacesLength());
 
         // Should provide pagination options
@@ -54,12 +52,14 @@ describe('Namespaces', () => {
             // Should show all namespaces by default (they are only 6 so they can be visualized all at once)
             cy.get('.dropdown-toggle')
                 .should('contain', 'All')
-                .click();
-            cy.get('.page-size-option')
-                .should('have.length', 1)
-                .and('contain', 'All');
-            // Close the menu to avoid overlapping other elements
-            cy.get('.dropdown-toggle').click();
+                .click()
+                .then(() => {
+                    cy.get('.page-size-option')
+                        .should('have.length', 1)
+                        .and('contain', 'All');
+                    // Close the menu to avoid overlapping other elements
+                    cy.get('.dropdown-toggle').click();
+                });
         });
 
         // Should show summary of results
@@ -123,20 +123,24 @@ describe('Namespaces', () => {
     it('should filter existing namespaces', () => {
         getNamespacesFilterField()
             .should('have.value', '')
-            .type('owl')
-            .should('have.value', 'owl');
-        getNamespaces()
-            .should('have.length', 1)
-            .and('contain', DEFAULT_NAMESPACES['owl']);
-        getNamespacesHeaderPaginationInfo()
-            .should('be.visible')
-            .and('contain', 'Showing 1 - 1 of 1 results');
+            .then((el) => {
+                cy.wrap(el).type('owl');
+            }).then(() => {
+                getNamespacesFilterField()
+                    .should('have.value', 'owl');
+                getNamespaces()
+                    .should('have.length', 1)
+                    .and('contain', DEFAULT_NAMESPACES['owl']);
+                getNamespacesHeaderPaginationInfo()
+                    .should('be.visible')
+                    .and('contain', 'Showing 1 - 1 of 1 results');
 
-        getNamespacesFilterField()
-            .clear()
-            .type('missing_prefix');
-        getNamespacesTable().should('not.be.visible');
-        getNoNamespacesMatchAlert().should('be.visible');
+                getNamespacesFilterField()
+                    .clear()
+                    .type('missing_prefix');
+                getNamespacesTable().should('not.be.visible');
+                getNoNamespacesMatchAlert().should('be.visible');
+        });
     });
 
     it('should allow to add new namespace', () => {
@@ -210,7 +214,7 @@ describe('Namespaces', () => {
 
         selectNamespace('rdf');
         selectNamespace('rdfs');
-        getDeleteNamespacesButton().click();
+        clickDeleteNamespacesButton();
         confirmModal();
 
         updatedCount = updatedCount - 2;
@@ -220,7 +224,7 @@ describe('Namespaces', () => {
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         getSelectAllNamespacesCheckbox().click();
-        getDeleteNamespacesButton().click();
+        clickDeleteNamespacesButton();
         confirmModal();
 
         getNamespacesTable().should('not.be.visible');
@@ -318,8 +322,10 @@ describe('Namespaces', () => {
         return getNamespacesTable().find('.select-all-namespaces');
     }
 
-    function getDeleteNamespacesButton() {
-        return getNamespacesTable().find('.delete-namespaces-btn');
+    function clickDeleteNamespacesButton() {
+        cy.waitUntil(() =>
+            cy.get('.delete-namespaces-btn')
+                .then(deleteBtn => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')));
     }
 
     function getNamespaces() {

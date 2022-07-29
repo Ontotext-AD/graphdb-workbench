@@ -2,6 +2,7 @@ import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
+import 'angular/core/services/license.service';
 
 const modules = [
     'ngCookies',
@@ -11,7 +12,8 @@ const modules = [
     'graphdb.framework.core',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.core.services.licenseService'
 ];
 
 angular
@@ -84,9 +86,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.$watch(function () {
-        return $repositories.getActiveRepository();
+            return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.getActiveRepository()) {
+        if ($scope.getActiveRepository() && $scope.isLicenseValid()) {
             if ($scope.usedPrefixes) {
                 $scope.loadResource();
             } else {

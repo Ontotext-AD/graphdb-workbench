@@ -13,11 +13,12 @@ angular
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', '$licenseService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, $licenseService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
     return {
         restrict: 'AE',
+        transclude: true,
         template: '<div id="classChart"></div>',
         scope: {
             classHierarchyData: '=',
@@ -27,38 +28,28 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             showClassInfoPanel: '=',
             showExternalElements: '=',
             hidePrefixes: '=',
-            currentBrowserLimit: '='
+            currentBrowserLimit: '=',
+            isLicenseValid: '&'
         },
         link: linkFunc
     };
 
-    function linkFunc(scope, element, attrs) {
-        renderCirclePacking(scope, element);
+    function linkFunc(scope) {
+        renderCirclePacking(scope);
     }
 
-    function renderCirclePacking(scope, element) {
+    function renderCirclePacking(scope) {
 
         var width = 800,
             height = 800,
             diameter = height,
-            margin = 20,
-            node,
-            root;
+            margin = 20;
 
         var pack = d3.layout.pack()
             .size([diameter - margin, diameter - margin])
             .value(function (d) {
                 return d.size;
             });
-
-        var colors = [
-            "hsl(33, 75%, 75%)",
-            "hsl(213, 75%, 75%)",
-            "hsl(333, 75%, 75%)",
-            "hsl(153, 75%, 75%)",
-            "hsl(273, 75%, 75%)",
-            "hsl(93, 75%, 75%)"
-        ];
 
         var color = d3.scale.linear()
             .domain([0, 4])
@@ -119,12 +110,12 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         var g = appendMainGroup();
 
-        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
+        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository() && scope.isLicenseValid()) {
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
             const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
             GraphDataRestService.getClassHierarchyData(selGraphFromCache !== null ? selGraphFromCache.contextID.uri : "")
-                .success(function (response, status, headers) {
+                .success(function (response, status) {
                     $rootScope.loader = false;
                     if (status === 207) {
                         toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
@@ -177,7 +168,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             var tip = d3tip()
                 .attr('class', 'd3-tip')
                 //.offset([-10, 0])
-                .customPosition(function (d) {
+                .customPosition(function () {
                     return {
                         top: 'inherit',
                         bottom: ($window.innerHeight - d3.event.clientY) + 'px',
@@ -195,7 +186,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 .enter().append("g");
 
             if (config.doFade) {
-                circleGroup.each(function (d) {
+                circleGroup.each(function () {
                     D3.Transition.fadeIn(d3.select(this), 550);
                 });
             }
@@ -259,8 +250,6 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             }
 
             var clickCancel = D3.Click.delayDblClick();
-            var parentCircles = d3.selectAll(".parent, .topLevelParent, .child, .root")
-                .call(clickCancel);
 
             doFocus = function (obj) {
                 zoom(obj);
@@ -273,7 +262,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     showClassInfoPanel();
 
                     // FIXME: is it ok to bind this event handler every time and not just once?
-                    scope.$on('sidePanelClosed', function (event) {
+                    scope.$on('sidePanelClosed', function () {
                         d3.selectAll(".selected").classed("selected", obj.selected = false);
                     });
                 }
@@ -437,7 +426,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             });
 
             if (config.doFade && !config.keepPrevState) {
-                text.each(function (d) {
+                text.each(function () {
                     D3.Transition.fadeIn(d3.select(this), 550);
                 });
             }
@@ -446,7 +435,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 function focusOnCurrentClass(focusHistoryId) {
                     if (focusHistoryId) {
                         circle.each(function (d) {
-                            if (focusHistoryId == d.id) {
+                            if (focusHistoryId === d.id) {
                                 doFocus(d);
                             }
                         });
@@ -608,7 +597,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     // the fancy version for faster browsers
                     var transition = d3.transition()
                         .duration(ZOOM_DURATION)
-                        .tween("zoom", function (d) {
+                        .tween("zoom", function () {
                             var i = d3.interpolateZoom(view, [focus.x, focus.y, adjustRadius(focus.r)]);
                             return function (t) {
                                 zoomTo(i(t));
@@ -815,7 +804,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 // hit enter again on the already selected class in order again react and zoom to it again
                 // if we are not at the moment
                 var currentSearchedClass;
-                onEnterClassSearchBroadcast = scope.$on('onEnterKeypressSearchAction', function (event) {
+                onEnterClassSearchBroadcast = scope.$on('onEnterKeypressSearchAction', function () {
                     if (currentSearchedClass) {
                         doFocus(currentSearchedClass);
                     }

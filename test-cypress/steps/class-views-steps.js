@@ -7,21 +7,28 @@ const ALL_GRAPHS = 'All graphs';
 const NEWS_GRAPH = 'http://example.org/news';
 
 Object.defineProperty(global, 'GRAPH_FILE', {
-    get: () => {return GRAPH_FILE;}
+    get: () => {
+        return GRAPH_FILE;
+    }
 });
 
 Object.defineProperty(global, 'ALL_GRAPHS', {
-    get: () => {return ALL_GRAPHS;}
+    get: () => {
+        return ALL_GRAPHS;
+    }
 });
 
 Object.defineProperty(global, 'NEWS_GRAPH', {
-    get: () => {return NEWS_GRAPH;}
+    get: () => {
+        return NEWS_GRAPH;
+    }
 });
 
 class ClassViewsSteps {
 
     static selectGraphFromDropDown(graph) {
-        cy.get('#selectGraphDropdown .dropdown-item')
+        cy.get('#selectGraphDropdown')
+            .find('.dropdown-item')
             .each(($el, index, $list) => {
                 if ($el.text().trim() === graph) {
                     cy.wrap($el).click();
@@ -30,12 +37,15 @@ class ClassViewsSteps {
     }
 
     static verifyGraphIsDisplayed(graph) {
-        cy.get('#selectGraphDropdown').should('be.visible')
-            .and('contain', graph);
+        cy.waitUntil(() =>
+            cy.get('#selectGraphDropdown')
+                .then(dropDown => dropDown && Cypress.dom.isAttached(dropDown) && dropDown.text().indexOf(graph) !== -1));
     }
 
     static clickGraphBtn() {
-        cy.get('#graphsBtnGroup').click();
+        return cy.waitUntil(() =>
+            cy.get('#graphsBtnGroup')
+                .then(graphsBtn => graphsBtn && Cypress.dom.isAttached(graphsBtn) && graphsBtn.trigger('click')));
     }
 
 
@@ -52,8 +62,11 @@ class ClassViewsSteps {
     }
 
     static confirmReload() {
-        cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.exist');
+        cy.get('.modal-footer .confirm-btn')
+            .click()
+            .then(() => {
+                cy.get('.modal').should('not.exist');
+            });
     }
 
     static reloadDiagram() {

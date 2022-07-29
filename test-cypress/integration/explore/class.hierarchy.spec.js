@@ -10,13 +10,18 @@ const CLASS_HIERARCHY = 'class hierarchy';
 describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
-    beforeEach(() => {
+    before(() => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
-
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+    });
 
+    beforeEach(() => {
+        waitUntilPageIsLoaded();
+    })
+
+    function waitUntilPageIsLoaded() {
+        cy.presetRepository(repositoryId);
         cy.visit('/hierarchy');
         cy.window();
         // Wait for the chart and diagram to be visible, also check if a class is displayed.
@@ -25,9 +30,9 @@ describe('Class hierarchy screen validation', () => {
             findClassByName('food:Grape');
             cy.get('@classInHierarchy').scrollIntoView().should('be.visible');
         });
-    });
+    }
 
-    afterEach(() => {
+    after(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -172,7 +177,7 @@ describe('Class hierarchy screen validation', () => {
     it('Test class-hierarchy for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
         // Should re-enter page to display Graph dropdown
-        cy.visit('/hierarchy');
+        waitUntilPageIsLoaded();
         ClassViewsSteps.verifyDataChangedWarning();
         verifyCounterValue(INITIAL_CLASS_COUNT);
         ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
@@ -182,12 +187,15 @@ describe('Class hierarchy screen validation', () => {
 
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
-        cy.visit('/hierarchy#1');
+        cy.url().should('contain', `${Cypress.config('baseUrl')}/hierarchy#1`);
+        ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
-        ClassViewsSteps.clickGraphBtn();
-        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
-        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
-        verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+        ClassViewsSteps.clickGraphBtn()
+            .then(() => {
+                ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
+                ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
+                verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
+            });
     });
 
     function getDomainRangeGraphButton() {

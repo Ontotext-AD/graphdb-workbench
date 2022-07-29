@@ -22,7 +22,9 @@ const allGraphs = {
     }
 };
 Object.defineProperty(global, 'allGraphs', {
-    get: () => {return allGraphs;}
+    get: () => {
+        return allGraphs;
+    }
 });
 
 angular
@@ -145,7 +147,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 }
                 if ($scope.status.indexOf('ERROR;') === 0) {
                     $scope.status = STATUS.ERROR;
-                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error: $scope.status.substring('ERROR;'.length)}));
                 }
             })
             .error(function (data) {
@@ -208,7 +210,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.$watch('direction', function () {
         if (!$repositories.getActiveRepository() ||
-                $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
+            $scope.isSystemRepository() || $repositories.isActiveRepoFedXType() || !$scope.isLicenseValid()) {
             return;
         }
         initView();
@@ -239,7 +241,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         GraphDataRestService.calculateRelationships(selectedGraph.contextID.uri)
             .success(function (data) {
                 if (data.indexOf('ERROR;') === 0) {
-                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
+                    toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error: $scope.status.substring('ERROR;'.length)}));
                 } else {
                     getRelationshipsStatus();
                 }
@@ -301,6 +303,11 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             $scope.status = STATUS.NO_REPO;
             return;
         }
+
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
+
         initView();
     }
 
