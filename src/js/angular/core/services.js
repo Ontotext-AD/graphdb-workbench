@@ -79,19 +79,44 @@ function MenuItemsProvider() {
     let productInfo;
 
     const items = [];
+    let itemsWithMissedParent = [];
 
     this.addItem = function (item) {
         if (angular.isUndefined(item.parent)) {
             if (!exists(items, item.label)) {
                 items.push(cloneItem(item, []));
+                // A new parent is registered so we try to process items which parents were missed.
+                this.updateItemsWithMissedParent();
             }
         } else {
-            const parentItem = findParent(items, item.parent);
-            if (!angular.isUndefined(parentItem)) {
-                if (!exists(parentItem.children, item.label)) {
-                    parentItem.children.push(cloneItem(item, item.children ? item.children : []));
-                }
+            if (!this.addItemToParent(item)) {
+                // Save item because parent may not processed yet. We will try later to process it again.
+                itemsWithMissedParent.push(item);
             }
+        }
+    };
+
+    this.addItemToParent = function (item) {
+        const parentItem = findParent(items, item.parent);
+        if (!angular.isUndefined(parentItem)) {
+            if (!exists(parentItem.children, item.label)) {
+                parentItem.children.push(cloneItem(item, item.children ? item.children : []));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    this.updateItemsWithMissedParent = function () {
+        if (itemsWithMissedParent.length > 0) {
+            const notProcessed = [];
+            let self = this;
+            itemsWithMissedParent.forEach(function (itemWithMissedParent) {
+                if (!self.addItemToParent(itemWithMissedParent)) {
+                    notProcessed.push(itemWithMissedParent);
+                }
+            });
+            itemsWithMissedParent = notProcessed;
         }
     };
 
