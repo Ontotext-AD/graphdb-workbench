@@ -407,12 +407,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $repositories.setRepository(repository);
     };
 
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal())
-        .then((principal) => {
-            $scope.principal = principal;
-            $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
-        });
+    function setPrincipal() {
+        // Using $q.when to proper set values in view
+        $q.when($jwtAuth.getPrincipal())
+            .then((principal) => {
+                $scope.principal = principal;
+                $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
+            });
+    }
 
     $scope.logout = function () {
         $jwtAuth.clearAuthentication();
@@ -787,6 +789,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $rootScope.redirectToLogin();
             }
         } else {
+            setPrincipal();
             $licenseService.checkLicenseStatus();
             $scope.getSavedQueries();
         }

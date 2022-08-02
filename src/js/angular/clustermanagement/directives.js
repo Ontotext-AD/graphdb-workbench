@@ -48,6 +48,9 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     updateTranslations();
                     updateLabels();
                 });
+                scope.$on("$destroy", function () {
+                    legendTooltip.destroy();
+                });
                 function updateTranslations() {
                     Object.keys(translationsMap).forEach((key) => {
                         translationsMap[key] = $translate.instant('cluster_management.cluster_graphical_view.' + key);
@@ -150,9 +153,12 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     .attr('class', 'd3-tip')
                     .customPosition(function () {
                         const bbox = tooltipElement.getBoundingClientRect();
+                        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+
                         return {
-                            left: bbox.left + 'px',
-                            top: (bbox.top - 30) + 'px'
+                            left: bbox.left + scrollLeft + 'px',
+                            top: (bbox.top - 30) + scrollTop + 'px'
                         };
                     })
                     .html(function (d) {

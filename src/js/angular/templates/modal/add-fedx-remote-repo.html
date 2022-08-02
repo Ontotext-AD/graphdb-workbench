@@ -10,8 +10,8 @@
     </button>
     <h3 class="modal-title">{{'edit.local.repo' | translate}}</h3>
 </div>
-<form id="addFedXRepositoryForm" novalidate name="form">
-    <div class="modal-body" ng-if="mode === 'remote'">
+<div class="modal-body" ng-if="mode === 'remote'">
+    <form id="addFedXRepositoryForm" novalidate name="form">
         <label> <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="graphdb-server" value="RemoteRepository">
             {{'gdb.rdf4j.server' | translate}}</label>
         <label class="padding-label"> <input type="radio" name="model.store" ng-model="model.store" ng-disabled="model.editMode" id="sparql-endpoint" value="SPARQLEndpoint">
@@ -58,8 +58,10 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-body" ng-if="mode === 'local'">
+    </form>
+</div>
+<div class="modal-body" ng-if="mode === 'local'">
+    <form id="addFedXRepositoryForm" novalidate name="form">
         <div id="respect">
             <input type="radio" name="model.respectRights" ng-model="model.respectRights" id="respect_access" value="true">
             <label for="respect_access" style="font-size: 1.3em; display:inline">{{'respect.repo.access.rights' | translate}}</label>
@@ -70,14 +72,14 @@
             <label for="ignore_access" style="font-size: 1.3em; display:inline">{{'ignore.repo.access.rights' | translate}}</label>
             <p class="indented-div">{{'regardless.repo.rights.federated.view.warning' | translate}}</p>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="submit" ng-click="ok();" class="btn btn-primary"
-                ng-disabled="form.$invalid" ng-if="!model.editMode"> {{'common.add' | translate}}
-        </button>
-        <button type="submit" ng-click="ok();" class="btn btn-primary"
-                ng-disabled="form.$invalid" ng-if="model.editMode"> {{'edit' | translate}}
-        </button>
-        <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
-    </div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
+            ng-disabled="form.$invalid" ng-if="!model.editMode"> {{'common.add' | translate}}
+    </button>
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
+            ng-disabled="form.$invalid" ng-if="model.editMode"> {{'edit' | translate}}
+    </button>
+    <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
+</div>

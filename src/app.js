@@ -67,7 +67,9 @@ const moduleDefinition = function (productInfo) {
             // configure toastr
             angular.extend(toastrConfig, {
                 timeOut: 5000,
-                positionClass: 'toast-bottom-right'
+                positionClass: 'toast-bottom-right',
+                tapToDismiss: false,
+                extendedTimeOut: 5000
             });
 
 
@@ -214,7 +216,7 @@ $.get('rest/info/version?local=1', function (data) {
     // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
     // the first attribute is M3 so the short version will be 10.0-M3.
     const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-    if (attributeArray.length) {
+    if (attributeArray && attributeArray.length) {
         data.productShortVersion = data.productShortVersion + attributeArray[1];
     }
 

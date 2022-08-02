@@ -111,7 +111,7 @@
                 <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
-                <span>{{clusterConfiguration.electionMinTimeout}}</span>
+                <span>{{clusterConfiguration.electionMinTimeout | number}}</span>
             </div>
         </div>
         <div class="datasource mb-1">
@@ -120,7 +120,7 @@
                 <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
-                <span>{{clusterConfiguration.electionRangeTimeout}}</span>
+                <span>{{clusterConfiguration.electionRangeTimeout | number}}</span>
             </div>
         </div>
         <div class="datasource mb-1">
@@ -129,7 +129,7 @@
                 <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
-                <span>{{clusterConfiguration.heartbeatInterval}}</span>
+                <span>{{clusterConfiguration.heartbeatInterval | number}}</span>
             </div>
         </div>
         <div class="datasource mb-1">
@@ -138,7 +138,7 @@
                 <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
-                <span>{{clusterConfiguration.messageSizeKB}}</span>
+                <span>{{clusterConfiguration.messageSizeKB | number}}</span>
             </div>
         </div>
         <div class="datasource mb-1">
@@ -147,13 +147,15 @@
                 <em class="icon-info text-primary" tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
-                <span>{{clusterConfiguration.verificationTimeout}}</span>
+                <span>{{clusterConfiguration.verificationTimeout | number}}</span>
             </div>
         </div>
         <h4>{{'cluster_management.cluster_configuration.nodes_list_label' | translate}}</h4>
         <ul>
-            <li class="data-value" ng-repeat="node in clusterConfiguration.nodes">
-                {{node}}
+            <li ng-repeat="node in clusterModel.nodes">
+                <a class="data-value" href="{{node.endpoint}}" target="_blank">{{node.endpoint}}</a>
+                <div class="small">{{ 'cluster_management.cluster_status.node.rpc_address' | translate }}: <span class="data-value">{{node.address}}</span></div>
+                <div class="small">{{ 'cluster_management.cluster_status.node.state' | translate }}: <span class="data-value">{{node.nodeState}}</span></div>
             </li>
         </ul>
     </div>

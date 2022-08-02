@@ -22,7 +22,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {uri: '', label: 'Local'};
+        this.location = {uri: '', label: 'Local', local: true};
         this.locationError = '';
         this.loading = true;
         this.repository = {
@@ -136,12 +136,12 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (!quick) {
                 this.locationsShouldReload = true;
             }
-            LocationsRestService.getActiveLocation().then(
+            return LocationsRestService.getActiveLocation().then(
                 function (res) {
                     if (res.data) {
                         const location = res.data;
                         if (location.active) {
-                            RepositoriesRestService.getRepositories().then(function (result) {
+                            return RepositoriesRestService.getRepositories().then(function (result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
                                         that.clearLocationErrorMsg(key);
@@ -156,7 +156,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                                     if (successCallback) {
                                         successCallback();
                                     }
-                                },
+                                }).catch(
                                 function (err) {
                                     loadingDone(err);
                                     if (errorCallback) {
@@ -176,7 +176,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     }
                     $rootScope.globalLocation = that.location;
                     $rootScope.globalRepositories = that.getRepositories();
-                },
+                }).catch(
                 function (err) {
                     loadingDone(err);
                     if (errorCallback) {
@@ -187,15 +187,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         let locationsRequestPromise;
 
-        this.getLocations = function () {
-            if (that.locationsShouldReload) {
+        this.getLocations = function (abortRequestPromise) {
+            if (this.locationsShouldReload || locationsRequestPromise) {
                 if (!locationsRequestPromise) {
                     this.locationsShouldReload = false;
                     this.locations = [this.location];
-                    const that = this;
-                    locationsRequestPromise = LocationsRestService.getLocations()
+                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise)
                         .then((data) => {
-                            this.locations = data.data;
+                            that.locations = data.data;
                             return this.locations;
                         })
                         .catch(function () {
@@ -212,17 +211,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 return locationsRequestPromise;
             }
 
-            // if request is in progress, return its promise, else return a promise and resolve it with locations
-            if (locationsRequestPromise) {
-                return locationsRequestPromise;
-            } else {
-                const deferred = $q.defer();
-                deferred.resolve(this.locations);
-                return deferred.promise;
-            }
+            const deferred = $q.defer();
+            deferred.resolve(this.locations);
+            return deferred.promise;
         };
 
-        that.getLocations();
 
         this.getActiveLocation = function () {
             return this.location;

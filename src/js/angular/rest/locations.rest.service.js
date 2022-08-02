@@ -20,8 +20,8 @@ function LocationsRestService($http) {
         getLocationRpcAddress
     };
 
-    function getLocations() {
-        return $http.get(LOCATIONS_ENDPOINT);
+    function getLocations(abortRequestPromise) {
+        return $http.get(LOCATIONS_ENDPOINT, {timeout: abortRequestPromise ? abortRequestPromise.promise : null});
     }
 
     function addLocation(data) {

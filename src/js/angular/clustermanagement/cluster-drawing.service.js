@@ -142,7 +142,7 @@ function getNodeIconType(node) {
     if (node.nodeState === NodeState.LEADER) {
         return '\ue935';
     } else if (node.nodeState === NodeState.FOLLOWER) {
-        return '\ue90A';
+        return '\ue963';
     } else if (node.nodeState === NodeState.CANDIDATE) {
         return '\ue914';
     } else if (node.nodeState === NodeState.NO_CONNECTION) {

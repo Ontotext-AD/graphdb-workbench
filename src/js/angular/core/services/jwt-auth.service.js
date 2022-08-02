@@ -123,12 +123,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 });
             };
 
-            let securityConfigRequestPromise;
             this.initSecurity = function () {
                 this.securityInitialized = false;
                 this.auth = localStorage.getItem(this.authStorageName);
 
-                securityConfigRequestPromise = SecurityRestService.getSecurityConfig().then(function (res) {
+                SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -198,12 +197,16 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             });
                         }
                     }
-                })
-                    .finally(() => securityConfigRequestPromise = null);
+                });
             };
 
             this.initSecurity();
 
+            this.reinitializeSecurity = function () {
+                if (!this.securityInitialized) {
+                    this.initSecurity();
+                }
+            };
 
             this.isSecurityEnabled = function () {
                 return this.securityEnabled;

@@ -41,8 +41,11 @@ describe('Repositories', () => {
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
+        cy.intercept('/rest/locations').as('getLocations');
 
         cy.visit('/repository');
+        waitLoader();
+        cy.wait('@getLocations');
         cy.window();
 
         waitUntilRepositoriesPageIsLoaded();
@@ -222,6 +225,7 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
+        cy.wait('@getLocations');
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -275,6 +279,7 @@ describe('Repositories', () => {
         // The currently selected repository is kept in local storage
         cy.visit('/repository');
         cy.window();
+
         // Should automatically select the default repository
         getRepositoriesDropdown()
             .find('.active-repository')
@@ -296,7 +301,7 @@ describe('Repositories', () => {
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
-
+        cy.wait('@getLocations');
         editRepository(repositoryId);
 
         // Some fields should be disabled
@@ -312,7 +317,7 @@ describe('Repositories', () => {
                 confirmModal();
                 waitLoader();
             });
-
+        cy.wait('@getLocations');
         // See the title is rendered in the repositories list
         getRepositoryFromList(repositoryId).should('contain', newTitle);
 
@@ -330,7 +335,7 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
-
+        cy.wait('@getLocations');
         selectRepoFromDropdown(repositoryId);
 
         getRepositoryFromList(repositoryId)

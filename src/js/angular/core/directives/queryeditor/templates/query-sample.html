@@ -4,8 +4,8 @@
     <button type="button" class="close" ng-click="cancel()"></button>
     <h3 class="modal-title">{{title}}</h3>
 </div>
-<form novalidate ng-submit="ok()" name="form" class="save-query-form">
-    <div class="modal-body">
+<div class="modal-body">
+    <form novalidate name="form" class="save-query-form" id="saveQueryForm">
         <input id="wb-sparql-sampleName" required type="text" ng-model="query.name" class="form-control"
                ng-change="queryExists = false"
                placeholder="{{'query.sample.title.placeholder' | translate}}"/>
@@ -32,13 +32,13 @@
                  ng-bind-html="existingQueryErrMsg">
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button id="wb-sparql-submit" class="btn btn-primary create-btn" ng-click="ok()" type="submit">
-            {{okButtonText}}
-        </button>
-    </div>
-</form>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button id="wb-sparql-submit" class="btn btn-primary create-btn" ng-click="ok()" type="submit" form="saveQueryForm">
+        {{okButtonText}}
+    </button>
+</div>
 
 <!-- End QuerySample modal -->
