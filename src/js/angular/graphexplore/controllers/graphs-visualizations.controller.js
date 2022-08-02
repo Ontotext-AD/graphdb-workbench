@@ -231,7 +231,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 
     $scope.defaultSettings = {
-        linksLimit: 20,
+        linksLimit: 200,
         includeInferred: true,
         sameAsState: true,
         languages: ['en'],
