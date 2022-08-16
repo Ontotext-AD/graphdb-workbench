@@ -76,6 +76,16 @@
             "name": "entityIdSize",
             "value": "32"
         },
+        "fts": {
+            "label": "Enable full-text search",
+            "name": "fts",
+            "value": "true"
+        },
+        "ftsLanguages": {
+            "label": "Enter language for full-text search",
+            "name": "ftsLanguages",
+            "value": ""
+        },
         "throwQueryEvaluationExceptionOnTimeout": {
             "label": "Throw exception on query time-out",
             "name": "throwQueryEvaluationExceptionOnTimeout",
