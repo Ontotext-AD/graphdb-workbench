@@ -1608,5 +1608,21 @@
     "all": "tous",
     "clear.tooltip": "Clair",
     "repo.page.location.label": "Localisation",
-    "repo.page.location.input.field.tooltip": "L'emplacement où créer le répertoire. Par défaut, il s'agit de l'emplacement local."
+    "repo.page.location.input.field.tooltip": "L'emplacement où créer le répertoire. Par défaut, il s'agit de l'emplacement local.",
+    "guide_step_plugin": {
+        "import_rdf_file": {
+            "step_one": {
+                "title": "Title of step one Fr",
+                "content": "Content of step one. Fr"
+            },
+            "step_two": {
+                "title": "Title of step two Fr",
+                "content": "Content of step tow. Fr"
+            },
+            "step_three": {
+                "title": "Title of step three Fr",
+                "content": "Content of step three. Fr"
+            }
+        }
+    }
 }

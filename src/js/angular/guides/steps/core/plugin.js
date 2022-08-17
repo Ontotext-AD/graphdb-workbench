@@ -70,5 +70,14 @@ PluginRegistry.add('guide.step', [
             }
             return stepDescription;
         }
+    },
+    {
+        'guideBlockName': 'info-message',
+        'getStep': (options, GuideUtils) => {
+            const notOverridable = {
+                'type': 'readonly',
+            };
+            return angular.extend({}, BASIC_STEP, options, notOverridable);
+        }
     }
 ]);

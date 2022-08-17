@@ -25,7 +25,8 @@ const modules = [
     'pascalprecht.translate',
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
-    'graphdb.framework.core.directives.languageselector.languageselector'
+    'graphdb.framework.core.directives.languageselector.languageselector',
+    'graphdb.framework.guides.services'
 ];
 
 const providers = [
@@ -162,7 +163,7 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'LocalStorageAdapter', 'LSKeys', function ($rootScope, $route, toastr, $sce, $translate, LocalStorageAdapter, LSKeys) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'LocalStorageAdapter', 'LSKeys', 'GuidesService', function ($rootScope, $route, toastr, $sce, $translate, LocalStorageAdapter, LSKeys, GuidesService) {
         $rootScope.$on('$routeChangeSuccess', function () {
             updateTitleAndHelpInfo();
 
@@ -192,6 +193,7 @@ const moduleDefinition = function (productInfo) {
                 rootElement.classList.add("dark");
             }
         }
+        GuidesService.init();
     }]);
 
     workbench.filter('titlecase', function() {

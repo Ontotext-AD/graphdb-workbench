@@ -48,12 +48,17 @@
                 </a>
             </span>
         </div>
+        <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+            <a class="btn btn-lg btn-secondary" ng-click="resumeGuide()"><span class="icon-play text-primary"></span> {{'guide.button.guide-paused' | translate}}</a>
+        </div>
         <rdf-resource-search class="float-xs-left p-0"></rdf-resource-search>
         <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
             <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" guide-selector="repositoriesGroupButton">
                 <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                      popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
+                      popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()"
+                      guide-selector="repository-{{getActiveRepositoryObject().id}}-button"
+                      class="active-repository">
                     <em ng-class="'icon-repo-' + getActiveRepositoryObject().type" class="icon-1-5x"></em>
                     {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
                 </span>
@@ -65,6 +70,7 @@
                     ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
+                    guide-selector="repository-{{repository.id}}-button"
                     popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
                     <a class="dropdown-item" ng-click="setRepository(repository)">
                         <em ng-class="'icon-repo-' + repository.type" class="icon-1-5x"></em>

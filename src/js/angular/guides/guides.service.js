@@ -144,7 +144,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
-    this.guideRepositoryUrl = '';
+    this.guideRepositoryUrl = '';//https://github.com/Ontotext-AD/graphdb-workbench/raw/feature/GDB-7292_Define_the_building_blocks_for_easy_guide/src';
 
     this.init = () => {
         this._subscribeToGuideResumed();
@@ -167,7 +167,25 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
         this.cancelGuide();
         this.loadGuide(guideFileName)
             .then(guide => {
-                return this._toStepsDescriptions(guide);
+                let toStepsDescriptions = this._toStepsDescriptions(guide);
+
+                if (guide && guide.options && guide.options.repositoryId) {
+                    // let repository = localStorage.getItem('com.ontotext.graphdb.repository');
+                    // if (repository !== guide.options.repositoryId) {
+                    //     const select = this._toStepsDescriptions({steps: [{"guideBlockName": "select-repository"}], options: guide.options});
+                    //     const index = startStepId ? startStepId : 0;
+                    //     const firstStepDescription = toStepsDescriptions[index];
+                    //     select[0].url = firstStepDescription.url;
+                    //     toStepsDescriptions.splice(index, 0, select[0], select[1]);
+                    // }
+                }
+
+                // Add id to everyone step
+                for (let index = 0; index < toStepsDescriptions.length; index++) {
+                    toStepsDescriptions[index].id = index;
+                }
+
+                return toStepsDescriptions;
             })
             .then(stepsDescriptions => {
                 if (!!startStepId) {
@@ -177,7 +195,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
                 }
             });
     }
-
 
     /**
      * Cancel the currently started guide if any.
@@ -383,11 +400,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
         guide.steps.forEach(step => {
             coreSteps = coreSteps.concat(this._getSteps(step, guide.options));
         });
-
-        // Add id to everyone step
-        for (let index = 0; index < coreSteps.length; index++) {
-            coreSteps[index].id = index;
-        }
         return coreSteps;
     }
 

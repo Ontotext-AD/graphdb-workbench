@@ -1,0 +1,22 @@
+{
+    "guideName": "guide.test-twoname",
+    "options": {
+        "repositoryId": "boyan_test",
+        "resourcePath": "test-guide-one/beatles.zip"
+    },
+    "steps": [
+        {
+            "guideBlockName": "create-repository",
+            "options": {
+                "repositoryId": "music",
+                "rulesetName": "RDFS-Plus (Optimized)"
+            }
+        },
+        {
+            "guideBlockName": "import-rdf-file",
+            "options": {
+                "fileName": "beatles.ttl"
+            }
+        }
+    ]
+}

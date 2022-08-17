@@ -17,9 +17,9 @@ angular
  * @param LocalStorageAdapter
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -299,7 +299,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
         const step = guide.steps[stepIndex];
         const url = step.options.url;
         if (!!url) {
-            $location.path(url);
+            $location.url(url);
+            $route.reload();
         }
 
         if (!!step.options.attachTo) {

@@ -1,0 +1,12 @@
+[
+    {
+        "title": "guide.test_one.name",
+        "guideFileName": "test-guide-one/test-guide-one_guide.json",
+        "order": 1
+    },
+    {
+        "title": "guide.test_two.name",
+        "guideFileName": "test-guide-two/test-guide-two_guide.json",
+        "order": 2
+    }
+]

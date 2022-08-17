@@ -1,0 +1,38 @@
+{
+    "guideName": "guide.test-one.name",
+    "options": {
+        "repositoryId": "boyan_test"
+    },
+    "steps": [
+        {
+            "guideBlockName": "visual-graph",
+            "options": {
+                "easyGraphInputText": "Be",
+                "clickOnIRI": "http://stardog.com/tutorial/The_Beatles",
+                "shortIRI": "The_Beatles"
+            }
+        },
+        {
+            "guideBlockName": "enable-autocomplete"
+        },
+        {
+            "guideBlockName": "download-guide-resource",
+            "options": {
+                "resourceUrl": "https://github.com/Ontotext-AD/graphdb-workbench/raw/feature/GDB-7292_Define_the_building_blocks_for_easy_guide/src/guides/test-guide-one/beatles.zip"
+            }
+        },
+        {
+            "guideBlockName": "import-rdf-file",
+            "options": {
+                "fileName": "beatles.ttl"
+            }
+        },
+        {
+            "guideBlockName": "create-repository",
+            "options": {
+                "repositoryId": "music",
+                "rulesetName": "RDFS-Plus (Optimized)"
+            }
+        }
+    ]
+}

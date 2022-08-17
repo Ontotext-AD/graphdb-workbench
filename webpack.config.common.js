@@ -111,6 +111,10 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/guides',
+                to: 'guides'
+            },
+            {
                 from: 'src/i18n',
                 to: 'i18n'
             },
