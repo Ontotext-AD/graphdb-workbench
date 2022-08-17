@@ -149,7 +149,7 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
-                                <td class="text-xs-right" ng-if="isUser() && data.config.owner === data.principal().username">
+                                <td class="text-xs-right" ng-if="isUser() && config.owner === principal().username">
                                     <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
                                     <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="{{'visual.delete.config' | translate}}"><span class="icon-trash"></span></button>
                                 </td>
