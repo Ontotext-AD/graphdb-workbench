@@ -1,0 +1,22 @@
+.btn-primary.shepherd-button:hover {
+    background-color: #d0460d;
+}
+
+.btn-primary.shepherd-button[disabled]{
+    opacity: 0.5;
+}
+
+.btn-secondary.shepherd-button:hover {
+    background-color: #dcdcdc;
+    color: #003663;
+}
+
+.guide-dialog.shepherd-element {
+    margin: 12px !important;
+}
+
+.shepherd-text {
+    text-align: center;
+    min-height: 60px;
+    margin-top: 10px;
+}
