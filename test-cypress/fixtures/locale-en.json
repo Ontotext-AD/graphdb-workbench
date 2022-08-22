@@ -537,6 +537,8 @@
     "menu.sparql.label": "SPARQL",
     "menu.monitor.label": "Monitor",
     "menu.queries.and.updates.label": "Queries and Updates",
+    "menu.fts.label": "Enable full-text search",
+    "menu.ftsLanguages.label": "Languages for full-text search",
     "menu.resources.label": "Resources",
     "menu.setup.label": "Setup",
     "menu.repositories.label": "Repositories",
