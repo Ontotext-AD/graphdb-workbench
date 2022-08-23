@@ -215,6 +215,7 @@ describe('Repositories', () => {
         getRepositoryRulesetMenu().should('have.value', '4');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
         getRepositoryContextIndexCheckbox().should('be.checked');
+        getRepositoryFtsCheckbox().should('be.checked');
     });
 
     it('should allow to switch between repositories', () => {
@@ -310,6 +311,7 @@ describe('Repositories', () => {
 
         typeRepositoryTitle(newTitle);
         getRepositoryContextIndexCheckbox().check();
+        getRepositoryFtsCheckbox().check();
 
         getSaveRepositoryButton()
             .click()
@@ -326,6 +328,7 @@ describe('Repositories', () => {
 
         getRepositoryTitleField().should('have.value', newTitle);
         getRepositoryContextIndexCheckbox().should('be.checked');
+        getRepositoryFtsCheckbox().should('be.checked');
     });
 
     it('should allow to delete existing repository', () => {
@@ -835,6 +838,10 @@ describe('Repositories', () => {
 
     function getRepositoryContextIndexCheckbox() {
         return getRepositoryCreateForm().find('#enableContextIndex');
+    }
+
+    function getRepositoryFtsCheckbox() {
+        return getRepositoryCreateForm().find('#fts');
     }
 
     function getSaveRepositoryButton() {
