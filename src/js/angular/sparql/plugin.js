@@ -17,7 +17,8 @@ PluginRegistry.add('main.menu', {
             href: 'sparql',
             order: 2,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: "icon-sparql"
+            icon: "icon-sparql",
+            guideSelector: 'menu-sparql'
         }
     ]
 });

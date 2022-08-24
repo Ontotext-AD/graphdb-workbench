@@ -43,7 +43,8 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings'
+            icon: 'icon-settings',
+            guideSelector: 'menu-setup'
         },
         {
             label: 'Repositories',
@@ -55,7 +56,8 @@ PluginRegistry.add('main.menu', {
             children: [{
                 href: 'repository/create',
                 children: []
-            }]
+            }],
+            guideSelector: 'sub-menu-repositories'
         }
     ]
 });

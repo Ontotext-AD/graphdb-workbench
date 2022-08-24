@@ -17,13 +17,15 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: "icon-settings"
+            icon: "icon-settings",
+            guideSelector: 'menu-setup'
         }, {
             label: 'Namespaces',
             labelKey: 'menu.namespaces.label',
             href: 'namespaces',
             order: 30,
-            parent: 'Setup'
+            parent: 'Setup',
+            guideSelector: 'sub-menu-namespaces'
         }
     ]
 });

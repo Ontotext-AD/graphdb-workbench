@@ -63,14 +63,16 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings'
+            icon: 'icon-settings',
+            guideSelector: 'menu-setup'
         },
         {
             label: 'Users and Access', labelKey: 'menu.users.and.access.label', href: 'users', order: 2, parent: 'Setup', role: 'ROLE_ADMIN',
             children: [{
                 href: 'user/create',
                 children: []
-            }]
+            }],
+            guideSelector: 'sub-menu-user-and-access'
         },
         {
             label: 'My Settings',
@@ -78,7 +80,8 @@ PluginRegistry.add('main.menu', {
             href: 'settings',
             order: 6,
             parent: 'Setup',
-            role: 'ROLE_USER'
+            role: 'ROLE_USER',
+            guideSelector: 'sub-menu-my-settings'
         }
     ]
 });

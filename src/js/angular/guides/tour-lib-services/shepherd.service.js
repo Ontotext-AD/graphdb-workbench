@@ -2,7 +2,7 @@ import {GuideUtils} from "../guide-utils";
 import Shepherd from "shepherd.js";
 
 export const GUIDE_NAME = 'shepherd.guide_name';
-export const GUIDE_CURRENT_STEP_ID ='shepherd.guide.current.step.id';
+export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
 export const GUIDE_PAUSE = 'shepherd.guide.pause';
 
 const modules = ['graphdb.framework.utils.localstorageadapter'];
@@ -21,8 +21,10 @@ ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter'];
 
 function ShepherdService($location, $translate, LocalStorageAdapter) {
     this.guideCancelSubscription = undefined;
-    this.onPause = () => {};
-    this.onCancel = () => {};
+    this.onPause = () => {
+    };
+    this.onCancel = () => {
+    };
 
     /**
      * Creates and starts a guide.
@@ -280,16 +282,23 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      * @private
      */
     this._startGuide = (guide, startStepId) => {
-        const stepIndex = guide.steps.findIndex((value => value.options.id === startStepId));
-        const step = guide.steps[stepIndex > -1 ? stepIndex : 0];
+        let stepIndex = guide.steps.findIndex((value => value.options.id === startStepId));
+        if (stepIndex < 0) {
+            stepIndex = 0;
+        }
+        const step = guide.steps[stepIndex];
         const url = step.options.url;
         if (!!url) {
             $location.path(url);
         }
 
-        GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
-            .then(() => guide.show(stepIndex))
-            .catch(() => guide.cancel());
+        if (!!step.options.attachTo) {
+            GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
+                .then(() => guide.show(stepIndex))
+                .catch(() => guide.cancel());
+        } else {
+            guide.show(stepIndex);
+        }
     }
 
     this._subscribeToGuideCanceled = () => {
@@ -416,9 +425,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
             } else if (previousStepDescription.forceReload || previousStepDescription.url && previousStepDescription.url !== currentStepDescription.url) {
                 $location.path(previousStepDescription.url);
             }
-            GuideUtils.waitFor(previousStepDescription.elementSelector, previousStepDescription.maxWaitTime)
-                .then(() => guide.back())
-                .catch(() => guide.cancel());
+
+            if (!!previousStepDescription.elementSelector) {
+                GuideUtils.waitFor(previousStepDescription.elementSelector, previousStepDescription.maxWaitTime)
+                    .then(() => guide.back())
+                    .catch(() => guide.cancel());
+            } else {
+                guide.back();
+            }
         }
     }
 
@@ -443,9 +457,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
             } else if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
                 $location.path(nextStepDescription.url);
             }
-            GuideUtils.waitFor(nextStepDescription.elementSelector, nextStepDescription.maxWaitTime)
-                .then(() => guide.next())
-                .catch(() => guide.cancel());
+
+            if (!!nextStepDescription.elementSelector) {
+                GuideUtils.waitFor(nextStepDescription.elementSelector, nextStepDescription.maxWaitTime)
+                    .then(() => guide.next())
+                    .catch(() => guide.cancel());
+            } else {
+                guide.next();
+            }
         }
     }
 
@@ -487,17 +506,22 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      * @private
      */
     this._toBaseGuideStep = ($translate, stepDescription, onShow) => {
+        let attachTo;
+        if (!!stepDescription.elementSelector) {
+            attachTo = {
+                element: stepDescription.elementSelector,
+                on: stepDescription.placement
+            }
+        }
+
         return {
             id: stepDescription.id,
-            title: $translate.instant(stepDescription.title, stepDescription),
-            text: $translate.instant(stepDescription.content, stepDescription),
+            title: this.unescapeHtml($translate.instant(stepDescription.title, stepDescription)),
+            text: this.unescapeHtml($translate.instant(stepDescription.content, stepDescription)),
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
             cancelIcon: {enabled: true},
-            attachTo: {
-                element: stepDescription.elementSelector,
-                on: stepDescription.placement
-            },
+            attachTo,
             modalOverlayOpeningPadding: 0,
             modalOverlayOpeningRadius: 0,
             canBePaused: stepDescription.canBePaused,
@@ -508,6 +532,17 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
                 }
             }
         };
+    }
+
+    /**
+     * Unescape string with HTML Entities: &lt;, &gt; etc.
+     * @param escapedHtml - escaped string. For example: "Click on menu &lt;b&gt;Import&lt;/b&gt;."
+     * @returns {string} - unescaped string. For example: "Click on menu <b>Import</b>."
+     */
+    this.unescapeHtml = (escapedHtml) => {
+        const div = document.createElement('div');
+        div.innerHTML = escapedHtml;
+        return div.innerText;
     }
 
     /**
