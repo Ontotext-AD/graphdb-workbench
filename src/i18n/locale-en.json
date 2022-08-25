@@ -1608,5 +1608,7 @@
     "all": "all",
     "clear.tooltip": "Clear",
     "repo.page.location.label": "Location",
-    "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one."
+    "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
+    "guide.step_plugin.enable-autocomplete.title": "",
+    "guide.step_plugin.enable-autocomplete.content": "Click checkbox that enables the index"
 }

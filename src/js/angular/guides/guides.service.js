@@ -144,6 +144,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
+    this.guideRepositoryUrl = '';
 
     this.init = () => {
         this._subscribeToGuideResumed();
@@ -176,6 +177,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
                 }
             });
     }
+
 
     /**
      * Cancel the currently started guide if any.
@@ -213,7 +215,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      */
     this.loadGuide = (guideFileName) => {
         return new Promise(resolve => {
-            $http.get(`guides/${guideFileName}`)
+            $http.get(`${this.guideRepositoryUrl}/guides/${guideFileName}`)
                 .success(function (data) {
                     resolve(data);
                 });
@@ -238,7 +240,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      */
     this.getGuides = () => {
         return new Promise(resolve => {
-            $http.get(`guides/guides.json`)
+            $http.get(`${this.guideRepositoryUrl}/guides/guides.json`)
                 .success(function (data) {
                     resolve(data);
                 });
@@ -251,7 +253,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      */
     this.getTranslation = () => {
         return new Promise(resolve => {
-            $http.get(`guides/i18n/locale-${$translate.use()}.json`)
+            $http.get(`${this.guideRepositoryUrl}/guides/i18n/locale-${$translate.use()}.json`)
                 .success(function (data) {
                     resolve(data);
                 });
@@ -301,7 +303,8 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      *       maxWaitTime: number,
      *       canBePaused: boolean,
      *       onNextClick: function
-     *       onPreviousClick: function
+     *       onPreviousClick: function,
+     *       beforeShowPromise: function
      *     }
      * </pre>
      *
@@ -365,6 +368,10 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      *     <li>
      *         <b>onPreviousClick</b> - function which will be executed when previous button is clicked.
      *     </li>
+     *     <li>
+     *         <b>beforeShowPromise</b> - a function that returns a promise. When the promise resolves, the rest of the show code for the step will execute.
+     *         Default implementation is wait <code>maxWaitTime</code> element with <code>elementSelector</code> to be visible.
+     *     </li>
      * </ul>
      * @private
      */
@@ -418,7 +425,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
                 if (!!predefinedStepDescription.getSteps) {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, GuideUtils)), parentOptions));
                 } else if (!!predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options)));
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, GuideUtils)));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }

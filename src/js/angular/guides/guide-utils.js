@@ -28,12 +28,18 @@ const GuideUtils = (function () {
                 try {
                     let element = document.querySelector(selector);
                     if (element != null) {
+                        if (!checkVisibility || angular.element(element).is(':visible')) {
                             clearInterval(elementExist);
-                        if (angular.element(element).is(':visible')) {
-                            resolve(element);
+                            setTimeout(() => {
+                                resolve(angular.element(element));
+                            }, 0)
                         } else {
+                            iteration -= waitTime;
+                            if (iteration < 0) {
+                                clearInterval(elementExist);
                                 console.log('Element is not visible: ' + selector);
                                 reject();
+                            }
                         }
                     } else {
                         iteration -= waitTime;
