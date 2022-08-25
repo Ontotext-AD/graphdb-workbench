@@ -18,7 +18,8 @@ PluginRegistry.add('main.menu', {
         href: 'cluster',
         order: 20,
         role: 'ROLE_ADMIN',
-        parent: 'Setup'
+        parent: 'Setup',
+        guideSelector: 'sub-menu-cluster'
     }]
 });
 

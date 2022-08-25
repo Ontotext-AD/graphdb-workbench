@@ -1,9 +1,9 @@
 const BASIC_STEP = {
     'title': '',
     'content': '',
-    'elementSelector': '',
+    'elementSelector': undefined,
     'placement': 'bottom',
-    'url': '',
+    'url': undefined,
     'type': 'read-only-element',
     'maxWaitTime': 3,
     'canBePaused': true,
@@ -15,25 +15,28 @@ PluginRegistry.add('guide.step', [
     {
         'guideBlockName': 'clickable-element',
         'getStep': (options) => {
-            return angular.extend({}, BASIC_STEP, options, {
-                'type': 'clickable'
-            });
+            const notOverridable = {
+                'type': 'clickable',
+            };
+            return angular.extend({}, BASIC_STEP, options, notOverridable);
         }
     },
     {
         'guideBlockName': 'read-only-element',
         'getStep': (options) => {
-            return angular.extend({}, BASIC_STEP, options, {
+            const notOverridable = {
                 'type': 'readonly',
-            });
+            };
+            return angular.extend({}, BASIC_STEP, options, notOverridable);
         }
     },
     {
         'guideBlockName': 'input-element',
         'getStep': (options) => {
-            return angular.extend({}, BASIC_STEP, options, {
-                'type': 'input',
-            });
+            const notOverridable = {
+                'type': 'readonly',
+            };
+            return angular.extend({}, BASIC_STEP, options, notOverridable);
         }
     }
 ]);

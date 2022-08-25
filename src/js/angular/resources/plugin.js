@@ -17,7 +17,8 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 3,
             role: 'ROLE_MONITORING',
-            icon: 'icon-monitoring'
+            icon: 'icon-monitoring',
+            guideSelector: 'menu-monitor'
         }, {
             label: 'Resources',
             labelKey: 'menu.resources.label',
@@ -25,7 +26,8 @@ PluginRegistry.add('main.menu', {
             // Added role requirement here to assert that users cannot see Resources menu item
             role: 'ROLE_MONITORING',
             order: 2,
-            parent: 'Monitor'
+            parent: 'Monitor',
+            guideSelector: 'sub-menu-resources'
         }
     ]
 });

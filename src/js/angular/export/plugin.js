@@ -17,7 +17,8 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 1,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-data'
+            icon: 'icon-data',
+            guideSelector: 'menu-explore'
         },
         {
             label: 'Graphs overview',
@@ -25,7 +26,8 @@ PluginRegistry.add('main.menu', {
             href: 'graphs',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',
-            parent: 'Explore'
+            parent: 'Explore',
+            guideSelector: 'sub-menu-graph-overview'
         }
     ]
 });

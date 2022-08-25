@@ -26,26 +26,30 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 7,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings'
+            icon: 'icon-settings',
+            guideSelector: 'menu-setup'
         }, {
             label: 'Help',
             labelKey: 'menu.help.label',
             href: '#',
             order: 8,
-            icon: 'icon-help'
+            icon: 'icon-help',
+            guideSelector: 'menu-help'
         }, {
             label: 'System information',
             labelKey: 'menu.system.information.label',
             href: 'sysinfo',
             order: 50,
             parent: 'Help',
-            role: 'ROLE_ADMIN'
+            role: 'ROLE_ADMIN',
+            guideSelector: 'sub-menu-system-information'
         }, {
             label: 'REST API',
             labelKey: 'menu.rest.api.label',
             href: 'webapi',
             order: 1,
-            parent: 'Help'
+            parent: 'Help',
+            guideSelector: 'sub-menu-rest-api'
         }, {
             label: 'Documentation',
             labelKey: 'menu.documentation.label',
@@ -54,7 +58,8 @@ PluginRegistry.add('main.menu', {
             icon: 'icon-external',
             hrefFun: function (productInfo) {
                 return DOCUMENTATION_URL + productInfo.productShortVersion + '/';
-            }
+            },
+            guideSelector: 'sub-menu-documentation'
         }, {
             label: 'Developer Hub',
             labelKey: 'menu.developer.hub.label',
@@ -63,7 +68,8 @@ PluginRegistry.add('main.menu', {
             icon: 'icon-external',
             hrefFun: function (productInfo) {
                 return DOCUMENTATION_URL + productInfo.productShortVersion + '/devhub/';
-            }
+            },
+            guideSelector: 'sub-menu-developer-hub'
         }, {
             label: 'Support',
             labelKey: 'menu.support.label',
@@ -72,7 +78,8 @@ PluginRegistry.add('main.menu', {
             icon: 'icon-external',
             hrefFun: function (productInfo) {
                 return DOCUMENTATION_URL + productInfo.productShortVersion + '/support.html';
-            }
+            },
+            guideSelector: 'sub-menu-support'
         }
     ]
 });

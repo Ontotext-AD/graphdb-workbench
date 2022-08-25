@@ -9,13 +9,18 @@ const GuideUtils = (function () {
             });
     }
 
+    const clickOnGuideElement = function (elementSelector, postSelector) {
+        return GuideUtils.clickOnElement(GuideUtils.getGuideElementSelector(elementSelector, postSelector));
+    }
+
     /**
      * Waits element to be present.
      * @param selector - selector of element looking for.
+     * @param checkVisibility - if true will wait to become visible. Default value is true
      * @param timeoutInSeconds - max time to waite in second. Default value is 1 second.
      * @returns {Promise}
      */
-    const waitFor = function (selector, timeoutInSeconds) {
+    const waitFor = function (selector, timeoutInSeconds, checkVisibility = true) {
         return new Promise(function (resolve, reject) {
             let iteration = timeoutInSeconds * 1000 | 1000;
             const waitTime = 100;
@@ -23,12 +28,12 @@ const GuideUtils = (function () {
                 try {
                     let element = document.querySelector(selector);
                     if (element != null) {
-                        clearInterval(elementExist);
+                            clearInterval(elementExist);
                         if (angular.element(element).is(':visible')) {
                             resolve(element);
                         } else {
-                            console.log('Element is not visible: ' + selector);
-                            reject();
+                                console.log('Element is not visible: ' + selector);
+                                reject();
                         }
                     } else {
                         iteration -= waitTime;
@@ -46,9 +51,26 @@ const GuideUtils = (function () {
             }, waitTime);
         });
     };
+
+    const isVisible = function (selector) {
+        const element = document.querySelector(selector);
+        return element && angular.element(element).is(':visible');
+    }
+
+    const isGuideElementVisible = function (guideSelectorValue) {
+        return this.isVisible(getGuideElementSelector(guideSelectorValue));
+    }
+
+    const getGuideElementSelector = function (guideSelectorValue, postSelector) {
+        return `[guide-selector="${guideSelectorValue}"]${postSelector ? postSelector : ''}`
+    }
     return {
         waitFor,
-        clickOnElement
+        clickOnElement,
+        clickOnGuideElement,
+        getGuideElementSelector,
+        isVisible,
+        isGuideElementVisible
     };
 })();
 

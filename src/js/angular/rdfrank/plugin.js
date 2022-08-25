@@ -17,7 +17,8 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings'
+            icon: 'icon-settings',
+            guideSelector: 'menu-setup'
         },
         {
             label: 'RDF Rank',
@@ -25,7 +26,8 @@ PluginRegistry.add('main.menu', {
             href: 'rdfrank',
             order: 45,
             parent: 'Setup',
-            role: 'IS_AUTHENTICATED_FULLY'
+            role: 'IS_AUTHENTICATED_FULLY',
+            guideSelector: 'sub-menu-rdf-rank'
         }
     ]
 });

@@ -28,7 +28,8 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings'
+            icon: 'icon-settings',
+            guideSelector: 'sub-menu-setup'
         },
         {
             label: 'Similarity',
@@ -40,7 +41,8 @@ PluginRegistry.add('main.menu', {
             children: [{
                 href: 'similarity/index/create',
                 children: []
-            }]
+            }],
+            guideSelector: 'sub-menu-similarity'
         }
     ]
 });

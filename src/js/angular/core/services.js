@@ -72,6 +72,7 @@ function MenuItemsProvider() {
             role: item.role,
             editions: item.editions,
             icon: item.icon,
+            guideSelector: item.guideSelector,
             children: children
         };
     };
