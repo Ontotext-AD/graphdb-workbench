@@ -21,10 +21,8 @@ ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter'];
 
 function ShepherdService($location, $translate, LocalStorageAdapter) {
     this.guideCancelSubscription = undefined;
-    this.onPause = () => {
-    };
-    this.onCancel = () => {
-    };
+    this.onPause = () => {};
+    this.onCancel = () => {};
 
     /**
      * Creates and starts a guide.
@@ -41,7 +39,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      *       maxWaitTime: number,
      *       canBePaused: boolean,
      *       onNextClick: function,
-     *       onPreviousClick: function
+     *       onPreviousClick: function,
+     *       beforeShowPromise: function
      *     }
      * </pre>
      *
@@ -100,10 +99,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      *         element can be persist when guide is paused. For example if step is "Click on sub menu "Repositories" of menu "Setup""
      *     </li>
      *     <li>
-     *         <b>onNextClick</b> - function which will be executed when nex button is clicked.
+     *         <b>onNextClick</b> - a function which will be executed when nex button is clicked.
      *     </li>
      *     <li>
-     *         <b>onPreviousClick</b> - function which will be executed when previous button is clicked.
+     *         <b>onPreviousClick</b> - a function which will be executed when previous button is clicked.
+     *     </li>
+     *     <li>
+     *         <b>beforeShowPromise</b> - a function that returns a promise. When the promise resolves, the rest of the show code for the step will execute.
+     *         Default implementation is wait <code>maxWaitTime</code> element with <code>elementSelector</code> to be visible.
      *     </li>
      *
      * </ul>
@@ -189,7 +192,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      *       maxWaitTime: number,
      *       canBePaused: boolean,
      *       onNextClick: function,
-     *       onPreviousClick: function
+     *       onPreviousClick: function,
+     *       beforeShowPromise: function
      *     }
      * </pre>
      *
@@ -252,6 +256,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      *     </li>
      *      <li>
      *         <b>onPreviousClick</b> - function which will be executed when previous button is clicked.
+     *     </li>
+     *     <li>
+     *         <b>beforeShowPromise</b> - a function that returns a promise. When the promise resolves, the rest of the show code for the step will execute.
+     *         Default implementation is wait <code>maxWaitTime</code> element with <code>elementSelector</code> to be visible.
      *     </li>
      * </ul>
      */
@@ -379,29 +387,23 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
      */
     this._pauseGuide = (guide) => {
         guide.hide();
-        this._saveStep(this._getStepWhichCanBePaused(Shepherd.activeTour));
+        this._saveStep(this._getStepWhichCanBePaused(guide.steps, guide.getCurrentStep().id));
         LocalStorageAdapter.set(GUIDE_PAUSE, true);
         if (this.onPause()) {
             this.onPause();
         }
     }
 
-    this._getStepWhichCanBePaused = (tour) => {
-        const currentStep = tour.getCurrentStep();
-        if (currentStep) {
-            if (currentStep.options.canBePaused) {
-                return currentStep;
-            }
-            tour.back();
-            tour.hide();
-            const previousStep = tour.getCurrentStep();
-            // checks if ids are equal this mean first step is reached.
-            if (currentStep.id === previousStep.id) {
-                return currentStep;
-            } else {
-                return this._getStepWhichCanBePaused(tour);
-            }
+    this._getStepWhichCanBePaused = (steps, stepId) => {
+        const index = steps.findIndex(step => step.id === stepId);
+        const step = steps[index];
+        if (step.options.canBePaused) {
+            return step;
         }
+        if (index > 0) {
+            return this._getStepWhichCanBePaused(steps, steps[index -1].id);
+        }
+        return undefined;
     }
 
     /**
@@ -426,13 +428,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
                 $location.path(previousStepDescription.url);
             }
 
-            if (!!previousStepDescription.elementSelector) {
-                GuideUtils.waitFor(previousStepDescription.elementSelector, previousStepDescription.maxWaitTime)
-                    .then(() => guide.back())
-                    .catch(() => guide.cancel());
-            } else {
-                guide.back();
-            }
+            guide.back();
         }
     }
 
@@ -458,13 +454,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
                 $location.path(nextStepDescription.url);
             }
 
-            if (!!nextStepDescription.elementSelector) {
-                GuideUtils.waitFor(nextStepDescription.elementSelector, nextStepDescription.maxWaitTime)
-                    .then(() => guide.next())
-                    .catch(() => guide.cancel());
-            } else {
-                guide.next();
-            }
+            guide.next();
         }
     }
 
@@ -525,7 +515,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
             modalOverlayOpeningPadding: 0,
             modalOverlayOpeningRadius: 0,
             canBePaused: stepDescription.canBePaused,
+            advanceOn: stepDescription.advanceOn,
             classes: 'guide-dialog',
+            beforeShowPromise: stepDescription.beforeShowPromise,
             when: {
                 show: () => {
                     onShow();

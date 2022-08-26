@@ -11,32 +11,64 @@ const BASIC_STEP = {
     'onPreviousClick': undefined
 };
 
+/**
+ * This function will be call before show a step. Step will shown after promise is resolve. It waits element of step to be visible on the page.
+ * @param maxWaitTime
+ * @param GuideUtils
+ * @param elementSelector
+ * @returns {function(): *}
+ */
+const beforeShowPromise = (GuideUtils, elementSelector, maxWaitTime) => {
+    return () => {
+        return GuideUtils.waitFor(elementSelector, maxWaitTime);
+    }
+}
+
 PluginRegistry.add('guide.step', [
     {
         'guideBlockName': 'clickable-element',
-        'getStep': (options) => {
+        'getStep': (options, GuideUtils) => {
             const notOverridable = {
                 'type': 'clickable',
             };
-            return angular.extend({}, BASIC_STEP, options, notOverridable);
+
+            const stepDescription = angular.extend({}, BASIC_STEP, {
+                'advanceOn': {
+                    selector: options.elementSelector,
+                    event: 'click'
+                },
+            }, options, notOverridable);
+
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
         }
     },
     {
         'guideBlockName': 'read-only-element',
-        'getStep': (options) => {
+        'getStep': (options, GuideUtils) => {
             const notOverridable = {
                 'type': 'readonly',
             };
-            return angular.extend({}, BASIC_STEP, options, notOverridable);
+            const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
         }
     },
     {
         'guideBlockName': 'input-element',
-        'getStep': (options) => {
+        'getStep': (options, GuideUtils) => {
             const notOverridable = {
                 'type': 'readonly',
             };
-            return angular.extend({}, BASIC_STEP, options, notOverridable);
+            const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
         }
     }
 ]);
