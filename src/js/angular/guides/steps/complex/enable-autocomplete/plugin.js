@@ -6,8 +6,8 @@ PluginRegistry.add('guide.step', [
                 'guideBlockName': 'click-main-menu',
                 'options': angular.extend({}, {
                     'label': 'menu_setup_autocomplete',
-                    'parentMenuSelector': 'menu-setup',
-                    'menuSelector': 'sub-menu-autocomplete'
+                    'menuSelector': 'menu-setup',
+                    'submenuSelector': 'sub-menu-autocomplete'
                 }, options)
             }, {
                 'guideBlockName': 'clickable-element',
@@ -16,13 +16,14 @@ PluginRegistry.add('guide.step', [
                     'content': 'guide.step_plugin.enable-autocomplete.content',
                     'url': '/autocomplete',
                     'elementSelector': GuideUtils.getGuideElementSelector('autocompleteCheckbox'),
-                    'onNextClick': () => {
+                    'onNextClick': (guide) => {
                         GuideUtils.waitFor(GuideUtils.getGuideElementSelector('autocompleteCheckbox', ' input'), 3, false)
                             .then(autocompleteCheckbox => {
                                 if (!autocompleteCheckbox.is(':checked')) {
                                     GuideUtils.clickOnGuideElement('autocompleteCheckbox')();
                                 }
                             });
+                        guide.next();
                     }
                 }, options)
             }

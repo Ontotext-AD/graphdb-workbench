@@ -3,53 +3,59 @@ PluginRegistry.add('guide.step', [
         'guideBlockName': 'click-main-menu',
         'getSteps': (options, GuideUtils) => {
             const steps = [];
-            const isSubmenu = options.hasOwnProperty('parentMenuSelector');
-            if (isSubmenu) {
+
+            const menuSelector = options.menuSelector;
+            const submenuSelector = options.submenuSelector;
+
+            const mainMenuClickElementPostSelector = !!submenuSelector ? ' div' : ' a';
+
+            // Main menu element
+            steps.push({
+                'guideBlockName': 'clickable-element',
+                'options': angular.extend({}, {
+                    'title': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.title',
+                    'content': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.content',
+                    'elementSelector': GuideUtils.getGuideElementSelector(menuSelector),
+                    showOn: () => {
+                        // If submenu is visible this mean that we have to close menu.
+                        if (!!submenuSelector && GuideUtils.isGuideElementVisible(submenuSelector)) {
+                            GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector)();
+                        }
+                        return true;
+                    },
+                    onNextClick: (guide) => {
+                        GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector)();
+
+                        if (!submenuSelector) {
+                            guide.next();
+                        }
+                    }
+                }, options)
+            })
+
+            if (!!submenuSelector) {
                 steps.push({
                     'guideBlockName': 'clickable-element',
                     'options': angular.extend({}, {
                         'title': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.title',
                         'content': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.content',
-                        'elementSelector': GuideUtils.getGuideElementSelector(options.parentMenuSelector),
-                        // Open main menu if is not open
-                        'onNextClick': () => {
-                            // first we check if sub menu is not visible this mean that parent menu is not open.
-                            if (!GuideUtils.isGuideElementVisible(options.menuSelector)) {
-                                // If is not open then triggers click event on it.
-                                GuideUtils.clickOnGuideElement(options.parentMenuSelector, ' div')();
+                        'elementSelector': GuideUtils.getGuideElementSelector(submenuSelector),
+                        placement: 'right',
+                        canBePaused: false,
+                        showOn: () => {
+                            // If submenu is visible this mean that we have to close menu.
+                            if (!GuideUtils.isGuideElementVisible(submenuSelector)) {
+                                GuideUtils.clickOnGuideElement(menuSelector, ' div')();
                             }
+                            return true;
                         },
-                        // Close main menu if is open
-                        'onPreviousClick': () => {
-                            // first we check if sub menu is visible this mean that parent menu is open.
-                            if (GuideUtils.isGuideElementVisible(options.menuSelector)) {
-                                // If is open then triggers click event on it.
-                                GuideUtils.clickOnGuideElement(options.parentMenuSelector, ' div')();
-                            }
+                        onNextClick: (guide) => {
+                            GuideUtils.clickOnGuideElement(submenuSelector, ' a')();
+                            guide.next();
                         }
                     }, options)
-                });
+                })
             }
-            steps.push({
-                'guideBlockName': 'clickable-element',
-                'options': angular.extend({}, {
-                    'title': 'guide.step_plugin.click-main-menu.' + options.label + '.menu.title',
-                    'content': 'guide.step_plugin.click-main-menu.' + options.label + '.menu.content',
-                    'elementSelector': GuideUtils.getGuideElementSelector(options.menuSelector),
-                    'placement': 'left',
-                    'onNextClick': () => {
-                        GuideUtils.clickOnGuideElement(options.menuSelector, ' a')()
-                    },
-                    'onPreviousClick': () => {
-                        // first we check if sub menu is not visible this mean that parent menu is not open.
-                        if (!GuideUtils.isGuideElementVisible(options.menuSelector)) {
-                            // If is not open then triggers click event on it.
-                            GuideUtils.clickOnGuideElement(options.parentMenuSelector, ' div')();
-                        }
-                    },
-                    'canBePaused': !isSubmenu
-                }, options)
-            });
             return steps;
         }
     }

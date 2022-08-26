@@ -21,8 +21,10 @@ ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter'];
 
 function ShepherdService($location, $translate, LocalStorageAdapter) {
     this.guideCancelSubscription = undefined;
-    this.onPause = () => {};
-    this.onCancel = () => {};
+    this.onPause = () => {
+    };
+    this.onCancel = () => {
+    };
 
     /**
      * Creates and starts a guide.
@@ -401,7 +403,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
             return step;
         }
         if (index > 0) {
-            return this._getStepWhichCanBePaused(steps, steps[index -1].id);
+            return this._getStepWhichCanBePaused(steps, steps[index - 1].id);
         }
         return undefined;
     }
@@ -422,13 +424,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
 
     this._getPreviousButtonAction = (guide, previousStepDescription, currentStepDescription) => {
         return () => {
-            if ('clickable' === previousStepDescription.type && angular.isFunction(previousStepDescription.onPreviousClick)) {
-                previousStepDescription.onPreviousClick();
+            if (angular.isFunction(currentStepDescription.onPreviousClick)) {
+                currentStepDescription.onPreviousClick(guide);
             } else if (previousStepDescription.forceReload || previousStepDescription.url && previousStepDescription.url !== currentStepDescription.url) {
                 $location.path(previousStepDescription.url);
+                guide.back();
+            } else {
+                guide.back();
             }
-
-            guide.back();
         }
     }
 
@@ -448,13 +451,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
 
     const _getNextButtonAction = (guide, currentStepDescription, nextStepDescription) => {
         return () => {
-            if ('clickable' === currentStepDescription.type && angular.isFunction(currentStepDescription.onNextClick)) {
-                currentStepDescription.onNextClick();
+            if (angular.isFunction(currentStepDescription.onNextClick)) {
+                currentStepDescription.onNextClick(guide);
             } else if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
                 $location.path(nextStepDescription.url);
+                guide.next();
+            } else {
+                guide.next();
             }
-
-            guide.next();
         }
     }
 
@@ -516,6 +520,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter) {
             modalOverlayOpeningRadius: 0,
             canBePaused: stepDescription.canBePaused,
             advanceOn: stepDescription.advanceOn,
+            showOn: stepDescription.showOn,
             classes: 'guide-dialog',
             beforeShowPromise: stepDescription.beforeShowPromise,
             when: {
