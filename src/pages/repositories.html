@@ -79,7 +79,8 @@
                                               tooltip-trigger="mouseenter"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
-                                              data-repository-id="{{repository}}"></span>
+                                              data-repository-id="{{repository}}"
+                                              guide-selector="repository-{{repository.id}}-plug"></span>
                                         <span role="button" class="icon-connection-on icon-lg text-tertiary"
                                               tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                               tooltip-trigger="mouseenter"

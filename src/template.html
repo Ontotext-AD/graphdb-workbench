@@ -70,9 +70,8 @@
                     ng-if="!isRepoActive(repository)"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
-                    guide-selector="repository-{{repository.id}}-button"
                     popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository)">
+                    <a class="dropdown-item" ng-click="setRepository(repository)" guide-selector="repository-{{repository.id}}-button">
                         <em ng-class="'icon-repo-' + repository.type" class="icon-1-5x"></em>
                         <span class="multiline-text">
 						    {{repository.id}} <br/>

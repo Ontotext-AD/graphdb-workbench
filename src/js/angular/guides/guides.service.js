@@ -11,7 +11,7 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService'];
+GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService', '$repositories'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -36,7 +36,8 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService']
  *       maxWaitTime: number,
  *       canBePaused: boolean,
  *       forceReload: boolean,
- *       onNextClick: function
+ *       onNextClick: function,
+ *       onNextValidate: function
  *     }
  * </pre>
  *
@@ -97,6 +98,10 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService']
  *     <li><b>forceReload</b> - if true will reload page no matter that step is on same page.
  *     <li>
  *         <b>onNextClick</b> - function which will be executed when nexButton is clicked. Usual it implements click on the element of the step.
+ *     </li>
+ *     <li>
+ *         <b>onNextValidate</b> - function that determines if clicking the next button advances the step.
+ *     </li>
  * </ul>
  * The core steps are the steps passed to some tour library services. Currently we use {@see ShepherdService}. They are created from plugins
  * described in guides/steps/core directory. Format of a such plugin is:
@@ -137,9 +142,10 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService']
  * @param $rootScope - the rootScope.
  * @param $translate - the translation service.
  * @param ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
+ * @param $repositories - the repositories service.
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, ShepherdService) {
+function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -167,9 +173,18 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
         this.cancelGuide();
         this.loadGuide(guideFileName)
             .then(guide => {
-                let toStepsDescriptions = this._toStepsDescriptions(guide);
-
-                if (guide && guide.options && guide.options.repositoryId) {
+                if (guide && guide.options && guide.options.repositoryIdBase) {
+                    // repositoryIdBase in the options can be used as a template to find a free repository ID.
+                    // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
+                    // - myrepo
+                    // - myrepo2
+                    // - myrepo3 and so on
+                    const repos = $repositories.getRepositories();
+                    guide.options.repositoryId = guide.options.repositoryIdBase;
+                    for (let i = 2; repos.find(repo => repo.id === guide.options.repositoryId); i++) {
+                        guide.options.repositoryId = guide.options.repositoryIdBase + i;
+                    }
+                } else if (guide && guide.options && guide.options.repositoryId) {
                     // let repository = localStorage.getItem('com.ontotext.graphdb.repository');
                     // if (repository !== guide.options.repositoryId) {
                     //     const select = this._toStepsDescriptions({steps: [{"guideBlockName": "select-repository"}], options: guide.options});
@@ -179,6 +194,8 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
                     //     toStepsDescriptions.splice(index, 0, select[0], select[1]);
                     // }
                 }
+
+                const toStepsDescriptions = this._toStepsDescriptions(guide);
 
                 // Add id to everyone step
                 for (let index = 0; index < toStepsDescriptions.length; index++) {
@@ -223,9 +240,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      *
      * <ul>
      *     <li>
-     *         <b>guideName</b> - guide name (optional).
-     *     </li>
-     *     <li>
      *         <b>options</b> - global options of the guide.
      *     </li>
      * </ul>
@@ -258,19 +272,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
     this.getGuides = () => {
         return new Promise(resolve => {
             $http.get(`${this.guideRepositoryUrl}/guides/guides.json`)
-                .success(function (data) {
-                    resolve(data);
-                });
-        });
-    }
-
-    /**
-     * Fetches guide translation file for locale <code>locale</code>.
-     * @returns {Promise<{}>}
-     */
-    this.getTranslation = () => {
-        return new Promise(resolve => {
-            $http.get(`${this.guideRepositoryUrl}/guides/i18n/locale-${$translate.use()}.json`)
                 .success(function (data) {
                     resolve(data);
                 });
@@ -319,7 +320,8 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      *       type: string,
      *       maxWaitTime: number,
      *       canBePaused: boolean,
-     *       onNextClick: function
+     *       onNextClick: function,
+     *       onNextValidate: function,
      *       onPreviousClick: function,
      *       beforeShowPromise: function
      *     }
@@ -383,6 +385,9 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
      *         <b>onNextClick</b> - function which will be executed when nex button is clicked.
      *     </li>
      *     <li>
+     *         <b>onNextValidate</b> - function that determines whether clicking the next button advances the step.
+     *     </li>
+     *     <li>
      *         <b>onPreviousClick</b> - function which will be executed when previous button is clicked.
      *     </li>
      *     <li>
@@ -435,7 +440,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (!!predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, GuideUtils)), parentOptions));
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, GuideUtils, $rootScope)), parentOptions));
                 } else if (!!predefinedStepDescription.getStep) {
                     steps.push(angular.copy(predefinedStepDescription.getStep(options, GuideUtils)));
                 } else {
@@ -443,6 +448,10 @@ function GuidesService($http, $rootScope, $translate, ShepherdService) {
                 }
             }
         }
+        steps.forEach((step, index) => {
+            step.stepN = index;
+            step.stepsTotalN = steps.length;
+        });
         return steps;
     }
 

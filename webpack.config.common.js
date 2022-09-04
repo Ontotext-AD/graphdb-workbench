@@ -256,6 +256,10 @@ module.exports = {
             }, {
                 test: /\.(png|jpg|jpeg|gif)$/,
                 loader: 'url-loader'
+            },
+            {
+                test: /\.(ttl|ttls|trig|trigs)$/,
+                loader: 'url-loader'
             }
         ]
     }

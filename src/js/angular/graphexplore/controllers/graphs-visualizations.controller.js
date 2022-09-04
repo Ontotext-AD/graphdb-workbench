@@ -1518,6 +1518,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }
         };
 
+        const expandEventHandler = function (d, i, parentNode) {
+            const shownLinks = graph.countLinks(d, graph.links);
+            if (shownLinks <= $scope.saveSettings['linksLimit']) {
+                expandNode(d, false, parentNode ? parentNode : this.parentNode);
+            } else {
+                toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
+            }
+            $scope.closeInfoPanel();
+        };
+
         const upEventHandler = function (d) {
             if (d3.event.button && d3.event.button !== 0) {
                 return;
@@ -1534,13 +1544,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     }, 40 + multiClickDelay - (d3.event.timeStamp - upEventLast));
                 } else if (virtualClickEventTimer === 2) {
                     // expand node
-                    const shownLinks = graph.countLinks(d, graph.links);
-                    if (shownLinks <= $scope.saveSettings['linksLimit']) {
-                        expandNode(d, false, element.parentNode);
-                    } else {
-                        toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
-                    }
-                    $scope.closeInfoPanel();
+                    expandEventHandler(d, 0, element.parentNode);
                 }
             }
 
@@ -1723,7 +1727,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .on("touchmove", moveEventHandler)
             .on("mouseup", upEventHandler)
             .on("touchend", upEventHandler)
-            .on("contextmenu", rightClickHandler);
+            .on("contextmenu", rightClickHandler)
+            // custom event used when user is following a guide
+            .on("gdb-expand-node", expandEventHandler)
+            // custom event used when user is following a guide
+            .on("gdb-show-node-info", showNodeInfo);
 
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
@@ -1802,6 +1810,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }).attr("y", function (d) {
                 return d.y;
             });
+
+            // other code can use the value of d3alpha to determine when the force layout has settled
+            $rootScope.d3alpha = force.alpha();
         });
 
         function panAndZoomed() {

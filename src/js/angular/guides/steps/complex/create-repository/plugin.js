@@ -37,7 +37,8 @@ PluginRegistry.add('guide.step', [
                         'title': 'guide.step_plugin.create_repository.repository_id.title',
                         'content': 'guide.step_plugin.create_repository.repository_id.content',
                         'url': '/repository/create/graphdb',
-                        'elementSelector': GuideUtils.getGuideElementSelector('graphDBRepositoryIdInput')
+                        'elementSelector': GuideUtils.getGuideElementSelector('graphDBRepositoryIdInput'),
+                        'onNextValidate': (step) => GuideUtils.validateTextInput(step.elementSelector, step.repositoryId)
                     }, options)
                 }
             ];

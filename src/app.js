@@ -95,7 +95,7 @@ const moduleDefinition = function (productInfo) {
 
             let routes = PluginRegistry.get('route');
 
-            routes.forEach(function (route) {
+            angular.forEach(routes, function (route) {
                 $routeProvider.when(route.url, {
                     controller: route.controller,
                     templateUrl: route.templateUrl,

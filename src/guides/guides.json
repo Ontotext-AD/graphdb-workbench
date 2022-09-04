@@ -1,12 +1,26 @@
 [
     {
-        "title": "guide.test_one.name",
+        "title": {
+            "en": "Test guide one",
+            "fr": "Guide de test un"
+        },
         "guideFileName": "test-guide-one/test-guide-one_guide.json",
         "order": 1
     },
     {
-        "title": "guide.test_two.name",
+        "title": {
+            "en": "Test guide two",
+            "fr": "Guide de test deux"
+        },
         "guideFileName": "test-guide-two/test-guide-two_guide.json",
         "order": 2
+    },
+    {
+        "title": {
+            "en": "The Beatles guide",
+            "fr": "Le guide sur Les Beatles"
+        },
+        "guideFileName": "guide-beatles/beatles_guide.json",
+        "order": 3
     }
 ]

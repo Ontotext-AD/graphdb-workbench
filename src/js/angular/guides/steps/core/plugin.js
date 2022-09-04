@@ -8,6 +8,7 @@ const BASIC_STEP = {
     'maxWaitTime': 3,
     'canBePaused': true,
     'onNextClick': undefined,
+    'onNextValidate': undefined,
     'onPreviousClick': undefined
 };
 
@@ -78,6 +79,18 @@ PluginRegistry.add('guide.step', [
                 'type': 'readonly',
             };
             return angular.extend({}, BASIC_STEP, options, notOverridable);
+        }
+    },
+    {
+        'guideBlockName': 'guide-end',
+        'getStep': (options, GuideUtils) => {
+            const notOverridable = {
+                'type': 'readonly'
+            };
+            const step = angular.extend({}, BASIC_STEP, options, notOverridable);
+            step.title = 'End of guide';
+            step.content = 'This guide has ended.';
+            return step;
         }
     }
 ]);

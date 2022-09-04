@@ -17,7 +17,16 @@ PluginRegistry.add('guide.step', [
                         'content': 'guide.step_plugin.import_rdf_file.content',
                         'url': '/import',
                         'elementSelector': GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
-                        'fileName': options.fileName
+                        'fileName': options.fileName,
+                        'onNextValidate': (step, toastr, $translate) => {
+                            if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.fileName)).length) {
+                                GuideUtils.noNextErrorToast(toastr, $translate,
+                                    'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
                     }, options)
                 },
                 {
@@ -39,6 +48,7 @@ PluginRegistry.add('guide.step', [
                         'title': 'guide.step_plugin.import_rdf_file.import-settings.import.button.title',
                         'content': 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         'elementSelector': GuideUtils.getGuideElementSelector('import-settings-import-button'),
+                        'placement': 'top',
                         onPreviousClick: (guide) => {
                             GuideUtils.clickOnGuideElement('import-settings-cancel-button')();
                             guide.back();

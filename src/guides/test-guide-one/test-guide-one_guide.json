@@ -18,7 +18,8 @@
         {
             "guideBlockName": "download-guide-resource",
             "options": {
-                "resourceUrl": "https://github.com/Ontotext-AD/graphdb-workbench/raw/feature/GDB-7292_Define_the_building_blocks_for_easy_guide/src/guides/test-guide-one/beatles.zip"
+                "resourcePath": "https://github.com/Ontotext-AD/graphdb-workbench/raw/feature/GDB-7292_Define_the_building_blocks_for_easy_guide/src/guides/test-guide-one",
+                "resourceFile": "beatles.zip"
             }
         },
         {

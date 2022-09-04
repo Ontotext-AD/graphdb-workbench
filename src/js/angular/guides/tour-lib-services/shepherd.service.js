@@ -15,11 +15,13 @@ angular
  * @param $location
  * @param $translate
  * @param LocalStorageAdapter
+ * @param $route
+ * @param toastr
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', 'toastr'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route, toastr) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -141,6 +143,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
         }
     }
 
+    this.isActive = () => {
+        return Shepherd.activeTour;
+    };
+
     this.getGuideFileName = () => {
         return LocalStorageAdapter.get(GUIDE_NAME);
     }
@@ -194,6 +200,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
      *       maxWaitTime: number,
      *       canBePaused: boolean,
      *       onNextClick: function,
+     *       onNextValidate: function,
      *       onPreviousClick: function,
      *       beforeShowPromise: function
      *     }
@@ -255,6 +262,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
      *     </li>
      *     <li>
      *         <b>onNextClick</b> - function which will be executed when nex button is clicked.
+     *     </li>
+     *     <li>
+     *         <b>onNextValidate</b> - function that determines whether pressing the next button advances the step
      *     </li>
      *      <li>
      *         <b>onPreviousClick</b> - function which will be executed when previous button is clicked.
@@ -452,13 +462,19 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
 
     const _getNextButtonAction = (guide, currentStepDescription, nextStepDescription) => {
         return () => {
-            if (angular.isFunction(currentStepDescription.onNextClick)) {
-                currentStepDescription.onNextClick(guide);
-            } else if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
-                $location.path(nextStepDescription.url);
-                guide.next();
-            } else {
-                guide.next();
+            let valid = true;
+            if (angular.isFunction(currentStepDescription.onNextValidate)) {
+                valid = currentStepDescription.onNextValidate(currentStepDescription, toastr, $translate);
+            }
+            if (valid) {
+                if (angular.isFunction(currentStepDescription.onNextClick)) {
+                    currentStepDescription.onNextClick(guide, currentStepDescription);
+                } else {
+                    if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
+                        $location.path(nextStepDescription.url);
+                    }
+                    guide.next();
+                }
             }
         }
     }
@@ -509,10 +525,17 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
             }
         }
 
+        // Adds " - n/N" to titles if the step is part of a multistep process,
+        // where n is the current step number and N is the total number of steps
+        let extraTitle = '';
+        if (stepDescription.stepsTotalN > 1) {
+            extraTitle = ' — ' + (stepDescription.stepN + 1) + '/' + stepDescription.stepsTotalN;
+        }
+
         return {
             id: stepDescription.id,
-            title: this.unescapeHtml($translate.instant(stepDescription.title, stepDescription)),
-            text: this.unescapeHtml($translate.instant(stepDescription.content, stepDescription)),
+            title: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription)) + extraTitle,
+            text: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)),
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
             cancelIcon: {enabled: true},
@@ -530,17 +553,6 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
                 }
             }
         };
-    }
-
-    /**
-     * Unescape string with HTML Entities: &lt;, &gt; etc.
-     * @param escapedHtml - escaped string. For example: "Click on menu &lt;b&gt;Import&lt;/b&gt;."
-     * @returns {string} - unescaped string. For example: "Click on menu <b>Import</b>."
-     */
-    this.unescapeHtml = (escapedHtml) => {
-        const div = document.createElement('div');
-        div.innerHTML = escapedHtml;
-        return div.innerText;
     }
 
     /**

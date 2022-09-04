@@ -1,0 +1,69 @@
+{
+    "options": {
+        "repositoryIdBase": "the_beatles"
+    },
+    "steps": [
+        {
+            "guideBlockName": "create-repository",
+            "options": {
+                "rulesetName": "RDFS-Plus (Optimized)"
+            }
+        },
+        {
+            "guideBlockName": "select-repository-dropdown"
+        },
+        {
+            "guideBlockName": "enable-autocomplete"
+        },
+        {
+            "guideBlockName": "download-guide-resource",
+            "options": {
+                "resourcePath": "guides/guide-beatles",
+                "resourceFile": "beatles.ttl"
+            }
+        },
+        {
+            "guideBlockName": "import-rdf-file",
+            "options": {
+                "fileName": "beatles.ttl"
+            }
+        },
+        {
+            "guideBlockName": "visual-graph",
+            "options": {
+                "easyGraphInputText": "be",
+                "clickOnIRI": "http://stardog.com/tutorial/The_Beatles"
+            }
+        },
+        {
+            "guideBlockName": "visual-graph-expand",
+            "options": {
+                "clickOnIRI": "http://stardog.com/tutorial/John_Lennon",
+                "shortIRI": "John_Lennon"
+            }
+        },
+        {
+            "guideBlockName": "visual-graph-properties",
+            "options": {
+                "clickOnIRI": "http://stardog.com/tutorial/Imagine",
+                "shortIRI": "Imagine"
+            }
+        },
+        {
+            "guideBlockName": "generic-message",
+            "options": {
+                "title": {
+                    "en": "Visual graph: more",
+                    "fr": "Graphique visuel : plus"
+                },
+                "content": {
+                    "en": "Try expanding other nodes, dragging the nodes and explore the settings.",
+                    "fr": "Essayez de développer d'autres nœuds, faites glisser les nœuds et explorez les paramètres."
+                }
+            }
+        },
+        {
+            "guideBlockName": "guide-end"
+        }
+    ]
+}

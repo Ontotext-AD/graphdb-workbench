@@ -224,7 +224,7 @@
         <span class="toggle-sidepanel" title="{{'visual.collapse.sidepanel' | translate}}" ng-click="toggleSidePanel()">
             <em ng-class="pageslideExpanded ? 'icon-caret-right' : 'icon-caret-left'"></em>
         </span>
-        <button class="close mb-1 ml-1" ng-click="closeInfoPanel()"></button>
+        <button class="close mb-1 ml-1" ng-click="closeInfoPanel()" guide-selector="close-info-panel"></button>
         <h3 class="hovered-parent" ng-if="showPredicates">
             {{'predicates.label' | translate}}
         </h3>

@@ -157,10 +157,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $rootScope.$on('guideReset', function () {
         $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
     });
 
     $rootScope.$on('guidePaused', function () {
         $scope.guidePaused = true;
+        $rootScope.guidePaused = true;
     });
 
     $rootScope.$on('$translateChangeSuccess', function () {

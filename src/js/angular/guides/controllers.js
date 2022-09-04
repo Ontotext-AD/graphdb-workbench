@@ -1,5 +1,6 @@
 import 'angular/guides/guides.service';
 import 'angular/core/directives/paginations';
+import {GuideUtils} from "./guide-utils";
 
 const modules = [
     'ui.bootstrap',
@@ -11,9 +12,9 @@ angular
     .module('graphdb.framework.guides.controllers', modules)
     .controller('GuidesCtrl', GuidesCtrl);
 
-GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter'];
+GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate'];
 
-function GuidesCtrl($scope, $rootScope, GuidesService, $filter) {
+function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
 
     $scope.guides = [];
     $scope.pageSizeOptions = [10, 20, 50, 100];
@@ -24,13 +25,10 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter) {
     $scope.init = function () {
         GuidesService.getGuides()
             .then(guides => {
-                GuidesService.getTranslation()
-                    .then(translation => {
-                        $scope.guides = $filter('orderBy')(guides, 'order');
-                        $scope.guides.forEach(guide => guide.name = translation[guide.title])
-                        $scope.matchedElements = $scope.guides;
-                        $scope.changePagination();
-                    });
+                $scope.guides = $filter('orderBy')(guides, 'order');
+                $scope.guides.forEach(guide => guide.name = GuideUtils.translateLocalMessage($translate, guide.title));
+                $scope.matchedElements = $scope.guides;
+                $scope.changePagination();
             });
     }
 
