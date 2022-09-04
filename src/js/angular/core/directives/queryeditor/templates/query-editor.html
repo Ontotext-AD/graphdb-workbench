@@ -20,21 +20,21 @@
 
             <script type="text/ng-template" id="sampleQueriesPopoverTemplate.html">
                 <ul id="wb-sparql-queryInSampleQueries" class="list-unstyled">
-                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal().username" class="hovered-parent saved-query">
+                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal.username" class="hovered-parent saved-query">
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
-                        <em class="icon-warning" ng-show="query.owner != principal().username && isUser()"
+                        <em class="icon-warning" ng-show="query.owner != principal.username && isUser()"
                            popover="{{'core.popover.shared.query.warning' | translate}}"
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal().username && isUser()"
+                                    ng-show="query.owner == principal.username && isUser()"
                                     popover="{{'core.edit.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal().username && isUser()"
+                                    ng-show="query.owner == principal.username && isUser()"
                                     popover="{{'core.delete.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
