@@ -152,6 +152,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.resumeGuide = function () {
         $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
         $rootScope.$broadcast('guideResume');
     }
 

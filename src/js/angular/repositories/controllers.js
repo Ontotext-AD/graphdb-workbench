@@ -141,10 +141,10 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService',
-    'LocalStorageAdapter', '$interval', '$translate', '$q', 'ShepherdService'];
+    'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
 
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService,
-    LocalStorageAdapter, $interval, $translate, $q, ShepherdService) {
+    LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
     $scope.loader = true;
 
     $scope.isLocationInactive = function (location) {
@@ -362,7 +362,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
 
     getLocations();
     const timer = $interval(function () {
-        if (ShepherdService.isActive() && !$rootScope.guidePaused) {
+        if (GuidesService.isActive() && !$rootScope.guidePaused) {
             // Don't refresh list while a guide is active
             return;
         }

@@ -279,6 +279,14 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
     }
 
     /**
+     * Returns true if a guide is currently active (even if paused).
+     * @returns {*}
+     */
+    this.isActive = () => {
+        return ShepherdService.isActive();
+    };
+
+    /**
      * Converts guide steps (array with complex steps) to array with core steps.
      * @param guide - a guide description:
      *

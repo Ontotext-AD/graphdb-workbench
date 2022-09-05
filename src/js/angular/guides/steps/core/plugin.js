@@ -88,8 +88,8 @@ PluginRegistry.add('guide.step', [
                 'type': 'readonly'
             };
             const step = angular.extend({}, BASIC_STEP, options, notOverridable);
-            step.title = 'End of guide';
-            step.content = 'This guide has ended.';
+            step.title = 'guide.step_plugin.guide-ended.title';
+            step.content = 'guide.step_plugin.guide-ended.content';
             return step;
         }
     }

@@ -8,7 +8,7 @@ import {bundle} from "../test-main";
 describe('==> Repository module controllers tests', function () {
 
     beforeEach(angular.mock.module('graphdb.framework.repositories.controllers'));
-    beforeEach(angular.mock.module('graphdb.framework.guides.shepherd.services'));
+    beforeEach(angular.mock.module('graphdb.framework.guides.services'));
 
     describe('=> LocationsAndRepositories tests', function () {
         let $repositories;
@@ -27,9 +27,9 @@ describe('==> Repository module controllers tests', function () {
         let httpDefaultUser;
         let $translate;
         let $q;
-        let ShepherdService;
+        let GuidesService;
 
-        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$q_, _$translate_, _ShepherdService_) {
+        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$q_, _$translate_, _GuidesService_) {
             $repositories = _$repositories_;
             $httpBackend = _$httpBackend_;
             $location = _$location_;
@@ -38,7 +38,7 @@ describe('==> Repository module controllers tests', function () {
             $timeout = _$timeout_;
             $translate = _$translate_;
             $q = _$q_;
-            ShepherdService = _ShepherdService_;
+            GuidesService = _GuidesService_;
 
             modalInstance = new FakeModal($q, $rootScope);
 
@@ -61,7 +61,7 @@ describe('==> Repository module controllers tests', function () {
                 $rootScope: $rootScope,
                 $translate: $translate,
                 $q: $q,
-                ShepherdService: ShepherdService
+                GuidesService: GuidesService
             });
 
             httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
@@ -78,7 +78,7 @@ describe('==> Repository module controllers tests', function () {
                 authorities: ['ROLE_ADMIN']
             });
 
-            ShepherdService.isActive = function () {
+            GuidesService.isActive = function () {
                 return false;
             };
         }));

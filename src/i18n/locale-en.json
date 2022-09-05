@@ -1675,5 +1675,7 @@
     "guide.step_plugin.visual-graph-properties-side-panel.title": "Visual graph: show properties",
     "guide.step_plugin.visual-graph-properties-side-panel.content": "The side panel shows the properties of the clicked node. You can close the panel by clicking on the X icon.",
     "guide.step_plugin.visual-graph-expand.title": "Visual graph: expand node",
-    "guide.step_plugin.visual-graph-expand.content": "Double click on <b>{{shortIRI}}</b> to expand the graph."
+    "guide.step_plugin.visual-graph-expand.content": "Double click on <b>{{shortIRI}}</b> to expand the graph.",
+    "guide.step_plugin.guide-ended.title": "End of guide",
+    "guide.step_plugin.guide-ended.content": "This guide has ended."
 }
