@@ -149,7 +149,7 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
-                                <td class="text-xs-right" ng-if="isUser() && config.owner === principal().username">
+                                <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
                                     <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
                                     <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="{{'visual.delete.config' | translate}}"><span class="icon-trash"></span></button>
                                 </td>
@@ -180,13 +180,13 @@
                                         <span class="icon-link"></span>
                                     </button>
                                     <button class="btn btn-link"
-                                            ng-if="isUser() && graph.owner === principal().username"
+                                            ng-if="isUser() && graph.owner === principal.username"
                                             tooltip="{{'visual.rename.graph' | translate}}" tooltip-trigger="mouseenter"
                                             ng-click="renameSavedGraph(graph)">
                                         <span class="icon-edit"></span>
                                     </button>
                                     <button class="btn btn-link"
-                                            ng-if="isUser() && graph.owner === principal().username"
+                                            ng-if="isUser() && graph.owner === principal.username"
                                             tooltip="{{'visual.delete.graph' | translate}}" tooltip-trigger="mouseenter"
                                             ng-click="deleteSavedGraph(graph)">
                                         <span class="icon-trash"></span>
