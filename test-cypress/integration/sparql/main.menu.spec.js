@@ -146,6 +146,11 @@ describe('Main menu tests', function () {
                         externalRedirect: 'https://graphdb.ontotext.com/'
                     },
                     {
+                        name: 'Guides',
+                        visible: false,
+                        redirect: '/guides'
+                    },
+                    {
                         name: 'System information',
                         visible: false,
                         redirect: '/sysinfo'
