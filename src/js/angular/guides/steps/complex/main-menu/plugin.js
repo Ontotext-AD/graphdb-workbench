@@ -37,8 +37,8 @@ PluginRegistry.add('guide.step', [
                 steps.push({
                     'guideBlockName': 'clickable-element',
                     'options': angular.extend({}, {
-                        'title': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.title',
-                        'content': 'guide.step_plugin.click-main-menu.' + options.label + '.main-menu.content',
+                        'title': 'guide.step_plugin.click-main-menu.' + options.label + '.menu.title',
+                        'content': 'guide.step_plugin.click-main-menu.' + options.label + '.menu.content',
                         'elementSelector': GuideUtils.getGuideElementSelector(submenuSelector),
                         placement: 'right',
                         canBePaused: false,

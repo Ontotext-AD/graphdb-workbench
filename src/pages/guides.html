@@ -1,0 +1,53 @@
+<link href="css/guides.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<h1>
+    {{title}}
+    <span class="btn btn-link"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
+
+<div ng-show="displayedGuides.length > 0" class="clearfix">
+    <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
+        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+            <span>{{pageSize}}</span>
+        </button>
+        <ul class="dropdown-menu small">
+            <li ng-repeat="size in pageSizeOptions" ng-if="size < guides.length">
+                <span class="dropdown-item page-size-option" ng-click="changePageSize(size)">{{size}}</span>
+            </li>
+            <li>
+                <span class="dropdown-item page-size-option" ng-click="changePageSize(guides.length)">{{'all.label' | translate}}</span>
+            </li>
+        </ul>
+    </div>
+    <span class="pull-right mr-1">{{'view.guides.guides.per.page.label' | translate}}</span>
+</div>
+<div ng-show="displayedGuides.length > 0">
+    <div paginations class="ot-guides-pagination pull-right ot-owlim-ctrl"></div>
+    <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedGuides.length ? displayedGuides.length + (pageSize * (page - 1)) : pageSize * page}} of {{guides.length}}</span>
+</div>
+
+<table ng-show="displayedGuides.length > 0" id="guides-table" class="table table-striped table-hover" aria-describedby="Guides table">
+    <thead>
+    <tr>
+        <th id="name" style="width: 90%">{{'view.guides.table.column.name' | translate}}</th>
+        <th id="actionsColumn" style="width: 10%">{{'view.guides.table.column.action' | translate}}</th>
+    </tr>
+    </thead>
+    <tr ng-repeat="guide in displayedGuides | orderBy: 'order'" loader-post-repeat-directive>
+        <td>
+            <span>{{guide.name}}</span>
+        </td>
+        <td>
+            <button class="btn btn-link" ng-click="startGuide(guide.guideFileName)" tooltip-trigger="mouseenter"
+                    tooltip="{{'view.guides.action.start' | translate}}"><span class="icon-play"></span></button>
+        </td>
+    </tr>
+    <tbody>
+    </tbody>
+</table>
+<div ng-show="guides.length > 0" class="ot-owlim-ctrl clearfix namespaces-pagination">
+    <div paginations class="ot-guides-pagination pull-right"></div>
+</div>

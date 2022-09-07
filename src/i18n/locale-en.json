@@ -525,6 +525,12 @@
     "view.system.information.helpInfo": "The System information view shows the configuration values of the JVM running the GraphDB Workbench as well generate a detailed server report file you can use to hunt down issues",
     "view.rest.api.documentation.title": "REST API documentation",
     "view.rest.api.documentation.helpInfo": "The REST API view documents the available public RESTful endpoints and provides an interactive interface to execute the requests.",
+    "view.guides.title": "Guides",
+    "view.guides.table.column.name": "Guide name",
+    "view.guides.table.column.action": "Action",
+    "view.guides.action.start": "Run the guide",
+    "view.guides.helpInfo": "",
+    "view.guides.guides.per.page.label": "Guides per page:",
     "collapse.menu.title": "Collapse menu",
     "view.plugins.helpInfo": "Activate or deactivate plugins.",
     "menu.rdf.label": "RDF",
@@ -557,6 +563,7 @@
     "menu.documentation.label": "Documentation",
     "menu.developer.hub.label": "Developer Hub",
     "menu.support.label": "Support",
+    "menu.guides.label": "Guides",
     "menu.plugins.label": "Plugins",
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",
@@ -1609,6 +1616,6 @@
     "clear.tooltip": "Clear",
     "repo.page.location.label": "Location",
     "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
-    "guide.step_plugin.enable-autocomplete.title": "",
-    "guide.step_plugin.enable-autocomplete.content": "Click checkbox that enables the index"
+    "guide.step_plugin.enable-autocomplete.title": "Enable autocomplete",
+    "guide.step_plugin.enable-autocomplete.content": "Click checkbox that enables the index."
 }

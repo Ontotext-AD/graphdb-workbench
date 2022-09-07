@@ -48,6 +48,9 @@
                 </a>
             </span>
         </div>
+        <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+            <a class="btn btn-lg btn-secondary" ng-click="resumeGuide()"><span class="icon-play text-primary"></span> {{'guide.button.guide-paused' | translate}}</a>
+        </div>
         <rdf-resource-search class="float-xs-left p-0"></rdf-resource-search>
         <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
             <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
