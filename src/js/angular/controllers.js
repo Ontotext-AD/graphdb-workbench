@@ -16,6 +16,9 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
+import './guides/guides.service';
+import './guides/directives'
+import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service'
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -37,7 +40,8 @@ angular
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.core.services.autocompleteStatus',
-        'graphdb.framework.utils.uriutils'
+        'graphdb.framework.utils.uriutils',
+        'graphdb.framework.guides.directives'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -123,6 +127,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
+    $scope.guidePaused = !!LocalStorageAdapter.get(GUIDE_PAUSE);
 
     const setYears = function () {
         const date = new Date();
@@ -143,6 +148,22 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // Recheck license status on navigation within the workbench (security is already inited)
             $licenseService.checkLicenseStatus();
         }
+    });
+
+    $scope.resumeGuide = function () {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+        $rootScope.$broadcast('guideResume');
+    }
+
+    $rootScope.$on('guideReset', function () {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+    });
+
+    $rootScope.$on('guidePaused', function () {
+        $scope.guidePaused = true;
+        $rootScope.guidePaused = true;
     });
 
     $rootScope.$on('$translateChangeSuccess', function () {

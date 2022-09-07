@@ -8,6 +8,7 @@ const BASIC_STEP = {
     'maxWaitTime': 3,
     'canBePaused': true,
     'onNextClick': undefined,
+    'onNextValidate': undefined,
     'onPreviousClick': undefined
 };
 
@@ -69,6 +70,27 @@ PluginRegistry.add('guide.step', [
                 stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
+        }
+    },
+    {
+        'guideBlockName': 'info-message',
+        'getStep': (options, GuideUtils) => {
+            const notOverridable = {
+                'type': 'readonly',
+            };
+            return angular.extend({}, BASIC_STEP, options, notOverridable);
+        }
+    },
+    {
+        'guideBlockName': 'guide-end',
+        'getStep': (options, GuideUtils) => {
+            const notOverridable = {
+                'type': 'readonly'
+            };
+            const step = angular.extend({}, BASIC_STEP, options, notOverridable);
+            step.title = 'guide.step_plugin.guide-ended.title';
+            step.content = 'guide.step_plugin.guide-ended.content';
+            return step;
         }
     }
 ]);
