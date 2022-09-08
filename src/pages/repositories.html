@@ -79,7 +79,8 @@
                                               tooltip-trigger="mouseenter"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
-                                              data-repository-id="{{repository}}"></span>
+                                              data-repository-id="{{repository}}"
+                                              guide-selector="repository-{{repository.id}}-plug"></span>
                                         <span role="button" class="icon-connection-on icon-lg text-tertiary"
                                               tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                               tooltip-trigger="mouseenter"
@@ -164,7 +165,7 @@
     </div>
     <div class="btns-all" ng-if="getLocationError()">
         <div class="btn-group" dropdown>
-            <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create"><span
+            <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create" guide-selector="createRepository"><span
                 class="icon-plus"></span> {{'repository.create.btn' | translate}}</a>
             <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" dropdown-toggle>
                 <span class="sr-only">{{'split.btn' | translate}}</span>

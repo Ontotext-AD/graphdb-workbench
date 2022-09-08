@@ -1,15 +1,15 @@
 const BASIC_STEP = {
-    'title': '',
-    'content': '',
-    'elementSelector': undefined,
-    'placement': 'bottom',
-    'url': undefined,
-    'type': 'read-only-element',
-    'maxWaitTime': 3,
-    'canBePaused': true,
-    'onNextClick': undefined,
-    'onNextValidate': undefined,
-    'onPreviousClick': undefined
+    title: '',
+    content: '',
+    elementSelector: undefined,
+    placement: 'bottom',
+    url: undefined,
+    type: 'read-only-element',
+    maxWaitTime: 3,
+    canBePaused: true,
+    onNextClick: undefined,
+    onNextValidate: undefined,
+    onPreviousClick: undefined
 };
 
 /**
@@ -27,14 +27,14 @@ const beforeShowPromise = (GuideUtils, elementSelector, maxWaitTime) => {
 
 PluginRegistry.add('guide.step', [
     {
-        'guideBlockName': 'clickable-element',
-        'getStep': (options, GuideUtils) => {
+        guideBlockName: 'clickable-element',
+        getStep: (options, GuideUtils) => {
             const notOverridable = {
-                'type': 'clickable',
+                type: 'clickable',
             };
 
             const stepDescription = angular.extend({}, BASIC_STEP, {
-                'advanceOn': {
+                advanceOn: {
                     selector: options.elementSelector,
                     event: 'click'
                 },
@@ -47,10 +47,10 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
-        'guideBlockName': 'read-only-element',
-        'getStep': (options, GuideUtils) => {
+        guideBlockName: 'read-only-element',
+        getStep: (options, GuideUtils) => {
             const notOverridable = {
-                'type': 'readonly',
+                type: 'readonly',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
@@ -60,10 +60,10 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
-        'guideBlockName': 'input-element',
-        'getStep': (options, GuideUtils) => {
+        guideBlockName: 'input-element',
+        getStep: (options, GuideUtils) => {
             const notOverridable = {
-                'type': 'readonly',
+                type: 'readonly',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
@@ -73,19 +73,19 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
-        'guideBlockName': 'info-message',
-        'getStep': (options, GuideUtils) => {
+        guideBlockName: 'info-message',
+        getStep: (options, GuideUtils) => {
             const notOverridable = {
-                'type': 'readonly',
+                type: 'readonly',
             };
             return angular.extend({}, BASIC_STEP, options, notOverridable);
         }
     },
     {
-        'guideBlockName': 'guide-end',
-        'getStep': (options, GuideUtils) => {
+        guideBlockName: 'guide-end',
+        getStep: (options, GuideUtils) => {
             const notOverridable = {
-                'type': 'readonly'
+                type: 'readonly'
             };
             const step = angular.extend({}, BASIC_STEP, options, notOverridable);
             step.title = 'guide.step_plugin.guide-ended.title';

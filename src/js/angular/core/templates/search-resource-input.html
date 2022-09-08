@@ -32,7 +32,7 @@
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)"
          ng-class="{active: activeSearchElm === $index, selected: selectedElementIndex === $index}"
          ng-mousemove="setActiveClassOnMouseMove($index)"
-         class="result-item">
+         class="result-item" guide-selector="autocomplete-{{autoCompleteUriResult.value}}">
         <p ng-bind-html="getResultItemHtml(autoCompleteUriResult)"></p>
     </div>
 </div>
