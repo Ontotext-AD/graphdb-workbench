@@ -1,12 +1,12 @@
 PluginRegistry.add('route', [
     {
-        'url': '/guides',
-        'module': 'graphdb.framework.guides',
-        'path': 'guides/app',
-        'templateUrl': 'pages/guides.html',
-        'title': 'view.guides.title',
-        'controller': 'GuidesCtrl',
-        'helpInfo': 'view.guides.helpInfo'
+        url: '/guides',
+        module: 'graphdb.framework.guides',
+        path: 'guides/app',
+        templateUrl: 'pages/guides.html',
+        title: 'view.guides.title',
+        controller: 'GuidesCtrl',
+        helpInfo: 'view.guides.helpInfo'
     }
 ]);
 

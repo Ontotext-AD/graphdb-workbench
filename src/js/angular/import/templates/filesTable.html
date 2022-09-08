@@ -94,7 +94,7 @@
                         <strong ng-show="file.type !== 'text'">{{file.name}}</strong>
                         <strong ng-show="file.type === 'text'"><a href="#" ng-click="pasteData(file)">{{file.name}}</a></strong>
                     </div>
-                    <div class="import-status">
+                    <div class="import-status" guide-selector="import-status-info">
                         <button role="button" class="btn btn-link btn-inline secondary b-0 p-0 import-status-reset"
                                 ng-click="resetStatus([file.name])"
                                 ng-show="file.status === 'DONE' || file.status === 'ERROR'"
@@ -142,6 +142,7 @@
                         ng-disabled="batch"
                         ng-cloak
                         ng-hide="!importable(file) || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
+                        guide-selector="import-file-{{file.name}}"
                         data-target="#{{viewType}}Modal">
                     <span class="icon-import"></span>
                     {{'common.import' | translate}}

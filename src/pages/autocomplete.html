@@ -43,7 +43,7 @@
                     <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
                     <label for="toggleIndex"></label>
                 </span>
-				<span ng-show="autocompleteEnabled" class="autocomplete-status">
+				<span ng-show="autocompleteEnabled" class="autocomplete-status" guide-selector="autocompleteStatus">
 					{{'with.status' | translate}}
 					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><em class="icon-check icon-lg"></em> {{'ready.label' | translate}}</span>
 

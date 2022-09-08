@@ -40,7 +40,8 @@
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
                              popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
-                             popover-placement="bottom">
+                             popover-placement="bottom"
+                             guide-selector="uploadRdfFileButton">
                             <a id="wb-import-uploadFile" ngf-select="showToast(rejFiles)" ng-model="currentFiles"
                                ngf-multiple="true"
                                class="pointer clearfix"
