@@ -151,7 +151,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
-    this.guideRepositoryUrl = '';
 
     this.init = () => {
         this._subscribeToGuideResumed();
@@ -163,86 +162,48 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
      * Creates a guide and start it from <code>startStepId</code>. Steps of starting guids are:
      * <ol>
      *     <li>Cancels currently ran guid if any;</li>
-     *     <li>Loads guide description from <code>guideFileName</code>;</li>
+     *     <li>Reads guide description from <code>guide</code>;</li>
      *     <li>Converts complex step sequence to core steps sequence;</li>
      *     <li>Starts guide from step with id <code>startStepId.</code>
      * </ol>
-     * @param guideFileName - path to guide description file.
+     * @param guide - the guide to start as an object.
      * @param startStepId
      */
-    this.startGuide = (guideFileName, startStepId) => {
+    this.startGuide = (guide, startStepId) => {
         this.cancelGuide();
-        this.loadGuide(guideFileName)
-            .then(guide => {
-                if (guide && guide.options && guide.options.repositoryIdBase) {
-                    // repositoryIdBase in the options can be used as a template to find a free repository ID.
-                    // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
-                    // - myrepo
-                    // - myrepo2
-                    // - myrepo3 and so on
-                    const repos = $repositories.getRepositories();
-                    guide.options.repositoryId = guide.options.repositoryIdBase;
-                    for (let i = 2; repos.find(repo => repo.id === guide.options.repositoryId); i++) {
-                        guide.options.repositoryId = guide.options.repositoryIdBase + i;
-                    }
-                }
 
-                const toStepsDescriptions = this._toStepsDescriptions(guide);
+        if (guide && guide.options && guide.options.repositoryIdBase) {
+            // repositoryIdBase in the options can be used as a template to find a free repository ID.
+            // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
+            // - myrepo
+            // - myrepo2
+            // - myrepo3 and so on
+            const repos = $repositories.getRepositories();
+            guide.options.repositoryId = guide.options.repositoryIdBase;
+            for (let i = 2; repos.find(repo => repo.id === guide.options.repositoryId); i++) {
+                guide.options.repositoryId = guide.options.repositoryIdBase + i;
+            }
+        }
 
-                // Add id to everyone step
-                for (let index = 0; index < toStepsDescriptions.length; index++) {
-                    toStepsDescriptions[index].id = index;
-                }
+        const stepsDescriptions = this._toStepsDescriptions(guide);
 
-                return toStepsDescriptions;
-            })
-            .then(stepsDescriptions => {
-                if (!!startStepId) {
-                    ShepherdService.resumeGuide(guideFileName, stepsDescriptions, startStepId);
-                } else {
-                    ShepherdService.startGuide(guideFileName, stepsDescriptions, startStepId);
-                }
-            });
-    }
+        // Add id to everyone step
+        for (let index = 0; index < stepsDescriptions.length; index++) {
+            stepsDescriptions[index].id = index;
+        }
+
+        if (!!startStepId) {
+            ShepherdService.resumeGuide(guide.guideId, stepsDescriptions, startStepId);
+        } else {
+            ShepherdService.startGuide(guide.guideId, stepsDescriptions, startStepId);
+        }
+    };
 
     /**
      * Cancel the currently started guide if any.
      */
     this.cancelGuide = () => {
         ShepherdService.cancel();
-    }
-
-    /**
-     * Fetches guide description with name <code>guideFileName</code> from the server.
-     *
-     * @param guideFileName - path to guide description file.
-     * @returns {Promise<[]>} - array with steps descriptions. Format of steps description:
-     *
-     * <pre>
-     *     {
-     *       tutorialName: string,
-     *       options: {
-     *          ......
-     *          },
-     *          steps: [
-     *          ...
-     *          ]
-     *        }
-     * </pre>
-     *
-     * <ul>
-     *     <li>
-     *         <b>options</b> - global options of the guide.
-     *     </li>
-     * </ul>
-     */
-    this.loadGuide = (guideFileName) => {
-        return new Promise(resolve => {
-            $http.get(`${this.guideRepositoryUrl}/guides/${guideFileName}`)
-                .success(function (data) {
-                    resolve(data);
-                });
-        });
     }
 
     /**
@@ -263,8 +224,15 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
      */
     this.getGuides = () => {
         return new Promise(resolve => {
-            $http.get(`${this.guideRepositoryUrl}/guides/guides.json`)
+            $http.get(GuideUtils.GUIDES_LIST_URL)
                 .success(function (data) {
+                    angular.forEach(data, (guide, index) => {
+                        if (guide.guideId === undefined) {
+                            // Ideally we want our guides to have stable IDs but it's not a big deal
+                            // if they don't have one - so just generate it in that case
+                            guide.guideId = index;
+                        }
+                    });
                     resolve(data);
                 });
         });
@@ -463,9 +431,13 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
     this._subscribeToGuideResumed = () => {
         if (!this.guideResumeSubscription) {
             this.guideResumeSubscription = $rootScope.$on('guideResume', () => {
-                const guideFileName = ShepherdService.getGuideFileName();
-                const currentStepId = ShepherdService.getCurrentStepId();
-                this.startGuide(guideFileName, currentStepId);
+                const currentGuideId = ShepherdService.getGuideId();
+                this.getGuides()
+                    .then(guides => {
+                        const currentGuide = guides.find((guide) => guide.guideId === currentGuideId);
+                        const currentStepId = ShepherdService.getCurrentStepId();
+                        this.startGuide(currentGuide, currentStepId);
+                    });
             });
         }
     };

@@ -1,7 +1,7 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'download-guide-resource',
-        getSteps: (options) => {
+        getSteps: (options, services) => {
             return {
                 guideBlockName: 'info-message',
                 options: angular.extend({}, {
@@ -9,6 +9,7 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.download-guide-resource.content',
                     canBePaused: true,
                     forceReload: true,
+                    resourceUrl: services.GuideUtils.toResourceDownloadUrl(options)
                 }, options)
             }
         }

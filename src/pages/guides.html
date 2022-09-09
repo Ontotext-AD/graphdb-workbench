@@ -38,10 +38,10 @@
     </thead>
     <tr ng-repeat="guide in displayedGuides | orderBy: 'order'" loader-post-repeat-directive>
         <td>
-            <span>{{guide.name}}</span>
+            <span>{{guide.translatedGuideName}}</span>
         </td>
         <td>
-            <button class="btn btn-link" ng-click="startGuide(guide.guideFileName)" tooltip-trigger="mouseenter"
+            <button class="btn btn-link" ng-click="startGuide(guide)" tooltip-trigger="mouseenter"
                     tooltip="{{'view.guides.action.start' | translate}}"><span class="icon-play"></span></button>
         </td>
     </tr>
