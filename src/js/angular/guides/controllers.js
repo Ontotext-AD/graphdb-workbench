@@ -30,21 +30,10 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
                 $scope.matchedElements = $scope.guides;
                 $scope.changePagination();
             });
-
-        $rootScope.$on('guideResume', () => {
-            $scope.resumeGuide();
-        });
     };
 
     $scope.startGuide = function (guide) {
         GuidesService.startGuide(guide);
-    };
-
-    $scope.resumeGuide = function () {
-        const currentGuideId = GuidesService.getCurrentGuideId();
-        const currentGuide = $scope.guides.find((guide) => guide.guideId === currentGuideId);
-        const currentStepId = GuidesService.getCurrentGuideStepId();
-        GuidesService.startGuide(currentGuide, currentStepId);
     };
 
     if (!this.translationSubscription) {

@@ -148,10 +148,12 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService',
  */
 function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories, toastr) {
 
+    this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
 
     this.init = () => {
+        this._subscribeToGuideResumed();
         this._subscribeToGuideCancel();
         this._subscribeToGuidePause();
     };
@@ -225,7 +227,11 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
             $http.get(GuideUtils.GUIDES_LIST_URL)
                 .success(function (data) {
                     angular.forEach(data, (guide, index) => {
-                        guide.guideId = index;
+                        if (guide.guideId === undefined) {
+                            // Ideally we want our guides to have stable IDs but it's not a big deal
+                            // if they don't have one - so just generate it in that case
+                            guide.guideId = index;
+                        }
                     });
                     resolve(data);
                 });
@@ -238,22 +244,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
      */
     this.isActive = () => {
         return ShepherdService.isActive();
-    };
-
-    /**
-     * Returns the current guide ID.
-     * @returns {*}
-     */
-    this.getCurrentGuideId = () => {
-        return ShepherdService.getGuideId();
-    };
-
-    /**
-     * Returns the current guide step ID.
-     * @returns {*}
-     */
-    this.getCurrentGuideStepId = () => {
-        return ShepherdService.getCurrentStepId();
     };
 
     /**
@@ -432,6 +422,25 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
         });
         return steps;
     }
+
+    /**
+     * Subscribes to guide resume event. When event occurred the guide will be start from the step where the guide was paused.
+     *
+     * @private
+     */
+    this._subscribeToGuideResumed = () => {
+        if (!this.guideResumeSubscription) {
+            this.guideResumeSubscription = $rootScope.$on('guideResume', () => {
+                const currentGuideId = ShepherdService.getGuideId();
+                this.getGuides()
+                    .then(guides => {
+                        const currentGuide = guides.find((guide) => guide.guideId === currentGuideId);
+                        const currentStepId = ShepherdService.getCurrentStepId();
+                        this.startGuide(currentGuide, currentStepId);
+                    });
+            });
+        }
+    };
 
     this._subscribeToGuideCancel = () => {
         ShepherdService.subscribeToGuideCancel(() => $rootScope.$broadcast('guideReset'));
