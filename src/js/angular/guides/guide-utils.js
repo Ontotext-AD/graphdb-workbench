@@ -1,4 +1,6 @@
 const GuideUtils = (function () {
+    const GUIDES_LIST_URL = '/rest/guides';
+    const GUIDES_DOWNLOAD_URL = '/rest/guides/download/';
 
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
@@ -213,7 +215,19 @@ const GuideUtils = (function () {
         return value.replace(/\s+/g, '');
     }
 
+    /**
+     * Constructs a download URL for the downloadable resource described by the provided step's
+     * options.
+     * @param options the options of the step
+     * @returns {string} the download URL
+     */
+    const toResourceDownloadUrl = (options) => {
+        return GUIDES_DOWNLOAD_URL + options.resourcePath + '/' + options.resourceFile;
+    };
+
     return {
+        GUIDES_LIST_URL,
+        GUIDES_DOWNLOAD_URL,
         waitFor,
         clickOnElement,
         clickOnGuideElement,
@@ -229,7 +243,8 @@ const GuideUtils = (function () {
         noNextErrorToast,
         deferredShow,
         scrollToTop,
-        removeWhiteSpaces
+        removeWhiteSpaces,
+        toResourceDownloadUrl
     };
 })();
 

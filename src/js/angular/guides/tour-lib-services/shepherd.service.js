@@ -1,7 +1,7 @@
 import {GuideUtils} from "../guide-utils";
 import Shepherd from "shepherd.js";
 
-export const GUIDE_NAME = 'shepherd.guide_name';
+export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
 export const GUIDE_PAUSE = 'shepherd.guide.pause';
 
@@ -29,7 +29,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
 
     /**
      * Creates and starts a guide.
-     * @param guideFileName - path to guide description file.
+     * @param guideId - a unique ID that identifies the guide.
      * @param stepsDescriptions - array with core steps. Format of a step is:
      * <pre>
      *     {
@@ -115,11 +115,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
      * </ul>
      * @param startStepId - start step id.
      */
-    this.startGuide = (guideFileName, stepsDescriptions, startStepId) => {
+    this.startGuide = (guideId, stepsDescriptions, startStepId) => {
         if (!stepsDescriptions) {
             return;
         }
-        const guide = this._createGuide(guideFileName)
+        const guide = this._createGuide(guideId);
         this._addGuideSteps(guide, stepsDescriptions);
         this._startGuide(guide, startStepId);
     }
@@ -127,9 +127,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
     /**
      * Starts guide from the step where it was paused.
      */
-    this.resumeGuide = (guideFileName, stepsDescriptions, startStepId) => {
+    this.resumeGuide = (guideId, stepsDescriptions, startStepId) => {
         LocalStorageAdapter.set(GUIDE_PAUSE, false);
-        this.startGuide(guideFileName, stepsDescriptions, startStepId);
+        this.startGuide(guideId, stepsDescriptions, startStepId);
     }
 
     /**
@@ -146,8 +146,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
         return Shepherd.activeTour;
     };
 
-    this.getGuideFileName = () => {
-        return LocalStorageAdapter.get(GUIDE_NAME);
+    this.getGuideId = () => {
+        return LocalStorageAdapter.get(GUIDE_ID);
     }
 
     this.getCurrentStepId = () => {
@@ -168,13 +168,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
 
     /**
      * Creates a guide.
-     * @param guideFileName - path to guide description name.
+     * @param guideId - a unique ID that identifies the guide.
      * @returns {Shepherd.Tour} - created guide.
      */
-    this._createGuide = (guideFileName) => {
+    this._createGuide = (guideId) => {
         this._subscribeToGuideCanceled();
         return new Shepherd.Tour({
-            name: guideFileName,
+            name: guideId,
             useModalOverlay: true,
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
@@ -492,7 +492,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
 
     this._saveStep = (step) => {
         if (!!step) {
-            LocalStorageAdapter.set(GUIDE_NAME, step.tour.options.name);
+            LocalStorageAdapter.set(GUIDE_ID, step.tour.options.name);
             LocalStorageAdapter.set(GUIDE_CURRENT_STEP_ID, step.options.id);
         }
     }
@@ -502,7 +502,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
      * @private
      */
     this._clearLocaleStorage = () => {
-        LocalStorageAdapter.remove(GUIDE_NAME);
+        LocalStorageAdapter.remove(GUIDE_ID);
         LocalStorageAdapter.remove(GUIDE_PAUSE);
         LocalStorageAdapter.remove(GUIDE_CURRENT_STEP_ID);
     };

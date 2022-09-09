@@ -25,16 +25,27 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
     $scope.init = function () {
         GuidesService.getGuides()
             .then(guides => {
-                $scope.guides = $filter('orderBy')(guides, 'order');
-                $scope.guides.forEach(guide => guide.name = GuideUtils.translateLocalMessage($translate, guide.title));
+                $scope.guides = $filter('orderBy')(guides, 'guideOrder');
+                $scope.guides.forEach(guide => guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, guide.guideName));
                 $scope.matchedElements = $scope.guides;
                 $scope.changePagination();
             });
-    }
 
-    $scope.startGuide = function (guideFileName) {
-        GuidesService.startGuide(guideFileName);
-    }
+        $rootScope.$on('guideResume', () => {
+            $scope.resumeGuide();
+        });
+    };
+
+    $scope.startGuide = function (guide) {
+        GuidesService.startGuide(guide);
+    };
+
+    $scope.resumeGuide = function () {
+        const currentGuideId = GuidesService.getCurrentGuideId();
+        const currentGuide = $scope.guides.find((guide) => guide.guideId === currentGuideId);
+        const currentStepId = GuidesService.getCurrentGuideStepId();
+        GuidesService.startGuide(currentGuide, currentStepId);
+    };
 
     if (!this.translationSubscription) {
         this.translationSubscription = $rootScope.$on('$translateChangeSuccess', () => {
