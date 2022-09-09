@@ -1640,9 +1640,9 @@
     "guide.step_plugin.click-main-menu.menu_sparql.main-menu.title": "SPARQL query",
     "guide.step_plugin.click-main-menu.menu_sparql.main-menu.content": "Click on menu <b>\"SPARQL\"</b>.",
     "guide.step_plugin.execute-sparql-query.query-editor.title": "SPARQL query",
-    "guide.step_plugin.execute-sparql-query.query-editor.content": "{{queryExplainMessage}} <br><b>{{queryAsHtml}}</b><br>",
+    "guide.step_plugin.execute-sparql-query.query-editor.content": "{{queryExplainMessageTranslated}} <br><b>{{queryAsHtml}}</b><br>",
     "guide.step_plugin.execute-sparql-query.result-explain.title": "SPARQL query",
-    "guide.step_plugin.execute-sparql-query.result-explain.content": "{{resultExplainMessage}}",
+    "guide.step_plugin.execute-sparql-query.result-explain.content": "{{resultExplainMessageTranslated}}",
     "guide.step_plugin.execute-sparql-query.run-sparql-query.title": "SPARQL query",
     "guide.step_plugin.execute-sparql-query.run-sparql-query.content": "Click on <b>Run</b> button.",
     "guide.step_plugin.import_rdf_file.title": "",
@@ -1687,5 +1687,6 @@
     "guide.step_plugin.visual-graph-expand.title": "Visual graph: expand node",
     "guide.step_plugin.visual-graph-expand.content": "Double click on <b>{{shortIRI}}</b> to expand the graph.",
     "guide.step_plugin.guide-ended.title": "End of guide",
-    "guide.step_plugin.guide-ended.content": "This guide has ended."
+    "guide.step_plugin.guide-ended.content": "This guide has ended.",
+    "guide.step_plugin.execute-sparql-query.query-not-same.error": "The query is not the same as the guide query!"
 }

@@ -1,7 +1,8 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'select-repository-dropdown',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
@@ -31,7 +32,8 @@ PluginRegistry.add('guide.step', [
     },
     {
         guideBlockName: 'select-repository-plug',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {

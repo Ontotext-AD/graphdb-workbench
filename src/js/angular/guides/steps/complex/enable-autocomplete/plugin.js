@@ -1,15 +1,17 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'enable-autocomplete',
-        getSteps: (options, GuideUtils) => [
-            {
-                guideBlockName: 'click-main-menu',
-                options: angular.extend({}, {
-                    label: 'menu_setup_autocomplete',
-                    menuSelector: 'menu-setup',
-                    submenuSelector: 'sub-menu-autocomplete'
-                }, options)
-            }, {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'click-main-menu',
+                    options: angular.extend({}, {
+                        label: 'menu_setup_autocomplete',
+                        menuSelector: 'menu-setup',
+                        submenuSelector: 'sub-menu-autocomplete'
+                    }, options)
+                }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
                     title: 'guide.step_plugin.enable-autocomplete.title',
@@ -27,15 +29,16 @@ PluginRegistry.add('guide.step', [
                     }
                 }, options)
             },
-            {
-                guideBlockName: 'read-only-element',
-                options: angular.extend({}, {
-                    title: 'guide.step_plugin.enable-autocomplete.status_info.title',
-                    content: 'guide.step_plugin.enable-autocomplete.status_info.content',
-                    url: '/autocomplete',
-                    elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus')
-                }, options)
-            }
-        ]
+                {
+                    guideBlockName: 'read-only-element',
+                    options: angular.extend({}, {
+                        title: 'guide.step_plugin.enable-autocomplete.status_info.title',
+                        content: 'guide.step_plugin.enable-autocomplete.status_info.content',
+                        url: '/autocomplete',
+                        elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus')
+                    }, options)
+                }
+            ]
+        }
     }
 ]);

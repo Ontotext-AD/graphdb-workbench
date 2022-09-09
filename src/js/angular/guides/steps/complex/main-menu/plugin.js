@@ -1,7 +1,8 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'click-main-menu',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             const steps = [];
 
             const menuSelector = options.menuSelector;

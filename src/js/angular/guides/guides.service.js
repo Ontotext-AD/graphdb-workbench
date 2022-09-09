@@ -11,7 +11,7 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService', '$repositories'];
+GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService', '$repositories', 'toastr'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -143,9 +143,10 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService',
  * @param $translate - the translation service.
  * @param ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
  * @param $repositories - the repositories service.
+ * @param toastr
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories) {
+function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories, toastr) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -439,7 +440,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (!!predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, GuideUtils, $rootScope)), parentOptions));
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, GuideUtils, $rootScope, toastr})), parentOptions));
                 } else if (!!predefinedStepDescription.getStep) {
                     steps.push(angular.copy(predefinedStepDescription.getStep(options, GuideUtils)));
                 } else {
