@@ -205,6 +205,13 @@ const GuideUtils = (function () {
         });
     };
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    }
+
+    const removeWhiteSpaces = (value) => {
+        return value.replace(/\s+/g, '');
+    }
 
     return {
         waitFor,
@@ -220,7 +227,9 @@ const GuideUtils = (function () {
         translateLocalMessage,
         unescapeHtml,
         noNextErrorToast,
-        deferredShow
+        deferredShow,
+        scrollToTop,
+        removeWhiteSpaces
     };
 })();
 

@@ -16,12 +16,11 @@ angular
  * @param $translate
  * @param LocalStorageAdapter
  * @param $route
- * @param toastr
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', 'toastr'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route, toastr) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -464,7 +463,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, toa
         return () => {
             let valid = true;
             if (angular.isFunction(currentStepDescription.onNextValidate)) {
-                valid = currentStepDescription.onNextValidate(currentStepDescription, toastr, $translate);
+                valid = currentStepDescription.onNextValidate(currentStepDescription);
             }
             if (valid) {
                 if (angular.isFunction(currentStepDescription.onNextClick)) {
@@ -545,6 +544,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, toa
             canBePaused: stepDescription.canBePaused,
             advanceOn: stepDescription.advanceOn,
             showOn: stepDescription.showOn,
+            scrollToHandler: stepDescription.scrollToHandler,
             classes: 'guide-dialog',
             beforeShowPromise: stepDescription.beforeShowPromise,
             when: {

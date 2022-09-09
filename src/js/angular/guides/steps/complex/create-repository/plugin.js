@@ -1,7 +1,8 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'create-repository',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             const steps = [
                 {
                     guideBlockName: 'click-main-menu',

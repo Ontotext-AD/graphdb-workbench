@@ -1,7 +1,10 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'import-rdf-file',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const toastr = services.toastr;
+            const $translate = services.$translate;
             return [
                 {
                     guideBlockName: 'click-main-menu',
@@ -18,7 +21,7 @@ PluginRegistry.add('guide.step', [
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
                         fileName: options.fileName,
-                        onNextValidate: (step, toastr, $translate) => {
+                        onNextValidate: () => {
                             if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.fileName)).length) {
                                 GuideUtils.noNextErrorToast(toastr, $translate,
                                     'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);

@@ -1,7 +1,7 @@
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'download-guide-resource',
-        getSteps: (options, GuideUtils) => {
+        getSteps: (options) => {
             return {
                 guideBlockName: 'info-message',
                 options: angular.extend({}, {

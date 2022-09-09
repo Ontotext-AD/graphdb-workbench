@@ -66,8 +66,8 @@
                         </div>
             -->
 
-            <div id="queryEditor">
-                <textarea ng-model="query" id="query" rows="16" cols="100"></textarea>
+            <div id="queryEditor" guide-selector="queryEditor">
+                <textarea ng-model="query" id="query" rows="16" cols="100" guide-selector="inputQuery"></textarea>
 
                 <div id="yasqe_buttons_mocked" style="display: none"></div>
                 <div id="yasqe_buttons" ng-hide="notoolbar">
@@ -128,7 +128,7 @@
                 </div>
                 <div id="runButton" ng-hide="norun">
                     <button id="wb-sparql-runQuery" class="btn btn-primary" ng-disabled="queryIsRunning"
-                            ng-click="runQuery(false, $event.shiftKey)">
+                            ng-click="runQuery(false, $event.shiftKey)" guide-selector="runSparqlQuery">
                         {{runButtonName | translate}}
                     </button>
                 </div>
@@ -228,7 +228,7 @@
 
                 <div class="plaintext">{{yasr.results.getException().responseText}}</div>
             </div>
-            <div class='yasr_results' ng-show="currentTabConfig.queryType && currentTabConfig.queryType != 'UPDATE' && currentTabConfig.queryType != 'ERROR' && !queryIsRunning"></div>
+            <div class='yasr_results' ng-show="currentTabConfig.queryType && currentTabConfig.queryType != 'UPDATE' && currentTabConfig.queryType != 'ERROR' && !queryIsRunning" guide-selector="yasrРesults"></div>
         </div>
 
         <div ng-show="queryIsRunning && currentTrackAlias" class="qe-aborter">
