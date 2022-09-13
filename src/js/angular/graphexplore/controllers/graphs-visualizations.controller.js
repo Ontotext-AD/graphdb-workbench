@@ -1811,8 +1811,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 return d.y;
             });
 
-            // other code can use the value of d3alpha to determine when the force layout has settled
-            $rootScope.d3alpha = force.alpha();
+            updateAlphaInScope();
         });
 
         function panAndZoomed() {
@@ -1848,6 +1847,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         d3.selectAll('.d3-actions-tip').remove();
 
         force.start();
+    }
+
+
+    function updateAlphaInScope() {
+        // other code can use the value of d3alpha to determine when the force layout has settled
+        $rootScope.d3alpha = force.alpha();
     }
 
     /* FIXME
@@ -1937,11 +1942,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             menuEvents.removeIcons();
         }
 
-        // If nodes are still rearranging result of force.alpha() is more than 0.05
-        // and we don't want to show node's icons on mouse over and stop rearrangement
-        if (force.alpha() < 0.05) {
+        // If nodes are still rearranging result of force.alpha() is more than 0.02
+        // and we don't want to show node's icons on mouse over and stop rearrangement.
+        // The chosen value 0.02 is somewhat magic and works well with 0.02 in awaitAlphaDropD3()
+        // in the guides code.
+        if (force.alpha() < 0.02) {
             menuEvents.initIcons(d, element.parentNode);
             force.stop();
+            updateAlphaInScope();
 
             return true;
         }

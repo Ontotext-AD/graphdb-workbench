@@ -63,7 +63,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'input-element',
         getStep: (options, GuideUtils) => {
             const notOverridable = {
-                type: 'readonly',
+                type: 'clickable',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
