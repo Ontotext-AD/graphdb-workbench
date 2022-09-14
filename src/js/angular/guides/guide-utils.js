@@ -102,7 +102,7 @@ const GuideUtils = (function () {
                         }
                     }
                 }, waitTime);
-            }, 300); // give it some time to spin up
+            }, 150); // give it some time to spin up
         });
     };
 

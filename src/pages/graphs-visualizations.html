@@ -433,7 +433,7 @@
                 </div>
             </div>
 
-            <div class="break-word-alt">
+            <div class="break-word-alt" guide-selector="graph-visualization-node-info-types">
                 <strong>{{'types.label' | translate}}: </strong><em class="text-muted" ng-if="!nodeTypes.length">No types</em><br>
                 <ul class="list-inline">
                     <li class="list-inline-item" ng-repeat="nodeType in nodeTypes"
@@ -470,7 +470,7 @@
 
                 <div ng-switch-default ui-scroll-viewport class="rdf-list">
                     <div ui-scroll='item in datasource' adapter="adapterContainer.adapter"
-                         class="datasource mb-1">
+                         class="datasource mb-1" guide-selector="graph-visualization-node-info-{{item.key}}">
                         <div class="item clearfix break-word-alt small">{{item.key}}</div>
                         <div class="data-value">
                             <a ng-if="item.value[0].t === 'i'" href="#" ng-click="openIRI(item.value[0].v, $event)" ng-bind="item.value[0].v"></a>

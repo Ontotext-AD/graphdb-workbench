@@ -127,7 +127,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
-    $scope.guidePaused = !!LocalStorageAdapter.get(GUIDE_PAUSE);
+    $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
 
     const setYears = function () {
         const date = new Date();

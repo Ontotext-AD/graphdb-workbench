@@ -18,9 +18,9 @@ angular
  * @param $route
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -531,15 +531,28 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
             extraTitle = ' — ' + (stepDescription.stepN + 1) + '/' + stepDescription.stepsTotalN;
         }
 
+        const content = this._toParagraph(GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)));
+
+        let extraContent = '';
+        if (stepDescription.extraContent) {
+            extraContent = GuideUtils.translateLocalMessage($translate, stepDescription.extraContent, stepDescription);
+            extraContent = $interpolate(extraContent)(stepDescription);
+            extraContent = this._toParagraph(extraContent);
+        }
+
+        const clickable = stepDescription.type !== 'readonly';
+
+        const extraPadding = stepDescription.extraPadding ? stepDescription.extraPadding : 0;
+
         return {
             id: stepDescription.id,
             title: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription)) + extraTitle,
-            text: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)),
+            text: content + extraContent,
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
             cancelIcon: {enabled: true},
             attachTo,
-            modalOverlayOpeningPadding: 0,
+            modalOverlayOpeningPadding: extraPadding,
             modalOverlayOpeningRadius: 0,
             canBePaused: stepDescription.canBePaused,
             advanceOn: stepDescription.advanceOn,
@@ -547,13 +560,23 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
             scrollToHandler: stepDescription.scrollToHandler,
             classes: 'guide-dialog',
             beforeShowPromise: stepDescription.beforeShowPromise,
+            canClickTarget: clickable,
+            keyboardNavigation: false,
             when: {
                 show: () => {
                     onShow();
                 }
             }
         };
-    }
+    };
+
+    this._toParagraph = (text) => {
+        if (text) {
+            return '<p>' + text + '</p>';
+        } else {
+            return '';
+        }
+    };
 
     /**
      * Created a base button.
@@ -568,9 +591,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route) {
             classes: isSecondary ? 'btn-lg btn-secondary' : 'btn-lg btn-primary'
         };
 
-        button.action = () => {
+        button.action = ($event) => {
+            $event.stopPropagation();
             action();
-        }
+        };
 
         return button;
     }
