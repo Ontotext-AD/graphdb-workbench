@@ -54,6 +54,7 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
+            const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
             return [
                 {
                     guideBlockName: 'clickable-element',
@@ -61,16 +62,21 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-expand.title',
                         content: 'guide.step_plugin.visual-graph-expand.content',
                         url: '/graphs-visualizations',
-                        elementSelector: `.node-wrapper[id^="${options.iri}"] circle`,
+                        canBePaused: false,
+                        elementSelector,
                         advanceOn: {
                             selector: `.node-wrapper[id^="${options.iri}"] circle`,
                             event: 'dblclick'
                         },
-                        onNextClick: (guide, step) => {
-                            GuideUtils.graphVizExpandNode(step.elementSelector);
-                            guide.next();
+                        onNextClick: (guide, stepDescription) => {
+                            GuideUtils.graphVizExpandNode(stepDescription.elementSelector);
+                            guide.getCurrentStep().hide();
+                            GuideUtils.awaitAlphaDropD3(null, $rootScope)()
+                                .then(() => {
+                                    guide.next();
+                                });
                         },
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3($rootScope)
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 }
             ];
@@ -81,6 +87,7 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
+            const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
             const steps = [
                 {
                     guideBlockName: 'clickable-element',
@@ -88,7 +95,8 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-properties.title',
                         content: 'guide.step_plugin.visual-graph-properties.content',
                         url: '/graphs-visualizations',
-                        elementSelector: `.node-wrapper[id^="${options.iri}"] circle`,
+                        elementSelector,
+                        canBePaused: false,
                         advanceOn: {
                             selector: `.node-wrapper[id^="${options.iri}"] circle`,
                             event: 'click'
@@ -97,7 +105,7 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.graphVizShowNodeInfo(step.elementSelector);
                             guide.next();
                         },
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3($rootScope)
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 },
                 {
@@ -106,7 +114,8 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-properties-side-panel.title',
                         content: 'guide.step_plugin.visual-graph-properties-side-panel.content',
                         url: '/graphs-visualizations',
-                        elementSelector: '.rdf-info-side-panel',
+                        elementSelector: '.rdf-side-panel-content',
+                        canBePaused: false,
                         placement: 'left',
                         beforeShowPromise: GuideUtils.deferredShow(500)
                     }, options)
@@ -127,6 +136,7 @@ PluginRegistry.add('guide.step', [
                             title: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.title',
                             content: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.content',
                             url: '/graphs-visualizations',
+                            canBePaused: false,
                             elementSelector: GuideUtils.getGuideElementSelector('graph-visualization-node-info-' + focusProperty.property),
                             focusProperty: focusProperty.property,
                             extraContent: focusProperty.message
@@ -141,6 +151,7 @@ PluginRegistry.add('guide.step', [
                     title: 'guide.step_plugin.visual-graph-properties-side-panel-close.title',
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
                     url: '/graphs-visualizations',
+                    canBePaused: false,
                     elementSelector: GuideUtils.getGuideElementSelector('close-info-panel'),
                     advanceOn: {
                         selector: GuideUtils.getGuideElementSelector('close-info-panel'),
@@ -160,6 +171,7 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
+            const elementSelector = `.link-wrapper[id^="${options.fromIri}>${options.toIri}"]`;
             return [
                 {
                     guideBlockName: 'read-only-element',
@@ -167,9 +179,10 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-link-focus.title',
                         content: 'guide.step_plugin.visual-graph-link-focus.content',
                         url: '/graphs-visualizations',
+                        canBePaused: false,
                         extraPadding: 40,
-                        elementSelector: `.link-wrapper[id^="${options.fromIri}>${options.toIri}"]`,
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3($rootScope)
+                        elementSelector,
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 }
             ];
@@ -180,6 +193,7 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
+            const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
             return [
                 {
                     guideBlockName: 'read-only-element',
@@ -187,9 +201,10 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-node-focus.title',
                         content: 'guide.step_plugin.visual-graph-node-focus.content',
                         url: '/graphs-visualizations',
+                        canBePaused: false,
                         extraPadding: 10,
-                        elementSelector: `.node-wrapper[id^="${options.iri}"] circle`,
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3($rootScope)
+                        elementSelector,
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 }
             ];

@@ -14,7 +14,7 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
-                    guideBlockName: 'read-only-element',
+                    guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         title: 'guide.step_plugin.import_rdf_file.title',
                         content: 'guide.step_plugin.import_rdf_file.content',

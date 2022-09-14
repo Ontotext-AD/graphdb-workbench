@@ -143,7 +143,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     }
 
     this.isActive = () => {
-        return Shepherd.activeTour;
+        if (!Shepherd.activeTour) {
+            return false;
+        }
+        const paused = LocalStorageAdapter.get(GUIDE_PAUSE);
+        return paused && paused === 'false';
     };
 
     this.getGuideId = () => {
