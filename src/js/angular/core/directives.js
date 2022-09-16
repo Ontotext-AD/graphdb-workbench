@@ -258,9 +258,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService) {
     return {
         restrict: 'EA',
         scope: {
@@ -540,6 +540,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.onKeyDown = function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
+                    if (GuidesService.isActive()) {
+                        return;
+                    }
                     if ($scope.uriValidation !== 'false') {
                         if (element.autoCompleteStatus) {
                             $scope.checkIfValidAndSearchEvent(event);

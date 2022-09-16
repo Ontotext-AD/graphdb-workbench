@@ -77,13 +77,18 @@ const GuideUtils = (function () {
      * Returns a function that returns a promise that will resolve when the D3 library force layout
      * settles (reaches an alpha value below the given threshold) or when the maximum wait time
      * passes. Useful in 'beforeShowPromise' of a step.
+     * @param elementSelector - a node selector.
      * @param scope scope where the d3alpha property is set
      * @param timeoutInSeconds maximum wait time for the alpha value to settle, the default is 2 seconds
      * @param alphaThreshold alpha value threshold, the default is 0.02
      * @returns {function(): Promise<unknown>}
      */
-    const awaitAlphaDropD3 = function (scope, timeoutInSeconds = 2, alphaThreshold = 0.02) {
+    const awaitAlphaDropD3 = function (elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.02) {
         return () => new Promise(function(resolve) {
+            if (isVisible(elementSelector)) {
+                resolve();
+                return;
+            }
             setTimeout(() => {
                 let iteration = timeoutInSeconds * 1000;
                 const waitTime = 100;

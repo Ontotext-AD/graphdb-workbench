@@ -21,9 +21,9 @@ angular
         $tooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService", "$translate"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService", "$translate", "GuidesService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService, $translate) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService, $translate, GuidesService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -1658,6 +1658,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
 
         function dragstarted(d) {
+            if (GuidesService.isActive()) {
+                // disable dragging if a guide is active.
+                return;
+            }
             if (d3.event.sourceEvent.button === 0) {
                 d.fixedBeforeDrag = d.fixed;
                 d.isBeingDragged = true;
@@ -1815,6 +1819,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         });
 
         function panAndZoomed() {
+            if (GuidesService.isActive()) {
+                // disable zooming if a guide is active.
+                return;
+            }
             transformValues = "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")";
             container.attr("transform", transformValues);
         }
@@ -2993,9 +3001,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     // event for capturing left and right arrows used for rotation
     $('body').on("keydown", function (event) {
-        if (event.target.nodeName === 'input' || !$scope.nodeSelected) {
-            // don't do anything when the target is an input field or no node is selected
-        } else if (event.keyCode === 37) {
+
+        if (GuidesService.isActive() || event.target.nodeName === 'input' || !$scope.nodeSelected) {
+            // don't do anything when the target is an input field or no node is selected or a guide is active.
+            return;
+        }
+
+       if (event.keyCode === 37) {
             // left arrow rotates left
             $scope.rotate(true);
         } else if (event.keyCode === 39) {
