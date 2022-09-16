@@ -1,69 +1,86 @@
 <title>GraphDB License Information</title>
 
 <h1>
-	{{title}}
-	<span class="btn btn-link"
-		popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-		popover-trigger="mouseenter"
-		popover-placement="bottom-right"
-		popover-append-to-body="true"><span class="icon-info"></span></span>
+    {{title}}
+    <span class="btn btn-link"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom-right"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loadingLicense()"></div>
 
 <div class="license-container" ng-show="!loadingLicense()">
 
-	<div class="alert alert-warning" ng-if="!getLicense().valid">
-		<p>
-			<strong>{{getLicense().message}}</strong><br>
-			{{'supply.license.or.contact.us.warning' | translate}}
-		</p>
-	</div>
+    <div class="alert alert-warning" ng-if="!getLicense().valid">
+        <p>
+            <strong>{{getLicense().message}}</strong><br>
+            {{'supply.license.or.contact.us.warning' | translate}}
+        </p>
+    </div>
 
-	<div class="card">
-		<h3 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h3>
-		<div class="card-block">
-			<div>
-				<div class="d-inline-block mr-2 mb-1">
-					{{'licensed.to' | translate}}
-					<span class="data-value big">{{getLicense().licensee}}</span>
-				</div>
-				<div class="d-inline-block mr-2 mb-1">
-					{{'valid.until' | translate}}
-					<span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
-				</div>
-				<div class="d-inline-block mr-2 mb-1">
-					{{'cores.number' | translate}}
-					<span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
-				</div>
-				<div class="d-inline-block mb-1">
-					{{'maintenance.date' | translate}}
-					<span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
-				</div>
-			</div>
-			<p class="text-muted">{{license.typeOfUse}}</p>
-			<div>
-				<a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
-					{{'core.errors.set.new.license.warning.msg' | translate}}
-				</a>
-                <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded() && !isFreeEdition() && isAdmin()" class="btn btn-secondary">
+    <div class="card">
+        <h3 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h3>
+        <div class="card-block">
+            <div>
+                <div class="float-xs-left d-inline-block mr-2 mb-1">
+                    {{'licensed.to' | translate}}
+                    <span class="data-value big">{{getLicense().licensee}}</span>
+                </div>
+                <div class="float-xs-left d-inline-block mr-2 mb-1">
+                    {{'valid.until' | translate}}
+                    <span
+                        class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                </div>
+                <div class="float-xs-left d-inline-block mr-2 mb-1">
+                    {{'cores.number' | translate}}
+                    <span
+                        class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
+                </div>
+                <div class="float-xs-left d-inline-block mr-2 mb-1">
+                    {{'maintenance.date' | translate}}
+                    <span
+                        class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                </div>
+                <div class="d-inline-block mb-1">
+                    {{'capabilities' | translate}}
+                    <div class="data-value big">
+                        <div ng-if="getLicense().licenseCapabilities.length!==0">
+                            <div ng-repeat="capability in getLicense().licenseCapabilities">
+                                <div>{{capability}}</div>
+                            </div>
+                        </div>
+                        <div ng-if="getLicense().licenseCapabilities.length===0">
+                            <div>{{'none' | translate}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted">{{license.typeOfUse}}</p>
+            <div>
+                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
+                    {{'core.errors.set.new.license.warning.msg' | translate}}
+                </a>
+                <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded() && !isFreeEdition() && isAdmin()"
+                        class="btn btn-secondary">
                     {{'revert.to.free' | translate}}
                 </button>
-			</div>
+            </div>
 
             <div class="mt-2" ng-if="isFreeEdition() || !getLicense().valid">
                 {{'free.license.restrictions' | translate}}
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 
-	<div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
-		{{'license.cannot.be.changed.from.wb.warning' | translate}}
-	</div>
+    <div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
+        {{'license.cannot.be.changed.from.wb.warning' | translate}}
+    </div>
 
-	<div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
-		{{'license.admin.authority.constraint' | translate}}
-	</div>
+    <div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
+        {{'license.admin.authority.constraint' | translate}}
+    </div>
 </div>
 
 

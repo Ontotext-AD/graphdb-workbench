@@ -1,26 +1,39 @@
 <div class="modal-header">
-	<button type="button" class="close" ng-click="cancel()"></button>
-	<h3 class="modal-title">{{'are.license.details.correct' | translate}}</h3>
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h3 class="modal-title">{{'are.license.details.correct' | translate}}</h3>
 </div>
 <div class="modal-body">
     <h4>GraphDB {{license.productType | titlecase}} {{'edition' | translate}}</h4>
     <div>
-		<div class="d-inline-block mr-2 mb-1">
+		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'licensed.to' | translate}}
 			<span class="data-value big">{{license.licensee}}</span>
 		</div>
-		<div class="d-inline-block mr-2 mb-1">
+		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'valid.until' | translate}}
 			<span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
 		</div>
-		<div class="d-inline-block mr-2 mb-1">
+		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'cores.number' | translate}}
 			<span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'unlimited' | translate}}</span>
 		</div>
-		<div class="d-inline-block mb-1">
+		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'maintenance.date' | translate}}
 			<span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
 		</div>
+        <div class="d-inline-block mb-1">
+            {{'capabilities' | translate}}
+            <div class="data-value big">
+                <div ng-if="license.licenseCapabilities.length!==0">
+                    <div ng-repeat="capability in license.licenseCapabilities">
+                        <div>{{capability}}</div>
+                    </div>
+                </div>
+                <div ng-if="license.licenseCapabilities.length===0">
+                    <div>{{'none' | translate}}</div>
+                </div>
+            </div>
+        </div>
 	</div>
 	<div class="text-muted">{{license.typeOfUse}}</div>
 </div>
