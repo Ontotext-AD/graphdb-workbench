@@ -3,10 +3,11 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'select-repository-dropdown',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'select-repository';
+
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    title: 'guide.step_plugin.choose-repository.title',
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector('repositoriesGroupButton'),
                     onNextClick: (guide) => {
@@ -17,7 +18,6 @@ PluginRegistry.add('guide.step', [
             }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    title: 'guide.step_plugin.select-repository.title',
                     content: 'guide.step_plugin.select-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`),
                     onNextClick: (guide) => {
@@ -37,7 +37,6 @@ PluginRegistry.add('guide.step', [
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    title: 'guide.step_plugin.select-repository-plug.title',
                     content: 'guide.step_plugin.select-repository-plug.content',
                     elementSelector: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-plug`),
                     onNextClick: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-plug`)

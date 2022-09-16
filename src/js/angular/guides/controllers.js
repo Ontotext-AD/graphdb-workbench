@@ -26,7 +26,21 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
         GuidesService.getGuides()
             .then(guides => {
                 $scope.guides = $filter('orderBy')(guides, 'guideOrder');
-                $scope.guides.forEach(guide => guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, guide.guideName));
+                $scope.guides.forEach(guide => {
+                    guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, guide.guideName);
+                    guide.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, guide.guideDescription);
+                    switch (guide.guideLevel) {
+                        case undefined:
+                        case 0:
+                            guide.guideLevelLabel = 'view.guides.level.beginner';
+                            break;
+                        case 1:
+                            guide.guideLevelLabel = 'view.guides.level.intermediate';
+                            break;
+                        default: // 2 and above
+                            guide.guideLevelLabel = 'view.guides.level.advanced';
+                    }
+                });
                 $scope.matchedElements = $scope.guides;
                 $scope.changePagination();
             });

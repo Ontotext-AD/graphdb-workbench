@@ -419,6 +419,9 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
         steps.forEach((step, index) => {
             step.stepN = index;
             step.stepsTotalN = steps.length;
+            if (!step.title && step.mainAction) {
+                step.title = 'guide.step-action.' + step.mainAction;
+            }
         });
         return steps;
     }

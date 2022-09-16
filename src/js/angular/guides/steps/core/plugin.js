@@ -63,7 +63,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'input-element',
         getStep: (options, GuideUtils) => {
             const notOverridable = {
-                type: 'clickable',
+                type: 'input',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
@@ -90,6 +90,7 @@ PluginRegistry.add('guide.step', [
             const step = angular.extend({}, BASIC_STEP, options, notOverridable);
             step.title = 'guide.step_plugin.guide-ended.title';
             step.content = 'guide.step_plugin.guide-ended.content';
+            step.canBePaused = false;
             return step;
         }
     }
