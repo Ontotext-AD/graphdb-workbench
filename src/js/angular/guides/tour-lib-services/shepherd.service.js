@@ -18,9 +18,9 @@ angular
  * @param $route
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate', '$compile'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate', 'toastr', '$compile'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate, $compile) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate, toastr, $compile) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -132,16 +132,6 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         this.startGuide(guideId, stepsDescriptions, startStepId);
     }
 
-    /**
-     * Cancels currently started guide if any.
-     */
-    this.cancel = () => {
-        const activeGuide = Shepherd.activeTour;
-        if (activeGuide) {
-            activeGuide.cancel();
-        }
-    }
-
     this.isActive = () => {
         return Shepherd.activeTour && !this.isPaused();
     };
@@ -180,6 +170,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return new Shepherd.Tour({
             name: guideId,
             useModalOverlay: true,
+            confirmCancel: true,
+            confirmCancelMessage: $translate.instant('guide.confirm.cancel.message'),
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
                 scrollTo: true
@@ -321,7 +313,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!!step.options.attachTo) {
             GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
-                .catch(() => guide.cancel());
+                .catch(error => {
+                    toastr.error($translate.instant('guide.start.unexpected.error.message'));
+                });
         } else {
             guide.show(stepIndex);
         }
@@ -441,7 +435,15 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._getPreviousButtonAction = (guide, previousStepDescription, currentStepDescription) => {
         return () => {
             if (angular.isFunction(currentStepDescription.onPreviousClick)) {
-                currentStepDescription.onPreviousClick(guide);
+                const onPreviousResult = currentStepDescription.onPreviousClick(guide);
+                if (onPreviousResult instanceof Promise) {
+                    onPreviousResult.catch(error => {
+                        toastr.error($translate.instant('guide.unexpected.error.message'));
+                        guide.hide();
+                    });
+                }
+
+
             } else if (previousStepDescription.forceReload || previousStepDescription.url && previousStepDescription.url !== currentStepDescription.url) {
                 $location.path(previousStepDescription.url);
                 guide.back();
@@ -473,7 +475,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
             if (valid) {
                 if (angular.isFunction(currentStepDescription.onNextClick)) {
-                    currentStepDescription.onNextClick(guide, currentStepDescription);
+                    const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
+                    if (onNextResult instanceof Promise) {
+                        onNextResult.catch(error => {
+                            toastr.error($translate.instant('guide.unexpected.error.message'));
+                            guide.hide();
+                        });
+                    }
                 } else {
                     if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
                         $location.path(nextStepDescription.url);
