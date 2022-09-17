@@ -146,7 +146,7 @@ describe('Main menu tests', function () {
                         externalRedirect: 'https://graphdb.ontotext.com/'
                     },
                     {
-                        name: 'Guides',
+                        name: 'Interactive guides',
                         visible: false,
                         redirect: '/guides'
                     },
