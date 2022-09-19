@@ -14,9 +14,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService', 'GuidesService'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
 
     let callbackOnChange;
 
@@ -879,6 +879,9 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             } else if ($location.search().query) {
                 const query = {name: $location.search().name, body: $location.search().query};
                 loadQueryIntoExistingOrNewTab(query, $location.search().infer, $location.search().sameAs);
+            } else if (GuidesService.isActive()) {
+                // In guide mode we always start with a fresh editor tab
+                scope.addNewTab();
             } else {
                 // Restore the previous tab after the dom has loaded
                 const currentid = LocalStorageAdapter.get(LSKeys.TABS_STATE_CURRENT_ID);

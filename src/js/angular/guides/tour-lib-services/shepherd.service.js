@@ -18,9 +18,9 @@ angular
  * @param $route
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate', '$compile'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate, $compile) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -143,11 +143,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     }
 
     this.isActive = () => {
-        if (!Shepherd.activeTour) {
-            return false;
-        }
-        const paused = LocalStorageAdapter.get(GUIDE_PAUSE);
-        return paused && paused === 'false';
+        return Shepherd.activeTour && !this.isPaused();
+    };
+
+    this.isPaused = () => {
+        return LocalStorageAdapter.get(GUIDE_PAUSE) === 'true';
     };
 
     this.getGuideId = () => {
@@ -305,6 +305,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._startGuide = (guide, startStepId) => {
+        LocalStorageAdapter.remove(GUIDE_PAUSE);
+
         let stepIndex = guide.steps.findIndex((value => value.options.id === startStepId));
         if (stepIndex < 0) {
             stepIndex = 0;
@@ -528,11 +530,19 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
         }
 
+        const title = GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription));
+
         // Adds " - n/N" to titles if the step is part of a multistep process,
         // where n is the current step number and N is the total number of steps
         let extraTitle = '';
         if (stepDescription.stepsTotalN > 1) {
-            extraTitle = ' — ' + (stepDescription.stepN + 1) + '/' + stepDescription.stepsTotalN;
+            const progress = document.createElement('span');
+            progress.setAttribute('tooltip', $translate.instant('guide.block.progress.tooltip', {action: title}));
+            progress.setAttribute('tooltip-placement', 'bottom');
+            progress.setAttribute('tooltip-trigger', 'mouseenter');
+            progress.setAttribute('tooltip-append-to-body', 'false');
+            progress.innerText = $translate.instant('guide.block.progress', {n: stepDescription.stepN + 1, nn: stepDescription.stepsTotalN});
+            extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
         const content = this._toParagraph(GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)));
@@ -550,7 +560,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
         return {
             id: stepDescription.id,
-            title: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription)) + extraTitle,
+            title: title + extraTitle,
             text: content + extraContent,
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
@@ -569,6 +579,21 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             when: {
                 show: () => {
                     onShow();
+
+                    const currentStep = Shepherd.activeTour.getCurrentStep();
+                    const currentStepElement = currentStep.getElement();
+
+                    this._addTotalProgress(currentStep, currentStepElement);
+
+                    this._addTypeIcon(currentStepElement, stepDescription);
+
+                    // We have some Angular bits on the elements and this is needed to make them work
+                    const scope = angular.element(currentStepElement).scope();
+                    if (angular.isFunction(stepDescription.onScope)) {
+                        // Step definitions may want to add functions to the scope
+                        stepDescription.onScope(scope);
+                    }
+                    setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
                 }
             }
         };
@@ -582,6 +607,52 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
     };
 
+    this._addTotalProgress = (currentStep, currentStepElement) => {
+        const steps = Shepherd.activeTour.steps;
+        const content = currentStepElement.querySelector('.shepherd-content');
+        const progress = document.createElement('div');
+        progress.className = 'shepherd-progress';
+        const progressText = document.createElement('span');
+        progressText.className = 'text-muted';
+        progressText.innerText = $translate.instant('guide.total.progress', {n: steps.indexOf(currentStep) + 1, nn: steps.length});
+        progressText.setAttribute('tooltip', $translate.instant('guide.total.progress.tooltip'));
+        progressText.setAttribute('tooltip-placement', 'left');
+        progressText.setAttribute('tooltip-trigger', 'mouseenter');
+        progressText.setAttribute('tooltip-append-to-body', 'false');
+        progress.appendChild(progressText);
+
+        content.appendChild(progress);
+    };
+
+    this._addTypeIcon = (currentStepElement, stepDescription) => {
+        let iconName;
+        let iconTooltip;
+        switch (stepDescription.type) {
+            case 'clickable':
+                iconName = 'focus';
+                iconTooltip = 'mouse'
+                break;
+            case 'input':
+                iconName = 'edit';
+                iconTooltip = 'input';
+                break;
+            default:
+                // handles 'readonly' and future types gracefully
+                iconName = 'info';
+                iconTooltip = 'info';
+                break;
+        }
+
+        const typeIcon = document.createElement('span');
+        typeIcon.className = 'shepherd-step-type icon-' + iconName + ' icon-1-25x';
+        typeIcon.setAttribute('tooltip', $translate.instant('guide.step-type.' + iconTooltip));
+        typeIcon.setAttribute('tooltip-placement', 'bottom-right');
+        typeIcon.setAttribute('tooltip-trigger', 'mouseenter');
+        typeIcon.setAttribute('tooltip-append-to-body', 'false');
+
+        angular.element(currentStepElement.querySelector('.shepherd-header')).prepend(typeIcon);
+    };
+
     /**
      * Created a base button.
      * @param text - the text of button.
@@ -592,7 +663,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._getButton = (text, action, isSecondary) => {
         const button = {
             text: text,
-            classes: isSecondary ? 'btn-lg btn-secondary' : 'btn-lg btn-primary'
+            classes: isSecondary ? 'btn btn-secondary' : 'btn btn-primary'
         };
 
         button.action = ($event) => {

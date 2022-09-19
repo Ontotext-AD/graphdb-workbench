@@ -3,18 +3,18 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'create-repository',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'create-repository';
+
             const steps = [
                 {
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
-                        label: 'menu_setup',
-                        menuSelector: 'menu-setup',
-                        submenuSelector: 'sub-menu-repositories'
+                        menu: 'repositories',
+                        showIntro: true
                     }, options)
                 }, {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create_repository.create_repository_button.title',
                         content: 'guide.step_plugin.create_repository.create_repository_button.content',
                         url: '/repository',
                         elementSelector: GuideUtils.getGuideElementSelector('createRepository'),
@@ -26,7 +26,6 @@ PluginRegistry.add('guide.step', [
                 }, {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create_repository.graph_db_repository.title',
                         content: 'guide.step_plugin.create_repository.graph_db_repository.content',
                         url: '/repository/create',
                         elementSelector: GuideUtils.getGuideElementSelector('createGraphDBRepository'),
@@ -35,7 +34,6 @@ PluginRegistry.add('guide.step', [
                 }, {
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create_repository.repository_id.title',
                         content: 'guide.step_plugin.create_repository.repository_id.content',
                         url: '/repository/create/graphdb',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryIdInput'),
@@ -48,7 +46,6 @@ PluginRegistry.add('guide.step', [
                 steps.push({
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create_repository.ruleset_dropdown.title',
                         content: 'guide.step_plugin.create_repository.ruleset_dropdown.content',
                         url: '/repository/create/graphdb',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
@@ -59,7 +56,6 @@ PluginRegistry.add('guide.step', [
             steps.push({
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    title: 'guide.step_plugin.create_repository.save_button.title',
                     content: 'guide.step_plugin.create_repository.save_button.content',
                     url: '/repository/create/graphdb',
                     elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryCrateButton'),

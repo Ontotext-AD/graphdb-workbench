@@ -3,18 +3,18 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'visual-graph',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'visual-graph';
+
             return [
                 {
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
-                        label: 'menu_explore_visual_graph',
-                        menuSelector: 'menu-explore',
-                        submenuSelector: 'sub-menu-visual-graph'
+                        menu: 'visual-graph',
+                        showIntro: true
                     }, options)
                 }, {
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_input_IRI.title',
                         content: 'guide.step_plugin.visual_graph_input_IRI.content',
                         forceReload: true,
                         url: '/graphs-visualizations',
@@ -24,7 +24,6 @@ PluginRegistry.add('guide.step', [
                 }, {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_show_autocomplete.title',
                         content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
@@ -37,7 +36,6 @@ PluginRegistry.add('guide.step', [
                 }, {
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_intro.title',
                         content: 'guide.step_plugin.visual_graph_intro.content',
                         url: '/graphs-visualizations',
                         elementSelector: '.graph-visualization',
