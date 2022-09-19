@@ -81,7 +81,7 @@
         <div>
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
-                        <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
+                        <input type="radio" class="form-check-input" id="checkboxSuccessSearch" ng-model="newConfig.startMode" value="search">
                         <img class="image-label-image" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="search image" width="100%">
                         <div class="image-label-content">
                             <h5>{{'start.with.search.box' | translate}}</h5>
@@ -90,7 +90,7 @@
                     </label>
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'node'}">
-                        <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="node">
+                        <input type="radio" class="form-check-input" id="checkboxSuccessNode" ng-model="newConfig.startMode" value="node">
                         <img class="image-label-image" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="node image" width="100%">
                         <div class="image-label-content">
                             <h5>{{'start.with.fixed.node' | translate}}</h5>
@@ -99,7 +99,7 @@
                     </label>
 
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'query'}">
-                        <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="query">
+                        <input type="radio" class="form-check-input" data-cy="graph-config-by-graph-query-checkbox" ng-model="newConfig.startMode" value="query">
                         <img class="image-label-image" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="query image" width="100%">
                         <div class="image-label-content">
                             <h5>{{'query.results.start' | translate}}</h5>
@@ -220,7 +220,7 @@
 
                 <div class="form-group row" ng-hide="page == 1 && newConfig.startMode != 'query'">
                     <div class="col-md-9">
-                        <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun callback-on-change="updateDirty">
+                        <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun callback-on-change="updateDirty" data-cy="query-editor">
                         </query-editor>
                     </div>
                     <div class="col-md-3">
