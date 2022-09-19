@@ -65,7 +65,8 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         content: 'guide.step-intro.' + options.mainAction,
-                        extraContent: helpInfo
+                        extraContent: helpInfo,
+                        extraContentClass: 'alert alert-help text-left'
                     }, options)
                 });
             }
