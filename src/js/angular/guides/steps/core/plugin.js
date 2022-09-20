@@ -15,20 +15,26 @@ const BASIC_STEP = {
 /**
  * This function will be call before show a step. Step will shown after promise is resolve. It waits element of step to be visible on the page.
  * @param maxWaitTime
- * @param GuideUtils
+ * @param services
  * @param elementSelector
  * @returns {function(): *}
  */
-const beforeShowPromise = (GuideUtils, elementSelector, maxWaitTime) => {
+const beforeShowPromise = (services, elementSelector, maxWaitTime) => {
     return () => {
-        return GuideUtils.waitFor(elementSelector, maxWaitTime);
+        return services.GuideUtils.waitFor(elementSelector, maxWaitTime)
+            .catch((error) => {
+                // error is caught just to show notification in generic way.
+                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                // throw the error, otherwise guide will continue with the next step.
+                throw error;
+            });
     }
 }
 
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'clickable-element',
-        getStep: (options, GuideUtils) => {
+        getStep: (options, services) => {
             const notOverridable = {
                 type: 'clickable',
             };
@@ -41,40 +47,40 @@ PluginRegistry.add('guide.step', [
             }, options, notOverridable);
 
             if (!stepDescription.beforeShowPromise) {
-                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
         }
     },
     {
         guideBlockName: 'read-only-element',
-        getStep: (options, GuideUtils) => {
+        getStep: (options, services) => {
             const notOverridable = {
                 type: 'readonly',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
-                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
         }
     },
     {
         guideBlockName: 'input-element',
-        getStep: (options, GuideUtils) => {
+        getStep: (options, services) => {
             const notOverridable = {
                 type: 'input',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
-                stepDescription.beforeShowPromise = beforeShowPromise(GuideUtils, stepDescription.elementSelector, stepDescription.maxWaitTime);
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
         }
     },
     {
         guideBlockName: 'info-message',
-        getStep: (options, GuideUtils) => {
+        getStep: (options) => {
             const notOverridable = {
                 type: 'readonly',
             };
@@ -83,7 +89,7 @@ PluginRegistry.add('guide.step', [
     },
     {
         guideBlockName: 'guide-end',
-        getStep: (options, GuideUtils) => {
+        getStep: (options) => {
             const notOverridable = {
                 type: 'readonly'
             };

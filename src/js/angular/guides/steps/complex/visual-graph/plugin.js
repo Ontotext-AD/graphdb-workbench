@@ -27,9 +27,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
-                        onNextClick: (guide, step) => {
-                            $(step.elementSelector).trigger('click');
-                        },
+                        onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
                         canBePaused: false,
                         forceReload: true
                     }, options)
@@ -143,6 +141,7 @@ PluginRegistry.add('guide.step', [
                 });
             }
 
+            const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             steps.push({
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
@@ -150,14 +149,13 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
                     url: '/graphs-visualizations',
                     canBePaused: false,
-                    elementSelector: GuideUtils.getGuideElementSelector('close-info-panel'),
+                    elementSelector: closeButtonSelector,
                     advanceOn: {
-                        selector: GuideUtils.getGuideElementSelector('close-info-panel'),
+                        selector: closeButtonSelector,
                         event: 'click'
                     },
-                    onNextClick: () => {
-                        $(GuideUtils.getGuideElementSelector('close-info-panel')).trigger('click');
-                    }
+                    onNextClick: (guide) =>
+                        GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
                 }, options)
             });
 

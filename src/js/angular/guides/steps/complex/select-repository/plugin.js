@@ -10,21 +10,14 @@ PluginRegistry.add('guide.step', [
                 options: angular.extend({}, {
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector('repositoriesGroupButton'),
-                    onNextClick: (guide) => {
-                        GuideUtils.clickOnGuideElement('repositoriesGroupButton')();
-                        guide.next();
-                    }
+                    onNextClick: (guide) => GuideUtils.clickOnGuideElement('repositoriesGroupButton')().then(() => guide.next())
                 }, options)
             }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
                     content: 'guide.step_plugin.select-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`),
-                    onNextClick: (guide) => {
-                        $(GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`))
-                            .trigger('click');
-                        guide.next();
-                    }
+                    onNextClick: (guide) => GuideUtils.clickOnGuideElement(`repository-${options.repositoryId}-button`)().then(() => guide.next())
                 }, options)
             }
             ];

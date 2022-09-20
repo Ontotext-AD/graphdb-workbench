@@ -18,10 +18,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.create_repository.create_repository_button.content',
                         url: '/repository',
                         elementSelector: GuideUtils.getGuideElementSelector('createRepository'),
-                        onNextClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('createRepository')();
-                            guide.next();
-                        }
+                        onNextClick: (guide) => GuideUtils.clickOnGuideElement('createRepository')().then(() => guide.next())
+
                     }, options)
                 }, {
                     guideBlockName: 'clickable-element',

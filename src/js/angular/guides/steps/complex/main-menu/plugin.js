@@ -85,13 +85,13 @@ PluginRegistry.add('guide.step', [
                         }
                         return true;
                     },
-                    onNextClick: (guide) => {
-                        GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector)();
-
-                        if (!submenuSelector) {
-                            guide.next();
-                        }
-                    }
+                    onNextClick: (guide) =>
+                        GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector)()
+                            .then(() => {
+                                if (!submenuSelector) {
+                                    guide.next();
+                                }
+                            })
                 }, options)
             })
 
@@ -111,10 +111,7 @@ PluginRegistry.add('guide.step', [
                             }
                             return true;
                         },
-                        onNextClick: (guide) => {
-                            GuideUtils.clickOnGuideElement(submenuSelector, ' a')();
-                            guide.next();
-                        }
+                        onNextClick: (guide) => GuideUtils.clickOnGuideElement(submenuSelector, ' a')().then(() => guide.next())
                     }, options)
                 })
             }

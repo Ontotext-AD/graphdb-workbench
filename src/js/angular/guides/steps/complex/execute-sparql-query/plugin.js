@@ -65,11 +65,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.getGuideElementSelector('runSparqlQuery'),
-                        onNextClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('runSparqlQuery')();
-                            guide.next();
-
-                        },
+                        onNextClick: (guide) => GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next()),
                         scrollToHandler: GuideUtils.scrollToTop,
                     }, options)
                 });

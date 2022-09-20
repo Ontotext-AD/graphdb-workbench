@@ -53,9 +53,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile),
                         url: '/import',
                         placement: 'left',
-                        onNextClick: () => {
-                            GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)();
-                        }
+                        onNextClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                     }, options)
                 },
                 {
@@ -64,13 +62,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         elementSelector: GuideUtils.getGuideElementSelector('import-settings-import-button'),
                         placement: 'top',
-                        onPreviousClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('import-settings-cancel-button')();
-                            guide.back();
-                        },
-                        onNextClick: () => {
-                            GuideUtils.clickOnGuideElement('import-settings-import-button')();
-                        },
+                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-settings-cancel-button')().then(() => guide.back()),
+                        onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
                     }, options)
                 },
@@ -80,10 +73,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
-                        onPreviousClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)();
-                            guide.back();
-                        },
+                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)().then(() => guide.back())
                     }, options)
                 }
             ]);

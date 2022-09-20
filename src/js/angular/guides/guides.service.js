@@ -170,8 +170,6 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
      * @param startStepId
      */
     this.startGuide = (guide, startStepId) => {
-        this.cancelGuide();
-
         if (guide && guide.options && guide.options.repositoryIdBase) {
             // repositoryIdBase in the options can be used as a template to find a free repository ID.
             // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
@@ -197,14 +195,9 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
         } else {
             ShepherdService.startGuide(guide.guideId, stepsDescriptions, startStepId);
         }
-    };
 
-    /**
-     * Cancel the currently started guide if any.
-     */
-    this.cancelGuide = () => {
-        ShepherdService.cancel();
-    }
+        $rootScope.$broadcast('guideStarted');
+    };
 
     /**
      * Fetches list with all available guides.
@@ -410,7 +403,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
                 if (!!predefinedStepDescription.getSteps) {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, GuideUtils, $rootScope, toastr})), parentOptions));
                 } else if (!!predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, GuideUtils)));
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr})));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }
