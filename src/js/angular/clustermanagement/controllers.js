@@ -184,6 +184,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 $scope.clusterModel.hasCluster = true;
                 $scope.clusterModel.nodes = nodes;
                 $scope.clusterModel.links = links;
+                $scope.clusterModel.shouldShowError = false;
             })
             .catch(function (error) {
                 if (error.status === 404) {
@@ -191,6 +192,15 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     $scope.clusterModel.nodes = [];
                     $scope.clusterModel.links = [];
                     $scope.clusterConfiguration = null;
+                } else if (error.status === 412) {
+                    const currentNode = error.data;
+                    $scope.clusterModel.hasCluster = true;
+                    $scope.clusterModel.nodes =[currentNode];
+                    $scope.clusterModel.links = [];
+                    if (!$scope.clusterModel.shouldShowError) {
+                        toastr.error("Node configuration is not consistent with the group. Remove node’s cluster configuration and add the node to the group again.");
+                        $scope.clusterModel.shouldShowError = true;
+                    }
                 }
             });
     };
