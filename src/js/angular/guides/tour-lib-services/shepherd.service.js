@@ -551,7 +551,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (stepDescription.extraContent) {
             extraContent = GuideUtils.translateLocalMessage($translate, stepDescription.extraContent, stepDescription);
             extraContent = $interpolate(extraContent)(stepDescription);
-            extraContent = this._toParagraph(extraContent);
+            extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
         }
 
         const clickable = stepDescription.type !== 'readonly';
@@ -599,9 +599,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         };
     };
 
-    this._toParagraph = (text) => {
+    this._toParagraph = (text, textClass) => {
         if (text) {
-            return '<p>' + text + '</p>';
+            const p = document.createElement('p');
+            if (textClass) {
+                p.className = textClass;
+            }
+            p.innerHTML = text;
+            return p.outerHTML;
         } else {
             return '';
         }
