@@ -66,7 +66,8 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step-intro.' + options.mainAction,
                         extraContent: helpInfo,
-                        extraContentClass: 'alert alert-help text-left'
+                        extraContentClass: 'alert alert-help text-left',
+                        skipPoint: true,
                     }, options)
                 });
             }
