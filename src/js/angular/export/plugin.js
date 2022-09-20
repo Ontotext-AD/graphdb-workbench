@@ -5,7 +5,7 @@ PluginRegistry.add('route', {
     'chunk': 'export',
     'controller': 'ExportCtrl',
     'templateUrl': 'pages/export.html',
-    'title': 'menu.explore.label',
+    'title': 'menu.graphs.overview.label',
     'helpInfo': 'view.export.ctr.helpInfo '
 });
 
