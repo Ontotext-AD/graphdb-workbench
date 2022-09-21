@@ -43,7 +43,7 @@ pipeline {
         }
 
         // Install
-        sh "npm ci --legacy-peer-deps"
+        sh "npm ci"
 
         // Build
         sh "npm run build"
