@@ -81,7 +81,7 @@
 
 			<div id="toggleIRIs" class="pull-right">
 				{{'index.iri.is' | translate}}
-				<span class="tag {{shouldIndexIRIs ? 'tag-primary' : 'tag-default'}}">{{shouldIndexIRIs ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
+				<span class="tag {{shouldIndexIRIs ? 'tag-primary' : 'tag-default'}}">{{shouldIndexIRIs ? 'common.on.btn' : 'common.off.btn' | translate}}</span>
 				<span tooltip="{{'click.to' | translate}} {{shouldIndexIRIs ? 'disable.label' : 'enable.label' | translate}} {{'indexing.of.iris' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIndexIRIs()" class="switch">
                     <input type="checkbox" class="switch" ng-checked="shouldIndexIRIs"/>
                     <label for="toggleIRIs"></label>

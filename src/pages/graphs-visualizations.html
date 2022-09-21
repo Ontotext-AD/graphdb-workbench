@@ -91,7 +91,7 @@
                         <h3>{{configLoaded.name}}</h3>
                         <p>{{'visual.search.iri' | translate}}
                             <span ng-if="configLoaded.name != defaultGraphConfig.name">{{'visual.graph.advanced.option' | translate}}</span>
-                            <p ng-if="configLoaded.hint">{{'hint' | translate}} {{configLoaded.hint}}</p>
+                            <p ng-if="configLoaded.hint">{{'hint' | translate}} {{configLoaded.hint}}
                         </p>
                         <search-resource-input class="incontext-search-rdf-resource"
                                 namespacespromise="getNamespacesPromise"
