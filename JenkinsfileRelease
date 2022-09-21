@@ -1,5 +1,9 @@
 pipeline {
 
+  tools {
+    nodejs 'nodejs-14.17.0'
+  }
+
   parameters {
     gitParameter name: 'branch',
                 description: 'The branch to check out',
