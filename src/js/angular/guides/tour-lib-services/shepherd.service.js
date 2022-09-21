@@ -391,7 +391,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     }
 
     this._getPauseButton = (guide) => {
-        return this._getButton($translate.instant('guide.button.pause'), () => this._pauseGuide(guide), true);
+        return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
     }
 
     /**
@@ -427,7 +427,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getPreviousButton = (guide, previousStepDescription, currentStepDescription) => {
-        const text = $translate.instant('guide.button.previous');
+        const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide, previousStepDescription, currentStepDescription);
         return this._getButton(text, action);
     }
@@ -462,7 +462,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getNextButton = (guide, currentStepDescription, nextStepDescription) => {
-        const text = $translate.instant('guide.button.next');
+        const text = $translate.instant('next.btn');
         const action = _getNextButtonAction(guide, currentStepDescription, nextStepDescription);
         return this._getButton(text, action);
     }
