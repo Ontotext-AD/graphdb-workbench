@@ -1,5 +1,9 @@
 pipeline {
 
+  tools {
+    nodejs 'nodejs-18.9.0'
+  }
+
   parameters {
     gitParameter name: 'branch',
                 description: 'The branch to check out',
@@ -28,6 +32,8 @@ pipeline {
   environment {
     CI = "true"
     NPM_TOKEN = credentials('npm-token')
+    // Needed for our version of webpack + newer nodejs
+    NODE_OPTIONS = "--openssl-legacy-provider"
   }
 
   stages {
@@ -79,13 +85,6 @@ pipeline {
           mimeType: 'text/html',
           body: '''${SCRIPT, template="groovy-html.template"}'''
         )
-      }
-    }
-
-    always {
-      sh "rm .npmrc"
-      dir("test-cypress/") {
-        sh "rm .npmrc"
       }
     }
   }

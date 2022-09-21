@@ -5,19 +5,21 @@ pipeline {
   }
 
   tools {
-    nodejs 'nodejs-14.17.0'
+    nodejs 'nodejs-18.9.0'
   }
 
   environment {
     CI = "true"
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
+    // Needed for our version of webpack + newer nodejs
+    NODE_OPTIONS = "--openssl-legacy-provider"
   }
 
   stages {
 
     stage('Install') {
       steps {
-        sh "npm install"
+        sh "npm install --legacy-peer-deps"
       }
     }
 
