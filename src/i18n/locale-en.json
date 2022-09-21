@@ -483,7 +483,7 @@
     "view.create.visual.graph.helpInfo": "A visual graph config defines the SPARQL queries used to retrieve nodes and edges in the visual graph, as well as the starting point of visualisation.",
     "view.import.helpInfo": "The Import view allows you to import RDF data into a GraphDB repository. Import data from local files, from files on the server where GraphDB is running, from a remote URL, or by pasting the RDF data as a text snippet. Each import method supports various RDF serialisation formats.",
     "view.jdbc.title": "JDBC configuration",
-    "view.jdbc.helpInfo": "The JDBC configuration view allows you to configure, store, update, preview, and delete virtual SQL tables that can be used with the Avatica JDBC driver. Each virtual SQL table is based on a SPARQL SELECT query and requires additional metadata for the definition of the SQL columns.",
+    "view.jdbc.helpInfo": "The JDBC configuration view allows you to configure, store, update, preview, and delete virtual SQL tables. These tables can then be used with the Avatica JDBC driver. Each virtual SQL table is based on a SPARQL SELECT query and requires additional metadata for the definition of the SQL columns.",
     "view.jdbc.create.title": "SQL table configuration",
     "view.jdbc.create.helpInfo": "The SQL table configuration view is used to define a virtual SQL table. Each table must have a name, a SPARQL SELECT query, and a set of SQL column definitions.",
     "jdbc.column.names.constraint": "Column names must be placed in array.",
