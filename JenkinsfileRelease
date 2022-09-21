@@ -46,6 +46,9 @@ pipeline {
           sh "npm version --git-tag-version=false ${ReleaseVersion}"
         }
 
+        // Print npm version
+        sh "npm -v"
+
         // Install
         sh "npm ci --legacy-peer-deps"
 
