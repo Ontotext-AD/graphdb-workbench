@@ -1618,7 +1618,7 @@
     "guide.button.guide-paused": "Guide en pause",
     "guide.button.guide-resume": "Continuer le guide",
     "guide.validate.no-next": "Impossible de passer au suivant",
-    "guide.total.progress": "Étape de guidage {{n}} de {{nn}}",
+    "guide.total.progress": "Étape de guidage {{n}} sur {{nn}}",
     "guide.total.progress.tooltip": "Ceci indique l'étape actuelle par rapport à l'ensemble du guide et le nombre total d'étapes dans le guide.",
     "guide.block.progress": "{{n}}/{{nn}}",
     "guide.block.progress.tooltip": "Ceci indique l'étape actuelle et le nombre total d'étapes dans l'action {{action}}.",
@@ -1647,7 +1647,7 @@
     "guide.step_plugin.create_repository.repository_id.content": "Entrez l'ID du dépôt : <b>{{repositoryId}}.</b>",
     "guide.step_plugin.create_repository.save_button.content": "Cliquez sur le bouton <b>{{'common.create.btn'|translate}}</b>.",
     "guide.step_plugin.create_repository.ruleset_dropdown.content": "Choisissez l'ensemble de règles : <b>{{rulesetName}}</b>.",
-    "guide.step_plugin.enable-autocomplete.content": "Cliquez sur la case à cocher qui active l'index.",
+    "guide.step_plugin.enable-autocomplete.content": "Cliquez sur la case à cocher pour activer l'indexation.",
     "guide.step_plugin.visual_graph_input_IRI.content": "Entrez <b>{{easyGraphInputText}}</b> dans la saisie de texte <b>Graphique facile</b>.",
     "guide.step_plugin.visual_graph_show_autocomplete.content": "Cliquez sur l'IRI <b>{{iri}}</b> pour afficher le graphique visuel.",
     "guide.step_plugin.visual_graph_intro.content": "Le graphique montre les connexions entre le nœud de départ, <b>{{iriLabel}}</b>, et les autres nœuds. Chaque flèche représente une ou plusieurs connexions.",
@@ -1679,5 +1679,5 @@
     "guide.step_plugin.visual-graph-expand.content": "Double-cliquez sur <b>{{iriLabel}}</b> pour développer le graphique.",
     "guide.step_plugin.guide-ended.title": "Fin du guide",
     "guide.step_plugin.guide-ended.content": "Ce guide est terminé.",
-    "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête guide !"
+    "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête du guide !"
 }
