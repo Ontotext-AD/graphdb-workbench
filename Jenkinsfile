@@ -12,7 +12,7 @@ pipeline {
     CI = "true"
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
     // Needed for our version of webpack + newer nodejs
-    NODE_OPTIONS = --openssl-legacy-provider
+    NODE_OPTIONS = "--openssl-legacy-provider"
   }
 
   stages {

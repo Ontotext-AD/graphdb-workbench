@@ -33,7 +33,7 @@ pipeline {
     CI = "true"
     NPM_TOKEN = credentials('npm-token')
     // Needed for our version of webpack + newer nodejs
-    NODE_OPTIONS = --openssl-legacy-provider
+    NODE_OPTIONS = "--openssl-legacy-provider"
   }
 
   stages {
