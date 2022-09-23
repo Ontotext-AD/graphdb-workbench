@@ -4,11 +4,7 @@ const GuideUtils = (function () {
 
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
-            .then(element => {
-                element.click();
-            }).catch(() => {
-                // nothing to do element is not visible or clickable
-            });
+            .then(element => element.click());
     }
 
     const clickOnGuideElement = function (elementSelector, postSelector) {
@@ -48,6 +44,7 @@ const GuideUtils = (function () {
                         if (iteration < 0) {
                             clearInterval(elementExist);
                             console.log('Element is not found: ' + selector);
+                            reject();
                         }
                     }
                 } catch (error) {

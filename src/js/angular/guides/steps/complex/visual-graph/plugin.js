@@ -3,18 +3,18 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'visual-graph',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'visual-graph';
+
             return [
                 {
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
-                        label: 'menu_explore_visual_graph',
-                        menuSelector: 'menu-explore',
-                        submenuSelector: 'sub-menu-visual-graph'
+                        menu: 'visual-graph',
+                        showIntro: true
                     }, options)
                 }, {
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_input_IRI.title',
                         content: 'guide.step_plugin.visual_graph_input_IRI.content',
                         forceReload: true,
                         url: '/graphs-visualizations',
@@ -24,20 +24,16 @@ PluginRegistry.add('guide.step', [
                 }, {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_show_autocomplete.title',
                         content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
-                        onNextClick: (guide, step) => {
-                            $(step.elementSelector).trigger('click');
-                        },
+                        onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
                         canBePaused: false,
                         forceReload: true
                     }, options)
                 }, {
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.visual_graph_intro.title',
                         content: 'guide.step_plugin.visual_graph_intro.content',
                         url: '/graphs-visualizations',
                         elementSelector: '.graph-visualization',
@@ -145,6 +141,7 @@ PluginRegistry.add('guide.step', [
                 });
             }
 
+            const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             steps.push({
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
@@ -152,14 +149,13 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
                     url: '/graphs-visualizations',
                     canBePaused: false,
-                    elementSelector: GuideUtils.getGuideElementSelector('close-info-panel'),
+                    elementSelector: closeButtonSelector,
                     advanceOn: {
-                        selector: GuideUtils.getGuideElementSelector('close-info-panel'),
+                        selector: closeButtonSelector,
                         event: 'click'
                     },
-                    onNextClick: () => {
-                        $(GuideUtils.getGuideElementSelector('close-info-panel')).trigger('click');
-                    }
+                    onNextClick: (guide) =>
+                        GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
                 }, options)
             });
 

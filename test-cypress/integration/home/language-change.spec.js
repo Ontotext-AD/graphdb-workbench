@@ -37,7 +37,7 @@ describe('Home screen language validation', () => {
 
             // The text in the labels should change
             HomeSteps.getViewResourceAsLabel().should('have.text', 'Voir la ressource');
-            HomeSteps.getActiveRepoAsLabel().should('have.text', 'Répertoire actif');
+            HomeSteps.getActiveRepoAsLabel().should('have.text', 'Dépôt actif');
             HomeSteps.getSavedSparqlQueriesAsLabel().should('have.text', 'Requêtes SPARQL sauvegardées');
             HomeSteps.getLicenseAsLabel().should('have.text', 'Licence');
         });

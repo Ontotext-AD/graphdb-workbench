@@ -365,3 +365,11 @@
     position: relative;
     z-index: -1;
 }
+
+.text-overflow-by-vw {
+    max-width: 60vw !important;
+}
+
+.text-left {
+    text-align: left;
+}

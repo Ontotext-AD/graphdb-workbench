@@ -15,8 +15,62 @@
     margin: 12px !important;
 }
 
+.shepherd-element {
+    border-radius: 0;
+    max-width: 500px;
+}
+
+.shepherd-content {
+    border-radius: 0;
+}
+
+.shepherd-header {
+    border-radius: 0;
+}
+
+.shepherd-header h3 {
+    padding-left: 0.5em;
+}
+
 .shepherd-text {
     text-align: center;
-    min-height: 60px;
+    min-height: 90px;
     margin-top: 10px;
+}
+
+.shepherd-text code {
+    text-align: left;
+    display: block;
+    height: 120px;
+    margin-top: 0.5em;
+    color: var(--onto-blue);
+    background-color: rgba(var(--onto-green-rgb), 0.3);
+    overflow: scroll;
+    white-space: pre-wrap;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-header {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.shepherd-footer {
+    padding-bottom: 0.5em;
+}
+
+.shepherd-progress {
+    display: block;
+    text-align: right;
+    padding-right: 1em;
+    font-size: 0.9em;
+}
+
+.shepherd-code {
+    position: relative;
+}
+
+.shepherd-code button {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }

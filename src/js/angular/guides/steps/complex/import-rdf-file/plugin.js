@@ -5,24 +5,38 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             const toastr = services.toastr;
             const $translate = services.$translate;
-            return [
+            options.mainAction = 'import-file';
+
+            const steps = [
                 {
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
-                        label: 'menu_import',
-                        menuSelector: 'menu-import'
+                        menu: 'import',
+                        showIntro: true
                     }, options)
-                },
+                }
+            ];
+
+            if (options.resourcePath) {
+                steps.push(
+                    {
+                        guideBlockName: 'download-guide-resource',
+                        options: angular.extend({}, {
+                            title: ''
+                        }, options)
+                    }
+                );
+            }
+
+            steps.push(...[
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.import_rdf_file.title',
                         content: 'guide.step_plugin.import_rdf_file.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
-                        fileName: options.fileName,
                         onNextValidate: () => {
-                            if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.fileName)).length) {
+                            if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile)).length) {
                                 GuideUtils.noNextErrorToast(toastr, $translate,
                                     'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
                                 return false;
@@ -35,47 +49,36 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.import_rdf_file.import-file.button.title',
                         content: 'guide.step_plugin.import_rdf_file.import-file.button.content',
-                        elementSelector: GuideUtils.getGuideElementSelector('import-file-' + options.fileName),
+                        elementSelector: GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile),
                         url: '/import',
                         placement: 'left',
-                        onNextClick: () => {
-                            GuideUtils.clickOnGuideElement('import-file-' + options.fileName)();
-                        }
+                        onNextClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                     }, options)
                 },
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.import_rdf_file.import-settings.import.button.title',
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         elementSelector: GuideUtils.getGuideElementSelector('import-settings-import-button'),
                         placement: 'top',
-                        onPreviousClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('import-settings-cancel-button')();
-                            guide.back();
-                        },
-                        onNextClick: () => {
-                            GuideUtils.clickOnGuideElement('import-settings-import-button')();
-                        },
+                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-settings-cancel-button')().then(() => guide.back()),
+                        onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
                     }, options)
                 },
                 {
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.import_status_info.title',
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
-                        onPreviousClick: (guide) => {
-                            GuideUtils.clickOnGuideElement('import-file-' + options.fileName)();
-                            guide.back();
-                        },
+                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)().then(() => guide.back())
                     }, options)
                 }
-            ]
+            ]);
+
+            return steps;
         }
     }
 ]);

@@ -18,9 +18,9 @@ angular
  * @param $route
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate'];
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate', 'toastr', '$compile'];
 
-function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate) {
+function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate, toastr, $compile) {
     this.guideCancelSubscription = undefined;
     this.onPause = () => {
     };
@@ -132,22 +132,12 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         this.startGuide(guideId, stepsDescriptions, startStepId);
     }
 
-    /**
-     * Cancels currently started guide if any.
-     */
-    this.cancel = () => {
-        const activeGuide = Shepherd.activeTour;
-        if (activeGuide) {
-            activeGuide.cancel();
-        }
-    }
-
     this.isActive = () => {
-        if (!Shepherd.activeTour) {
-            return false;
-        }
-        const paused = LocalStorageAdapter.get(GUIDE_PAUSE);
-        return paused && paused === 'false';
+        return Shepherd.activeTour && !this.isPaused();
+    };
+
+    this.isPaused = () => {
+        return LocalStorageAdapter.get(GUIDE_PAUSE) === 'true';
     };
 
     this.getGuideId = () => {
@@ -180,6 +170,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return new Shepherd.Tour({
             name: guideId,
             useModalOverlay: true,
+            confirmCancel: true,
+            confirmCancelMessage: $translate.instant('guide.confirm.cancel.message'),
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
                 scrollTo: true
@@ -305,6 +297,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._startGuide = (guide, startStepId) => {
+        LocalStorageAdapter.remove(GUIDE_PAUSE);
+
         let stepIndex = guide.steps.findIndex((value => value.options.id === startStepId));
         if (stepIndex < 0) {
             stepIndex = 0;
@@ -319,7 +313,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!!step.options.attachTo) {
             GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
-                .catch(() => guide.cancel());
+                .catch(error => {
+                    toastr.error($translate.instant('guide.start.unexpected.error.message'));
+                });
         } else {
             guide.show(stepIndex);
         }
@@ -395,7 +391,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     }
 
     this._getPauseButton = (guide) => {
-        return this._getButton($translate.instant('guide.button.pause'), () => this._pauseGuide(guide), true);
+        return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
     }
 
     /**
@@ -431,7 +427,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getPreviousButton = (guide, previousStepDescription, currentStepDescription) => {
-        const text = $translate.instant('guide.button.previous');
+        const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide, previousStepDescription, currentStepDescription);
         return this._getButton(text, action);
     }
@@ -439,7 +435,15 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._getPreviousButtonAction = (guide, previousStepDescription, currentStepDescription) => {
         return () => {
             if (angular.isFunction(currentStepDescription.onPreviousClick)) {
-                currentStepDescription.onPreviousClick(guide);
+                const onPreviousResult = currentStepDescription.onPreviousClick(guide);
+                if (onPreviousResult instanceof Promise) {
+                    onPreviousResult.catch(error => {
+                        toastr.error($translate.instant('guide.unexpected.error.message'));
+                        guide.hide();
+                    });
+                }
+
+
             } else if (previousStepDescription.forceReload || previousStepDescription.url && previousStepDescription.url !== currentStepDescription.url) {
                 $location.path(previousStepDescription.url);
                 guide.back();
@@ -458,7 +462,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getNextButton = (guide, currentStepDescription, nextStepDescription) => {
-        const text = $translate.instant('guide.button.next');
+        const text = $translate.instant('next.btn');
         const action = _getNextButtonAction(guide, currentStepDescription, nextStepDescription);
         return this._getButton(text, action);
     }
@@ -471,7 +475,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
             if (valid) {
                 if (angular.isFunction(currentStepDescription.onNextClick)) {
-                    currentStepDescription.onNextClick(guide, currentStepDescription);
+                    const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
+                    if (onNextResult instanceof Promise) {
+                        onNextResult.catch(error => {
+                            toastr.error($translate.instant('guide.unexpected.error.message'));
+                            guide.hide();
+                        });
+                    }
                 } else {
                     if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
                         $location.path(nextStepDescription.url);
@@ -528,11 +538,19 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
         }
 
+        const title = GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription));
+
         // Adds " - n/N" to titles if the step is part of a multistep process,
         // where n is the current step number and N is the total number of steps
         let extraTitle = '';
         if (stepDescription.stepsTotalN > 1) {
-            extraTitle = ' — ' + (stepDescription.stepN + 1) + '/' + stepDescription.stepsTotalN;
+            const progress = document.createElement('span');
+            progress.setAttribute('tooltip', $translate.instant('guide.block.progress.tooltip', {action: title}));
+            progress.setAttribute('tooltip-placement', 'bottom');
+            progress.setAttribute('tooltip-trigger', 'mouseenter');
+            progress.setAttribute('tooltip-append-to-body', 'false');
+            progress.innerText = $translate.instant('guide.block.progress', {n: stepDescription.stepN + 1, nn: stepDescription.stepsTotalN});
+            extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
         const content = this._toParagraph(GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)));
@@ -541,7 +559,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (stepDescription.extraContent) {
             extraContent = GuideUtils.translateLocalMessage($translate, stepDescription.extraContent, stepDescription);
             extraContent = $interpolate(extraContent)(stepDescription);
-            extraContent = this._toParagraph(extraContent);
+            extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
         }
 
         const clickable = stepDescription.type !== 'readonly';
@@ -550,7 +568,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
         return {
             id: stepDescription.id,
-            title: GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription)) + extraTitle,
+            title: title + extraTitle,
             text: content + extraContent,
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
@@ -569,17 +587,83 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             when: {
                 show: () => {
                     onShow();
+
+                    const currentStep = Shepherd.activeTour.getCurrentStep();
+                    const currentStepElement = currentStep.getElement();
+
+                    this._addTotalProgress(currentStep, currentStepElement);
+
+                    this._addTypeIcon(currentStepElement, stepDescription);
+
+                    // We have some Angular bits on the elements and this is needed to make them work
+                    const scope = angular.element(currentStepElement).scope();
+                    if (angular.isFunction(stepDescription.onScope)) {
+                        // Step definitions may want to add functions to the scope
+                        stepDescription.onScope(scope);
+                    }
+                    setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
                 }
             }
         };
     };
 
-    this._toParagraph = (text) => {
+    this._toParagraph = (text, textClass) => {
         if (text) {
-            return '<p>' + text + '</p>';
+            const p = document.createElement('p');
+            if (textClass) {
+                p.className = textClass;
+            }
+            p.innerHTML = text;
+            return p.outerHTML;
         } else {
             return '';
         }
+    };
+
+    this._addTotalProgress = (currentStep, currentStepElement) => {
+        const steps = Shepherd.activeTour.steps;
+        const content = currentStepElement.querySelector('.shepherd-content');
+        const progress = document.createElement('div');
+        progress.className = 'shepherd-progress';
+        const progressText = document.createElement('span');
+        progressText.className = 'text-muted';
+        progressText.innerText = $translate.instant('guide.total.progress', {n: steps.indexOf(currentStep) + 1, nn: steps.length});
+        progressText.setAttribute('tooltip', $translate.instant('guide.total.progress.tooltip'));
+        progressText.setAttribute('tooltip-placement', 'left');
+        progressText.setAttribute('tooltip-trigger', 'mouseenter');
+        progressText.setAttribute('tooltip-append-to-body', 'false');
+        progress.appendChild(progressText);
+
+        content.appendChild(progress);
+    };
+
+    this._addTypeIcon = (currentStepElement, stepDescription) => {
+        let iconName;
+        let iconTooltip;
+        switch (stepDescription.type) {
+            case 'clickable':
+                iconName = 'focus';
+                iconTooltip = 'mouse'
+                break;
+            case 'input':
+                iconName = 'edit';
+                iconTooltip = 'input';
+                break;
+            default:
+                // handles 'readonly' and future types gracefully
+                iconName = 'info';
+                iconTooltip = 'info';
+                break;
+        }
+
+        const typeIcon = document.createElement('span');
+        typeIcon.className = 'shepherd-step-type icon-' + iconName + ' icon-1-25x';
+        typeIcon.setAttribute('tooltip', $translate.instant('guide.step-type.' + iconTooltip));
+        typeIcon.setAttribute('tooltip-placement', 'bottom-right');
+        typeIcon.setAttribute('tooltip-trigger', 'mouseenter');
+        typeIcon.setAttribute('tooltip-append-to-body', 'false');
+
+        angular.element(currentStepElement.querySelector('.shepherd-header')).prepend(typeIcon);
     };
 
     /**
@@ -592,7 +676,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._getButton = (text, action, isSecondary) => {
         const button = {
             text: text,
-            classes: isSecondary ? 'btn-lg btn-secondary' : 'btn-lg btn-primary'
+            classes: isSecondary ? 'btn btn-secondary' : 'btn btn-primary'
         };
 
         button.action = ($event) => {
