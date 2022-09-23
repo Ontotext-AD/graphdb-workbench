@@ -87,5 +87,12 @@ pipeline {
         )
       }
     }
+
+    always {
+      sh "git checkout .npmrc"
+      dir("test-cypress/") {
+        sh "rm .npmrc"
+      }
+    }
   }
 }
