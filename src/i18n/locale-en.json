@@ -468,6 +468,7 @@
     "view.clusterManagement.create.title": "Create cluster",
     "view.clusterManagement.edit.title": "Edit cluster",
     "view.clusterManagement.helpInfo": "The Cluster management view is a visual administration tool for the GraphDB cluster. Here you can create, modify and delete a cluster or you can use it to monitor the state of a running cluster in near real time.",
+    "view.clusterManagement.oldVersionError": "Node configuration is not consistent with the group. Remove node’s cluster configuration and add the node to the group again.",
     "view.resource.title": "Resource",
     "view.export.ctr.helpInfo": "Graphs overview provides a list of the default graph and all named graphs in GraphDB. It can be used to inspect the statements in each graph, export the graph or clear the graph's data.",
     "view.connector.management.title": "Connector management",

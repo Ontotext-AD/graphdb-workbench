@@ -469,6 +469,7 @@
     "view.autocomplete.helpInfo": "L'index Autocomplete est utilisé pour la complétion automatique des URIs dans l'éditeur SPARQL et la page de ressources View. Utilisez cette vue pour activer ou désactiver l'index et vérifier son état.",
     "view.clusterManagement.title": "Gestion des clusters",
     "view.clusterManagement.helpInfo": "La vue Gestion des clusters est un outil d'administration visuelle pour le cluster GraphDB. Vous pouvez y créer ou modifier un cluster en glissant et déposant les nœuds ou vous pouvez l'utiliser pour surveiller l'état d'un cluster en cours d'exécution en temps quasi réel. La vue montre les répertoires de l'emplacement actif et de tous les emplacements distants.",
+    "view.clusterManagement.oldVersionError": "La configuration du nœud n'est pas cohérente avec le groupe. Supprimez la configuration du nœud du groupe, puis ajoutez à nouveau le nœud au groupe.",
     "view.resource.title": "",
     "view.export.ctr.helpInfo": "La vue d'ensemble des graphes fournit une liste du graphe par défaut et de tous les graphes nommés dans GraphDB. Il peut être utilisé pour inspecter les déclarations dans chaque graphe, exporter le graphe ou effacer les données du graphe.",
     "view.connector.management.title": "Gestion des connecteurs\n",

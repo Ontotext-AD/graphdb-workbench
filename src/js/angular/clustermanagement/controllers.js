@@ -198,7 +198,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                     $scope.clusterModel.nodes =[currentNode];
                     $scope.clusterModel.links = [];
                     if (!$scope.clusterModel.shouldShowError) {
-                        toastr.error("Node configuration is not consistent with the group. Remove node’s cluster configuration and add the node to the group again.");
+                        toastr.error($translate.instant('view.clusterManagement.oldVersionError'));
                         $scope.clusterModel.shouldShowError = true;
                     }
                 }
