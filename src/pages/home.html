@@ -33,15 +33,15 @@
             <div class="card">
                 <div class="card-block" ng-keydown="onKeyDown($event)">
                     <search-resource-input
-                        namespacespromise="getNamespacesPromise"
-                        autocompletepromisestatus="getAutocompletePromise"
-                        open-in-new-tab="true"
-                        preserve-search="true"
-                        clear="doClear"
-                        empty="empty"
-                        radio-buttons="true"
-                        clear-input-icon="true"
-                        id="search-resource-input-home">
+                            namespacespromise="getNamespacesPromise"
+                            autocompletepromisestatus="getAutocompletePromise"
+                            open-in-new-tab="true"
+                            preserve-search="true"
+                            clear="doClear"
+                            empty="empty"
+                            radio-buttons="true"
+                            clear-input-icon="true"
+                            id="search-resource-input-home">
                     </search-resource-input>
                 </div>
             </div>
@@ -59,11 +59,9 @@
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
-                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span
-                            class="icon-link"></span>
+                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
-                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link"
-                                tooltip="{{'repoTooltips.editRepository' | translate}}"
+                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" tooltip="{{'repoTooltips.editRepository' | translate}}"
                                 ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>
@@ -81,8 +79,7 @@
                         <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
                             tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
                         <div>
-                            {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span
-                            class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
+                            {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
                         </div>
                     </h3>
                     <div ng-if="activeRepositorySize && !activeRepositorySizeError">
@@ -90,31 +87,23 @@
                             <div class="row">
                                 <div class="col-xs-6 mb-1 total-statements">
                                     <span>{{'total.statements' | translate}}</span>
-                                    <span class="data-value big"
-                                          ng-if="activeRepositorySize.total !== -1">{{activeRepositorySize.total | currency:'':0}}</span>
-                                    <span class="data-value big"
-                                          ng-if="activeRepositorySize.total === -1">&ndash;</span>
+                                    <span class="data-value big" ng-if="activeRepositorySize.total !== -1">{{activeRepositorySize.total | currency:'':0}}</span>
+                                    <span class="data-value big" ng-if="activeRepositorySize.total === -1">&ndash;</span>
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="explicit-statements">
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.explicit !== -1">{{activeRepositorySize.explicit | currency:'':0}}</span>
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.explicit === -1">&ndash;</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit !== -1">{{activeRepositorySize.explicit | currency:'':0}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit === -1">&ndash;</span>
                                         <span>{{'explicit' | translate}}</span>
                                     </div>
                                     <div class="inferred-statements">
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.inferred !== -1">{{activeRepositorySize.inferred | currency:'':0}}</span>
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.inferred === -1">&ndash;</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.inferred !== -1">{{activeRepositorySize.inferred | currency:'':0}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.inferred === -1">&ndash;</span>
                                         <span class="">{{'inferred' | translate}}</span>
                                     </div>
                                     <div>
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.explicit !== 0 && activeRepositorySize.total !== -1">{{activeRepositorySize.total / activeRepositorySize.explicit | number: 2}}</span>
-                                        <span class="data-value"
-                                              ng-if="activeRepositorySize.explicit === 0 || activeRepositorySize.total === -1">&ndash;</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit !== 0 && activeRepositorySize.total !== -1">{{activeRepositorySize.total / activeRepositorySize.explicit | number: 2}}</span>
+                                        <span class="data-value" ng-if="activeRepositorySize.explicit === 0 || activeRepositorySize.total === -1">&ndash;</span>
                                         <span class="">{{'expansion.ratio' | translate}}</span>
                                     </div>
                                 </div>
@@ -130,11 +119,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div>
-                                <a ng-show="canWriteActiveRepo()" class="btn btn-link"
-                                   href="import">{{'import.rdf.data.label' | translate}}</a>
-                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="import">
-                                    {{'import.rdf.data.label' | translate}}
-                                </button>
+                                <a ng-show="canWriteActiveRepo()" class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</a>
+                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</button>
                             </div>
                             <div><a class="btn btn-link" href="graphs">{{'export.rdf.data' | translate}}</a></div>
                         </div>
@@ -147,13 +133,9 @@
             <div class="card"
                  ng-cloak>
                 <div>
-                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries"
-                        ng-show="sampleQueries">
-                        <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null"
-                            class="list-group-item list-group-item-action">
-                            <span class="help-label execute-saved-query"
-                                  ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span
-                                class="icon-caret-right"></span></span>
+                    <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
+                        <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null" class="list-group-item list-group-item-action">
+                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="icon-caret-right"></span></span>
                             <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>
@@ -167,8 +149,7 @@
 
     <div class="row mb-3">
         <div class="col-lg-12">
-            <h3 id="license-label-home"><span tooltip="{{'menu.license.tooltip' | translate}}"
-                                              tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
+            <h3 id="license-label-home"><span tooltip="{{'menu.license.tooltip' | translate}}" tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
             <div class="card">
                 <h4 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h4>
                 <!-- appears only when there is a problem with the license -->
@@ -193,28 +174,25 @@
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'valid.until' | translate}}
-                            <span
-                                class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'cores.number' | translate}}
-                            <span
-                                class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
+                            <span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'maintenance.date' | translate}}
-                            <span
-                                class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mb-1">
                             {{'capabilities' | translate}}
                             <div class="data-value big">
-                                <div ng-if="getLicense().licenseCapabilities.length!==0">
+                                <div ng-if="getLicense().licenseCapabilities.length !== 0">
                                     <div ng-repeat="capability in getLicense().licenseCapabilities">
                                         <div>{{capability}}</div>
                                     </div>
                                 </div>
-                                <div ng-if="getLicense().licenseCapabilities.length===0">
+                                <div ng-if="getLicense().licenseCapabilities.length === 0">
                                     <div>{{'none' | translate}}</div>
                                 </div>
                             </div>
@@ -226,8 +204,7 @@
                     </p>
 
                     <div>
-                        <a href="license" ng-hide="isLicenseHardcoded() || !hasRole('ROLE_ADMIN')"
-                           class="btn btn-primary">
+                        <a href="license" ng-hide="isLicenseHardcoded() || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
                             {{'license.settings.label' | translate}}
                         </a>
                     </div>

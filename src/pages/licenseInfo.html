@@ -1,24 +1,24 @@
 <title>GraphDB License Information</title>
 
 <h1>
-    {{title}}
-    <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-          popover-trigger="mouseenter"
-          popover-placement="bottom-right"
-          popover-append-to-body="true"><span class="icon-info"></span></span>
+            {{title}}
+            <span class="btn btn-link"
+                    popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+                    popover-trigger="mouseenter"
+                    popover-placement="bottom-right"
+                    popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loadingLicense()"></div>
 
 <div class="license-container" ng-show="!loadingLicense()">
 
-    <div class="alert alert-warning" ng-if="!getLicense().valid">
-        <p>
-            <strong>{{getLicense().message}}</strong><br>
-            {{'supply.license.or.contact.us.warning' | translate}}
-        </p>
-    </div>
+        <div class="alert alert-warning" ng-if="!getLicense().valid">
+                <p>
+                        <strong>{{getLicense().message}}</strong><br>
+                        {{'supply.license.or.contact.us.warning' | translate}}
+                </p>
+        </div>
 
     <div class="card">
         <h3 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h3>
@@ -46,12 +46,12 @@
                 <div class="d-inline-block mb-1">
                     {{'capabilities' | translate}}
                     <div class="data-value big">
-                        <div ng-if="getLicense().licenseCapabilities.length!==0">
+                        <div ng-if="getLicense().licenseCapabilities.length !== 0">
                             <div ng-repeat="capability in getLicense().licenseCapabilities">
                                 <div>{{capability}}</div>
                             </div>
                         </div>
-                        <div ng-if="getLicense().licenseCapabilities.length===0">
+                        <div ng-if="getLicense().licenseCapabilities.length === 0">
                             <div>{{'none' | translate}}</div>
                         </div>
                     </div>
@@ -74,13 +74,13 @@
         </div>
     </div>
 
-    <div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
-        {{'license.cannot.be.changed.from.wb.warning' | translate}}
-    </div>
+        <div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
+                {{'license.cannot.be.changed.from.wb.warning' | translate}}
+        </div>
 
-    <div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
-        {{'license.admin.authority.constraint' | translate}}
-    </div>
+        <div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
+                {{'license.admin.authority.constraint' | translate}}
+        </div>
 </div>
 
 
