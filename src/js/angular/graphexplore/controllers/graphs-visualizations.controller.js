@@ -169,8 +169,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         angular.element(ev.currentTarget).children('span').toggleClass("icon-caret-down").toggleClass("icon-caret-up");
     };
 
+    function getSettings() {
+        // When a guide is active we really want the default settings to make sure the user gets
+        // the same as the author of the guide intended
+        return GuidesService.isActive() ? $scope.defaultSettings : $scope.saveSettings;
+    }
+
     function updatePredicateLabels() {
-        if (!$scope.saveSettings['showLinksText']) {
+        if (!getSettings()['showLinksText']) {
             d3.selectAll("svg .link-wrapper text")
                 .style("display", "none");
         } else {
@@ -351,8 +357,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     };
 
     const loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
-        const sendSameAs = (sameAsParam === undefined) ? ($scope.saveSettings['sameAsState']) : sameAsParam === true;
-        const sendInferred = (inferredParam === undefined) ? ($scope.saveSettings['includeInferred']) : inferredParam === true;
+        const settings = getSettings();
+        const sendSameAs = (sameAsParam === undefined) ? (settings['sameAsState']) : sameAsParam === true;
+        const sendInferred = (inferredParam === undefined) ? (settings['includeInferred']) : inferredParam === true;
         $scope.loading = true;
         $http({
             url: 'rest/explore-graph/graph',
@@ -362,8 +369,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             },
             data: {
                 query: queryString,
-                linksLimit: $scope.saveSettings['linksLimit'],
-                languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
+                linksLimit: settings['linksLimit'],
+                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
                 includeInferred: sendInferred,
                 sameAsState: sendSameAs
             }
@@ -901,7 +908,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }, 0);
         } else if (config.startMode === 'query' && config.startGraphQuery) {
             $scope.loading = true;
-            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.saveSettings['linksLimit'], config.startQuerySameAs)
+            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, getSettings()['linksLimit'], config.startQuerySameAs)
                 .then(function (response) {
                     // Node drawing will turn off loader
                     initGraphFromResponse(response);
@@ -962,6 +969,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             // broadcasted event from view resource directive to take input value
             $scope.$on('onRootNodeChange', function (e, inputValue) {
                 $scope.loading = true;
+                const settings = getSettings();
                 if (angular.isDefined(inputValue)) {
                     $scope.rootNodeIri = inputValue;
                     $http({
@@ -970,9 +978,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                         params: {
                             iri: inputValue,
                             config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
-                            languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                            includeInferred: $scope.saveSettings['includeInferred'],
-                            sameAsState: $scope.saveSettings['sameAsState']
+                            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                            includeInferred: settings['includeInferred'],
+                            sameAsState: settings['sameAsState']
                         }
                     }).then(function (response) {
                         $scope.nodeSelected = true;
@@ -1446,7 +1454,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             })
             .attr("dy", "-0.5em")
             .style("text-anchor", "middle")
-            .style("display", $scope.saveSettings.showLinksText ? "" : "none")
+            .style("display", getSettings()['showLinksText'] ? "" : "none")
             .on("mouseover", function (d) {
                 d3.event.stopPropagation();
                 showPredicateToolTip(d);
@@ -1520,7 +1528,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         const expandEventHandler = function (d, i, parentNode) {
             const shownLinks = graph.countLinks(d, graph.links);
-            if (shownLinks <= $scope.saveSettings['linksLimit']) {
+            if (shownLinks <= getSettings()['linksLimit']) {
                 expandNode(d, false, parentNode ? parentNode : this.parentNode);
             } else {
                 toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
@@ -2061,6 +2069,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             const promises = [];
             const newNodesData = [];
 
+            const settings = getSettings();
+
             _.forEach(newNodes, function (newNode, index) {
                 promises.push($http({
                     url: 'rest/explore-graph/node',
@@ -2068,9 +2078,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     params: {
                         iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
                         config: $scope.configLoaded.id,
-                        languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                        includeInferred: $scope.saveSettings['includeInferred'],
-                        sameAsState: $scope.saveSettings['sameAsState']
+                        languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                        includeInferred: settings['includeInferred'],
+                        sameAsState: settings['sameAsState']
                     }
                 }).then(function (res) {
                     // Save the data for later
@@ -2110,23 +2120,24 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
         loader.init(d, parentNode);
 
+        const settings = getSettings();
         const expandIri = d.iri;
         $http({
             url: 'rest/explore-graph/links',
             method: 'GET',
             params: {
-                iri: expandIri, linksLimit: $scope.saveSettings['linksLimit'],
-                includeInferred: $scope.saveSettings['includeInferred'],
+                iri: expandIri, linksLimit: settings['linksLimit'],
+                includeInferred: settings['includeInferred'],
                 config: $scope.configLoaded.id,
-                preferredTypes: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredTypes'],
-                rejectedTypes: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedTypes'],
-                preferredPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredPredicates'],
-                rejectedPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedPredicates'],
-                preferredTypesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredTypesOnly'],
-                preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['preferredPredicatesOnly'],
-                languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                sameAsState: $scope.saveSettings['sameAsState'],
-                includeSchema: $scope.saveSettings['includeSchema']
+                preferredTypes: !$scope.shouldShowSettings() ? [] : settings['preferredTypes'],
+                rejectedTypes: !$scope.shouldShowSettings() ? [] : settings['rejectedTypes'],
+                preferredPredicates: !$scope.shouldShowSettings() ? [] : settings['preferredPredicates'],
+                rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates'],
+                preferredTypesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredTypesOnly'],
+                preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredPredicatesOnly'],
+                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                sameAsState: settings['sameAsState'],
+                includeSchema: settings['includeSchema']
             }
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
@@ -2480,14 +2491,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         $scope.propertiesQueryObj.query = '';
         $scope.dataNodeKeysQuery = '';
+        const settings = getSettings();
         $http.get('rest/explore-graph/properties', {
             params: {
                 iri: d.isTriple ? createTriple(d.iri) : d.iri,
                 config: $scope.configLoaded.id,
-                languages: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['languages'],
-                includeInferred: $scope.saveSettings['includeInferred'],
-                sameAsState: $scope.saveSettings['sameAsState'],
-                rejectedPredicates: !$scope.shouldShowSettings() ? [] : $scope.saveSettings['rejectedPredicates']
+                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                includeInferred: settings['includeInferred'],
+                sameAsState: settings['sameAsState'],
+                rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates']
             }
         }).then(function (response) {
             $scope.data = _.mapKeys(response.data, function (value, key) {
