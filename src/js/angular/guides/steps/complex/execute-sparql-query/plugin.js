@@ -23,17 +23,35 @@ PluginRegistry.add('guide.step', [
                 }
             ];
 
+            const defaultQuery = 'select * where { \n\t?s ?p ?o .\n} limit 100 \n';
+            const queries = {};
+            queries[-1] = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nselect * where { \n\t?s ?p ?o .\n?o rdf:type ""\n} limit 100 ';
+
             let overwriteQuery = false;
-            options.queries.forEach(queryDef => {
+            options.queries.forEach((queryDef, index) => {
                 const query = queryDef.query;
+                queries[index] = query;
                 code.innerText = query;
                 options.queryAsHtmlCodeElement = '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>';
+
+                const queryEditorSelector = GuideUtils.getGuideElementSelector('queryEditor', ' .CodeMirror-code');
                 steps.push({
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
                         url: '/sparql',
-                        elementSelector: GuideUtils.getGuideElementSelector('queryEditor', ' .CodeMirror-code'),
+                        elementSelector: queryEditorSelector,
+                        beforeShowPromise: () => new Promise(function (resolve, reject) {
+                            GuideUtils.deferredShow(10)()
+                                .then(() => {
+                                    GuideUtils.waitFor(queryEditorSelector, 3)
+                                        .then(() => resolve())
+                                        .catch((error) => {
+                                            services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                            reject();
+                                        });
+                                })
+                        }),
                         onNextValidate: (step) => {
                             const editorQuery = GuideUtils.removeWhiteSpaces(window.editor.getValue());
                             const stepQuery = GuideUtils.removeWhiteSpaces(query);
@@ -50,6 +68,23 @@ PluginRegistry.add('guide.step', [
                             overwriteQuery = true;
                             return true;
                         },
+                        onPreviousClick: () => new Promise(function (resolve, reject) {
+                            const currentQuery = index === 0 ? defaultQuery : queries[index - 1];
+                            const previousQuery = queries[index];
+                            window.editor.setValue(previousQuery);
+                            // when guide is on first sparql query step no need to populate the result of query.
+                            if (index === 0) {
+                                window.editor.setValue(currentQuery);
+                                resolve();
+                            } else {
+                                GuideUtils.clickOnGuideElement('runSparqlQuery')()
+                                    .then(() => resolve())
+                                    .catch(() => reject())
+                                    .finally(() => {
+                                        window.editor.setValue(currentQuery);
+                                    });
+                            }
+                        }),
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.queryExtraContent,
                         onScope: (scope) => {
@@ -67,6 +102,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('runSparqlQuery'),
                         onNextClick: (guide) => GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next()),
                         scrollToHandler: GuideUtils.scrollToTop,
+                        canBePaused: false
                     }, options)
                 });
                 steps.push({
@@ -78,7 +114,19 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('yasrРesults'),
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
-                        extraContent: queryDef.resultExtraContent
+                        extraContent: queryDef.resultExtraContent,
+                        onPreviousClick: () => new Promise(function (resolve, reject) {
+                            const previousQuery = queries[index - 1];
+                            window.editor.setValue(previousQuery);
+                            GuideUtils.clickOnGuideElement('runSparqlQuery')()
+                                .then(() => resolve())
+                                .catch(() => reject())
+                                .finally(() => {
+                                    const currentQuery = queries[index];
+                                    window.editor.setValue(currentQuery);
+                                });
+                        }),
+                        canBePaused: false
                     }, options)
                 });
             });

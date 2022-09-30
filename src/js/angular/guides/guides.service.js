@@ -11,7 +11,7 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService', '$repositories', 'toastr'];
+GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -144,9 +144,11 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', 'ShepherdService',
  * @param ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
  * @param $repositories - the repositories service.
  * @param toastr
+ * @param $location
+ * @param $route
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories, toastr) {
+function GuidesService($http, $rootScope, $translate, ShepherdService, $repositories, toastr, $location, $route) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -401,9 +403,9 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (!!predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, GuideUtils, $rootScope, toastr})), parentOptions));
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, GuideUtils, $rootScope, toastr, $location, $route})), parentOptions));
                 } else if (!!predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr})));
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route})));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }

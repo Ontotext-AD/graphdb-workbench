@@ -154,3 +154,7 @@
 .triple-pred {
     color: var(--onto-orange-dark);
 }
+
+.disable-visual-graph-node {
+    pointer-events: none;
+}

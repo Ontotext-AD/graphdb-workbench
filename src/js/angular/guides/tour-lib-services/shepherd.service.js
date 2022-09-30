@@ -430,8 +430,21 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      */
     this._pauseGuide = (guide) => {
         guide.hide();
-        this._saveStep(this._getStepWhichCanBePaused(guide.steps, guide.getCurrentStep().id));
+        let step = this._getStepWhichCanBePaused(guide.steps, guide.getCurrentStep().id);
+        this._saveStep(step);
         LocalStorageAdapter.set(GUIDE_PAUSE, true);
+
+        // Remove all step from history which can be paused and are after the step on which guide will be paused.
+        let stepHistoryCleaned = false;
+        while (!stepHistoryCleaned) {
+            const stepHistory = this._getHistory();
+            if (stepHistory.at(stepHistory.length - 1) !== step.options.id) {
+                this._removeLastStepFromHistory();
+                continue;
+            }
+            stepHistoryCleaned = true;
+        }
+
         if (this.onPause()) {
             this.onPause();
         }
@@ -477,17 +490,21 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             const currentStep = guide.getCurrentStep();
 
             if (angular.isFunction(currentStep.options.onPreviousClick)) {
-                const onPreviousResult = currentStep.options.onPreviousClick(guide);
-                if (onPreviousResult instanceof Promise) {
-                    onPreviousResult.catch(error => {
+                currentStep.options.onPreviousClick(guide)
+                    .then((stopStepNavigation) => {
+                        if (angular.isUndefined(stopStepNavigation) || stopStepNavigation === null || !stopStepNavigation) {
+                            currentStep.hide();
+                            guide.show(nextStep.id);
+                        }
+                    })
+                    .catch(error => {
                         toastr.error($translate.instant('guide.unexpected.error.message'));
                         guide.hide();
-                    });
-                }
+                });
+                return;
             } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
                 $location.path(nextStep.options.url);
             }
-
             currentStep.hide();
             guide.show(nextStep.id);
         }
@@ -648,7 +665,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
         const extraPadding = stepDescription.extraPadding ? stepDescription.extraPadding : 0;
 
-        return {
+        const step = {
             id: stepDescription.id,
             title: title + extraTitle,
             text: content + extraContent,
@@ -669,27 +686,48 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             skipPoint: stepDescription.skipPoint,
             onPreviousClick: stepDescription.onPreviousClick,
             when: {
-                show: () => {
-                    onShow();
-
-                    const currentStep = Shepherd.activeTour.getCurrentStep();
-                    const currentStepElement = currentStep.getElement();
-
-                    this._addTotalProgress(currentStep, currentStepElement);
-
-                    this._addTypeIcon(currentStepElement, stepDescription);
-
-                    // We have some Angular bits on the elements and this is needed to make them work
-                    const scope = angular.element(currentStepElement).scope();
-                    if (angular.isFunction(stepDescription.onScope)) {
-                        // Step definitions may want to add functions to the scope
-                        stepDescription.onScope(scope);
-                    }
-                    setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
-                }
+                show: this._getShowFunction(stepDescription, onShow)
             }
         };
+
+        if (angular.isFunction(stepDescription.hide)) {
+            step.when.hide = stepDescription.hide;
+        }
+
+        return step;
     };
+
+    this._getShowFunction = (stepDescription, onShow) => {
+        if (angular.isFunction(stepDescription.show)) {
+            return () => {
+                stepDescription.show();
+                onShow();
+                this._whenStepShow(stepDescription);
+            }
+        }
+
+        return () => {
+            onShow();
+            this._whenStepShow(stepDescription);
+        }
+    }
+
+    this._whenStepShow = (stepDescription) => {
+        const currentStep = Shepherd.activeTour.getCurrentStep();
+        const currentStepElement = currentStep.getElement();
+
+        this._addTotalProgress(currentStep, currentStepElement);
+
+        this._addTypeIcon(currentStepElement, stepDescription);
+
+        // We have some Angular bits on the elements and this is needed to make them work
+        const scope = angular.element(currentStepElement).scope();
+        if (angular.isFunction(stepDescription.onScope)) {
+            // Step definitions may want to add functions to the scope
+            stepDescription.onScope(scope);
+        }
+        setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
+    }
 
     this._toParagraph = (text, textClass) => {
         if (text) {
