@@ -3,6 +3,7 @@ import Shepherd from "shepherd.js";
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
+export const GUIDE_STEP_HISTORY = 'shepherd.guide.step.history';
 export const GUIDE_PAUSE = 'shepherd.guide.pause';
 
 const modules = ['graphdb.framework.utils.localstorageadapter'];
@@ -114,8 +115,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      *
      * </ul>
      * @param startStepId - start step id.
+     * @param clearHistory - if true will clear guide step history.
      */
-    this.startGuide = (guideId, stepsDescriptions, startStepId) => {
+    this.startGuide = (guideId, stepsDescriptions, startStepId, clearHistory = true) => {
+        if (clearHistory) {
+            LocalStorageAdapter.remove(GUIDE_STEP_HISTORY);
+        }
+
         if (!stepsDescriptions) {
             return;
         }
@@ -129,7 +135,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      */
     this.resumeGuide = (guideId, stepsDescriptions, startStepId) => {
         LocalStorageAdapter.set(GUIDE_PAUSE, false);
-        this.startGuide(guideId, stepsDescriptions, startStepId);
+        this.startGuide(guideId, stepsDescriptions, startStepId, false);
     }
 
     this.isActive = () => {
@@ -380,18 +386,43 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const step = this._toBaseGuideStep($translate, currentStepDescription, () => this._updateLocalStorage());
         const buttons = [];
         if (previousStepDescription) {
-            buttons.push(this._getPreviousButton(guide, previousStepDescription, currentStepDescription));
+            buttons.push(this._getPreviousButton(guide));
         }
         if (!!nextStepDescription) {
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
         }
         buttons.push(this._getPauseButton(guide));
+
+        if (currentStepDescription.skipPoint) {
+            buttons.push(this._getSkipButton(guide, previousStepDescription, currentStepDescription, nextStepDescription))
+        }
         step.buttons = buttons;
         return step;
     }
 
     this._getPauseButton = (guide) => {
         return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
+    }
+
+    this._getSkipButton = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
+        return this._getButton($translate.instant('skip.btn'), () => this._skipSteps(guide), true);
+    }
+
+    this._skipSteps = (guide) => {
+        const currentStep = guide.getCurrentStep();
+        const currentStepIndex = guide.steps.findIndex(step => currentStep.id === step.id);
+        this._startGuide(guide, this._getNextSkipPointId(guide.steps, currentStepIndex));
+    }
+
+    this._getNextSkipPointId = (steps, currentStepIndex) => {
+        for (let index = currentStepIndex + 1; index < steps.length; index++) {
+            const step = steps.at(index);
+            if (step.options.skipPoint) {
+                return step.id;
+            }
+        }
+        // if there isn't next step with skipPoint set to true, then return last step id.
+        return steps.at(steps.length - 1).id;
     }
 
     /**
@@ -428,28 +459,37 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      */
     this._getPreviousButton = (guide, previousStepDescription, currentStepDescription) => {
         const text = $translate.instant('previous.btn');
-        const action = this._getPreviousButtonAction(guide, previousStepDescription, currentStepDescription);
+        const action = this._getPreviousButtonAction(guide);
         return this._getButton(text, action);
     }
 
-    this._getPreviousButtonAction = (guide, previousStepDescription, currentStepDescription) => {
+    this._getPreviousButtonAction = (guide) => {
         return () => {
-            if (angular.isFunction(currentStepDescription.onPreviousClick)) {
-                const onPreviousResult = currentStepDescription.onPreviousClick(guide);
+            const nextStepId = this._getPreviousStepIdFromHistory();
+            let nextStep;
+
+            if (nextStepId === -1) {
+                nextStep = guide.steps.at(0);
+            } else {
+                nextStep = guide.steps.find(step => step.options.id === nextStepId);
+            }
+
+            const currentStep = guide.getCurrentStep();
+
+            if (angular.isFunction(currentStep.options.onPreviousClick)) {
+                const onPreviousResult = currentStep.options.onPreviousClick(guide);
                 if (onPreviousResult instanceof Promise) {
                     onPreviousResult.catch(error => {
                         toastr.error($translate.instant('guide.unexpected.error.message'));
                         guide.hide();
                     });
                 }
-
-
-            } else if (previousStepDescription.forceReload || previousStepDescription.url && previousStepDescription.url !== currentStepDescription.url) {
-                $location.path(previousStepDescription.url);
-                guide.back();
-            } else {
-                guide.back();
+            } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
+                $location.path(nextStep.options.url);
             }
+
+            currentStep.hide();
+            guide.show(nextStep.id);
         }
     }
 
@@ -501,7 +541,20 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!activeTour) {
             return;
         }
-        this._saveStep(activeTour.getCurrentStep());
+        const currentStep = activeTour.getCurrentStep();
+        const currentStepIndex = activeTour.steps.findIndex(step => step.id === currentStep.id);
+
+        const lastSavedStepId = this.getCurrentStepId();
+        const lastSavedStepIndex = activeTour.steps.findIndex(step => step.id === lastSavedStepId);
+
+        // If current step index is greatest than last saved step index this means that next button was clicked.
+        if (currentStepIndex > lastSavedStepIndex) {
+            this._addStepToHistory(currentStep);
+        } else if (lastSavedStepIndex > currentStepIndex) {
+            this._removeLastStepFromHistory();
+        }
+
+        this._saveStep(currentStep);
     }
 
     this._saveStep = (step) => {
@@ -509,6 +562,34 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             LocalStorageAdapter.set(GUIDE_ID, step.tour.options.name);
             LocalStorageAdapter.set(GUIDE_CURRENT_STEP_ID, step.options.id);
         }
+    }
+
+    this._addStepToHistory = (step) => {
+        const history = this._getHistory();
+        history.push(step.options.id);
+        LocalStorageAdapter.set(GUIDE_STEP_HISTORY, history);
+    }
+
+    this._getHistory = () => {
+        let stepHistory = LocalStorageAdapter.get(GUIDE_STEP_HISTORY);
+        if (stepHistory) {
+            return stepHistory;
+        }
+        return [];
+    }
+
+    this._removeLastStepFromHistory = () => {
+        const history = this._getHistory();
+        history.splice(history.length - 1, 1);
+        LocalStorageAdapter.set(GUIDE_STEP_HISTORY, history);
+    }
+
+    this._getPreviousStepIdFromHistory = () => {
+        const history = this._getHistory();
+        if (history.length > 1) {
+            return history.at(history.length - 2);
+        }
+        return -1;
     }
 
     /**
@@ -519,6 +600,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         LocalStorageAdapter.remove(GUIDE_ID);
         LocalStorageAdapter.remove(GUIDE_PAUSE);
         LocalStorageAdapter.remove(GUIDE_CURRENT_STEP_ID);
+        LocalStorageAdapter.remove(GUIDE_STEP_HISTORY);
     };
 
     /**
@@ -584,6 +666,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             beforeShowPromise: stepDescription.beforeShowPromise,
             canClickTarget: clickable,
             keyboardNavigation: false,
+            skipPoint: stepDescription.skipPoint,
+            onPreviousClick: stepDescription.onPreviousClick,
             when: {
                 show: () => {
                     onShow();

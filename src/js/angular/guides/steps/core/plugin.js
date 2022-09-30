@@ -9,7 +9,8 @@ const BASIC_STEP = {
     canBePaused: true,
     onNextClick: undefined,
     onNextValidate: undefined,
-    onPreviousClick: undefined
+    onPreviousClick: undefined,
+    skipPoint: false
 };
 
 /**
@@ -96,7 +97,6 @@ PluginRegistry.add('guide.step', [
             const step = angular.extend({}, BASIC_STEP, options, notOverridable);
             step.title = 'guide.step_plugin.guide-ended.title';
             step.content = 'guide.step_plugin.guide-ended.content';
-            step.canBePaused = false;
             return step;
         }
     }

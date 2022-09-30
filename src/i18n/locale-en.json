@@ -186,6 +186,7 @@
     "lifetime.label": "lifetime",
     "state.label": "state",
     "download.btn": "Download",
+    "skip.btn": "Skip",
     "show.remaining": "Show remaining",
     "characters.label": "characters",
     "show.first.chars": "Show first 500 characters",

@@ -190,7 +190,7 @@ function GuidesService($http, $rootScope, $translate, ShepherdService, $reposito
             stepsDescriptions[index].id = index;
         }
 
-        if (!!startStepId) {
+        if (angular.isDefined(startStepId)) {
             ShepherdService.resumeGuide(guide.guideId, stepsDescriptions, startStepId);
         } else {
             ShepherdService.startGuide(guide.guideId, stepsDescriptions, startStepId);

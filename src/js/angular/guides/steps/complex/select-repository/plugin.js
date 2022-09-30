@@ -8,6 +8,7 @@ PluginRegistry.add('guide.step', [
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
+                    skipPoint: true,
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector('repositoriesGroupButton'),
                     onNextClick: (guide) => GuideUtils.clickOnGuideElement('repositoriesGroupButton')().then(() => guide.next())
