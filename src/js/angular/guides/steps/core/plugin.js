@@ -94,10 +94,16 @@ PluginRegistry.add('guide.step', [
             const notOverridable = {
                 type: 'readonly'
             };
-            const step = angular.extend({}, BASIC_STEP, options, notOverridable);
-            step.title = 'guide.step_plugin.guide-ended.title';
-            step.content = 'guide.step_plugin.guide-ended.content';
-            return step;
+            return angular.extend({}, BASIC_STEP, options, {
+                title: 'guide.step_plugin.guide-ended.title',
+                content: 'guide.step_plugin.guide-ended.content',
+                show: (guide) => () => {
+                    guide.options.confirmCancel = false;
+                },
+                hide: (guide) => () => {
+                    guide.options.confirmCancel = true;
+                }
+            }, notOverridable);
         }
     }
 ]);

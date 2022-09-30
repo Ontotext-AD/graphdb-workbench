@@ -383,15 +383,15 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._toGuideStep = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
-        const step = this._toBaseGuideStep($translate, currentStepDescription, () => this._updateLocalStorage());
+        const step = this._toBaseGuideStep(guide, $translate, currentStepDescription, () => this._updateLocalStorage());
         const buttons = [];
         if (previousStepDescription) {
             buttons.push(this._getPreviousButton(guide));
         }
         if (!!nextStepDescription) {
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
+            buttons.push(this._getPauseButton(guide));
         }
-        buttons.push(this._getPauseButton(guide));
 
         if (currentStepDescription.skipPoint) {
             buttons.push(this._getSkipButton(guide, previousStepDescription, currentStepDescription, nextStepDescription))
@@ -628,7 +628,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @returns created step.
      * @private
      */
-    this._toBaseGuideStep = ($translate, stepDescription, onShow) => {
+    this._toBaseGuideStep = (guide, $translate, stepDescription, onShow) => {
         let attachTo;
         if (!!stepDescription.elementSelector) {
             attachTo = {
@@ -686,21 +686,21 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             skipPoint: stepDescription.skipPoint,
             onPreviousClick: stepDescription.onPreviousClick,
             when: {
-                show: this._getShowFunction(stepDescription, onShow)
+                show: this._getShowFunction(guide, stepDescription, onShow)
             }
         };
 
         if (angular.isFunction(stepDescription.hide)) {
-            step.when.hide = stepDescription.hide;
+            step.when.hide = stepDescription.hide(guide);
         }
 
         return step;
     };
 
-    this._getShowFunction = (stepDescription, onShow) => {
+    this._getShowFunction = (guide, stepDescription, onShow) => {
         if (angular.isFunction(stepDescription.show)) {
             return () => {
-                stepDescription.show();
+                stepDescription.show(guide)();
                 onShow();
                 this._whenStepShow(stepDescription);
             }
