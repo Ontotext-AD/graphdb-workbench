@@ -62,13 +62,13 @@
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
                         <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" tooltip="{{'repoTooltips.editRepository' | translate}}"
-                           ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
+                                ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
                             <em class="icon-warning icon-lg text-warning"
-                               tooltip="{{getDegradedReason()}} {{'not.supported.repo.edit.label' | translate}}"
-                               tooltip-placement="top" tooltip-trigger="mouseenter"></em>
+                                tooltip="{{getDegradedReason()}} {{'not.supported.repo.edit.label' | translate}}"
+                                tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                         </span>
                         <button type="button" tooltip="{{'refresh.repo.info' | translate}}" class="btn btn-link"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
@@ -77,7 +77,7 @@
                     </div>
                     <h3 class="card-title ellipsis-block repo-info-home">
                         <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
-                           tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
+                            tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
                         <div>
                             {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
                         </div>
@@ -167,22 +167,35 @@
                     </div>
                 </div>
                 <div class="card-block" ng-show="hasActiveLocation()">
-                    <div class="" ng-show="getLicense().product">
-                        <div class="d-inline-block mr-2 mb-1">
+                    <div class="row" ng-show="getLicense().product">
+                        <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'licensed.to' | translate}}
                             <span class="data-value big">{{getLicense().licensee}}</span>
                         </div>
-                        <div class="d-inline-block mr-2 mb-1">
+                        <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'valid.until' | translate}}
-                            <span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
                         </div>
-                        <div class="d-inline-block mr-2 mb-1">
+                        <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'cores.number' | translate}}
                             <span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
                         </div>
-                        <div class="d-inline-block mb-1">
+                        <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'maintenance.date' | translate}}
-                            <span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                        </div>
+                        <div class="float-xs-left d-inline-block ml-1 mb-1">
+                            {{'capabilities' | translate}}
+                            <div class="data-value big">
+                                <div ng-if="getLicense().licenseCapabilities.length !== 0">
+                                    <div ng-repeat="capability in getLicense().licenseCapabilities">
+                                        <div>{{capability}}</div>
+                                    </div>
+                                </div>
+                                <div ng-if="getLicense().licenseCapabilities.length === 0">
+                                    <div>{{'none' | translate}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

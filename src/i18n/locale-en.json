@@ -1106,6 +1106,8 @@
     "save.settings.btn": "Save settings",
     "are.license.details.correct": "Are your license details correct?",
     "edition": "Edition",
+    "capabilities": "Capabilities",
+    "none": "None",
     "licensed.to": "Licensed to",
     "valid.until": "Valid until",
     "perpetual": "Perpetual",
