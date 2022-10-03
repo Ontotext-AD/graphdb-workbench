@@ -12,9 +12,9 @@ angular
     .module('graphdb.framework.guides.controllers', modules)
     .controller('GuidesCtrl', GuidesCtrl);
 
-GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate'];
+GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate'];
 
-function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
+function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate) {
 
     $scope.guides = [];
     $scope.pageSizeOptions = [10, 20, 50, 100];
@@ -27,8 +27,8 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate) {
             .then(guides => {
                 $scope.guides = $filter('orderBy')(guides, 'guideOrder');
                 $scope.guides.forEach(guide => {
-                    guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, guide.guideName);
-                    guide.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, guide.guideDescription);
+                    guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName);
+                    guide.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription);
                     switch (guide.guideLevel) {
                         case undefined:
                         case 0:

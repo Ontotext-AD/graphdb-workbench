@@ -54,6 +54,15 @@ PluginRegistry.add('guide.step', [
                     helpInfo = 'view.sparql.helpInfo';
 
                     break;
+                case "class-hierarchy":
+                    menuSelector = 'menu-explore';
+                    menuTitle = 'menu.explore.label';
+                    submenuSelector = 'menu-class-hierarchy';
+                    submenuTitle = 'menu.class.hierarchy.label';
+                    viewName = 'view.class.hierarchy.title';
+                    helpInfo = 'view.class.hierarchy.helpInfo';
+
+                    break;
             }
 
             const mainMenuClickElementPostSelector = !!submenuSelector ? ' div' : ' a';

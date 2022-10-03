@@ -67,7 +67,7 @@ const GuideUtils = (function () {
     }
 
     const getGuideElementSelector = function (guideSelectorValue, postSelector) {
-        return `[guide-selector="${guideSelectorValue}"]${postSelector ? postSelector : ''}`
+        return `[guide-selector="${guideSelectorValue}"] ${postSelector ? postSelector : ''}`
     }
 
     /**
@@ -129,6 +129,26 @@ const GuideUtils = (function () {
     };
 
     /**
+     * Focuses a class in the class hierarchy view by firing a custom event.
+     * @param elementSelector the node to focus
+     */
+    const classHierarchyFocus = function (elementSelector) {
+        const element = d3.select(elementSelector);
+        const evt = new CustomEvent("gdb-focus", {detail: element.datum()});
+        element.node().dispatchEvent(evt);
+    };
+
+    /**
+     * Zooms to a class in the class hierarchy view by firing a custom event.
+     * @param elementSelector the node to zoom to
+     */
+    const classHierarchyZoom = function (elementSelector) {
+        const element = d3.select(elementSelector);
+        const evt = new CustomEvent("gdb-zoom", {detail: element.datum()});
+        element.node().dispatchEvent(evt);
+    };
+
+    /**
      * Validates that the provided selector (to a input element) contains the expected user input.
      * @param elementSelector a selector to an input element
      * @param expectedInput the expected user input
@@ -153,11 +173,12 @@ const GuideUtils = (function () {
      * Translates a message, where the message can be a message ID (in most cases) or an object that
      * supplies the translations for each language.
      * @param $translate the $translation service
+     * @param $interpolate the $interpolate service
      * @param message the message to translate
      * @param parameters parameters to pass to the translation service
      * @returns {*}
      */
-    const translateLocalMessage = ($translate, message, parameters) => {
+    const translateLocalMessage = ($translate, $interpolate, message, parameters) => {
         const lang = $translate.use();
         let translated;
         if (angular.isObject(message)) {
@@ -165,8 +186,10 @@ const GuideUtils = (function () {
             if (!translated) {
                 translated = message['en'];
             }
+            translated = $interpolate(translated)(parameters);
         } else {
-            translated = $translate.instant(message, parameters);
+            // $translate.instant() garbles HTML, so we need to ungarble it
+            translated = unescapeHtml($translate.instant(message, parameters));
         }
         return translated;
     };
@@ -186,12 +209,13 @@ const GuideUtils = (function () {
      * Shows a toast with error that advancing to the next step isn't possible.
      * @param toastr the toast service
      * @param $translate the translation service
+     * @param $interpolate the interpolation service
      * @param message the message to show in the toast
      * @param parameters parameters to pass to the translation service
      */
-    const noNextErrorToast = (toastr, $translate, message, parameters) => {
-        toastr.error(unescapeHtml(translateLocalMessage($translate, message, parameters)),
-            unescapeHtml(translateLocalMessage($translate, 'guide.validate.no-next', parameters)),
+    const noNextErrorToast = (toastr, $translate, $interpolate, message, parameters) => {
+        toastr.error(unescapeHtml(translateLocalMessage($translate, $interpolate, message, parameters)),
+            unescapeHtml(translateLocalMessage($translate, $interpolate, 'guide.validate.no-next', parameters)),
             {allowHtml: true});
     };
 
@@ -227,6 +251,22 @@ const GuideUtils = (function () {
         return GUIDES_DOWNLOAD_URL + options.resourcePath + '/' + options.resourceFile;
     };
 
+    const getSparqlEditorSelector = (postSelector) => {
+        return getGuideElementSelector('queryEditor', ' .CodeMirror-code', postSelector);
+    };
+
+    const getSparqlResultsSelector = (postSelector) => {
+        return getGuideElementSelector('yasrResults', postSelector);
+    };
+
+    const getSparqlResultsSelectorForIri = (iri) => {
+        return getSparqlResultsSelector("a[title='" + iri + "']");
+    };
+
+    const getSparqlResultsSelectorForRow = (row) => {
+        return getSparqlResultsSelector('tbody tr:nth-child(' + row + ')');
+    };
+
     return {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
@@ -239,6 +279,8 @@ const GuideUtils = (function () {
         awaitAlphaDropD3,
         graphVizExpandNode,
         graphVizShowNodeInfo,
+        classHierarchyFocus,
+        classHierarchyZoom,
         validateTextInput,
         translateLocalMessage,
         unescapeHtml,
@@ -246,7 +288,11 @@ const GuideUtils = (function () {
         deferredShow,
         scrollToTop,
         removeWhiteSpaces,
-        toResourceDownloadUrl
+        toResourceDownloadUrl,
+        getSparqlEditorSelector,
+        getSparqlResultsSelector,
+        getSparqlResultsSelectorForIri,
+        getSparqlResultsSelectorForRow
     };
 })();
 
