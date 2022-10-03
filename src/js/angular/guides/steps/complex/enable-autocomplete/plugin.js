@@ -26,7 +26,7 @@ PluginRegistry.add('guide.step', [
                             $(autocompleteCheckboxSelector)
                                 .on('mouseup.autocompleteCheckboxClick', function () {
                                     // If autocomplete is enabled go to the next step.
-                                    GuideUtils.deferredShow(20)()
+                                    GuideUtils.deferredShow(500)()
                                         .then(() => {
                                             if (GuideUtils.isGuideElementChecked('autocompleteCheckbox', ' input')) {
                                                 guide.next();

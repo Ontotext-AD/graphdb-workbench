@@ -458,13 +458,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     this._getNextSkipPointId = (steps, currentStepIndex) => {
         for (let index = currentStepIndex + 1; index < steps.length; index++) {
-            const step = steps.at(index);
+            const step = steps[index];
             if (step.options.skipPoint) {
                 return step.id;
             }
         }
         // if there isn't next step with skipPoint set to true, then return last step id.
-        return steps.at(steps.length - 1).id;
+        return steps[steps.length - 1].id;
     };
 
     /**
@@ -482,7 +482,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         let stepHistoryCleaned = false;
         while (!stepHistoryCleaned) {
             const stepHistory = this._getHistory();
-            if (stepHistory && stepHistory.length > 0 && stepHistory.at(stepHistory.length - 1) !== step.options.id) {
+            if (stepHistory && stepHistory.length > 0 && stepHistory[stepHistory.length - 1] !== step.options.id) {
                 this._removeLastStepFromHistory();
                 continue;
             }
@@ -642,7 +642,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     this._getHistory = () => {
-        const stepHistory = LocalStorageAdapter.get(GUIDE_STEP_HISTORY);
+        const stepHistory = LocalStorageAdapter.get(GUIDE_STEP_HISTORY) || [];
         if (stepHistory) {
             return stepHistory;
         }
@@ -660,11 +660,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (stepId) {
             const index = history.findIndex((historyStepId) => historyStepId === stepId);
             if (index > 0) {
-                return history.at(index - 1);
+                return history[index - 1];
             }
         } else {
             if (history.length > 1) {
-                return history.at(history.length - 2);
+                return history[history.length - 2];
             }
         }
         return -1;

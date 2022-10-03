@@ -356,7 +356,7 @@ describe('Repositories', () => {
 
         confirmModal();
 
-        getRepositoriesList().should('not.exist');
+        cy.contains('td', repositoryId).should('not.exist');
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {

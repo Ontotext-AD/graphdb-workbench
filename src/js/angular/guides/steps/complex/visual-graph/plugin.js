@@ -281,7 +281,13 @@ PluginRegistry.add('guide.step', [
                         GuideUtils.deferredShow(500)()
                             .then(() => resolve());
                     }),
-                    onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
+                    onNextClick: (guide) => {
+                        guide.getCurrentStep().hide();
+                        GuideUtils.waitFor(closeButtonSelector, 3).then(() => {
+                            $(closeButtonSelector).trigger('click');
+                            guide.next();
+                        });
+                    }
                 }, options)
             });
 

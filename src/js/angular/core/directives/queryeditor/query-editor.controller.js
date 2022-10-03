@@ -922,7 +922,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
         if (sameAsBtn && !$scope.currentQuery.inference && !sameAsBtn.disabled) {
             sameAsBtn.disabled = true;
             $scope.currentQuery.sameAs = false;
-        } else if ($scope.currentQuery.inference && sameAsBtn.disabled) {
+        } else if (sameAsBtn && $scope.currentQuery.inference && sameAsBtn.disabled) {
             sameAsBtn.removeAttribute('disabled');
             $scope.currentQuery.sameAs = principal.appSettings.DEFAULT_SAMEAS;
         }

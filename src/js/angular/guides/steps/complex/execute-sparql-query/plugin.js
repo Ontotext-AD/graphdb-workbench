@@ -15,6 +15,7 @@ PluginRegistry.add('guide.step', [
             copy.className = 'btn btn-sm btn-secondary';
             copy.innerText = $translate.instant('guide.step_plugin.execute-sparql-query.copy-to-editor.button');
             copy.setAttribute('ng-click', 'copyQuery()');
+            copy.setAttribute('guide-selector', 'copyQueryButton');
 
             const steps = [
                 {
@@ -97,7 +98,10 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.getGuideElementSelector('runSparqlQuery'),
-                        onNextClick: (guide) => GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next()),
+                        onNextClick: (guide) => {
+                            guide.getCurrentStep().hide();
+                            GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next())
+                        },
                         scrollToHandler: GuideUtils.scrollToTop,
                         canBePaused: false,
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
