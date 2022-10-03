@@ -1,8 +1,18 @@
+const disableAllNodes = () => {
+    $('.node-wrapper').addClass('disable-visual-graph-node');
+}
+
+const enableAllNodes = () => {
+    $('.node-wrapper').removeClass('disable-visual-graph-node');
+}
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'visual-graph',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            const $location = services.$location;
+            const $route = services.$route;
             options.mainAction = 'visual-graph';
 
             return [
@@ -38,6 +48,17 @@ PluginRegistry.add('guide.step', [
                         url: '/graphs-visualizations',
                         elementSelector: '.graph-visualization',
                         placement: 'left',
+                        onPreviousClick: () => new Promise(function (resolve, reject) {
+                            $location.url('/graphs-visualizations');
+                            $route.reload();
+                            let searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
+                            GuideUtils.waitFor(searchInputSelector, 3)
+                                .then(() => {
+                                    GuideUtils.validateTextInput(searchInputSelector, options.easyGraphInputText);
+                                    resolve();
+                                })
+                                .catch(() => reject());
+                        }),
                         canBePaused: false,
                         forceReload: true
                     }, options)
@@ -50,6 +71,7 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
+            const $route = services.$route;
             const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
             return [
                 {
@@ -72,7 +94,15 @@ PluginRegistry.add('guide.step', [
                                     guide.next();
                                 });
                         },
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
+                        beforeShowPromise: () => new Promise(function (resolve, reject) {
+                            $route.reload();
+                            GuideUtils.deferredShow(50)()
+                                .then(() => {
+                                    GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)()
+                                        .then(() => resolve())
+                                        .catch(() => reject());
+                                });
+                        }),
                     }, options)
                 }
             ];
@@ -113,7 +143,14 @@ PluginRegistry.add('guide.step', [
                         elementSelector: '.rdf-side-panel-content',
                         canBePaused: false,
                         placement: 'left',
-                        beforeShowPromise: GuideUtils.deferredShow(500)
+                        beforeShowPromise: GuideUtils.deferredShow(500),
+                        onPreviousClick: () => new Promise(function (resolve) {
+                            GuideUtils.waitFor(closeButtonSelector, 3)
+                                .then(() => {
+                                    $(closeButtonSelector).trigger('click')
+                                    resolve();
+                                }).catch(() => resolve());
+                        })
                     }, options)
                 }
             ];
@@ -133,6 +170,7 @@ PluginRegistry.add('guide.step', [
                             content: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.content',
                             url: '/graphs-visualizations',
                             canBePaused: false,
+                            placement: 'left',
                             elementSelector: GuideUtils.getGuideElementSelector('graph-visualization-node-info-' + focusProperty.property),
                             focusProperty: focusProperty.property,
                             extraContent: focusProperty.message
@@ -149,13 +187,20 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
                     url: '/graphs-visualizations',
                     canBePaused: false,
+                    placement: 'left',
                     elementSelector: closeButtonSelector,
                     advanceOn: {
                         selector: closeButtonSelector,
                         event: 'click'
                     },
-                    onNextClick: (guide) =>
-                        GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
+                    beforeShowPromise: () => new Promise(function (resolve) {
+                        // We have to be sure that node info sidebar is open. It is needed when this step is loaded when next step "Previous"
+                        // button is clicked.
+                        GuideUtils.graphVizShowNodeInfo(elementSelector);
+                        GuideUtils.deferredShow(500)()
+                            .then(() => resolve());
+                    }),
+                    onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
                 }, options)
             });
 
@@ -178,6 +223,8 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         extraPadding: 40,
                         elementSelector,
+                        show: disableAllNodes,
+                        hide: enableAllNodes,
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 }
@@ -200,6 +247,8 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         extraPadding: 10,
                         elementSelector,
+                        show: disableAllNodes,
+                        hide: enableAllNodes,
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
                     }, options)
                 }
