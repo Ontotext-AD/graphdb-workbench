@@ -84,7 +84,7 @@
                 popover="{{'explore.graph.visually.popover' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
-                ng-click="goToGraphsViz()">
+                ng-click="goToGraphsViz()" guide-selector="explore-visual">
             {{'visual.graph.label' | translate}}
         </button>
 
@@ -94,7 +94,8 @@
         <ul class="nav nav-tabs">
             <li ng-repeat="roleVar in roles" class="nav-item">
                 <a class="nav-link" href ng-click="changeRole(roleVar)"
-                   ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading">
+                   ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading"
+                   guide-selector="role-{{roleVar}}">
                     {{roleVar | translate}}
                 </a>
             </li>
@@ -104,7 +105,7 @@
     <div id="yasr">
         <!--<pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
         <div class="yasr" id="yasr-inner">
-            <div class='yasr_results'></div>
+            <div class='yasr_results' guide-selector="yasrResults"></div>
         </div>
     </div>
 

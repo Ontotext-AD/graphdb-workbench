@@ -637,7 +637,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
         }
 
-        const title = GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.title, stepDescription));
+        const title = GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.title, stepDescription));
 
         // Adds " - n/N" to titles if the step is part of a multistep process,
         // where n is the current step number and N is the total number of steps
@@ -652,12 +652,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
-        const content = this._toParagraph(GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, stepDescription.content, stepDescription)));
+        const content = this._toParagraph(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.content, stepDescription));
 
         let extraContent = '';
         if (stepDescription.extraContent) {
-            extraContent = GuideUtils.translateLocalMessage($translate, stepDescription.extraContent, stepDescription);
-            extraContent = $interpolate(extraContent)(stepDescription);
+            extraContent = GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.extraContent, stepDescription);
             extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
         }
 
