@@ -63,7 +63,10 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         elementSelector: GuideUtils.getGuideElementSelector('import-settings-import-button'),
                         placement: 'top',
-                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-settings-cancel-button')(),
+                        onPreviousClick: (guide) => new Promise(function (resolve) {
+                            GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
+                                .then(() => resolve());
+                        }),
                         onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
                     }, options)
@@ -74,7 +77,10 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
-                        onPreviousClick: (guide) => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
+                        onPreviousClick: (guide) => new Promise(function (resolve) {
+                            GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
+                                .then(() => resolve())
+                        }),
                     }, options)
                 }
             ]);

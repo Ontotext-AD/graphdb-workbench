@@ -1,8 +1,8 @@
-const disableAllNodes = () => {
+const disableAllNodes = () => () =>{
     $('.node-wrapper').addClass('disable-visual-graph-node');
 }
 
-const enableAllNodes = () => {
+const enableAllNodes = () => () => {
     $('.node-wrapper').removeClass('disable-visual-graph-node');
 }
 
