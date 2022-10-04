@@ -1,5 +1,8 @@
 <div class="ot-loader ot-loader-home" onto-loader-fancy size="100" ng-show="isLoadingLocation()"></div>
 <div class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
+    <div class="row mt-2" ng-if="!tutorialState">
+        <a href="#" class="btn btn-link float-xs-right" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
+    </div>
     <div class="row mb-3 tutorial-container" ng-init="initTutorial()" ng-if="tutorialState">
         <div class="col-lg-12">
             <div class="card mt-2">
@@ -14,8 +17,8 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <a href="#" class="btn btn-lg btn-primary" ng-click="slideNext()">{{'ok.continue' | translate}}</a>
-                    <a href="#" class="btn btn-lg btn-outline-secondary decline-tutorial" ng-click="declineTutorial()">{{'no.thanks' | translate}}</a>
+                    <a href="/guides" class="btn btn-lg btn-primary">{{'take.me.to.guides' | translate}}</a>
+                    <a href="#" class="btn btn-lg btn-outline-secondary decline-tutorial" ng-click="declineTutorial()">{{'hide.panel' | translate}}</a>
                     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
                             <button type="button" class="btn btn-secondary" ng-click="slideToPage($index)"

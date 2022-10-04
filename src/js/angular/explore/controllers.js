@@ -187,6 +187,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         if ($routeParams.context != null) {
             $scope.context = $routeParams.context;
         }
+        // Remember the role in the URL so the URL is stable and leads back to the same view
+        $location.search('role', $scope.role);
         // wait for principal request if it has not finished and then fetch graph
         Promise.resolve(principalRequestPromise)
             .then(() => getGraph());

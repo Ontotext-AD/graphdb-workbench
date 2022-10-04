@@ -207,6 +207,9 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 .attr("class", function (d) {
                     return d.role;
                 })
+                .attr("guide-selector", function (d) {
+                    return "class-" + d.name;
+                })
                 .style("fill", function (d) {
                     //return colors[d.depth % 6];
                     return d.children ? color(d.depth) : "#E0D0D0";
@@ -230,7 +233,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         });
                         d.circle.on('mouseout', tip.hide);
                     }
-                });
+                })
+                // custom event used when user is following a guide
+                .on("gdb-focus", doFocus)
+                .on("gdb-zoom", zoom);
+
 
             if (flattenedClassNames) {
                 flattenedClassNames = _.uniqBy(flattenedClassNames, 'name');
@@ -361,7 +368,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                                 newobj = obj.children[i];
                             }
                         }
-                        obj = newobj;
+                        if (newobj.children) {
+                            // Use the child only if it has children
+                            obj = newobj;
+                        }
+                    } else if (!obj.children) {
+                        // If node has no children use its parent instead
+                        obj = obj.parent;
                     }
 
                     zoom(obj, true);
@@ -565,12 +578,23 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     scope.showExternalElements = (d.name === ROOT_OBJ_NAME);
                 });
 
+                if (focus === d) {
+                    // Node is already zoomed to
+                    // Important to return before we modify the history, otherwise we choke the browser
+                    return;
+                }
+
                 if (d.id) {
                     $window.history.replaceState({id: d.id}, "classHierarchyPage" + d.id, "hierarchy#" + d.id);
                 }
 
-                if (focus === d) {
-                    return;
+                if (!d.children) {
+                    // No children - zoom to parent instead
+                    d = d.parent;
+                    if (focus === d) {
+                        // Parent is already zoomed to
+                        return;
+                    }
                 }
 
                 if (shouldClosePanel) {

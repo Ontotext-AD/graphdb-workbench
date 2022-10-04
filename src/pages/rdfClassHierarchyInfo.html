@@ -153,7 +153,7 @@
 				ps-size="25vw">
             <div class="break-word-alt p-1">
                 <button class="close mb-1 ml-1"
-                   ng-click="toggleClassInfoSidePanel(); $event.stopPropagation();"></button>
+                   ng-click="toggleClassInfoSidePanel(); $event.stopPropagation();" guide-selector="close-info-panel"></button>
 
 				<h3 class="hovered-parent">
 					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.name}}</a>
@@ -179,8 +179,8 @@
                     <p class="alert alert-warning" ng-switch-when="0">
                     	{{'no.instances.for.selected.class.type' | translate}}
                     </p>
-					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}}>{{'view.instance.in.sparql.label' | translate}}</a></p>
-                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}}>{{'view.all.label' | translate}} {{selectedClass.instancesCount | number}} {{'instances.in.sparql' | translate}}</a></p>
+					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}} guide-selector="instances-count">{{'view.instance.in.sparql.label' | translate}}</a></p>
+                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}} guide-selector="instances-count">{{'view.all.label' | translate}} {{selectedClass.instancesCount | number}} {{'instances.in.sparql' | translate}}</a></p>
                 </div>
 
                 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="instancesLoader"></div>
@@ -201,7 +201,7 @@
 							<table class="table table-sm table-striped" aria-describedby="Class instances table">
 								<tbody>
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
-										<td class="break-word-alt">
+										<td class="break-word-alt" guide-selector="instance-{{ item.resolvedUri }}">
 											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
 												title="{{'copy.to.clipboard.modal.ok.btn' | translate}}"
 												ng-click="copyToClipboard(item.absUriNonEncoded)">

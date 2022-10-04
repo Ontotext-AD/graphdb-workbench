@@ -5,6 +5,7 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             const toastr = services.toastr;
             const $translate = services.$translate;
+            const $interpolate = services.$interpolate;
             options.mainAction = 'execute-sparql-query';
 
             const code = document.createElement('code');
@@ -34,7 +35,7 @@ PluginRegistry.add('guide.step', [
                 code.innerText = query;
                 options.queryAsHtmlCodeElement = '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>';
 
-                const queryEditorSelector = GuideUtils.getGuideElementSelector('queryEditor', ' .CodeMirror-code');
+                const queryEditorSelector = GuideUtils.getSparqlEditorSelector();
                 steps.push({
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
@@ -50,7 +51,7 @@ PluginRegistry.add('guide.step', [
                                             services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                             reject();
                                         });
-                                })
+                                });
                         }),
                         onNextValidate: (step) => {
                             const editorQuery = GuideUtils.removeWhiteSpaces(window.editor.getValue());
@@ -60,7 +61,7 @@ PluginRegistry.add('guide.step', [
                                     // The query is the default query OR we previously overwrote it => we can overwrite it
                                     window.editor.setValue(query);
                                 } else {
-                                    GuideUtils.noNextErrorToast(toastr, $translate,
+                                    GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
                                         'guide.step_plugin.execute-sparql-query.query-not-same.error', options);
                                     return false;
                                 }
@@ -111,7 +112,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.result-explain.content',
                         url: '/sparql',
                         placement: 'top',
-                        elementSelector: GuideUtils.getGuideElementSelector('yasrРesults'),
+                        elementSelector: GuideUtils.getSparqlResultsSelector(),
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.resultExtraContent,

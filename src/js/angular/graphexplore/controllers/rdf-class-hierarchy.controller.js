@@ -289,7 +289,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
         $scope.encodedUri = encodeURIComponent(uri);
 
-        const query = "prefix onto:<http://www.ontotext.com/> select ?s from onto:disable-sameAs { ?s a <" + uri + "> . }";
+        const query = "prefix onto:<http://www.ontotext.com/>\nselect ?s {\n    ?s a <" + uri + "> .\n}";
 
         const encodedQuery = encodeURIComponent(query);
 

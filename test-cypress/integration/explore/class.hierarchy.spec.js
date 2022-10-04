@@ -65,7 +65,9 @@ describe('Class hierarchy screen validation', () => {
     });
 
     it('Test focus on diagram', () => {
-        let className = ':CabernetSauvignon';
+        // This must not be a top-level class and it must have no children,
+        // otherwise asserting the zooming becomes tricky
+        let className = ':SweetRiesling';
         findClassByName(className);
         cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
 
@@ -140,8 +142,9 @@ describe('Class hierarchy screen validation', () => {
             .should('be.visible')
             .and('length.be.gt', 0);
 
-        // Click on a suggested random third class
-        cy.get('#search_input_dropdown > :nth-child(3)')
+        // Click on a specific element that isn't a top-level one and has children,
+        // otherwise it gets tricky to assert whether it was zoomed
+        cy.get('#search_input_dropdown').contains('WineColor')
             .then(($el) => {
                 let selectedClassName = $el.text().trim();
 
@@ -247,11 +250,15 @@ describe('Class hierarchy screen validation', () => {
     }
 
     function verifyClassIsNotExpanded($element) {
-        return cy.wrap($element).should('have.css', 'font-size').and('eq', '10px');
+        // This works well only for classes that aren't top level and have no children
+        return cy.wrap($element)
+            .should('have.css', 'display').and('eq', 'none');
     }
 
     function verifyClassIsExpanded($element) {
-        return cy.wrap($element).should('have.css', 'font-size').and('not.eq', '10px');
+        // This works well only for classes that aren't top level and have no children
+        return cy.wrap($element)
+            .should('have.css', 'display').and('not.eq', 'none');
     }
 
     function verifyCounterValue(classCount) {

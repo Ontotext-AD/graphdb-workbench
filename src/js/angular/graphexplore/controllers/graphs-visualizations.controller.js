@@ -1005,7 +1005,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
 
         if ($location.search().uri) {
-            $scope.openUri($location.search().uri);
+            $scope.openUri($location.search().uri, true);
         }
 
         if ($location.search().saved) {
