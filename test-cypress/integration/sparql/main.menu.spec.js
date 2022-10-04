@@ -126,6 +126,11 @@ describe('Main menu tests', function () {
                 visible: true,
                 submenu: [
                     {
+                        name: 'Interactive guides',
+                        visible: false,
+                        redirect: '/guides'
+                    },
+                    {
                         name: 'REST API',
                         visible: false,
                         redirect: '/webapi'
@@ -144,11 +149,6 @@ describe('Main menu tests', function () {
                         name: 'Support',
                         visible: false,
                         externalRedirect: 'https://graphdb.ontotext.com/'
-                    },
-                    {
-                        name: 'Interactive guides',
-                        visible: false,
-                        redirect: '/guides'
                     },
                     {
                         name: 'System information',

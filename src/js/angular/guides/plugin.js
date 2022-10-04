@@ -15,7 +15,7 @@ PluginRegistry.add('main.menu', {
         {
             label: 'Guides',
             labelKey: 'menu.guides.label',
-            order: 5,
+            order: 0,
             parent: 'Help',
             icon: 'paste',
             href: 'guides',

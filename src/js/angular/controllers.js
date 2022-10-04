@@ -522,11 +522,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.declineTutorial = function () {
-        $('.tutorial-container').slideUp("slow", function () {
-            // Animation complete.
-            LocalStorageAdapter.set(LSKeys.TUTORIAL_STATE, 1);
-            $scope.tutorialState = false;
-        });
+        LocalStorageAdapter.set(LSKeys.TUTORIAL_STATE, 1);
+        $scope.tutorialState = false;
+    };
+
+    $scope.showTutorial = function () {
+        $scope.tutorialState = true;
+        LocalStorageAdapter.remove(LSKeys.TUTORIAL_STATE);
     };
 
     $scope.initTutorial = function () {
@@ -536,7 +538,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.tutorialInfo = [
             {
                 "title": $translate.instant("main.info.title.welcome.page"),
-                "info": decodeHTML($translate.instant('main.info.welcome.page'))
+                "info": '<p>' + decodeHTML($translate.instant('main.info.welcome.page')) + '</p>'
+                    + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.guides')) + '</p>'
+                    + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.footer')) + '</p>'
             },
             {
                 "title": $translate.instant('main.info.title.create.repo.page'),
