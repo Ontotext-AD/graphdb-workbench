@@ -849,7 +849,7 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                 toastr.success($translate.instant('edit.repo.success.msg', {saveId: $scope.repositoryInfo.saveId}));
                 $repositories.init().finally(() => $scope.goBackToPreviousLocation());
                 if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
-                    $repositories.restartRepository($scope.repositoryInfo.id);
+                    $repositories.restartRepository($scope.repositoryInfo);
                 }
             }).error(function (data) {
             const msg = getError(data);
