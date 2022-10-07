@@ -549,6 +549,7 @@
     "menu.sparql.label": "SPARQL",
     "menu.monitor.label": "Surveiller",
     "menu.queries.and.updates.label": "Requêtes et mises à jour",
+    "menu.ftsLanguages.label": "Entrez la langue pour la recherche plein texte",
     "menu.resources.label": "Ressources",
     "menu.setup.label": "Configurer",
     "menu.repositories.label": "Dépôts",
