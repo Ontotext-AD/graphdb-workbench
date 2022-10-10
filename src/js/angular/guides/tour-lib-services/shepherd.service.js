@@ -439,7 +439,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         let stepHistoryCleaned = false;
         while (!stepHistoryCleaned) {
             const stepHistory = this._getHistory();
-            if (stepHistory.at(stepHistory.length - 1) !== step.options.id) {
+            if (stepHistory && stepHistory.length > 0 && stepHistory.at(stepHistory.length - 1) !== step.options.id) {
                 this._removeLastStepFromHistory();
                 continue;
             }

@@ -215,7 +215,9 @@ describe('Repositories', () => {
         getRepositoryRulesetMenu().should('have.value', '4');
         getRepositoryDisableSameAsCheckbox().should('not.be.checked');
         getRepositoryContextIndexCheckbox().should('be.checked');
-        getRepositoryFtsCheckbox().should('be.checked');
+
+        // TODO uncomment and refactor when FTS configuration is with clear ON or OFF status
+        // getRepositoryFtsCheckbox().should('be.checked');
     });
 
     it('should allow to switch between repositories', () => {
@@ -311,7 +313,9 @@ describe('Repositories', () => {
 
         typeRepositoryTitle(newTitle);
         getRepositoryContextIndexCheckbox().check();
-        getRepositoryFtsCheckbox().check();
+
+        // TODO uncomment and refactor when FTS configuration is with clear ON or OFF status
+        // getRepositoryFtsCheckbox().check();
 
         getSaveRepositoryButton()
             .click()
@@ -328,7 +332,9 @@ describe('Repositories', () => {
 
         getRepositoryTitleField().should('have.value', newTitle);
         getRepositoryContextIndexCheckbox().should('be.checked');
-        getRepositoryFtsCheckbox().should('be.checked');
+
+        // TODO uncomment and refactor when FTS configuration is with clear ON or OFF status
+        // getRepositoryFtsCheckbox().should('be.checked');
     });
 
     it('should allow to delete existing repository', () => {
@@ -663,7 +669,7 @@ describe('Repositories', () => {
             .should('have.length.greaterThan', 0)
             .then(() => {
                 assertRepositoryStatus(repositoryId, "RUNNING");
-            })
+            });
 
         //Restart the repository
         restartRepository(repositoryId);

@@ -1707,6 +1707,7 @@
     "guide.step_plugin.guide-ended.title": "End of guide",
     "guide.step_plugin.guide-ended.content": "This guide has ended.",
     "guide.step_plugin.execute-sparql-query.query-not-same.error": "The query is not the same as the guide query!",
+    "guide.step_plugin.enable-autocomplete.error": "The autocomplete index is not enabled!",
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
     "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support."
