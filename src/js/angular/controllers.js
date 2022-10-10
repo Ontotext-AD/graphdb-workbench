@@ -17,8 +17,8 @@ import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
 import './guides/guides.service';
-import './guides/directives'
-import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service'
+import './guides/directives';
+import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -41,7 +41,8 @@ angular
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.core.services.autocompleteStatus',
         'graphdb.framework.utils.uriutils',
-        'graphdb.framework.guides.directives'
+        'graphdb.framework.guides.directives',
+        'graphdb.framework.guides.services'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -115,11 +116,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -136,6 +137,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     setYears();
+
+    $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
+        if (GuidesService.isActive()) {
+            e.preventDefault();
+        }
+    });
 
     $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;

@@ -139,7 +139,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     }
 
     this.isActive = () => {
-        return Shepherd.activeTour && !this.isPaused();
+        // if beforeShowPromise promise is rejected then Shepherd active tour is active but current step is not opened.
+        return Shepherd.activeTour && Shepherd.activeTour.isActive() && Shepherd.activeTour.getCurrentStep().isOpen() && !this.isPaused();
     };
 
     this.isPaused = () => {
@@ -536,7 +537,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                     if (onNextResult instanceof Promise) {
                         onNextResult.catch(error => {
                             toastr.error($translate.instant('guide.unexpected.error.message'));
-                            guide.hide();
+                            guide.cancel();
                         });
                     }
                 } else {
