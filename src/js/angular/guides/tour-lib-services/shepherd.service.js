@@ -128,7 +128,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const guide = this._createGuide(guideId);
         this._addGuideSteps(guide, stepsDescriptions);
         this._startGuide(guide, startStepId);
-    }
+    };
 
     /**
      * Starts guide from the step where it was paused.
@@ -136,7 +136,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this.resumeGuide = (guideId, stepsDescriptions, startStepId) => {
         LocalStorageAdapter.set(GUIDE_PAUSE, false);
         this.startGuide(guideId, stepsDescriptions, startStepId, false);
-    }
+    };
 
     this.isActive = () => {
         return Shepherd.activeTour && !this.isPaused();
@@ -148,11 +148,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     this.getGuideId = () => {
         return LocalStorageAdapter.get(GUIDE_ID);
-    }
+    };
 
     this.getCurrentStepId = () => {
         return LocalStorageAdapter.get(GUIDE_CURRENT_STEP_ID);
-    }
+    };
 
     this.subscribeToGuideCancel = (oncancel) => {
         if (angular.isFunction(oncancel)) {
@@ -164,7 +164,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (angular.isFunction(onPause)) {
             this.onPause = onPause;
         }
-    }
+    };
 
     /**
      * Creates a guide.
@@ -183,7 +183,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 scrollTo: true
             }
         });
-    }
+    };
 
     /**
      * Transforms <code>stepsDescriptions</code> to Shepherd Tour steps and add it to <code>guide<code>.
@@ -294,7 +294,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (stepsDescriptions.length > 1) {
             guide.addStep(this._getLastStep(guide, stepsDescriptions));
         }
-    }
+    };
 
     /**
      * Starts <code>guide</code> from <code>startStepId</code>
@@ -319,13 +319,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!!step.options.attachTo) {
             GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
-                .catch(error => {
+                .catch(() => {
                     toastr.error($translate.instant('guide.start.unexpected.error.message'));
                 });
         } else {
             guide.show(stepIndex);
         }
-    }
+    };
 
     this._subscribeToGuideCanceled = () => {
         if (!this.guideCancelSubscription) {
@@ -336,7 +336,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 }
             });
         }
-    }
+    };
 
     /**
      * Creates first step from <code>stepsDescriptions</code>.
@@ -348,7 +348,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._getFirstStep = function (guide, stepsDescriptions) {
         const nextStepDescription = stepsDescriptions.length > 1 ? stepsDescriptions[1] : undefined;
         return this._toGuideStep(guide, undefined, stepsDescriptions[0], nextStepDescription);
-    }
+    };
 
     /**
      * Creates middle step from <code>stepsDescriptions</code>.
@@ -360,18 +360,50 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      */
     this._getMiddleStep = (guide, stepsDescriptions, indexOfProcessedStep) => {
         return this._toGuideStep(guide, stepsDescriptions[indexOfProcessedStep - 1], stepsDescriptions[indexOfProcessedStep], stepsDescriptions[indexOfProcessedStep + 1]);
-    }
+    };
 
     /**
      * Creates last step from <code>stepsDescriptions</code>.
-     * @param guide - the guide.
-     * @param stepsDescriptions - array with descriptions of steps.
-     * @returns the last step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {array} stepsDescriptions - array with descriptions of steps.
+     * @return {{}}the last step.
      * @private
      */
     this._getLastStep = (guide, stepsDescriptions) => {
-        return this._toGuideStep(guide, stepsDescriptions[stepsDescriptions.length - 2], stepsDescriptions[stepsDescriptions.length - 1]);
-    }
+        const step = this._toGuideStep(guide, stepsDescriptions[stepsDescriptions.length - 2], stepsDescriptions[stepsDescriptions.length - 1]);
+        step.buttons.push(this._getBackToGuidesButton(guide));
+        step.buttons.push(this._getCancelButton(guide));
+        return step;
+    };
+
+    this._getBackToGuidesButton = (guide) => {
+        return this._getButton($translate.instant('back.to.guides.btn'), () => this._backToGuidesButton(guide), true);
+    };
+
+
+    this._getCancelButton = (guide) => {
+        return this._getButton($translate.instant('common.close'), () => this._cancelGuide(guide, false), true);
+    };
+
+    this._backToGuidesButton = (guide) => {
+        $location.path("guides");
+        this._cancelGuide(guide, false);
+    };
+
+    /**
+     * Cancel the guide.
+     * @param {Shepherd.Tour} guide
+     * @param {boolean} confirmCancel
+     * @private
+     */
+    this._cancelGuide = (guide, confirmCancel = true) => {
+        guide.options.confirmCancel = confirmCancel;
+        guide.cancel();
+
+        if (this.onCancel()) {
+            this.onCancel();
+        }
+    };
 
     /**
      * Converts <code>currentStepDescription</code> to Shepherd Tour step.
@@ -388,31 +420,31 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (previousStepDescription) {
             buttons.push(this._getPreviousButton(guide));
         }
-        if (!!nextStepDescription) {
+        if (nextStepDescription) {
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
             buttons.push(this._getPauseButton(guide));
         }
 
         if (currentStepDescription.skipPoint) {
-            buttons.push(this._getSkipButton(guide, previousStepDescription, currentStepDescription, nextStepDescription))
+            buttons.push(this._getSkipButton(guide, previousStepDescription, currentStepDescription, nextStepDescription));
         }
         step.buttons = buttons;
         return step;
-    }
+    };
 
     this._getPauseButton = (guide) => {
         return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
-    }
+    };
 
     this._getSkipButton = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
         return this._getButton($translate.instant('skip.btn'), () => this._skipSteps(guide), true);
-    }
+    };
 
     this._skipSteps = (guide) => {
         const currentStep = guide.getCurrentStep();
         const currentStepIndex = guide.steps.findIndex(step => currentStep.id === step.id);
         this._startGuide(guide, this._getNextSkipPointId(guide.steps, currentStepIndex));
-    }
+    };
 
     this._getNextSkipPointId = (steps, currentStepIndex) => {
         for (let index = currentStepIndex + 1; index < steps.length; index++) {
@@ -423,7 +455,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
         // if there isn't next step with skipPoint set to true, then return last step id.
         return steps.at(steps.length - 1).id;
-    }
+    };
 
     /**
      * Pauses current ran guide.
@@ -448,7 +480,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (this.onPause()) {
             this.onPause();
         }
-    }
+    };
 
     this._getStepWhichCanBePaused = (steps, stepId) => {
         const index = steps.findIndex(step => step.id === stepId);
@@ -460,7 +492,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             return this._getStepWhichCanBePaused(steps, steps[index - 1].id);
         }
         return undefined;
-    }
+    };
 
     /**
      * Creates a previous button.
@@ -474,7 +506,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide);
         return this._getButton(text, action);
-    }
+    };
 
     this._getPreviousButtonAction = (guide) => {
         return () => {
@@ -497,7 +529,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                             guide.show(nextStep.id);
                         }
                     })
-                    .catch(error => {
+                    .catch(() => {
                         toastr.error($translate.instant('guide.unexpected.error.message'));
                         guide.hide();
                 });
@@ -507,8 +539,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             }
             currentStep.hide();
             guide.show(nextStep.id);
-        }
-    }
+        };
+    };
 
     /**
      * Creates a next button.
@@ -522,7 +554,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const text = $translate.instant('next.btn');
         const action = _getNextButtonAction(guide, currentStepDescription, nextStepDescription);
         return this._getButton(text, action);
-    }
+    };
 
     const _getNextButtonAction = (guide, currentStepDescription, nextStepDescription) => {
         return () => {
@@ -546,8 +578,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                     guide.next();
                 }
             }
-        }
-    }
+        };
+    };
 
     /**
      * Updates guide related values into local store.
@@ -572,34 +604,34 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
 
         this._saveStep(currentStep);
-    }
+    };
 
     this._saveStep = (step) => {
         if (!!step) {
             LocalStorageAdapter.set(GUIDE_ID, step.tour.options.name);
             LocalStorageAdapter.set(GUIDE_CURRENT_STEP_ID, step.options.id);
         }
-    }
+    };
 
     this._addStepToHistory = (step) => {
         const history = this._getHistory();
         history.push(step.options.id);
         LocalStorageAdapter.set(GUIDE_STEP_HISTORY, history);
-    }
+    };
 
     this._getHistory = () => {
-        let stepHistory = LocalStorageAdapter.get(GUIDE_STEP_HISTORY);
+        const stepHistory = LocalStorageAdapter.get(GUIDE_STEP_HISTORY);
         if (stepHistory) {
             return stepHistory;
         }
         return [];
-    }
+    };
 
     this._removeLastStepFromHistory = () => {
         const history = this._getHistory();
         history.splice(history.length - 1, 1);
         LocalStorageAdapter.set(GUIDE_STEP_HISTORY, history);
-    }
+    };
 
     this._getPreviousStepIdFromHistory = () => {
         const history = this._getHistory();
@@ -607,7 +639,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             return history.at(history.length - 2);
         }
         return -1;
-    }
+    };
 
     /**
      * Remove all related data to a guid from local store.
@@ -634,7 +666,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             attachTo = {
                 element: stepDescription.elementSelector,
                 on: stepDescription.placement
-            }
+            };
         }
 
         const title = GuideUtils.unescapeHtml(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.title, stepDescription));
@@ -708,8 +740,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return () => {
             onShow();
             this._whenStepShow(stepDescription);
-        }
-    }
+        };
+    };
 
     this._whenStepShow = (stepDescription) => {
         const currentStep = Shepherd.activeTour.getCurrentStep();
@@ -726,7 +758,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             stepDescription.onScope(scope);
         }
         setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
-    }
+    };
 
     this._toParagraph = (text, textClass) => {
         if (text) {
@@ -806,5 +838,5 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         };
 
         return button;
-    }
+    };
 }
