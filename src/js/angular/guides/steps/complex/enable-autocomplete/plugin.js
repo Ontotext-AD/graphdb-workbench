@@ -3,6 +3,9 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'enable-autocomplete',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            const toastr = services.toastr;
+            const $translate = services.$translate;
+            const $interpolate = services.$interpolate;
             options.mainAction = 'enable-autocomplete';
 
             return [
@@ -18,14 +21,14 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.enable-autocomplete.content',
                     url: '/autocomplete',
                     elementSelector: GuideUtils.getGuideElementSelector('autocompleteCheckbox'),
-                    onNextClick: (guide) => {
-                        GuideUtils.waitFor(GuideUtils.getGuideElementSelector('autocompleteCheckbox', ' input'), 3, false)
-                            .then(autocompleteCheckbox => {
-                                if (!autocompleteCheckbox.is(':checked')) {
-                                    GuideUtils.clickOnGuideElement('autocompleteCheckbox')();
-                                }
-                            });
-                        guide.next();
+                    onNextValidate: (step) => {
+
+                        if (!GuideUtils.isVisible()) {
+                            GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
+                                'guide.step_plugin.enable-autocomplete.error', options);
+                            return false;
+                        }
+                        return true;
                     }
                 }, options)
             },
@@ -34,7 +37,8 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.enable-autocomplete.status_info.content',
                         url: '/autocomplete',
-                        elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus')
+                        elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus'),
+                        canBePaused: false
                     }, options)
                 }
             ]
