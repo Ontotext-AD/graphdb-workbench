@@ -29,6 +29,7 @@ PluginRegistry.add('guide.step', [
                 );
             }
 
+            const importSettingsButtonSelector = GuideUtils.getGuideElementSelector('import-settings-import-button');
             steps.push(...[
                 {
                     guideBlockName: 'clickable-element',
@@ -61,11 +62,24 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
-                        elementSelector: GuideUtils.getGuideElementSelector('import-settings-import-button'),
+                        elementSelector: importSettingsButtonSelector,
                         placement: 'top',
-                        onPreviousClick: (guide) => new Promise(function (resolve) {
+                        onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
                                 .then(() => resolve());
+                        }),
+                        beforeShowPromise: () => new Promise(function (resolve, reject) {
+                            services.GuideUtils.deferredShow(300)()
+                                .then(() => {
+                                    services.GuideUtils.waitFor(importSettingsButtonSelector, 3)
+                                        .then(() => {
+                                            resolve();
+                                        })
+                                        .catch((error) => {
+                                            services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                            reject(error);
+                                        });
+                                });
                         }),
                         onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
@@ -77,10 +91,10 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
-                        onPreviousClick: (guide) => new Promise(function (resolve) {
+                        onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
-                                .then(() => resolve())
-                        }),
+                                .then(() => resolve());
+                        })
                     }, options)
                 }
             ]);
