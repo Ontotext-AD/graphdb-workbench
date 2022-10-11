@@ -187,6 +187,7 @@
     "state.label": "state",
     "download.btn": "Download",
     "skip.btn": "Skip",
+    "back.to.guides.btn": "Back to the guides",
     "show.remaining": "Show remaining",
     "characters.label": "characters",
     "show.first.chars": "Show first 500 characters",
