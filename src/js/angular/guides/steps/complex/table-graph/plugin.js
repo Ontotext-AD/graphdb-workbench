@@ -10,7 +10,6 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step-intro.table-graph',
-                        skipPoint: true,
                         scrollToHandler: GuideUtils.scrollToTop,
                         elementSelector: GuideUtils.getSparqlResultsSelectorForIri(options.iri),
                         onNextClick: (guide, step) => {
