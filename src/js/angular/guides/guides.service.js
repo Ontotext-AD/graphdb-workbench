@@ -11,7 +11,7 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route'];
+GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route', '$timeout'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -138,18 +138,19 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'S
  *     </li>
  * </ul>
  *
- * @param $http - the http client.
- * @param $rootScope - the rootScope.
- * @param $translate - the translation service.
- * @param $interpolate - the interpolation service.
- * @param ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
- * @param $repositories - the repositories service.
- * @param toastr
- * @param $location
- * @param $route
+ * @param {*} $http - the http client.
+ * @param {*} $rootScope - the rootScope.
+ * @param {*} $translate - the translation service.
+ * @param {*} $interpolate - the interpolation service.
+ * @param {*} ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
+ * @param {*} $repositories - the repositories service.
+ * @param {*} toastr
+ * @param {*} $location
+ * @param {*} $route
+ * @param {*} $timeout
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdService, $repositories, toastr, $location, $route) {
+function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdService, $repositories, toastr, $location, $route, $timeout) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -169,8 +170,8 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *     <li>Converts complex step sequence to core steps sequence;</li>
      *     <li>Starts guide from step with id <code>startStepId.</code>
      * </ol>
-     * @param guide - the guide to start as an object.
-     * @param startStepId
+     * @param {*} guide - the guide to start as an object.
+     * @param {*} startStepId
      */
     this.startGuide = (guide, startStepId) => {
         if (guide && guide.options && guide.options.repositoryIdBase) {
@@ -181,7 +182,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             // - myrepo3 and so on
             const repos = $repositories.getRepositories();
             guide.options.repositoryId = guide.options.repositoryIdBase;
-            for (let i = 2; repos.find(repo => repo.id === guide.options.repositoryId); i++) {
+            for (let i = 2; repos.find((repo) => repo.id === guide.options.repositoryId); i++) {
                 guide.options.repositoryId = guide.options.repositoryIdBase + i;
             }
         }
@@ -204,7 +205,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
 
     /**
      * Fetches list with all available guides.
-     * @returns {Promise<[]>} array with guides descriptions. A guide description have to be:
+     * @return {Promise<[]>} array with guides descriptions. A guide description have to be:
      * <pre>
      *     {
      *         name: string,
@@ -219,7 +220,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *  </ul>
      */
     this.getGuides = () => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             $http.get(GuideUtils.GUIDES_LIST_URL)
                 .success(function (data) {
                     angular.forEach(data, (guide, index) => {
@@ -232,11 +233,11 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
                     resolve(data);
                 });
         });
-    }
+    };
 
     /**
      * Returns true if a guide is currently active (even if paused).
-     * @returns {*}
+     * @return {boolean}
      */
     this.isActive = () => {
         return ShepherdService.isActive();
@@ -244,7 +245,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
 
     /**
      * Converts guide steps (array with complex steps) to array with core steps.
-     * @param guide - a guide description:
+     * @param {*} guide - a guide description:
      *
      * <pre>
      *     {
@@ -271,7 +272,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *     </li>
      *  </ul>
      *
-     * @returns arrays with core steps extracted from all 'guide.step' plugins registered in <code>data</code>. Format of a step
+     * @return arrays with core steps extracted from all 'guide.step' plugins registered in <code>data</code>. Format of a step
      * description is:
      *
      * <pre>
@@ -359,6 +360,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *         Default implementation is wait <code>maxWaitTime</code> element with <code>elementSelector</code> to be visible.
      *     </li>
      * </ul>
+     * @return {[]}
      * @private
      */
     this._toStepsDescriptions = (guide) => {
@@ -366,15 +368,15 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             return [];
         }
         let coreSteps = [];
-        guide.steps.forEach(step => {
+        guide.steps.forEach((step) => {
             coreSteps = coreSteps.concat(this._getSteps(step, guide.options));
         });
         return coreSteps;
-    }
+    };
 
     /**
      * Converts a complex step to array with core steps.
-     * @param complexStep - a complex or core step description. Format of the description is:
+     * @param {*} complexStep - a complex or core step description. Format of the description is:
      * <pre>
      *     {
      *         guideBlockName: string,
@@ -389,24 +391,24 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *         <b>options</b> - options of the steps. For example the name of the rdf file which have to be imported.
      *     </li>
      *  </ul>
-     * @param parentOptions - options passed from parent.
-     * @returns {*[]} - an array with core steps.
+     * @param {*}parentOptions - options passed from parent.
+     * @return {*[]} - an array with core steps.
      * @private
      */
     this._getSteps = (complexStep, parentOptions) => {
         let steps = [];
         if (angular.isArray(complexStep)) {
-            complexStep.forEach(stepDescription => {
+            complexStep.forEach((stepDescription) => {
                 steps = steps.concat(this._getSteps(stepDescription, angular.extend({}, complexStep.options, parentOptions)));
             });
         } else {
-            const predefinedStepDescription = PluginRegistry.get('guide.step').find((predefinedStep => predefinedStep.guideBlockName === complexStep.guideBlockName));
+            const predefinedStepDescription = PluginRegistry.get('guide.step').find(((predefinedStep) => predefinedStep.guideBlockName === complexStep.guideBlockName));
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
-                if (!!predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route})), parentOptions));
-                } else if (!!predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route})));
+                if (predefinedStepDescription.getSteps) {
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout})), parentOptions));
+                } else if (predefinedStepDescription.getStep) {
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route, $timeout})));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }
@@ -420,7 +422,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             }
         });
         return steps;
-    }
+    };
 
     /**
      * Subscribes to guide resume event. When event occurred the guide will be start from the step where the guide was paused.
@@ -432,7 +434,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             this.guideResumeSubscription = $rootScope.$on('guideResume', () => {
                 const currentGuideId = ShepherdService.getGuideId();
                 this.getGuides()
-                    .then(guides => {
+                    .then((guides) => {
                         const currentGuide = guides.find((guide) => guide.guideId === currentGuideId);
                         const currentStepId = ShepherdService.getCurrentStepId();
                         this.startGuide(currentGuide, currentStepId);
@@ -443,9 +445,9 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
 
     this._subscribeToGuideCancel = () => {
         ShepherdService.subscribeToGuideCancel(() => $rootScope.$broadcast('guideReset'));
-    }
+    };
 
     this._subscribeToGuidePause = () => {
         ShepherdService.subscribeToGuidePause(() => $rootScope.$broadcast('guidePaused'));
-    }
+    };
 }
