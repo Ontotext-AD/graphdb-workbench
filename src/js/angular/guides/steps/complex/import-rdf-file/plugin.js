@@ -37,6 +37,21 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
+                        // Disable default behavior of service when element is clicked.
+                        advanceOn: undefined,
+                        show: (guide) => () => {
+                            // Add "change" listener to the file upload input, it will be triggered when a file is selected.
+                            $('#ngf-wb-import-uploadFile')
+                                .on('change.importRdfFile', function () {
+                                    // Check if expected file is selected, then process to the next step.
+                                    GuideUtils.waitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 2)
+                                        .then(() => guide.next());
+                                });
+                        },
+                        hide: () => () => {
+                            // Remove ths listener from element. It is important when step is hided.
+                            $('#ngf-wb-import-uploadFile').off('change.importRdfFile');
+                        },
                         onNextValidate: () => {
                             if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile)).length) {
                                 GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
