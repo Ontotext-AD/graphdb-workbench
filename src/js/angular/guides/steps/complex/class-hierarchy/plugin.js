@@ -30,8 +30,8 @@ PluginRegistry.add('guide.step', [
                         content: '',
                         extraContent: options.introExtraContent,
                         url: '/hierarchy',
-                        elementSelector: '#classChart',
-                        placement: 'top'
+                        elementSelector: '#classChart #main-group',
+                        placement: 'left'
                     }, options)
                 });
             }
@@ -44,6 +44,7 @@ PluginRegistry.add('guide.step', [
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.class_hierarchy_zoom.content',
                             url: '/hierarchy',
+                            placement: 'left',
                             elementSelector: selector,
                             onNextClick: (guide, step) => {
                                 GuideUtils.classHierarchyZoom(step.elementSelector);
@@ -58,6 +59,8 @@ PluginRegistry.add('guide.step', [
                                 content: '',
                                 extraContent: zoomIri.postExtraContent,
                                 url: '/hierarchy',
+                                placement: 'left',
+                                beforeShowPromise: GuideUtils.deferredShow(800),
                                 elementSelector: selector
                             }, options)
                         });
