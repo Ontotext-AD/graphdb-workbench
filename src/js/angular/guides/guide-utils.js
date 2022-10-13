@@ -267,6 +267,14 @@ const GuideUtils = (function () {
         return getSparqlResultsSelector('tbody tr:nth-child(' + row + ')');
     };
 
+    const isChecked = (selector) => {
+        return angular.element(selector).is(':checked');
+    };
+
+    const isGuideElementChecked = (selector, postSelect) => {
+        return isChecked(GuideUtils.getGuideElementSelector('autocompleteCheckbox', postSelect));
+    };
+
     return {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
@@ -292,7 +300,9 @@ const GuideUtils = (function () {
         getSparqlEditorSelector,
         getSparqlResultsSelector,
         getSparqlResultsSelectorForIri,
-        getSparqlResultsSelectorForRow
+        getSparqlResultsSelectorForRow,
+        isChecked,
+        isGuideElementChecked
     };
 })();
 
