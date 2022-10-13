@@ -252,7 +252,10 @@ const GuideUtils = (function () {
     };
 
     const getSparqlEditorSelector = (postSelector) => {
-        return getGuideElementSelector('queryEditor .CodeMirror-code', postSelector);
+        if (postSelector) {
+            return getGuideElementSelector('queryEditor', '.CodeMirror-code ' + postSelector);
+        }
+        return getGuideElementSelector('queryEditor', '.CodeMirror-code');
     };
 
     const getSparqlResultsSelector = (postSelector) => {
