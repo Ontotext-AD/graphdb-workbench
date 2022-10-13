@@ -1545,14 +1545,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             const event = d3.event;
             const element = this;
-            if (d3.event.timeStamp - upEventLast < multiClickDelay) {
-                if (virtualClickEventTimer === 1) {
-                    mouseEventTimer = $timeout(function () {
-                        clickedNode(d, element, event);
-                    }, 40 + multiClickDelay - (d3.event.timeStamp - upEventLast));
-                } else if (virtualClickEventTimer === 2) {
-                    // expand node
-                    expandEventHandler(d, 0, element.parentNode);
+            if (!GuidesService.isActive()) {
+                if (d3.event.timeStamp - upEventLast < multiClickDelay) {
+                    if (virtualClickEventTimer === 1) {
+                        mouseEventTimer = $timeout(function () {
+                            clickedNode(d, element, event);
+                        }, 40 + multiClickDelay - (d3.event.timeStamp - upEventLast));
+                    } else if (virtualClickEventTimer === 2) {
+                        // expand node
+                        expandEventHandler(d, 0, element.parentNode);
+                    }
                 }
             }
 

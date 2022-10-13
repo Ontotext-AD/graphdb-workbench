@@ -14,11 +14,11 @@ const BASIC_STEP = {
 };
 
 /**
- * This function will be call before show a step. Step will shown after promise is resolve. It waits element of step to be visible on the page.
- * @param maxWaitTime
- * @param services
- * @param elementSelector
- * @returns {function(): *}
+ * This function will be called before show a step. Step will be shown after promise is resolve. It waits element of step to be visible on the page.
+ * @param {*} services
+ * @param {string} elementSelector
+ * @param {number} maxWaitTime
+ * @return {function(): *}
  */
 const beforeShowPromise = (services, elementSelector, maxWaitTime) => {
     return () => {
@@ -29,22 +29,22 @@ const beforeShowPromise = (services, elementSelector, maxWaitTime) => {
                 // throw the error, otherwise guide will continue with the next step.
                 throw error;
             });
-    }
-}
+    };
+};
 
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'clickable-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'clickable',
+                type: 'clickable'
             };
 
             const stepDescription = angular.extend({}, BASIC_STEP, {
                 advanceOn: {
                     selector: options.elementSelector,
                     event: 'click'
-                },
+                }
             }, options, notOverridable);
 
             if (!stepDescription.beforeShowPromise) {
@@ -57,7 +57,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'read-only-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'readonly',
+                type: 'readonly'
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
@@ -70,7 +70,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'input-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'input',
+                type: 'input'
             };
             const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
@@ -83,7 +83,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'info-message',
         getStep: (options) => {
             const notOverridable = {
-                type: 'readonly',
+                type: 'readonly'
             };
             return angular.extend({}, BASIC_STEP, options, notOverridable);
         }

@@ -1,10 +1,10 @@
-const disableAllNodes = () => () =>{
+const disableAllNodes = () => () => {
     $('.node-wrapper').addClass('disable-visual-graph-node');
-}
+};
 
 const enableAllNodes = () => () => {
     $('.node-wrapper').removeClass('disable-visual-graph-node');
-}
+};
 
 PluginRegistry.add('guide.step', [
     {
@@ -51,13 +51,13 @@ PluginRegistry.add('guide.step', [
                         onPreviousClick: () => new Promise(function (resolve, reject) {
                             $location.url('/graphs-visualizations');
                             $route.reload();
-                            let searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
+                            const searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
                             GuideUtils.waitFor(searchInputSelector, 3)
                                 .then(() => {
                                     GuideUtils.validateTextInput(searchInputSelector, options.easyGraphInputText);
                                     resolve();
                                 })
-                                .catch(() => reject());
+                                .catch((error) => reject(error));
                         }),
                         canBePaused: false,
                         forceReload: true
@@ -73,6 +73,17 @@ PluginRegistry.add('guide.step', [
             const $rootScope = services.$rootScope;
             const $route = services.$route;
             const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
+
+            // Expands visual graph when a node is double-clicked.
+            const dblClickFunction = (guide) => () => {
+                GuideUtils.graphVizExpandNode(elementSelector);
+                guide.getCurrentStep().hide();
+                GuideUtils.awaitAlphaDropD3(null, $rootScope)()
+                    .then(() => {
+                        guide.next();
+                    });
+            };
+
             return [
                 {
                     guideBlockName: 'clickable-element',
@@ -82,10 +93,8 @@ PluginRegistry.add('guide.step', [
                         url: '/graphs-visualizations',
                         canBePaused: false,
                         elementSelector,
-                        advanceOn: {
-                            selector: `.node-wrapper[id^="${options.iri}"] circle`,
-                            event: 'dblclick'
-                        },
+                        // Disable default behavior of service when element is clicked.
+                        advanceOn: undefined,
                         onNextClick: (guide, stepDescription) => {
                             GuideUtils.graphVizExpandNode(stepDescription.elementSelector);
                             guide.getCurrentStep().hide();
@@ -94,15 +103,24 @@ PluginRegistry.add('guide.step', [
                                     guide.next();
                                 });
                         },
+                        show: (guide) => () => {
+                            // Add "dblclick" listener to the element. Processing of double-click event is disabled for the visual graph when guide is started.
+                            // So we have expanded the graph manually when a selected node is double-clicked.
+                            $(elementSelector).on('dblclick.onNodeDbClicked', dblClickFunction(guide));
+                        },
+                        hide: () => () => {
+                            // Remove the "dblclick" listener of element. It is important when step is hided.
+                            $(elementSelector).off('dblclick.onNodeDbClicked');
+                        },
                         beforeShowPromise: () => new Promise(function (resolve, reject) {
                             $route.reload();
                             GuideUtils.deferredShow(50)()
                                 .then(() => {
                                     GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)()
                                         .then(() => resolve())
-                                        .catch(() => reject());
+                                        .catch((error) => reject(error));
                                 });
-                        }),
+                        })
                     }, options)
                 }
             ];
@@ -114,6 +132,28 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             const $rootScope = services.$rootScope;
             const elementSelector = `.node-wrapper[id^="${options.iri}"] circle`;
+
+            let mouseClickTimeStamp;
+            let mouseEventTimer;
+
+            // Expands Node info sidebar panel when a node is clicked.
+            const onClick = (services, guide) => (event) => {
+                if (mouseEventTimer) {
+                    // Cancels expansion of the sidebar panel if user double-clicked.
+                    if (event.timeStamp - mouseClickTimeStamp < 400) {
+                        services.$timeout.cancel(mouseEventTimer);
+                        mouseEventTimer = null;
+                    }
+                } else {
+                    mouseClickTimeStamp = event.timeStamp;
+                    mouseEventTimer = services.$timeout(function () {
+                        GuideUtils.graphVizShowNodeInfo(elementSelector);
+                        mouseEventTimer = null;
+                        guide.next();
+                    }, 500);
+                }
+            };
+
             const steps = [
                 {
                     guideBlockName: 'clickable-element',
@@ -123,9 +163,16 @@ PluginRegistry.add('guide.step', [
                         url: '/graphs-visualizations',
                         elementSelector,
                         canBePaused: false,
-                        advanceOn: {
-                            selector: `.node-wrapper[id^="${options.iri}"] circle`,
-                            event: 'click'
+                        // Disable default behavior of service when element is clicked.
+                        advanceOn: undefined,
+                        show: (guide) => () => {
+                            // Add "click" listener to the element. Processing of click event is disabled for the visual graph when guide is started.
+                            // So we have to open side panel info manually when a selected node is clicked.
+                            $(elementSelector).on('click.onNodeClicked', onClick(services, guide));
+                        },
+                        hide: () => () => {
+                            // Remove the "click" listener of element. It is important when step is hided.
+                            $(elementSelector).off('click.onNodeClicked');
                         },
                         onNextClick: (guide, step) => {
                             GuideUtils.graphVizShowNodeInfo(step.elementSelector);
@@ -147,7 +194,7 @@ PluginRegistry.add('guide.step', [
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.waitFor(closeButtonSelector, 3)
                                 .then(() => {
-                                    $(closeButtonSelector).trigger('click')
+                                    $(closeButtonSelector).trigger('click');
                                     resolve();
                                 }).catch(() => resolve());
                         })
@@ -156,7 +203,7 @@ PluginRegistry.add('guide.step', [
             ];
 
             if (angular.isArray(options.focusProperties)) {
-                options.focusProperties.forEach(focusProperty => {
+                options.focusProperties.forEach((focusProperty) => {
                     if (!angular.isObject(focusProperty)) {
                         focusProperty = {
                             property: focusProperty

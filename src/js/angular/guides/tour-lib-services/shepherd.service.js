@@ -30,8 +30,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates and starts a guide.
-     * @param guideId - a unique ID that identifies the guide.
-     * @param stepsDescriptions - array with core steps. Format of a step is:
+     * @param {string} guideId - a unique ID that identifies the guide.
+     * @param {*} stepsDescriptions - array with core steps. Format of a step is:
      * <pre>
      *     {
      *       title: string,
@@ -114,8 +114,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      *     </li>
      *
      * </ul>
-     * @param startStepId - start step id.
-     * @param clearHistory - if true will clear guide step history.
+     * @param {string} startStepId - start step id.
+     * @param {boolean} clearHistory - if true will clear guide step history.
      */
     this.startGuide = (guideId, stepsDescriptions, startStepId, clearHistory = true) => {
         if (clearHistory) {
@@ -132,6 +132,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Starts guide from the step where it was paused.
+     * @param {string} guideId
+     * @param {*} stepsDescriptions
+     * @param {string} startStepId
      */
     this.resumeGuide = (guideId, stepsDescriptions, startStepId) => {
         LocalStorageAdapter.set(GUIDE_PAUSE, false);
@@ -159,7 +162,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (angular.isFunction(oncancel)) {
             this.onCancel = oncancel;
         }
-    }
+    };
 
     this.subscribeToGuidePause = (onPause) => {
         if (angular.isFunction(onPause)) {
@@ -169,8 +172,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates a guide.
-     * @param guideId - a unique ID that identifies the guide.
-     * @returns {Shepherd.Tour} - created guide.
+     * @param {string} guideId - a unique ID that identifies the guide.
+     * @return {Shepherd.Tour} - created guide.
      */
     this._createGuide = (guideId) => {
         this._subscribeToGuideCanceled();
@@ -188,8 +191,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Transforms <code>stepsDescriptions</code> to Shepherd Tour steps and add it to <code>guide<code>.
-     * @param guide - the guide.
-     * @param stepsDescriptions - array with steps descriptions. The format of a description is:
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {*} stepsDescriptions - array with steps descriptions. The format of a description is:
      *
      * <pre>
      *     {
@@ -283,7 +286,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             guide.addStep(this._getFirstStep(guide, stepsDescriptions));
         }
 
-        // Chek if stepsDescriptions has more than 2 elements. This mean there are middle steps. The middle steps have previous and next steps.
+        // Check if stepsDescriptions has more than 2 elements. This mean there are middle steps. The middle steps have previous and next steps.
         if (stepsDescriptions.length > 2) {
             // Process all steps without first and last one.
             for (let index = 1; index < stepsDescriptions.length - 1; index++) {
@@ -299,25 +302,25 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Starts <code>guide</code> from <code>startStepId</code>
-     * @param guide - the guid to be started.
-     * @param startStepId - star step id. If it is not present the <code>guide</code> will be started from beginning.
+     * @param {Shepherd.Tour} guide - the guid to be started.
+     * @param {string} startStepId - star step id. If it is not present the <code>guide</code> will be started from beginning.
      * @private
      */
     this._startGuide = (guide, startStepId) => {
         LocalStorageAdapter.remove(GUIDE_PAUSE);
 
-        let stepIndex = guide.steps.findIndex((value => value.options.id === startStepId));
+        let stepIndex = guide.steps.findIndex(((value) => value.options.id === startStepId));
         if (stepIndex < 0) {
             stepIndex = 0;
         }
         const step = guide.steps[stepIndex];
         const url = step.options.url;
-        if (!!url) {
+        if (url) {
             $location.url(url);
             $route.reload();
         }
 
-        if (!!step.options.attachTo) {
+        if (step.options.attachTo) {
             GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
                 .catch(() => {
@@ -341,9 +344,9 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates first step from <code>stepsDescriptions</code>.
-     * @param guide - the guide.
-     * @param stepsDescriptions - array with descriptions of steps.
-     * @returns the first step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {*} stepsDescriptions - array with descriptions of steps.
+     * @return {Shepherd.Step} the first step.
      * @private
      */
     this._getFirstStep = function (guide, stepsDescriptions) {
@@ -353,10 +356,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates middle step from <code>stepsDescriptions</code>.
-     * @param guide - the guide.
-     * @param stepsDescriptions - array with descriptions of steps.
-     * @param indexOfProcessedStep - index of step which have to be created.
-     * @returns the created step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {*} stepsDescriptions - array with descriptions of steps.
+     * @param {number} indexOfProcessedStep - index of step which have to be created.
+     * @return {Shepherd.Step} the created step.
      * @private
      */
     this._getMiddleStep = (guide, stepsDescriptions, indexOfProcessedStep) => {
@@ -367,7 +370,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * Creates last step from <code>stepsDescriptions</code>.
      * @param {Shepherd.Tour} guide - the guide.
      * @param {array} stepsDescriptions - array with descriptions of steps.
-     * @return {{}}the last step.
+     * @return {Shepherd.Step} the last step.
      * @private
      */
     this._getLastStep = (guide, stepsDescriptions) => {
@@ -408,11 +411,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Converts <code>currentStepDescription</code> to Shepherd Tour step.
-     * @param guide - the guide.
-     * @param previousStepDescription - the previous step description.
-     * @param currentStepDescription - processed step description.
-     * @param nextStepDescription - the next step description.
-     * @returns created step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {*} previousStepDescription - the previous step description.
+     * @param {*} currentStepDescription - processed step description.
+     * @param {*} nextStepDescription - the next step description.
+     * @return {Shepherd.Step} created step.
      * @private
      */
     this._toGuideStep = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
@@ -427,7 +430,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
 
         if (currentStepDescription.skipPoint) {
-            buttons.push(this._getSkipButton(guide, previousStepDescription, currentStepDescription, nextStepDescription));
+            buttons.push(this._getSkipButton(guide));
         }
         step.buttons = buttons;
         return step;
@@ -437,13 +440,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
     };
 
-    this._getSkipButton = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
+    this._getSkipButton = (guide) => {
         return this._getButton($translate.instant('skip.btn'), () => this._skipSteps(guide), true);
     };
 
     this._skipSteps = (guide) => {
         const currentStep = guide.getCurrentStep();
-        const currentStepIndex = guide.steps.findIndex(step => currentStep.id === step.id);
+        const currentStepIndex = guide.steps.findIndex((step) => currentStep.id === step.id);
         this._startGuide(guide, this._getNextSkipPointId(guide.steps, currentStepIndex));
     };
 
@@ -460,10 +463,12 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Pauses current ran guide.
+     * @param {Shepherd.Tour} guide
+     * @private
      */
     this._pauseGuide = (guide) => {
         guide.hide();
-        let step = this._getStepWhichCanBePaused(guide.steps, guide.getCurrentStep().id);
+        const step = this._getStepWhichCanBePaused(guide.steps, guide.getCurrentStep().id);
         this._saveStep(step);
         LocalStorageAdapter.set(GUIDE_PAUSE, true);
 
@@ -484,7 +489,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     this._getStepWhichCanBePaused = (steps, stepId) => {
-        const index = steps.findIndex(step => step.id === stepId);
+        const index = steps.findIndex((step) => step.id === stepId);
         const step = steps[index];
         if (step.options.canBePaused) {
             return step;
@@ -497,13 +502,11 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates a previous button.
-     * @param guide - the guide.
-     * @param previousStepDescription - previous step description.
-     * @param currentStepDescription - processed step description.
-     * @returns created step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @return {*} created button.
      * @private
      */
-    this._getPreviousButton = (guide, previousStepDescription, currentStepDescription) => {
+    this._getPreviousButton = (guide) => {
         const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide);
         return this._getButton(text, action);
@@ -517,7 +520,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             if (nextStepId === -1) {
                 nextStep = guide.steps.at(0);
             } else {
-                nextStep = guide.steps.find(step => step.options.id === nextStepId);
+                nextStep = guide.steps.find((step) => step.options.id === nextStepId);
             }
 
             const currentStep = guide.getCurrentStep();
@@ -533,7 +536,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                     .catch(() => {
                         toastr.error($translate.instant('guide.unexpected.error.message'));
                         guide.hide();
-                });
+                    });
                 return;
             } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
                 $location.path(nextStep.options.url);
@@ -545,10 +548,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Creates a next button.
-     * @param guide - the guide.
-     * @param currentStepDescription - processed step description.
-     * @param nextStepDescription - next step description.
-     * @returns created step.
+     * @param {Shepherd.Tour} guide - the guide.
+     * @param {*} currentStepDescription - processed step description.
+     * @param {*} nextStepDescription - next step description.
+     * @return {*} created step.
      * @private
      */
     this._getNextButton = (guide, currentStepDescription, nextStepDescription) => {
@@ -567,7 +570,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 if (angular.isFunction(currentStepDescription.onNextClick)) {
                     const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
                     if (onNextResult instanceof Promise) {
-                        onNextResult.catch(error => {
+                        onNextResult.catch(() => {
                             toastr.error($translate.instant('guide.unexpected.error.message'));
                             guide.cancel();
                         });
@@ -592,12 +595,12 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             return;
         }
         const currentStep = activeTour.getCurrentStep();
-        const currentStepIndex = activeTour.steps.findIndex(step => step.id === currentStep.id);
+        const currentStepIndex = activeTour.steps.findIndex((step) => step.id === currentStep.id);
 
         const lastSavedStepId = this.getCurrentStepId();
-        const lastSavedStepIndex = activeTour.steps.findIndex(step => step.id === lastSavedStepId);
+        const lastSavedStepIndex = activeTour.steps.findIndex((step) => step.id === lastSavedStepId);
 
-        // If current step index is greatest than last saved step index this means that next button was clicked.
+        // If current step index is greater than last saved step index this means that next button was clicked.
         if (currentStepIndex > lastSavedStepIndex) {
             this._addStepToHistory(currentStep);
         } else if (lastSavedStepIndex > currentStepIndex) {
@@ -608,7 +611,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     this._saveStep = (step) => {
-        if (!!step) {
+        if (step) {
             LocalStorageAdapter.set(GUIDE_ID, step.tour.options.name);
             LocalStorageAdapter.set(GUIDE_CURRENT_STEP_ID, step.options.id);
         }
@@ -654,16 +657,18 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     /**
+     *
      * Creates a Shepherd Tour step and fill it with base properties from <code>stepDescription</code>.
-     * @param $translate
-     * @param stepDescription - step description. The format of a description is:
-     * @param onShow - function which will be executed when popup dialog shown.
-     * @returns created step.
+     * @param {Shepherd.Tour} guide
+     * @param {*} $translate
+     * @param {*} stepDescription
+     * @param {function} onShow - function which will be executed when popup dialog shown.
+     * @return {*}
      * @private
      */
     this._toBaseGuideStep = (guide, $translate, stepDescription, onShow) => {
         let attachTo;
-        if (!!stepDescription.elementSelector) {
+        if (stepDescription.elementSelector) {
             attachTo = {
                 element: stepDescription.elementSelector,
                 on: stepDescription.placement
@@ -681,7 +686,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             progress.setAttribute('tooltip-placement', 'bottom');
             progress.setAttribute('tooltip-trigger', 'mouseenter');
             progress.setAttribute('tooltip-append-to-body', 'false');
-            progress.innerText = $translate.instant('guide.block.progress', {n: stepDescription.stepN + 1, nn: stepDescription.stepsTotalN});
+            progress.innerText = $translate.instant('guide.block.progress', {
+                n: stepDescription.stepN + 1,
+                nn: stepDescription.stepsTotalN
+            });
             extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
@@ -735,7 +743,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 stepDescription.show(guide)();
                 onShow();
                 this._whenStepShow(stepDescription);
-            }
+            };
         }
 
         return () => {
@@ -797,7 +805,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         switch (stepDescription.type) {
             case 'clickable':
                 iconName = 'focus';
-                iconTooltip = 'mouse'
+                iconTooltip = 'mouse';
                 break;
             case 'input':
                 iconName = 'edit';
@@ -822,10 +830,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     /**
      * Created a base button.
-     * @param text - the text of button.
-     * @param isSecondary - if true will be styled as secondary button.
-     * @param action - to be executed when button is clicked.
-     * @returns created button.
+     * @param {string} text - the text of button.
+     * @param {function} action - to be executed when button is clicked.
+     * @param {boolean} isSecondary - if true will be styled as secondary button.
+     * @return {*} created button.
      */
     this._getButton = (text, action, isSecondary) => {
         const button = {
