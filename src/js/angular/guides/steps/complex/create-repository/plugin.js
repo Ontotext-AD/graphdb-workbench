@@ -5,6 +5,8 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             options.mainAction = 'create-repository';
 
+            const repositoryIdInputSelector = GuideUtils.getGuideElementSelector('graphDBRepositoryIdInput');
+            const repositoryId = options.repositoryId;
             const steps = [
                 {
                     guideBlockName: 'click-main-menu',
@@ -34,19 +36,20 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.repository_id.content',
                         url: '/repository/create/graphdb',
-                        elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryIdInput'),
-                        onNextValidate: (step) => GuideUtils.validateTextInput(step.elementSelector, step.repositoryId)
+                        elementSelector: repositoryIdInputSelector,
+                        onNextValidate: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId)
                     }, options)
                 }
             ];
 
-            if (!!options.rulesetName) {
+            if (options.rulesetName) {
                 steps.push({
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.ruleset_dropdown.content',
                         url: '/repository/create/graphdb',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
+                        show: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId),
                         rulesetName: options.rulesetName
                     }, options)
                 });
@@ -57,6 +60,7 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.create_repository.save_button.content',
                     url: '/repository/create/graphdb',
                     elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryCrateButton'),
+                    show: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId),
                     onNextClick: GuideUtils.clickOnGuideElement('graphDBRepositoryCrateButton')
                 }, options)
             });

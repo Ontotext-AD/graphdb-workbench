@@ -23,7 +23,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.table-graph-overview',
                         scrollToHandler: GuideUtils.scrollToTop,
-                        elementSelector: GuideUtils.getSparqlResultsSelector(),
+                        elementSelector: GuideUtils.getSparqlResultsSelector() + ' tbody',
                         placement: 'top'
                     }, options)
                 }
@@ -96,7 +96,7 @@ PluginRegistry.add('guide.step', [
                         steps.push({
                             guideBlockName: 'read-only-element',
                             options: angular.extend({}, {
-                                elementSelector: GuideUtils.getSparqlResultsSelector()
+                                elementSelector: GuideUtils.getSparqlResultsSelector() + ' tbody'
                             }, angular.extend({}, options, subStep))
                         });
                     }
