@@ -847,7 +847,7 @@ describe('Repositories', () => {
     }
 
     function getRepositoryFtsCheckbox() {
-        return getRepositoryCreateForm().find('#fts');
+        return getRepositoryCreateForm().find('#enableFtsIndex');
     }
 
     function getSaveRepositoryButton() {
