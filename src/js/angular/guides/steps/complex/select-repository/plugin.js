@@ -5,7 +5,7 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             options.mainAction = 'select-repository';
 
-            let repositoryButtonSelector = GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`);
+            const repositoryButtonSelector = GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`);
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
