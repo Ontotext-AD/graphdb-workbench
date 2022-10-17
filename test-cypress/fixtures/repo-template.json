@@ -76,15 +76,30 @@
             "name": "entityIdSize",
             "value": "32"
         },
-        "fts": {
+        "enableFtsIndex": {
             "label": "Enable full-text search",
-            "name": "fts",
+            "name": "enableFtsIndex",
             "value": "true"
         },
-        "ftsLanguages": {
+        "ftsIndexes": {
             "label": "Enter language for full-text search",
-            "name": "ftsLanguages",
-            "value": ""
+            "name": "ftsIndexes",
+            "value": "default, iri"
+        },
+        "ftsStringLiteralsIndex": {
+            "label": "FTS index for xsd:string literals",
+            "name": "ftsStringLiteralsIndex",
+            "value": "default"
+        },
+        "ftsIrisIndex": {
+            "label": "FTS index for full-text indexing of IRIs",
+            "name": "ftsIrisIndex",
+            "value": "none"
+        },
+        "ftsDefaultAnalyzer": {
+            "label": "Analyzer for the default index",
+            "name": "ftsDefaultAnalyzer",
+            "value": "standard"
         },
         "throwQueryEvaluationExceptionOnTimeout": {
             "label": "Throw exception on query time-out",

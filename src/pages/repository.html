@@ -296,21 +296,52 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" tooltip="{{'repoTooltips.fts' | translate}}">
-                                    <input id="fts" name="fts" ng-true-value="'true'"
+                                <label class="padding-label" tooltip="{{'repoTooltips.enableFtsIndex' | translate}}">
+                                    <input id="enableFtsIndex" name="enableFtsIndex" ng-true-value="'true'"
                                            ng-false-value="'false'" type="checkbox"
-                                           ng-model="repositoryInfo.params.fts.value"/>
-                                    {{repositoryInfo.params.fts.label}}
+                                           ng-model="repositoryInfo.params.enableFtsIndex.value"/>
+                                    {{repositoryInfo.params.enableFtsIndex.label}}
                                 </label>
                             </div>
                         </div>
                         <div class="form-group row indented-div">
                             <label
-                                    class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsLanguages.label' | translate}}</label>
-                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.ftsLanguages' | translate}}">
-                                <input class="form-control" id="ftsLanguages" type="text" name="ftsLanguages"
-                                       ng-model="repositoryInfo.params.ftsLanguages.value"
-                                       ng-disabled="repositoryInfo.params.fts.value === 'false'"/>
+                                    class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsIndexes.label' | translate}}</label>
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.ftsIndexes' | translate}}">
+                                <input class="form-control" id="ftsIndexes" type="text" name="ftsIndexes"
+                                       ng-model="repositoryInfo.params.ftsIndexes.value"
+                                       ng-disabled="repositoryInfo.params.enableFtsIndex.value === 'false'"/>
+                            </div>
+                        </div>
+                        <div class="form-group row indented-div">
+                            <label
+                                class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsStringLiteralsIndex.label' | translate}}</label>
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.ftsStringLiteralsIndex' | translate}}">
+                                <input class="form-control" id="ftsStringLiteralsIndex" type="text"
+                                       name="ftsStringLiteralsIndex"
+                                       ng-model="repositoryInfo.params.ftsStringLiteralsIndex.value"
+                                       ng-disabled="repositoryInfo.params.enableFtsIndex.value === 'false'"/>
+                            </div>
+                        </div>
+                        <div class="form-group row indented-div">
+                            <label
+                                class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsIrisIndex.label' | translate}}</label>
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.ftsIrisIndex' | translate}}">
+                                <input class="form-control" id="ftsIrisIndex" type="text"
+                                       name="ftsIrisIndex"
+                                       ng-model="repositoryInfo.params.ftsIrisIndex.value"
+                                       ng-disabled="repositoryInfo.params.enableFtsIndex.value === 'false'"/>
+                            </div>
+                        </div>
+                        <div class="form-group row indented-div" ng-if="false">
+                            <!-- TODO enable when the configuration should be shown -->
+                            <label
+                                class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsDefaultAnalyzer.label' | translate}}</label>
+                            <div class="col-xs-3 col-md-2" tooltip="{{'repoTooltips.ftsDefaultAnalyzer' | translate}}">
+                                <input class="form-control" id="ftsDefaultAnalyzer" type="text"
+                                       name="ftsDefaultAnalyzer"
+                                       ng-model="repositoryInfo.params.ftsDefaultAnalyzer.value"
+                                       ng-disabled="repositoryInfo.params.enableFtsIndex.value === 'false'"/>
                             </div>
                         </div>
                         <h5>{{'menu.queries.and.updates.label' | translate}}</h5>
