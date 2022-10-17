@@ -971,6 +971,7 @@
     "repoTooltips.shaclOptions.performanceLogging": "Log (INFO) the execution time per shape. It is recommended to disable parallel validation and caching of select nodes when this is enabled.",
     "repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions": "Activates RDF4J's SHACL extensions that provide additional functionality (experimental).",
     "repoTooltips.shaclOptions.dashDataShapes": "Activates DASH Data Shapes extensions that provide additional functionality (experimental).",
+    "repoTooltips.shaclOptions.shapesGraph": "Sets the named graphs where SHACL shapes can be stored. The list is comma-delimited.",
     "repoTooltips.entityIdSize": "Defines the bit size of internal IDs used to index entities (URIs, blank nodes, literals, and RDF* embedded triples).<br>Use 40 bit ID only if you expect more than 2 billion unique RDF values.",
     "repoTooltips.enableContextIndex": "Builds an additional Context-Predicate-Subject-Object index to boost the SPARQL query performance of queries with GRAPH/FROM/FROM NAMED clauses.",
     "repoTooltips.enablePredicateList": "Enables the mappings from an entity (subject or object) to its predicates; enabling it can significantly speed up queries that use wildcard predicate patterns.",

@@ -254,6 +254,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="offset-xs-1 offset-md-4 offset-lg-3">
+                                        <label
+                                            class="col-lg-2 col-form-label">{{repositoryInfo.params.shapesGraph.label | translate}}</label>
+                                        <div class="col-lg-6" tooltip="{{'repoTooltips.shaclOptions.shapesGraph' | translate}}">
+                                            <input class="form-control" id="shapesGraph" type="text" name="shapesGraph"
+                                                   ng-model="repositoryInfo.params.shapesGraph.value"/>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <h5>{{'repo.indexing.section' | translate}}</h5>
