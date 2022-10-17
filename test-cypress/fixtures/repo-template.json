@@ -77,12 +77,12 @@
             "value": "32"
         },
         "enableFtsIndex": {
-            "label": "Enable full-text search",
+            "label": "Enable full-text search (FTS) index",
             "name": "enableFtsIndex",
             "value": "true"
         },
         "ftsIndexes": {
-            "label": "Enter language for full-text search",
+            "label": "FTS indexes to build (comma delimited)",
             "name": "ftsIndexes",
             "value": "default, iri"
         },
