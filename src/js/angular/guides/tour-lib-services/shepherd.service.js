@@ -426,7 +426,6 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
         if (nextStepDescription) {
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
-            buttons.push(this._getPauseButton(guide));
         }
 
         if (currentStepDescription.skipPoint) {
