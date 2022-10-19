@@ -311,7 +311,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             scope.currentTabConfig.timeFinished = Date.now();
                             scope.currentTabConfig.timeTook = (scope.currentTabConfig.timeFinished - scope.queryStartTime) / 1000;
 
-                            const customError = createCustomError(-1, $translate.instant('query.editor.inactive.plugin.warning.msg', {connectorName: res.data.connectorName, pluginName: res.data.pluginName}));
+                            const customErrorText = $translate.instant('query.editor.inactive.plugin.warning.msg', {connectorName: res.data.connectorName, pluginName: res.data.pluginName});
+                            const customError = createCustomError(-1, customErrorText, customErrorText);
 
                             yasr.results = {
                                 getException: function () {
