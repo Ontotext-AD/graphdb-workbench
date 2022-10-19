@@ -76,16 +76,17 @@ PluginRegistry.add('guide.step', [
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             options.title = 'guide.step_plugin.class-hierarchy-instances.title';
-
+            const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
+            const clasInstanceSelector = GuideUtils.getGuideElementSelector('class-' + options.iri);
             const steps = [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances.content',
                         url: '/hierarchy',
-                        elementSelector: GuideUtils.getGuideElementSelector('class-' + options.iri),
-                        onNextClick: (guide, step) => {
-                            GuideUtils.classHierarchyFocus(step.elementSelector);
+                        elementSelector: clasInstanceSelector,
+                        onNextClick: (guide) => {
+                            GuideUtils.classHierarchyFocus(clasInstanceSelector);
                             guide.next();
                         }
                     }, options)
@@ -98,6 +99,11 @@ PluginRegistry.add('guide.step', [
                         elementSelector: '.rdf-info-side-panel div',
                         canBePaused: false,
                         placement: 'left',
+                        onPreviousClick: () => new Promise(function (resolve) {
+                            GuideUtils.waitFor(closeButtonSelector, 1)
+                                .then(() => $(closeButtonSelector).trigger('click'));
+                            resolve();
+                        }),
                         beforeShowPromise: GuideUtils.deferredShow(800)
                     }, options)
                 }
@@ -125,14 +131,32 @@ PluginRegistry.add('guide.step', [
             }
 
             if (options.followCountLink) {
-                const selector = GuideUtils.getGuideElementSelector('instances-count');
+                const instanceCountSelector = GuideUtils.getGuideElementSelector('instances-count');
                 steps.push({
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-count.content',
                         url: '/hierarchy',
                         canBePaused: false,
-                        elementSelector: selector,
+                        elementSelector: instanceCountSelector,
+                        beforeShowPromise: () => new Promise(function (resolve, reject) {
+                            if (!GuideUtils.isVisible(closeButtonSelector)) {
+                                GuideUtils.waitFor(clasInstanceSelector, 3)
+                                    .then(() => {
+                                        GuideUtils.classHierarchyFocus(clasInstanceSelector);
+                                        GuideUtils.waitFor(instanceCountSelector, 3)
+                                            .then(() => {
+                                                // Wait a little time animation to complete.
+                                                GuideUtils.deferredShow(500)()
+                                                    .then(() => resolve());
+                                            })
+                                            .catch((error) => reject(error));
+                                    })
+                                    .catch((error) => resolve(error));
+                            } else {
+                                resolve();
+                            }
+                        }),
                         onNextClick: (guide, step) => {
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'));
@@ -168,7 +192,6 @@ PluginRegistry.add('guide.step', [
                 });
             }
 
-            const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             steps.push({
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
