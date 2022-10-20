@@ -185,6 +185,9 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             for (let i = 2; repos.find((repo) => repo.id === guide.options.repositoryId); i++) {
                 guide.options.repositoryId = guide.options.repositoryIdBase + i;
             }
+
+            guide.options.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName, {});
+            guide.options.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription, {});
         }
 
         const stepsDescriptions = this._toStepsDescriptions(guide);

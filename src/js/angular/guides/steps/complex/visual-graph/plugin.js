@@ -242,11 +242,13 @@ PluginRegistry.add('guide.step', [
                         };
                     }
                     const translationIdSuffix = focusProperty.property === 'types' ? '-types' : '-property';
+                    const content = focusProperty.skipGenericMessage && focusProperty.message ?
+                        null : 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.content';
                     steps.push({
                         guideBlockName: 'read-only-element',
                         options: angular.extend({}, {
                             title: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.title',
-                            content: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.content',
+                            content: content,
                             url: '/graphs-visualizations',
                             canBePaused: false,
                             placement: 'left',
