@@ -56895,7 +56895,7 @@ var root = module.exports = function(yasr) {
 		
 		var mode = yasr.results.getType();
 		if (mode) {
-			if (mode == "json") {
+			if (mode === "json") {
 				mode = {name: "javascript", json: true};
 			}
 			cmOptions.mode = mode;
@@ -56917,7 +56917,7 @@ var root = module.exports = function(yasr) {
 		if (!yasr.results) return false;
 		if (!yasr.results.getOriginalResponseAsString) return false;
 		var response = yasr.results.getOriginalResponseAsString();
-		if ((!response || response.length == 0) && yasr.results.getException()) return false;//in this case, show exception instead, as we have nothing to show anyway
+		if ((!response || response.length === 0) && yasr.results.getException()) return false;//in this case, show exception instead, as we have nothing to show anyway
 		return true;
 	};
 	
@@ -56926,7 +56926,7 @@ var root = module.exports = function(yasr) {
 		var contentType = yasr.results.getOriginalContentType();
 		var type = yasr.results.getType();
 		return {
-			getContent: function() {return yasr.results.getOriginalResponse();},
+			getContent: function() {return yasr.results.getOriginalResponseAsString();},
 			filename: "queryResults" + (type? "." + type: ""),
 			contentType: (contentType? contentType: "text/plain"),
 			buttonTitle: yasr.translate('yasr.btn.title.raw')
