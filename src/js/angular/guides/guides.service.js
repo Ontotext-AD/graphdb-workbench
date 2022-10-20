@@ -406,9 +406,9 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout})), parentOptions));
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService})), parentOptions));
                 } else if (predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route, $timeout})));
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route, $timeout, ShepherdService})));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }

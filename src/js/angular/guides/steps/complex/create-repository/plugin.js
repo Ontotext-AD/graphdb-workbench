@@ -49,7 +49,9 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.create_repository.ruleset_dropdown.content',
                         url: '/repository/create/graphdb',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
-                        show: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId),
+                        show: () => () => {
+                            GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId);
+                        },
                         rulesetName: options.rulesetName
                     }, options)
                 });
@@ -60,7 +62,9 @@ PluginRegistry.add('guide.step', [
                     content: 'guide.step_plugin.create_repository.save_button.content',
                     url: '/repository/create/graphdb',
                     elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryCrateButton'),
-                    show: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId),
+                    show: () => () => {
+                        GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId);
+                    },
                     onNextClick: GuideUtils.clickOnGuideElement('graphDBRepositoryCrateButton')
                 }, options)
             });

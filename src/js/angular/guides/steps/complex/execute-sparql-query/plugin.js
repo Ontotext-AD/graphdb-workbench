@@ -6,6 +6,8 @@ PluginRegistry.add('guide.step', [
             const toastr = services.toastr;
             const $translate = services.$translate;
             const $interpolate = services.$interpolate;
+            const $location = services.$location;
+            const $route = services.$route;
             options.mainAction = 'execute-sparql-query';
 
             const code = document.createElement('code');
@@ -49,11 +51,11 @@ PluginRegistry.add('guide.step', [
                                         .then(() => resolve())
                                         .catch((error) => {
                                             services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                            reject();
+                                            reject(error);
                                         });
                                 });
                         }),
-                        onNextValidate: (step) => {
+                        onNextValidate: () => {
                             const editorQuery = GuideUtils.removeWhiteSpaces(window.editor.getValue());
                             const stepQuery = GuideUtils.removeWhiteSpaces(query);
                             if (editorQuery !== stepQuery) {
@@ -69,21 +71,21 @@ PluginRegistry.add('guide.step', [
                             overwriteQuery = true;
                             return true;
                         },
-                        onPreviousClick: () => new Promise(function (resolve, reject) {
-                            const currentQuery = index === 0 ? defaultQuery : queries[index - 1];
-                            const previousQuery = queries[index];
-                            window.editor.setValue(previousQuery);
-                            // when guide is on first sparql query step no need to populate the result of query.
+                        initPreviousStep: () => new Promise((resolve, reject) => {
                             if (index === 0) {
-                                window.editor.setValue(currentQuery);
+                                window.editor.setValue(defaultQuery);
                                 resolve();
                             } else {
-                                GuideUtils.clickOnGuideElement('runSparqlQuery')()
-                                    .then(() => resolve())
-                                    .catch(() => reject())
-                                    .finally(() => {
-                                        window.editor.setValue(currentQuery);
-                                    });
+                                if ('/sparql' !== $location.url()) {
+                                    $location.url('/sparql');
+                                    $route.reload();
+                                }
+                                GuideUtils.waitFor(GuideUtils.getSparqlEditorSelector(), 3)
+                                    .then(() => {
+                                        window.editor.setValue(queries[index - 1]);
+                                        resolve();
+                                    })
+                                    .catch((error) => reject(error));
                             }
                         }),
                         scrollToHandler: GuideUtils.scrollToTop,
@@ -103,7 +105,21 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('runSparqlQuery'),
                         onNextClick: (guide) => GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next()),
                         scrollToHandler: GuideUtils.scrollToTop,
-                        canBePaused: false
+                        canBePaused: false,
+                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                .then(() => {
+                                    const currentStepId = services.ShepherdService.getCurrentStepId();
+                                    // Skip expanding of node if last step is "visual-graph-expand"
+                                    if (currentStepId === stepId) {
+                                        resolve();
+                                    } else {
+                                        GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => resolve()).catch((error) => reject(error));
+                                    }
+                                })
+                                .catch((error) => reject(error));
+                        })
                     }, options)
                 });
                 steps.push({
@@ -116,18 +132,27 @@ PluginRegistry.add('guide.step', [
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.resultExtraContent,
-                        onPreviousClick: () => new Promise(function (resolve, reject) {
-                            const previousQuery = queries[index - 1];
-                            window.editor.setValue(previousQuery);
-                            GuideUtils.clickOnGuideElement('runSparqlQuery')()
-                                .then(() => resolve())
-                                .catch(() => reject())
-                                .finally(() => {
-                                    const currentQuery = queries[index];
-                                    window.editor.setValue(currentQuery);
-                                });
-                        }),
-                        canBePaused: false
+                        canBePaused: false,
+                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                            if ('/sparql' !== $location.url()) {
+                                $location.url('/sparql');
+                                $route.reload();
+                                GuideUtils.waitFor(GuideUtils.getSparqlEditorSelector())
+                                    .then(() => {
+                                        window.editor.setValue(query);
+                                        GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => resolve()).catch((error) => reject(error));
+                                    })
+                                    .catch((error) => reject(error));
+                            } else {
+                                const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                                previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                    .then(() => {
+                                        window.editor.setValue(query);
+                                        resolve();
+                                    })
+                                    .catch((error) => reject(error));
+                            }
+                        })
                     }, options)
                 });
             });

@@ -11,7 +11,7 @@ PluginRegistry.add('guide.step', [
                     forceReload: true,
                     resourceUrl: services.GuideUtils.toResourceDownloadUrl(options)
                 }, options)
-            }
+            };
         }
     }]
 );

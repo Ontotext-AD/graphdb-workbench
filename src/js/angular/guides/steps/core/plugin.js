@@ -44,7 +44,8 @@ PluginRegistry.add('guide.step', [
                 advanceOn: {
                     selector: options.elementSelector,
                     event: 'click'
-                }
+                },
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
             }, options, notOverridable);
 
             if (!stepDescription.beforeShowPromise) {
@@ -59,7 +60,10 @@ PluginRegistry.add('guide.step', [
             const notOverridable = {
                 type: 'readonly'
             };
-            const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
+            const stepDescription = angular.extend({}, BASIC_STEP, {
+                    initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                },
+                options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
@@ -72,7 +76,9 @@ PluginRegistry.add('guide.step', [
             const notOverridable = {
                 type: 'input'
             };
-            const stepDescription = angular.extend({}, BASIC_STEP, options, notOverridable);
+            const stepDescription = angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+            }, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
@@ -81,20 +87,20 @@ PluginRegistry.add('guide.step', [
     },
     {
         guideBlockName: 'info-message',
-        getStep: (options) => {
+        getStep: (options, services) => {
             const notOverridable = {
                 type: 'readonly'
             };
-            return angular.extend({}, BASIC_STEP, options, notOverridable);
+            return angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+            }, options, notOverridable);
         }
     },
     {
         guideBlockName: 'guide-end',
-        getStep: (options) => {
+        getStep: (options, services) => {
             const notOverridable = {
-                type: 'readonly'
-            };
-            return angular.extend({}, BASIC_STEP, options, {
+                type: 'readonly',
                 title: 'guide.step_plugin.guide-ended.title',
                 content: 'guide.step_plugin.guide-ended.content',
                 show: (guide) => () => {
@@ -103,7 +109,10 @@ PluginRegistry.add('guide.step', [
                 hide: (guide) => () => {
                     guide.options.confirmCancel = true;
                 }
-            }, notOverridable);
+            };
+            return angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+            }, options, notOverridable);
         }
     }
 ]);
