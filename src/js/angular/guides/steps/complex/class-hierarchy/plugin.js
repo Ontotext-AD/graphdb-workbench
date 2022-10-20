@@ -1,3 +1,16 @@
+const reloadAndOpenInfoPanel = (services, clasInstanceSelector, resolve, reject) => {
+    services.$location.url('/hierarchy');
+    services.$route.reload();
+    services.GuideUtils.waitFor(clasInstanceSelector, 3)
+        .then(() => {
+            services.GuideUtils.classHierarchyFocus(clasInstanceSelector);
+            // Wait a little time animation to complete.
+            services.GuideUtils.deferredShow(500)()
+                .then(() => resolve());
+        })
+        .catch((error) => reject(error));
+};
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'class-hierarchy',
@@ -75,6 +88,8 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'class-hierarchy-instances',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            const $location = services.$location;
+            const $route = services.$route;
             options.title = 'guide.step_plugin.class-hierarchy-instances.title';
             const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             const clasInstanceSelector = GuideUtils.getGuideElementSelector('class-' + options.iri);
@@ -88,7 +103,14 @@ PluginRegistry.add('guide.step', [
                         onNextClick: (guide) => {
                             GuideUtils.classHierarchyFocus(clasInstanceSelector);
                             guide.next();
-                        }
+                        },
+                        initPreviousStep: () => new Promise((resolve, reject) => {
+                            if (!GuideUtils.isVisible(closeButtonSelector)) {
+                                reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector, resolve, reject);
+                            } else {
+                                resolve();
+                            }
+                        })
                     }, options)
                 },
                 {
@@ -99,12 +121,12 @@ PluginRegistry.add('guide.step', [
                         elementSelector: '.rdf-info-side-panel div',
                         canBePaused: false,
                         placement: 'left',
+                        beforeShowPromise: GuideUtils.deferredShow(800),
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.waitFor(closeButtonSelector, 1)
                                 .then(() => $(closeButtonSelector).trigger('click'));
                             resolve();
-                        }),
-                        beforeShowPromise: GuideUtils.deferredShow(800)
+                        })
                     }, options)
                 }
             ];
@@ -130,8 +152,8 @@ PluginRegistry.add('guide.step', [
                 });
             }
 
+            const instanceCountSelector = GuideUtils.getGuideElementSelector('instances-count');
             if (options.followCountLink) {
-                const instanceCountSelector = GuideUtils.getGuideElementSelector('instances-count');
                 steps.push({
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
@@ -139,24 +161,6 @@ PluginRegistry.add('guide.step', [
                         url: '/hierarchy',
                         canBePaused: false,
                         elementSelector: instanceCountSelector,
-                        beforeShowPromise: () => new Promise(function (resolve, reject) {
-                            if (!GuideUtils.isVisible(closeButtonSelector)) {
-                                GuideUtils.waitFor(clasInstanceSelector, 3)
-                                    .then(() => {
-                                        GuideUtils.classHierarchyFocus(clasInstanceSelector);
-                                        GuideUtils.waitFor(instanceCountSelector, 3)
-                                            .then(() => {
-                                                // Wait a little time animation to complete.
-                                                GuideUtils.deferredShow(500)()
-                                                    .then(() => resolve());
-                                            })
-                                            .catch((error) => reject(error));
-                                    })
-                                    .catch((error) => resolve(error));
-                            } else {
-                                resolve();
-                            }
-                        }),
                         onNextClick: (guide, step) => {
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'));
@@ -164,6 +168,7 @@ PluginRegistry.add('guide.step', [
                         }
                     }, options)
                 });
+
                 steps.push({
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
@@ -187,7 +192,8 @@ PluginRegistry.add('guide.step', [
                         onNextClick: (guide) => {
                             window.history.back();
                             guide.next();
-                        }
+                        },
+                        initPreviousStep: () => Promise.resolve()
                     }, options)
                 });
             }
@@ -202,13 +208,36 @@ PluginRegistry.add('guide.step', [
                     placement: 'left',
                     // If we followed the count link we come back here from another view
                     // and the side panel needs time to open
-                    beforeShowPromise: options.followCountLink ? GuideUtils.deferredShow(1500) : null,
+                    beforeShowPromise: options.followCountLink ? GuideUtils.deferredShow(1500) : Promise.resolve(),
                     advanceOn: {
                         selector: closeButtonSelector,
                         event: 'click'
                     },
                     onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3)
-                        .then(() => $(closeButtonSelector).trigger('click'))
+                        .then(() => $(closeButtonSelector).trigger('click')),
+                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+
+                        const currentStepId = services.ShepherdService.getCurrentStepId();
+                        // If method is called from same step just click count link
+                        if (currentStepId === stepId && options.followCountLink) {
+                            GuideUtils.waitFor(instanceCountSelector, 3)
+                                .then(() => {
+                                    $(instanceCountSelector).trigger('click');
+                                    GuideUtils.waitFor(GuideUtils.getSparqlResultsSelector(), 3)
+                                        .then(() => {
+                                            GuideUtils.deferredShow(50)()
+                                                .then(() => resolve())
+                                                .catch((error) => reject(error));
+                                        })
+                                        .catch((error) => reject(error));
+                                    resolve();
+                                })
+                                .catch((error) => reject(error));
+                        } else {
+                            // If is called from other step we have to reload and open the info panel.
+                            reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector, resolve, reject);
+                        }
+                    })
                 }, options)
             });
 

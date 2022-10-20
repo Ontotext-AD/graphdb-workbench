@@ -59,6 +59,18 @@ PluginRegistry.add('guide.step', [
                                 })
                                 .catch((error) => reject(error));
                         }),
+                        initPreviousStep: () => new Promise(function (resolve, reject) {
+                            const url = '/graphs-visualizations?uri=' + options.iri;
+                            if (url !== decodeURIComponent($location.url())) {
+                                $location.url(url);
+                                $route.reload();
+                                GuideUtils.waitFor(`.node-wrapper[id^="${options.iri}"] circle`, 3)
+                                    .then(() => resolve())
+                                    .catch((error) => reject(error));
+                            } else {
+                                resolve();
+                            }
+                        }),
                         canBePaused: false,
                         forceReload: true
                     }, options)
@@ -95,8 +107,8 @@ PluginRegistry.add('guide.step', [
                         elementSelector,
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
-                        onNextClick: (guide, stepDescription) => {
-                            GuideUtils.graphVizExpandNode(stepDescription.elementSelector);
+                        onNextClick: (guide) => {
+                            GuideUtils.graphVizExpandNode(elementSelector);
                             guide.getCurrentStep().hide();
                             GuideUtils.awaitAlphaDropD3(null, $rootScope)()
                                 .then(() => {
@@ -120,6 +132,26 @@ PluginRegistry.add('guide.step', [
                                         .then(() => resolve())
                                         .catch((error) => reject(error));
                                 });
+                        }),
+                        initPreviousStep: (services, stepId) => new Promise(function (resolve, reject) {
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            previousStep.options.initPreviousStep(services, previousStep.id)
+                                .then(() => {
+                                    const currentStepId = services.ShepherdService.getCurrentStepId();
+                                    // Skip expanding of node if last step is "visual-graph-expand"
+                                    if (currentStepId === stepId) {
+                                        resolve();
+                                    } else {
+                                        GuideUtils.graphVizExpandNode(elementSelector);
+                                        GuideUtils.deferredShow(50)()
+                                            .then(() => {
+                                                GuideUtils.awaitAlphaDropD3(null, $rootScope)()
+                                                    .then(() => resolve())
+                                                    .catch((error) => reject(error));
+                                            });
+                                    }
+                                })
+                                .catch((error) => reject(error));
                         })
                     }, options)
                 }
@@ -296,7 +328,17 @@ PluginRegistry.add('guide.step', [
                         elementSelector,
                         show: disableAllNodes,
                         hide: enableAllNodes,
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
+                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                            if (GuideUtils.isVisible(elementSelector)) {
+                                resolve();
+                            } else {
+                                const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                                previousStep.options.initPreviousStep(services, previousStep.id)
+                                    .then(() => resolve())
+                                    .catch((error) => reject(error));
+                            }
+                        })
                     }, options)
                 }
             ];

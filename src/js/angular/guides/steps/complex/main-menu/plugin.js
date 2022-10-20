@@ -65,7 +65,7 @@ PluginRegistry.add('guide.step', [
                     break;
             }
 
-            const mainMenuClickElementPostSelector = !!submenuSelector ? ' div' : ' a';
+            const mainMenuClickElementPostSelector = submenuSelector ? ' div' : ' a';
             options.viewName = viewName;
 
             // View intro element
@@ -76,7 +76,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step-intro.' + options.mainAction,
                         extraContent: helpInfo,
                         extraContentClass: 'alert alert-help text-left',
-                        skipPoint: true,
+                        skipPoint: true
                     }, options)
                 });
             }
@@ -101,11 +101,21 @@ PluginRegistry.add('guide.step', [
                                 if (!submenuSelector) {
                                     guide.next();
                                 }
-                            })
+                            }),
+                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                        if (previousStep) {
+                            previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                .then(() => resolve())
+                                .catch((error) => reject(error));
+                        } else {
+                            resolve();
+                        }
+                    })
                 }, options)
-            })
+            });
 
-            if (!!submenuSelector) {
+            if (submenuSelector) {
                 steps.push({
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
@@ -121,9 +131,19 @@ PluginRegistry.add('guide.step', [
                             }
                             return true;
                         },
-                        onNextClick: (guide) => GuideUtils.clickOnGuideElement(submenuSelector, ' a')().then(() => guide.next())
+                        onNextClick: (guide) => GuideUtils.clickOnGuideElement(submenuSelector, ' a')().then(() => guide.next()),
+                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            if (previousStep) {
+                                previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                    .then(() => resolve())
+                                    .catch((error) => reject(error));
+                            } else {
+                                resolve();
+                            }
+                        })
                     }, options)
-                })
+                });
             }
             return steps;
         }

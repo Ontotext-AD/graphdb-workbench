@@ -74,7 +74,7 @@ const GuideUtils = (function () {
      * Returns a function that returns a promise that will resolve when the D3 library force layout
      * settles (reaches an alpha value below the given threshold) or when the maximum wait time
      * passes. Useful in 'beforeShowPromise' of a step.
-     * @param {string} elementSelector - a node selector.
+     * @param {string | null} elementSelector - a node selector.
      * @param {*}scope scope where the d3alpha property is set
      * @param {number} timeoutInSeconds maximum wait time for the alpha value to settle, the default is 2 seconds
      * @param {number} alphaThreshold alpha value threshold, the default is 0.02
@@ -278,6 +278,17 @@ const GuideUtils = (function () {
         return isChecked(GuideUtils.getGuideElementSelector('autocompleteCheckbox', postSelect));
     };
 
+    const defaultInitPreviousStep = (services, stepId) => new Promise(function (resolve, reject) {
+        const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+        if (previousStep) {
+            previousStep.options.initPreviousStep(services, previousStep.options.id)
+                .then(() => resolve())
+                .catch((error) => reject(error));
+        } else {
+            resolve();
+        }
+    });
+
     return {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
@@ -305,7 +316,8 @@ const GuideUtils = (function () {
         getSparqlResultsSelectorForIri,
         getSparqlResultsSelectorForRow,
         isChecked,
-        isGuideElementChecked
+        isGuideElementChecked,
+        defaultInitPreviousStep
     };
 })();
 
