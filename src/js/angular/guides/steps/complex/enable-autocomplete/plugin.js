@@ -3,9 +3,6 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'enable-autocomplete',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const toastr = services.toastr;
-            const $translate = services.$translate;
-            const $interpolate = services.$interpolate;
             options.mainAction = 'enable-autocomplete';
 
             const autocompleteCheckboxSelector = GuideUtils.getGuideElementSelector('autocompleteCheckbox');
@@ -29,21 +26,23 @@ PluginRegistry.add('guide.step', [
                             $(autocompleteCheckboxSelector)
                                 .on('mouseup.autocompleteCheckboxClick', function () {
                                     // If autocomplete is enabled go to the next step.
-                                    if (!GuideUtils.isGuideElementChecked('autocompleteCheckbox', ' input')) {
-                                        guide.next();
-                                    }
+                                    GuideUtils.deferredShow(20)()
+                                        .then(() => {
+                                            if (GuideUtils.isGuideElementChecked('autocompleteCheckbox', ' input')) {
+                                                guide.next();
+                                            }
+                                        });
                                 });
+                        },
+                        onNextClick: (guide) => {
+                            if (!GuideUtils.isGuideElementChecked('autocompleteCheckbox', ' input')) {
+                                $(autocompleteCheckboxSelector).trigger('click');
+                            }
+                            guide.next();
                         },
                         hide: () => () => {
                             // Remove ths listener from element. It is important when step is hided.
                             $(autocompleteCheckboxSelector).off('mouseup.autocompleteCheckboxClick');
-                        },
-                        onNextValidate: () => {
-                            if (!GuideUtils.isGuideElementChecked('autocompleteCheckbox', ' input')) {
-                                GuideUtils.noNextErrorToast(toastr, $translate, $interpolate, 'guide.step_plugin.enable-autocomplete.error', options);
-                                return false;
-                            }
-                            return true;
                         }
                     }, options)
                 },
