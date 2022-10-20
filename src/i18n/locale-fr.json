@@ -1705,5 +1705,13 @@
     "guide.step_plugin.table-graph-visual": "Vous pouvez toujours explorer les mêmes données en utilisant la vue <b>{{'visual.graph.label'|translate}}</b>. Cliquez sur le {{'visual.graph.label'|translate}} pour l'essayer maintenant.",
     "guide.step_plugin.guide-ended.title": "Fin du guide",
     "guide.step_plugin.guide-ended.content": "Ce guide est terminé.",
+    "guide.step_plugin.enable-autocomplete.error": "L'index de saisie semi-automatique n'est pas activé !",
+    "guide.step_plugin.welcome.title": "Bienvenue dans {{translatedGuideName}}",
+    "guide.step_plugin.welcome.content": "Tout au long du guide, vous verrez des boîtes comme celle-ci qui fourniront des instructions sur ce qu'il faut faire.<p>L'icône dans le coin supérieur gauche est également un indice :<ul><li>{{infoIconHint}}</li><li>{{mouseIconHint}}</li><li>{{inputIconHint}}</li></ul></p>",
+    "guide.step_plugin.welcome.info-icon-hint": "<span class='icon icon-1-5x icon-info'></span> signifie que la boîte fournit des informations.",
+    "guide.step_plugin.welcome.mouse-icon-hint": "<span class='icon icon-1-5x icon-focus'></span> vous demande de faire quelque chose avec la souris.",
+    "guide.step_plugin.welcome.input-icon-hint": "<span class='icon icon-1-5x icon-edit'></span> vous dit de taper ou de coller quelque chose.",
+    "guide.step_plugin.welcome-what.title": "Qu'est-ce que {{translatedGuideName}} ?",
+    "guide.step_plugin.welcome-what.content": "{{translatedGuideDescription}}<p>Commençons pour de vrai maintenant !</p>",
     "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête du guide !"
 }
