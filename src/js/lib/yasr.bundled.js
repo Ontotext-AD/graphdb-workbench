@@ -54165,12 +54165,20 @@ module.exports={
   "dependencies": {
     "store": "^2.0.4"
   },
+  "deprecated": "Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.",
   "description": "Utils for YASGUI libs",
   "devDependencies": {},
   "directories": {},
   "dist": {
     "shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz"
+    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
+    "integrity": "sha512-w9BnalJg330lZhljHn0j6Ta6jyQTJL8nbhjyeDj4Z9PrX7GLrgcwq7CO7uP6Keq86L1XjpUgUU6JAmTlmkXj6w==",
+    "signatures": [
+      {
+        "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+        "sig": "MEUCIQChXn8SW+Xzp3hIj8sCOEzZO7ohF5kxjzHo5OmcJ1XO/wIgcBFbqGmN4Iyiw9ptQjoCz57rpREAGaXlYIf2o+zj68I="
+      }
+    ]
   },
   "gitHead": "6031b1cb732d390b29cd5376dceb9a9d665bbd11",
   "homepage": "https://github.com/YASGUI/Utils",
@@ -56918,7 +56926,7 @@ var root = module.exports = function(yasr) {
 		var contentType = yasr.results.getOriginalContentType();
 		var type = yasr.results.getType();
 		return {
-			getContent: function() {return yasr.results.getOriginalResponseAsString();},
+			getContent: function() {return yasr.results.getOriginalResponse();},
 			filename: "queryResults" + (type? "." + type: ""),
 			contentType: (contentType? contentType: "text/plain"),
 			buttonTitle: yasr.translate('yasr.btn.title.raw')
@@ -56946,7 +56954,7 @@ root.defaults = {
 	    foldGutter: true,
 	    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 	},
-	limit: 100
+	limit: 1000
 };
 
 root.version = {
