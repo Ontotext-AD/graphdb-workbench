@@ -1,11 +1,20 @@
+const getRepositoryName = (services, options) => {
+    return services.$repositories.getRepositories().find((repo) => repo.id === options.repositoryId) ? options.repositoryId : options.repositoryIdBase;
+};
+
+const getRepositoryElementSelector = (services, options) => {
+    return services.GuideUtils.getGuideElementSelector(`repository-${getRepositoryName(services, options)}-button`);
+};
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'select-repository-dropdown',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            const $translate = services.$translate;
+            const $interpolate = services.$interpolate;
             options.mainAction = 'select-repository';
 
-            const repositoryButtonSelector = GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-button`);
             return [{
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
@@ -17,17 +26,40 @@ PluginRegistry.add('guide.step', [
             }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    content: 'guide.step_plugin.select-repository.content',
-                    elementSelector: repositoryButtonSelector,
+                    content: () => {
+                        const parameters = {repositoryId: getRepositoryName(services, options)};
+                        return `<p>${GuideUtils.translateLocalMessage($translate, $interpolate, 'guide.step_plugin.select-repository.content', parameters)}</p>`;
+                    },
+                    elementSelector: () => {
+                        return getRepositoryElementSelector(services, options);
+                    },
+                    advanceOn: undefined,
                     beforeShowPromise: () => new Promise(function (resolve, reject) {
-                        services.GuideUtils.waitFor(repositoryButtonSelector, 1)
+                        services.GuideUtils.waitFor(getRepositoryElementSelector(services, options), 1)
                             .then(() => resolve())
                             .catch((error) => {
                                 services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                 reject(error);
                             });
                     }),
-                    onNextClick: (guide) => GuideUtils.clickOnGuideElement(`repository-${options.repositoryId}-button`)().then(() => guide.next()),
+                    show: (guide) => () => {
+                        $('#repositorySelectDropdown').addClass('autoCloseOff');
+                        // Added listener to the element.
+                        $(getRepositoryElementSelector(services, options))
+                            .on('mouseup.selectRepositoryButtonClick', function () {
+                                guide.next();
+                            });
+                    },
+                    onNextClick: (guide) => {
+                        $(getRepositoryElementSelector(services, options)).off('mouseup.selectRepositoryButtonClick');
+                        $('#repositorySelectDropdown').removeClass('autoCloseOff');
+                        GuideUtils.clickOnElement(getRepositoryElementSelector(services, options))().then(() => guide.next());
+                    },
+                    hide: () => () => {
+                        $('#repositorySelectDropdown').removeClass('autoCloseOff');
+                        // Remove ths listener from element. It is important when step is hided.
+                        $(getRepositoryElementSelector(services, options)).off('mouseup.selectRepositoryButtonClick');
+                    },
                     canBePaused: false
                 }, options)
             }
