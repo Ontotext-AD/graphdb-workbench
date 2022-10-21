@@ -289,7 +289,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
                 }
                 $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
                 $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
-                loadTab($scope.currentQuery.id);
+                loadTab();
                 selectTab($scope.currentQuery.id);
             }, 100);
 
@@ -490,7 +490,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         $('.dataTables_filter').remove();
         $('.resultsTable').remove();
         $timeout(function () {
-            loadTab(tabID);
+            loadTab();
             selectTab(tabID);
         }, 100);
     }
