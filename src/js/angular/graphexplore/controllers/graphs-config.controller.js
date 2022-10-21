@@ -215,7 +215,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
 
         $scope.goToNextPage = function () {
             broadcastAddStartFixedNodeEvent();
-            if (selectedFixedNodeChanged) {
+            if ($scope.newConfig.startMode !== 'node' || selectedFixedNodeChanged) {
                 $scope.goToPage($scope.page + 1);
             }
         };
@@ -387,7 +387,6 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     $scope.orientationViewMode = true;
 
     // start of repository actions
-    let backendRepositoryID = $scope.getActiveRepository();
 
     function saveQueryToLocal(currentQueryTab) {
     }
@@ -415,7 +414,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
     function getLoaderMessage() {
         const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
         const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
-        let message = '';
+        let message;
 
         if ($scope.progressMessage) {
             message = $scope.progressMessage + '... ' + timeHuman;
@@ -503,11 +502,6 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         if (!angular.element(document).find('.editable-input').is(':focus')) {
             angular.element(document).find('.CodeMirror textarea:first-child').focus();
         }
-    }
-
-    // end of query editor results orientation operations
-
-    function deleteCachedSparqlResults() {
     }
 
     function selectTab(id) {
@@ -654,12 +648,10 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $mo
         return tab;
     }
 
-    let maxID = 1;
-
     function addNewTab(callback, tabName, savedQuery) {
     }
 
-    function loadTab(id) {
+    function loadTab() {
         $scope.tabsData = [$scope.currentQuery];
 
         let tab = $scope.currentQuery;
