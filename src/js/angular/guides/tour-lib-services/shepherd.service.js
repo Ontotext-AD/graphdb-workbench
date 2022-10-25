@@ -334,6 +334,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!this.guideCancelSubscription) {
             this.guideCancelSubscription = Shepherd.on('cancel', () => {
                 this._clearLocaleStorage();
+                const currentStep = Shepherd.activeTour.getCurrentStep();
+                if (currentStep && angular.isFunction(currentStep.hide)) {
+                    // Some steps have state and when shepherd library hides them the "hide()" function is called. This function cleaned the state
+                    // of the steps. When we are on step which has state and click on cancel button the library don't call this function.
+                    // So we call it manually. For example see "select-repository" plugin it has listener which must be removed when step is hided.
+                    currentStep.hide();
+                }
                 if (this.onCancel) {
                     this.onCancel();
                 }
