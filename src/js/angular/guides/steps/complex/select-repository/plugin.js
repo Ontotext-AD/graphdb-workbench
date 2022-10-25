@@ -11,9 +11,8 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'select-repository-dropdown',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const $translate = services.$translate;
-            const $interpolate = services.$interpolate;
             options.mainAction = 'select-repository';
+            options.getRepositoryId = () => getRepositoryName(services, options);
 
             return [{
                 guideBlockName: 'clickable-element',
@@ -26,10 +25,7 @@ PluginRegistry.add('guide.step', [
             }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
-                    content: () => {
-                        const parameters = {repositoryId: getRepositoryName(services, options)};
-                        return `<p>${GuideUtils.translateLocalMessage($translate, $interpolate, 'guide.step_plugin.select-repository.content', parameters)}</p>`;
-                    },
+                    content: 'guide.step_plugin.select-repository.content',
                     elementSelector: () => {
                         return getRepositoryElementSelector(services, options);
                     },
