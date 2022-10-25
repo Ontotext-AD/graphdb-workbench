@@ -140,7 +140,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
         if (GuidesService.isActive()) {
-            e.preventDefault();
+            if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
+                e.preventDefault();
+            }
         }
     });
 
@@ -159,7 +161,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.resumeGuide = function () {
         $rootScope.$broadcast('guideResume');
-    }
+    };
 
     $rootScope.$on('guideReset', function () {
         $scope.guidePaused = false;
@@ -210,7 +212,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.getLocationFromUri = function (location) {
         return $repositories.getLocationFromUri(location);
-    }
+    };
 
     $scope.$on("$locationChangeSuccess", function () {
         $scope.showFooter = $location.url() === '/';
@@ -384,15 +386,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.isActiveRepoOntopType = function () {
         return $repositories.isActiveRepoOntopType();
-    }
+    };
 
     $scope.isActiveRepoFedXType = function () {
         return $repositories.isActiveRepoFedXType();
-    }
+    };
 
     $scope.isLicenseValid = function() {
         return $licenseService.isLicenseValid();
-    }
+    };
 
     /**
      *  Sets attrs property in the directive
@@ -493,7 +495,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.isRepoActive = function (repository) {
         return $repositories.isRepoActive(repository);
-    }
+    };
 
     $scope.getRepositorySize = function () {
         $scope.repositorySize = {};
@@ -848,23 +850,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.showLicense = function() {
         return $licenseService.showLicense;
-    }
+    };
 
     $scope.getLicense = function() {
         return $licenseService.license;
-    }
+    };
 
     $scope.isLicenseHardcoded = function() {
         return $licenseService.isLicenseHardcoded;
-    }
+    };
 
     $scope.getProductType = function() {
         return $licenseService.productType;
-    }
+    };
 
     $scope.getProductTypeHuman = function() {
         return $licenseService.productTypeHuman;
-    }
+    };
 
 
     $scope.getHumanReadableSeconds = function (s, preciseSeconds) {

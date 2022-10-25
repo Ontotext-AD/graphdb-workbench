@@ -712,13 +712,16 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
-        const content = this._toParagraph(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.content, stepDescription));
+        const text = () => {
+            const content = this._toParagraph(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.content, stepDescription));
 
-        let extraContent = '';
-        if (stepDescription.extraContent) {
-            extraContent = GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.extraContent, stepDescription);
-            extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
-        }
+            let extraContent = '';
+            if (stepDescription.extraContent) {
+                extraContent = GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.extraContent, stepDescription);
+                extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
+            }
+            return content + extraContent;
+        };
 
         const clickable = stepDescription.type !== 'readonly';
 
@@ -727,7 +730,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const step = {
             id: stepDescription.id,
             title: title + extraTitle,
-            text: content + extraContent,
+            text,
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
             cancelIcon: {enabled: true},
