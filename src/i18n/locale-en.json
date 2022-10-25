@@ -1678,7 +1678,7 @@
     "guide.step_plugin.download-guide-resource.title": "Download guide resources",
     "guide.step_plugin.download-guide-resource.content": "This guide requires a file to be downloaded.<br>Please <a href=\"{{resourceUrl}}\" target=\"_blank\">download {{resourceFile}}</a>.",
     "guide.step_plugin.choose-repository.content": "Click on the repository selection dropdown.",
-    "guide.step_plugin.select-repository.content": "Click on the <b>{{repositoryId}}</b> repository button.",
+    "guide.step_plugin.select-repository.content": "Click on the <b>{{getRepositoryId()}}</b> repository button.",
     "guide.step_plugin.select-repository-plug.content": "Click on the plug icon of the <b>{{repositoryId}}</b> repository.",
     "guide.step_plugin.import_rdf_file.import-file.button.content": "Click on the <b>{{'common.import'|translate}}</b> button.",
     "guide.step_plugin.import_rdf_file.import-settings.import.button.content": "Click on the <b>{{'common.import'|translate}}</b> button.",
