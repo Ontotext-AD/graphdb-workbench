@@ -13,12 +13,13 @@ const GuideUtils = (function () {
 
     /**
      * Waits element to be present.
-     * @param {string} selector - selector of element looking for.
+     * @param {string} elementSelector - selector of element looking for.
      * @param {number} timeoutInSeconds - max time to waite in second. Default value is 1 second.
      * @param {boolean} checkVisibility - if true will wait to become visible. Default value is true
      * @return {Promise}
      */
-    const waitFor = function (selector, timeoutInSeconds = 1, checkVisibility = true) {
+    const waitFor = function (elementSelector, timeoutInSeconds = 1, checkVisibility = true) {
+        const selector = getElementSelector(elementSelector);
         return new Promise(function (resolve, reject) {
             let iteration = timeoutInSeconds * 1000 | 1000;
             const waitTime = 100;
@@ -289,6 +290,10 @@ const GuideUtils = (function () {
         }
     });
 
+    const getElementSelector = (elementSelector) => {
+        return angular.isFunction(elementSelector) ? elementSelector() : elementSelector;
+    };
+
     return {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
@@ -317,7 +322,8 @@ const GuideUtils = (function () {
         getSparqlResultsSelectorForRow,
         isChecked,
         isGuideElementChecked,
-        defaultInitPreviousStep
+        defaultInitPreviousStep,
+        getElementSelector
     };
 })();
 
