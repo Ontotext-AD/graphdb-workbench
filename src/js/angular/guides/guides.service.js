@@ -185,6 +185,9 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             for (let i = 2; repos.find((repo) => repo.id === guide.options.repositoryId); i++) {
                 guide.options.repositoryId = guide.options.repositoryIdBase + i;
             }
+
+            guide.options.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName, {});
+            guide.options.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription, {});
         }
 
         const stepsDescriptions = this._toStepsDescriptions(guide);
@@ -396,6 +399,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      * @private
      */
     this._getSteps = (complexStep, parentOptions) => {
+        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories};
         let steps = [];
         if (angular.isArray(complexStep)) {
             complexStep.forEach((stepDescription) => {
@@ -406,9 +410,9 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService})), parentOptions));
+                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, services)), parentOptions));
                 } else if (predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, {GuideUtils, $translate, toastr, $location, $route, $timeout, ShepherdService})));
+                    steps.push(angular.copy(predefinedStepDescription.getStep(options, services)));
                 } else {
                     steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }

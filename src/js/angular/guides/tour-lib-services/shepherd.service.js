@@ -142,8 +142,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     this.isActive = () => {
-        // if beforeShowPromise promise is rejected then Shepherd active tour is active but current step is not opened.
-        return Shepherd.activeTour && Shepherd.activeTour.isActive() && Shepherd.activeTour.getCurrentStep().isOpen() && !this.isPaused();
+        return Shepherd.activeTour && !this.isPaused();
     };
 
     this.isPaused = () => {
@@ -335,6 +334,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!this.guideCancelSubscription) {
             this.guideCancelSubscription = Shepherd.on('cancel', () => {
                 this._clearLocaleStorage();
+                const currentStep = Shepherd.activeTour.getCurrentStep();
+                if (currentStep && angular.isFunction(currentStep.hide)) {
+                    // Some steps have state and when shepherd library hides them the "hide()" function is called. This function cleaned the state
+                    // of the steps. When we are on step which has state and click on cancel button the library don't call this function.
+                    // So we call it manually. For example see "select-repository" plugin it has listener which must be removed when step is hided.
+                    currentStep.hide();
+                }
                 if (this.onCancel) {
                     this.onCancel();
                 }
@@ -713,13 +719,16 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
 
-        const content = this._toParagraph(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.content, stepDescription));
+        const text = () => {
+            const content = this._toParagraph(GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.content, stepDescription));
 
-        let extraContent = '';
-        if (stepDescription.extraContent) {
-            extraContent = GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.extraContent, stepDescription);
-            extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
-        }
+            let extraContent = '';
+            if (stepDescription.extraContent) {
+                extraContent = GuideUtils.translateLocalMessage($translate, $interpolate, stepDescription.extraContent, stepDescription);
+                extraContent = this._toParagraph(extraContent, stepDescription.extraContentClass);
+            }
+            return content + extraContent;
+        };
 
         const clickable = stepDescription.type !== 'readonly';
 
@@ -728,7 +737,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const step = {
             id: stepDescription.id,
             title: title + extraTitle,
-            text: content + extraContent,
+            text,
             url: stepDescription.url,
             maxWaitTime: stepDescription.maxWaitTime,
             cancelIcon: {enabled: true},

@@ -2484,7 +2484,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.rdfRank = d.rdfRank;
         $scope.nodeIri = d.iri;
         $scope.resourceType = d.isTriple ? 'triple' : 'uri';
-        $scope.encodedIri = d.isTriple ? encodeURI(createTriple(d.iri)) : encodeURI(d.iri);
+        $scope.encodedIri = d.isTriple ? encodeURIComponent(createTriple(d.iri)) : encodeURIComponent(d.iri);
         $scope.showInfoPanel = true;
 
         $scope.rdfsLabel = d.labels[0].label;

@@ -38,6 +38,10 @@
     margin-top: 10px;
 }
 
+.shepherd-text ol, .shepherd-text ul {
+    text-align: left;
+}
+
 .shepherd-text code {
     text-align: left;
     display: block;
