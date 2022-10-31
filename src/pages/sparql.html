@@ -44,7 +44,7 @@
     <query-editor
             ng-show="getActiveRepositoryNoError()"
             ng-keyup="saveQueryToLocal(currentQuery)"
-            nocount="{{skipCountQuery}}">
+            nocount="{{skipCountQuery}}" enable-column-resizing-on-window-width>
     </query-editor>
     <form id="wb-download" method="GET" action="" target="_self">
         <input id="wb-download-query" name="query" type="hidden"/>
