@@ -426,6 +426,28 @@ describe('==> Controllers tests', function () {
                 $timeout.flush();
                 expect(windowMock.history.back).toHaveBeenCalled();
             });
+            it('should compact the user granted authority \'WRITE_REPO_*\' properly', function () {
+                $httpBackend.flush();
+                $scope.user.grantedAuthorities = ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_repo1', 'WRITE_REPO_*', 'READ_REPO_*'];
+                $scope.createUserHttp();
+                $httpBackend.expectPOST("rest/security/users/testov", {"password":"testova",
+                    "appSettings":{"DEFAULT_SAMEAS":true,"DEFAULT_INFERENCE":true,"EXECUTE_COUNT":true, "IGNORE_SHARED_QUERIES":false,"DEFAULT_VIS_GRAPH_SCHEMA":true},
+                    "grantedAuthorities":["ROLE_USER","WRITE_REPO_*","READ_REPO_*"]})
+                    .respond(200);
+                $httpBackend.flush();
+                $timeout.flush();
+            });
+            it('should compact the user granted authority \'READ_REPO_*\' properly', function () {
+                $httpBackend.flush();
+                $scope.user.grantedAuthorities = ['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo', 'READ_REPO_*'];
+                $scope.createUserHttp();
+                $httpBackend.expectPOST("rest/security/users/testov", {"password":"testova",
+                    "appSettings":{"DEFAULT_SAMEAS":true,"DEFAULT_INFERENCE":true,"EXECUTE_COUNT":true, "IGNORE_SHARED_QUERIES":false,"DEFAULT_VIS_GRAPH_SCHEMA":true},
+                    "grantedAuthorities":["ROLE_USER","WRITE_REPO_myrepo","READ_REPO_myrepo","READ_REPO_*"]})
+                    .respond(200);
+                $httpBackend.flush();
+                $timeout.flush();
+            });
         });
 
         describe('$scope.validateForm', function () {

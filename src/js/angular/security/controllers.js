@@ -104,6 +104,37 @@ const parseAuthorities = function (authorities) {
     };
 };
 
+const compactAuthorities = function (authorities) {
+    const writeAllRepos = authorities.find(authority => authority === `${WRITE_REPO_PREFIX}*`);
+    if (writeAllRepos) {
+        return  _.remove(authorities, function (_authority) {
+            if (_authority.indexOf(READ_REPO_PREFIX) === -1 && _authority.indexOf(WRITE_REPO_PREFIX) === -1) {
+                return true;
+            }
+            return writeAllRepos === _authority ||
+                (_authority.indexOf(READ_REPO_PREFIX) !== -1 && _authority === `${READ_REPO_PREFIX}*`);
+        });
+    }
+    const readAllRepos = authorities.find(authority => authority === `${READ_REPO_PREFIX}*`);
+    if (readAllRepos) {
+        return  _.remove(authorities, function (_authority) {
+            if (_authority.indexOf(READ_REPO_PREFIX) === -1 && _authority.indexOf(WRITE_REPO_PREFIX) === -1) {
+                return true;
+            }
+            if (_authority.indexOf(READ_REPO_PREFIX) !== -1) {
+                const repoId = _authority.substr(READ_REPO_PREFIX.length);
+                const writeRepoId = `${WRITE_REPO_PREFIX}${repoId}`;
+                const writeRepoFound = authorities.find(auth => auth === writeRepoId);
+                if (_authority === readAllRepos || writeRepoFound) {
+                    return true;
+                }
+            }
+            return _authority.indexOf(WRITE_REPO_PREFIX) !== -1;
+        });
+    }
+    return authorities;
+};
+
 securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
     function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
         $scope.username = '';
@@ -509,7 +540,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
                 username: $scope.user.username,
                 pass: $scope.user.password,
                 appSettings: $scope.user.appSettings,
-                grantedAuthorities: $scope.user.grantedAuthorities
+                grantedAuthorities: compactAuthorities($scope.user.grantedAuthorities)
             }).success(function () {
                 toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
                 const timer = $timeout(function () {
@@ -636,7 +667,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 username: $scope.user.username,
                 pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
-                grantedAuthorities: $scope.user.grantedAuthorities
+                grantedAuthorities: compactAuthorities($scope.user.grantedAuthorities)
             }).success(function () {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function () {
