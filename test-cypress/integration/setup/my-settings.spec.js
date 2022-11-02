@@ -239,6 +239,19 @@ describe('My Settings', () => {
     )
 });
 
+    it('sameAs button should be disabled if inference is turned off', () => {
+        clickLabelBtn('#inference-on')
+            .then(() => {
+                cy.get('#inference-on')
+                    .find('.switch:checkbox')
+                    .should('not.be.visible');
+            });
+
+        cy.get('#sameas-on')
+            .find('.switch:checkbox')
+            .should('not.be.visible');
+    });
+
     function getUserRepositoryTable() {
         return cy.get('.user-repositories .table');
     }

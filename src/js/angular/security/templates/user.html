@@ -83,10 +83,12 @@
 									{{user.appSettings.DEFAULT_SAMEAS ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
-							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : 'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
 								  class="switch mr-0">
-								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_SAMEAS"/>
+								<input  id="sameAsCheck" type="checkbox" class="switch"
+                                        ng-checked="user.appSettings.DEFAULT_SAMEAS"
+                                        ng-disabled="shouldDisableSameAs()"/>
 								<label for="sameas-on"></label>
 							</span>
 							{{'security.default.editor.graph' | translate}}
