@@ -120,6 +120,10 @@
                                                                     <input type="text" class="form-control"
                                                                            ng-if="child.__type == 'String'"
                                                                            ng-model="field[child.__name]" readonly>
+                                                                    <textarea class="form-control"
+                                                                              ng-if="child.__type == 'BigString'"
+                                                                              ng-model="field[child.__name]" readonly>
+                                                                    </textarea>
                                                                     <div ng-if="child.__type == 'StringArray'"
                                                                          ng-repeat="value in field[child.__name] track by $index">
                                                                         <input type="text" class="form-control"
@@ -127,7 +131,7 @@
                                                                                readonly/>
                                                                     </div>
                                                                     <!-- Handles other types, e.g. OptionArray -->
-                                                                    <div ng-if="child.__type != 'String' && child.__type != 'StringArray'"
+                                                                    <div ng-if="child.__type != 'String' && child.__type != 'StringArray' && child.__type != 'BigString'"
                                                                          class="col-form-label">
                                                                         <label ng-show="!field[child.__name]"><em>{{'no.value.set' | translate}}</em></label>
                                                                         <pre class="form-control" ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
