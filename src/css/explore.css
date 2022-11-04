@@ -14,3 +14,9 @@
 .autocomplete-toast a, .autocomplete-toast a:hover {
     color: #fff;
 }
+
+@media screen and (max-width: 768px) {
+    .page {
+        padding-right: 20px;
+    }
+}

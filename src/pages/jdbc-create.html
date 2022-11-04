@@ -8,7 +8,7 @@
 
 <link href="css/jdbc.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="container-fluid">
+<div class="container-fluid fit-content">
     <h1>
         {{title}}
         <span class="btn btn-link"
@@ -129,7 +129,7 @@
                 <br/>
                 <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
                               notoolbar-inference
-                              notoolbar-same-as callback-on-change="updateDirty">
+                              notoolbar-same-as callback-on-change="updateDirty" enable-column-resizing-on-window-width>
                 </query-editor>
             </div>
         </div>

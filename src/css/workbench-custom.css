@@ -373,3 +373,7 @@
 .text-left {
     text-align: left;
 }
+
+.fit-content {
+    width: fit-content;
+}

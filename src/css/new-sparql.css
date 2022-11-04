@@ -164,3 +164,9 @@ a[aria-expanded = true].query-has-error span {
     position: absolute;
     right: 0;
 }
+
+@media only screen and (max-width:768px) {
+    #sparql-content {
+        width: fit-content;
+    }
+}

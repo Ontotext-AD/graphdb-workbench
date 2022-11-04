@@ -4,6 +4,7 @@ import 'angular/externalsync/controllers';
 import YASQE from 'lib/yasqe.bundled';
 import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../../app";
+import {YasrUtils} from "../../../utils/yasr-utils";
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
@@ -48,6 +49,10 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         scope.nostatus = attrs.hasOwnProperty('nostatus');
         // Doesn't show the run button
         scope.norun = attrs.hasOwnProperty('norun');
+
+        scope.enableColumnResizingOnWindowWidth = attrs.hasOwnProperty('enableColumnResizingOnWindowWidth');
+
+
         // Name of the Run button in the editor
         scope.runButtonName = 'query.editor.run.btn';
         if (attrs.runButtonName) {
@@ -541,11 +546,21 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         });
 
         function initYasr() {
-            yasr = YASR(document.getElementById("yasr"), { // eslint-disable-line new-cap
+            scope.$on('$destroy', function () {
+                if (yasr) {
+                    yasr.destroy();
+                }
+            });
+
+            const yasrOptions = { // eslint-disable-line new-cap
                 getUsedPrefixes: {}, // initially blank, populated when we fetch the namespaces
                 persistency: false,
                 locale: $languageService.getLanguage()
-            });
+            };
+            if (scope.enableColumnResizingOnWindowWidth) {
+                yasrOptions.pluginsOptions = YasrUtils.getYasrConfiguration();
+            }
+            yasr = YASR(document.getElementById("yasr"), yasrOptions);
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
             yasr.getQueryResultsAsFormat = function (downloadFormat) {
