@@ -825,7 +825,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 if (window.editor.getQueryMode() === 'update') {
                     ModalService.openSimpleModal({
                         title: $translate.instant('confirm.execute'),
-                        message: $translate.instant('query.editor.automatically.execute.update.warning'),
+                        message: decodeHTML($translate.instant('query.editor.automatically.execute.update.warning')),
                         warning: true
                     }).result
                         .then(function () {
