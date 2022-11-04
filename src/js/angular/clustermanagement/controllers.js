@@ -767,8 +767,8 @@ function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, RemoteLocation
     const clusterModel = angular.copy(data.clusterModel);
     $scope.nodes = [];
 
-    $scope.clusterNodes = clusterModel.locations.filter((location) => clusterConfiguration.nodes.includes(location.rpcAddress));
-    $scope.locations = clusterModel.locations.filter((location) => !$scope.clusterNodes.includes(location));
+    $scope.clusterNodes = clusterModel.nodes.map((node) => ({['rpcAddress']: node.address, ['endpoint']: node.endpoint}));
+    $scope.locations = clusterModel.locations.filter((location) => !clusterConfiguration.nodes.includes(location.rpcAddress));
     $scope.locations.forEach((location) => location.isNew = true);
 
     $scope.addNodeToList = function (location) {
