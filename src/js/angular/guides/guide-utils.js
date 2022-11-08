@@ -294,6 +294,38 @@ const GuideUtils = (function () {
         return angular.isFunction(elementSelector) ? elementSelector() : elementSelector;
     };
 
+    /**
+     * Executes a sparql query.
+     * @param {*} $location - the locations service.
+     * @param {*} $route
+     * @param {string} query - sparql query to be executed.
+     * @param {boolean} reload - if true sparql page will be loaded before execution of query.
+     * @return {Promise<unknown>}
+     */
+    const executeSparqlQuery = ($location, $route, query, reload = false) => new Promise((resolve, reject) => {
+        if (reload) {
+            $location.url('/sparql');
+            $route.reload();
+            waitFor(getSparqlEditorSelector())
+                .then(() => {
+                    waitFor('.no-query-run')
+                        .then(() => {
+                            window.editor.setValue(query);
+                            clickOnGuideElement('runSparqlQuery')()
+                                .then(() => resolve())
+                                .catch((error) => reject(error));
+                        })
+                        .catch((error) => reject(error));
+                })
+                .catch((error) => reject(error));
+        } else {
+            window.editor.setValue(query);
+            clickOnGuideElement('runSparqlQuery')()
+                .then(() => resolve())
+                .catch((error) => reject(error));
+        }
+    });
+
     return {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
@@ -323,7 +355,8 @@ const GuideUtils = (function () {
         isChecked,
         isGuideElementChecked,
         defaultInitPreviousStep,
-        getElementSelector
+        getElementSelector,
+        executeSparqlQuery
     };
 })();
 
