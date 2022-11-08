@@ -13,13 +13,14 @@ const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core.services.repositories',
-    'graphdb.framework.utils.uriutils'
+    'graphdb.framework.utils.uriutils',
+    'graphdb.framework.guides.services'
 ];
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService',
-    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, $translate, LicenseRestService) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService',
+    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -188,7 +189,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             $scope.settingsFor = fileName;
             $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
 
-            const modalInstance = $modal.open({
+            const options = {
                 templateUrl: 'js/angular/import/templates/settingsModal.html',
                 controller: 'SettingsModalCtrl',
                 resolve: {
@@ -204,7 +205,15 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                     }
                 },
                 size: 'lg'
-            });
+            };
+
+            if (GuidesService.isActive()) {
+                // Prevents closing dialog when user click outside the if.
+                options.backdrop = 'static';
+                options.keyboard = false;
+            }
+
+            const modalInstance = $modal.open(options);
 
 
             modalInstance.result.then(function (settings) {
