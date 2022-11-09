@@ -35,7 +35,6 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
             PluginsRestService.getPlugins($scope.getActiveRepository())
                 .success(function (data) {
                     $scope.plugins = $scope.buildPluginsArray(data.results.bindings);
-                    $scope.matchedElements = [];
                     if (angular.isDefined($scope.plugins)) {
                         $scope.displayedPlugins = $scope.plugins;
                     }
@@ -116,6 +115,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
     };
 
     $scope.filterResults = function () {
+        $scope.matchedElements = [];
         angular.forEach($scope.plugins, function (item) {
             if (item.name.indexOf($scope.searchPlugins) !== -1) {
                 $scope.matchedElements.push(item);
@@ -124,7 +124,6 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
     };
 
     $scope.onPluginsSearch = function () {
-        $scope.matchedElements = [];
         $scope.filterResults();
     };
 
