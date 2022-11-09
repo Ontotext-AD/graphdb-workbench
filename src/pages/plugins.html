@@ -22,18 +22,17 @@
     <div class="search-bar" ng-show="plugins.length > 0 && !loader">
             <span class="pull-left" id="searchbox-plugins">
                 <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
-                       ng-model="searchPlugins" tooltip-trigger="mouseenter" tooltip="{{'common.search.btn' | translate}}"
-                       ng-change="onPluginsSearch()">
+                       ng-model="searchPluginsTerm" tooltip-trigger="mouseenter" tooltip="{{'common.search.btn' | translate}}"
+                       ng-change="onSearchTermChanged()">
             </span>
-        <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{matchedElements.length}} {{'results.label' | translate}}</span>
+        <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{displayedPlugins.length}} {{'results.label' | translate}}</span>
     </div>
 
     <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
            id="wb-plugins-pluginInPlugins"
            class="table table-hover" aria-describedby="Plugins table">
         <tbody>
-        <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin"
-            loader-post-repeat-directive>
+        <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin" loader-post-repeat-directive>
             <td id="wb-plugins-td" ng-show="!loader">
                 <div class="lead" id="toggleIndex">
                     <span class="plugins-header">{{plugin.name}}</span>
