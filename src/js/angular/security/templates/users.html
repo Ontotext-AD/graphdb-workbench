@@ -29,7 +29,7 @@
 			</span>
 		</div>
 
-		<a id="wb-users-userCreateLink" class="btn btn-primary" href="user/create"><span class="icon-plus"></span> {{'view.create.user.title' | translate}}</a>
+		<a id="wb-users-userCreateLink" ng-show="!hasExternalAuth()" class="btn btn-primary" href="user/create"><span class="icon-plus"></span> {{'view.create.user.title' | translate}}</a>
 	</div>
 
 	<div ng-show="hasExternalAuth()">
@@ -68,7 +68,7 @@
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
                             <em class="icon-edit" tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
                         </a>
-						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" href ng-click="removeUser(user.username)">
+						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" ng-show="!hasExternalAuth()" href ng-click="removeUser(user.username)">
                             <em class="icon-trash" tooltip="{{'security.delete.user.tooltip' | translate}}"></em>
                         </a>
 					</span>
