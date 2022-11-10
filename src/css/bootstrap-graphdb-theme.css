@@ -1948,6 +1948,7 @@ code {
 
 .tooltip-inner {
     text-decoration: none;
+    white-space: pre-wrap;
     background-color: var(--onto-blue);
     border-radius: 0;
 }
