@@ -76,7 +76,7 @@
                                 {{repositoryInfo.params.ruleset.label}}
                                 <div class="ruleset-warning icon-warning icon-2x"
                                     ng-if="rulesetWarning()"
-                                    tooltip-html-unsafe="{{rulesetWarning()}}"
+                                    tooltip="{{rulesetWarning()}}"
                                     tooltip-placement="top"></div>
                             </label>
                             <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" tooltip="{{'repoTooltips.ruleset' | translate}}" tooltip-trigger="mouseenter">
@@ -271,12 +271,12 @@
                             <label
                                 class="col-md-3 col-lg-2">{{repositoryInfo.params.entityIdSize.label}}</label>
                             <div class="radio">
-                                <label class="padding-label" tooltip-html-unsafe="{{'repoTooltips.entityIdSize' | translate}}">
+                                <label class="padding-label" tooltip="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize32" type="radio" value="32" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     32-bit
                                 </label>
-                                <label class="padding-label" tooltip-html-unsafe="{{'repoTooltips.entityIdSize' | translate}}">
+                                <label class="padding-label" tooltip="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize40" type="radio" value="40" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     40-bit
