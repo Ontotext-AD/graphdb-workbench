@@ -1,5 +1,6 @@
 import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../app";
+import {YasrUtils} from "../../utils/yasr-utils";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -107,11 +108,17 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
                     data.results.bindings.forEach(function (e) {
                         $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
                     });
+                    $scope.$on('$destroy', function () {
+                        if (yasr) {
+                            yasr.destroy();
+                        }
+                    });
                     yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
                         //this way, the URLs in the results are prettified using the defined prefixes
                         getUsedPrefixes: $scope.usedPrefixes,
                         persistency: false,
-                        hideHeader: true
+                        hideHeader: true,
+                        pluginsOptions: YasrUtils.getYasrConfiguration()
                     });
                 }).error(function (data) {
                     toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));

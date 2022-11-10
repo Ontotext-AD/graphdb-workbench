@@ -46,7 +46,8 @@ failing tests.
 There are two options for running the tests. One is a headless execution and the second is through
 the Cypress's dashboard application. Follow the steps described below: 
 * Ensure a GraphDB instance is running on `localhost:7200`. One can be run by executing 
-`docker-compose up` in the `graphdb-workbench/test-cypress` folder. 
+`docker-compose up` in the `graphdb-workbench/test-cypress` folder. Check path directory which is set with **-Dgraphdb.workbench.importDirectory** property when server is started. The folder with this path have to contains all files from "fixture/graphdb-import" 
+
 * In `graphdb-workbench` folder execute `npm run start` to build and run the workbench web 
 application. In result it is published and served by webpack's web dev server.
 * In terminal, go in `graphdb-workbench/test-cypress` folder and choose one of the options below: 
