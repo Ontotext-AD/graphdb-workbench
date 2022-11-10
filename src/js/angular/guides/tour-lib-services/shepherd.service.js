@@ -322,7 +322,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (step.options.attachTo) {
             GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
-                .catch(() => {
+                .catch((error) => {
+                    console.log(error);
                     toastr.error($translate.instant('guide.start.unexpected.error.message'));
                 });
         } else {
@@ -542,7 +543,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                                     guide.show(nextStep.id);
                                 }
                             })
-                            .catch(() => {
+                            .catch((error) => {
+                                console.log(error);
                                 toastr.error($translate.instant('guide.unexpected.error.message'));
                                 this._cancelGuide(guide, false);
                             });
@@ -553,7 +555,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                     currentStep.hide();
                     guide.show(nextStep.id);
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.log(error);
                     toastr.error($translate.instant('guide.unexpected.error.message'));
                     this._cancelGuide(guide, false);
                 });
@@ -584,7 +587,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 if (angular.isFunction(currentStepDescription.onNextClick)) {
                     const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
                     if (onNextResult instanceof Promise) {
-                        onNextResult.catch(() => {
+                        onNextResult.catch((error) => {
+                            console.log(error);
                             toastr.error($translate.instant('guide.unexpected.error.message'));
                             this._cancelGuide(guide, false);
                         });
