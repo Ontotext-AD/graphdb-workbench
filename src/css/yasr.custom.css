@@ -100,7 +100,6 @@
 .yasr .uri-cell {
   display: inline;
   word-break: normal !important;
-  word-wrap: normal !important;
 }
 
 .yasr .triple-cell {

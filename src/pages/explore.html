@@ -1,6 +1,6 @@
 <link href="css/explore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <div core-errors></div>
-<div class="page" ng-show="getActiveRepository()">
+<div class="page fit-content" ng-show="getActiveRepository()">
     <div class="resource-info" ng-if="!isTripleResource()">
         <div class="thumb" ng-show="{{details.img}}">
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
@@ -102,7 +102,7 @@
         </ul>
     </div>
 
-    <div id="yasr">
+    <div id="yasr" class="explore">
         <!--<pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
         <div class="yasr" id="yasr-inner">
             <div class='yasr_results' guide-selector="yasrResults"></div>
