@@ -1,3 +1,7 @@
+.grey-row {
+    background-color: rgba(0, 0, 0, .05);
+}
+
 .wb-plugins-td {
     width: 50%;
     float: left;
@@ -35,33 +39,18 @@
     align-items: center;
 }
 
-    table {
-        width: 100%;
-    }
-
-#wb-plugins-pluginInPlugins tr:nth-child(4n-3) {
-        background-color: rgba(0,0,0,.05);
-}
-
-#wb-plugins-pluginInPlugins tr:nth-child(4n) {
-    background-color: rgba(0,0,0,.05);
+table {
+    width: 100%;
 }
 
 tr {
     display: inline-flex;
 }
 
-@media all and (max-width:800px) {
+@media all and (max-width: 800px) {
 
     tr {
         display: table-row;
-    }
-
-    #wb-plugins-pluginInPlugins tr:nth-child(even) {
-        background-color: white;
-    }
-    #wb-plugins-pluginInPlugins tr:nth-child(odd) {
-        background-color: rgba(0,0,0,.05);
     }
 
     tr {
