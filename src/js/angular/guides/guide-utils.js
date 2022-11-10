@@ -1,6 +1,6 @@
 const GuideUtils = (function () {
-    const GUIDES_LIST_URL = '/rest/guides';
-    const GUIDES_DOWNLOAD_URL = '/rest/guides/download/';
+    const GUIDES_LIST_URL = 'rest/guides';
+    const GUIDES_DOWNLOAD_URL = 'rest/guides/download/';
 
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
