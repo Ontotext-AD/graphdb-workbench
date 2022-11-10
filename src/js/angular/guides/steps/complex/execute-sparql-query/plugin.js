@@ -76,15 +76,9 @@ PluginRegistry.add('guide.step', [
                                 window.editor.setValue(defaultQuery);
                                 resolve();
                             } else {
-                                if ('/sparql' !== $location.url()) {
-                                    $location.url('/sparql');
-                                    $route.reload();
-                                }
-                                GuideUtils.waitFor(GuideUtils.getSparqlEditorSelector(), 3)
-                                    .then(() => {
-                                        window.editor.setValue(queries[index - 1]);
-                                        resolve();
-                                    })
+                                const haveToReload = '/sparql' !== $location.url();
+                                GuideUtils.executeSparqlQuery($location, $route, query, haveToReload)
+                                    .then(() => resolve())
                                     .catch((error) => reject(error));
                             }
                         }),
@@ -135,13 +129,8 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
                             if ('/sparql' !== $location.url()) {
-                                $location.url('/sparql');
-                                $route.reload();
-                                GuideUtils.waitFor(GuideUtils.getSparqlEditorSelector())
-                                    .then(() => {
-                                        window.editor.setValue(query);
-                                        GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => resolve()).catch((error) => reject(error));
-                                    })
+                                GuideUtils.executeSparqlQuery($location, $route, query, true)
+                                    .then(() => resolve())
                                     .catch((error) => reject(error));
                             } else {
                                 const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
