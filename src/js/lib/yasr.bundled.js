@@ -54121,7 +54121,7 @@ module.exports={
         "spec": ">=1.4.1 <2.0.0",
         "type": "range"
       },
-      "/home/sava/IntellijProjects/YASR-Ontotext"
+      "/home/boyan/Git/YASR-Ontotext"
     ]
   ],
   "_from": "yasgui-utils@>=1.4.1 <2.0.0",
@@ -54155,7 +54155,7 @@ module.exports={
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
   "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/home/sava/IntellijProjects/YASR-Ontotext",
+  "_where": "/home/boyan/Git/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -54165,12 +54165,20 @@ module.exports={
   "dependencies": {
     "store": "^2.0.4"
   },
+  "deprecated": "Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.",
   "description": "Utils for YASGUI libs",
   "devDependencies": {},
   "directories": {},
   "dist": {
     "shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
-    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz"
+    "tarball": "https://registry.npmjs.org/yasgui-utils/-/yasgui-utils-1.6.7.tgz",
+    "integrity": "sha512-w9BnalJg330lZhljHn0j6Ta6jyQTJL8nbhjyeDj4Z9PrX7GLrgcwq7CO7uP6Keq86L1XjpUgUU6JAmTlmkXj6w==",
+    "signatures": [
+      {
+        "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+        "sig": "MEUCIQChXn8SW+Xzp3hIj8sCOEzZO7ohF5kxjzHo5OmcJ1XO/wIgcBFbqGmN4Iyiw9ptQjoCz57rpREAGaXlYIf2o+zj68I="
+      }
+    ]
   },
   "gitHead": "6031b1cb732d390b29cd5376dceb9a9d665bbd11",
   "homepage": "https://github.com/YASGUI/Utils",
@@ -54536,7 +54544,15 @@ var root = module.exports = function(yasr) {
     yasr.translate = require('./translate.js')(yasr.options.locale);
 
 	var container = $("<div class='booleanResult'></div>");
-	var draw = function() {
+	var plugin = {
+		id: 'boolean',
+		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
+		hideFromSelection: true,
+		getPriority: 1,
+	}
+	plugin.options = $.extend(true, {}, yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {});
+
+	plugin.draw = function() {
 		container.empty().appendTo(yasr.resultsContainer);
 		var booleanVal = yasr.results.getBoolean();
 		
@@ -54558,21 +54574,11 @@ var root = module.exports = function(yasr) {
 		
 		$("<span></span>").text(textVal).appendTo(container);
 	};
-	
 
-	var canHandleResults = function(){return yasr.results.getBoolean && (yasr.results.getBoolean() === true || yasr.results.getBoolean() == false);};
+	plugin.canHandleResults = function(){return yasr.results.getBoolean && (yasr.results.getBoolean() === true || yasr.results.getBoolean() == false);};
 
-	
-	
-	return {
-		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
-		draw: draw,
-		hideFromSelection: true,
-		getPriority: 1,
-		canHandleResults: canHandleResults
-	}
+	return plugin;
 };
-
 
 root.version = {
 	"YASR-boolean" : require("../package.json").version,
@@ -54599,7 +54605,15 @@ var root = module.exports = function(yasr) {
     yasr.translate = require('./translate.js')(yasr.options.locale);
 
 	var container = $("<div class='booleanBootResult'></div>");
-	var draw = function() {
+	const plugin = {
+		id: 'booleanBootstrap',
+		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
+		hideFromSelection: true,
+		getPriority: 3,
+	}
+	plugin.options = $.extend(true, {}, yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {});
+
+	plugin.draw = function() {
 		container.empty().appendTo(yasr.resultsContainer);
 		var booleanVal = yasr.results.getBoolean();
 		
@@ -54615,21 +54629,11 @@ var root = module.exports = function(yasr) {
 			
 		alert.appendTo(container);
 	};
-	
 
-	var canHandleResults = function(){return yasr.results.getBoolean && (yasr.results.getBoolean() === true || yasr.results.getBoolean() == false);};
+	plugin.canHandleResults = function(){return yasr.results.getBoolean && (yasr.results.getBoolean() === true || yasr.results.getBoolean() == false);};
 
-	
-	
-	return {
-		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
-		draw: draw,
-		hideFromSelection: true,
-		getPriority: 3,
-		canHandleResults: canHandleResults
-	}
+	return plugin;
 };
-
 
 root.version = {
 	"YASR-boolean" : require("../package.json").version,
@@ -54752,8 +54756,17 @@ var root = module.exports = function(yasr) {
     yasr.translate = require('./translate.js')(yasr.options.locale);
 
 	var $container = $("<div class='errorResult'></div>");
-	var options = $.extend(true, {}, root.defaults);
-	
+
+	const plugin = {
+		id: 'error',
+		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
+		getPriority: 20,
+		hideFromSelection: true,
+	}
+
+	const customOptions = yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {};
+	var options = plugin.options = $.extend(true, {}, root.defaults, customOptions);
+
 	var getTryBtn = function(){
 		var $tryBtn = null;
 		if (options.tryQueryLink) {
@@ -54768,7 +54781,7 @@ var root = module.exports = function(yasr) {
 		return $tryBtn;
 	}
 	
-	var draw = function() {
+	plugin.draw = function() {
 		var error = yasr.results.getException();
 		$container.empty().appendTo(yasr.resultsContainer);
 		var $header = $("<div>", {class:'errorHeader'}).appendTo($container);
@@ -54807,17 +54820,9 @@ var root = module.exports = function(yasr) {
 		}
 		
 	};
-	
-	
-	var  canHandleResults = function(yasr){return yasr.results.getException() || false;};
-	
-	return {
-		name: null,//don't need to set this: we don't show it in the selection widget anyway, so don't need a human-friendly name
-		draw: draw,
-		getPriority: 20,
-		hideFromSelection: true,
-		canHandleResults: canHandleResults,
-	}
+
+	plugin.canHandleResults = function(yasr){return yasr.results.getException() || false;};
+	return plugin;
 };
 
 /**
@@ -55552,8 +55557,6 @@ console = console || {"log":function(){}};//make sure any console statements don
 
 require('./jquery/extendJquery.js');
 
-
-
 /**
  * Main YASR constructor
  * 
@@ -55564,8 +55567,6 @@ require('./jquery/extendJquery.js');
  * @return {doc} YASR document
  */
 var root = module.exports = function(parent, options, queryResults) {
-
-
 	var yasr = {};
 	yasr.options = $.extend(true, {}, root.defaults, options);
 	yasr.container = $(parent).find(".yasr");
@@ -56023,6 +56024,18 @@ var root = module.exports = function(parent, options, queryResults) {
 		yasr.setResponse(queryResults);
 	} 
 	yasr.updateHeader();
+
+	const resizeEvent = 'resize.' + new Date().getTime();
+	$(window).on(resizeEvent, yasr.draw);
+
+	yasr.destroy = function () {
+		$(window).off(resizeEvent);
+		for (const plugin in yasr.plugins) {
+			if ($.isFunction(plugin.destroy)) {
+				plugin.destroy();
+			}
+		}
+	}
 	return yasr;
 };
 
@@ -56606,9 +56619,16 @@ var root = module.exports = function(yasr) {
     // load and register the translation service providing the locale config
     yasr.translate = require('./translate.js')(yasr.options.locale);
 
-	var plugin = {};
-	var options = $.extend(true, {}, root.defaults);
-	
+	var plugin = {
+		id: 'pivot',
+		name: "Pivot Table",
+		nameLabel: 'yasr.pivot.pivot_table',
+		getPriority: 4,
+	};
+
+	const customOptions = yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {};
+	var options = plugin.options = $.extend(true, {}, root.defaults, customOptions);
+
 	if (options.useD3Chart) {
 		try {
 			// Don't load d3 here, use the global one
@@ -56619,9 +56639,7 @@ var root = module.exports = function(yasr) {
 		}
 		if ($.pivotUtilities.d3_renderers) $.extend(true,  $.pivotUtilities.renderers, $.pivotUtilities.d3_renderers);
 	}
-	
-	
-	
+
 	var $pivotWrapper;
 	var mergeLabelPostfix = null;
 	var getShownVariables = function() {
@@ -56644,7 +56662,6 @@ var root = module.exports = function(yasr) {
 	};
 	
 	var formatForPivot = function(callback) {
-		
 		var vars = getShownVariables();
 		var usedPrefixes = null;
 		if (yasr.options.getUsedPrefixes) {
@@ -56695,7 +56712,8 @@ var root = module.exports = function(yasr) {
 		}
 		return settings;
 	};
-	var draw = function() {
+
+	plugin.draw = function() {
 		var doDraw = function() {
 			var onRefresh = function(pivotObj) {
 				if (persistencyId) {
@@ -56777,11 +56795,12 @@ var root = module.exports = function(yasr) {
 			doDraw();
 		}
 	};
-	var canHandleResults = function(){
+
+	plugin.canHandleResults = function(){
 		return yasr.results && yasr.results.getVariables && yasr.results.getVariables() && yasr.results.getVariables().length > 0;
 	};
 	
-	var getDownloadInfo =  function() {
+	plugin.getDownloadInfo =  function() {
 		if (!yasr.results) return null;
 		var svgEl = yasr.resultsContainer.find('.pvtRendererArea svg');
 		if (svgEl.length > 0) {
@@ -56816,7 +56835,8 @@ var root = module.exports = function(yasr) {
 		} 
 		
 	};
-	var getEmbedHtml = function() {
+
+	plugin.getEmbedHtml = function() {
 		if (!yasr.results) return null;
 		
 		var svgEl = yasr.resultsContainer.find('.pvtRendererArea svg')
@@ -56833,19 +56853,9 @@ var root = module.exports = function(yasr) {
 		//don't use jquery, so we can easily influence indentation
 		return '<div style="width: 800px; height: 600px;">\n' + htmlString + '\n</div>';
 	};
-	return {
-		getDownloadInfo: getDownloadInfo,
-		getEmbedHtml: getEmbedHtml,
-		options: options,
-		draw: draw,
-		name: "Pivot Table",
-		nameLabel: 'yasr.pivot.pivot_table',
-		canHandleResults: canHandleResults,
-		getPriority: 4,
-	}
+
+	return plugin;
 };
-
-
 
 root.defaults = {
 	mergeLabelsWithUris: false,
@@ -56878,16 +56888,24 @@ var root = module.exports = function(yasr) {
     // load and register the translation service providing the locale config
     yasr.translate = require('./translate.js')(yasr.options.locale);
 
-	var plugin = {};
-	var options = $.extend(true, {}, root.defaults);
+	const plugin = {
+		id: 'rawResponse',
+		name: "Raw Response",
+		nameLabel: 'yasr.name.raw_response',
+		getPriority: 2,
+	}
+
+	const customOptions = yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {};
+	var options = plugin.options = $.extend(true, {}, root.defaults, customOptions);
 	var cm = null;
-	var draw = function() {
+
+	plugin.draw = function() {
 		var cmOptions = options.CodeMirror;
 		cmOptions.value = yasr.results.getShortOriginalResponse(options.limit);
 		
 		var mode = yasr.results.getType();
 		if (mode) {
-			if (mode == "json") {
+			if (mode === "json") {
 				mode = {name: "javascript", json: true};
 			}
 			cmOptions.mode = mode;
@@ -56903,17 +56921,17 @@ var root = module.exports = function(yasr) {
 		cm.on('unfold', function() {
 			cm.refresh();
 		});
-		
 	};
-	var canHandleResults = function(){
+
+	plugin.canHandleResults = function(){
 		if (!yasr.results) return false;
 		if (!yasr.results.getOriginalResponseAsString) return false;
 		var response = yasr.results.getOriginalResponseAsString();
-		if ((!response || response.length == 0) && yasr.results.getException()) return false;//in this case, show exception instead, as we have nothing to show anyway
+		if ((!response || response.length === 0) && yasr.results.getException()) return false;//in this case, show exception instead, as we have nothing to show anyway
 		return true;
 	};
-	
-	var getDownloadInfo = function() {
+
+	plugin.getDownloadInfo = function() {
 		if (!yasr.results) return null;
 		var contentType = yasr.results.getOriginalContentType();
 		var type = yasr.results.getType();
@@ -56925,18 +56943,8 @@ var root = module.exports = function(yasr) {
 		};
 	};
 	
-	return {
-		draw: draw,
-		name: "Raw Response",
-		nameLabel: 'yasr.name.raw_response',
-		canHandleResults: canHandleResults,
-		getPriority: 2,
-		getDownloadInfo: getDownloadInfo,
-		
-	}
+	return plugin;
 };
-
-
 
 root.defaults = {
 	CodeMirror: {
@@ -56946,7 +56954,7 @@ root.defaults = {
 	    foldGutter: true,
 	    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 	},
-	limit: 100
+	limit: 1000
 };
 
 root.version = {
@@ -56982,11 +56990,14 @@ var root = module.exports = function(yasr) {
 
 	var table = null;
 	var plugin = {
+		id: 'table',
 		name: "Table",
 		nameLabel: 'yasr.table',
 		getPriority: 10,
 	};
-	var options = plugin.options = $.extend(true, {}, root.defaults);
+
+	const customOptions = yasr.options.pluginsOptions ? yasr.options.pluginsOptions[plugin.id] : {};
+	var options = plugin.options = $.extend(true, {}, root.defaults, customOptions);
 	var tableLengthPersistencyId = (options.persistency? yasr.getPersistencyId(options.persistency.tableLength): null);
 
 	var getRows = function() {
@@ -57090,7 +57101,7 @@ var root = module.exports = function(yasr) {
 		// hideOrShowDatatablesControls();
 		addAdditionalEvents();
 	};
-	
+
 	plugin.draw = function() {
 		table = $('<table cellpadding="0" cellspacing="0" border="0" class="resultsTable table stripe hover table-bordered fixedCellWidth"></table>');
 		$(yasr.resultsContainer).html(table);
@@ -57109,11 +57120,12 @@ var root = module.exports = function(yasr) {
 		
 		
 		drawSvgIcons();
-		
-		addEvents();
-		
-		//finally, make the columns dragable:
-		table.colResizable();
+
+		if (!options.enableColumnResizingOnWindowWidth || options.enableColumnResizingOnWindowWidth <= $(window).width()) {
+			addEvents();
+			//finally, make the columns dragable:
+			table.colResizable();
+		}
 		//and: make sure the height of the resize handlers matches the height of the table header
 		var thHeight = table.find('thead').outerHeight();
 		$(yasr.resultsContainer).find('.JCLRgrip').height(table.find('thead').outerHeight());
