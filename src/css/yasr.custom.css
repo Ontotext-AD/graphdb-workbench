@@ -100,6 +100,13 @@
 .yasr .uri-cell {
   display: inline;
   word-break: normal !important;
+  word-wrap: normal !important;
+}
+
+@media screen and (max-width: 768px) {
+    .yasr .uri-cell {
+        word-wrap: break-word !important;
+    }
 }
 
 .yasr .triple-cell {
