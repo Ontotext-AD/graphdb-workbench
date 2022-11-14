@@ -374,6 +374,8 @@
     text-align: left;
 }
 
-.fit-content {
-    width: fit-content;
+@media only screen and (max-width:768px) {
+    .fit-content-on-mobile {
+        width: fit-content;
+    }
 }
