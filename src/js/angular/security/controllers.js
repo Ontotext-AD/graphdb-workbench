@@ -194,6 +194,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                         $scope.users[i].userType = pa.userType;
                         $scope.users[i].userTypeDescription = pa.userTypeDescription;
                         $scope.users[i].repositories = pa.repositories;
+                        $scope.users[i].customRoles = pa.customRoles;
                     }
                     $scope.loader = false;
                 }).error(function (data) {
@@ -794,6 +795,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             const pa = parseAuthorities(scope.userData.authorities);
             $scope.userType = pa.userType;
             $scope.grantedAuthorities = pa.grantedAuthorities;
+            $scope.customRoles = pa.customRoles;
         };
 
         $scope.loader = false;
