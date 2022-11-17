@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "2.2.0-QDRPLACPOC1",
+    "version": "2.2.0-QDRPLACPOC2",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
