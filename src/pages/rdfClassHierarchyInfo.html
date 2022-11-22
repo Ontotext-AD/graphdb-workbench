@@ -11,7 +11,7 @@
 <div class="toolbar-holder pull-right mt-1" id="toolbar"
 	ng-class="{ 'pushed-toolbar': showClassInfoPanel }"
 	ng-show="hasClassHierarchy() && !loader || !isAllGraphsSelected()">
-    <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
+    <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2" ng-if="hasClassHierarchy()">
         <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                 data-toggle="dropdown"
                 aria-expanded="false">
