@@ -14,6 +14,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         $scope.stringLimit = 500;
         $scope.expanded = {};
         $scope.error = '';
+        $scope.paused = false;
 
         function containsIPV4(ip) {
             const blocks = ip.split('.');
@@ -52,6 +53,10 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
 
             return [match[2], shortUrl, match[1]];
         };
+
+        $scope.togglePause = function () {
+            $scope.paused = !$scope.paused;
+        }
 
         $scope.getQueries = function () {
             // Skip execution if already getting from previous call, if paused, if jolokia returned an error,

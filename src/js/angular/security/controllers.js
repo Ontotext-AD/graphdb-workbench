@@ -455,6 +455,16 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
                 $scope.confirmPasswordError = '';
             }
         };
+
+        $scope.shouldDisableSameAs = function () {
+            const sameAsCheckbox = $('#sameAsCheck');
+            if ($scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE && sameAsCheckbox.prop('checked')) {
+                sameAsCheckbox.prop("checked", false);
+                $scope.user.appSettings.DEFAULT_SAMEAS = false;
+            }
+
+            return $scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE;
+        };
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',

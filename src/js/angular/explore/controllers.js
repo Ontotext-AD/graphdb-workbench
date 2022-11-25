@@ -2,6 +2,7 @@ import 'angular/utils/file-types';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
+import {YasrUtils} from "../utils/yasr-utils";
 
 const modules = [
     'ngCookies',
@@ -96,12 +97,18 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                         data.results.bindings.forEach(function (e) {
                             $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
                         });
+                        $scope.$on('$destroy', function () {
+                            if (yasr) {
+                                yasr.destroy();
+                            }
+                        });
                         yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
                             //this way, the URLs in the results are prettified using the defined prefixes
                             getUsedPrefixes: $scope.usedPrefixes,
                             persistency: false,
                             hideHeader: true,
-                            locale: $languageService.getLanguage()
+                            locale: $languageService.getLanguage(),
+                            pluginsOptions: YasrUtils.getYasrConfiguration()
                         });
                         $scope.loadResource();
                     }).error(function (data) {

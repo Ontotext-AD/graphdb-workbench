@@ -1,3 +1,5 @@
+import VisualGraphSteps from "../../steps/visual-graph-steps";
+
 const FILE_TO_IMPORT = 'wine.rdf';
 const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
 
@@ -248,7 +250,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test verify mouse/keyboard actions', () => {
-            let mouseActions = 'Mouse actions\n                ' +
+            const mouseActions = 'Mouse actions\n                ' +
                 '\n                    \n                    \n                        \n                            ' +
                 'Single click\n                        \n                        ' +
                 'View node details and properties\n                    \n                    \n                        \n                            ' +
@@ -264,14 +266,14 @@ describe('Visual graph screen validation', () => {
                 'Pin down or unpin the node\n                    \n                    \n                        \n                            ' +
                 'Click and drag outside a node\n                        \n                        ' +
                 'Move the whole graph\n';
-            let touchActions = 'Touch actions\n            \n                \n                \n                    \n                        ' +
+            const touchActions = 'Touch actions\n            \n                \n                \n                    \n                        ' +
                 'Tap\n                    \n                    ' +
                 'View node details and properties\n                \n                \n                    \n                        ' +
                 'Tap and hold\n                    \n                    ' +
                 'Removes a node and its links\n                \n                \n                    \n                        ' +
                 'Tap twice\n                    \n                    ' +
                 'Load node connections\n';
-            let keyboardActions = 'Keyboard actions\n                \n                    \n                        \n                            ' +
+            const keyboardActions = 'Keyboard actions\n                \n                    \n                        \n                            ' +
                 'Left arrow\n                        \n                        ' +
                 'Rotate the graph to the left\n                    \n                    \n                        \n                            ' +
                 'Right arrow\n                        \n                        ' +
@@ -513,7 +515,7 @@ describe('Visual graph screen validation', () => {
         cy.get('.page-2-link').should('be.visible')
             .and('contain', 'Graph expansion');
         cy.get('.page-3-link').should('be.visible')
-            .and('contain', 'Node basics')
+            .and('contain', 'Node basics');
         cy.get('.page-4-link').should('be.visible')
             .and('contain', 'Edge basics');
         cy.get('.page-5-link').should('be.visible')
@@ -523,11 +525,66 @@ describe('Visual graph screen validation', () => {
 
         cy.get('.expand-samples .list-group-item').first().click();
         getSaveConfig().click();
-        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations')
+        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'configName');
         getGraphConfigurationsArea().should('be.visible')
             .and('contain', 'No graph configs');
+    });
+
+    it('CRUD on saved graph', () => {
+        const graphConfigName = 'MyGraphConfig_' + Date.now();
+        const namedGraph = 'myGraph' + Date.now();
+        const renamedGraph = 'myRenamedGraph' + Date.now();
+
+        //Creates saved graph
+        cy.visit('graphs-visualizations');
+        getCreateCustomGraphLink().click();
+        cy.url().should('include', '/config/save');
+        getGraphConfigName().type(graphConfigName);
+        cy.get('[data-cy="graph-config-by-graph-query-checkbox"]').check();
+        cy.get('[data-cy="query-editor"]').type('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10', {parseSpecialCharSequences: false});
+        getSaveConfig().click();
+        cy.url().should('include', 'graphs-visualizations');
+        cy.contains('td', graphConfigName).parent().within(() => {
+            cy.get('[data-cy="graph-config-starting-point-query-results"]').click();
+        });
+        VisualGraphSteps
+            .updateGraphConfiguration(namedGraph);
+
+        //Visualize saved graph
+        cy.visit('graphs-visualizations');
+        cy.contains('td', namedGraph).parent().within(() => {
+            cy.get('td a').contains(namedGraph).click();
+        });
+        cy.get('[data-cy="save-or-update-graph"]').should('be.visible');
+
+        //Finds the button "Get URL to Graph" and opens the modal form "Copy URL to clipboard"
+        cy.visit('graphs-visualizations');
+        cy.contains('td', namedGraph).parent().within( () => {
+            cy.get('td a')
+                .get('[data-cy="copy-to-clipboard-saved-graph"]').click();
+        });
+           cy.get( '[id="copyToClipboardForm"]').contains('Copy URL to clipboard');
+
+        //Renames saved graph
+        cy.visit('graphs-visualizations');
+        cy.contains('td', namedGraph).parent().within( () => {
+            cy.get('td a')
+                .get('[data-cy="rename-saved-graph"]').click();
+        });
+        cy.get('[id="saveGraphForm"]')
+            .get('[id="wb-graphviz-savegraph-name"]').clear().type(renamedGraph)
+            .get('[id="wb-graphviz-savegraph-submit"]').click();
+        cy.get('.toast').contains('Saved graph ' + renamedGraph + ' was edited.');
+
+        //Deletes saved graph
+        VisualGraphSteps
+            .deleteSavedGraph(renamedGraph);
+
+        //Deletes graph config
+        VisualGraphSteps
+            .deleteGraphConfig(graphConfigName);
     });
 
     // Visual graph home view access
@@ -545,7 +602,7 @@ describe('Visual graph screen validation', () => {
                 cy.waitUntil(() =>
                     cy.get('.graph-visualization')
                         .find('.nodes-container')
-                        .then(nodesContainer => nodesContainer))
+                        .then((nodesContainer) => nodesContainer))
                     .then(() => {
                         getNodes();
                     });
@@ -585,14 +642,14 @@ describe('Visual graph screen validation', () => {
     }
 
     function showPreferredTypes(enable) {
-        let command = enable ? 'check' : 'uncheck';
+        const command = enable ? 'check' : 'uncheck';
         getShowPreferredTypesOnlyCheckbox()[command]();
     }
 
     function toggleInferredStatements(enable) {
         openVisualGraphSettings();
         getSettingsPanel().should('be.visible');
-        let command = enable ? 'check' : 'uncheck';
+        const command = enable ? 'check' : 'uncheck';
         getIncludeInferredStatementsCheckbox()[command]();
         saveSettings();
     }
