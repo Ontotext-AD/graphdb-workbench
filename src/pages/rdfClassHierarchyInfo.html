@@ -22,7 +22,7 @@
             </a>
         </button>
         <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-            <li ng-repeat="graph in downsizeGraphsInRepoIfMoreThan1000()" ng-if="graph.contextID.value !== getSelGraphValue()">
+            <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelGraphValue()">
                 <a class="dropdown-item" ng-click="chosenGraph(graph)">
 					<span class="multiline-text">
 						{{graph.contextID.value | translate}} <br/>
