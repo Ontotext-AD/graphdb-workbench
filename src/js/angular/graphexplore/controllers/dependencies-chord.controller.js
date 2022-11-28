@@ -324,6 +324,14 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelectedGraphValue() === 'all.graphs.label'
-    }
+        return $scope.getSelectedGraphValue() === 'all.graphs.label';
+    };
+
+    //Method used to limit the graphs loaded in the drop-down menu, otherwise browsers crash.
+    $scope.downsizeGraphsInRepoIfMoreThan1000 = function () {
+        if ($scope.graphsInRepo.length > 1002) {
+            return $scope.graphsInRepo.slice(0, 1002);
+        }
+        return $scope.graphsInRepo;
+    };
 }

@@ -488,6 +488,14 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelGraphValue() === 'all.graphs.label'
-    }
+        return $scope.getSelGraphValue() === 'all.graphs.label';
+    };
+
+    //Method used to limit the graphs loaded in the drop-down menu, otherwise browsers crash.
+    $scope.downsizeGraphsInRepoIfMoreThan1000 = function () {
+        if ($scope.graphsInRepo.length > 1002) {
+            return $scope.graphsInRepo.slice(0, 1002);
+        }
+        return $scope.graphsInRepo;
+    };
 }

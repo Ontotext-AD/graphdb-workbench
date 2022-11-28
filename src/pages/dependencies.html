@@ -21,7 +21,7 @@
 </div>
 <div class="content" ng-show="!isActiveRepoFedXType() && !repositoryError && isLicenseValid() && !isSystemRepository()">
     <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
-        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2" ng-if="dependenciesData.hasLinks">
+        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                     data-toggle="dropdown"
                     aria-expanded="false">
@@ -32,7 +32,7 @@
                 </a>
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">
+                <li ng-repeat="graph in downsizeGraphsInRepoIfMoreThan1000()" ng-if="graph.contextID.value !== getSelectedGraphValue()">
                     <a class="dropdown-item" ng-click="selectGraph(graph)">
                         <span class="multiline-text">
 						    {{graph.contextID.value | translate}} <br/>
@@ -41,7 +41,7 @@
                 </li>
             </ul>
         </div>
-        <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
+            <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
                  ng-show="allNotFilteredClasses.length > 0"
                ng-click="removeAllClasses()"
                tooltip="{{'remove.classes.label' | translate}}"
