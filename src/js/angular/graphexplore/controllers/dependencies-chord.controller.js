@@ -54,12 +54,15 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
 
+    //allGraphs is used to include all graphs in the chosen repository and represent the Class Relationships diagram and table,
+    // while graphsInRepo is sliced to 1000 if there are more than 1000 graphs in the repository, and they are present
+    // in the drop-down menu otherwise browsers crash.
     let selectedGraph = allGraphs;
 
     const initView = function () {
         RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
-                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
                 if (!$scope.isSystemRepository()) {
                     $scope.status = 'WAIT';
@@ -324,6 +327,6 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelectedGraphValue() === 'all.graphs.label'
-    }
+        return $scope.getSelectedGraphValue() === 'all.graphs.label';
+    };
 }

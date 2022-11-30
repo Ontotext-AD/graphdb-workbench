@@ -51,6 +51,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
     };
 
+    //allGraphs is used to include all graphs in the chosen repository and represent the Class Hierarchy diagram,
+    // while graphsInRepo is sliced to 1000 if there are more than 1000 graphs in the repository, and they are present
+    // in the drop-down menu otherwise browsers crash.
     let selectedGraph = allGraphs;
 
     const initView = function () {
@@ -59,7 +62,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
         return RDF4JRepositoriesRestService.resolveGraphs()
             .success(function (graphsInRepo) {
-                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
             }).error(function (data) {
             $scope.repositoryError = getError(data);
@@ -488,6 +491,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     };
 
     $scope.isAllGraphsSelected = function () {
-        return $scope.getSelGraphValue() === 'all.graphs.label'
-    }
+        return $scope.getSelGraphValue() === 'all.graphs.label';
+    };
 }
