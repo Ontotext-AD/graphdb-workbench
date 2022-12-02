@@ -281,11 +281,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     };
 
     $scope.copyToClipboardResult = function (uri) {
-        document.addEventListener('copy', function (e) {
-            e.clipboardData.setData('text/plain', uri);
-            e.preventDefault();
-        }, true);
-        document.execCommand('copy');
+        ModalService.openCopyToClipboardModal(uri);
     };
 
     $scope.$on('language-changed', function (event, args) {
