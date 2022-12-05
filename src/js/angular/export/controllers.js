@@ -3,6 +3,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
 import {decodeHTML} from "../../../app";
+import {cloneDeep} from "lodash";
 
 const modules = [
     'ngCookies',
@@ -87,7 +88,7 @@ exportCtrl.controller('ExportCtrl',
                             $scope.graphsByValue[binding.contextID.value] = binding.contextID;
                         });
                         $scope.graphs = data.results.bindings;
-                        $scope.filteredGraphs = angular.copy($scope.graphs);
+                        $scope.filteredGraphs = cloneDeep($scope.graphs);
                         $scope.displayGraphs = $scope.filteredGraphs.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
                         $scope.loader = false;
                         $scope.selectedGraphs.exportGraphs = {};
