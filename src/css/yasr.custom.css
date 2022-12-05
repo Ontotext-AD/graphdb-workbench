@@ -131,6 +131,10 @@
     padding: 0px;
 }
 
+.yasr .yasr_results td div.uri-cell,
+.yasr .yasr_results td div.triple-cell{
+    display: grid;
+}
 
 .yasr .yasr_results .uri-cell .share-result,
 .yasr .yasr_results .triple-cell .share-result{
@@ -140,7 +144,7 @@
 .yasr .yasr_results .uri-cell:hover > .share-result,
 .yasr .yasr_results .triple-link-end:hover + .share-result,
 .yasr .yasr_results .share-result:hover {
-  display: inline;
+  display: contents;
   position: absolute;
   padding-top: 3px;
   padding-left: 3px;
