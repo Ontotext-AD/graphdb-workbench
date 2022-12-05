@@ -53,9 +53,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         return encodeURIComponent(param);
     };
 
-    $scope.getRdfStarLocalNames = function(triple) {
+    $scope.getRdfStarLocalNames = function (triple) {
         let localNames = triple.slice();
-        const trimmed =  triple.replace(/[<>]+/g, '');
+        const trimmed = triple.replace(/[<>]+/g, '');
         trimmed.split(' ').forEach(uri => {
             localNames = localNames.replace(uri, ClassInstanceDetailsService.getLocalName(uri));
         });
@@ -112,8 +112,8 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                         });
                         $scope.loadResource();
                     }).error(function (data) {
-                        toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-                    });
+                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+                });
             }
         }
     });
