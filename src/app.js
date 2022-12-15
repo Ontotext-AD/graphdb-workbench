@@ -7,6 +7,7 @@ import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
+import {defineCustomElementOntotextYasgui} from 'ontotext-yasgui-web-component/dist/components/index';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -26,7 +27,8 @@ const modules = [
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
-    'graphdb.framework.guides.services'
+    'graphdb.framework.guides.services',
+    'ngCustomElement'
 ];
 
 const providers = [
@@ -42,6 +44,9 @@ const providers = [
 ];
 
 const moduleDefinition = function (productInfo) {
+
+    defineCustomElementOntotextYasgui();
+
     const workbench = angular.module('graphdb.workbench', modules);
 
     workbench.config([...providers,
