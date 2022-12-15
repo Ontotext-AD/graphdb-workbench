@@ -1938,5 +1938,8 @@
     "global.operations_statuses.IN_SYNC.title": "In sync",
     "global.operations_statuses.RECOVERING.title": "Recovering",
     "global.operations_statuses.OUT_OF_SYNC.title": "Out of sync",
-    "global.operations_statuses.UNAVAILABLE_NODES.title": "Unavailable nodes"
+    "global.operations_statuses.UNAVAILABLE_NODES.title": "Unavailable nodes",
+    "view.sparql-editor.title": "Ontotext Yasgui SPARQL Query & Update",
+    "view.sparql-editor.helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
+    "menu.sparql-editor.label": "Ontotext Yasgui SPARQL"
 }
