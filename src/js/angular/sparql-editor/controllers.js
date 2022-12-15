@@ -10,6 +10,10 @@ function SparqlEditorCtrl($scope, $repositories) {
 
     $scope.config = undefined;
 
+    function init() {
+        $scope.configChanged();
+    }
+
     $scope.queryExecuted = function (query) {
         console.log(query.detail);
     };
@@ -28,4 +32,6 @@ function SparqlEditorCtrl($scope, $repositories) {
     };
 
     $scope.$on('repositoryIsSet', $scope.configChanged);
+
+    init();
 }
