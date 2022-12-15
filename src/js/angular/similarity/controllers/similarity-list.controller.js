@@ -256,7 +256,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         let tokens = [];
         let prefix = '';
         tokens = queryTemplate.match(/[a-zA-Z0-9-]+:<http:\/\/www.ontotext.com\/graphdb\/similarity\/instance\/>/);
-        prefix = tokens[0].substring(0, tokens[0].indexOf(':'));
+        prefix = tokens == null ? "similarity-index" : tokens[0].substring(0, tokens[0].indexOf(':'));
 
         const replacedQuery = queryTemplate
             .replace('?index', prefix + ':' + $scope.selected.name)
