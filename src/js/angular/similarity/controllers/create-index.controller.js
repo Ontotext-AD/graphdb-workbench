@@ -218,7 +218,10 @@ function CreateSimilarityIdxCtrl($scope, toastr, $modal, $timeout, SimilarityRes
                     }
                 });
             }
-        });
+        }).error(function (error) {
+            const msg = getError(error);
+            toastr.error(msg);
+        });;
     };
 
     $scope.$watch('newIndex.name', function () {

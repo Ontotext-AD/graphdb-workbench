@@ -19,7 +19,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
-    }
+    };
 
     const literalForQuery = function (literal) {
         return '"' + literal + '"';
@@ -251,8 +251,20 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         } else {
             queryTemplate = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
         }
+
+        //replace template prefix for PREFIX_INSTANCE in the view mode with actual prefix from the query
+        var array = [];
+        var prefix = '';
+        array = queryTemplate.split(' ');
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].includes(PREFIX_INSTANCE)) {
+                prefix = array[i].substring(0, array[i].indexOf(':'));
+                break;
+            }
+        }
+
         const replacedQuery = queryTemplate
-            .replace('?index', 'inst:' + $scope.selected.name)
+            .replace('?index', prefix + ':' + $scope.selected.name)
             .replace('?query', $scope.lastSearch.termOrSubject)
             .replace('?searchType', ($scope.selected.type === 'text' ? ':' : 'psi:') + ($scope.lastSearch.type === 'searchEntityPredicate' ? 'searchEntity' : $scope.lastSearch.type))
             .replace('?resultType', $scope.selected.type === 'text' ? ':' + $scope.resultType : 'psi:entityResult')
