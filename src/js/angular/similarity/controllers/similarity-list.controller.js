@@ -253,15 +253,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
 
         //replace template prefix for PREFIX_INSTANCE in the view mode with actual prefix from the query
-        var array = [];
-        var prefix = '';
-        array = queryTemplate.split(' ');
-        for (let i = 0; i < array.length; i++) {
-            if (array[i].includes(PREFIX_INSTANCE)) {
-                prefix = array[i].substring(0, array[i].indexOf(':'));
-                break;
-            }
-        }
+        let tokens = [];
+        let prefix = '';
+        tokens = queryTemplate.match(/[a-zA-Z0-9-]+:<http:\/\/www.ontotext.com\/graphdb\/similarity\/instance\/>/);
+        prefix = tokens[0].substring(0, prefix.indexOf(':'));
 
         const replacedQuery = queryTemplate
             .replace('?index', prefix + ':' + $scope.selected.name)
