@@ -127,9 +127,12 @@ describe('Namespaces', () => {
         getNamespaces()
             .should('contain', DEFAULT_NAMESPACES['owl']);
         cy.visit('namespaces');
+        const updatedCount = getDefaultNamespacesLength();
+        cy.get('[data-cy="namespaces-per-page-menu"]').click()
+            .get('[data-cy="all-label"]').click();
         getNamespacesHeaderPaginationInfo()
             .should('be.visible')
-            .and('contain', 'Showing 1 - 10 of ' + getDefaultNamespacesLength() + ' results');
+            .and('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         getNamespacesFilterField()
             .clear()
@@ -198,7 +201,8 @@ describe('Namespaces', () => {
 
     it('should allow to delete existing namespaces', () => {
         // Delete single namespace from its actions
-        deleteNamespace('afn');
+        getNamespaces();
+        deleteNamespace('xsd');
         confirmModal();
 
         let updatedCount = getDefaultNamespacesLength() - 1;
@@ -207,8 +211,8 @@ describe('Namespaces', () => {
         getNamespacesHeaderPaginationInfo()
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
-        selectNamespace('graphdb');
-        selectNamespace('apf');
+        selectNamespace('rdf');
+        selectNamespace('rdfs');
         getDeleteNamespacesButton().click();
         confirmModal();
 
