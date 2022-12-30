@@ -1,7 +1,7 @@
 describe('Namespaces', () => {
 
     let repositoryId;
-    let DEFAULT_NAMESPACES = {};
+    const DEFAULT_NAMESPACES = {};
 
     beforeEach(() => {
         repositoryId = 'namespaces-' + Date.now();
@@ -51,12 +51,11 @@ describe('Namespaces', () => {
 
         // Should provide pagination options
         getNamespacesPerPageMenu().within(() => {
-            // Should show all namespaces by default (they are only 6 so they can be visualized all at once)
             cy.get('.dropdown-toggle')
                 .should('contain', 'All')
                 .click();
             cy.get('.page-size-option')
-                .should('have.length', 1)
+                .should('have.length', getPagingCount())
                 .and('contain', 'All');
             // Close the menu to avoid overlapping other elements
             cy.get('.dropdown-toggle').click();
@@ -126,11 +125,11 @@ describe('Namespaces', () => {
             .type('owl')
             .should('have.value', 'owl');
         getNamespaces()
-            .should('have.length', 1)
-            .and('contain', DEFAULT_NAMESPACES['owl']);
+            .should('contain', DEFAULT_NAMESPACES['owl']);
+        cy.visit('namespaces');
         getNamespacesHeaderPaginationInfo()
             .should('be.visible')
-            .and('contain', 'Showing 1 - 1 of 1 results');
+            .and('contain', 'Showing 1 - 10 of ' + getDefaultNamespacesLength() + ' results');
 
         getNamespacesFilterField()
             .clear()
@@ -159,7 +158,7 @@ describe('Namespaces', () => {
             .should('have.value', namespaceUri);
         getAddNamespaceButton().click();
 
-        let updatedCount = getDefaultNamespacesLength() + 1;
+        const updatedCount = getDefaultNamespacesLength() + 1;
         // Verify results table is refreshed
         getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
@@ -198,8 +197,8 @@ describe('Namespaces', () => {
     });
 
     it('should allow to delete existing namespaces', () => {
-        // Delete single namespace from it's actions
-        deleteNamespace('xsd');
+        // Delete single namespace from its actions
+        deleteNamespace('afn');
         confirmModal();
 
         let updatedCount = getDefaultNamespacesLength() - 1;
@@ -208,8 +207,8 @@ describe('Namespaces', () => {
         getNamespacesHeaderPaginationInfo()
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
-        selectNamespace('rdf');
-        selectNamespace('rdfs');
+        selectNamespace('graphdb');
+        selectNamespace('apf');
         getDeleteNamespacesButton().click();
         confirmModal();
 
@@ -323,11 +322,13 @@ describe('Namespaces', () => {
     }
 
     function getNamespaces() {
+        cy.get('[data-cy="namespaces-per-page-menu"]').click()
+            .get('[data-cy="all-label"]').click();
         return getNamespacesTable().find('.namespace');
     }
 
     function getNamespace(prefix) {
-        return getNamespaces()
+        return getNamespacesTable().find('.namespace')
             .find('.namespace-prefix')
             .contains(prefix)
             .parentsUntil('tbody')
@@ -367,5 +368,21 @@ describe('Namespaces', () => {
 
     function getDefaultNamespacesLength() {
         return Object.keys(DEFAULT_NAMESPACES).length;
+    }
+
+    function getPagingCount() {
+        const count = getDefaultNamespacesLength();
+        if (count <= 10) {
+            return 1;
+        }
+        if (count <= 20) {
+            return 2;
+        }
+        if (count <= 50) {
+            return 3;
+        }
+        if (count <= 100) {
+            return 4;
+        } else return 5;
     }
 });
