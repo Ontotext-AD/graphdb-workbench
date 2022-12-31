@@ -47,6 +47,7 @@ describe('Namespaces', () => {
 
         // Should render a table with some default namespaces
         getNamespacesTable().should('be.visible');
+        getRefreshedTableNamespaces();
         getNamespaces().should('have.length', getDefaultNamespacesLength());
 
         // Should provide pagination options
@@ -128,8 +129,7 @@ describe('Namespaces', () => {
             .should('contain', DEFAULT_NAMESPACES['owl']);
         cy.visit('namespaces');
         const updatedCount = getDefaultNamespacesLength();
-        cy.get('[data-cy="namespaces-per-page-menu"]').click()
-            .get('[data-cy="all-label"]').click();
+        getRefreshedTableNamespaces();
         getNamespacesHeaderPaginationInfo()
             .should('be.visible')
             .and('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
@@ -161,8 +161,9 @@ describe('Namespaces', () => {
             .should('have.value', namespaceUri);
         getAddNamespaceButton().click();
 
-        const updatedCount = getDefaultNamespacesLength() + 1;
+        let updatedCount = getDefaultNamespacesLength() + 1;
         // Verify results table is refreshed
+        getRefreshedTableNamespaces();
         getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
@@ -188,6 +189,7 @@ describe('Namespaces', () => {
         confirmModal();
 
         // Should have not created new record, should update the existing
+        getRefreshedTableNamespaces();
         getNamespaces()
             .should('have.length', getDefaultNamespacesLength() + 1)
             // This assert here ensures the table will contain the modified namespace before actually checking it because the table is
@@ -200,11 +202,12 @@ describe('Namespaces', () => {
     });
 
     it('should allow to delete existing namespaces', () => {
-        // Delete single namespace from its actions
-        getNamespaces();
+        // Delete single namespace from it's actions
+        getRefreshedTableNamespaces();
         deleteNamespace('xsd');
         confirmModal();
 
+        getRefreshedTableNamespaces();
         let updatedCount = getDefaultNamespacesLength() - 1;
         // Verify results table is refreshed
         getNamespaces().should('have.length', updatedCount);
@@ -216,6 +219,7 @@ describe('Namespaces', () => {
         getDeleteNamespacesButton().click();
         confirmModal();
 
+        getRefreshedTableNamespaces();
         updatedCount = updatedCount - 2;
         // Verify results table is refreshed
         getNamespaces().should('have.length', updatedCount);
@@ -326,9 +330,12 @@ describe('Namespaces', () => {
     }
 
     function getNamespaces() {
+        return getNamespacesTable().find('.namespace');
+    }
+
+    function getRefreshedTableNamespaces() {
         cy.get('[data-cy="namespaces-per-page-menu"]').click()
             .get('[data-cy="all-label"]').click();
-        return getNamespacesTable().find('.namespace');
     }
 
     function getNamespace(prefix) {
