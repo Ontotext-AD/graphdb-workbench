@@ -41,7 +41,7 @@
         <div ng-show="displayedNamespaces.length > 0" class="clearfix">
             <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
-                        ng-disabled="disabled">
+                        ng-disabled="disabled" data-cy="namespaces-per-page-menu">
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) > -1">{{pageSize}}</span>
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) === -1">{{'all.label' | translate}}</span>
                 </button>
@@ -50,7 +50,7 @@
                         <span class="dropdown-item page-size-option" ng-click="changePageSize(size)">{{size}}</span>
                     </li>
                     <li>
-                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)">{{'all.label' | translate}}</span>
+                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)" data-cy="all-label">{{'all.label' | translate}}</span>
                     </li>
                 </ul>
             </div>
