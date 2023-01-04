@@ -22,11 +22,8 @@ function SparqlEditorCtrl($scope, $repositories) {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository) {
             $scope.config = {
-                yasguiConfig: {
-                    requestConfig: {
-                        endpoint: `/repositories/${activeRepository}`
-                    }
-                }
+                endpoint: "/repositories/test-repo",
+                showToolbar: true
             };
         }
     };
