@@ -543,7 +543,10 @@ describe('Visual graph screen validation', () => {
         cy.url().should('include', '/config/save');
         getGraphConfigName().type(graphConfigName);
         cy.get('[data-cy="graph-config-by-graph-query-checkbox"]').check();
-        cy.get('[data-cy="query-editor"]').type('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10', {parseSpecialCharSequences: false});
+        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10').then( () => {
+                getSaveConfig().click();
+            }
+        );
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
         cy.contains('td', graphConfigName).parent().within(() => {
@@ -577,6 +580,7 @@ describe('Visual graph screen validation', () => {
             .get('[id="wb-graphviz-savegraph-name"]').clear().type(renamedGraph)
             .get('[id="wb-graphviz-savegraph-submit"]').click();
         cy.get('.toast').contains('Saved graph ' + renamedGraph + ' was edited.');
+        cy.hideToastContainer();
 
         //Deletes saved graph
         VisualGraphSteps

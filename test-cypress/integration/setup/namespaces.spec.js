@@ -206,6 +206,7 @@ describe('Namespaces', () => {
         getRefreshedTableNamespaces();
         deleteNamespace('xsd');
         confirmModal();
+        cy.hideToastContainer();
 
         getRefreshedTableNamespaces();
         let updatedCount = getDefaultNamespacesLength() - 1;
@@ -218,6 +219,7 @@ describe('Namespaces', () => {
         selectNamespace('rdfs');
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
         getRefreshedTableNamespaces();
         updatedCount = updatedCount - 2;
@@ -229,6 +231,7 @@ describe('Namespaces', () => {
         getSelectAllNamespacesCheckbox().click();
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
         getNamespacesTable().should('not.be.visible');
         getNoNamespacesAlert().should('be.visible');

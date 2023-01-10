@@ -48,3 +48,8 @@ Cypress.Commands.add("form_request", (url, formData) => {
         })
         .wait("@formRequest");
 });
+
+Cypress.Commands.add("hideToastContainer", (url, formData) => {
+    cy.get('.toast-success')
+        .then((toastContainer) => toastContainer && toastContainer.remove());
+});
