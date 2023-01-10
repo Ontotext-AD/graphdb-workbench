@@ -367,7 +367,7 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespaceButton(prefix) {
-        return cy.get(`[data-cy="delete-pref_${prefix}"]`);
+        return getNamespace(prefix).find(`[data-cy="delete-pref_${prefix}"]`).should('be.visible');
     }
 
     function deleteNamespace(prefix) {
