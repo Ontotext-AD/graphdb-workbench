@@ -329,7 +329,7 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespacesButton() {
-        return getNamespacesTable().find('.delete-namespaces-btn');
+        return getNamespacesTable().get('[data-cy="delete-several-prefixes"]');
     }
 
     function getNamespaces() {
