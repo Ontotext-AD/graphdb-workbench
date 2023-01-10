@@ -336,6 +336,10 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
 
             return true;
         }
+
+        $scope.addCustomId = function (name) {
+            return `delete-pref_${name}`;
+        }
     }]);
 
 namespaces.controller('StandartModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -347,5 +351,9 @@ namespaces.controller('StandartModalCtrl', ['$scope', '$modalInstance', function
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+    };
+
+    $scope.addCustomId = function (name) {
+        return `delete-pref_${name}`;
     };
 }]);

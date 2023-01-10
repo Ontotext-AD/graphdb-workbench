@@ -534,8 +534,8 @@ describe('Visual graph screen validation', () => {
 
     it('CRUD on saved graph', () => {
         const graphConfigName = 'MyGraphConfig_' + Date.now();
-        const namedGraph = 'myGraph' + Date.now();
-        const renamedGraph = 'myRenamedGraph' + Date.now();
+        const namedGraph = 'myGraph_' + Date.now();
+        const renamedGraph = 'myRenamedGraph_' + Date.now();
 
         //Creates saved graph
         cy.visit('graphs-visualizations');
