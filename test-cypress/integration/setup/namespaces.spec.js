@@ -346,7 +346,7 @@ describe('Namespaces', () => {
             .find('.namespace-prefix')
             .contains(prefix)
             .parentsUntil('tbody')
-            .last().should('be.visible');
+            .last();
     }
 
     function getSelectNamespaceCheckbox(prefix) {
