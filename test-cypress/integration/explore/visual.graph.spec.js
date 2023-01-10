@@ -550,7 +550,7 @@ describe('Visual graph screen validation', () => {
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
         cy.contains('td', graphConfigName).parent().within(() => {
-            cy.get('[data-cy="graph-config-starting-point-query-results"]').click();
+            cy.get('[data-cy="graph-config-starting-point-query-results"]').should('be.visible').click();
         });
         VisualGraphSteps
             .updateGraphConfiguration(namedGraph);
