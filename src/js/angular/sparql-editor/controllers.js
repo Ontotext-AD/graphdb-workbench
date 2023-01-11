@@ -4,13 +4,15 @@ angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$repositories', 'toastr', '$translate', 'SparqlRestService'];
+SparqlEditorCtrl.$inject = ['$scope', '$repositories', 'toastr', '$translate', 'SparqlRestService', '$languageService'];
 
-function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestService) {
+function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestService, $languageService) {
 
     this.repository = '';
 
     $scope.config = undefined;
+
+    $scope.language = $languageService.getLanguage();
 
     function init() {
         $scope.configChanged();
@@ -21,7 +23,8 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         if (activeRepository) {
             $scope.config = {
                 endpoint: `/repositories/${activeRepository}`,
-                showToolbar: true
+                showToolbar: true,
+                componentId: 'graphdb-workbench-sparql-editor'
             };
         }
     };
@@ -57,6 +60,9 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     };
 
     $scope.$on('repositoryIsSet', $scope.configChanged);
+    $scope.$on('language-changed', function (event, args) {
+        $scope.language = args.locale;
+    });
 
     init();
 }
