@@ -22,28 +22,4 @@ export class YasqeSteps {
     static getControlBar() {
         return cy.get('.controlbar');
     }
-
-    static getIncludeInferredStatementsButton() {
-        return cy.get('.yasqe_inferStatementsButton');
-    }
-
-    static includeInferredStatements() {
-        this.getIncludeInferredStatementsButton().click();
-    }
-
-    static getExpandResultsOverSameAsButton() {
-        return cy.get('.yasqe_expandResultsButton');
-    }
-
-    static expandResultsOverSameAs() {
-        this.getExpandResultsOverSameAsButton().click();
-    }
-
-    static getShareQueryButton() {
-        return cy.get('.yasqe_shareQueryButton');
-    }
-
-    static shareQuery() {
-        this.getShareQueryButton().click();
-    }
 }
