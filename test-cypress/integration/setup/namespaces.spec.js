@@ -185,7 +185,7 @@ describe('Namespaces', () => {
         // Modify the URI & confirm overwrite
         typeNamespacePrefix(namespacePrefix);
         typeNamespaceURI(namespaceUriModified);
-        addNamespace({timeout: 7000});
+        addNamespace();
         confirmModal();
 
         // Should have not created new record, should update the existing
@@ -346,7 +346,7 @@ describe('Namespaces', () => {
             .find('.namespace-prefix')
             .contains(prefix)
             .parentsUntil('tbody')
-            .last({timeout: 7000});
+            .last();
     }
 
     function getSelectNamespaceCheckbox(prefix) {
@@ -367,7 +367,7 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespaceButton(prefix) {
-        return getNamespace(prefix).find(`[data-cy="delete-pref_${prefix}"]`).should('be.visible');
+        return getNamespace(prefix).then( ()=> cy.get(`[data-cy="delete-pref_${prefix}"]`).should('be.visible'));
     }
 
     function deleteNamespace(prefix) {
