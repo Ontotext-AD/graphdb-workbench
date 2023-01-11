@@ -344,7 +344,9 @@ describe('Namespaces', () => {
     function getNamespace(prefix) {
         return getNamespacesTable().find('.namespace')
             .find('.namespace-prefix')
+            .should('be.visible')
             .contains(prefix)
+            .should('be.visible')
             .parentsUntil('tbody')
             .should('be.visible')
             .last();
