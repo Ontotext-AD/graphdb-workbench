@@ -590,6 +590,7 @@ describe('Visual graph screen validation', () => {
         //Deletes graph config
         VisualGraphSteps
             .deleteGraphConfig(graphConfigName);
+        cy.visit('graphs-visualizations');
     });
 
     // Visual graph home view access
