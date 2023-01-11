@@ -346,6 +346,7 @@ describe('Namespaces', () => {
             .find('.namespace-prefix')
             .contains(prefix)
             .parentsUntil('tbody')
+            .should('be.visible')
             .last();
     }
 
