@@ -549,7 +549,7 @@ describe('Visual graph screen validation', () => {
         );
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
-        cy.contains('td', graphConfigName).parent().within(() => {
+        cy.contains('td', graphConfigName).should('be.visible').parent().within(() => {
             cy.get('td a')
                 .get('[data-cy="graph-config-starting-point-query-results"]').should('be.visible').click();
         });
