@@ -343,6 +343,7 @@ describe('Namespaces', () => {
 
     function getNamespace(prefix) {
         return getNamespacesTable().find('.namespace')
+            .should('be.visible')
             .find('.namespace-prefix')
             .should('be.visible')
             .contains(prefix)
@@ -381,7 +382,7 @@ describe('Namespaces', () => {
     }
 
     function deleteNamespace(prefix) {
-        getDeleteNamespaceButton(prefix).click();
+        getDeleteNamespaceButton(prefix).should('be.visible').click();
     }
 
     // ------ Namespaces pagination ------
