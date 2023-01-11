@@ -120,7 +120,7 @@ describe('Setup / Connectors - Lucene', () => {
             cy.get('.toast-message')
                 .then(msg => msg && msg.text().indexOf(successMessage) > -1))
             .then(() => {
-                hideToastContainer();
+                cy.hideToastContainer();
             });
     }
 
@@ -130,14 +130,5 @@ describe('Setup / Connectors - Lucene', () => {
 
     function getConfirmConnectorDeletebutton() {
         return cy.get('.delete-connector-btn');
-    }
-
-    /**
-     *  Toast success container for some reason
-     *  is overlapping create connector button
-     */
-    function hideToastContainer() {
-        cy.get('.toast-success')
-            .then(toastContainer => toastContainer && toastContainer.remove());
     }
 });

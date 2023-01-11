@@ -350,7 +350,9 @@ describe('Namespaces', () => {
     }
 
     function getSelectNamespaceCheckbox(prefix) {
-        return getNamespace(prefix).find('.select-namespace');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.select-namespace');
     }
 
     function selectNamespace(prefix) {
@@ -358,7 +360,9 @@ describe('Namespaces', () => {
     }
 
     function getEditNamespaceButton(prefix) {
-        return getNamespace(prefix).find('.edit-namespace-btn');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.edit-namespace-btn');
     }
 
     // TODO: Not used yet
@@ -367,7 +371,10 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespaceButton(prefix) {
-        return getNamespace(prefix).then( ()=> cy.get(`[data-cy="delete-pref_${prefix}"]`).should('be.visible'));
+        return getNamespace(prefix)
+            .should('be.visible')
+            .get(`[data-cy="delete-pref_${prefix}"]`)
+            .should('be.visible');
     }
 
     function deleteNamespace(prefix) {
