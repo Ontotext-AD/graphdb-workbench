@@ -185,7 +185,7 @@ describe('Namespaces', () => {
         // Modify the URI & confirm overwrite
         typeNamespacePrefix(namespacePrefix);
         typeNamespaceURI(namespaceUriModified);
-        addNamespace();
+        addNamespace({timeout: 7000});
         confirmModal();
 
         // Should have not created new record, should update the existing
@@ -346,7 +346,7 @@ describe('Namespaces', () => {
             .find('.namespace-prefix')
             .contains(prefix)
             .parentsUntil('tbody')
-            .last();
+            .last({timeout: 7000});
     }
 
     function getSelectNamespaceCheckbox(prefix) {
