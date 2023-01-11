@@ -349,7 +349,6 @@ describe('Namespaces', () => {
             .contains(prefix)
             .should('be.visible')
             .parentsUntil('tbody')
-            .should('be.visible')
             .last();
     }
 

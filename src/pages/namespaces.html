@@ -121,7 +121,7 @@
                             tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
                             ng-disabled="{{!canWriteActiveRepo()}}" tooltip-trigger="mouseenter" tooltip="{{'delete.namespace' | translate}}"
-                            data-cy="{{addCustomId(namespace.prefix)}}">
+                            data-cy="{{'delete-pref_' + namespace.prefix}}">
                         <span class="icon-trash"></span></button>
                 </td>
             </tr>
