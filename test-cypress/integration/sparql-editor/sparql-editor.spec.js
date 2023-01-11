@@ -1,5 +1,5 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
-import {YasguiSteps} from "../../steps/yasgui-steps";
+import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 
 describe('Default view', () => {
 

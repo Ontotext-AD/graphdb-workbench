@@ -1,4 +1,5 @@
 import SparqlSteps from '../../steps/sparql-steps';
+import {LanguageSelectorSteps} from "../../steps/language-selector-steps";
 
 describe('YASQE and YASR language change validation', () => {
     let repositoryId;
@@ -10,10 +11,10 @@ describe('YASQE and YASR language change validation', () => {
 
     afterEach(() => {
         // Change the language back to English
-        SparqlSteps.changeLanguage('en');
+        LanguageSelectorSteps.switchToEn();
 
         cy.deleteRepository(repositoryId);
-    })
+    });
 
     context('Default language should be active and language change should affect labels', () => {
         it('should change labels in SPARQL view', () => {
@@ -24,7 +25,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getEditorAndResultsBtn().should('contain', 'Editor and results');
             SparqlSteps.getResultsOnlyBtn().should('contain', 'Results only');
 
-            SparqlSteps.changeLanguage('fr');
+            LanguageSelectorSteps.switchToFr();
 
             // The text in the labels should change
             SparqlSteps.getSparqlQueryUpdateLabel().should('contain', 'Requête et mise à jour SPARQL');
@@ -49,7 +50,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getTabWithGoogleChartText().should('contain', 'Google Chart');
             SparqlSteps.getResultsDescription().should('contain', 'Showing results from');
 
-            SparqlSteps.changeLanguage('fr');
+            LanguageSelectorSteps.switchToFr();
 
             // The text in the labels should change
             SparqlSteps.getTabWithTableText().should('contain', 'Tableau');
