@@ -45,11 +45,12 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
             });
         }).catch((err) => {
             const msg = getError(err);
-            toastr.error(msg, $translate.instant('query.editor.create.saved.query.error'));
+            const errorMessage = $translate.instant('query.editor.create.saved.query.error');
+            toastr.error(msg, errorMessage);
             $scope.config = merge({}, $scope.config, {
                 savedQuery: {
                     saveSuccess: false,
-                    errorMessage: [msg]
+                    errorMessage: [errorMessage]
                 }
             });
         });
