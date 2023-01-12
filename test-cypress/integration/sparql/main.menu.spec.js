@@ -50,11 +50,6 @@ describe('Main menu tests', function () {
                 ]
             },
             {
-                name: 'Ontotext Yasgui SPARQL',
-                visible: true,
-                redirect: '/sparql-editor'
-            },
-            {
                 name: 'SPARQL',
                 visible: true,
                 redirect: '/sparql'
