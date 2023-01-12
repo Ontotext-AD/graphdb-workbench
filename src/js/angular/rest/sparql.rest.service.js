@@ -14,7 +14,7 @@ function SparqlRestService($http) {
         addKnownPrefixes,
         editSavedQuery,
         deleteSavedQuery,
-        addNewSavedQuery,
+        addNewSavedQuery
     };
 
     function getSavedQueries() {
@@ -41,7 +41,20 @@ function SparqlRestService($http) {
         return $http.delete(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}`);
     }
 
-    function addNewSavedQuery(query) {
-        return $http.post(SAVED_QUERIES_ENDPOINT, query);
+    /**
+     * Creates a new saved query.
+     *
+     * @param {object} payload A payload object in format
+     * <code>
+     *  {
+     *      body: string,
+     *      name: string,
+     *      shared: boolean
+     *  }
+     * </code>
+     * @return {Promise} a promise which resolves with the result of the save query request or an error message.
+     */
+    function addNewSavedQuery(payload) {
+        return $http.post(SAVED_QUERIES_ENDPOINT, payload);
     }
 }
