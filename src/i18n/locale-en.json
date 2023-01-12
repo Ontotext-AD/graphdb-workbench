@@ -1725,8 +1725,5 @@
     "guide.step_plugin.welcome-what.content": "{{translatedGuideDescription}}<p>Let's get started for real now!</p>",
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
-    "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",
-    "view.sparql-editor.title": "Ontotext Yasgui SPARQL Query & Update",
-    "view.sparql-editor.helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
-    "menu.sparql-editor.label": "Ontotext Yasgui SPARQL"
+    "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support."
 }
