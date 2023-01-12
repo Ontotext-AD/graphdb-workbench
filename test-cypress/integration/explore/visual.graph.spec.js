@@ -534,8 +534,8 @@ describe('Visual graph screen validation', () => {
 
     it('CRUD on saved graph', () => {
         const graphConfigName = 'MyGraphConfig_' + Date.now();
-        const namedGraph = 'myGraph' + Date.now();
-        const renamedGraph = 'myRenamedGraph' + Date.now();
+        const namedGraph = 'myGraph_' + Date.now();
+        const renamedGraph = 'myRenamedGraph_' + Date.now();
 
         //Creates saved graph
         cy.visit('graphs-visualizations');
@@ -543,11 +543,15 @@ describe('Visual graph screen validation', () => {
         cy.url().should('include', '/config/save');
         getGraphConfigName().type(graphConfigName);
         cy.get('[data-cy="graph-config-by-graph-query-checkbox"]').check();
-        cy.get('[data-cy="query-editor"]').type('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10', {parseSpecialCharSequences: false});
+        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10').then( () => {
+                getSaveConfig().click();
+            }
+        );
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
-        cy.contains('td', graphConfigName).parent().within(() => {
-            cy.get('[data-cy="graph-config-starting-point-query-results"]').click();
+        cy.contains('td', graphConfigName).should('be.visible').parent().within(() => {
+            cy.get('td a')
+                .get('[data-cy="graph-config-starting-point-query-results"]').should('be.visible').click();
         });
         VisualGraphSteps
             .updateGraphConfiguration(namedGraph);
@@ -577,6 +581,7 @@ describe('Visual graph screen validation', () => {
             .get('[id="wb-graphviz-savegraph-name"]').clear().type(renamedGraph)
             .get('[id="wb-graphviz-savegraph-submit"]').click();
         cy.get('.toast').contains('Saved graph ' + renamedGraph + ' was edited.');
+        cy.hideToastContainer();
 
         //Deletes saved graph
         VisualGraphSteps

@@ -206,6 +206,7 @@ describe('Namespaces', () => {
         getRefreshedTableNamespaces();
         deleteNamespace('xsd');
         confirmModal();
+        cy.hideToastContainer();
 
         getRefreshedTableNamespaces();
         let updatedCount = getDefaultNamespacesLength() - 1;
@@ -218,6 +219,7 @@ describe('Namespaces', () => {
         selectNamespace('rdfs');
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
         getRefreshedTableNamespaces();
         updatedCount = updatedCount - 2;
@@ -229,6 +231,7 @@ describe('Namespaces', () => {
         getSelectAllNamespacesCheckbox().click();
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
         getNamespacesTable().should('not.be.visible');
         getNoNamespacesAlert().should('be.visible');
@@ -326,7 +329,7 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespacesButton() {
-        return getNamespacesTable().find('.delete-namespaces-btn');
+        return getNamespacesTable().get('[data-cy="delete-several-prefixes"]');
     }
 
     function getNamespaces() {
@@ -340,14 +343,19 @@ describe('Namespaces', () => {
 
     function getNamespace(prefix) {
         return getNamespacesTable().find('.namespace')
+            .should('be.visible')
             .find('.namespace-prefix')
+            .should('be.visible')
             .contains(prefix)
+            .should('be.visible')
             .parentsUntil('tbody')
             .last();
     }
 
     function getSelectNamespaceCheckbox(prefix) {
-        return getNamespace(prefix).find('.select-namespace');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.select-namespace');
     }
 
     function selectNamespace(prefix) {
@@ -355,7 +363,9 @@ describe('Namespaces', () => {
     }
 
     function getEditNamespaceButton(prefix) {
-        return getNamespace(prefix).find('.edit-namespace-btn');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.edit-namespace-btn');
     }
 
     // TODO: Not used yet
@@ -364,11 +374,14 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespaceButton(prefix) {
-        return getNamespace(prefix).find('.delete-namespace-btn');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .get(`[data-cy="delete-pref_${prefix}"]`)
+            .should('be.visible');
     }
 
     function deleteNamespace(prefix) {
-        getDeleteNamespaceButton(prefix).click();
+        getDeleteNamespaceButton(prefix).should('be.visible').click();
     }
 
     // ------ Namespaces pagination ------
