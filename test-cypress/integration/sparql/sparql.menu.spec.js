@@ -688,7 +688,8 @@ describe('SPARQL screen validation', () => {
     });
 
     context('Saved queries & links', () => {
-        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId));
+        repositoryId = 'sparql-' + Date.now();
+        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId))
 
         const QUERY_FOR_SAVING = 'select (count (*) as ?cnt)\n' +
             'where {\n' +
