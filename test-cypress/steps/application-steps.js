@@ -1,4 +1,5 @@
 export class ApplicationSteps {
+
     // notifications
     static getNotifications() {
         return cy.get('#toast-container');
