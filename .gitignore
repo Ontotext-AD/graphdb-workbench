@@ -11,5 +11,6 @@ coverage/
 # Dev specific
 report/
 cypress/
+test-cypress/logs/
 logs/
 .downloads
