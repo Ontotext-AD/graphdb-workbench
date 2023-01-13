@@ -240,6 +240,7 @@
     "ontop.repos.translate.data": "Les dépôts Ontop traduisent les données stockées dans une base de données SQL en un point d'accès SPARQL virtuel.",
     "fedex.virtual.sparql": "SPARQL virtuel FedX",
     "fedex.multi.sparql.endpoints": "Les dépôts FedX permettent de fédérer de manière transparente plusieurs points d'accès SPARQL en un seul point d'accès virtuel.",
+    "fedex.experimental.feature.warning": "La fédération GraphDB FedX est actuellement une fonctionnalité expérimentale. Il n'est pas recommandé de l'utiliser dans un environnement de production.",
     "connector.label": "connecteur",
     "eta.label": "ETA :",
     "processed.entities": "Entités traitées :",

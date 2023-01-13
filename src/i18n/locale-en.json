@@ -236,6 +236,7 @@
     "ontop.repos.translate.data": "Ontop repositories translate data stored in an SQL database to a virtual SPARQL endpoint.",
     "fedex.virtual.sparql": "FedX Virtual SPARQL",
     "fedex.multi.sparql.endpoints": "FedX repositories provide transparent federation of multiple SPARQL endpoints under a single virtual endpoint.",
+    "fedex.experimental.feature.warning": "GraphDB FedX federation is currently an experimental feature. Not recommended to be used in a production environment.",
     "connector.label": "connector",
     "eta.label": "ETA:",
     "processed.entities": "Processed entities:",

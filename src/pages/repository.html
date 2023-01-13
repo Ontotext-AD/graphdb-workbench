@@ -7,6 +7,9 @@
     <p class="alert alert-danger" ng-hide="hasActiveLocation()">
         {{'repo.no.active.location.warning' | translate}}<a ng-href="repository" href="repository">{{'repo.choose.location.warning' | translate}}</a>.
     </p>
+    <div class="top-offset row" ng-if="repositoryInfo.type === 'fedx'">
+        <p class="alert alert-warning">{{'fedex.experimental.feature.warning' | translate}}</p>
+    </div>
     <div ng-show="hasActiveLocation()">
         <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
         <div ng-hide="loader">
