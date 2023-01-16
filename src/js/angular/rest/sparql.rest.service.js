@@ -17,6 +17,24 @@ function SparqlRestService($http) {
         addNewSavedQuery
     };
 
+    /**
+     * Fetch saved queries.
+     * @return {Promise} a promise which resolves with the saved queries list result in format
+     * <code>
+     * [
+     *   {
+     *       // the name of the query
+     *       name: string;
+     *       // the query itself
+     *       body: string;
+     *       // the query creator
+     *       owner: string;
+     *       // if the query is public or private
+     *       shared: boolean;
+     *   }
+     * ]
+     * </code>
+     */
     function getSavedQueries() {
         return $http.get(SAVED_QUERIES_ENDPOINT);
     }
@@ -52,7 +70,7 @@ function SparqlRestService($http) {
      *      shared: boolean
      *  }
      * </code>
-     * @return {Promise} a promise which resolves with the result of the save query request or an error message.
+     * @return {Promise} a promise which resolves with the result from the save query request or an error message.
      */
     function addNewSavedQuery(payload) {
         return $http.post(SAVED_QUERIES_ENDPOINT, payload);
