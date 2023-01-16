@@ -1,4 +1,5 @@
 import {merge} from "lodash";
+import {savedQueriesResponseMapper} from "../rest/mappers/saved-query-response-mapper";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -18,7 +19,7 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         $scope.configChanged();
     }
 
-    $scope.configChanged = function () {
+    $scope.configChanged = () => {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository) {
             $scope.config = {
@@ -29,11 +30,11 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         }
     };
 
-    $scope.queryExecuted = function (query) {
+    $scope.queryExecuted = (query) => {
         console.log(query.detail);
     };
 
-    $scope.createSavedQuery = function (event) {
+    $scope.createSavedQuery = (event) => {
         const payload = {
             name: event.detail.queryName,
             body: event.detail.query,
@@ -56,6 +57,20 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
                     errorMessage: [errorMessage]
                 }
             });
+        });
+    };
+
+    $scope.loadSavedQueries = () => {
+        SparqlRestService.getSavedQueries().then((res) => {
+            const savedQueries = savedQueriesResponseMapper(res.data);
+            $scope.config = merge({}, $scope.config, {
+                savedQueries: {
+                    data: savedQueries
+                }
+            });
+        }).catch((err) => {
+            const msg = getError(err);
+            toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
         });
     };
 
