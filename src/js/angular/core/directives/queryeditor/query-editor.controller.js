@@ -356,7 +356,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 
     function abortCurrentQuery() {
-        MonitoringRestService.abortQueryByAlias($scope.currentTrackAlias)
+        MonitoringRestService.abortQueryByAlias($scope.currentTrackAlias, $repositories.getActiveRepository())
             .success(function () {
                 $scope.abortRequested = true;
             });
