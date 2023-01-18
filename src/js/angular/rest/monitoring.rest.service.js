@@ -12,7 +12,6 @@ function MonitoringRestService($http) {
         monitorResources,
         monitorGC,
         monitorQuery,
-        abortQueryByAlias,
         deleteQuery,
         getQueryCount,
         checkAutocompleteStatus
@@ -28,10 +27,6 @@ function MonitoringRestService($http) {
 
     function monitorQuery(repositoryID) {
         return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`);
-    }
-
-    function abortQueryByAlias(alias, repositoryID) {
-        return $http.delete(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(alias)}`);
     }
 
     function deleteQuery(queryId, repositoryID) {
