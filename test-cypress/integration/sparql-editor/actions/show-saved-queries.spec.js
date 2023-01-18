@@ -32,7 +32,7 @@ describe('Show saved queries', () => {
         YasguiSteps.showSavedQueries();
         YasguiSteps.getSavedQueriesPopup().should('be.visible');
         // When I select a query from the list
-        YasguiSteps.selectSavedQuery(0);
+        YasguiSteps.selectSavedQueryByIndex(0);
         // Then I expect that the popup should be closed
         YasguiSteps.getSavedQueriesPopup().should('not.exist');
         // And the query will be populated in a new tab in the yasgui
