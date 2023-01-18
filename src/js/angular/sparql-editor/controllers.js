@@ -73,7 +73,7 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         };
     };
 
-    const querySavedhandler = (successMessage) => {
+    const querySavedHandler = (successMessage) => {
         toastr.success(successMessage);
         $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
             saveSuccess: true
@@ -81,11 +81,11 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     };
 
     const queryCreatedHandler = (payload) => {
-        return querySavedhandler($translate.instant('query.editor.save.saved.query.success.msg', {name: payload.name}));
+        return querySavedHandler($translate.instant('query.editor.save.saved.query.success.msg', {name: payload.name}));
     };
 
     const queryUpdatedHandler = (payload) => {
-        return querySavedhandler($translate.instant('query.editor.edit.saved.query.success.msg', {name: payload.name}));
+        return querySavedHandler($translate.instant('query.editor.edit.saved.query.success.msg', {name: payload.name}));
     };
 
     const querySaveErrorHandler = (err) => {
