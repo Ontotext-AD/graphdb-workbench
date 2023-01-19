@@ -24,15 +24,15 @@ describe('Expand results over owl:sameAs', () => {
     it('Should be able to toggle expand results parameter', () => {
         // When I open the editor
         // Then I expect that expand results should be enabled by default
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.attr', 'title', 'Expand results over owl:sameAs: ON');
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-sameas-on');
+        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: ON');
+        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-on');
         YasqeSteps.executeQuery();
         cy.wait('@query').its('request.body').should('contain', 'sameAs=true');
         // When I disable the expand results action
         YasqeSteps.expandResultsOverSameAs();
         // Then I expect that the button state should be changed
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.attr', 'title', 'Expand results over owl:sameAs: OFF');
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-sameas-off');
+        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: OFF');
+        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-off');
         // And sameAs=false parameter should be sent with the request
         YasqeSteps.executeQuery();
         cy.wait('@query').its('request.body').should('contain', 'sameAs=false');
@@ -40,8 +40,8 @@ describe('Expand results over owl:sameAs', () => {
         // When I disable the include inferred action
         YasqeSteps.includeInferredStatements();
         // Then I expect that sameAs should be disabled too
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.attr', 'title', 'Expand results over owl:sameAs: OFF');
-        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-sameas-off');
+        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'data-tooltip', 'Requires \'Include Inferred\'!');
+        YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-off');
         YasqeSteps.executeQuery();
         cy.wait('@query').its('request.body').should('contain', 'infer=false&sameAs=false');
     });
