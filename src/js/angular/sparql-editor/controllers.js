@@ -6,6 +6,7 @@ import {
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
 import {QueryMode} from "../utils/query-types";
+import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -27,6 +28,8 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     $scope.savedQueryConfig = undefined;
     $scope.language = $languageService.getLanguage();
     $scope.prefixes = {};
+    const outputHandlers = new Map();
+    const downloadAsPluginNameToEventHandler = new Map();
 
     // =========================
     // Public functions
@@ -164,6 +167,18 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         });
     };
 
+    /**
+     * Handles the ontotext-yasgui component output events.
+     *
+     * @param {TYPE: string, payload: any}$event - the event fired from ontotext-yasgui component
+     */
+    $scope.output = ($event) => {
+        const yasguiOutputModel = toYasguiOutputModel($event);
+        if (outputHandlers.has(yasguiOutputModel.TYPE)) {
+            outputHandlers.get(yasguiOutputModel.TYPE)(yasguiOutputModel);
+        }
+    };
+
     // =========================
     // Private function
     // =========================
@@ -287,6 +302,64 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 // on repo change do the same as above
                 // focus on the active editor on init
             });
+    }
+
+    // ================================
+    // =     Setup output handlers    =
+    // ================================
+    outputHandlers.set('downloadAs', downloadAsHandler);
+
+    function downloadAsHandler(downloadAsEvent) {
+        const handler = downloadAsPluginNameToEventHandler.get(downloadAsEvent.pluginName);
+        if (handler) {
+            handler(downloadAsEvent);
+        }
+    }
+
+    // ================================
+    // =   Setup download handlers    =
+    // ================================
+
+    downloadAsPluginNameToEventHandler.set('response', downloadCurrentResults);
+    downloadAsPluginNameToEventHandler.set('extended_table', downloadThroughServer);
+
+    function downloadCurrentResults(downloadAsEvent) {
+        if ("application/sparql-results+json" === downloadAsEvent.contentType) {
+            ontoElement.getEmbeddedResultAsJson()
+                .then((response) => {
+                    const content = JSON.stringify(response, null, '\t');
+                    downloadAsFile(`${getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType, content);
+                });
+        } else if ("text/csv" === downloadAsEvent.contentType) {
+            ontoElement.getEmbeddedResultAsCSV()
+                .then((response) => {
+                    downloadAsFile(`${getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response);
+                });
+        }
+    }
+
+    function getFileTimePrefix() {
+        const now = new Date();
+        return `${now.toLocaleDateString($scope.language)}_${now.toLocaleTimeString($scope.language)}`;
+    }
+
+    function downloadThroughServer(downloadAsEvent) {
+        const query = downloadAsEvent.query;
+        const infer = downloadAsEvent.infer;
+        const sameAs = downloadAsEvent.sameAs;
+        const accept = downloadAsEvent.contentType;
+        const authToken = localStorage.getItem('com.ontotext.graphdb.auth') || '';
+
+        // TODO change it
+        // Simple cross-browser download with a form
+        const $wbDownload = $('#wb-download');
+        $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
+        $('#wb-download-query').val(query);
+        $('#wb-download-infer').val(infer);
+        $('#wb-download-sameAs').val(sameAs);
+        $('#wb-auth-token').val(authToken);
+        $('#wb-download-accept').val(accept);
+        $wbDownload.submit();
     }
 
     init();
