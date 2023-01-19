@@ -33,6 +33,7 @@
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
+        "cypress-real-events": "^1.7.6",
         "minimist": "^1.2.5"
     },
     "resolutions": {
