@@ -45,4 +45,16 @@ export class YasrSteps {
     static clickOnCopyResourceLink(rowNumber, cellNumber) {
         this.showSharedResourceLink(rowNumber, cellNumber).realClick();
     }
+
+    static getDownloadAsDropdown() {
+        return this.getYasr().find('ontotext-download-as');
+    }
+
+    static openDownloadAsDropdown() {
+        this.getDownloadAsDropdown().click();
+    }
+
+    static getDownloadAsOption(number) {
+        return this.getDownloadAsDropdown().find('.ontotext-dropdown-menu-item').eq(number);
+    }
 }
