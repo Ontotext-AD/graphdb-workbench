@@ -37,7 +37,16 @@ describe('Save query', () => {
         // Then the query should be saved
         YasguiSteps.getSaveQueryDialog().should('not.exist');
         ApplicationSteps.getSuccessNotifications().should('be.visible');
-        // TODO: verify that it's save through the saved queries menu when it's ready
+        // When I open the saved queries popup
+        YasguiSteps.showSavedQueries();
+        // Then I expect to see the saved query in the list
+        YasguiSteps.getSavedQueries().should('contain', savedQueryName);
+        // When I select the query
+        YasguiSteps.selectSavedQueryByName(savedQueryName);
+        // Then I expect to see the query opened in a new editor tab
+        YasguiSteps.getTabs().should('have.length', 2);
+        YasguiSteps.getCurrentTab().should('contain', savedQueryName);
+        YasguiSteps.getTabQuery(1).should('equal', 'select *');
     });
 
     it('Should prevent saving query with duplicated name', () => {
