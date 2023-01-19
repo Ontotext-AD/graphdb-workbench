@@ -27,12 +27,20 @@ export class YasqeSteps {
         return cy.get('.yasqe_inferStatementsButton');
     }
 
+    static getIncludeInferredStatementsButtonTooltip() {
+        return this.getIncludeInferredStatementsButton().parent();
+    }
+
     static includeInferredStatements() {
         this.getIncludeInferredStatementsButton().click();
     }
 
     static getExpandResultsOverSameAsButton() {
         return cy.get('.yasqe_expandResultsButton');
+    }
+
+    static getExpandResultsOverSameAsButtonTooltip() {
+        return this.getExpandResultsOverSameAsButton().parent();
     }
 
     static expandResultsOverSameAs() {
