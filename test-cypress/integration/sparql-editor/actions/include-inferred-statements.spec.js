@@ -24,12 +24,12 @@ describe('Include inferred statements', () => {
     it('Should be able to toggle include inferred statements', () => {
         // When I open the editor
         // Then I expect that include inferred statements should be enabled by default
-        YasqeSteps.getIncludeInferredStatementsButton().should('have.attr', 'title', 'Include inferred data in results: ON');
+        YasqeSteps.getIncludeInferredStatementsButtonTooltip().should('have.attr', 'data-tooltip', 'Include inferred data in results: ON');
         YasqeSteps.getIncludeInferredStatementsButton().should('have.class', 'icon-inferred-on');
         YasqeSteps.executeQuery();
         cy.wait('@query').its('request.body').should('contain', 'infer=true');
         YasqeSteps.includeInferredStatements();
-        YasqeSteps.getIncludeInferredStatementsButton().should('have.attr', 'title', 'Include inferred data in results: OFF');
+        YasqeSteps.getIncludeInferredStatementsButtonTooltip().should('have.attr', 'data-tooltip', 'Include inferred data in results: OFF');
         YasqeSteps.getIncludeInferredStatementsButton().should('have.class', 'icon-inferred-off');
         YasqeSteps.executeQuery();
         cy.wait('@query').its('request.body').should('contain', 'infer=false');
