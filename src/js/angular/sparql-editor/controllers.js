@@ -12,6 +12,7 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     this.repository = '';
 
     $scope.config = undefined;
+    $scope.savedQueryConfig = undefined;
 
     $scope.language = $languageService.getLanguage();
 
@@ -35,39 +36,21 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     };
 
     $scope.createSavedQuery = (event) => {
-        const payload = {
-            name: event.detail.queryName,
-            body: event.detail.query,
-            shared: event.detail.isPublic
-        };
-        SparqlRestService.addNewSavedQuery(payload).then((res) => {
-            toastr.success($translate.instant('query.editor.save.saved.query.success.msg', {name: payload.name}));
-            $scope.config = merge({}, $scope.config, {
-                savedQuery: {
-                    saveSuccess: true
-                }
-            });
-        }).catch((err) => {
-            const msg = getError(err);
-            const errorMessage = $translate.instant('query.editor.create.saved.query.error');
-            toastr.error(msg, errorMessage);
-            $scope.config = merge({}, $scope.config, {
-                savedQuery: {
-                    saveSuccess: false,
-                    errorMessage: [errorMessage]
-                }
-            });
-        });
+        const payload = queryPayloadFromEvent(event);
+        SparqlRestService.addNewSavedQuery(payload).then(() => queryCreatedHandler(payload)).catch(querySaveErrorHandler);
+    };
+
+    $scope.updateSavedQuery = (event) => {
+        const payload = queryPayloadFromEvent(event);
+        SparqlRestService.editSavedQuery(payload).then(() => queryUpdatedHandler(payload)).catch(querySaveErrorHandler);
     };
 
     $scope.loadSavedQueries = () => {
         SparqlRestService.getSavedQueries().then((res) => {
             const savedQueries = savedQueriesResponseMapper(res.data);
-            $scope.config = merge({}, $scope.config, {
-                savedQueries: {
-                    data: savedQueries
-                }
-            });
+            $scope.savedQueryConfig = {
+                savedQueries: savedQueries
+            };
         }).catch((err) => {
             const msg = getError(err);
             toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
@@ -80,4 +63,38 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     });
 
     init();
+
+    // private functions
+    const queryPayloadFromEvent = (event) => {
+        return {
+            name: event.detail.queryName,
+            body: event.detail.query,
+            shared: event.detail.isPublic
+        };
+    };
+
+    const querySavedHandler = (successMessage) => {
+        toastr.success(successMessage);
+        $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
+            saveSuccess: true
+        });
+    };
+
+    const queryCreatedHandler = (payload) => {
+        return querySavedHandler($translate.instant('query.editor.save.saved.query.success.msg', {name: payload.name}));
+    };
+
+    const queryUpdatedHandler = (payload) => {
+        return querySavedHandler($translate.instant('query.editor.edit.saved.query.success.msg', {name: payload.name}));
+    };
+
+    const querySaveErrorHandler = (err) => {
+        const msg = getError(err);
+        const errorMessage = $translate.instant('query.editor.create.saved.query.error');
+        toastr.error(msg, errorMessage);
+        $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
+            saveSuccess: false,
+            errorMessage: [errorMessage]
+        });
+    };
 }
