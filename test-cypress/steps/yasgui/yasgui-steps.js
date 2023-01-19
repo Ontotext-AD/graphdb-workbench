@@ -4,6 +4,14 @@ export class YasguiSteps {
         return cy.get('.yasgui');
     }
 
+    static getTabs() {
+        return cy.get('.tab');
+    }
+
+    static getCurrentTab() {
+        return cy.get('.tab.active');
+    }
+
     static getCreateSavedQueryButton() {
         return cy.get('.yasqe_createSavedQueryButton');
     }
@@ -60,12 +68,44 @@ export class YasguiSteps {
         this.getSaveQueryDialog().find('#publicQuery').click();
     }
 
+    static getIsPublicField() {
+        return this.getSaveQueryDialog().find('#publicQuery');
+    }
+
     static getErrorsPane() {
         return this.getSaveQueryDialog().find('.alert-danger');
     }
 
     static getErrors() {
         return this.getErrorsPane().find('.error-message');
+    }
+
+    static getShowSavedQueriesButton() {
+        return cy.get('.yasqe_showSavedQueriesButton');
+    }
+
+    static showSavedQueries() {
+        this.getShowSavedQueriesButton().click();
+    }
+
+    static getSavedQueriesPopup() {
+        return cy.get('.saved-queries-popup');
+    }
+
+    static getSavedQueries() {
+        return this.getSavedQueriesPopup().find('.saved-query');
+    }
+
+    static selectSavedQueryByIndex(index) {
+        this.getSavedQueries().eq(index).find('a').click();
+    }
+
+    static selectSavedQueryByName(name) {
+        this.getSavedQueries().contains(name).click();
+    }
+
+    static editQueryByName(name) {
+        this.getSavedQueries().contains(name).realHover().siblings('.edit-saved-query').click();
     }
 
     static getYasguiModeButton() {
@@ -178,5 +218,11 @@ export class YasguiSteps {
 
     static isHorizontalOrientation() {
         this.getYasguiTag().should('have.class', 'orientation-horizontal');
+    }
+
+    static getTabQuery(tabIndex) {
+        return cy.get('.yasqe .CodeMirror').then((el) => {
+            return el[tabIndex].CodeMirror.getValue();
+        });
     }
 }
