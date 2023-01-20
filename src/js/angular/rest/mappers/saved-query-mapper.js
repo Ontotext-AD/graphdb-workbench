@@ -10,3 +10,11 @@ export const savedQueriesResponseMapper = (response) => {
     }
     return [];
 };
+
+export const savedQueryPayloadFromEvent = (event) => {
+    return {
+        name: event.detail.queryName,
+        body: event.detail.query,
+        shared: event.detail.isPublic
+    };
+};
