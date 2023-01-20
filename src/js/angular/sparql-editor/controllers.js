@@ -1,5 +1,5 @@
 import {merge} from "lodash";
-import {savedQueriesResponseMapper} from "../rest/mappers/saved-query-response-mapper";
+import {savedQueriesResponseMapper, savedQueryPayloadFromEvent} from "../rest/mappers/saved-query-mapper";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -36,13 +36,23 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     };
 
     $scope.createSavedQuery = (event) => {
-        const payload = queryPayloadFromEvent(event);
+        const payload = savedQueryPayloadFromEvent(event);
         SparqlRestService.addNewSavedQuery(payload).then(() => queryCreatedHandler(payload)).catch(querySaveErrorHandler);
     };
 
     $scope.updateSavedQuery = (event) => {
-        const payload = queryPayloadFromEvent(event);
+        const payload = savedQueryPayloadFromEvent(event);
         SparqlRestService.editSavedQuery(payload).then(() => queryUpdatedHandler(payload)).catch(querySaveErrorHandler);
+    };
+
+    $scope.deleteSavedQuery = (event) => {
+        const payload = savedQueryPayloadFromEvent(event);
+        SparqlRestService.deleteSavedQuery(payload.name).then(() => {
+            toastr.success($translate.instant('query.editor.delete.saved.query.success.msg', {savedQueryName: payload.name}));
+        }).catch((err) => {
+            const msg = getError(err);
+            toastr.error(msg, $translate.instant('query.editor.delete.saved.query.error'));
+        });
     };
 
     $scope.loadSavedQueries = () => {
@@ -65,13 +75,6 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     init();
 
     // private functions
-    const queryPayloadFromEvent = (event) => {
-        return {
-            name: event.detail.queryName,
-            body: event.detail.query,
-            shared: event.detail.isPublic
-        };
-    };
 
     const querySavedHandler = (successMessage) => {
         toastr.success(successMessage);
