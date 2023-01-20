@@ -81,6 +81,12 @@ function SparqlRestService($http) {
         return $http.put(SAVED_QUERIES_ENDPOINT, payload);
     }
 
+    /**
+     * Deletes an existing saved query.
+     *
+     * @param {string} savedQueryName The name of the query which should be deleted.
+     * @return {Promise} a promise which resolves with the result from the delete query request or an error message.
+     */
     function deleteSavedQuery(savedQueryName) {
         return $http.delete(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}`);
     }
