@@ -105,7 +105,11 @@ export class YasguiSteps {
     }
 
     static editQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().siblings('.edit-saved-query').click();
+        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.edit-saved-query').click();
+    }
+
+    static deleteQueryByName(name) {
+        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.delete-saved-query').click();
     }
 
     static getYasguiModeButton() {
@@ -224,5 +228,17 @@ export class YasguiSteps {
         return cy.get('.yasqe .CodeMirror').then((el) => {
             return el[tabIndex].CodeMirror.getValue();
         });
+    }
+
+    static getDeleteQueryConfirmation() {
+        return cy.get('.confirmation-dialog');
+    }
+
+    static rejectDeleteOperation() {
+        this.getDeleteQueryConfirmation().find('.cancel-button').click();
+    }
+
+    static confirmDeleteOperation() {
+        this.getDeleteQueryConfirmation().find('.confirm-button').click();
     }
 }
