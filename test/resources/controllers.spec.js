@@ -36,22 +36,34 @@ describe('=> ResourcesCtrl tests', function () {
             return bundle[key];
         };
 
-        httpGetResourcesData = $httpBackend.when('GET', 'rest/monitor/resource').respond(200, {
+        httpGetResourcesData = $httpBackend.when('GET', 'rest/monitor/infrastructure').respond(200, {
             "heapMemoryUsage": {
                 "max": 1888485376,
                 "committed": 703594496,
                 "init": 134217728,
-                "used": 212264560
+                "used": 212264560,
+                "free": 16609443840
             },
             "nonHeapMemoryUsage": {
                 "max": -1,
                 "committed": 124477440,
                 "init": 2555904,
-                "used": 122066392
+                "used": 122066392,
+                "free": -183684985
+            },
+            "storageMemory": {
+                "dataDirUsed": 174259171328,
+                "workDirUsed": 174259171328,
+                "logsDirUsed": 174259171328,
+                "dataDirFree": 7743021056,
+                "workDirFree": 7743021056,
+                "logsDirFree": 7743021056
             },
             "threadCount": 20,
             "cpuLoad": 19.695456009969313,
-            "classCount": 13173
+            "classCount": 13173,
+            "gcCount": 15,
+            "openFileDescriptors": 550
         });
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -86,7 +98,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource')
+            $httpBackend.expectGET('rest/monitor/infrastructure')
             $interval.flush(2001);
             expect($httpBackend.flush).not.toThrow();
             $interval.flush(2000);
@@ -99,7 +111,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource');
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
             jasmine.clock().mockDate(fixedDate);
@@ -127,7 +139,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource');
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
             jasmine.clock().mockDate(fixedDate);
@@ -166,7 +178,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource');
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
             jasmine.clock().mockDate(fixedDate);
@@ -205,7 +217,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource');
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
             jasmine.clock().mockDate(fixedDate);
@@ -244,7 +256,7 @@ describe('=> ResourcesCtrl tests', function () {
             $scope.getActiveRepository = function () {
                 return 'activeRepository'
             }
-            $httpBackend.expectGET('rest/monitor/resource');
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
             jasmine.clock().mockDate(fixedDate);

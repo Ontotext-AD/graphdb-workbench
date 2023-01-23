@@ -55,8 +55,15 @@ describe('=> QueriesCtrl tests', function () {
 
         $httpBackend.when('GET', 'rest/locations', {}).respond(200);
 
-        httpGetQueriesData = $httpBackend.when('GET', 'rest/monitor/query').respond(200, [{
-            "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
+        httpGetQueriesData = $httpBackend.when('GET', 'rest/monitor/repository/activeRepository/query/active').respond(200, [{
+            "trackAlias": "query-editor-37833.700000047684-1674459747948",
+            "username": "admin",
+            "node": null,
+            "type": "QUERY",
+            "numberOfOperations": 0,
+            "humanLifetime": "0s",
+
+            "sparqlString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
             "trackId": "21107",
             "nsTotalSpentInNext": 6406320151,
             "nsAverageForOneNext": 5616,
@@ -67,7 +74,13 @@ describe('=> QueriesCtrl tests', function () {
             "msSinceCreated": 6689,
             "running": true
         }, {
-            "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
+            "trackAlias": "query-editor-37833.700000047684-1674454747948",
+            "username": "admin",
+            "type": "QUERY",
+            "numberOfOperations": 0,
+            "humanLifetime": "0s",
+
+            "sparqlString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
             "trackId": "1234",
             "node": "http://example.com:7300/repositories/repo#678",
             "nsTotalSpentInNext": 1234567,
@@ -111,12 +124,18 @@ describe('=> QueriesCtrl tests', function () {
 
     describe('$scope.getQueries()', function () {
         it('should set queries correctly', function () {
-            $httpBackend.expectGET('rest/monitor/query');
+            $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
             $interval.flush(1001);
             $httpBackend.flush();
             expect($scope.queries).toEqual({
                 "21107": {
-                    "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
+                    "trackAlias": "query-editor-37833.700000047684-1674459747948",
+                    "username": "admin",
+                    "node": null,
+                    "type": "QUERY",
+                    "numberOfOperations": 0,
+                    "humanLifetime": "0s",
+                    "sparqlString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 100567123123123",
                     "trackId": "21107",
                     "parsedNode": null,
                     "nsTotalSpentInNext": 6406320151,
@@ -129,7 +148,12 @@ describe('=> QueriesCtrl tests', function () {
                     "running": true
                 },
                 "1234": {
-                    "queryString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
+                    "trackAlias": "query-editor-37833.700000047684-1674454747948",
+                    "username": "admin",
+                    "type": "QUERY",
+                    "numberOfOperations": 0,
+                    "humanLifetime": "0s",
+                    "sparqlString": "SELECT ?s ?p ?o\nWHERE {\n\t?s ?p ?o .\n} LIMIT 123",
                     "trackId": "1234",
                     "node": "http://example.com:7300/repositories/repo#678",
                     "parsedNode": ["678", "example:7300", "repo"],
@@ -148,7 +172,7 @@ describe('=> QueriesCtrl tests', function () {
         })
 
         it('should set noQueries correct', function () {
-            $httpBackend.expectGET('rest/monitor/query');
+            $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
             httpGetQueriesData.respond(200, []);
             $interval.flush(1001);
             $httpBackend.flush();
@@ -159,7 +183,7 @@ describe('=> QueriesCtrl tests', function () {
 
         it('should set error', function () {
             $scope.error = ''
-            $httpBackend.expectGET('rest/monitor/query');
+            $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
             httpGetQueriesData.respond(400, '');
             $interval.flush(1001);
             $httpBackend.flush();
