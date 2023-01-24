@@ -1,13 +1,14 @@
 import {merge} from "lodash";
 import {savedQueriesResponseMapper, savedQueryPayloadFromEvent} from "../rest/mappers/saved-query-mapper";
+import {RouteConstants} from "../utils/route-constants";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$repositories', 'toastr', '$translate', 'SparqlRestService', '$languageService'];
+SparqlEditorCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
 
-function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestService, $languageService) {
+function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
 
     this.repository = '';
 
@@ -15,10 +16,6 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
     $scope.savedQueryConfig = undefined;
 
     $scope.language = $languageService.getLanguage();
-
-    function init() {
-        $scope.configChanged();
-    }
 
     $scope.configChanged = () => {
         const activeRepository = $repositories.getActiveRepository();
@@ -55,6 +52,17 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         });
     };
 
+    $scope.shareSavedQuery = (event) => {
+        const payload = savedQueryPayloadFromEvent(event);
+        $scope.savedQueryConfig = {
+            shareQueryLink: ShareQueryLinkService.createShareSavedQueryLink(payload.name, payload.owner)
+        };
+    };
+
+    $scope.savedQueryShareLinkCopied = () => {
+        toastr.success($translate.instant('modal.ctr.copy.url.success'));
+    };
+
     $scope.loadSavedQueries = () => {
         SparqlRestService.getSavedQueries().then((res) => {
             const savedQueries = savedQueriesResponseMapper(res.data);
@@ -72,9 +80,34 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
         $scope.language = args.locale;
     });
 
-    init();
-
     // private functions
+
+    const initTabFromSavedQuery = (queryParams) => {
+        const savedQueryName = queryParams[RouteConstants.savedQueryName];
+        const savedQueryOwner = queryParams[RouteConstants.savedQueryOwner];
+        SparqlRestService.getSavedQuery(savedQueryName, savedQueryOwner).then((res) => {
+            // TODO:
+            // * Check if there is an open tab with the same query already. If there is one, then open it.
+            // * Otherwise open a new tab and load the query in the editor.
+            // * Before opening a new tab: check if there is a running query or update and prevent it. Same should be
+            // checked on tab switching for existing tab too.
+        }).catch((err) => {
+            toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
+                savedQueryName: savedQueryName,
+                error: getError(err)
+            }));
+        });
+    };
+
+    const initFromUrlParams = () => {
+        const queryParams = $location.search();
+        if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
+            // init new tab from shared saved query link
+            initTabFromSavedQuery(queryParams);
+        } else if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
+            // init new tab from shared query link
+        }
+    };
 
     const querySavedHandler = (successMessage) => {
         toastr.success(successMessage);
@@ -100,4 +133,15 @@ function SparqlEditorCtrl($scope, $repositories, toastr, $translate, SparqlRestS
             errorMessage: [errorMessage]
         });
     };
+
+    // Initialization and bootstrap
+    function init() {
+        $scope.configChanged();
+        // check is there is a savedquery or query url parameter and init the editor
+        initFromUrlParams();
+        // on repo change do the same as above
+        // focus on the active editor on init
+    }
+
+    init();
 }
