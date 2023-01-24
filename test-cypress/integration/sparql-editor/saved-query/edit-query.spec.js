@@ -1,7 +1,9 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
+import {SavedQuery} from "../../../steps/yasgui/saved-query";
+import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
+import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
 
 describe('Edit saved queries', () => {
 
@@ -9,6 +11,7 @@ describe('Edit saved queries', () => {
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
+        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         QueryStubs.stubDefaultQueryResponse(repositoryId);
@@ -23,37 +26,28 @@ describe('Edit saved queries', () => {
 
     it('Should prevent saving query with duplicated name', () => {
         // Given I have created a query
-        YasguiSteps.getCreateSavedQueryButton().should('be.visible');
-        YasguiSteps.createSavedQuery();
-        YasguiSteps.clearQueryNameField();
-        let savedQueryName = generateQueryName();
-        YasguiSteps.writeQueryName(savedQueryName);
-        YasguiSteps.clearQueryField();
-        YasguiSteps.writeQuery('select *');
-        YasguiSteps.toggleIsPublic();
-        YasguiSteps.saveQuery();
-        YasguiSteps.getSaveQueryDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        const savedQueryName = SavedQuery.generateQueryName();
+        SavedQuery.create(savedQueryName);
         // When I open the saved queries popup
         YasguiSteps.showSavedQueries();
         // Then I expect to see the last saved query in the list
-        YasguiSteps.getSavedQueries().should('contain', savedQueryName);
+        SavedQueriesDialog.getSavedQueries().should('contain', savedQueryName);
         // When I edit the saved query
-        YasguiSteps.editQueryByName(savedQueryName);
+        SavedQueriesDialog.editQueryByName(savedQueryName);
         // Then I expect that save query dialog should be opened
-        YasguiSteps.getQueryNameField().should('have.value', savedQueryName);
-        YasguiSteps.getQueryField().should('have.value', 'select *');
-        YasguiSteps.getIsPublicField().should('be.checked');
+        SaveQueryDialog.getQueryNameField().should('have.value', savedQueryName);
+        SaveQueryDialog.getQueryField().should('have.value', 'select *');
+        SaveQueryDialog.getIsPublicField().should('be.checked');
         // When I change the query
-        YasguiSteps.clearQueryField();
-        YasguiSteps.writeQuery('select $s $p $o');
+        SaveQueryDialog.clearQueryField();
+        SaveQueryDialog.writeQuery('select $s $p $o');
         // And try to save the query
-        YasguiSteps.saveQuery();
+        SaveQueryDialog.saveQuery();
         // Then the query should be updated
-        YasguiSteps.getSaveQueryDialog().should('not.exist');
+        SaveQueryDialog.getSaveQueryDialog().should('not.exist');
         YasguiSteps.showSavedQueries();
-        YasguiSteps.editQueryByName(savedQueryName);
-        YasguiSteps.getQueryField().should('have.value', 'select $s $p $o');
+        SavedQueriesDialog.editQueryByName(savedQueryName);
+        SaveQueryDialog.getQueryField().should('have.value', 'select $s $p $o');
         // When I change the query name
         // TODO: This currently won't work. The legacy implementation in the WB does the following:
         // * First POST to create a new query with the new name
@@ -72,7 +66,3 @@ describe('Edit saved queries', () => {
         // YasguiSteps.getQueryField().should('have.value', 'select $s $p $o');
     });
 });
-
-function generateQueryName() {
-    return 'Saved query - ' + Date.now();
-}
