@@ -1,5 +1,6 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
+import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 
 describe('Show saved queries', () => {
 
@@ -7,6 +8,7 @@ describe('Show saved queries', () => {
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
+        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.intercept(`/repositories/${repositoryId}`, {fixture: '/graphql-editor/default-query-response.json'}).as('getGuides');
@@ -23,18 +25,18 @@ describe('Show saved queries', () => {
         // When I click on show saved queries button
         YasguiSteps.showSavedQueries();
         // Then I expect that a popup with a saved queries list to be opened
-        YasguiSteps.getSavedQueriesPopup().should('be.visible');
-        YasguiSteps.getSavedQueries().should('have.length.gt', 0);
+        SavedQueriesDialog.getSavedQueriesPopup().should('be.visible');
+        SavedQueriesDialog.getSavedQueries().should('have.length.gt', 0);
     });
 
     it('Should be able to select a query from the list', () => {
         // Given I have opened the saved queries popup
         YasguiSteps.showSavedQueries();
-        YasguiSteps.getSavedQueriesPopup().should('be.visible');
+        SavedQueriesDialog.getSavedQueriesPopup().should('be.visible');
         // When I select a query from the list
-        YasguiSteps.selectSavedQueryByIndex(0);
+        SavedQueriesDialog.selectSavedQueryByIndex(0);
         // Then I expect that the popup should be closed
-        YasguiSteps.getSavedQueriesPopup().should('not.exist');
+        SavedQueriesDialog.getSavedQueriesPopup().should('not.exist');
         // And the query will be populated in a new tab in the yasgui
         YasguiSteps.getTabs().should('have.length', 2);
         YasguiSteps.getCurrentTab().should('contain', 'Add statements');
@@ -44,10 +46,10 @@ describe('Show saved queries', () => {
     it('Should be able to close the popup by clicking outside', () => {
         // Given I have opened the saved queries popup
         YasguiSteps.showSavedQueries();
-        YasguiSteps.getSavedQueriesPopup().should('be.visible');
+        SavedQueriesDialog.getSavedQueriesPopup().should('be.visible');
         // When I click outside of the popup
         cy.get('body').click();
         // Then the popup should be closed
-        YasguiSteps.getSavedQueriesPopup().should('not.exist');
+        SavedQueriesDialog.getSavedQueriesPopup().should('not.exist');
     });
 });
