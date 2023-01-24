@@ -4,12 +4,26 @@ export class YasguiSteps {
         return cy.get('.yasgui');
     }
 
+    static getYasguiTag() {
+        return cy.get('ontotext-yasgui');
+    }
+
+    static openANewTab() {
+        cy.get('button.addTab').click();
+    }
+
     static getTabs() {
         return cy.get('.tab');
     }
 
     static getCurrentTab() {
         return cy.get('.tab.active');
+    }
+
+    static getTabQuery(tabIndex) {
+        return cy.get('.yasqe .CodeMirror').then((el) => {
+            return el[tabIndex].CodeMirror.getValue();
+        });
     }
 
     static getCreateSavedQueryButton() {
@@ -20,66 +34,6 @@ export class YasguiSteps {
         this.getCreateSavedQueryButton().click();
     }
 
-    static getSaveQueryDialog() {
-        return cy.get('.dialog');
-    }
-
-    static closeSaveQueryDialog() {
-        this.getSaveQueryDialog().find('.close-button').click();
-    }
-
-    static cancelSaveQuery() {
-        this.getSaveQueryDialog().find('.cancel-button').click();
-    }
-
-    static getSaveQueryButton() {
-        return this.getSaveQueryDialog().find('.ok-button');
-    }
-
-    static saveQuery() {
-        this.getSaveQueryButton().click();
-    }
-
-    static getQueryField() {
-        return this.getSaveQueryDialog().find('#query');
-    }
-
-    static writeQuery(query) {
-        this.getQueryField().type(query, {parseSpecialCharSequences: false});
-    }
-
-    static clearQueryField() {
-        this.getQueryField().clear();
-    }
-
-    static getQueryNameField() {
-        return this.getSaveQueryDialog().find('#queryName');
-    }
-
-    static writeQueryName(queryName) {
-        this.getQueryNameField().type(queryName);
-    }
-
-    static clearQueryNameField() {
-        this.getQueryNameField().clear();
-    }
-
-    static toggleIsPublic() {
-        this.getSaveQueryDialog().find('#publicQuery').click();
-    }
-
-    static getIsPublicField() {
-        return this.getSaveQueryDialog().find('#publicQuery');
-    }
-
-    static getErrorsPane() {
-        return this.getSaveQueryDialog().find('.alert-danger');
-    }
-
-    static getErrors() {
-        return this.getErrorsPane().find('.error-message');
-    }
-
     static getShowSavedQueriesButton() {
         return cy.get('.yasqe_showSavedQueriesButton');
     }
@@ -88,44 +42,8 @@ export class YasguiSteps {
         this.getShowSavedQueriesButton().click();
     }
 
-    static getSavedQueriesPopup() {
-        return cy.get('.saved-queries-popup');
-    }
-
-    static getSavedQueries() {
-        return this.getSavedQueriesPopup().find('.saved-query');
-    }
-
-    static selectSavedQueryByIndex(index) {
-        this.getSavedQueries().eq(index).find('a').click();
-    }
-
-    static selectSavedQueryByName(name) {
-        this.getSavedQueries().contains(name).click();
-    }
-
-    static editQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.edit-saved-query').click();
-    }
-
-    static deleteQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.delete-saved-query').click();
-    }
-
     static getYasguiModeButton() {
         return cy.get('.btn-mode-yasgui');
-    }
-
-    static getYasguiTag() {
-        return cy.get('ontotext-yasgui');
-    }
-
-    static getTabs() {
-        return cy.get('.tab');
-    }
-
-    static openANewTab() {
-        cy.get('button.addTab').click();
     }
 
     static isYasguiModeSelected() {
@@ -222,12 +140,6 @@ export class YasguiSteps {
 
     static isHorizontalOrientation() {
         this.getYasguiTag().should('have.class', 'orientation-horizontal');
-    }
-
-    static getTabQuery(tabIndex) {
-        return cy.get('.yasqe .CodeMirror').then((el) => {
-            return el[tabIndex].CodeMirror.getValue();
-        });
     }
 
     static getDeleteQueryConfirmation() {
