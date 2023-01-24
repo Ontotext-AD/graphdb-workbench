@@ -17,18 +17,12 @@ function SparqlRestService($http) {
         addNewSavedQuery
     };
 
-    function getSavedQuery(savedQueryName, owner) {
-        let ownerQuery = '';
-        if (owner != null) {
-            ownerQuery = `&owner=${encodeURIComponent(owner)}`;
-        }
-        return $http.get(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}${ownerQuery}`);
-    }
-
     /**
-     * Fetch saved queries.
-     * @return {Promise} a promise which resolves with the saved queries list result in format
-     * <code>
+     * Fetch a saved query by name and owner.
+     * @param {string} savedQueryName The query name.
+     * @param {string} owner The owner of the query.
+     * @return {Promise} A promise which resolves with the saved query data in format
+     * <pre>
      * [
      *   {
      *       // the name of the query
@@ -41,7 +35,33 @@ function SparqlRestService($http) {
      *       shared: boolean;
      *   }
      * ]
-     * </code>
+     * </pre>
+     */
+    function getSavedQuery(savedQueryName, owner) {
+        let ownerQuery = '';
+        if (owner != null) {
+            ownerQuery = `&owner=${encodeURIComponent(owner)}`;
+        }
+        return $http.get(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}${ownerQuery}`);
+    }
+
+    /**
+     * Fetch saved queries.
+     * @return {Promise} a promise which resolves with the saved queries list result in format
+     * <pre>
+     * [
+     *   {
+     *       // the name of the query
+     *       name: string;
+     *       // the query itself
+     *       body: string;
+     *       // the query creator
+     *       owner: string;
+     *       // if the query is public or private
+     *       shared: boolean;
+     *   }
+     * ]
+     * </pre>
      */
     function getSavedQueries() {
         return $http.get(SAVED_QUERIES_ENDPOINT);
@@ -51,13 +71,13 @@ function SparqlRestService($http) {
      * Creates a new saved query.
      *
      * @param {object} payload A payload object in format
-     * <code>
+     * <pre>
      *  {
      *      body: string,
      *      name: string,
      *      shared: boolean
      *  }
-     * </code>
+     * </pre>
      * @return {Promise} a promise which resolves with the result from the save query request or an error message.
      */
     function addNewSavedQuery(payload) {
@@ -68,13 +88,13 @@ function SparqlRestService($http) {
      * Updates an existing saved query.
      *
      * @param {object} payload A payload object in format
-     * <code>
+     * <pre>
      *  {
      *      body: string,
      *      name: string,
      *      shared: boolean
      *  }
-     * </code>
+     * </pre>
      * @return {Promise} a promise which resolves with the result from the save query request or an error message.
      */
     function editSavedQuery(payload) {
