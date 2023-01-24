@@ -44,7 +44,7 @@ describe('Share saved queries', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
     });
 
-    it('Should be able to open a saved query through a share link', () => {
+    it.skip('Should be able to open a saved query through a share link', () => {
 
     });
 });
