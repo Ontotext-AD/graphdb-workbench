@@ -2,7 +2,7 @@ import {YasguiSteps} from "./yasgui-steps";
 import {SaveQueryDialog} from "./save-query-dialog";
 import {ApplicationSteps} from "../application-steps";
 
-const DEFAULT_QUERY = 'select *';
+export const DEFAULT_QUERY = 'select *';
 
 export class SavedQuery {
 
