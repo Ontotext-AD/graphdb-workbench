@@ -5,7 +5,7 @@
 }
 
 .yasr table.dataTable thead th {
-  background-color: rgba(var(--onto-green-rgb), 0.1) !important;
+  background-color: hsla(var(--onto-green-hsl), 0.1) !important;
 }
 
 .yasr table.dataTable thead th, .yasr table.dataTable thead td {
