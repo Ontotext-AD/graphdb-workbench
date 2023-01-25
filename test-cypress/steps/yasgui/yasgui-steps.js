@@ -20,6 +20,10 @@ export class YasguiSteps {
         return cy.get('.tab.active');
     }
 
+    static openTab(index) {
+        this.getTabs().eq(index).click();
+    }
+
     static getTabQuery(tabIndex) {
         return cy.get('.yasqe .CodeMirror').then((el) => {
             return el[tabIndex].CodeMirror.getValue();
