@@ -8,7 +8,7 @@
 			uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 			popover-trigger="mouseenter"
 			popover-placement="bottom-right"
-			popover-append-to-body="true"><span class="icon-info"></span></span>
+			popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
 	</h1>
 
 
@@ -89,9 +89,10 @@
 										<input class="form-check-input" type="checkbox" ng-model="selectedAll" ng-click="checkAll()">
 									</label>
 									<div class="btn-group btn-group-sm" uib-dropdown>
+										<!-- Keep the closing button tag right after the closing span tag, otherwise
+											 an extra space is rendered in HTML -->
 										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle gdb-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()">
-											<span class="icon-export"></span>
-										</button>
+											<span class="icon-export"></span></button>
 										<ul class="dropdown-menu" role="menu">
 											<li ng-repeat="format in exportFormats"
 												ng-click="exportSelectedGraphs(format)">
@@ -133,10 +134,11 @@
 							<td>
 
 								<div class="btn-group" uib-dropdown>
+									<!-- Keep the closing button tag right after the closing span tag, otherwise
+										 an extra space is rendered in HTML -->
 									<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle gdb-tooltip="{{'export.graph.label' | translate}}"
-                                            ng-disabled="!graph.contextID.uri">
-										<span class="icon-export"></span>
-									</button>
+											ng-disabled="!graph.contextID.uri">
+										<span class="icon-export"></span></button>
 									<ul class="dropdown-menu" role="menu">
 										<li ng-repeat="format in exportFormats"
 											ng-click="exportRepo(format, graph.contextID);">
