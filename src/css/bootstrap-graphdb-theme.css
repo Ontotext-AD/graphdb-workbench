@@ -4,8 +4,8 @@
 	Colors used in multiple places
 -------------------------------------------------------------*/
 :root {
-    --autocomplete-background: rgba(var(--onto-green-rgb), 0.3);
-    --autocomplete-background-selected: rgba(var(--onto-green-rgb), 0.5);
+    --autocomplete-background: hsla(var(--onto-green-hsl), 0.3);
+    --autocomplete-background-selected: hsla(var(--onto-green-hsl), 0.5);
     --autocomplete-match: var(--onto-blue);
 }
 
@@ -484,6 +484,11 @@ a {
     color: var(--onto-blue);
 }
 
+/* Actual links that lead to an external site */
+a[href^="http"] {
+    text-decoration: underline;
+}
+
 a:focus, a:hover {
     color: var(--onto-blue-light);
 }
@@ -509,7 +514,7 @@ a:focus, a:hover {
 }
 
 .text-muted {
-    color: rgba(0, 0, 0, 0.3) !important
+    color: rgba(0, 0, 0, 0.66) !important
 }
 
 .pos-r {
@@ -665,7 +670,7 @@ main menu height*/
 }
 
 .main-menu .active .menu-item-icon {
-    color: var(--onto-blue);
+    color: var(--onto-icon-on-orange);
 }
 
 .main-menu :not(.brand) .menu-element-root {
@@ -950,7 +955,7 @@ main menu height*/
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
     color: var(--onto-orange);
-    background-color: rgba(var(--onto-orange-rgb), 0.2);
+    background-color: hsla(var(--onto-orange-hsl), 0.075);
     border-color: var(--onto-orange);
 }
 
@@ -958,19 +963,19 @@ main menu height*/
     color: var(--onto-blue);
     background-image: none;
     background-color: transparent;
-    border-color: rgba(var(--onto-blue-rgb), 0.5);
+    border-color: hsla(var(--onto-blue-hsl), 0.5);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
     color: var(--onto-blue);
-    background-color: rgba(var(--onto-blue-rgb), 0.2);
+    background-color: hsla(var(--onto-blue-hsl), 0.2);
     border-color: var(--onto-blue);
 }
 
 .btn-outline-secondary.active:hover {
-    background-color: rgba(var(--onto-blue-rgb), 0.2);
+    background-color: hsla(var(--onto-blue-hsl), 0.2);
     border-color: var(--onto-blue);
 }
 
@@ -982,20 +987,20 @@ main menu height*/
 .btn-link, .btn-link a {
     color: var(--onto-orange);
     padding: .5em .8em;
+    text-decoration: underline;
+    text-decoration-style: dotted !important;
 }
 
 .btn-link.secondary {
-    color: rgba(0, 0, 0, .3);
+    color: rgba(0, 0, 0, .66);
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
     color: var(--onto-orange-dark);
-    text-decoration: none;
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
     color: rgba(0, 0, 0, .3);
-    text-decoration: none;
 }
 
 .btn-link.btn-sm {
@@ -1136,7 +1141,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .open > .btn-secondary.dropdown-toggle [class^="icon-"] {
-    color: var(--onto-blue) !important;
+    color: var(--onto-icon-on-orange) !important;
 }
 
 .btn-secondary.dropdown-toggle [class^="icon-"] {
@@ -1233,7 +1238,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .text-tertiary {
-    color: var(--onto-green) !important;
+    color: var(--onto-green-dark) !important;
 }
 
 .text-info {
@@ -1255,27 +1260,31 @@ footer.footer .container-fluid.main-container p {
 }
 
 .alert-warning, .alert-info, .alert-help, .alert-danger, .alert-success {
-    color: #000000A8;
+    color: #000000AF;
 }
 
 .alert-warning {
-    background-color: #f9e6c0;
+    kbackground-color: #f9e6c0;
+    background-color: rgba(252, 248, 227, 0.7);
 }
 
 .alert-info {
-    background-color: #cfefec;
+    kbackground-color: #cfefec;
+    background-color: rgba(203, 238, 234, 0.7);
 }
 
 .alert-help {
-    background-color: #e7f7f5;
+    background-color: #e8f5fe;
 }
 
 .alert-success {
-    background-color: #dff0d8;
+    kbackground-color: #dff0d8;
+    background-color: rgba(219, 252, 202, 0.7);
 }
 
 .alert-danger {
-    background-color: #fbdbd5;
+    kbackground-color: #fbdbd5;
+    background-color: rgba(242, 222, 222, 0.7);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
@@ -1288,13 +1297,13 @@ footer.footer .container-fluid.main-container p {
 .alert-danger:before,
 .alert-success:before {
     font-family: 'icomoon', sans-serif !important;
-    font-size: 1.6em;
+    font-size: 1.5em;
     vertical-align: middle;
     line-height: 1;
     position: absolute;
     left: 0.6em;
     top: 0.6em;
-    color: #00000080;
+    color: #0000008F;
 }
 
 .alert-info:before {
@@ -1494,7 +1503,7 @@ ul.style-arrow li:before {
 .progress-bar {
     height: 2rem;
     color: #000;
-    background-color: rgba(var(--onto-green-rgb), 0.5);
+    background-color: hsla(var(--onto-green-hsl), 0.5);
     padding: 0 0.2em;
     text-align: center;
 }
@@ -1734,7 +1743,7 @@ code {
 }
 
 .card.button:hover {
-    border-color: rgba(var(--onto-orange-rgb), 0.4)
+    border-color: hsla(var(--onto-orange-hsl), 0.4)
 }
 
 .card.button .card-block {
@@ -1755,7 +1764,7 @@ code {
 }
 
 .card.button .btn:hover {
-    background-color: rgba(var(--onto-orange-rgb), 0.1)
+    background-color: hsla(var(--onto-orange-hsl), 0.1)
 }
 
 .card.button .btn [class^="icon-"] {
@@ -1997,8 +2006,12 @@ code {
 /*-------------------------------------------------------------
 	List groups
 -------------------------------------------------------------*/
+.list-group-item-action {
+    color: var(--onto-blue) !important;
+}
+
 .list-group-item-action:focus, .list-group-item-action:hover {
-    background-color: rgba(var(--onto-orange-rgb), 0.1);
+    background-color: hsla(var(--onto-orange-hsl), 0.1);
 }
 
 .list-group-item pre {
@@ -2083,7 +2096,7 @@ li.remote {
 }
 
 .form-control:focus {
-    border-color: rgba(var(--onto-blue-rgb), 0.5);
+    border-color: hsla(var(--onto-blue-hsl), 0.5);
 }
 
 .input-group-btn {
@@ -2206,7 +2219,7 @@ input.switch:empty ~ label:after {
 }
 
 input.switch:checked ~ label:before {
-    background-color: rgba(var(--onto-blue-rgb), .5)
+    background-color: hsla(var(--onto-blue-hsl), .5)
 }
 
 input.switch:checked ~ label:after {
@@ -2250,6 +2263,72 @@ input.switch:checked ~ label:after {
 #toast-container .toast.toast-success {
     background-image: none !important;
 }
+
+#toast-container .toast {
+    font-size: 1.2rem;
+    opacity: 1;
+    padding: 25px 25px 25px 60px;
+    width: 450px;
+}
+
+@media (max-width: 1439px) {
+    #toast-container .toast {
+        width: 400px;
+    }
+}
+
+.toast-error {
+    kbackground-color: #D81B30;
+    background-color: var(--color-danger-dark);
+}
+
+.toast-warning {
+    kbackground-color: #6e6e38;
+    background-color: var(--color-warning-dark);
+}
+
+.toast-info {
+    kbackground-color: #1774c5;
+    background-color: var(--color-info-dark);
+}
+
+.toast-success {
+    kbackground-color: #006D40;
+    background-color: var(--color-success-dark);
+}
+
+.toast-error:before,
+.toast-warning:before,
+.toast-info:before,
+.toast-success:before {
+    font-family: 'icomoon', sans-serif !important;
+    font-size: 1.5em;
+    position: absolute;
+    left: 0.6em;
+    display: block;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.toast-info:before {
+    content: "\e924";
+}
+
+.toast-warning:before {
+    content: "\e930";
+}
+
+.toast-error:before {
+    content: "\e920";
+}
+
+.toast-success:before {
+    content: "\e914";
+}
+
 
 #toast-container > .toast-error:before,
 #toast-container > .toast-warning:before {
@@ -2659,4 +2738,44 @@ input[name=namespace] {
 
 .repo-info-home div {
     align-self: center;
+}
+
+.text-danger {
+    color: var(--color-danger-dark) !important;
+}
+
+.text-success {
+    color: var(--color-success-dark) !important;
+}
+
+.text-warning {
+    color: var(--color-warning-dark) !important;
+}
+
+.text-info {
+    color: var(--color-info-dark) !important;
+}
+
+.tag-danger {
+    background-color: var(--color-danger-dark) !important;
+}
+
+.tag-success {
+    background-color: var(--color-success-dark) !important;
+}
+
+.tag-warning {
+    background-color: var(--color-warning-dark) !important;
+}
+
+.tag-info {
+    background-color: var(--color-info-dark) !important;
+}
+
+.rzslider .rz-pointer {
+    background-color: var(--onto-blue) !important;
+}
+
+.rzslider .rz-selection {
+    background: var(--onto-blue) !important;
 }

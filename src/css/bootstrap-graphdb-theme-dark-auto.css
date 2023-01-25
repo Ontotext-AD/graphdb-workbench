@@ -4,8 +4,8 @@
     --body-filter-dark: invert(95%) hue-rotate(180deg);
     --html-background-dark: #0d0d0d;
     --media-filter-dark: invert(100%) hue-rotate(180deg);
-    --alert-filter-dark: brightness(0.8);
-    --toast-filter-dark: invert(90%) hue-rotate(180deg) contrast(1.5);
+    --alert-filter-dark: brightness(0.9);
+    /*--toast-filter-dark: invert(100%) hue-rotate(195deg) contrast(2);*/
     --checkbox-filter-dark: invert(100%) hue-rotate(180deg);
 }
 
@@ -15,12 +15,21 @@
     --html-background: var(--html-background-dark);
     --media-filter: var(--media-filter-dark);
     --alert-filter: var(--alert-filter-dark);
-    --toast-filter: var(--toast-filter-dark);
+    /*--toast-filter: var(--toast-filter-dark);*/
     --checkbox-filter: var(--checkbox-filter-dark);
+
     /* This results in a more subdued orange in the dark theme, easier on the eyes */
-    --onto-orange-rgb: 232, 126, 96;
-    --onto-orange: #e87e60;
-    --onto-orange-dark: #d07156;
+    --onto-orange-hue: 25.4;
+    --onto-orange-lightness: 30%;
+
+    /* Slightly different blue in the dark theme */
+    --onto-blue-hue: 200.3;
+
+    --color-danger-dark: #9f2010;
+    --color-success-dark: #005934;
+    --color-warning-dark: #734721;
+    --color-info-dark: #115590;
+
 }
 
 /* Invert all elements on the root while attempting to not alter the hue substantially. */
@@ -56,8 +65,9 @@ img, video, .brand {
 }
 
 /* Make the toastr boxes more close to the light theme so they stand out */
-.toast {
-    filter: var(--toast-filter);
+#toast-container .toast {
+    /*filter: var(--toast-filter);*/
+    /*color: black;*/
 }
 
 /* Revert the change on checkboxes and let the browser apply its dark theme there */

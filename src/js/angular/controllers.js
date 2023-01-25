@@ -46,11 +46,12 @@ angular
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
-    .controller('repositorySizeCtrl', repositorySizeCtrl);
+    .controller('repositorySizeCtrl', repositorySizeCtrl)
+    .controller('uxTestCtrl', uxTestCtrl)
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'toastr'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, toastr) {
     $scope.doClear = false;
 
     $scope.getActiveRepositorySize = function () {
@@ -937,3 +938,22 @@ function repositorySizeCtrl($scope, $http, RepositoriesRestService) {
         });
     };
 }
+
+uxTestCtrl.$inject = ['$scope', '$repositories', 'toastr'];
+
+function uxTestCtrl($scope, $repositories, toastr) {
+    $scope.demoToast = function(alertType, secondArg=true) {
+        toastr[alertType]('Consectetur adipiscing elit. Sic transit gloria mundi.',
+            secondArg ? 'Lorem ipsum dolor sit amet' : undefined,
+            {timeOut: 300000, extendedTimeOut: 300000});
+    };
+
+    $scope.clearToasts = function() {
+        toastr.clear();
+    }
+
+    $scope.clearRepo = function() {
+        $repositories.setRepository('');
+    };
+}
+

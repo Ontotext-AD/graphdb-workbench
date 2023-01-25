@@ -48,7 +48,7 @@
     height: 120px;
     margin-top: 0.5em;
     color: var(--onto-blue);
-    background-color: rgba(var(--onto-green-rgb), 0.3);
+    background-color: hsla(var(--onto-green-hsl), 0.3);
     overflow: scroll;
     white-space: pre-wrap;
 }

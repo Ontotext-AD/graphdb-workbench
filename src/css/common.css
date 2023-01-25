@@ -8,23 +8,44 @@
     --main-font-weight: 300;
     --mono-font: 'JetBrains Mono', Menlo, Consolas, 'Ubuntu Mono', monospace;
 
-    --onto-orange-rgb: 232, 78, 15;
-    --onto-orange: #E84E0F;
-    --onto-orange-light: #ea5f26;
-    --onto-orange-dark: #d0460d;
+    --onto-orange-hue: 13.4;
+    --onto-orange-saturation: 87.9%;
+    --onto-orange-lightness: 33%;
+    --onto-orange-hsl: var(--onto-orange-hue), var(--onto-orange-saturation), var(--onto-orange-lightness);
 
-    --onto-blue-rgb: 0, 54, 99;
-    --onto-blue: #003663;
-    --onto-blue-light: #0060b0;
-    --onto-blue-dark: #003059;
+    --onto-orange: hsl(var(--onto-orange-hsl));
+    --onto-orange-light: hsl(var(--onto-orange-hue), var(--onto-orange-saturation), calc(var(--onto-orange-lightness)*1.2));
+    --onto-orange-dark: hsl(var(--onto-orange-hue), var(--onto-orange-saturation), calc(var(--onto-orange-lightness)*0.8));
 
-    --onto-green-rgb: 2, 169, 154;
-    --onto-green: #02A99A;
-    --onto-green-light: #1bb1a4;
-    --onto-green-dark: #01988a;
+
+    --onto-blue-hue: 207.3;
+    --onto-blue-saturation: 100%;
+    --onto-blue-lightness: 19.4%;
+    --onto-blue-hsl: var(--onto-blue-hue), var(--onto-blue-saturation), var(--onto-blue-lightness);
+
+    --onto-blue: hsl(var(--onto-blue-hsl));
+    --onto-blue-light: hsl(var(--onto-blue-hue), var(--onto-blue-saturation), calc(var(--onto-blue-lightness)*1.2));
+    --onto-blue-dark: hsl(var(--onto-blue-hue), var(--onto-blue-saturation), calc(var(--onto-blue-lightness)*0.8));
+
+
+    --onto-green-hue: 174.6;
+    --onto-green-saturation: 97.7%;
+    --onto-green-lightness: 33.5%;
+    --onto-green-hsl: var(--onto-green-hue), var(--onto-green-saturation), var(--onto-green-lightness);
+
+    --onto-green: hsl(var(--onto-green-hsl));
+    --onto-green-light: hsl(var(--onto-green-hue), var(--onto-green-saturation), calc(var(--onto-green-lightness)*1.2));
+    --onto-green-dark: hsl(var(--onto-green-hue), var(--onto-green-saturation), calc(var(--onto-green-lightness)*0.8));
+
+    --onto-icon-on-orange: rgba(255, 255, 255, 0.8);
 
     --onto-grey-rgb: 151, 153, 156;
     --onto-grey: #97999C;
+
+    --color-danger-dark: #a41424;
+    --color-success-dark: #005934;
+    --color-warning-dark: #734721;
+    --color-info-dark: #115590;
 }
 
 /*-------------------------------------------------------------
