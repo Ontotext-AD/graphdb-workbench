@@ -1,5 +1,9 @@
 import {merge} from "lodash";
-import {savedQueriesResponseMapper, savedQueryPayloadFromEvent} from "../rest/mappers/saved-query-mapper";
+import {
+    savedQueriesResponseMapper,
+    savedQueryPayloadFromEvent,
+    savedQueryResponseMapper
+} from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
 
 angular
@@ -9,6 +13,7 @@ angular
 SparqlEditorCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
 
 function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
+    const ontoElement = document.querySelector('ontotext-yasgui');
 
     this.repository = '';
 
@@ -65,7 +70,7 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
 
     $scope.loadSavedQueries = () => {
         SparqlRestService.getSavedQueries().then((res) => {
-            const savedQueries = savedQueriesResponseMapper(res.data);
+            const savedQueries = savedQueriesResponseMapper(res);
             $scope.savedQueryConfig = {
                 savedQueries: savedQueries
             };
@@ -86,11 +91,12 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         const savedQueryName = queryParams[RouteConstants.savedQueryName];
         const savedQueryOwner = queryParams[RouteConstants.savedQueryOwner];
         SparqlRestService.getSavedQuery(savedQueryName, savedQueryOwner).then((res) => {
-            // TODO:
+            const savedQuery = savedQueryResponseMapper(res);
             // * Check if there is an open tab with the same query already. If there is one, then open it.
             // * Otherwise open a new tab and load the query in the editor.
-            // * Before opening a new tab: check if there is a running query or update and prevent it. Same should be
-            // checked on tab switching for existing tab too.
+            // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
+            // Same as the above should be checked on tab switching for existing tab too.
+            ontoElement.openTab(savedQuery);
         }).catch((err) => {
             toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
                 savedQueryName: savedQueryName,
@@ -99,12 +105,12 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         });
     };
 
-    const initFromUrlParams = () => {
+    const initViewFromUrlParams = () => {
         const queryParams = $location.search();
         if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
             // init new tab from shared saved query link
             initTabFromSavedQuery(queryParams);
-        } else if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
+        } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
         }
     };
@@ -138,7 +144,7 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
     function init() {
         $scope.configChanged();
         // check is there is a savedquery or query url parameter and init the editor
-        initFromUrlParams();
+        initViewFromUrlParams();
         // on repo change do the same as above
         // focus on the active editor on init
     }

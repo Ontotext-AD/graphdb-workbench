@@ -3,8 +3,12 @@ export class ShareSavedQueryDialog {
         return cy.get('.share-saved-query-dialog');
     }
 
-    static getShareLink() {
+    static getShareLinkField() {
         return this.getDialog().find('#shareLink');
+    }
+
+    static getShareLink() {
+        return this.getShareLinkField().invoke('val');
     }
 
     static copyLink() {
