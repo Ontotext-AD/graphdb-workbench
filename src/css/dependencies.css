@@ -124,7 +124,7 @@ div.tooltip {
     border-left: 1pt solid #ffffff !important;
     border-top: 0.5pt solid #ffffff !important;
     border-right: 1pt solid #ffffff !important;
-    background-color: rgba(var(--onto-green-rgb), 0.30) !important;
+    background-color: hsla(var(--onto-green-hsl), 0.30) !important;
 }
 
 

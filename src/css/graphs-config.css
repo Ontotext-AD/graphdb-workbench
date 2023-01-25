@@ -52,13 +52,13 @@
 }
 
 .image-label:hover {
-    border-color: rgba(var(--onto-orange-rgb), 0.3);
-    background-color:  rgba(var(--onto-orange-rgb), 0.03)
+    border-color: hsla(var(--onto-orange-hsl), 0.3);
+    background-color:  hsla(var(--onto-orange-hsl), 0.03)
 }
 
 .image-label.active, .image-label.active:hover {
     border-color: rgb(237, 79, 47);
-    background-color:  rgba(var(--onto-orange-rgb), 0.15)
+    background-color:  hsla(var(--onto-orange-hsl), 0.15)
 }
 
 @media (max-width: 1270px) {

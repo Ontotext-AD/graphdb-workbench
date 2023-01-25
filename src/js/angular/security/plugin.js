@@ -52,6 +52,16 @@ PluginRegistry.add('route', [
         'controller': 'RolesMappingController',
         'templateUrl': 'js/angular/security/templates/roles.html',
         'title': 'view.roles.mapping.title'
+    }, {
+        'url': '/ux-test1',
+        'templateUrl': 'pages/ux-test1.html',
+        'controller': 'uxTestCtrl',
+        'title': 'UX Test'
+    }, {
+        'url': '/ux-test2',
+        'templateUrl': 'pages/ux-test2.html',
+        'controller': 'uxTestCtrl',
+        'title': 'UX Test'
     }
 ]);
 
