@@ -31,3 +31,8 @@
 .query-table td:nth-child(5) {
     min-width: 30vw;
 }
+
+.chart-header {
+  margin-left: 100px;
+  text-align: center;
+}
