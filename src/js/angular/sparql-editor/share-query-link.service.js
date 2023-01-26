@@ -21,9 +21,9 @@ function ShareQueryLinkService() {
     function createShareQueryLink(queryData) {
         return getBaseUrl() + '?' + $.param({
             name: queryData.name,
-            infer: queryData.inference,
-            sameAs: queryData.sameAs,
-            query: window.editor.getValue()
+            query: queryData.body,
+            infer: queryData.inference || true,
+            sameAs: queryData.sameAs || true
         });
     }
 

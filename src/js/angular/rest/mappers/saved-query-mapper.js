@@ -29,6 +29,13 @@ export const savedQueryResponseMapper = (response) => {
     return null;
 };
 
+export const queryModelFromParams = (queryName, query) => {
+    return {
+        queryName: queryName,
+        query: query
+    };
+};
+
 export const savedQueryPayloadFromEvent = (event) => {
     return {
         name: event.detail.queryName,

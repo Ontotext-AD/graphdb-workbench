@@ -46,6 +46,14 @@ export class YasguiSteps {
         this.getShowSavedQueriesButton().click();
     }
 
+    static getShareQueryButton() {
+        return cy.get('.yasqe_shareQueryButton');
+    }
+
+    static shareQuery(tabIndex = 0) {
+        this.getShareQueryButton().eq(tabIndex).click();
+    }
+
     static getYasguiModeButton() {
         return cy.get('.btn-mode-yasgui');
     }

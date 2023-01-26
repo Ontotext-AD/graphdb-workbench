@@ -1,5 +1,6 @@
 import {merge} from "lodash";
 import {
+    queryModelFromParams,
     savedQueriesResponseMapper,
     savedQueryPayloadFromEvent,
     savedQueryResponseMapper
@@ -10,9 +11,9 @@ angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
+SparqlEditorCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService', '$timeout'];
 
-function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
+function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService, $timeout) {
     const ontoElement = document.querySelector('ontotext-yasgui');
 
     this.repository = '';
@@ -64,7 +65,14 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         };
     };
 
-    $scope.savedQueryShareLinkCopied = () => {
+    $scope.shareQuery = (event) => {
+        const queryModel = savedQueryPayloadFromEvent(event);
+        $scope.savedQueryConfig = {
+            shareQueryLink: ShareQueryLinkService.createShareQueryLink(queryModel)
+        };
+    };
+
+    $scope.queryShareLinkCopied = () => {
         toastr.success($translate.instant('modal.ctr.copy.url.success'));
     };
 
@@ -87,7 +95,7 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
 
     // private functions
 
-    const initTabFromSavedQuery = (queryParams) => {
+    const initTabFromSharedSavedQuery = (queryParams) => {
         const savedQueryName = queryParams[RouteConstants.savedQueryName];
         const savedQueryOwner = queryParams[RouteConstants.savedQueryOwner];
         SparqlRestService.getSavedQuery(savedQueryName, savedQueryOwner).then((res) => {
@@ -105,13 +113,25 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         });
     };
 
+    const initTabFromSharedQuery = (queryParams) => {
+        const queryName = queryParams[RouteConstants.name];
+        const query = queryParams[RouteConstants.query];
+        const queryModel = queryModelFromParams(queryName, query);
+        // * Check if there is an open tab with the same query already. If there is one, then open it.
+        // * Otherwise open a new tab and load the query in the editor.
+        // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
+        // Same as the above should be checked on tab switching for existing tab too.
+        ontoElement.openTab(queryModel);
+    };
+
     const initViewFromUrlParams = () => {
         const queryParams = $location.search();
         if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
             // init new tab from shared saved query link
-            initTabFromSavedQuery(queryParams);
+            initTabFromSharedSavedQuery(queryParams);
         } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
+            initTabFromSharedQuery(queryParams);
         }
     };
 
