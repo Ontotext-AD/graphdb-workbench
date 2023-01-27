@@ -36,3 +36,8 @@
   margin-left: 100px;
   text-align: center;
 }
+
+.chart-additional-info {
+  text-align: right !important;
+  margin-right: 20px;
+}
