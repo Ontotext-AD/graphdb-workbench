@@ -34,28 +34,59 @@ describe('Monitor Resources', () => {
     }
 
     function getTabContent() {
-        return cy.get('.tab-content');
+        return cy.get('.tabs');
     }
 
     function getActiveTabContent() {
-        return getTabContent().find('.tab-pane.active');
+        return getTabContent().find('.tab-pane');
     }
 
-    function getMemoryUsageChart() {
-        return getTabContent().find('.nv-stackedAreaChart');
+    function getChart(id) {
+        return getTabContent().find(`#${id}`);
     }
 
-    it('Initial state ', () => {
+    function verifyCharts(charts) {
+        charts.forEach((chart) => {
+            getChart(chart.id).scrollIntoView().find('.chart-header').should('contain', chart.label);
+            getChart(chart.id).scrollIntoView().find(`.${chart.type}`).should('be.visible');
+        });
+    }
+
+    it('Should display monitor tabs ', () => {
+        const tabs = ['Resource monitoring'];
+
         // Graphics container should be present
         getTabsPanel().should('be.visible');
         // All tabs should be visible
-        let tabs = ['Memory', 'Threads', 'CPU', 'Classes'];
-        getTabsPanel().find('.nav-item').should('have.length', 4).each(($tab, index) => {
+        getTabsPanel().find('.nav-item').should('have.length', 1).each(($tab, index) => {
             cy.wrap($tab).should('be.visible').contains(tabs[index]);
         });
-        // And "Memory" tab should be opened by default
-        getActiveTab().contains('Memory');
-        getMemoryUsageChart().should('be.visible');
-        getActiveTabContent().find('h2').contains('Heap Memory Usage');
+        // Default tap should be Resource monitoring
+        getActiveTab().contains('Resource monitoring');
+    });
+
+    it('Resource monitoring tab should show cpu, file, storage and memory charts', () => {
+        const charts = [{
+            id: 'CPUUsageGraphic',
+            label: 'System CPU Load',
+            type: 'nv-lineChart'
+        }, {
+            id: 'openFileDescriptors',
+            label: 'File descriptors',
+            type: 'nv-lineChart'
+        }, {
+            id: 'heapMemoryGraphic',
+            label: 'Heap memory usage',
+            type: 'nv-lineChart'
+        }, {
+            id: 'offHeapMemoryGraphic',
+            label: 'Off-heap memory usage',
+            type: 'nv-lineChart'
+        }, {
+            id: 'diskStorage',
+            label: 'Disk Storage',
+            type: 'nv-multiBarHorizontalChart'
+        }];
+        verifyCharts(charts);
     });
 });
