@@ -16,8 +16,9 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$interval', '$timeout', 'MonitoringRestService', '$translate',
-    function ($scope, $interval, $timeout, MonitoringRestService, $translate) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate',
+    function ($scope, $timeout, MonitoringRestService, $translate) {
+        const POLLING_INTERVAL = 2000;
         const chartOptions = {
             chart: {
                 interpolate: 'monotone',
@@ -61,18 +62,16 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$interval', '$timeout', 'M
         };
 
         let firstLoad = true;
-        let pendingRequest = false;
 
         $scope.activeTab = 'resourceMonitor';
         $scope.error = '';
         $scope.loader = true;
         $scope.chartConfig = {refreshDataOnly: true, extended: false};
-
+        let resourceMonitorPoll;
         const getResourceMonitorData = function () {
             if ($scope.error) {
                 return;
             }
-            pendingRequest = true;
             MonitoringRestService.monitorResources().then(function (response) {
                 const data = response.data;
                 if (data) {
@@ -94,20 +93,18 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$interval', '$timeout', 'M
                         });
                     }
                 }
+                resourceMonitorPoll = $timeout(getResourceMonitorData, POLLING_INTERVAL);
             }).catch(function (error) {
-                $scope.error = getError(error);
+                $scope.error = getError(error.data);
                 $scope.loader = false;
-            }).finally(() => {
-                pendingRequest = false;
             });
         };
-        const timer = $interval(function () {
-            if (!pendingRequest) {
-                getResourceMonitorData();
-            }
-        }, 2000);
+
+        getResourceMonitorData();
 
         $scope.$on('$destroy', function () {
-            $interval.cancel(timer);
+            if (resourceMonitorPoll) {
+                $timeout.cancel(resourceMonitorPoll);
+            }
         });
     }]);
