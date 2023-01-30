@@ -438,7 +438,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             let auth = $jwtAuth.getAuthToken();
             if (auth) {
                 _.extend(config.headers, {
-                    'Authorization': $jwtAuth.getAuthToken()
+                    'Authorization': auth
                 });
             }
 
