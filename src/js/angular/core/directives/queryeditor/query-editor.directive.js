@@ -435,9 +435,12 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         YASQE.getAjaxConfig = function (yasqe, callbackOrConfig) {
             const config = originalGetAjaxConfig(yasqe, callbackOrConfig);
 
-            _.extend(config.headers, {
-                'Authorization': $jwtAuth.getAuthToken()
-            });
+            let auth = $jwtAuth.getAuthToken();
+            if (auth) {
+                _.extend(config.headers, {
+                    'Authorization': $jwtAuth.getAuthToken()
+                });
+            }
 
             return config;
         };
