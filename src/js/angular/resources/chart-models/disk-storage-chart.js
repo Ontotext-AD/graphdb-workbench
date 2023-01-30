@@ -1,7 +1,10 @@
 import {ChartData} from "./chart-data";
 
 export class DiskStorageChart extends ChartData {
-    chartSetup() {
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, true, true);
+    }
+    chartSetup(chartOptions) {
         const diskStorageChartOptions = {
             type: 'multiBarHorizontalChart',
             stacked: true,
@@ -21,8 +24,7 @@ export class DiskStorageChart extends ChartData {
             },
             yDomain: [0, 1]
         };
-        Object.assign(this.chartOptions.chart, diskStorageChartOptions)
-        this.firstLoad = true;
+        Object.assign(chartOptions.chart, diskStorageChartOptions);
     }
 
     createDataHolder() {
@@ -35,12 +37,11 @@ export class DiskStorageChart extends ChartData {
         }];
     }
 
-    addData(timestamp, data) {
+    addNewData(dataHolder, timestamp, data, isFirstLoad) {
         const storageData = data.storageMemory;
-        const [used, free] = this.data;
+        const [used, free] = dataHolder;
 
-        if (this.firstLoad) {
-            this.firstLoad = false;
+        if (isFirstLoad) {
             used.values.push([this.translateService.instant('resource.storage.data'), 0]);
             used.values.push([this.translateService.instant('resource.storage.work'), 0]);
             used.values.push([this.translateService.instant('resource.storage.logs'), 0]);

@@ -43,27 +43,27 @@
                             <div class="row mt-2">
                                 <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
                                     <h4 class="chart-header">{{'resource.system.cpu_load.label' | translate}}</h4>
-                                    <div nvd3 options="resourceMonitorData.cpuLoad.chartOptions" data="resourceMonitorData.cpuLoad.data" config="chartConfig"></div>
+                                    <div nvd3 options="resourceMonitorData.cpuLoad.chartOptions" data="resourceMonitorData.cpuLoad.dataHolder" config="chartConfig"></div>
                                 </div>
                                 <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
                                     <h4 class="chart-header">{{'resource.system.file_descriptors.label' | translate}}</h4>
-                                    <div nvd3 options="resourceMonitorData.fileDescriptors.chartOptions" data="resourceMonitorData.fileDescriptors.data" config="chartConfig"></div>
+                                    <div nvd3 options="resourceMonitorData.fileDescriptors.chartOptions" data="resourceMonitorData.fileDescriptors.dataHolder" config="chartConfig"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
                                     <h4 class="chart-header">{{'resource.memory.heap.label' | translate}}</h4>
-                                    <div nvd3 options="resourceMonitorData.heapMemory.chartOptions" data="resourceMonitorData.heapMemory.data" config="chartConfig"></div>
+                                    <div nvd3 options="resourceMonitorData.heapMemory.chartOptions" data="resourceMonitorData.heapMemory.dataHolder" config="chartConfig"></div>
                                 </div>
                                 <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
                                     <h4 class="chart-header">{{'resource.memory.non_heap.label' | translate}}</h4>
-                                    <div nvd3 options="resourceMonitorData.offHeapMemory.chartOptions" data="resourceMonitorData.offHeapMemory.data" config="chartConfig"></div>
+                                    <div nvd3 options="resourceMonitorData.offHeapMemory.chartOptions" data="resourceMonitorData.offHeapMemory.dataHolder" config="chartConfig"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="diskStorage" class="col-lg-12 col-xl-6">
                                     <h4 class="chart-header">{{'resource.storage.label' | translate}}</h4>
-                                    <div nvd3 options="resourceMonitorData.diskStorage.chartOptions" data="resourceMonitorData.diskStorage.data" config="chartConfig"></div>
+                                    <div nvd3 options="resourceMonitorData.diskStorage.chartOptions" data="resourceMonitorData.diskStorage.dataHolder" config="chartConfig"></div>
                                 </div>
                             </div>
                         </div>

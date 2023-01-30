@@ -454,7 +454,7 @@
     "security.save.admin.settings": "Save administrator settings",
     "security.admin.pass.unset": "If you unset the password and then enable security, this administrator will not be able to log into GraphDB through the workbench. Are you sure that you want to continue?",
     "resource.no_data": "No Data Available",
-    "resource.system.cpu_load.label": "Process CPU Load",
+    "resource.system.cpu_load.label": "System CPU Load",
     "resource.system.file_descriptors.label": "File descriptors",
     "resource.system.file_descriptors.open": "Open file descriptors",
     "resource.system.file_descriptors.max": "Max file descriptors: {{max}}",

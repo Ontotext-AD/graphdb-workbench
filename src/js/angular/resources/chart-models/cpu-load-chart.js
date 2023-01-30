@@ -1,8 +1,11 @@
 import {ChartData} from "./chart-data";
 
-export class CPULoadChartData extends ChartData {
-    chartSetup() {
-        this.chartOptions.chart.yAxis.tickFormat = function (d) {
+export class CpuLoadChart extends ChartData {
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, false, false);
+    }
+    chartSetup(chartOptions) {
+        chartOptions.chart.yAxis.tickFormat = function (d) {
             return d + '%';
         };
     }
@@ -12,8 +15,8 @@ export class CPULoadChartData extends ChartData {
             values: []
         }];
     }
-    addNewData(timestamp, data) {
-        this.data[0].values.push([timestamp, this.formatValue(data.cpuLoad)]);
+    addNewData(dataHolder, timestamp, data) {
+        dataHolder[0].values.push([timestamp, this.formatValue(data.cpuLoad)]);
         if (this.loading) {
             this.loading = false;
         }
@@ -21,8 +24,8 @@ export class CPULoadChartData extends ChartData {
     formatValue(cpuLoad) {
         return parseFloat(cpuLoad).toFixed(4);
     }
-    updateRange() {
-        const maxChartValue = Math.max(...this.data[0].values.flatMap((data) => data[1]));
+    updateRange(dataHolder) {
+        const maxChartValue = Math.max(...dataHolder[0].values.flatMap((data) => data[1]));
         const domainUpperBound = maxChartValue > 50 ? 100 : maxChartValue * 2;
         this.chartOptions.chart.yDomain = [0, domainUpperBound];
     }

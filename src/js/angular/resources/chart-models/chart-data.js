@@ -1,26 +1,38 @@
 export class ChartData {
-    constructor(translateService, chartOptions) {
+    constructor(translateService, chartOptions, disableRangeUpdate, disableOldDataRemoval) {
+        this.disableRangeUpdate = disableRangeUpdate;
+        this.disableOldDataRemoval = disableOldDataRemoval;
         this.translateService = translateService;
         this.range = 150;
         this.chartOptions = chartOptions;
-        this.chartSetup();
-        this.data = this.createDataHolder();
+        this.chartSetup(this.chartOptions);
+        this.dataHolder = this.createDataHolder();
+        this.firstLoad = true;
     }
-    chartSetup() {}
+    chartSetup(chartOptions) {}
     createDataHolder() {
         throw new Error('Must implement data holder creation');
     }
-    addData(timestamp, data) {
-        this.removeOldData();
-        this.addNewData(timestamp, data);
-        this.updateRange();
-    }
-
-    removeOldData() {
-        if (this.data[0].values.length > this.range) {
-            this.data.forEach((data) => data.values.shift());
+    addData(timestamp, newData) {
+        if (!this.disableOldDataRemoval) {
+            this.removeOldData(this.dataHolder, this.range);
+        }
+        this.addNewData(this.dataHolder, timestamp, newData, this.isFirstLoad());
+        if (!this.disableRangeUpdate) {
+            this.updateRange(this.dataHolder);
+        }
+        if (this.firstLoad) {
+            this.firstLoad = false;
         }
     }
-    addNewData(timestamp, data) {}
-    updateRange() {}
+    removeOldData(dataHolder, range) {
+        if (dataHolder[0].values.length > range) {
+            dataHolder.forEach((data) => data.values.shift());
+        }
+    }
+    addNewData(dataHolder, timestamp, data, isFirstLoad) {}
+    updateRange(dataHolder) {}
+    isFirstLoad() {
+        return this.firstLoad;
+    }
 }

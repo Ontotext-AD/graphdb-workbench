@@ -5,23 +5,20 @@ import 'lib/nvd3/nv.d3';
 import {FileDescriptorsChart} from "./chart-models/file-descriptors-chart";
 import {HeapMemoryChart} from "./chart-models/heap-memory-chart";
 import {NonHeapMemoryChart} from "./chart-models/non-heap-memory-chart";
-import {CPULoadChartData} from "./chart-models/cpu-load-chart";
+import {CpuLoadChart} from "./chart-models/cpu-load-chart";
 import {DiskStorageChart} from "./chart-models/disk-storage-chart";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
-    'graphdb.framework.rest.monitoring.service',
-    'toastr'
+    'graphdb.framework.rest.monitoring.service'
 ];
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$timeout', 'MonitoringRestService', '$translate',
-    function ($scope, toastr, $interval, $timeout, MonitoringRestService, $translate) {
-        $scope.resourceMonitorData = {};
-        $scope.chartConfig = {refreshDataOnly: true, extended: false};
-        $scope.chartOptions = {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$interval', '$timeout', 'MonitoringRestService', '$translate',
+    function ($scope, $interval, $timeout, MonitoringRestService, $translate) {
+        const chartOptions = {
             chart: {
                 interpolate: 'monotone',
                 type: 'lineChart',
@@ -55,22 +52,29 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
                 }
             }
         };
+        $scope.resourceMonitorData = {
+            cpuLoad: new CpuLoadChart($translate, angular.copy(chartOptions)),
+            fileDescriptors: new FileDescriptorsChart($translate, angular.copy(chartOptions)),
+            heapMemory: new HeapMemoryChart($translate, angular.copy(chartOptions)),
+            offHeapMemory: new NonHeapMemoryChart($translate, angular.copy(chartOptions)),
+            diskStorage: new DiskStorageChart($translate, angular.copy(chartOptions))
+        };
 
-        $scope.resourceMonitorData.cpuLoad = new CPULoadChartData($translate, angular.copy($scope.chartOptions));
-        $scope.resourceMonitorData.fileDescriptors = new FileDescriptorsChart($translate, angular.copy($scope.chartOptions));
-        $scope.resourceMonitorData.heapMemory = new HeapMemoryChart($translate, angular.copy($scope.chartOptions));
-        $scope.resourceMonitorData.offHeapMemory = new NonHeapMemoryChart($translate, angular.copy($scope.chartOptions));
-        $scope.resourceMonitorData.diskStorage = new DiskStorageChart($translate, angular.copy($scope.chartOptions));
+        let firstLoad = true;
+        let pendingRequest = false;
 
-        $scope.firstLoad = true;
         $scope.activeTab = 'resourceMonitor';
         $scope.error = '';
         $scope.loader = true;
-        $scope.getResourceMonitorData = function () {
+        $scope.chartConfig = {refreshDataOnly: true, extended: false};
+
+        const getResourceMonitorData = function () {
             if ($scope.error) {
                 return;
             }
-            MonitoringRestService.monitorResources().success(function (data) {
+            pendingRequest = true;
+            MonitoringRestService.monitorResources().then(function (response) {
+                const data = response.data;
                 if (data) {
                     const timestamp = new Date();
 
@@ -78,8 +82,8 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
                         chart.addData(timestamp, data);
                     });
 
-                    if ($scope.firstLoad) {
-                        $scope.firstLoad = false;
+                    if (firstLoad) {
+                        firstLoad = false;
 
                         const timer = $timeout(function () {
                             $scope.loader = false;
@@ -90,14 +94,17 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', 'toastr', '$interval', '$ti
                         });
                     }
                 }
-            }).error(function (data) {
-                $scope.error = getError(data);
+            }).catch(function (error) {
+                $scope.error = getError(error);
                 $scope.loader = false;
+            }).finally(() => {
+                pendingRequest = false;
             });
         };
-
         const timer = $interval(function () {
-            $scope.getResourceMonitorData();
+            if (!pendingRequest) {
+                getResourceMonitorData();
+            }
         }, 2000);
 
         $scope.$on('$destroy', function () {

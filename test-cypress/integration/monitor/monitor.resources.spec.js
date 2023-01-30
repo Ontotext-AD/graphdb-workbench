@@ -68,7 +68,7 @@ describe('Monitor Resources', () => {
     it('Resource monitoring tab should show cpu, file, storage and memory charts', () => {
         const charts = [{
             id: 'CPUUsageGraphic',
-            label: 'Process CPU Load',
+            label: 'System CPU Load',
             type: 'nv-lineChart'
         }, {
             id: 'openFileDescriptors',
