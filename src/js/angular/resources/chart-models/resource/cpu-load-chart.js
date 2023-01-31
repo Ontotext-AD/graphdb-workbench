@@ -1,4 +1,4 @@
-import {ChartData} from "./chart-data";
+import {ChartData} from "../chart-data";
 
 export class CpuLoadChart extends ChartData {
     constructor(translateService, chartOptions) {

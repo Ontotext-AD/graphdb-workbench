@@ -29,8 +29,12 @@ describe('Monitor Resources', () => {
         return cy.get('.graphics');
     }
 
+    function getTabButtons() {
+        return getTabsPanel().find('.nav-item');
+    }
+
     function getActiveTab() {
-        return getTabsPanel().find('.nav-link.active');
+        return getTabButtons().find('.nav-link.active');
     }
 
     function getTabContent() {
@@ -53,16 +57,16 @@ describe('Monitor Resources', () => {
     }
 
     it('Should display monitor tabs ', () => {
-        const tabs = ['Resource monitoring'];
+        const tabs = ['Resource monitoring', 'Performance'];
 
         // Graphics container should be present
         getTabsPanel().should('be.visible');
         // All tabs should be visible
-        getTabsPanel().find('.nav-item').should('have.length', 1).each(($tab, index) => {
+        getTabButtons().should('have.length', tabs.length).each(($tab, index) => {
             cy.wrap($tab).should('be.visible').contains(tabs[index]);
         });
         // Default tap should be Resource monitoring
-        getActiveTab().contains('Resource monitoring');
+        getActiveTab().should('contain', 'Resource monitoring');
     });
 
     it('Resource monitoring tab should show cpu, file, storage and memory charts', () => {
@@ -86,6 +90,32 @@ describe('Monitor Resources', () => {
             id: 'diskStorage',
             label: 'Disk Storage',
             type: 'nv-multiBarHorizontalChart'
+        }];
+        verifyCharts(charts);
+    });
+
+    it('Performance monitoring tab should show charts', () => {
+        getTabButtons().eq(1).click();
+        const charts = [{
+            id: 'activeQueries',
+            label: 'Queries',
+            type: 'nv-lineChart'
+        }, {
+            id: 'globalCache',
+            label: 'Global cache',
+            type: 'nv-lineChart'
+        }, {
+            id: 'epoolReads',
+            label: 'Entity pool reads',
+            type: 'nv-lineChart'
+        }, {
+            id: 'epoolWrites',
+            label: 'Entity pool writes',
+            type: 'nv-lineChart'
+        }, {
+            id: 'connections',
+            label: 'Transactions and Connections',
+            type: 'nv-lineChart'
         }];
         verifyCharts(charts);
     });

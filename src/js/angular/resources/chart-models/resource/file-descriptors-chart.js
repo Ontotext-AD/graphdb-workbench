@@ -1,4 +1,4 @@
-import {ChartData} from "./chart-data";
+import {ChartData} from "../chart-data";
 
 export class FileDescriptorsChart extends ChartData {
     constructor(translateService, chartOptions) {
