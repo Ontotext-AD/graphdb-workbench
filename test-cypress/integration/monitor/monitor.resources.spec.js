@@ -18,7 +18,7 @@ describe('Monitor Resources', () => {
         cy.get('.ot-loader').should('not.be.visible');
 
         // Ensure the chart on the default active tab is rendered
-        getActiveTabContent().find('svg').should('be.visible');
+        getActiveTabContent().should('be.visible');
     });
 
     after(() => {

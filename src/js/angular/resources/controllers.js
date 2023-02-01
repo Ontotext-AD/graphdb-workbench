@@ -81,8 +81,12 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         $scope.error = '';
         $scope.loader = true;
 
-        $scope.isAdmin = $jwtAuth.isAdmin();
-        $scope.isRepoManager = $jwtAuth.isRepoManager();
+        $scope.isAdmin = function () {
+            return $jwtAuth.isAdmin();
+        };
+        $scope.isRepoManager = function () {
+            $jwtAuth.isRepoManager();
+        };
 
         $scope.switchTab = (tab) => {
             $scope.activeTab = tab;
