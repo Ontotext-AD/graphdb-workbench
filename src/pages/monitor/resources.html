@@ -1,84 +1,75 @@
+<link href="css/jmx.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-	<link href="css/jmx.css?v=[AIV]{version}[/AIV]" rel="stylesheet" />
-
-	<!-- 	nvd3 css and js  starts-->
-	<link href="js/lib/nvd3/nv.d3.css?v=[AIV]{version}[/AIV]" rel="stylesheet" />
+<!-- 	nvd3 css and js  starts-->
+<link href="js/lib/nvd3/nv.d3.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 
-	<div class="hiddenVariables" style="display: none;">
-		<div class="localUse">${localUse}</div>
-		<div class="jmxServer">${jmxServer}</div>
-	</div>
+<div class="hiddenVariables" style="display: none;">
+    <div class="localUse">${localUse}</div>
+    <div class="jmxServer">${jmxServer}</div>
+</div>
 
-	<h1>
-		{{title}}
-		<span class="btn btn-link"
-			popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-			popover-trigger="mouseenter"
-			popover-placement="bottom-right"
-			popover-append-to-body="true"><span class="icon-info"></span></span>
-	</h1>
+<h1>
+    {{title}}
+    <span class="btn btn-link"
+          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          popover-trigger="mouseenter"
+          popover-placement="bottom-right"
+          popover-append-to-body="true"><span class="icon-info"></span></span>
+</h1>
 
-	<div id="wb-monitoringResources" class="ot-owlim-resources">
-		<div class="row ng-scope" ng-show="!loader && error">
-			<p class="alert alert-danger">
-                {{'common.error' | translate}}: {{error}}.
-				<br/>
-                {{'refresh.to.retry' | translate}}
-			</p>
-		</div>
+<div id="wb-monitoringResources" class="ot-owlim-resources">
+    <div class="row ng-scope" ng-show="!loader && error">
+        <p class="alert alert-danger">
+            {{'common.error' | translate}}: {{error}}.
+            <br/>
+            {{'refresh.to.retry' | translate}}
+        </p>
+    </div>
 
-		<div>
-			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+    <div>
+        <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 
-			<div ng-hide="loader || error">
-				<div class="container graphics row">
-					<div class="tabbable">
-					   <ul class="nav nav-tabs">
-						  <li class="tab1Li nav-item" ><span class="nav-link" ng-click="activeTab = 'memory'" ng-class="activeTab == 'memory' ? 'active':''">{{'memory.label' | translate}}</span></li>
-						  <li class="tab2Li nav-item" ><span class="nav-link" ng-click="activeTab = 'threads'" ng-class="activeTab == 'threads' ? 'active':''">{{'threads.label' | translate}}</span></li>
-						  <li class="tab3Li nav-item" ><span class="nav-link" ng-click="activeTab = 'cpu'" ng-class="activeTab == 'cpu' ? 'active':''">{{'cpu.label' | translate}}</span></li>
-						  <li class="tab4Li nav-item" ><span class="nav-link" ng-click="activeTab = 'classes'" ng-class="activeTab == 'classes' ? 'active':''">{{'classes.label' | translate}}</span></li>
-					   </ul>
-					   <div class="tab-content">
-						  <div class="tab-pane fade in" ng-class="activeTab == 'memory' ? 'active':''" id="tab1">
-							<div id="heapMemoryGraphic">
-								<br>
-								<h2 class="pull-left">{{'heap.memory.usage' | translate}}</h2>
-
-								<div class="pull-right">
-									<a id="wb-monitoringQueries-garbadgeCollector" ng-click="garbadgeCollector()" ng-hide="garbadgeCollectorLoader" class="btn btn-sm btn-primary performGC" href>{{'perform.gc' | translate}}</a>
-								</div>
-
-								<div onto-loader size="31" ng-show="garbadgeCollectorLoader" class=" ot-loader onto-loader-performGC"></div>
-
-								<div nvd3 options="chartMemoryOptions" data="data.memoryUsage" config="chartConfig" style="height: 500px;"></div>
-							</div>
-						  </div>
-						  <div class="tab-pane fade in" ng-class="activeTab == 'threads' ? 'active':''" id="tab2">
-							<div id="threadsGraphic">
-								<br>
-								<h2>{{'threads.label' | translate}}</h2>
-								<div nvd3 options="chartOptions" data="data.threadCount" config="chartConfig" style="height: 500px;"></div>
-							</div>
-						  </div>
-						  <div class="tab-pane fade in" ng-class="activeTab == 'cpu' ? 'active':''" id="tab3">
-							<div id="CPUUsageGraphic">
-								<br>
-								<h2>{{'system.cpu.load' | translate}}</h2>
-								<div nvd3 options="chartCPUOptions" data="data.cpuLoad" config="chartConfig" style="height: 500px;"></div>
-							</div>
-						  </div>
-						  <div class="tab-pane fade in" ng-class="activeTab == 'classes' ? 'active':''" id="tab4">
-							<div id="classesGraphic">
-								<br>
-								<h2>{{'loaded.classes.count' | translate}}</h2>
-								<div nvd3 options="chartOptions" data="data.classCount" config="chartConfig" style="height: 500px;"></div>
-							</div>
-						  </div>
-					   </div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div ng-if="!loader && !error">
+            <div class="graphics row">
+                <div class="monitor-tabs">
+                    <ul class="nav nav-tabs">
+                        <li class="resource-tab nav-item">
+                            <span class="nav-link" ng-click="activeTab = 'resourceMonitor'" ng-class="activeTab == 'resourceMonitor' ? 'active':''">{{'monitor.resource' | translate}}</span>
+                        </li>
+                    </ul>
+                    <div class="tabs ml-2 mr-2">
+                        <div class="tab-pane fade in" ng-if="activeTab === 'resourceMonitor'" id="resourceTab">
+                            <div class="row mt-2">
+                                <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resource.system.cpu_load.label' | translate}}</h4>
+                                    <div nvd3 options="resourceMonitorData.cpuLoad.chartOptions" data="resourceMonitorData.cpuLoad.dataHolder" config="chartConfig"></div>
+                                </div>
+                                <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resource.system.file_descriptors.label' | translate}}</h4>
+                                    <div nvd3 options="resourceMonitorData.fileDescriptors.chartOptions" data="resourceMonitorData.fileDescriptors.dataHolder" config="chartConfig"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resource.memory.heap.label' | translate}}</h4>
+                                    <div nvd3 options="resourceMonitorData.heapMemory.chartOptions" data="resourceMonitorData.heapMemory.dataHolder" config="chartConfig"></div>
+                                </div>
+                                <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resource.memory.non_heap.label' | translate}}</h4>
+                                    <div nvd3 options="resourceMonitorData.offHeapMemory.chartOptions" data="resourceMonitorData.offHeapMemory.dataHolder" config="chartConfig"></div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div id="diskStorage" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resource.storage.label' | translate}}</h4>
+                                    <div nvd3 options="resourceMonitorData.diskStorage.chartOptions" data="resourceMonitorData.diskStorage.dataHolder" config="chartConfig"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

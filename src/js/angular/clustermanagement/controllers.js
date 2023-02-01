@@ -438,8 +438,8 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
     $scope.clusterConfiguration = {
-        electionMinTimeout: 20000,
-        electionRangeTimeout: 10000,
+        electionMinTimeout: 8000,
+        electionRangeTimeout: 6000,
         heartbeatInterval: 2000,
         messageSizeKB: 64,
         verificationTimeout: 1500,
