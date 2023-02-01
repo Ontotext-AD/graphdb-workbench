@@ -64,7 +64,7 @@ describe('==> Repository module controllers tests', function () {
                 GuidesService: GuidesService
             });
 
-            httpGetLocation = $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
+            httpGetLocation = $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
             httpGetActiveLocation = $httpBackend.when('GET', 'rest/locations/active').respond(200, {});
             httpGetRepositories = $httpBackend.when('GET', 'rest/repositories').respond(200, {});
             httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -110,7 +110,7 @@ describe('==> Repository module controllers tests', function () {
                     test = true
                 };
                 $httpBackend.expectPUT('rest/locations', {}).respond(200, {locations: ['some new location']});
-                $httpBackend.expectGET('rest/locations').respond(200, {locations: ['some new location']});
+                $httpBackend.expectGET('rest/locations?filterClusterLocations=true').respond(200, {locations: ['some new location']});
                 $scope.editLocationHttp({});
                 $httpBackend.flush();
                 expect($scope.locations).toEqual({locations: ['some new location']});
@@ -210,7 +210,7 @@ describe('==> Repository module controllers tests', function () {
                     return bundle[key];
                 };
 
-                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
+                $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
 
                 locationMock = {path: jasmine.createSpy('locationMock.path')};
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
@@ -319,7 +319,7 @@ describe('==> Repository module controllers tests', function () {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
 
-                $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
+                $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
 
                 routeParamsMock = {repositoryId: 'repo', repositoryType: 'graphdb'};
 
@@ -390,7 +390,7 @@ describe('==> Repository module controllers tests', function () {
                 }
             };
 
-            $httpBackend.when('GET', 'rest/locations').respond(200, [{}]);
+            $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
             routeParamsMock = {repositoryId: 'repo'};
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 

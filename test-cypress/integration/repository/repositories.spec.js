@@ -41,7 +41,7 @@ describe('Repositories', () => {
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
-        cy.intercept('/rest/locations').as('getLocations');
+        cy.intercept('/rest/locations?filterClusterLocations=true').as('getLocations');
 
         cy.visit('/repository');
         waitLoader();

@@ -40,10 +40,10 @@ export const LinkState = {
 };
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope) {
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
@@ -248,6 +248,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
                 .finally(() => {
                     $scope.setLoader(false);
                     updateCluster(true);
+                    $rootScope.$broadcast('reloadLocations');
                 });
         });
     };
@@ -431,9 +432,9 @@ const getAdvancedOptionsClass = function () {
 };
 
 CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data', '$modal',
-    'RemoteLocationsService'];
+    'RemoteLocationsService', '$rootScope'];
 
-function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, RemoteLocationsService) {
+function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, RemoteLocationsService, $rootScope) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];
@@ -464,7 +465,11 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
             .catch(function (error) {
                 handleErrors(error.data, error.status);
             })
-            .finally(() => $scope.setLoader(false));
+            .finally(() => {
+                $scope.setLoader(false);
+                console.log('broadcasting event')
+                $rootScope.$broadcast('reloadLocations');
+            });
     };
 
     function handleErrors(data, status) {
