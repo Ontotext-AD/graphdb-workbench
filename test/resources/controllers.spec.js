@@ -179,16 +179,14 @@ describe('=> ResourcesCtrl tests', function () {
 
             $httpBackend.flush();
             expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0]]}, {key: "Open connections", values: [[today, 0]]}]);
-            expect($scope.performanceMonitorData.epoolReadsChart.dataHolder).toEqual([{key: "Reads", values: [[today, 0, 10504]]}]);
-            expect($scope.performanceMonitorData.epoolWritesChart.dataHolder).toEqual([{key: "Writes", values: [[today, 0, 122]]}]);
+            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122]]}]);
             expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
             expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759]]}, {key: 'Miss', values: [[today, 558]]}]);
             $timeout.flush(2001);
             $httpBackend.flush();
 
             expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0], [today, 0]]}, {key: "Open connections", values: [[today, 0], [today, 0]]}]);
-            expect($scope.performanceMonitorData.epoolReadsChart.dataHolder).toEqual([{key: "Reads", values: [[today, 0, 10504], [today, 0, 10504]]}]);
-            expect($scope.performanceMonitorData.epoolWritesChart.dataHolder).toEqual([{key: "Writes", values: [[today, 0, 122], [today, 0, 122]]}]);
+            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
             expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
             expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
         });

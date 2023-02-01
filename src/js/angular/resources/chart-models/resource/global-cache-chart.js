@@ -21,9 +21,4 @@ export class GlobalCacheChart extends ChartData {
         hit.values.push([timestamp, data.cacheHit]);
         miss.values.push([timestamp, data.cacheMiss]);
     }
-    updateRange(dataHolder) {
-        const maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
-        const domainUpperBound = maxChartValue * 1.2;
-        this.chartOptions.chart.yDomain = [0, domainUpperBound];
-    }
 }

@@ -31,8 +31,17 @@ export class ChartData {
         }
     }
     addNewData(dataHolder, timestamp, data, isFirstLoad) {}
-    updateRange(dataHolder) {}
+
+    updateRange(dataHolder, multiplier) {
+        const maxChartValue = ChartData.getMaxValueFromDataHolder(dataHolder);
+        const domainUpperBound = maxChartValue * (multiplier || 1.2);
+        this.chartOptions.chart.yDomain = [0, domainUpperBound || 1];
+    }
     isFirstLoad() {
         return this.firstLoad;
+    }
+
+    static getMaxValueFromDataHolder(dataHolder) {
+        return Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
     }
 }

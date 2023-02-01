@@ -105,13 +105,9 @@ describe('Monitor Resources', () => {
             label: 'Global cache',
             type: 'nv-lineChart'
         }, {
-            id: 'epoolReads',
-            label: 'Entity pool reads',
-            type: 'nv-lineChart'
-        }, {
-            id: 'epoolWrites',
-            label: 'Entity pool writes',
-            type: 'nv-lineChart'
+            id: 'epool',
+            label: 'Entity pool',
+            type: 'multiChart'
         }, {
             id: 'connections',
             label: 'Transactions and Connections',

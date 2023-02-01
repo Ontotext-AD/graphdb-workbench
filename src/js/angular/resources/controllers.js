@@ -10,8 +10,7 @@ import {DiskStorageChart} from './chart-models/resource/disk-storage-chart';
 import {QueriesChart} from './chart-models/performance/queries-chart';
 import {GlobalCacheChart} from './chart-models/resource/global-cache-chart';
 import {ConnectionsChart} from './chart-models/performance/connections-chart';
-import {EpoolReadsChart} from './chart-models/performance/epool-reads-chart';
-import {EpoolWritesChart} from './chart-models/performance/epool-writes-chart';
+import {EpoolChart} from './chart-models/performance/epool-chart';
 
 const modules = [
     'ui.bootstrap',
@@ -42,7 +41,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 noData: $translate.instant('resource.no_data'),
                 showControls: true,
                 rightAlignYAxis: false,
-                duration: 1,
                 useInteractiveGuideline: true,
                 xAxis: {
                     showMaxMin: false,
@@ -68,8 +66,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
 
         $scope.performanceMonitorData = {
             connectionsChart: new ConnectionsChart($translate, angular.copy(chartOptions)),
-            epoolReadsChart: new EpoolReadsChart($translate, angular.copy(chartOptions)),
-            epoolWritesChart: new EpoolWritesChart($translate, angular.copy(chartOptions))
+            epoolChart: new EpoolChart($translate, angular.copy(chartOptions))
         };
 
         $scope.queriesChart = new QueriesChart($translate, angular.copy(chartOptions));
@@ -83,7 +80,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         $scope.activeTab = 'resourceMonitor';
         $scope.error = '';
         $scope.loader = true;
-        $scope.chartConfig = {refreshDataOnly: true, extended: false};
 
         $scope.isAdmin = $jwtAuth.isAdmin();
         $scope.isRepoManager = $jwtAuth.isRepoManager();
