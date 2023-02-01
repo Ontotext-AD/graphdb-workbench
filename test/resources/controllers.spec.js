@@ -3,6 +3,13 @@ import 'angular/core/services/repositories.service';
 import "angular/resources/controllers";
 import {bundle} from "../test-main";
 
+const mocks = angular.module('MocksForResourceMonitor', []);
+mocks.service('$repositories', function () {
+    this.getActiveRepository = function () {
+        return 'activeRepository';
+    };
+});
+
 beforeEach(angular.mock.module('graphdb.framework.jmx.resources.controllers', function ($provide) {
     $provide.constant("productInfo", {
         "productType": "standard", "productVersion": "7.0", "sesame": "2.9.0", "connectors": "5.0.0"
@@ -15,16 +22,22 @@ describe('=> ResourcesCtrl tests', function () {
         $timeout,
         $scope,
         $repositories,
+        MonitoringRestService,
+        $jwtAuth,
         httpGetResourcesData;
         let $translate;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$translate_) {
+    beforeEach(angular.mock.module('MocksForResourceMonitor'));
+
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$translate_, _MonitoringRestService_, _$jwtAuth_) {
 
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
         $repositories = _$repositories_;
         $translate = _$translate_;
+        MonitoringRestService = _MonitoringRestService_;
+        $jwtAuth = _$jwtAuth_;
 
         $translate.instant = function (key, modification) {
             if (modification) {
@@ -63,6 +76,25 @@ describe('=> ResourcesCtrl tests', function () {
             "gcCount": 15,
             "openFileDescriptors": 550
         });
+        $httpBackend.when('GET', 'rest/monitor/structures').respond(200, {
+            "cacheHit": 5759,
+            "cacheMiss": 558
+        });
+        $httpBackend.when('GET', 'rest/monitor/repository/activeRepository').respond(200, {
+            "queries": {
+                "slow": 0,
+                "suboptimal": 0
+            },
+            "entityPool": {
+                "epoolReads": 10504,
+                "epoolWrites": 122,
+                "epoolSize": 75
+            },
+            "activeTransactions": 0,
+            "openConnections": 0
+        });
+        $httpBackend.when('GET', 'rest/monitor/repository/activeRepository/query/active').respond(200, []);
+
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: false,
@@ -77,9 +109,10 @@ describe('=> ResourcesCtrl tests', function () {
         });
 
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
+        $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
         $scope = $rootScope.$new();
-        $controller('ResourcesCtrl', {$scope: $scope});
+        $controller('ResourcesCtrl', {$scope: $scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth});
 
         jasmine.clock().install();
     }));
@@ -92,12 +125,9 @@ describe('=> ResourcesCtrl tests', function () {
     });
 
     describe('$scope.getResourcesData()', function () {
-        it('should call function on every 2s', function () {
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
+        it('should call resource monitor function on every 2s', function () {
+            $httpBackend.expectGET('rest/monitor/infrastructure');
 
-            $httpBackend.expectGET('rest/monitor/infrastructure')
             $timeout.flush(2001);
             expect($httpBackend.flush).not.toThrow();
             $timeout.flush(2000);
@@ -106,10 +136,20 @@ describe('=> ResourcesCtrl tests', function () {
             expect($httpBackend.flush).not.toThrow();
         });
 
+        it('should call performance monitor function on every 2s', function () {
+            $httpBackend.expectGET('rest/monitor/repository/activeRepository');
+            $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
+            $httpBackend.expectGET('rest/monitor/structures');
+
+            // $timeout.flush(2001);
+            expect($httpBackend.flush).not.toThrow();
+            $timeout.flush(2000);
+            expect($httpBackend.flush).not.toThrow();
+            $timeout.flush(2000);
+            expect($httpBackend.flush).not.toThrow();
+        });
+
         it('should set resource monitor charts data correct', function () {
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
@@ -132,11 +172,26 @@ describe('=> ResourcesCtrl tests', function () {
             expect($scope.resourceMonitorData.diskStorage.dataHolder).toEqual([{key: "Used", values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
         });
 
-        it('should set cpuLoad yDomain to 0, 100 if the current value is above 50', function () {
+        it('should set performance monitor charts data correct', function () {
+            var fixedDate = new Date('1999-01-02');
+            jasmine.clock().mockDate(fixedDate);
+            var today = new Date();
 
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
+            $httpBackend.flush();
+            expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0]]}, {key: "Open connections", values: [[today, 0]]}]);
+            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122]]}]);
+            expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
+            expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759]]}, {key: 'Miss', values: [[today, 558]]}]);
+            $timeout.flush(2001);
+            $httpBackend.flush();
+
+            expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0], [today, 0]]}, {key: "Open connections", values: [[today, 0], [today, 0]]}]);
+            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
+            expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
+            expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
+        });
+
+        it('should set cpuLoad yDomain to 0, 100 if the current value is above 50', function () {
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
@@ -186,10 +241,6 @@ describe('=> ResourcesCtrl tests', function () {
         });
 
         it('should set file descriptors yDomain to 0, max*2', function () {
-
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
@@ -238,10 +289,6 @@ describe('=> ResourcesCtrl tests', function () {
         })
 
         it('should set heap memory yDomain to 0, max*1.2', function () {
-
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
@@ -290,10 +337,6 @@ describe('=> ResourcesCtrl tests', function () {
         })
 
         it('should set non-heap memory yDomain to 0, max*1.2', function () {
-
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');
@@ -374,9 +417,6 @@ describe('=> ResourcesCtrl tests', function () {
                 "openFileDescriptors": 600
             });
 
-            $scope.getActiveRepository = function () {
-                return 'activeRepository'
-            }
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
             var fixedDate = new Date('1999-01-02');

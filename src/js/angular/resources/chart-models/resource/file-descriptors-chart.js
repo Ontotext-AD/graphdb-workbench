@@ -1,4 +1,4 @@
-import {ChartData} from "./chart-data";
+import {ChartData} from "../chart-data";
 
 export class FileDescriptorsChart extends ChartData {
     constructor(translateService, chartOptions) {
@@ -33,8 +33,6 @@ export class FileDescriptorsChart extends ChartData {
         this.chartOptions.title.text = this.translateService.instant('resource.system.file_descriptors.max', {max: data.maxFileDescriptors});
     }
     updateRange(dataHolder) {
-        const maxChartValue = Math.max(...dataHolder[0].values.flatMap((data) => data[1]));
-        const domainUpperBound = maxChartValue * 2;
-        this.chartOptions.chart.yDomain = [0, domainUpperBound];
+        super.updateRange(dataHolder, 2);
     }
 }

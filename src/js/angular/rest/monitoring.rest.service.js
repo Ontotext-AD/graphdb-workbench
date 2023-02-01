@@ -10,15 +10,25 @@ const QUERY_MONITORING_ENDPOINT = `${MONITORING_ENDPOINT}/repository`;
 function MonitoringRestService($http) {
     return {
         monitorResources,
+        monitorStructures,
         monitorGC,
         monitorQuery,
         deleteQuery,
         getQueryCount,
-        checkAutocompleteStatus
+        checkAutocompleteStatus,
+        monitorQueryTransactionStatistics
     };
 
     function monitorResources() {
         return $http.get(`${MONITORING_ENDPOINT}/infrastructure`);
+    }
+
+    function monitorStructures() {
+        return $http.get(`${MONITORING_ENDPOINT}/structures`);
+    }
+
+    function monitorQueryTransactionStatistics(repositoryID) {
+        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}`);
     }
 
     function monitorGC() {

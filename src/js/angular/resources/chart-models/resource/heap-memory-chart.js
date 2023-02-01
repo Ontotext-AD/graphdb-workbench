@@ -1,4 +1,4 @@
-import {ChartData} from "./chart-data";
+import {ChartData} from "../chart-data";
 
 export class HeapMemoryChart extends ChartData {
     constructor(translateService, chartOptions) {
@@ -32,9 +32,7 @@ export class HeapMemoryChart extends ChartData {
     }
     updateRange(dataHolder) {
         this.setScale(dataHolder);
-        const maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
-        const domainUpperBound = maxChartValue * 1.2;
-        this.chartOptions.chart.yDomain = [0, domainUpperBound];
+        super.updateRange(dataHolder);
     }
     setScale(dataHolder) {
         this.chartOptions.chart.yAxis.tickFormat = (d) => {
