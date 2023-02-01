@@ -10,6 +10,7 @@ import {DiskStorageChart} from './chart-models/resource/disk-storage-chart';
 import {QueriesChart} from './chart-models/performance/queries-chart';
 import {GlobalCacheChart} from './chart-models/resource/global-cache-chart';
 import {ConnectionsChart} from './chart-models/performance/connections-chart';
+import {ClusterHealthChart} from './chart-models/cluster-health/cluster-health-chart';
 import {EpoolChart} from './chart-models/performance/epool-chart';
 
 const modules = [
@@ -39,7 +40,8 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 },
                 clipEdge: true,
                 noData: $translate.instant('resource.no_data'),
-                showControls: true,
+                showControls: false,
+                duration: 0,
                 rightAlignYAxis: false,
                 useInteractiveGuideline: true,
                 xAxis: {
@@ -75,6 +77,8 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             globalCacheChart: new GlobalCacheChart($translate, angular.copy(chartOptions))
         };
 
+        $scope.clusterHealthChart = new ClusterHealthChart($translate, angular.copy(chartOptions));
+
         let firstLoad = true;
 
         $scope.activeTab = 'resourceMonitor';
@@ -83,9 +87,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
 
         $scope.isAdmin = function () {
             return $jwtAuth.isAdmin();
-        };
-        $scope.isRepoManager = function () {
-            $jwtAuth.isRepoManager();
         };
 
         $scope.switchTab = (tab) => {
@@ -129,7 +130,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             });
         };
         let queryMonitorData;
-
         const getQueryMonitor = function() {
             const activeRepository = $scope.getActiveRepository();
             if ($scope.error) {
@@ -222,10 +222,41 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 $scope.loader = false;
             });
         };
+        let clusterMonitorPoll;
+        const getClusterMonitorData = function () {
+            if ($scope.error) {
+                return;
+            }
+            MonitoringRestService.monitorCluster().then(function (response) {
+                const data = response.data;
+                if (data) {
+                    const timestamp = new Date();
+
+                    $scope.clusterHealthChart.addData(timestamp, data);
+
+                    if ($scope.firstLoad) {
+                        $scope.firstLoad = false;
+
+                        const timer = $timeout(function () {
+                            $scope.loader = false;
+                        }, 500);
+
+                        $scope.$on('$destroy', function () {
+                            $timeout.cancel(timer);
+                        });
+                    }
+                }
+                clusterMonitorPoll = $timeout(getClusterMonitorData, POLLING_INTERVAL);
+            }).catch(function (data) {
+                $scope.error = getError(data);
+                $scope.loader = false;
+            });
+        };
 
         getResourceMonitorData();
         getQueryMonitor();
         getStructuresMonitorData();
+        getClusterMonitorData();
 
         $scope.$on('$destroy', function () {
             if (resourceMonitorPoll) {
@@ -236,6 +267,9 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             }
             if (structuresMonitorPoll) {
                 $timeout.cancel(structuresMonitorPoll);
+            }
+            if (clusterMonitorPoll) {
+                $timeout.cancel(clusterMonitorPoll);
             }
         });
     }]);

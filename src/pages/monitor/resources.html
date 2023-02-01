@@ -37,8 +37,11 @@
                         <li class="resource-tab nav-item">
                             <span class="nav-link" ng-click="switchTab('resourceMonitor')" ng-class="activeTab == 'resourceMonitor' ? 'active':''">{{'monitor.resource' | translate}}</span>
                         </li>
-                        <li class="performance-tab nav-item" ng-if="isAdmin">
+                        <li class="performance-tab nav-item" ng-if="isAdmin()">
                             <span class="nav-link" ng-click="switchTab('performanceMonitor')" ng-class="activeTab == 'performanceMonitor' ? 'active':''">{{'monitor.performance.label' | translate}}</span>
+                        </li>
+                        <li class="cluster-tab nav-item">
+                            <span class="nav-link" ng-click="switchTab('clusterHealth')" ng-class="activeTab == 'clusterHealth' ? 'active':''">{{'monitor.cluster' | translate}}</span>
                         </li>
                     </ul>
                     <div class="tabs ml-2 mr-2">
@@ -96,6 +99,14 @@
                                         <h4 class="chart-header">{{'resource.connections.label' | translate}}</h4>
                                         <div nvd3 options="performanceMonitorData.connectionsChart.chartOptions" data="performanceMonitorData.connectionsChart.dataHolder"></div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade in" ng-if="activeTab === 'clusterHealth'" id="clusterHealthMonitorTab">
+                            <div class="row mt-2">
+                                <div id="clusterHealth" class="col-lg-12 col-xl-6">
+                                    <h4 class="chart-header">{{'resources.cluster_health.label' | translate}}</h4>
+                                    <div nvd3 options="clusterHealthChart.chartOptions" data="clusterHealthChart.dataHolder"></div>
                                 </div>
                             </div>
                         </div>

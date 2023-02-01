@@ -11,6 +11,7 @@ function MonitoringRestService($http) {
     return {
         monitorResources,
         monitorStructures,
+        monitorCluster,
         monitorGC,
         monitorQuery,
         deleteQuery,
@@ -25,6 +26,10 @@ function MonitoringRestService($http) {
 
     function monitorStructures() {
         return $http.get(`${MONITORING_ENDPOINT}/structures`);
+    }
+
+    function monitorCluster() {
+        return $http.get(`${MONITORING_ENDPOINT}/cluster`);
     }
 
     function monitorQueryTransactionStatistics(repositoryID) {

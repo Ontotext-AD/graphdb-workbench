@@ -57,7 +57,7 @@ describe('Monitor Resources', () => {
     }
 
     it('Should display monitor tabs ', () => {
-        const tabs = ['Resource monitoring', 'Performance'];
+        const tabs = ['Resource monitoring', 'Performance', 'Cluster health'];
 
         // Graphics container should be present
         getTabsPanel().should('be.visible');
@@ -112,6 +112,16 @@ describe('Monitor Resources', () => {
             id: 'connections',
             label: 'Transactions and Connections',
             type: 'nv-lineChart'
+        }];
+        verifyCharts(charts);
+    });
+
+    it('Cluster health monitoring tab should show charts', () => {
+        getTabButtons().eq(2).click();
+        const charts = [{
+            id: 'clusterHealth',
+            label: 'Cluster health',
+            type: 'nv-stackedarea'
         }];
         verifyCharts(charts);
     });
