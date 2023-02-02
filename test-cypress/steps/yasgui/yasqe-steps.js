@@ -38,4 +38,12 @@ export class YasqeSteps {
     static expandResultsOverSameAs() {
         this.getExpandResultsOverSameAsButton().click();
     }
+
+    static getShareQueryButton() {
+        return cy.get('.yasqe_shareQueryButton');
+    }
+
+    static shareQuery() {
+        this.getShareQueryButton().click();
+    }
 }
