@@ -7,6 +7,5 @@ export class NonHeapMemoryChart extends HeapMemoryChart {
     addNewData(dataHolder, timestamp, data) {
         dataHolder[0].values.push([timestamp, data.nonHeapMemoryUsage.committed]);
         dataHolder[1].values.push([timestamp, data.nonHeapMemoryUsage.used]);
-        this.setScale(dataHolder);
     }
 }

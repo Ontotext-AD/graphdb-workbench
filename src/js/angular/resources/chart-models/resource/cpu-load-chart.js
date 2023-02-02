@@ -17,9 +17,6 @@ export class CpuLoadChart extends ChartData {
     }
     addNewData(dataHolder, timestamp, data) {
         dataHolder[0].values.push([timestamp, this.formatValue(data.cpuLoad)]);
-        if (this.loading) {
-            this.loading = false;
-        }
     }
     formatValue(cpuLoad) {
         return parseFloat(cpuLoad).toFixed(4);
