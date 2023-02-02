@@ -10,10 +10,9 @@ angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$location', '$jwtAuth', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
+SparqlEditorCtrl.$inject = ['$scope', '$location', '$jwtAuth', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService', 'RDF4JRepositoriesRestService'];
 
-function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
-
+function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService, RDF4JRepositoriesRestService) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -26,6 +25,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     $scope.config = undefined;
     $scope.savedQueryConfig = undefined;
     $scope.language = $languageService.getLanguage();
+    $scope.prefixes = {};
 
     // =========================
     // Public functions
@@ -44,7 +44,8 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 componentId: 'graphdb-workbench-sparql-editor',
                 headers: () => {
                     return headers;
-                }
+                },
+                prefixes: $scope.prefixes
             };
         }
     };
@@ -52,6 +53,16 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     $scope.queryExecuted = (query) => {
         // eslint-disable-next-line no-console
         console.log(query.detail);
+    };
+
+    $scope.notify = (notification) => {
+        if ("success" === notification.detail.type) {
+            toastr.success(notification.detail.message);
+        } else if ("warning" === notification.detail.type) {
+            toastr.warning(notification.detail.message);
+        } else if ("error" === notification.detail.type) {
+            toastr.error(notification.detail.message);
+        }
     };
 
     $scope.createSavedQuery = (event) => {
@@ -108,7 +119,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     // Event handlers
     // =========================
 
-    $scope.$on('repositoryIsSet', $scope.configChanged);
+    $scope.$on('repositoryIsSet', init);
 
     $scope.$on('language-changed', function (event, args) {
         $scope.language = args.locale;
@@ -184,13 +195,27 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         });
     };
 
+    function setPrefixes(namespacesResponse) {
+        const usedPrefixes = {};
+        namespacesResponse.data.results.bindings.forEach(function (e) {
+            usedPrefixes[e.prefix.value] = e.namespace.value;
+        });
+        $scope.prefixes = usedPrefixes;
+    }
+
     // Initialization and bootstrap
     function init() {
-        $scope.configChanged();
-        // check is there is a savedquery or query url parameter and init the editor
-        initViewFromUrlParams();
-        // on repo change do the same as above
-        // focus on the active editor on init
+        RDF4JRepositoriesRestService.getRepositoryNamespaces()
+            .then((namespacesResponse) => {
+                setPrefixes(namespacesResponse);
+            })
+            .finally(() => {
+                $scope.configChanged();
+                // check is there is a savedquery or query url parameter and init the editor
+                initViewFromUrlParams();
+                // on repo change do the same as above
+                // focus on the active editor on init
+            });
     }
 
     init();
