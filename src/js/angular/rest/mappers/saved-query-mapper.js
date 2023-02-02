@@ -1,3 +1,12 @@
+export const buildQueryModel = (query, queryName, owner, isPublic) => {
+    return {
+        queryName: queryName,
+        query: query,
+        owner: owner,
+        isPublic: isPublic
+    };
+};
+
 /**
  * Maps a saved queries response to array with saved queries model objects.
  * @param {object} response object having data[] property
@@ -5,12 +14,9 @@
  */
 export const savedQueriesResponseMapper = (response) => {
     if (response && response.data) {
-        return response.data.map((savedQuery) => ({
-                queryName: savedQuery.name,
-                query: savedQuery.body,
-                owner: savedQuery.owner,
-                isPublic: savedQuery.shared
-            })
+        return response.data.map((savedQuery) => (
+                buildQueryModel(savedQuery.body, savedQuery.name, savedQuery.owner, savedQuery.shared)
+            )
         );
     }
     return [];
@@ -29,7 +35,7 @@ export const savedQueryResponseMapper = (response) => {
     return null;
 };
 
-export const savedQueryPayloadFromEvent = (event) => {
+export const queryPayloadFromEvent = (event) => {
     return {
         name: event.detail.queryName,
         body: event.detail.query,
