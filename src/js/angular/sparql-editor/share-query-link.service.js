@@ -21,9 +21,10 @@ function ShareQueryLinkService() {
     function createShareQueryLink(queryData) {
         return getBaseUrl() + '?' + $.param({
             name: queryData.name,
-            infer: queryData.inference,
-            sameAs: queryData.sameAs,
-            query: window.editor.getValue()
+            query: queryData.body,
+            // TODO: pass these from the component as well
+            infer: queryData.inference || true,
+            sameAs: queryData.sameAs || true
         });
     }
 
