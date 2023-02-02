@@ -229,7 +229,6 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
-        cy.wait('@getLocations');
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -238,6 +237,8 @@ describe('Repositories', () => {
         typeRepositoryId(secondRepoId);
         saveRepository();
         cy.wait('@getRepositories');
+        cy.url().should('eq', Cypress.config('baseUrl') + '/repository');
+        waitLoader();
 
         // Connect to the first repo via the connection icon
         // Note: Not using within() because the whole row will be re-rendered & detached
@@ -306,7 +307,6 @@ describe('Repositories', () => {
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
-        cy.wait('@getLocations');
         editRepository(repositoryId);
 
         // Some fields should be disabled
@@ -346,7 +346,6 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
-        cy.wait('@getLocations');
         selectRepoFromDropdown(repositoryId);
 
         getRepositoryFromList(repositoryId)
@@ -357,7 +356,6 @@ describe('Repositories', () => {
             .click({force: true});
 
         confirmModal();
-        cy.wait('@getRepositories');
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
