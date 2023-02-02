@@ -491,7 +491,7 @@
     "resources.cluster_health.out_sync": "Out of sync",
     "resources.cluster_health.syncing": "Syncing",
     "resources.cluster_health.disconnected": "Disconnected",
-    "resource.memory.heap.additional_data": "Leader elections: {{leaderElections}} / Recoveries: {{failedRecoveries}} / Failed transactions: {{failedTransactions}}",
+    "resource.cluster_health.additional_data": "Leader elections: {{leaderElections}} / Recoveries: {{failedRecoveries}} / Failed transactions: {{failedTransactions}}",
     "view.autocomplete.title": "Autocomplete index",
     "view.autocomplete.helpInfo": "The Autocomplete index is used for automatic completion of IRIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.",
     "view.clusterManagement.title": "Cluster management",

@@ -59,6 +59,6 @@ export class ClusterHealthChart extends ChartData {
             failedTransactions: data.failedTransactionsCount
         };
         this.chartOptions.title.enable = true;
-        this.chartOptions.title.text = this.translateService.instant('resource.memory.heap.additional_data', subTitleValues);
+        this.chartOptions.title.text = this.translateService.instant('resource.cluster_health.additional_data', subTitleValues);
     }
 }
