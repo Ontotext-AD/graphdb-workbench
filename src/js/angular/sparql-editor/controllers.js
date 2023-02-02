@@ -1,8 +1,8 @@
 import {merge} from "lodash";
 import {
     savedQueriesResponseMapper,
-    savedQueryPayloadFromEvent,
-    savedQueryResponseMapper
+    queryPayloadFromEvent,
+    savedQueryResponseMapper, buildQueryModel
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
 
@@ -38,17 +38,17 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
     };
 
     $scope.createSavedQuery = (event) => {
-        const payload = savedQueryPayloadFromEvent(event);
+        const payload = queryPayloadFromEvent(event);
         SparqlRestService.addNewSavedQuery(payload).then(() => queryCreatedHandler(payload)).catch(querySaveErrorHandler);
     };
 
     $scope.updateSavedQuery = (event) => {
-        const payload = savedQueryPayloadFromEvent(event);
+        const payload = queryPayloadFromEvent(event);
         SparqlRestService.editSavedQuery(payload).then(() => queryUpdatedHandler(payload)).catch(querySaveErrorHandler);
     };
 
     $scope.deleteSavedQuery = (event) => {
-        const payload = savedQueryPayloadFromEvent(event);
+        const payload = queryPayloadFromEvent(event);
         SparqlRestService.deleteSavedQuery(payload.name).then(() => {
             toastr.success($translate.instant('query.editor.delete.saved.query.success.msg', {savedQueryName: payload.name}));
         }).catch((err) => {
@@ -58,13 +58,20 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
     };
 
     $scope.shareSavedQuery = (event) => {
-        const payload = savedQueryPayloadFromEvent(event);
+        const payload = queryPayloadFromEvent(event);
         $scope.savedQueryConfig = {
             shareQueryLink: ShareQueryLinkService.createShareSavedQueryLink(payload.name, payload.owner)
         };
     };
 
-    $scope.savedQueryShareLinkCopied = () => {
+    $scope.shareQuery = (event) => {
+        const payload = queryPayloadFromEvent(event);
+        $scope.savedQueryConfig = {
+            shareQueryLink: ShareQueryLinkService.createShareQueryLink(payload)
+        };
+    };
+
+    $scope.queryShareLinkCopied = () => {
         toastr.success($translate.instant('modal.ctr.copy.url.success'));
     };
 
@@ -105,6 +112,18 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         });
     };
 
+    const initTabFromSharedQuery = (queryParams) => {
+        const queryName = queryParams[RouteConstants.name];
+        const query = queryParams[RouteConstants.query];
+        const queryOwner = queryParams[RouteConstants.owner];
+        const sharedQueryModel = buildQueryModel(query, queryName, queryOwner, true);
+        // * Check if there is an open tab with the same query already. If there is one, then open it.
+        // * Otherwise open a new tab and load the query in the editor.
+        // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
+        // Same as the above should be checked on tab switching for existing tab too.
+        ontoElement.openTab(sharedQueryModel);
+    };
+
     const initViewFromUrlParams = () => {
         const queryParams = $location.search();
         if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
@@ -112,6 +131,7 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
             initTabFromSavedQuery(queryParams);
         } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
+            initTabFromSharedQuery(queryParams);
         }
     };
 
