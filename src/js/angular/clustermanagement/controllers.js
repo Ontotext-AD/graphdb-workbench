@@ -467,7 +467,6 @@ function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService,
             })
             .finally(() => {
                 $scope.setLoader(false);
-                console.log('broadcasting event')
                 $rootScope.$broadcast('reloadLocations');
             });
     };

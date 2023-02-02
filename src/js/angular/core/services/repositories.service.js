@@ -22,7 +22,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {uri: '', label: 'Local', local: true};
+        this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
         this.loading = true;
         this.repository = {

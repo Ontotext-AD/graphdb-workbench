@@ -228,6 +228,7 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
+        cy.wait('@getLocations');
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -303,6 +304,7 @@ describe('Repositories', () => {
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
+        cy.wait('@getLocations');
         editRepository(repositoryId);
 
         // Some fields should be disabled
@@ -342,6 +344,7 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
+        cy.wait('@getLocations');
         selectRepoFromDropdown(repositoryId);
 
         getRepositoryFromList(repositoryId)
@@ -854,7 +857,6 @@ describe('Repositories', () => {
     function saveRepository() {
         getSaveRepositoryButton().click();
         waitLoader();
-        cy.wait('@getLocations');
     }
 
     function waitLoader() {
