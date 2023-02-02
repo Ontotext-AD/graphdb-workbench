@@ -28,6 +28,9 @@ describe('Internationalization of ontotext-yasgui-web-component', () => {
 
         // When I change language to French.
         LanguageSelectorSteps.switchToFr();
+        // Yasgui re-renders all DOM elements to shows the new labels. This includes the plugins of yasr which is time-consuming.
+        // We have to wait a bit because cypress is too fast and grabs the old element (with the old label) and the test fails.
+        cy.wait(500);
 
         // Then I expect labels to be translated on French language.
         YasguiSteps.getYasguiModeButton().contains('Éditeur et résultats');
