@@ -237,8 +237,10 @@ describe('Repositories', () => {
         typeRepositoryId(secondRepoId);
         saveRepository();
         cy.wait('@getRepositories');
-        cy.url().should('eq', Cypress.config('baseUrl') + '/repository');
-        waitLoader();
+
+        // Wait for redirection to previous '/repository'
+        cy.waitUntil(() =>
+                cy.url().then(url => url === (Cypress.config('baseUrl') + '/repository')));
 
         // Connect to the first repo via the connection icon
         // Note: Not using within() because the whole row will be re-rendered & detached
