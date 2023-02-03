@@ -174,7 +174,7 @@
                 <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
-        <button id="addLocation1" ng-click="addLocation()" class="btn btn-primary pull-right"><span
+        <button id="addLocation1" ng-if="!getActiveLocation().isInCluster" ng-click="addLocation()" class="btn btn-primary pull-right"><span
             class="icon-plus"></span>{{'attach.remote.location' | translate}}
         </button>
     </div>

@@ -22,7 +22,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
-        this.location = {uri: '', label: 'Local', local: true};
+        this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
         this.loading = true;
         this.repository = {
@@ -192,7 +192,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                 if (!locationsRequestPromise) {
                     this.locationsShouldReload = false;
                     this.locations = [this.location];
-                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise)
+                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise, true)
                         .then((data) => {
                             that.locations = data.data;
                             return this.locations;
@@ -434,5 +434,11 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (!securityEnabled || userLoggedIn || freeAccess) {
                 that.init();
             }
+        });
+        $rootScope.$on('reloadLocations', function () {
+            // the event is emitted when cluster is created/deleted
+            that.locationsShouldReload = true;
+            that.getLocations()
+                .then(() => that.initQuick());
         });
     }]);

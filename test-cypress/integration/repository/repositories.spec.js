@@ -41,7 +41,8 @@ describe('Repositories', () => {
 
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
-        cy.intercept('/rest/locations').as('getLocations');
+        cy.intercept('/rest/locations?filterClusterLocations=true').as('getLocations');
+        cy.intercept('/rest/repositories/all').as('getRepositories');
 
         cy.visit('/repository');
         waitLoader();
@@ -89,7 +90,7 @@ describe('Repositories', () => {
         cy.url().should('include', '/repository/create/');
 
         // Create a repository by supplying only an identifier
-        getRepositoryCreateForm().should('be.visible');
+        getRepositoryCreateForm();
         getRepositoryIdField()
             .should('have.value', '')
             .type(repositoryId)
@@ -160,7 +161,7 @@ describe('Repositories', () => {
 
         saveRepository();
 
-        getRepositoryCreateForm().should('be.visible');
+        getRepositoryCreateForm();
         getRepositoryIdField().should('have.attr', 'placeholder', 'This field is required');
 
         getToast()
@@ -208,7 +209,7 @@ describe('Repositories', () => {
 
         cy.url().should('include', '/repository/edit/' + repositoryId);
 
-        getRepositoryCreateForm().should('be.visible');
+        getRepositoryCreateForm();
         getRepositoryIdField().should('have.value', repositoryId);
         getRepositoryTitleField().should('have.value', repoTitle);
         // OWL-Horst (Optimized) has become 4
@@ -228,7 +229,6 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
-        cy.wait('@getLocations');
 
         createRepository();
         chooseRepositoryType(GDB_REPOSITORY_TYPE);
@@ -236,6 +236,11 @@ describe('Repositories', () => {
 
         typeRepositoryId(secondRepoId);
         saveRepository();
+        cy.wait('@getRepositories');
+
+        // Wait for redirection to previous '/repository'
+        cy.waitUntil(() =>
+                cy.url().then(url => url === (Cypress.config('baseUrl') + '/repository')));
 
         // Connect to the first repo via the connection icon
         // Note: Not using within() because the whole row will be re-rendered & detached
@@ -304,7 +309,6 @@ describe('Repositories', () => {
         typeRepositoryId(repositoryId);
         typeRepositoryTitle('Title');
         saveRepository();
-        cy.wait('@getLocations');
         editRepository(repositoryId);
 
         // Some fields should be disabled
@@ -344,7 +348,6 @@ describe('Repositories', () => {
 
         typeRepositoryId(repositoryId);
         saveRepository();
-        cy.wait('@getLocations');
         selectRepoFromDropdown(repositoryId);
 
         getRepositoryFromList(repositoryId)
@@ -355,8 +358,6 @@ describe('Repositories', () => {
             .click({force: true});
 
         confirmModal();
-
-        getRepositoriesList().should('not.exist');
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         getRepositoriesDropdown().click().within(() => {
@@ -519,7 +520,7 @@ describe('Repositories', () => {
         cy.url().should('include', '/repository/create/ontop');
 
         // Create a repository by supplying only an identifier
-        getRepositoryCreateForm().should('be.visible');
+        getRepositoryCreateForm();
         getRepositoryIdField()
             .should('have.value', '')
             .type(repositoryId)
@@ -629,7 +630,7 @@ describe('Repositories', () => {
         cy.url().should('include', '/repository/create');
 
         // Create a repository by supplying only an identifier
-        getRepositoryCreateForm().should('be.visible');
+        getRepositoryCreateForm();
         getRepositoryIdField()
             .should('have.value', '')
             .type(repositoryId)
@@ -807,7 +808,7 @@ describe('Repositories', () => {
     }
 
     function getRepositoryCreateForm() {
-        return cy.get('#newRepoForm');
+        return cy.get('#newRepoForm').should('be.visible');
     }
 
     function getRepositoryIdField() {
