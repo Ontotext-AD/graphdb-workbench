@@ -271,9 +271,11 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
         }).result
             .then(function () {
                 $scope.loader = true;
-                $repositories.deleteRepository(repository).finally(() => {
-                    getLocations();
-                });
+                $repositories.deleteRepository(repository)
+                    .finally(() => {
+                        getLocations();
+                        $scope.loader = false;
+                    });
                 removeCachedGraphsOnDelete(repository);
             });
     };
@@ -659,13 +661,16 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         RepositoriesRestService.createRepository($scope.repositoryInfo)
             .then(function () {
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
-                $repositories.init().finally(() => $scope.goBackToPreviousLocation());
+                $repositories.init();
             })
             .catch(function (error) {
                 const msg = getError(error.data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
-            .finally(() => $scope.loader = false);
+            .finally(() => {
+                $scope.loader = false;
+                $scope.goBackToPreviousLocation();
+            });
     };
 
     $scope.createRepo = function () {

@@ -394,6 +394,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasRole(UserRole.ROLE_ADMIN);
             };
 
+            this.isRepoManager = function () {
+                return this.hasRole(UserRole.ROLE_REPO_MANAGER);
+            }
+
             this.checkForWrite = function (menuRole, repo) {
                 if ('WRITE_REPO' === menuRole) {
                     return this.canWriteRepo(repo);
@@ -402,7 +406,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasAdminRole = function () {
-                return this.isAdmin() || this.hasRole(UserRole.ROLE_REPO_MANAGER);
+                return this.isAdmin() || this.isRepoManager();
             };
 
             this.canWriteRepo = function (repo) {

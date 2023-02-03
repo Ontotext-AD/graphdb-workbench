@@ -5,42 +5,52 @@ angular
 MonitoringRestService.$inject = ['$http'];
 
 const MONITORING_ENDPOINT = 'rest/monitor';
-const QUERY_MONITORING_ENDPOINT = `${MONITORING_ENDPOINT}/query`;
+const QUERY_MONITORING_ENDPOINT = `${MONITORING_ENDPOINT}/repository`;
 
 function MonitoringRestService($http) {
     return {
         monitorResources,
+        monitorStructures,
+        monitorCluster,
         monitorGC,
         monitorQuery,
-        abortQueryByAlias,
         deleteQuery,
         getQueryCount,
-        checkAutocompleteStatus
+        checkAutocompleteStatus,
+        monitorQueryTransactionStatistics
     };
 
     function monitorResources() {
-        return $http.get(`${MONITORING_ENDPOINT}/resource`);
+        return $http.get(`${MONITORING_ENDPOINT}/infrastructure`);
+    }
+
+    function monitorStructures() {
+        return $http.get(`${MONITORING_ENDPOINT}/structures`);
+    }
+
+    function monitorCluster() {
+        return $http.get(`${MONITORING_ENDPOINT}/cluster`);
+    }
+
+    function monitorQueryTransactionStatistics(repositoryID) {
+        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}`);
     }
 
     function monitorGC() {
-        return $http.post(`${MONITORING_ENDPOINT}/resource/gc`);
+        return $http.post(`${MONITORING_ENDPOINT}/infrastructure/gc`);
     }
 
-    function monitorQuery() {
-        return $http.get(QUERY_MONITORING_ENDPOINT);
+    function monitorQuery(repositoryID) {
+        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`);
     }
 
-    function abortQueryByAlias(alias) {
-        return $http.delete(`${QUERY_MONITORING_ENDPOINT}?queryAlias=${encodeURIComponent(alias)}`);
+    function deleteQuery(queryId, repositoryID) {
+        return $http.delete(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(queryId)}`);
     }
 
-    function deleteQuery(queryId) {
-        return $http.delete(`${QUERY_MONITORING_ENDPOINT}?queryId=${encodeURIComponent(queryId)}`);
-    }
-
-    function getQueryCount() {
+    function getQueryCount(repositoryID) {
         return $http({
-            url: `${QUERY_MONITORING_ENDPOINT}/count`,
+            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/count`,
             method: 'GET',
             timeout: 10000
         });

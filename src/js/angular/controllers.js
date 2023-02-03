@@ -787,7 +787,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
 
         $scope.getQueriesRunning = true;
-        MonitoringRestService.getQueryCount()
+        MonitoringRestService.getQueryCount($repositories.getActiveRepository())
             .success(function (data) {
                 $scope.queryCount = data;
                 fibo.reset();

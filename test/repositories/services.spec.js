@@ -80,7 +80,7 @@ describe('==> Repository module services tests', function () {
                 expect($repositories.repositories).toEqual(new Map());
                 expect($repositories.repository).toEqual('');
                 expect($repositories.location).toEqual('');
-                expect($repositories.locations).toEqual([{ uri: '', label: 'Local', local: true }]);
+                expect($repositories.locations).toEqual([{ uri: '', label: 'Local', local: true, isInCluster: false }]);
                 expect($repositories.getActiveLocation()).toEqual('');
                 expect($repositories.hasActiveLocation()).toEqual(false);
                 expect($repositories.getActiveRepository()).toBeUndefined();

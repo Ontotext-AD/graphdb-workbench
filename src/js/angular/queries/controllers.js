@@ -66,7 +66,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
             }
 
             $scope.getQueriesRunning = true;
-            MonitoringRestService.monitorQuery().success(function (data) {
+            MonitoringRestService.monitorQuery($repositories.getActiveRepository()).success(function (data) {
                 const newQueries = data;
                 $scope.noQueries = newQueries.length === 0;
 
@@ -103,7 +103,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
         $scope.deleteQueryHttp = function (queryId) {
 
             $scope.loader = true;
-            MonitoringRestService.deleteQuery(queryId).success(function () {
+            MonitoringRestService.deleteQuery(queryId, $repositories.getActiveRepository()).success(function () {
                 toastr.success($translate.instant('abort.request.sent.msg'));
                 $scope.loader = false;
             }).error(function (data) {
@@ -126,8 +126,8 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
 
         $scope.downloadQuery = function (queryId) {
             const filename = 'query_' + queryId + '.rq';
-            let link = 'rest/monitor/query/download?queryId=' + encodeURIComponent(queryId)
-                + '&repository=' + encodeURIComponent($repositories.getActiveRepository())
+            let link = '/rest/monitor/repository/' + $repositories.getActiveRepository()
+                + '/query/download?query=' + encodeURIComponent(queryId)
                 + '&filename=' + encodeURIComponent(filename);
             if ($jwtAuth.isAuthenticated()) {
                 link = link + '&authToken=' + encodeURIComponent($jwtAuth.getAuthToken());

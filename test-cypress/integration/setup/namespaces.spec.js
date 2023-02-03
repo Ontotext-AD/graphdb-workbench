@@ -1,7 +1,7 @@
 describe('Namespaces', () => {
 
     let repositoryId;
-    let DEFAULT_NAMESPACES = {};
+    const DEFAULT_NAMESPACES = {};
 
     beforeEach(() => {
         repositoryId = 'namespaces-' + Date.now();
@@ -47,16 +47,16 @@ describe('Namespaces', () => {
 
         // Should render a table with some default namespaces
         getNamespacesTable().should('be.visible');
+        getRefreshedTableNamespaces();
         getNamespaces().should('have.length', getDefaultNamespacesLength());
 
         // Should provide pagination options
         getNamespacesPerPageMenu().within(() => {
-            // Should show all namespaces by default (they are only 6 so they can be visualized all at once)
             cy.get('.dropdown-toggle')
                 .should('contain', 'All')
                 .click();
             cy.get('.page-size-option')
-                .should('have.length', 1)
+                .should('have.length', getPagingCount())
                 .and('contain', 'All');
             // Close the menu to avoid overlapping other elements
             cy.get('.dropdown-toggle').click();
@@ -126,11 +126,13 @@ describe('Namespaces', () => {
             .type('owl')
             .should('have.value', 'owl');
         getNamespaces()
-            .should('have.length', 1)
-            .and('contain', DEFAULT_NAMESPACES['owl']);
+            .should('contain', DEFAULT_NAMESPACES['owl']);
+        cy.visit('namespaces');
+        const updatedCount = getDefaultNamespacesLength();
+        getRefreshedTableNamespaces();
         getNamespacesHeaderPaginationInfo()
             .should('be.visible')
-            .and('contain', 'Showing 1 - 1 of 1 results');
+            .and('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
         getNamespacesFilterField()
             .clear()
@@ -161,6 +163,7 @@ describe('Namespaces', () => {
 
         let updatedCount = getDefaultNamespacesLength() + 1;
         // Verify results table is refreshed
+        getRefreshedTableNamespaces();
         getNamespaces().should('have.length', updatedCount);
         getNamespacesHeaderPaginationInfo()
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
@@ -186,6 +189,7 @@ describe('Namespaces', () => {
         confirmModal();
 
         // Should have not created new record, should update the existing
+        getRefreshedTableNamespaces();
         getNamespaces()
             .should('have.length', getDefaultNamespacesLength() + 1)
             // This assert here ensures the table will contain the modified namespace before actually checking it because the table is
@@ -199,9 +203,12 @@ describe('Namespaces', () => {
 
     it('should allow to delete existing namespaces', () => {
         // Delete single namespace from it's actions
+        getRefreshedTableNamespaces();
         deleteNamespace('xsd');
         confirmModal();
+        cy.hideToastContainer();
 
+        getRefreshedTableNamespaces();
         let updatedCount = getDefaultNamespacesLength() - 1;
         // Verify results table is refreshed
         getNamespaces().should('have.length', updatedCount);
@@ -212,7 +219,9 @@ describe('Namespaces', () => {
         selectNamespace('rdfs');
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
+        getRefreshedTableNamespaces();
         updatedCount = updatedCount - 2;
         // Verify results table is refreshed
         getNamespaces().should('have.length', updatedCount);
@@ -222,6 +231,7 @@ describe('Namespaces', () => {
         getSelectAllNamespacesCheckbox().click();
         getDeleteNamespacesButton().click();
         confirmModal();
+        cy.hideToastContainer();
 
         getNamespacesTable().should('not.be.visible');
         getNoNamespacesAlert().should('be.visible');
@@ -319,23 +329,33 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespacesButton() {
-        return getNamespacesTable().find('.delete-namespaces-btn');
+        return getNamespacesTable().get('[data-cy="delete-several-prefixes"]');
     }
 
     function getNamespaces() {
         return getNamespacesTable().find('.namespace');
     }
 
+    function getRefreshedTableNamespaces() {
+        cy.get('[data-cy="namespaces-per-page-menu"]').click()
+            .get('[data-cy="all-label"]').click();
+    }
+
     function getNamespace(prefix) {
-        return getNamespaces()
+        return getNamespacesTable().find('.namespace')
+            .should('be.visible')
             .find('.namespace-prefix')
+            .should('be.visible')
             .contains(prefix)
+            .should('be.visible')
             .parentsUntil('tbody')
             .last();
     }
 
     function getSelectNamespaceCheckbox(prefix) {
-        return getNamespace(prefix).find('.select-namespace');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.select-namespace');
     }
 
     function selectNamespace(prefix) {
@@ -343,7 +363,9 @@ describe('Namespaces', () => {
     }
 
     function getEditNamespaceButton(prefix) {
-        return getNamespace(prefix).find('.edit-namespace-btn');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .find('.edit-namespace-btn');
     }
 
     // TODO: Not used yet
@@ -352,11 +374,14 @@ describe('Namespaces', () => {
     }
 
     function getDeleteNamespaceButton(prefix) {
-        return getNamespace(prefix).find('.delete-namespace-btn');
+        return getNamespace(prefix)
+            .should('be.visible')
+            .get(`[data-cy="delete-pref_${prefix}"]`)
+            .should('be.visible');
     }
 
     function deleteNamespace(prefix) {
-        getDeleteNamespaceButton(prefix).click();
+        getDeleteNamespaceButton(prefix).should('be.visible').click();
     }
 
     // ------ Namespaces pagination ------
@@ -367,5 +392,21 @@ describe('Namespaces', () => {
 
     function getDefaultNamespacesLength() {
         return Object.keys(DEFAULT_NAMESPACES).length;
+    }
+
+    function getPagingCount() {
+        const count = getDefaultNamespacesLength();
+        if (count <= 10) {
+            return 1;
+        }
+        if (count <= 20) {
+            return 2;
+        }
+        if (count <= 50) {
+            return 3;
+        }
+        if (count <= 100) {
+            return 4;
+        } else return 5;
     }
 });

@@ -3,7 +3,7 @@ import 'angular/core/directives';
 import 'angular/resources/controllers';
 import 'angular/core/services/repositories.service';
 import 'd3/build/d3';
-import 'lib/nvd3/angular-nvd3';
+import 'angular-nvd3-charts';
 
 const modules = [
     'toastr',

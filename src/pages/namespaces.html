@@ -41,7 +41,7 @@
         <div ng-show="displayedNamespaces.length > 0" class="clearfix">
             <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
-                        ng-disabled="disabled">
+                        ng-disabled="disabled" data-cy="namespaces-per-page-menu">
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) > -1">{{pageSize}}</span>
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) === -1">{{'all.label' | translate}}</span>
                 </button>
@@ -50,7 +50,7 @@
                         <span class="dropdown-item page-size-option" ng-click="changePageSize(size)">{{size}}</span>
                     </li>
                     <li>
-                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)">{{'all.label' | translate}}</span>
+                        <span class="dropdown-item page-size-option" ng-click="changePageSize(namespaces.length)" data-cy="all-label">{{'all.label' | translate}}</span>
                     </li>
                 </ul>
             </div>
@@ -76,7 +76,7 @@
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
-                            tooltip="{{'delete.selected' | translate}}"><span class="icon-trash"></span></button>
+                            tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="icon-trash"></span></button>
                 </th>
                 <th id="prefixColumn" style="width: 20%">{{'prefix.label' | translate}}</th>
                 <th id="uriColumn">{{'iri.label' | translate}}</th>
@@ -120,7 +120,8 @@
                     <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
                             tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
-                            ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" tooltip="{{'delete.namespace' | translate}}">
+                            ng-disabled="{{!canWriteActiveRepo()}}" tooltip-trigger="mouseenter" tooltip="{{'delete.namespace' | translate}}"
+                            data-cy="{{'delete-pref_' + namespace.prefix}}">
                         <span class="icon-trash"></span></button>
                 </td>
             </tr>

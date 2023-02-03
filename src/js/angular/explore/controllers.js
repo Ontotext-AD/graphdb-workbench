@@ -108,6 +108,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                             persistency: false,
                             hideHeader: true,
                             locale: $languageService.getLanguage(),
+                            // Additional option for translation.
+                            // For the explore view could be applied
+                            translateHeaders: true,
                             pluginsOptions: YasrUtils.getYasrConfiguration()
                         });
                         $scope.loadResource();

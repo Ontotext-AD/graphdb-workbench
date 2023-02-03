@@ -17,11 +17,11 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, ($iframe) => {
         name: 'iframe',
         consoleProps() {
             return {
-                iframe: $iframe,
+                iframe: $iframe
             };
-        },
+        }
     });
-    return new Cypress.Promise(resolve => {
+    return new Cypress.Promise((resolve) => {
         // Directly resolve the body if it is loaded, otherwise wait
         if ($iframe.contents().find('body').children().length > 0) {
             resolve($iframe.contents().find('body'));
@@ -41,10 +41,21 @@ Cypress.Commands.add("form_request", (url, formData) => {
         .route("POST", url)
         .as("formRequest")
         .window()
-        .then(win => {
+        .then((win) => {
             var xhr = new win.XMLHttpRequest();
             xhr.open("POST", url);
             xhr.send(formData);
         })
         .wait("@formRequest");
+});
+
+/**
+ *  Toast success container for some reason
+ *  is overlapping a needed button
+ *  @author Sava Savov sava.savov@ontotext.com
+ */
+
+Cypress.Commands.add("hideToastContainer", (url, formData) => {
+    cy.get('.toast-success')
+        .then((toastContainer) => toastContainer && toastContainer.remove());
 });

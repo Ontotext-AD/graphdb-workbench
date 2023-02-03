@@ -20,8 +20,9 @@ function LocationsRestService($http) {
         getLocationRpcAddress
     };
 
-    function getLocations(abortRequestPromise) {
-        return $http.get(LOCATIONS_ENDPOINT, {timeout: abortRequestPromise ? abortRequestPromise.promise : null});
+    function getLocations(abortRequestPromise, filterClusterLocations) {
+        return $http.get(LOCATIONS_ENDPOINT, { params: { filterClusterLocations: filterClusterLocations} },
+                        { timeout: abortRequestPromise ? abortRequestPromise.promise : null });
     }
 
     function addLocation(data) {
