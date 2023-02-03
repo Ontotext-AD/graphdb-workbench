@@ -94,6 +94,18 @@ describe('=> ResourcesCtrl tests', function () {
             "openConnections": 0
         });
         $httpBackend.when('GET', 'rest/monitor/repository/activeRepository/query/active').respond(200, []);
+        $httpBackend.when('GET', 'rest/monitor/cluster').respond(200, {
+            "term": 4,
+            "failureRecoveriesCount": 0,
+            "failedTransactionsCount": 0,
+            "nodesStats": {
+                "nodesInCluster": 3,
+                "nodesInSync": 3,
+                "nodesOutOfSync": 0,
+                "nodesDisconnected": 0,
+                "nodesSyncing": 0
+            }
+        });
 
 
         $httpBackend.when('GET', 'rest/security/all').respond(200, {
@@ -128,7 +140,6 @@ describe('=> ResourcesCtrl tests', function () {
         it('should call resource monitor function on every 2s', function () {
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
-            $timeout.flush(2001);
             expect($httpBackend.flush).not.toThrow();
             $timeout.flush(2000);
             expect($httpBackend.flush).not.toThrow();
@@ -141,7 +152,16 @@ describe('=> ResourcesCtrl tests', function () {
             $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
             $httpBackend.expectGET('rest/monitor/structures');
 
-            // $timeout.flush(2001);
+            expect($httpBackend.flush).not.toThrow();
+            $timeout.flush(2000);
+            expect($httpBackend.flush).not.toThrow();
+            $timeout.flush(2000);
+            expect($httpBackend.flush).not.toThrow();
+        });
+
+        it('should call cluster health monitor function on every 2s', function () {
+            $httpBackend.expectGET('rest/monitor/cluster');
+
             expect($httpBackend.flush).not.toThrow();
             $timeout.flush(2000);
             expect($httpBackend.flush).not.toThrow();
@@ -189,6 +209,29 @@ describe('=> ResourcesCtrl tests', function () {
             expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
             expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
             expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
+        });
+
+        it('should set cluster health monitor charts data correct', function () {
+            var fixedDate = new Date('1999-01-02');
+            jasmine.clock().mockDate(fixedDate);
+            var today = new Date();
+
+            $httpBackend.flush();
+            expect($scope.clusterHealthChart.dataHolder).toEqual([
+                {key: 'In sync', values: [[today, 3]]},
+                {key: 'Syncing', color: '#ff5508', values: [[today, 0]]},
+                {key: 'Out of sync', color: '#f52121', values: [[today, 0]]},
+                {key: 'Disconnected', color: '#999999', values: [[today, 0]]}
+            ]);
+            $timeout.flush(2001);
+            $httpBackend.flush();
+
+            expect($scope.clusterHealthChart.dataHolder).toEqual([
+                {key: 'In sync', values: [[today, 3], [today, 3]]},
+                {key: 'Syncing', color: '#ff5508', values: [[today, 0], [today, 0]]},
+                {key: 'Out of sync', color: '#f52121', values: [[today, 0], [today, 0]]},
+                {key: 'Disconnected', color: '#999999', values: [[today, 0], [today, 0]]}
+            ]);
         });
 
         it('should set cpuLoad yDomain to 0, 100 if the current value is above 50', function () {
@@ -431,7 +474,7 @@ describe('=> ResourcesCtrl tests', function () {
             expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yAxis.tickFormat(8589934592)).toEqual('8.00 GB');
             expect($scope.resourceMonitorData.offHeapMemory.chartOptions.chart.yAxis.tickFormat(265289728)).toEqual('253.00 MB');
             expect($scope.resourceMonitorData.diskStorage.chartOptions.chart.yAxis.tickFormat(0.5)).toEqual('50.00%');
-        })
+        });
     });
 
 });
