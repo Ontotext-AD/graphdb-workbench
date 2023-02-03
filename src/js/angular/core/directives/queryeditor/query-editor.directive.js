@@ -75,43 +75,40 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
     }
 
     function drawQueryEditor(scope) {
-        scope.changePagination = changePagination;
 
-        // start of keyboard shortcut actions
-        function saveQueryAction() {
-            angular.element('#wb-sparql-saveQuery')[0].click();
-        }
+        const originalExecuteQuery = YASQE.executeQuery;
+        const originalGetUrlArguments = YASQE.getUrlArguments;
+        const originalGetAjaxConfig = YASQE.getAjaxConfig;
 
-        function runQueryAction() {
-            scope.runQuery(false, false);
-        }
+        // =========================
+        // Public functions
+        // =========================
 
-        function explainQueryAction() {
-            scope.runQuery(false, true);
-        }
+        scope.changePagination = function() {
+            scope.runQuery(true, scope.explainRequested);
+        };
 
-        function goToNextTabAction() {
-            if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
-                return;
-            }
-            let idx = findTabIndexByID(scope.currentQuery.id);
-            idx = (idx + 1) % scope.tabs.length;
-            const tab = scope.tabs[idx];
-            selectTab(tab.id);
-        }
+        scope.copyToClipboardQuery = function (savedQueryName, owner) {
+            ModalService.openCopyToClipboardModal(createQueryURL(savedQueryName, owner));
+        };
 
-        function goToPreviousTabAction() {
-            if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
-                return;
-            }
-            let idx = findTabIndexByID(scope.currentQuery.id);
-            idx--;
-            if (idx === -1) {
-                idx = scope.tabs.length - 1;
-            }
-            const tab = scope.tabs[idx];
-            selectTab(tab.id);
-        }
+        scope.copyToClipboardResult = function (resultURI) {
+            ModalService.openCopyToClipboardModal(resultURI);
+        };
+
+        scope.goToVisual = function () {
+            const paramsToParse = {
+                query: window.editor.getValue(),
+                sameAs: scope.currentQuery.sameAs,
+                inference: scope.currentQuery.inference
+            };
+
+            $location.path('graphs-visualizations').search(paramsToParse);
+        };
+
+        // =========================
+        // Patches
+        // =========================
 
         window.editor = YASQE.fromTextArea(
             document.getElementById("query"), {
@@ -154,75 +151,9 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             toastr.error('Cannot execute autocomplete query. ' + getError(data));
         };
 
-        window.editor.on("update", function () {
-            angular.element('.parseErrorIcon').parent().css('z-index', '10');
-        });
-
-        window.editor.on("changes", function () {
-            angular.element('.CodeMirror-linenumbers').css('width', '1px');
-            angular.element('.CodeMirror-sizer').css('margin-left', '0px');
-            clearTimeout(scope.changesTimeout);
-            const hasError = !window.editor.queryValid;
-            scope.changesTimeout = setTimeout(callbackOnChange ? callbackOnChange() : function () {
-                const idx = findTabIndexByID(scope.currentQuery.id) + 1;
-                $('a[data-id = "' + idx + '"]')
-                    .toggleClass('query-has-error', hasError)
-                    .attr('title', hasError ?
-                        $translate.instant('query.editor.query.syntax.error') :
-                        '');
-            }, 200);
-            scope.currentQuery.query = window.editor.getValue();
-            scope.currentQuery.queryType = window.editor.getQueryType();
-        });
-
-
-        function selectTab(id) {
-            $timeout(function () {
-                let requestedTab = $('a[data-id = "' + id + '"]');
-                if (requestedTab.length === 0) {
-                    // tab has been deleted in another browser window or something else occurred,
-                    // select first tab instead
-                    requestedTab = $('a[data-id]').first();
-                }
-                requestedTab.tab('show');
-            }, 0);
-        }
-
-        // hide unneeded yasqe fullscreen button
-        $(".fullscreenToggleBtns").hide();
-
-        const afterCopy = function (event) {
-            $(event.target).removeClass('fa-link').addClass('fa-check').blur();
-            setTimeout(function () {
-                $(event.target).removeClass('fa-check').addClass('fa-link');
-            }, 1000);
-        };
-
-        window.onbeforeunload = function () {
-            if (!scope.nostorage) {
-                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
-            }
-            scope.saveTab(scope.currentQuery.id);
-        };
-
-        /*
-         * Patch the execute query to take into account the inference
-         * and the same as options
-         */
-        const originalExecuteQuery = YASQE.executeQuery;
-        const originalGetUrlArguments = YASQE.getUrlArguments;
-
-        scope.$on('$destroy', function () {
-            if (!scope.nostorage) {
-                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
-            }
-            YASQE.executeQuery = originalExecuteQuery;
-            YASQE.getUrlArguments = originalGetUrlArguments;
-            scope.saveTab(scope.currentQuery.id);
-        });
-
-        /*
+        /**
          * Add our own buttons
+         * @param {object} yasqe
          */
         YASQE.drawButtons = function (yasqe) {
             // Define this property because otherwise there are errors in yasgui's code.
@@ -249,22 +180,15 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             return data;
         };
 
-        function createCustomError(status, statusText, responseText) {
-            return {
-                status: status,
-                statusText: statusText,
-                responseText: responseText
-            };
-        }
-
-        // Generates a new tracking alias for queries based on time
-        function newTrackAlias() {
-            return "query-editor-" + performance.now() + "-" + Date.now();
-        }
-
         let connectorProgressModal;
         let yasr;
 
+        /**
+         * Patch the execute query to take into account the inference and the same as options.
+         *
+         * @param {object} cm A CodeMirror reference.
+         * @return {Promise}
+         */
         YASQE.executeQuery = function (cm) {
             if (yasr && $(yasr.resultsContainer).length) {
                 $(yasr.resultsContainer).empty();
@@ -431,7 +355,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         };
 
         // Override yasqe's getAjaxConfig() so we can inject our authorization header
-        const originalGetAjaxConfig = YASQE.getAjaxConfig;
         YASQE.getAjaxConfig = function (yasqe, callbackOrConfig) {
             const config = originalGetAjaxConfig(yasqe, callbackOrConfig);
 
@@ -444,6 +367,154 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
             return config;
         };
+
+        // =========================
+        // Event handlers
+        // =========================
+
+        window.onbeforeunload = function () {
+            if (!scope.nostorage) {
+                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
+            }
+            scope.saveTab(scope.currentQuery.id);
+        };
+
+        window.editor.on("update", function () {
+            angular.element('.parseErrorIcon').parent().css('z-index', '10');
+        });
+
+        window.editor.on("changes", function () {
+            angular.element('.CodeMirror-linenumbers').css('width', '1px');
+            angular.element('.CodeMirror-sizer').css('margin-left', '0px');
+            clearTimeout(scope.changesTimeout);
+            const hasError = !window.editor.queryValid;
+            scope.changesTimeout = setTimeout(callbackOnChange ? callbackOnChange() : function () {
+                const idx = findTabIndexByID(scope.currentQuery.id) + 1;
+                $('a[data-id = "' + idx + '"]')
+                    .toggleClass('query-has-error', hasError)
+                    .attr('title', hasError ?
+                        $translate.instant('query.editor.query.syntax.error') :
+                        '');
+            }, 200);
+            scope.currentQuery.query = window.editor.getValue();
+            scope.currentQuery.queryType = window.editor.getQueryType();
+        });
+
+        // When no repo is selected (editor hidden) and the user selects a repo the SPARQL params should be handled
+        scope.$on('repositoryIsSet', function () {
+            if ($repositories.getActiveRepository()) {
+                updateRepositoryAndSecurity();
+            }
+        });
+
+        scope.$on('language-changed', function (event, args) {
+            if (yasr && yasr.options) {
+                yasr.options.locale = args.locale;
+                yasr.changeLanguage(args.locale);
+            }
+            window.editor.options.locale = args.locale;
+            // Notify YASQE about the new language
+            YASQE.signal(window.editor, 'language-changed');
+        });
+
+        // Adds prefixes when the user pastes a query. This was in the controller before and it stopped working
+        // (needs to happen to after YASQE adds the textarea), see GDB-1936
+        $('textarea').on('paste', function () {
+            $timeout(function () {
+                scope.addKnownPrefixes();
+            }, 0);
+        });
+
+        // Hide the sample queries when the user clicks somewhere else in the UI.
+        $(document).mouseup(function (event) {
+            const container = $('#sampleQueriesCollapse');
+            if (!container.is(event.target) // if the target of the click isn't the container..
+                && container.has(event.target).length === 0 //... nor a descendant of the container
+                && scope.showSampleQueries) {
+                scope.toggleSampleQueries();
+            }
+        });
+
+        scope.$on('$destroy', function () {
+            if (!scope.nostorage) {
+                LocalStorageAdapter.set(LSKeys.TABS_STATE, scope.tabs);
+            }
+            YASQE.executeQuery = originalExecuteQuery;
+            YASQE.getUrlArguments = originalGetUrlArguments;
+            scope.saveTab(scope.currentQuery.id);
+        });
+
+        // =========================
+        // Private functions
+        // =========================
+
+        // start of keyboard shortcut actions
+        function saveQueryAction() {
+            angular.element('#wb-sparql-saveQuery')[0].click();
+        }
+
+        function runQueryAction() {
+            scope.runQuery(false, false);
+        }
+
+        function explainQueryAction() {
+            scope.runQuery(false, true);
+        }
+
+        function goToNextTabAction() {
+            if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
+                return;
+            }
+            let idx = findTabIndexByID(scope.currentQuery.id);
+            idx = (idx + 1) % scope.tabs.length;
+            const tab = scope.tabs[idx];
+            selectTab(tab.id);
+        }
+
+        function goToPreviousTabAction() {
+            if (scope.tabs.length < 2 || !scope.currentQuery.id || !scope.isTabChangeOk(false)) {
+                return;
+            }
+            let idx = findTabIndexByID(scope.currentQuery.id);
+            idx--;
+            if (idx === -1) {
+                idx = scope.tabs.length - 1;
+            }
+            const tab = scope.tabs[idx];
+            selectTab(tab.id);
+        }
+
+        function selectTab(id) {
+            $timeout(function () {
+                let requestedTab = $('a[data-id = "' + id + '"]');
+                if (requestedTab.length === 0) {
+                    // tab has been deleted in another browser window or something else occurred,
+                    // select first tab instead
+                    requestedTab = $('a[data-id]').first();
+                }
+                requestedTab.tab('show');
+            }, 0);
+        }
+
+        function afterCopy(event) {
+            $(event.target).removeClass('fa-link').addClass('fa-check').blur();
+            setTimeout(function () {
+                $(event.target).removeClass('fa-check').addClass('fa-link');
+            }, 1000);
+        }
+
+        function createCustomError(status, statusText, responseText) {
+            return {
+                status: status,
+                statusText: statusText,
+                responseText: responseText
+            };
+        }
+
+        // Generates a new tracking alias for queries based on time
+        function newTrackAlias() {
+            return "query-editor-" + performance.now() + "-" + Date.now();
+        }
 
         function createQueryURL(savedQueryName, owner) {
             let url = [location.protocol, '//', location.host, location.pathname].join('');
@@ -462,32 +533,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             }
             return url;
         }
-
-        scope.copyToClipboardQuery = function (savedQueryName, owner) {
-            ModalService.openCopyToClipboardModal(createQueryURL(savedQueryName, owner));
-        };
-
-        scope.copyToClipboardResult = function (resultURI) {
-            ModalService.openCopyToClipboardModal(resultURI);
-        };
-
-        scope.goToVisual = function () {
-            const paramsToParse = {
-                query: window.editor.getValue(),
-                sameAs: scope.currentQuery.sameAs,
-                inference: scope.currentQuery.inference
-            };
-
-            $location.path('graphs-visualizations').search(paramsToParse);
-        };
-
-        // Adds prefixes when the user pastes a query. This was in the controller before and it stopped working
-        // (needs to happen to after YASQE adds the textarea), see GDB-1936
-        $('textarea').on('paste', function () {
-            $timeout(function () {
-                scope.addKnownPrefixes();
-            }, 0);
-        });
 
         function setNewTabState(dataOrJqXhr, textStatus, jqXhrOrErrorString) {
             // store explicitly the contentType
@@ -538,16 +583,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             $('a[data-id = "' + scope.executedQueryTab.id + '"]').tab('show');
         }
 
-        scope.$on('language-changed', function (event, args) {
-            if (yasr && yasr.options) {
-                yasr.options.locale = args.locale;
-                yasr.changeLanguage(args.locale);
-            }
-            window.editor.options.locale = args.locale;
-            // Notify YASQE about the new language
-            YASQE.signal(window.editor, 'language-changed');
-        });
-
         function initYasr() {
             scope.$on('$destroy', function () {
                 if (yasr) {
@@ -563,6 +598,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             if (scope.enableColumnResizingOnWindowWidth) {
                 yasrOptions.pluginsOptions = YasrUtils.getYasrConfiguration();
             }
+            // eslint-disable-next-line new-cap
             yasr = YASR(document.getElementById("yasr"), yasrOptions);
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
@@ -791,12 +827,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             });
         }
 
-        initYasr();
-
-        function changePagination() {
-            scope.runQuery(true, scope.explainRequested);
-        }
-
         function highlightExplainPlan() {
             var bindings = yasr.results.getBindings();
             var vars = yasr.results.getVariables();
@@ -811,16 +841,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 YASQE.runMode(queryResultValue, "sparql11", document.getElementById("highlighted_output"));
             }
         }
-
-        // Hide the sample queries when the user clicks somewhere else in the UI.
-        $(document).mouseup(function (event) {
-            const container = $('#sampleQueriesCollapse');
-            if (!container.is(event.target) // if the target of the click isn't the container..
-                && container.has(event.target).length === 0 //... nor a descendant of the container
-                && scope.showSampleQueries) {
-                scope.toggleSampleQueries();
-            }
-        });
 
         function findTabIndexByID(id) {
             for (let i = 0; i < scope.tabs.length; i++) {
@@ -918,22 +938,25 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             addTabWithQueryIfNeeded();
         }
 
-        if ($repositories.getActiveRepository()) {
-            updateRepositoryAndSecurity();
-        }
+        // =========================
+        // Init
+        // =========================
+        function init() {
+            initYasr();
 
-        // When no repo is selected (editor hidden) and the user selects a repo the SPARQL params should be handled
-        scope.$on('repositoryIsSet', function () {
+            // hide unneeded yasqe fullscreen button
+            $(".fullscreenToggleBtns").hide();
+
             if ($repositories.getActiveRepository()) {
                 updateRepositoryAndSecurity();
             }
-        });
-        // end of repository actions
 
-        // focus the editor
-        $timeout(function () {
-            angular.element(document).find('.CodeMirror textarea:first-child').focus();
-        }, 50);
+            // focus the editor
+            $timeout(function () {
+                angular.element(document).find('.CodeMirror textarea:first-child').focus();
+            }, 50);
+        }
 
+        init();
     }
 }
