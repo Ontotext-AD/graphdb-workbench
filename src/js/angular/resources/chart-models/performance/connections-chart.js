@@ -17,8 +17,9 @@ export class ConnectionsChart extends ChartData {
         }];
     }
     addNewData(dataHolder, timestamp, data) {
-        dataHolder[0].values.push([timestamp, data.activeTransactions]);
-        dataHolder[1].values.push([timestamp, data.openConnections]);
+        const performanceData = data.performanceData;
+        dataHolder[0].values.push([timestamp, performanceData.activeTransactions]);
+        dataHolder[1].values.push([timestamp, performanceData.openConnections]);
     }
     updateRange(dataHolder) {
         super.updateRange(dataHolder, 2);

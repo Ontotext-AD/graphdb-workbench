@@ -50,11 +50,12 @@ export class EpoolChart extends ChartData {
         }];
     }
     addNewData(dataHolder, timestamp, data, isFirstLoad) {
+        const performanceData = data.performanceData;
         const [readsData, writesData] = dataHolder;
         let readsDiff = 0;
         let writesDiff = 0;
-        const currentReads = data.entityPool.epoolReads;
-        const currentWrites = data.entityPool.epoolWrites;
+        const currentReads = performanceData.entityPool.epoolReads;
+        const currentWrites = performanceData.entityPool.epoolWrites;
 
         if (!isFirstLoad) {
             const lastReadsEntry = readsData.values[readsData.values.length - 1][2];

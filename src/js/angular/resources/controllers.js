@@ -22,8 +22,9 @@ const modules = [
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
 resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$jwtAuth', '$q',
-    function ($scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth, $q) {
+    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth, $q) {
         const POLLING_INTERVAL = 2000;
+        const MAX_RETRIES = 3;
         const chartOptions = {
             chart: {
                 interpolate: 'monotone',
@@ -32,10 +33,10 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 margin: {
                     left: 100
                 },
-                x: function (d) {
+                x: function(d) {
                     return d[0];
                 },
-                y: function (d) {
+                y: function(d) {
                     return d[1];
                 },
                 clipEdge: true,
@@ -46,13 +47,13 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 useInteractiveGuideline: true,
                 xAxis: {
                     showMaxMin: false,
-                    tickFormat: function (d) {
+                    tickFormat: function(d) {
                         return d3.time.format('%X')(new Date(d));
                     }
                 },
                 yAxis: {
                     showMaxMin: false,
-                    tickFormat: function (d) {
+                    tickFormat: function(d) {
                         return d;
                     }
                 }
@@ -65,27 +66,26 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             offHeapMemory: new NonHeapMemoryChart($translate, angular.copy(chartOptions)),
             diskStorage: new DiskStorageChart($translate, angular.copy(chartOptions))
         };
-
         $scope.performanceMonitorData = {
             connectionsChart: new ConnectionsChart($translate, angular.copy(chartOptions)),
-            epoolChart: new EpoolChart($translate, angular.copy(chartOptions))
+            epoolChart: new EpoolChart($translate, angular.copy(chartOptions)),
+            queriesChart: new QueriesChart($translate, angular.copy(chartOptions))
         };
-
-        $scope.queriesChart = new QueriesChart($translate, angular.copy(chartOptions));
-
         $scope.structuresMonitorData = {
             globalCacheChart: new GlobalCacheChart($translate, angular.copy(chartOptions))
         };
-
         $scope.clusterHealthChart = new ClusterHealthChart($translate, angular.copy(chartOptions));
 
-        let firstLoad = true;
-
         $scope.activeTab = 'resourceMonitor';
-        $scope.error = '';
+        $scope.error = true;
+
+        const hasMonitorError = (errorHolder) => {
+            return errorHolder.hasError;
+        };
+
         $scope.loader = true;
 
-        $scope.isAdmin = function () {
+        $scope.isAdmin = function() {
             return $jwtAuth.isAdmin();
         };
 
@@ -93,183 +93,188 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             $scope.activeTab = tab;
         };
 
-        $scope.getActiveRepository = function () {
+        $scope.getActiveRepository = function() {
             return $repositories.getActiveRepository();
         };
 
-        let resourceMonitorPoll;
-        const getResourceMonitorData = function () {
-            if ($scope.error) {
-                return;
-            }
-            MonitoringRestService.monitorResources().then(function (response) {
-                const data = response.data;
-                if (data) {
-                    const timestamp = new Date();
-
-                    Object.values($scope.resourceMonitorData).forEach((chart) => {
-                        chart.addData(timestamp, data);
+        // TODO: Organize the following somehow. These are fetcher functions
+        const getResourceMonitorData = function() {
+            return MonitoringRestService.monitorResources()
+                .then(function(response) {
+                    processResponse(response, (timestamp, data) => {
+                        Object.values($scope.resourceMonitorData).forEach((chart) => {
+                            chart.addData(timestamp, data);
+                        });
                     });
-
-                    if (firstLoad) {
-                        firstLoad = false;
-
-                        const timer = $timeout(function () {
-                            $scope.loader = false;
-                        }, 500);
-
-                        $scope.$on('$destroy', function () {
-                            $timeout.cancel(timer);
-                        });
-                    }
-                }
-                resourceMonitorPoll = $timeout(getResourceMonitorData, POLLING_INTERVAL);
-            }).catch(function (error) {
-                $scope.error = getError(error.data);
-                $scope.loader = false;
-            });
-        };
-        let queryMonitorData;
-        const getQueryMonitor = function() {
-            const activeRepository = $scope.getActiveRepository();
-            if ($scope.error) {
-                return;
-            } else if (!activeRepository) {
-                queryMonitorData = $timeout(getQueryMonitor, POLLING_INTERVAL);
-                return;
-            }
-            $q.all([getPerformanceMonitorData(), getActiveQueryMonitor()])
-                .then((response) => {
-                    const [performanceData, activeQueryData] = response;
-                    const timestamp = new Date();
-
-                    if (performanceData) {
-                        Object.values($scope.performanceMonitorData).forEach((chart) => {
-                            chart.addData(timestamp, performanceData);
-                        });
-                    }
-
-                    if (activeQueryData) {
-                        $scope.queriesChart.addData(timestamp, {activeQueryData, performanceData});
-                    }
-
-                    if ($scope.firstLoad) {
-                        $scope.firstLoad = false;
-
-                        const timer = $timeout(function () {
-                            $scope.loader = false;
-                        }, 500);
-
-                        $scope.$on('$destroy', function () {
-                            $timeout.cancel(timer);
-                        });
-                    }
-
-                    queryMonitorData = $timeout(getQueryMonitor, POLLING_INTERVAL);
                 });
         };
-        const getPerformanceMonitorData = function () {
+        const getQueryMonitor = function() {
             const activeRepository = $scope.getActiveRepository();
-            return MonitoringRestService.monitorQueryTransactionStatistics(activeRepository).then(function (response) {
-                return response.data;
-            }).catch(function (data) {
-                $scope.error = getError(data);
-                $scope.loader = false;
-            });
-        };
-        const getActiveQueryMonitor = function () {
-            const activeRepository = $scope.getActiveRepository();
-            return MonitoringRestService.monitorQuery(activeRepository).then(function (response) {
-                return response.data;
-            }).catch(function (data) {
-                $scope.error = getError(data);
-                $scope.loader = false;
-            });
-        };
-        let structuresMonitorPoll;
-        const getStructuresMonitorData = function () {
-            const activeRepository = $scope.getActiveRepository();
-            if ($scope.error) {
-                return;
-            } else if (!activeRepository) {
-                structuresMonitorPoll = $timeout(getStructuresMonitorData, POLLING_INTERVAL);
-                return;
+            if (!activeRepository) {
+                return Promise.resolve();
             }
-            MonitoringRestService.monitorStructures(activeRepository).then(function (response) {
-                const data = response.data;
-                if (data) {
-                    const timestamp = new Date();
-
-                    Object.values($scope.structuresMonitorData).forEach((chart) => {
-                        chart.addData(timestamp, data);
+            return $q.all([getPerformanceMonitorData(activeRepository), getActiveQueryMonitor(activeRepository)])
+                .then((response) => {
+                    const [performanceData, activeQueryData] = response;
+                    processResponse({data: {performanceData, activeQueryData}}, (timestamp, data) => {
+                        Object.values($scope.performanceMonitorData).forEach((chart) => {
+                            chart.addData(timestamp, data);
+                        });
                     });
-
-                    if ($scope.firstLoad) {
-                        $scope.firstLoad = false;
-
-                        const timer = $timeout(function () {
-                            $scope.loader = false;
-                        }, 500);
-
-                        $scope.$on('$destroy', function () {
-                            $timeout.cancel(timer);
-                        });
-                    }
-                }
-                structuresMonitorPoll = $timeout(getStructuresMonitorData, POLLING_INTERVAL);
-            }).catch(function (data) {
-                $scope.error = getError(data);
-                $scope.loader = false;
-            });
+                });
         };
-        let clusterMonitorPoll;
-        const getClusterMonitorData = function () {
-            if ($scope.error) {
-                return;
+        const getPerformanceMonitorData = function(activeRepository) {
+            return MonitoringRestService.monitorQueryTransactionStatistics(activeRepository)
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+        const getActiveQueryMonitor = function(activeRepository) {
+            return MonitoringRestService.monitorQuery(activeRepository)
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+        const getStructuresMonitorData = function() {
+            const activeRepository = $scope.getActiveRepository();
+            if (!activeRepository) {
+                return Promise.resolve();
             }
-            MonitoringRestService.monitorCluster().then(function (response) {
-                const data = response.data;
-                if (data) {
-                    const timestamp = new Date();
 
-                    $scope.clusterHealthChart.addData(timestamp, data);
-
-                    if ($scope.firstLoad) {
-                        $scope.firstLoad = false;
-
-                        const timer = $timeout(function () {
-                            $scope.loader = false;
-                        }, 500);
-
-                        $scope.$on('$destroy', function () {
-                            $timeout.cancel(timer);
+            return MonitoringRestService.monitorStructures(activeRepository)
+                .then(function(response) {
+                    processResponse(response, (timestamp, data) => {
+                        Object.values($scope.structuresMonitorData).forEach((chart) => {
+                            chart.addData(timestamp, data);
                         });
-                    }
-                }
-                clusterMonitorPoll = $timeout(getClusterMonitorData, POLLING_INTERVAL);
-            }).catch(function (data) {
-                $scope.error = getError(data);
-                $scope.loader = false;
-            });
+                    });
+                });
+        };
+        const getClusterMonitorData = function() {
+            return MonitoringRestService.monitorCluster()
+                .then(function(response) {
+                    processResponse(response, (timestamp, data) => $scope.clusterHealthChart.addData(timestamp, data));
+                });
         };
 
-        getResourceMonitorData();
-        getQueryMonitor();
-        getStructuresMonitorData();
-        getClusterMonitorData();
 
-        $scope.$on('$destroy', function () {
-            if (resourceMonitorPoll) {
-                $timeout.cancel(resourceMonitorPoll);
+        // TODO: Organize the following somehow
+        const getData = (monitor) => {
+            if (hasMonitorError(monitor.error)) {
+                if (monitor.error.retries === MAX_RETRIES) {
+                    if (monitor.poll) {
+                        $timeout.cancel(monitor.poll);
+                    }
+                    return;
+                }
+                monitor.error.retries++;
             }
-            if (queryMonitorData) {
-                $timeout.cancel(queryMonitorData);
+            return monitor.fetchFn()
+                .then(() => {
+                    clearError(monitor.error);
+                })
+                .catch((error) => {
+                    setError(monitor.error, error);
+                })
+                .finally(() => {
+                    if (monitor.poll) {
+                        $timeout.cancel(monitor.poll);
+                    }
+                    monitor.poll = $timeout(() => getData(monitor), POLLING_INTERVAL);
+                });
+        };
+        const processResponse = (response, dataSetter) => {
+            const data = response.data;
+            if (data) {
+                setChartData(data, dataSetter);
+
+                if ($scope.firstLoad) {
+                    $scope.firstLoad = false;
+
+                    const timer = $timeout(function() {
+                        $scope.loader = false;
+                    }, 500);
+
+                    $scope.$on('$destroy', function() {
+                        $timeout.cancel(timer);
+                    });
+                }
             }
-            if (structuresMonitorPoll) {
-                $timeout.cancel(structuresMonitorPoll);
+        };
+        const setChartData = (data, dataSetter) => {
+            const timestamp = new Date();
+            dataSetter(timestamp, data);
+        };
+        const setError = (errorHolder, error) => {
+            errorHolder.hasError = !!error;
+            if (errorHolder.hasError) {
+                errorHolder.message = getError(error);
             }
-            if (clusterMonitorPoll) {
-                $timeout.cancel(clusterMonitorPoll);
+            $scope.error = Object.values($scope.monitors).some((monitor) => monitor.error.hasError);
+        };
+        const clearError = (errorHolder) => {
+            errorHolder.hasError = false;
+            errorHolder.message = '';
+            $scope.error = Object.values($scope.monitors).some((monitor) => monitor.error.hasError);
+        };
+
+        $scope.monitors = [];
+        $scope.monitors.push({
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            fetchFn: getResourceMonitorData,
+            poll: null
+        });
+        $scope.monitors.push({
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            fetchFn: getClusterMonitorData,
+            poll: null
+        });
+        $scope.monitors.push({
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            fetchFn: getStructuresMonitorData,
+            poll: null
+        });
+
+        $scope.monitors.push({
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            fetchFn: getQueryMonitor,
+            poll: null
+        });
+
+        $q.all($scope.monitors.map((monitor) => getData(monitor)))
+            .finally(() => {
+                if ($scope.loader) {
+                    const timer = $timeout(function() {
+                        $scope.loader = false;
+                    }, 500);
+
+                    $scope.$on('$destroy', function() {
+                        $timeout.cancel(timer);
+                    });
+                }
+            });
+
+        $scope.$on('$destroy', function() {
+            for (const monitor of $scope.monitors) {
+                if (monitor.poll) {
+                    $timeout.cancel(monitor.poll);
+                }
             }
         });
     }]);
