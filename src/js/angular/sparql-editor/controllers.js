@@ -10,30 +10,47 @@ angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
+SparqlEditorCtrl.$inject = ['$scope', '$location', '$jwtAuth', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService'];
 
-function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
+function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService) {
+
     const ontoElement = document.querySelector('ontotext-yasgui');
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/sparql-results+json',
+        'X-GraphDB-Local-Consistency': 'updating'
+    };
 
     this.repository = '';
 
     $scope.config = undefined;
     $scope.savedQueryConfig = undefined;
-
     $scope.language = $languageService.getLanguage();
+
+    // =========================
+    // Public functions
+    // =========================
 
     $scope.configChanged = () => {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository) {
+            const authToken = $jwtAuth.getAuthToken();
+            if (authToken) {
+                headers['Authorization'] = authToken;
+            }
             $scope.config = {
                 endpoint: `/repositories/${activeRepository}`,
                 showToolbar: true,
-                componentId: 'graphdb-workbench-sparql-editor'
+                componentId: 'graphdb-workbench-sparql-editor',
+                headers: () => {
+                    return headers;
+                }
             };
         }
     };
 
     $scope.queryExecuted = (query) => {
+        // eslint-disable-next-line no-console
         console.log(query.detail);
     };
 
@@ -87,12 +104,19 @@ function SparqlEditorCtrl($scope, $location, $repositories, toastr, $translate, 
         });
     };
 
+    // =========================
+    // Event handlers
+    // =========================
+
     $scope.$on('repositoryIsSet', $scope.configChanged);
+
     $scope.$on('language-changed', function (event, args) {
         $scope.language = args.locale;
     });
 
-    // private functions
+    // =========================
+    // Private function
+    // =========================
 
     const initTabFromSavedQuery = (queryParams) => {
         const savedQueryName = queryParams[RouteConstants.savedQueryName];
