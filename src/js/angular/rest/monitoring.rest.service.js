@@ -21,19 +21,35 @@ function MonitoringRestService($http) {
     };
 
     function monitorResources() {
-        return $http.get(`${MONITORING_ENDPOINT}/infrastructure`);
+        return $http({
+            url: `${MONITORING_ENDPOINT}/infrastructure`,
+            method: 'GET',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function monitorStructures() {
-        return $http.get(`${MONITORING_ENDPOINT}/structures`);
+        return $http({
+            url: `${MONITORING_ENDPOINT}/structures`,
+            method: 'GET',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function monitorCluster() {
-        return $http.get(`${MONITORING_ENDPOINT}/cluster`);
+        return $http({
+            url: `${MONITORING_ENDPOINT}/cluster`,
+            method: 'GET',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function monitorQueryTransactionStatistics(repositoryID) {
-        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}`);
+        return $http({
+            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}`,
+            method: 'GET',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function monitorGC() {
@@ -41,11 +57,19 @@ function MonitoringRestService($http) {
     }
 
     function monitorQuery(repositoryID) {
-        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`);
+        return $http({
+            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`,
+            method: 'GET',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function deleteQuery(queryId, repositoryID) {
-        return $http.delete(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(queryId)}`);
+        return $http({
+            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(queryId)}`,
+            method: 'DELETE',
+            headers: {'Accept': 'application/json'}
+        });
     }
 
     function getQueryCount(repositoryID) {
