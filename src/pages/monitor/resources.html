@@ -20,8 +20,8 @@
 
 <div id="wb-monitoringResources" class="ot-owlim-resources">
     <div class="row ng-scope" ng-show="!loader && error">
-        <div class="alert alert-danger">
-            <div ng-repeat="monitor in monitors" ng-if="monitor.error.hasError">
+        <div class="alert alert-danger errors">
+            <div class="error" ng-repeat="monitor in monitors" ng-if="monitor.error.hasError">
                 {{'common.error' | translate}}: {{monitor.error.message}} {{'monitor.retrying' | translate: {retry: monitor.error.retries} }}
             </div>
             <br/>
@@ -29,11 +29,9 @@
         </div>
     </div>
 
-    <div>
-        <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
+    <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
 
-        <div ng-if="!loader">
-            <div class="graphics row">
+    <div ng-if="!loader" class="graphics row">
                 <div class="monitor-tabs">
                     <ul class="nav nav-tabs">
                         <li class="resource-tab nav-item">
@@ -115,6 +113,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </div>

@@ -1,6 +1,4 @@
-// Skipped because cluster health throws an error as there is no cluster.
-// TODO Unskip this either when cluster is available for cypress tests or when proper error handling in the monitor view is implemented
-describe.skip('Monitor Resources', () => {
+describe('Monitor Resources', () => {
 
     let repositoryId;
 
@@ -16,8 +14,7 @@ describe.skip('Monitor Resources', () => {
         cy.window();
 
         // Wait for loaders to disappear
-        cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader').should('not.be.visible');
+        getTabsPanel().should('be.visible');
 
         // Ensure the chart on the default active tab is rendered
         getActiveTabContent().should('be.visible');
@@ -49,6 +46,18 @@ describe.skip('Monitor Resources', () => {
 
     function getChart(id) {
         return getTabContent().find(`#${id}`);
+    }
+
+    function getErrorsPane() {
+        return cy.get('.errors');
+    }
+
+    function getErrors() {
+        return getErrorsPane().find('.error');
+    }
+
+    function getError(index) {
+        return getErrors().eq(index);
     }
 
     function verifyCharts(charts) {
@@ -118,12 +127,16 @@ describe.skip('Monitor Resources', () => {
         verifyCharts(charts);
     });
 
-    it('Cluster health monitoring tab should show charts', () => {
+    it('Should show error and no data chart for non existing cluster', () => {
+        getErrorsPane().should('be.visible');
+        getErrors().should('have.length', 1);
+        getError(0).should('contain', 'Cluster does not exist');
+
         getTabButtons().eq(2).click();
         const charts = [{
             id: 'clusterHealth',
             label: 'Cluster health',
-            type: 'nv-stackedarea'
+            type: 'nv-noData'
         }];
         verifyCharts(charts);
     });
