@@ -65,11 +65,7 @@ function MonitoringRestService($http) {
     }
 
     function deleteQuery(queryId, repositoryID) {
-        return $http({
-            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(queryId)}`,
-            method: 'DELETE',
-            headers: {'Accept': 'application/json'}
-        });
+        return $http.delete(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query?query=${encodeURIComponent(queryId)}`);
     }
 
     function getQueryCount(repositoryID) {
