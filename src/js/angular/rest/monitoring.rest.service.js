@@ -57,11 +57,7 @@ function MonitoringRestService($http) {
     }
 
     function monitorQuery(repositoryID) {
-        return $http({
-            url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`,
-            method: 'GET',
-            headers: {'Accept': 'application/json'}
-        });
+        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`);
     }
 
     function deleteQuery(queryId, repositoryID) {
