@@ -97,7 +97,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             return $repositories.getActiveRepository();
         };
 
-        // TODO: Organize the following somehow. These are fetcher functions
         const getResourceMonitorData = function() {
             return MonitoringRestService.monitorResources()
                 .then(function(response) {
@@ -157,24 +156,22 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 });
         };
 
-
-        // TODO: Organize the following somehow
         const getData = (monitor) => {
             if (hasMonitorError(monitor.error)) {
                 if (monitor.error.retries === MAX_RETRIES) {
                     if (monitor.poll) {
                         $timeout.cancel(monitor.poll);
                     }
-                    return;
+                    return Promise.resolve();
                 }
                 monitor.error.retries++;
             }
             return monitor.fetchFn()
                 .then(() => {
-                    clearError(monitor.error);
+                    clearMonitorError(monitor);
                 })
                 .catch((error) => {
-                    setError(monitor.error, error);
+                    setMonitorError(monitor, error);
                 })
                 .finally(() => {
                     if (monitor.poll) {
@@ -187,35 +184,23 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             const data = response.data;
             if (data) {
                 setChartData(data, dataSetter);
-
-                if ($scope.firstLoad) {
-                    $scope.firstLoad = false;
-
-                    const timer = $timeout(function() {
-                        $scope.loader = false;
-                    }, 500);
-
-                    $scope.$on('$destroy', function() {
-                        $timeout.cancel(timer);
-                    });
-                }
             }
         };
         const setChartData = (data, dataSetter) => {
             const timestamp = new Date();
             dataSetter(timestamp, data);
         };
-        const setError = (errorHolder, error) => {
-            errorHolder.hasError = !!error;
-            if (errorHolder.hasError) {
-                errorHolder.message = getError(error);
+        const setMonitorError = (monitor, error) => {
+            monitor.error.hasError = !!error;
+            if (monitor.error.hasError) {
+                monitor.error.message = getError(error);
             }
-            $scope.error = Object.values($scope.monitors).some((monitor) => monitor.error.hasError);
+            $scope.error = Object.values($scope.monitors).some((mon) => mon.error.hasError);
         };
-        const clearError = (errorHolder) => {
-            errorHolder.hasError = false;
-            errorHolder.message = '';
-            $scope.error = Object.values($scope.monitors).some((monitor) => monitor.error.hasError);
+        const clearMonitorError = (monitor) => {
+            monitor.error.hasError = false;
+            monitor.error.message = '';
+            $scope.error = Object.values($scope.monitors).some((mon) => mon.error.hasError);
         };
 
         $scope.monitors = [];
@@ -257,20 +242,23 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             poll: null
         });
 
+        let loaderTimer = null;
         $q.all($scope.monitors.map((monitor) => getData(monitor)))
             .finally(() => {
                 if ($scope.loader) {
-                    const timer = $timeout(function() {
+                    if (loaderTimer) {
+                        $timeout.cancel(loaderTimer);
+                    }
+                    loaderTimer = $timeout(function() {
                         $scope.loader = false;
                     }, 500);
-
-                    $scope.$on('$destroy', function() {
-                        $timeout.cancel(timer);
-                    });
                 }
             });
 
         $scope.$on('$destroy', function() {
+            if (loaderTimer) {
+                $timeout.cancel(loaderTimer);
+            }
             for (const monitor of $scope.monitors) {
                 if (monitor.poll) {
                     $timeout.cancel(monitor.poll);
