@@ -341,7 +341,7 @@ describe('=> ResourcesCtrl tests', function () {
             $timeout.flush(2001);
             $httpBackend.flush();
             expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, 703594496*1.2]);
+            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(703594496*1.2)]);
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
@@ -376,7 +376,7 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, 783594496*1.2])
+            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(783594496*1.2)])
         })
 
         it('should set non-heap memory yDomain to 0, max*1.2', function () {

@@ -19,6 +19,9 @@ export class EpoolChart extends ChartData {
                 rotateYLabel: true,
                 tickFormat: function(d) {
                     return d;
+                },
+                tickValues: () => {
+                    return EpoolChart.getIntegerRangeForValues(this.dataHolder[0]);
                 }
             },
             yAxis2: {
@@ -28,6 +31,9 @@ export class EpoolChart extends ChartData {
                 rotateYLabel: true,
                 tickFormat: function(d) {
                     return d;
+                },
+                tickValues: () => {
+                    return EpoolChart.getIntegerRangeForValues(this.dataHolder[1]);
                 }
             },
             y1Domain: [0, 1],
@@ -68,12 +74,11 @@ export class EpoolChart extends ChartData {
         writesData.values.push([timestamp, writesDiff, currentWrites]);
     }
     updateRange(dataHolder) {
-        this.chartOptions.chart.yDomain1 = this.getRangeForAxis(dataHolder[0]);
-        this.chartOptions.chart.yDomain2 = this.getRangeForAxis(dataHolder[1]);
+        this.chartOptions.chart.yDomain1 = this.getAxisDomain(dataHolder[0]);
+        this.chartOptions.chart.yDomain2 = this.getAxisDomain(dataHolder[1]);
     }
-    getRangeForAxis(dataHolder) {
-        const maxChartValue = Math.max(...dataHolder.values.map((data) => data[1]));
-        const domainUpperBound = maxChartValue * 1.2;
-        return [0, domainUpperBound || 1];
+    getAxisDomain(dataHolder) {
+        const [domainUpperBound] = EpoolChart.calculateMaxChartValueAndDivisions(dataHolder);
+        return [0, domainUpperBound];
     }
 }
