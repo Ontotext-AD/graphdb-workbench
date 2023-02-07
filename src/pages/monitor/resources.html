@@ -20,18 +20,18 @@
 
 <div id="wb-monitoringResources" class="ot-owlim-resources">
     <div class="row ng-scope" ng-show="!loader && error">
-        <p class="alert alert-danger">
-            {{'common.error' | translate}}: {{error}}.
+        <div class="alert alert-danger errors">
+            <div class="error" ng-repeat="monitor in monitors" ng-if="monitor.error.hasError">
+                {{'common.error' | translate}}: {{monitor.error.message}} {{'monitor.retrying' | translate: {retry: monitor.error.retries} }}
+            </div>
             <br/>
             {{'refresh.to.retry' | translate}}
-        </p>
+        </div>
     </div>
 
-    <div>
-        <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
+    <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
 
-        <div ng-if="!loader && !error">
-            <div class="graphics row">
+    <div ng-if="!loader" class="graphics row">
                 <div class="monitor-tabs">
                     <ul class="nav nav-tabs">
                         <li class="resource-tab nav-item">
@@ -83,7 +83,7 @@
                                 <div class="row mt-2">
                                     <div id="activeQueries" class="col-lg-12 col-xl-6">
                                         <h4 class="chart-header">{{'resource.queries.label' | translate}}</h4>
-                                        <div nvd3 options="queriesChart.chartOptions" data="queriesChart.dataHolder"></div>
+                                        <div nvd3 options="performanceMonitorData.queriesChart.chartOptions" data="performanceMonitorData.queriesChart.dataHolder"></div>
                                     </div>
                                     <div id="globalCache" class="col-lg-12 col-xl-6">
                                         <h4 class="chart-header">{{'resources.global_cache.label' | translate}}</h4>
@@ -113,6 +113,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </div>

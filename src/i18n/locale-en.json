@@ -204,6 +204,7 @@
     "monitor.performance.label": "Performance",
     "monitor.performance.no_repository": "Charts are not available because you are not connected to any repository",
     "monitor.cluster": "Cluster health",
+    "monitor.retrying": "Retries: {{retry}}",
     "access.to.url.restricted": "Access to the requested URL is restricted!",
     "autocomplete.not.supported": "Autocomplete not fully supported",
     "autocomplete.config.not.supported": "Configuring autocomplete is not supported.",

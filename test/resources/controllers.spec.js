@@ -148,9 +148,9 @@ describe('=> ResourcesCtrl tests', function () {
         });
 
         it('should call performance monitor function on every 2s', function () {
+            $httpBackend.expectGET('rest/monitor/structures');
             $httpBackend.expectGET('rest/monitor/repository/activeRepository');
             $httpBackend.expectGET('rest/monitor/repository/activeRepository/query/active');
-            $httpBackend.expectGET('rest/monitor/structures');
 
             expect($httpBackend.flush).not.toThrow();
             $timeout.flush(2000);
@@ -200,14 +200,14 @@ describe('=> ResourcesCtrl tests', function () {
             $httpBackend.flush();
             expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0]]}, {key: "Open connections", values: [[today, 0]]}]);
             expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122]]}]);
-            expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
+            expect($scope.performanceMonitorData.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
             expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759]]}, {key: 'Miss', values: [[today, 558]]}]);
             $timeout.flush(2001);
             $httpBackend.flush();
 
             expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0], [today, 0]]}, {key: "Open connections", values: [[today, 0], [today, 0]]}]);
             expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
-            expect($scope.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
+            expect($scope.performanceMonitorData.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
             expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
         });
 
@@ -341,7 +341,7 @@ describe('=> ResourcesCtrl tests', function () {
             $timeout.flush(2001);
             $httpBackend.flush();
             expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, 703594496*1.2])
+            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, 703594496*1.2]);
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
