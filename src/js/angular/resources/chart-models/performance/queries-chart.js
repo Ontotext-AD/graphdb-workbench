@@ -9,6 +9,9 @@ export class QueriesChart extends ChartData {
         chartOptions.title = {
             className: 'chart-additional-info'
         };
+        chartOptions.chart.yAxis.tickValues = () => {
+            return QueriesChart.getIntegerRangeForValues(this.dataHolder);
+        };
     }
 
     createDataHolder() {
@@ -25,8 +28,5 @@ export class QueriesChart extends ChartData {
         const suboptimal = performanceData.queries.suboptimal;
         this.chartOptions.title.enable = true;
         this.chartOptions.title.text = this.translateService.instant('resource.queries.slow_and_suboptimal', {slowQueries, suboptimal});
-    }
-    updateRange(dataHolder) {
-        super.updateRange(dataHolder, 2);
     }
 }

@@ -23,7 +23,7 @@ const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controller
 
 resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$jwtAuth', '$q',
     function($scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth, $q) {
-        const POLLING_INTERVAL = 2000;
+        const POLLING_INTERVAL = 500;
         const MAX_RETRIES = 3;
         const chartOptions = {
             chart: {

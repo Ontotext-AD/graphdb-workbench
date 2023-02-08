@@ -6,6 +6,9 @@ export class ConnectionsChart extends ChartData {
     }
     chartSetup(chartOptions) {
         chartOptions.chart.color = d3.scale.category10().range();
+        chartOptions.chart.yAxis.tickValues = () => {
+            return ConnectionsChart.getIntegerRangeForValues(this.dataHolder);
+        };
     }
     createDataHolder() {
         return [{
@@ -20,8 +23,5 @@ export class ConnectionsChart extends ChartData {
         const performanceData = data.performanceData;
         dataHolder[0].values.push([timestamp, performanceData.activeTransactions]);
         dataHolder[1].values.push([timestamp, performanceData.openConnections]);
-    }
-    updateRange(dataHolder) {
-        super.updateRange(dataHolder, 2);
     }
 }
