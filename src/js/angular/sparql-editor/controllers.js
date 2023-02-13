@@ -5,6 +5,7 @@ import {
     savedQueryResponseMapper, buildQueryModel
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
+import {QueryMode} from "../utils/query-types";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -68,6 +69,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      */
     $scope.queryExecuted = (event) => {
         updateRequestHeaders(event.detail.request);
+        changeEndpointByQueryType(event.detail.queryMode, event.detail.request);
     };
 
     /**
@@ -179,6 +181,14 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         req.header['X-GraphDB-Track-Alias'] = $scope.currentTrackAlias;
         req.header['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
         req.header['X-Requested-With'] = 'XMLHttpRequest';
+    };
+
+    const changeEndpointByQueryType = (queryMode, request) => {
+        // if query mode is 'query' -> '/repositories/repo-name'
+        // if query mode is 'update' -> '/repositories/repo-name/statements'
+        if (queryMode === QueryMode.update) {
+            request.url += '/statements';
+        }
     };
 
     const initTabFromSavedQuery = (queryParams) => {
