@@ -15,8 +15,8 @@ export class YasqeSteps {
         return cy.get('.yasqe_queryButton');
     }
 
-    static executeQuery() {
-        this.getExecuteQueryButton().click();
+    static executeQuery(tabIndex = 0) {
+        this.getExecuteQueryButton(tabIndex).eq(tabIndex).click();
     }
 
     static getControlBar() {
