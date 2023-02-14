@@ -1,6 +1,7 @@
 import VisualGraphSteps from "../../steps/visual-graph-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
+const VALID_RESOURCE = 'USRegion';
 
 describe('Visual graph screen validation', () => {
 
@@ -82,15 +83,36 @@ describe('Visual graph screen validation', () => {
             .deleteGraphConfig(graphConfigName);
     });
 
-    function getCreateCustomGraphLink() {
-        return cy.get('.create-graph-config').should('be.visible');
-    }
+    context('When autocomplete is enabled', () => {
+        before(() => {
+            cy.enableAutocomplete(repositoryId);
+        });
 
-    function getGraphConfigName() {
-        return cy.get('.graph-config-name').should('be.visible');
-    }
+        beforeEach(() => {
+            cy.visit('graphs-visualizations');
+            cy.window();
+        });
 
-    function getSaveConfig() {
-        return cy.get('.btn-save-config').should('be.visible');
-    }
+        it('Test search for a resource - suggestions', () => {
+            getSearchField().should('be.visible').type(VALID_RESOURCE);
+            // Verify that a list of suggested resources is displayed as you type.
+            cy.get('#auto-complete-results-wrapper .result-item').should('have.length', 1);
+        });
+    });
 });
+
+function getSearchField() {
+    return cy.get('.search-rdf-resources input:visible');
+}
+
+function getCreateCustomGraphLink() {
+    return cy.get('.create-graph-config').should('be.visible');
+}
+
+function getGraphConfigName() {
+    return cy.get('.graph-config-name').should('be.visible');
+}
+
+function getSaveConfig() {
+    return cy.get('.btn-save-config').should('be.visible');
+}
