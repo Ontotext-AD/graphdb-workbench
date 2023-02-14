@@ -4,7 +4,9 @@
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
+        "start:flaky": "cypress open --config-file cypress-flaky.config.js",
         "test": "cypress run",
+        "test:flaky": "cypress run --config-file cypress-flaky.config.js",
         "test:partial": "cypress run --spec \"integration/repository/**\""
     },
     "author": {

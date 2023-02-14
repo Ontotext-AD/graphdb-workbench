@@ -344,6 +344,7 @@ describe('SPARQL screen validation', () => {
             getBooleanResult().should('be.visible').and('contain', 'NO');
         });
 
+        // This test depends on external service http://factforge.net/repositories/ff-news which can occasionally fail.
         it.skip('Test execute (CONSTRUCT) query', () => {
             cy.fixture('queries/construct-query.sparql').then(constructQuery => {
                 cy.pasteQuery(constructQuery);
