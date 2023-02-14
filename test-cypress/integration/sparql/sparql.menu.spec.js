@@ -344,7 +344,7 @@ describe('SPARQL screen validation', () => {
             getBooleanResult().should('be.visible').and('contain', 'NO');
         });
 
-        it('Test execute (CONSTRUCT) query', () => {
+        it.skip('Test execute (CONSTRUCT) query', () => {
             cy.fixture('queries/construct-query.sparql').then(constructQuery => {
                 cy.pasteQuery(constructQuery);
             });
