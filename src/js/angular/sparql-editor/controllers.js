@@ -36,7 +36,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository) {
             $scope.config = {
-                endpoint: `/repositories/${activeRepository}`,
+                endpoint: getQueryEndpoint(),
                 showToolbar: true,
                 componentId: 'graphdb-workbench-sparql-editor',
                 headers: () => {
@@ -187,7 +187,9 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         // if query mode is 'query' -> '/repositories/repo-name'
         // if query mode is 'update' -> '/repositories/repo-name/statements'
         if (queryMode === QueryMode.update) {
-            request.url += '/statements';
+            request.url = getMutationEndpoint();
+        } else if (queryMode === QueryMode.query) {
+            request.url = getQueryEndpoint();
         }
     };
 
@@ -245,6 +247,14 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
 
     const queryUpdatedHandler = (payload) => {
         return querySavedHandler($translate.instant('query.editor.edit.saved.query.success.msg', {name: payload.name}));
+    };
+
+    const getQueryEndpoint = () => {
+        return `/repositories/${$repositories.getActiveRepository()}`;
+    };
+
+    const getMutationEndpoint = () => {
+        return `/repositories/${$repositories.getActiveRepository()}/statements`;
     };
 
     const querySaveErrorHandler = (err) => {
