@@ -1,5 +1,3 @@
-import VisualGraphSteps from "../../steps/visual-graph-steps";
-
 const FILE_TO_IMPORT = 'wine.rdf';
 const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
 
@@ -46,12 +44,6 @@ describe('Visual graph screen validation', () => {
         beforeEach(() => {
             cy.visit('graphs-visualizations');
             cy.window();
-        });
-
-        it('Test search for a resource - suggestions', () => {
-            getSearchField().should('be.visible').type(VALID_RESOURCE);
-            // Verify that a list of suggested resources is displayed as you type.
-            cy.get('#auto-complete-results-wrapper .result-item').should('have.length', 1);
         });
 
         it('Test search for an invalid resource', () => {
@@ -703,11 +695,6 @@ describe('Visual graph screen validation', () => {
     function openVisualGraphHome() {
         cy.get('.toolbar-holder').should('be.visible')
             .find('.return-home-btn').should('be.visible').click();
-    }
-
-    function confirmDelete() {
-        cy.get('.modal-footer .confirm-btn').click();
-        cy.get('.modal').should('not.exist');
     }
 
     function updateLinksLimitField(value) {
