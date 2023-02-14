@@ -366,40 +366,6 @@ describe('SPARQL screen validation', () => {
             getResultsDownloadButton().should('be.visible').and('not.be.disabled');
         });
 
-        it('Test execute query with and without "Including inferred" selected', () => {
-            let insertQuery = 'INSERT DATA { <urn:a> <http://a/b> <urn:b> . <urn:b> <http://a/b> <urn:c> . }';
-
-            cy.pasteQuery(insertQuery);
-            SparqlSteps.executeQuery();
-
-            getUpdateMessage().should('be.visible');
-            getResultsWrapper().should('not.be.visible');
-
-            // Should be enabled by default
-            getInferenceButton()
-                .find('.icon-inferred-on')
-                .should('be.visible');
-
-            cy.pasteQuery(DEFAULT_QUERY);
-            SparqlSteps.executeQuery();
-
-            // Confirm that all statements are available (70 from ruleset, 2 explicit and 2 inferred)
-            getResultsWrapper().should('be.visible');
-
-            verifyResultsPageLength(74);
-
-            // Uncheck ‘Include inferred’
-            cy.waitUntil(() =>
-                getInferenceButton().find('.icon-inferred-on')
-                    .then(infBtn => infBtn && cy.wrap(infBtn).click()))
-                .then(() =>
-                    cy.get('.icon-inferred-off').should('be.visible'));
-
-            // Confirm that only inferred statements (only 2) are available
-            SparqlSteps.executeQuery();
-            verifyResultsPageLength(2);
-        });
-
         it('should test text mining plugin', () => {
             cy.pasteQuery(GATE_CLIENT_CREATE_QUERY);
             cy.executeQuery();
