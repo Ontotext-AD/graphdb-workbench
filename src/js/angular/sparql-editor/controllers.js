@@ -55,7 +55,6 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      * When the repository gets changed through the UI, we need to update the yasgui configuration so that new queries
      * to be issued against the new repository.
      */
-    $scope.$on('repositoryIsSet', $scope.updateConfig);
     $scope.$on('repositoryIsSet', init);
 
     $scope.$on('language-changed', function (event, args) {
