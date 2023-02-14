@@ -424,16 +424,19 @@ describe('SPARQL screen validation', () => {
     });
 
     context('SPARQL queries with OWL-Horst Optimized', () => {
-        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId, {
-            params: {
-                ruleset: {
-                    value: 'owl-horst-optimized'
-                },
-                disableSameAs: {
-                    value: false
+        beforeEach(() => {
+            repositoryId = 'sparql-' + Date.now();
+            SparqlSteps.createRepoAndVisit(repositoryId, {
+                params: {
+                    ruleset: {
+                        value: 'owl-horst-optimized'
+                    },
+                    disableSameAs: {
+                        value: false
+                    }
                 }
-            }
-        }));
+            })
+        });
 
         it('Test execute query including inferred with ruleset "OWL-Horst (Optimized)"', () => {
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -502,7 +505,10 @@ describe('SPARQL screen validation', () => {
     });
 
     context('SPARQL view & download', () => {
-        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId));
+        beforeEach(() => {
+            repositoryId = 'sparql-' + Date.now();
+            SparqlSteps.createRepoAndVisit(repositoryId)
+        });
 
         it('Test open a new tab', () => {
             getNewTabButton().click();
@@ -688,7 +694,10 @@ describe('SPARQL screen validation', () => {
     });
 
     context('Saved queries & links', () => {
-        beforeEach(() => SparqlSteps.createRepoAndVisit(repositoryId));
+        beforeEach(() => {
+            repositoryId = 'sparql-' + Date.now();
+            SparqlSteps.createRepoAndVisit(repositoryId)
+        });
 
         const QUERY_FOR_SAVING = 'select (count (*) as ?cnt)\n' +
             'where {\n' +
@@ -943,6 +952,7 @@ describe('SPARQL screen validation', () => {
         const wineUri = '<http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#CorbansDryWhiteRiesling>';
 
         it('should suggest resources in the "SPARQL" editor when autocomplete is enabled', () => {
+            repositoryId = 'sparql-' + Date.now();
             SparqlSteps.createRepository(repositoryId);
 
             cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -977,6 +987,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('should not suggests resources in the "SPARQL" editor if the autocomplete is NOT enabled', () => {
+            repositoryId = 'sparql-' + Date.now();
             SparqlSteps.createRepoAndVisit(repositoryId);
 
             clearQuery();

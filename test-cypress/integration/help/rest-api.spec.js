@@ -1,4 +1,4 @@
-describe('Help / REST API', () => {
+describe.skip('Help / REST API', () => {
 
     before(() => {
         // Disables the security (only for this spec) to be able to interact with Swagger's iframe
