@@ -155,7 +155,7 @@ describe('User and Access', () => {
         getConfirmPasswordField().type(password);
         getRoleRadioButton(role).click();
         if (role === "#roleUser") {
-            getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').within(() => {
+            getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
                 cy.get('.write').click();
             });
             getConfirmUserCreateButton().click();

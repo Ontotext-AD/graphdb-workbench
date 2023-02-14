@@ -15,7 +15,7 @@ module.exports = defineConfig({
             return require('./plugins/index.js')(on, config);
         },
         baseUrl: 'http://localhost:9000',
-        specPattern: 'integration/**/*.{js,jsx,ts,tsx}',
+        specPattern: 'integration-flaky/**/*.{js,jsx,ts,tsx}',
         supportFile: 'support/index.js'
     }
 });
