@@ -1,8 +1,13 @@
+import {EventData} from "../../../models/ontotext-yasgui/event-data";
+import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
+
 export const toYasguiOutputModel = ($event) => {
     const eventData = toEventData($event);
     switch (eventData.TYPE) {
-        case "downloadAs":
+        case EventDataType.DOWNLOAD_AS:
             return buildDownloadAsModel(eventData);
+        case EventDataType.NOTIFICATION_MESSAGE:
+            return buildNotificationMessageModel(eventData);
         default:
             return eventData;
     }
@@ -19,12 +24,14 @@ export const buildDownloadAsModel = (eventData) => {
     };
 };
 
-export class EventData {
-    constructor(TYPE, payload) {
-        this.TYPE = TYPE;
-        this.payload = payload;
-    }
-}
+export const buildNotificationMessageModel = (eventData) => {
+    return {
+        TYPE: eventData.TYPE,
+        message: eventData.payload.message,
+        code: eventData.payload.code,
+        messageType: eventData.payload.messageType
+    };
+};
 
 export const toEventData = ($event) => {
     return new EventData($event.detail.TYPE, $event.detail.payload);

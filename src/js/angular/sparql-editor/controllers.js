@@ -7,6 +7,9 @@ import {
 import {RouteConstants} from "../utils/route-constants";
 import {QueryMode} from "../utils/query-types";
 import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
+import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
+import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
+import {NotificationMessageType} from "../../../models/ontotext-yasgui/notification-message-type";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -83,16 +86,6 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     $scope.createSavedQuery = (event) => {
         const payload = queryPayloadFromEvent(event);
         SparqlRestService.addNewSavedQuery(payload).then(() => queryCreatedHandler(payload)).catch(querySaveErrorHandler);
-    };
-
-    $scope.notify = (notification) => {
-        if ("success" === notification.detail.type) {
-            toastr.success(notification.detail.message);
-        } else if ("warning" === notification.detail.type) {
-            toastr.warning(notification.detail.message);
-        } else if ("error" === notification.detail.type) {
-            toastr.error(notification.detail.message);
-        }
     };
 
     /**
@@ -313,7 +306,18 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
             handler(downloadAsEvent);
         }
     }
-    outputHandlers.set('downloadAs', downloadAsHandler);
+    outputHandlers.set(EventDataType.DOWNLOAD_AS, downloadAsHandler);
+
+    function notificationMessageHandler(notificationMessageEvent) {
+        if (NotificationMessageType.SUCCESS === notificationMessageEvent.messageType) {
+            toastr.success(notificationMessageEvent.message);
+        } else if (NotificationMessageType.WARNING === notificationMessageEvent.messageType) {
+            toastr.warning(notificationMessageEvent.message);
+        } else if (NotificationMessageType.ERROR === notificationMessageEvent.messageType) {
+            toastr.error(notificationMessageEvent.message);
+        }
+    }
+    outputHandlers.set(EventDataType.NOTIFICATION_MESSAGE, notificationMessageHandler);
     // ================================
     // =   Setup download handlers    =
     // ================================
@@ -356,7 +360,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         $('#wb-download-accept').val(accept);
         $wbDownload.submit();
     }
-    downloadAsPluginNameToEventHandler.set('extended_table', downloadThroughServer);
+    downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
     init();
 }
