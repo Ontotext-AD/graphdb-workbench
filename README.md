@@ -49,13 +49,20 @@ the Cypress's dashboard application. Follow the steps described below:
 `docker-compose up` in the `graphdb-workbench/test-cypress` folder. Check path directory which is set with **-Dgraphdb.workbench.importDirectory** property when server is started. The folder with this path have to contains all files from "fixture/graphdb-import" 
 
 * In `graphdb-workbench` folder execute `npm run start` to build and run the workbench web 
-application. In result it is published and served by webpack's web dev server.
+application. In result, it is published and served by webpack's web dev server.
 * In terminal, go in `graphdb-workbench/test-cypress` folder and choose one of the options below: 
     * Execute `npm run test` - this will run the test suite in a headless mode and the outcome log
 will be seen in the terminal.
     * Execute `npm run start` or the equivalent `npx cypress open` - this will open the Cypress's
 dashboard application through which the tests can be run one by one or altogether and observing the
 outcome in the dashboard.
+      
+> There is a separate acceptance tests suite containing some flaky tests which often fail on CI. 
+> That's why these are moved in the `integration-flaky` suite which is doesn't run on CI and is
+> responsibility of the developer to run them manually before the commit.
+> 
+> The flaky test suite can be run similarly to the normal test suite but using following commands:
+> `npm run start:flaky` for browser mode or `npm run test:flaky` for a headless mode.
 
 ## Release and publish
 The workbench is regularly published as a package in the NPM registry.
