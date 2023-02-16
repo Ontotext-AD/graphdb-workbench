@@ -1,21 +1,33 @@
 export const toYasguiOutputModel = ($event) => {
-    switch ($event.detail.TYPE) {
+    const eventData = toEventData($event);
+    switch (eventData.TYPE) {
         case "downloadAs":
-            return buildDownloadAsModel($event);
+            return buildDownloadAsModel(eventData);
         default:
-            return $event.detail;
+            return eventData;
     }
 };
 
-export const buildDownloadAsModel = ($event) => {
+export const buildDownloadAsModel = (eventData) => {
     return {
-        TYPE: $event.detail.TYPE,
-        contentType: $event.detail.payload.value,
-        pluginName: $event.detail.payload.pluginName,
-        query: $event.detail.payload.query,
-        infer: $event.detail.payload.infer,
-        sameAs: $event.detail.payload.sameAs
+        TYPE: eventData.TYPE,
+        contentType: eventData.payload.value,
+        pluginName: eventData.payload.pluginName,
+        query: eventData.payload.query,
+        infer: eventData.payload.infer,
+        sameAs: eventData.payload.sameAs
     };
+};
+
+export class EventData {
+    constructor(TYPE, payload) {
+        this.TYPE = TYPE;
+        this.payload = payload;
+    }
+}
+
+export const toEventData = ($event) => {
+    return new EventData($event.detail.TYPE, $event.detail.payload);
 };
 
 export const downloadAsFile = (filename, contentType, content) => {
