@@ -170,7 +170,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     /**
      * Handles the ontotext-yasgui component output events.
      *
-     * @param {TYPE: string, payload: any}$event - the event fired from ontotext-yasgui component
+     * @param {EventData}$event - the event fired from ontotext-yasgui component
      */
     $scope.output = ($event) => {
         const yasguiOutputModel = toYasguiOutputModel($event);
@@ -307,22 +307,16 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     // ================================
     // =     Setup output handlers    =
     // ================================
-    outputHandlers.set('downloadAs', downloadAsHandler);
-
     function downloadAsHandler(downloadAsEvent) {
         const handler = downloadAsPluginNameToEventHandler.get(downloadAsEvent.pluginName);
         if (handler) {
             handler(downloadAsEvent);
         }
     }
-
+    outputHandlers.set('downloadAs', downloadAsHandler);
     // ================================
     // =   Setup download handlers    =
     // ================================
-
-    downloadAsPluginNameToEventHandler.set('response', downloadCurrentResults);
-    downloadAsPluginNameToEventHandler.set('extended_table', downloadThroughServer);
-
     function downloadCurrentResults(downloadAsEvent) {
         if ("application/sparql-results+json" === downloadAsEvent.contentType) {
             ontoElement.getEmbeddedResultAsJson()
@@ -337,6 +331,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 });
         }
     }
+    downloadAsPluginNameToEventHandler.set('response', downloadCurrentResults);
 
     function getFileTimePrefix() {
         const now = new Date();
@@ -348,12 +343,12 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         const infer = downloadAsEvent.infer;
         const sameAs = downloadAsEvent.sameAs;
         const accept = downloadAsEvent.contentType;
-        const authToken = localStorage.getItem('com.ontotext.graphdb.auth') || '';
+        const authToken = $jwtAuth.getAuthToken() || '';
 
         // TODO change it
         // Simple cross-browser download with a form
         const $wbDownload = $('#wb-download');
-        $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
+        $wbDownload.attr('action', getQueryEndpoint());
         $('#wb-download-query').val(query);
         $('#wb-download-infer').val(infer);
         $('#wb-download-sameAs').val(sameAs);
@@ -361,6 +356,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         $('#wb-download-accept').val(accept);
         $wbDownload.submit();
     }
+    downloadAsPluginNameToEventHandler.set('extended_table', downloadThroughServer);
 
     init();
 }
