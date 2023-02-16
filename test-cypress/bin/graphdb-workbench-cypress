@@ -6,7 +6,7 @@
 
 const path = require('path');
 const cypress = require('cypress');
-const cypressConfig = require('../cypress.json');
+const cypressConfig = require('../cypress.config.js');
 
 const originalWorkingDir = process.cwd();
 
