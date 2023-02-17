@@ -7,11 +7,6 @@ export class EpoolChart extends ChartData {
     chartSetup(chartOptions) {
         const customChartOptions = {
             type: 'multiChart',
-            color: d3.scale.category10().range(),
-            margin: {
-                left: 100,
-                right: 60
-            },
             yAxis1: {
                 showMaxMin: false,
                 axisLabel: this.translateService.instant('resource.epool.reads'),
@@ -40,8 +35,12 @@ export class EpoolChart extends ChartData {
             y2Domain: [0, 1]
         };
         Object.assign(chartOptions.chart, customChartOptions);
-        chartOptions.chart.color = d3.scale.category10().range();
     }
+
+    getTitle() {
+        return this.translateService.instant('resource.epool.label');
+    }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.epool.reads'),

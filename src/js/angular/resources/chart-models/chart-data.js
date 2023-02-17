@@ -1,4 +1,76 @@
 export class ChartData {
+    getChartOptions(translateService) {
+        return {
+            chart: {
+                interpolate: 'monotone',
+                type: 'lineChart',
+                height: 500,
+                margin: {
+                    left: 80,
+                    right: 80
+                },
+                x: function (d) {
+                    return d[0];
+                },
+                y: function (d) {
+                    return d[1];
+                },
+                clipEdge: true,
+                noData: translateService.instant('resource.no_data'),
+                showControls: false,
+                duration: 0,
+                rightAlignYAxis: false,
+                useInteractiveGuideline: true,
+                xAxis: {
+                    showMaxMin: false,
+                    tickFormat: function (d) {
+                        return d3.time.format('%X')(new Date(d));
+                    }
+                },
+                yAxis: {
+                    showMaxMin: false,
+                    tickFormat: function (d) {
+                        return d;
+                    }
+                },
+                legend: {
+                    maxKeyLength: 100
+                },
+                color: d3.scale.category10().range()
+            },
+            title: {
+                enable: true,
+                text: this.getTitle()
+            },
+            subtitle: {
+                className: 'chart-additional-info',
+                enable: true,
+                text: this.getSubTitle()
+            }
+        };
+    }
+
+    /**
+     * Must implement
+     * @return {string} the title name
+     */
+    getTitle() {
+        return 'No chart title set';
+    }
+
+    setTitle(title) {
+        this.chartOptions.title.enable = true;
+        this.chartOptions.title.text = title;
+    }
+
+    getSubTitle() {
+    }
+
+    setSubTitle(subTitle) {
+        this.chartOptions.subtitle.enable = true;
+        this.chartOptions.subtitle.html = subTitle;
+    }
+
     /**
      * Defines the default multiplier for chart overhead. The space above the maximum value.
      */
@@ -18,7 +90,7 @@ export class ChartData {
         this.disableOldDataRemoval = disableOldDataRemoval;
         this.translateService = translateService;
         this.range = 150;
-        this.chartOptions = chartOptions;
+        this.chartOptions = this.getChartOptions(translateService);
         this.chartSetup(this.chartOptions);
         this.dataHolder = this.createDataHolder();
         this.firstLoad = true;

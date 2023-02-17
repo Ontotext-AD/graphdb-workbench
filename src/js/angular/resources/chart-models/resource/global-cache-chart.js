@@ -4,9 +4,11 @@ export class GlobalCacheChart extends ChartData {
     constructor(translateService, chartOptions) {
         super(translateService, chartOptions, false, false);
     }
-    chartSetup(chartOptions) {
-        chartOptions.chart.color = d3.scale.category10().range();
+
+    getTitle() {
+        return this.translateService.instant('resources.global_cache.label');
     }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resources.global_cache.hits'),

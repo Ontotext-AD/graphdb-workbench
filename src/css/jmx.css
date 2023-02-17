@@ -39,5 +39,7 @@
 
 .chart-additional-info {
   text-align: right !important;
-  margin-right: 20px;
+  margin-right: 80px;
+  height: 24px;
+  font-weight: 400;
 }

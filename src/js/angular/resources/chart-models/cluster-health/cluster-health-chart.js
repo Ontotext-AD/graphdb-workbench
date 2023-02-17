@@ -21,10 +21,12 @@ export class ClusterHealthChart extends ChartData {
             }
         };
         Object.assign(chartOptions.chart, clusterHealthChartOptions);
-        chartOptions.title = {
-            className: 'chart-additional-info'
-        };
     }
+
+    getTitle() {
+        return this.translateService.instant('resources.cluster_health.label');
+    }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resources.cluster_health.in_sync'),
@@ -58,7 +60,6 @@ export class ClusterHealthChart extends ChartData {
             failedRecoveries: data.failureRecoveriesCount,
             failedTransactions: data.failedTransactionsCount
         };
-        this.chartOptions.title.enable = true;
-        this.chartOptions.title.text = this.translateService.instant('resource.cluster_health.additional_data', subTitleValues);
+        this.setSubTitle(this.translateService.instant('resource.cluster_health.additional_data', subTitleValues));
     }
 }
