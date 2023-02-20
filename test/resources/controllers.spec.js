@@ -123,6 +123,20 @@ describe('=> ResourcesCtrl tests', function () {
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
+        $httpBackend.when('GET', 'rest/cluster/node/status').respond(200, {
+            "address": "yordan:7300",
+            "nodeState": "LEADER",
+            "term": 2,
+            "syncStatus": {
+                "yordan:7301": "IN_SYNC",
+                "yordan:7302": "IN_SYNC",
+                "yordan:7304": "IN_SYNC"
+            },
+            "lastLogTerm": 0,
+            "lastLogIndex": 0,
+            "endpoint": "http://yordan:7200"
+        });
+
         $scope = $rootScope.$new();
         $controller('ResourcesCtrl', {$scope: $scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth});
 
@@ -178,14 +192,14 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU Load", values: [[today, '19.6955']]}])
+            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
             expect($scope.resourceMonitorData.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550]]}])
             expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
             expect($scope.resourceMonitorData.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392]]}])
             expect($scope.resourceMonitorData.diskStorage.dataHolder).toEqual([{key: "Used", values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU Load", values: [[today, '19.6955'], [today, '19.6955']]}])
+            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '19.6955']]}])
             expect($scope.resourceMonitorData.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550], [today, 550]]}])
             expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496], [today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560], [today, 212264560]]}])
             expect($scope.resourceMonitorData.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440], [today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392], [today, 122066392]]}])
@@ -243,7 +257,7 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU Load", values: [[today, '19.6955']]}])
+            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
             expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 39.391])
 
             httpGetResourcesData.respond(200, {
@@ -279,8 +293,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU Load", values: [[today, '19.6955'], [today, '51.6955']]}])
-            expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 100])
+            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '51.6955']]}]);
+            expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 100]);
         });
 
         it('should set file descriptors yDomain to 0, max*2', function () {
