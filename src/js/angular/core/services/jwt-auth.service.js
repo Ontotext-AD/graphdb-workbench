@@ -396,7 +396,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.isRepoManager = function () {
                 return this.hasRole(UserRole.ROLE_REPO_MANAGER);
-            }
+            };
+
+            this.hasRoleMonitor = function () {
+                return this.hasRole(UserRole.ROLE_MONITORING);
+            };
 
             this.checkForWrite = function (menuRole, repo) {
                 if ('WRITE_REPO' === menuRole) {
