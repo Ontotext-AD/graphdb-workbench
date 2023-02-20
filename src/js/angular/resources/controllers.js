@@ -23,8 +23,8 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$jwtAuth', '$q', 'ClusterRestService',
-    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth, $q, ClusterRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService',
+    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService) {
         const POLLING_INTERVAL = 2000;
         const MAX_RETRIES = 3;
         $scope.resourceMonitorData = {
@@ -53,10 +53,6 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         };
 
         $scope.loader = true;
-
-        $scope.isAdmin = function() {
-            return $jwtAuth.isAdmin();
-        };
 
         $scope.switchTab = (tab) => {
             $scope.activeTab = tab;

@@ -1,7 +1,8 @@
 const UserRole = Object.freeze({
     'ROLE_ADMIN': 'ROLE_ADMIN',
     'ROLE_USER': 'ROLE_USER',
-    'ROLE_REPO_MANAGER': 'ROLE_REPO_MANAGER'
+    'ROLE_REPO_MANAGER': 'ROLE_REPO_MANAGER',
+    'ROLE_MONITORING': 'ROLE_MONITORING'
 });
 
 const UserType = Object.freeze({
