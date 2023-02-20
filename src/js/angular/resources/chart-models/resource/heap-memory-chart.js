@@ -22,14 +22,24 @@ export class HeapMemoryChart extends ChartData {
     }
     addNewData(dataHolder, timestamp, data) {
         const [committed, used] = dataHolder;
-        committed.values.push([timestamp, data.heapMemoryUsage.committed]);
-        used.values.push([timestamp, data.heapMemoryUsage.used]);
-        if (data.heapMemoryUsage.max > 0) {
-            const maxMemory = this.formatBytesValue(data.heapMemoryUsage.max, dataHolder);
+        const memoryData = this.parseData(data);
+        committed.values.push([timestamp, memoryData.committed]);
+        used.values.push([timestamp, memoryData.used]);
+        this.setMaxHeapSize(memoryData.max, dataHolder);
+    }
+
+    parseData(data) {
+        return data.heapMemoryUsage;
+    }
+
+    setMaxHeapSize(max, dataHolder) {
+        if (max > 0) {
+            const maxMemory = this.formatBytesValue(max);
             this.chartOptions.title.enable = true;
             this.chartOptions.title.text = this.translateService.instant('resource.memory.heap.max', {max: maxMemory});
         }
     }
+
     updateRange(dataHolder) {
         this.setScale(dataHolder);
         super.updateRange(dataHolder);
@@ -40,7 +50,10 @@ export class HeapMemoryChart extends ChartData {
         };
     }
     formatBytesValue(value, dataHolder) {
-        const maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
+        let maxChartValue = value;
+        if (dataHolder) {
+            maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
+        }
 
         const k = 1024;
         const i = Math.floor(Math.log(maxChartValue) / Math.log(k));
