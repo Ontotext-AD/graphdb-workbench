@@ -150,7 +150,7 @@ describe('=> ResourcesCtrl tests', function () {
         jasmine.clock().uninstall();
     });
 
-    describe('$scope.getResourcesData()', function () {
+    describe('Test resource data fetch and set', function () {
         it('should call resource monitor function on every 2s', function () {
             $httpBackend.expectGET('rest/monitor/infrastructure');
 
@@ -442,7 +442,7 @@ describe('=> ResourcesCtrl tests', function () {
         })
     });
 
-    describe('$scope.chartOptions', function () {
+    describe('Test chart options', function () {
         it('should return correct data for Y axis', function () {
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {

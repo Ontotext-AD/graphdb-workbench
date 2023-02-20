@@ -1,8 +1,8 @@
 import {ChartData} from '../chart-data';
 
 export class ClusterHealthChart extends ChartData {
-    constructor(translateService, chartOptions) {
-        super(translateService, chartOptions, true, false);
+    constructor(translateService) {
+        super(translateService, true, false);
         this.nodesCount = 0;
     }
     chartSetup(chartOptions) {

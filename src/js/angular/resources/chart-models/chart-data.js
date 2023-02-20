@@ -1,53 +1,54 @@
 export class ChartData {
-    getChartOptions(translateService) {
-        return {
-            chart: {
-                interpolate: 'monotone',
-                type: 'lineChart',
-                height: 500,
-                margin: {
-                    left: 80,
-                    right: 80
-                },
-                x: function (d) {
-                    return d[0];
-                },
-                y: function (d) {
-                    return d[1];
-                },
-                clipEdge: true,
-                noData: translateService.instant('resource.no_data'),
-                showControls: false,
-                duration: 0,
-                rightAlignYAxis: false,
-                useInteractiveGuideline: true,
-                xAxis: {
-                    showMaxMin: false,
-                    tickFormat: function (d) {
-                        return d3.time.format('%X')(new Date(d));
-                    }
-                },
-                yAxis: {
-                    showMaxMin: false,
-                    tickFormat: function (d) {
-                        return d;
-                    }
-                },
-                legend: {
-                    maxKeyLength: 100
-                },
-                color: d3.scale.category10().range()
-            },
-            title: {
-                enable: true,
-                text: this.getTitle()
-            },
-            subtitle: {
-                className: 'chart-additional-info',
-                enable: true,
-                text: this.getSubTitle()
+    /**
+     * Defines the default multiplier for chart overhead. The space above the maximum value.
+     */
+    static get DEFAULT_MULTIPLIER() {
+        return 1.2;
+    }
+
+    /**
+     * Defines the default divisions for chart. Used to calculate chart ticks.
+     */
+    static get MAXIMUM_DIVISIONS() {
+        return 10;
+    }
+
+    constructor(translateService, disableRangeUpdate, disableOldDataRemoval) {
+        this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
+    }
+
+    initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval, resetData = true) {
+        this.disableRangeUpdate = disableRangeUpdate;
+        this.disableOldDataRemoval = disableOldDataRemoval;
+        this.translateService = translateService;
+        this.range = 150;
+        this.chartOptions = this.getDefaultChartOptions(translateService);
+        this.chartSetup(this.chartOptions);
+        if (resetData) {
+            this.dataHolder = this.createDataHolder();
+            this.firstLoad = true;
+        }
+    }
+
+    refresh() {
+        this.initialChartSetup(this.translateService, this.disableRangeUpdate, this.disableOldDataRemoval, false);
+        this.translateLabels(this.dataHolder);
+        this.updateRange(this.dataHolder);
+    }
+
+
+    /**
+     * Hook used to translate all labels. Default implementation translates dataHolder series keys
+     * @param dataHolder
+     */
+    translateLabels(dataHolder) {
+        this.createDataHolder().forEach((series, index) => {
+            if (dataHolder[index].originalKey) {
+                dataHolder[index].originalKey = series.key;
+            } else {
+                dataHolder[index].key = series.key;
             }
-        };
+        });
     }
 
     /**
@@ -69,31 +70,6 @@ export class ChartData {
     setSubTitle(subTitle) {
         this.chartOptions.subtitle.enable = true;
         this.chartOptions.subtitle.html = subTitle;
-    }
-
-    /**
-     * Defines the default multiplier for chart overhead. The space above the maximum value.
-     */
-    static get DEFAULT_MULTIPLIER() {
-        return 1.2;
-    }
-
-    /**
-     * Defines the default divisions for chart. Used to calculate chart ticks.
-     */
-    static get MAXIMUM_DIVISIONS() {
-        return 10;
-    }
-
-    constructor(translateService, chartOptions, disableRangeUpdate, disableOldDataRemoval) {
-        this.disableRangeUpdate = disableRangeUpdate;
-        this.disableOldDataRemoval = disableOldDataRemoval;
-        this.translateService = translateService;
-        this.range = 150;
-        this.chartOptions = this.getChartOptions(translateService);
-        this.chartSetup(this.chartOptions);
-        this.dataHolder = this.createDataHolder();
-        this.firstLoad = true;
     }
 
     /**
@@ -163,6 +139,57 @@ export class ChartData {
 
     isFirstLoad() {
         return this.firstLoad;
+    }
+
+    getDefaultChartOptions(translateService) {
+        return {
+            chart: {
+                interpolate: 'monotone',
+                type: 'lineChart',
+                height: 500,
+                margin: {
+                    left: 80,
+                    right: 80
+                },
+                x: function (d) {
+                    return d[0];
+                },
+                y: function (d) {
+                    return d[1];
+                },
+                clipEdge: true,
+                noData: translateService.instant('resource.no_data'),
+                showControls: false,
+                duration: 0,
+                rightAlignYAxis: false,
+                useInteractiveGuideline: true,
+                xAxis: {
+                    showMaxMin: false,
+                    tickFormat: function (d) {
+                        return d3.time.format('%X')(new Date(d));
+                    }
+                },
+                yAxis: {
+                    showMaxMin: false,
+                    tickFormat: function (d) {
+                        return d;
+                    }
+                },
+                legend: {
+                    maxKeyLength: 100
+                },
+                color: d3.scale.category10().range()
+            },
+            title: {
+                enable: true,
+                text: this.getTitle()
+            },
+            subtitle: {
+                className: 'chart-additional-info',
+                enable: true,
+                text: this.getSubTitle()
+            }
+        };
     }
 
     /**
