@@ -5,11 +5,15 @@ export class ConnectionsChart extends ChartData {
         super(translateService, chartOptions, false, false);
     }
     chartSetup(chartOptions) {
-        chartOptions.chart.color = d3.scale.category10().range();
         chartOptions.chart.yAxis.tickValues = () => {
             return ConnectionsChart.getIntegerRangeForValues(this.dataHolder);
         };
     }
+
+    getTitle() {
+        return this.translateService.instant('resource.connections.label');
+    }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.connections.active'),

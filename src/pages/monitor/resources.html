@@ -48,27 +48,22 @@
                         <div class="tab-pane fade in" ng-if="activeTab === 'resourceMonitor'" id="resourceTab">
                             <div class="row mt-2">
                                 <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resource.system.cpu_load.label' | translate}}</h4>
                                     <div nvd3 options="resourceMonitorData.cpuLoad.chartOptions" data="resourceMonitorData.cpuLoad.dataHolder"></div>
                                 </div>
                                 <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resource.system.file_descriptors.label' | translate}}</h4>
                                     <div nvd3 options="resourceMonitorData.fileDescriptors.chartOptions" data="resourceMonitorData.fileDescriptors.dataHolder"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resource.memory.heap.label' | translate}}</h4>
                                     <div nvd3 options="resourceMonitorData.heapMemory.chartOptions" data="resourceMonitorData.heapMemory.dataHolder"></div>
                                 </div>
                                 <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resource.memory.non_heap.label' | translate}}</h4>
                                     <div nvd3 options="resourceMonitorData.offHeapMemory.chartOptions" data="resourceMonitorData.offHeapMemory.dataHolder"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="diskStorage" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resource.storage.label' | translate}}</h4>
                                     <div nvd3 options="resourceMonitorData.diskStorage.chartOptions" data="resourceMonitorData.diskStorage.dataHolder"></div>
                                 </div>
                             </div>
@@ -82,21 +77,17 @@
                             <div ng-if="getActiveRepository()">
                                 <div class="row mt-2">
                                     <div id="activeQueries" class="col-lg-12 col-xl-6">
-                                        <h4 class="chart-header">{{'resource.queries.label' | translate}}</h4>
                                         <div nvd3 options="performanceMonitorData.queriesChart.chartOptions" data="performanceMonitorData.queriesChart.dataHolder"></div>
                                     </div>
                                     <div id="globalCache" class="col-lg-12 col-xl-6">
-                                        <h4 class="chart-header">{{'resources.global_cache.label' | translate}}</h4>
                                         <div nvd3 options="structuresMonitorData.globalCacheChart.chartOptions" data="structuresMonitorData.globalCacheChart.dataHolder"></div>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div id="epool" class="col-lg-12 col-xl-6">
-                                        <h4 class="chart-header">{{'resource.epool.label' | translate}}</h4>
                                         <div nvd3 options="performanceMonitorData.epoolChart.chartOptions" data="performanceMonitorData.epoolChart.dataHolder"></div>
                                     </div>
                                     <div id="connections" class="col-lg-12 col-xl-6">
-                                        <h4 class="chart-header">{{'resource.connections.label' | translate}}</h4>
                                         <div nvd3 options="performanceMonitorData.connectionsChart.chartOptions" data="performanceMonitorData.connectionsChart.dataHolder"></div>
                                     </div>
                                 </div>
@@ -104,8 +95,12 @@
                         </div>
                         <div class="tab-pane fade in" ng-if="activeTab === 'clusterHealth'" id="clusterHealthMonitorTab">
                             <div class="row mt-2">
+                                <div class="alert lead alert-info" ng-show="!hasCluster">
+                                    {{'monitor.cluster.no_cluster' | translate}}
+                                </div>
+                            </div>
+                            <div ng-if="hasCluster" class="row mt-2">
                                 <div id="clusterHealth" class="col-lg-12 col-xl-6">
-                                    <h4 class="chart-header">{{'resources.cluster_health.label' | translate}}</h4>
                                     <div nvd3 options="clusterHealthChart.chartOptions" data="clusterHealthChart.dataHolder"></div>
                                 </div>
                             </div>

@@ -62,7 +62,7 @@ describe('Monitor Resources', () => {
 
     function verifyCharts(charts) {
         charts.forEach((chart) => {
-            getChart(chart.id).scrollIntoView().find('.chart-header').should('contain', chart.label);
+            getChart(chart.id).scrollIntoView().find('.title').should('contain', chart.label);
             getChart(chart.id).scrollIntoView().find(`.${chart.type}`).should('be.visible');
         });
     }
@@ -83,7 +83,7 @@ describe('Monitor Resources', () => {
     it('Resource monitoring tab should show cpu, file, storage and memory charts', () => {
         const charts = [{
             id: 'CPUUsageGraphic',
-            label: 'System CPU Load',
+            label: 'System CPU load',
             type: 'nv-lineChart'
         }, {
             id: 'openFileDescriptors',
@@ -99,7 +99,7 @@ describe('Monitor Resources', () => {
             type: 'nv-lineChart'
         }, {
             id: 'diskStorage',
-            label: 'Disk Storage',
+            label: 'Disk storage',
             type: 'nv-multiBarHorizontalChart'
         }];
         verifyCharts(charts);
@@ -127,17 +127,9 @@ describe('Monitor Resources', () => {
         verifyCharts(charts);
     });
 
-    it('Should show error and no data chart for non existing cluster', () => {
-        getErrorsPane().should('be.visible');
-        getErrors().should('have.length', 1);
-        getError(0).should('contain', 'Cluster does not exist');
-
+    it('Should show info and no error for non existing cluster', () => {
+        getErrorsPane().should('not.be.visible');
         getTabButtons().eq(2).click();
-        const charts = [{
-            id: 'clusterHealth',
-            label: 'Cluster health',
-            type: 'nv-noData'
-        }];
-        verifyCharts(charts);
+        cy.get('.alert-info').should('be.visible').and('contain', 'Charts are not available because GraphDB is not in cluster configuration');
     });
 });

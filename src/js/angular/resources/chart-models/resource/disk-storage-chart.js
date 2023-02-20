@@ -27,6 +27,10 @@ export class DiskStorageChart extends ChartData {
         Object.assign(chartOptions.chart, diskStorageChartOptions);
     }
 
+    getTitle() {
+        return this.translateService.instant('resource.storage.label');
+    }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.storage.used'),

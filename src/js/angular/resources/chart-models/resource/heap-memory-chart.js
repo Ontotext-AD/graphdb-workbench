@@ -4,12 +4,11 @@ export class HeapMemoryChart extends ChartData {
     constructor(translateService, chartOptions) {
         super(translateService, chartOptions, false, false);
     }
-    chartSetup(chartOptions) {
-        chartOptions.chart.color = d3.scale.category10().range();
-        chartOptions.title = {
-            className: 'chart-additional-info'
-        };
+
+    getTitle() {
+        return this.translateService.instant('resource.memory.heap.label');
     }
+
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.memory.committed'),
@@ -35,8 +34,7 @@ export class HeapMemoryChart extends ChartData {
     setMaxHeapSize(max, dataHolder) {
         if (max > 0) {
             const maxMemory = this.formatBytesValue(max);
-            this.chartOptions.title.enable = true;
-            this.chartOptions.title.text = this.translateService.instant('resource.memory.heap.max', {max: maxMemory});
+            this.setSubTitle(this.translateService.instant('resource.memory.heap.max', {max: maxMemory}));
         }
     }
 
