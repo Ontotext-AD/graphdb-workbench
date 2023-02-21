@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class DiskStorageChart extends ChartData {
-    constructor(translateService, chartOptions) {
-        super(translateService, chartOptions, true, true);
+    constructor(translateService) {
+        super(translateService, true, true);
     }
     chartSetup(chartOptions) {
         const diskStorageChartOptions = {
@@ -29,6 +29,17 @@ export class DiskStorageChart extends ChartData {
 
     getTitle() {
         return this.translateService.instant('resource.storage.label');
+    }
+
+    translateLabels(dataHolder) {
+        super.translateLabels(dataHolder);
+        const [used, free] = dataHolder;
+        used.values[0][0] = this.translateService.instant('resource.storage.data');
+        used.values[1][0] = this.translateService.instant('resource.storage.work');
+        used.values[2][0] = this.translateService.instant('resource.storage.logs');
+        free.values[0][0] = this.translateService.instant('resource.storage.data');
+        free.values[1][0] = this.translateService.instant('resource.storage.work');
+        free.values[2][0] = this.translateService.instant('resource.storage.logs');
     }
 
     createDataHolder() {

@@ -23,10 +23,18 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService',
-    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService',
+    function($scope, $rootScope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService) {
         const POLLING_INTERVAL = 2000;
         const MAX_RETRIES = 3;
+
+        $rootScope.$on('$translateChangeSuccess', function (event, args) {
+            Object.values($scope.resourceMonitorData).forEach((chart) => chart.refresh());
+            Object.values($scope.performanceMonitorData).forEach((chart) => chart.refresh());
+            Object.values($scope.structuresMonitorData).forEach((chart) => chart.refresh());
+            $scope.clusterHealthChart.refresh();
+        });
+
         $scope.resourceMonitorData = {
             cpuLoad: new CpuLoadChart($translate),
             fileDescriptors: new FileDescriptorsChart($translate),
