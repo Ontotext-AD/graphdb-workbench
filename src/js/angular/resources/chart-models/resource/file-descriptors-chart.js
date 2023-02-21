@@ -5,8 +5,9 @@ export class FileDescriptorsChart extends ChartData {
         super(translateService, false, false);
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.system.file_descriptors.label');
+    chartSetup(chartOptions) {
+        chartOptions.chart.yAxis.tickFormat = (d) => this.numberFormatter(d);
+        chartOptions.chart.color = [chartOptions.chart.color[1]];
     }
 
     createDataHolder() {
@@ -18,14 +19,18 @@ export class FileDescriptorsChart extends ChartData {
     }
     addNewData(dataHolder, timestamp, data) {
         if (!data.openFileDescriptors) {
-            this.setSubTitle(this.translateService.instant('resource.system.file_descriptors.only_unix'));
+            const subTitleKeyValues = [{
+                label: this.translateService.instant('resource.system.file_descriptors.only_unix')
+            }];
+            this.setSubTitle(subTitleKeyValues);
             return;
         }
         dataHolder[0].values.push([timestamp, data.openFileDescriptors]);
-        if (!this.chartOptions.title.enable) {
-            this.chartOptions.title.enable = true;
-        }
-        this.setSubTitle(this.translateService.instant('resource.system.file_descriptors.max', {max: data.maxFileDescriptors}));
+        const subTitleKeyValues = [{
+            label: this.translateService.instant('resource.system.file_descriptors.max'),
+            value: this.numberFormatter(data.maxFileDescriptors)
+        }];
+        this.setSubTitle(subTitleKeyValues);
     }
     updateRange(dataHolder) {
         super.updateRange(dataHolder, 2);

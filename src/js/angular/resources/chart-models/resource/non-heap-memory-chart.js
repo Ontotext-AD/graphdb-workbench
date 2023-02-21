@@ -5,10 +5,6 @@ export class NonHeapMemoryChart extends HeapMemoryChart {
         super(translateService, false, false);
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.memory.non_heap.label');
-    }
-
     parseData(data) {
         return data.nonHeapMemoryUsage;
     }

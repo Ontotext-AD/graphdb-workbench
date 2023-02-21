@@ -1,3 +1,5 @@
+import {formatLocale} from "d3-format";
+
 export class ChartData {
     /**
      * Defines the default multiplier for chart overhead. The space above the maximum value.
@@ -13,8 +15,17 @@ export class ChartData {
         return 10;
     }
 
+    static get COLORS() {
+        return ['#003663', '#E84E0F', '#02A99A', '#999999'];
+    }
+
     constructor(translateService, disableRangeUpdate, disableOldDataRemoval) {
         this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
+        const locale = {
+            thousands: " ",
+            grouping: [3]
+        };
+        this.numberFormatter = formatLocale(locale).format(",");
     }
 
     initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval, resetData = true) {
@@ -51,25 +62,16 @@ export class ChartData {
         });
     }
 
-    /**
-     * Must implement
-     * @return {string} the title name
-     */
-    getTitle() {
-        return 'No chart title set';
-    }
-
-    setTitle(title) {
+    setSubTitle(keyValues) {
         this.chartOptions.title.enable = true;
-        this.chartOptions.title.text = title;
-    }
-
-    getSubTitle() {
-    }
-
-    setSubTitle(subTitle) {
-        this.chartOptions.subtitle.enable = true;
-        this.chartOptions.subtitle.html = subTitle;
+        const subTitle = keyValues.map((keyValue) => {
+            let values = keyValue.value;
+            if (Array.isArray(keyValue.value)) {
+                values = keyValue.value.join('/');
+            }
+            return keyValue.label + (keyValue.value !== undefined ? `<span class="data-value">${values}</span>` : '');
+        });
+        this.chartOptions.title.html = subTitle.map((subTitleElement) => `<span class="info-element">${subTitleElement}</span>`);
     }
 
     /**
@@ -93,13 +95,9 @@ export class ChartData {
      * @param newData the new data
      */
     addData(timestamp, newData) {
-        if (!this.disableOldDataRemoval) {
-            this.removeOldData(this.dataHolder, this.range);
-        }
+        this.removeOldData(this.dataHolder, this.range);
         this.addNewData(this.dataHolder, timestamp, newData, this.isFirstLoad());
-        if (!this.disableRangeUpdate) {
-            this.updateRange(this.dataHolder);
-        }
+        this.updateRange(this.dataHolder);
         if (this.firstLoad) {
             this.firstLoad = false;
         }
@@ -111,6 +109,9 @@ export class ChartData {
      * @param range the number of entries to keep
      */
     removeOldData(dataHolder, range) {
+        if (this.disableOldDataRemoval) {
+            return;
+        }
         if (dataHolder[0].values.length > range) {
             dataHolder.forEach((data) => data.values.shift());
         }
@@ -133,6 +134,9 @@ export class ChartData {
      * @param multiplier
      */
     updateRange(dataHolder, multiplier) {
+        if (this.disableRangeUpdate) {
+            return;
+        }
         const [domainUpperBound] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
         this.chartOptions.chart.yDomain = [0, domainUpperBound];
     }
@@ -178,16 +182,12 @@ export class ChartData {
                 legend: {
                     maxKeyLength: 100
                 },
-                color: d3.scale.category10().range()
+                color: ChartData.COLORS
             },
             title: {
                 enable: true,
-                text: this.getTitle()
-            },
-            subtitle: {
                 className: 'chart-additional-info',
-                enable: true,
-                text: this.getSubTitle()
+                html: ' '
             }
         };
     }
@@ -239,5 +239,19 @@ export class ChartData {
     static getIntegerRangeForValues(dataHolder, multiplier) {
         const [maxChartValue, divisions] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
         return d3.range(0, maxChartValue + 1, divisions);
+    }
+
+    static formatBytesValue(value, dataHolder) {
+        let maxChartValue = value;
+        if (dataHolder) {
+            maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
+        }
+
+        const k = 1024;
+        const i = Math.floor(Math.log(maxChartValue) / Math.log(k));
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const relativeValue = parseFloat(value) / Math.pow(k, i);
+        return `${relativeValue.toFixed(2)} ${sizes[i]}`;
     }
 }

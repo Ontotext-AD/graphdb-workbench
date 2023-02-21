@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'ResourcesCtrl',
     'templateUrl': 'pages/monitor/resources.html',
     'title': 'view.resource.monitoring.title',
-    'helpInfo': 'view.resource.monitoring.helpInfo'
+    'helpInfo': 'view.resource.monitoring.helpInfo',
+    'reloadOnSearch': false
 });
 
 PluginRegistry.add('main.menu', {

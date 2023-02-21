@@ -5,6 +5,10 @@ export class GlobalCacheChart extends ChartData {
         super(translateService, false, false);
     }
 
+    chartSetup(chartOptions) {
+        chartOptions.chart.yAxis.tickFormat = (d) => this.numberFormatter(d);
+    }
+
     getTitle() {
         return this.translateService.instant('resources.global_cache.label');
     }

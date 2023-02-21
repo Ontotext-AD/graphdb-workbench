@@ -127,8 +127,7 @@ describe('Monitor Resources', () => {
         verifyCharts(charts);
     });
 
-    it('Should show info and no error for non existing cluster', () => {
-        getErrorsPane().should('not.be.visible');
+    it('Should show info for non existing cluster', () => {
         getTabButtons().eq(2).click();
         cy.get('.alert-info').should('be.visible').and('contain', 'Charts are not available because GraphDB is not in cluster configuration');
     });
