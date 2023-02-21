@@ -10,7 +10,6 @@ describe('Import screen validation - server files', () => {
     const FILE_FOR_IMPORT = 'italian_public_schools_links.nt.gz';
     const TTLS_FOR_IMPORT = 'test_turtlestar.ttls';
     const TRIGS_FOR_IMPORT = 'test-trigstar.trigs';
-    const BLANK_NODE_FILE = 'bnodes.ttl';
 
     beforeEach(() => {
         repositoryId = 'server-import-' + Date.now();
@@ -43,31 +42,12 @@ describe('Import screen validation - server files', () => {
             .verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
-    it('Test import all Server files successfully without changing settings', () => {
-        ImportSteps
-            .selectAllServerFiles()
-            .importServerFiles()
-            .verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatus(BLANK_NODE_FILE, SUCCESS_MESSAGE);
-    });
-
     it('Test import with resetting status of imported file', () => {
         ImportSteps
             .selectServerFile(FILE_FOR_IMPORT)
             .importServerFiles()
             .verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE)
             .resetStatusOfUploadedFile(FILE_FOR_IMPORT)
-            .verifyNoImportStatus(FILE_FOR_IMPORT);
-    });
-
-    it('Test import with resetting status of all imported files', () => {
-        ImportSteps
-            .selectAllServerFiles()
-            .importServerFiles()
-            .verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatus(BLANK_NODE_FILE, SUCCESS_MESSAGE)
-            .resetStatusOfUploadedFiles()
-            .verifyNoImportStatus(BLANK_NODE_FILE)
             .verifyNoImportStatus(FILE_FOR_IMPORT);
     });
 

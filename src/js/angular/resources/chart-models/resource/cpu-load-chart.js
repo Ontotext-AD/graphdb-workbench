@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class CpuLoadChart extends ChartData {
-    constructor(translateService, chartOptions) {
-        super(translateService, chartOptions, false, false);
+    constructor(translateService) {
+        super(translateService, false, false);
     }
     chartSetup(chartOptions) {
         chartOptions.chart.yAxis.tickFormat = function (d) {
