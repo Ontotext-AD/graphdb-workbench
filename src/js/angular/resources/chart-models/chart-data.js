@@ -17,7 +17,8 @@ export class ChartData {
         return ['#003663', '#E84E0F', '#02A99A', '#999999'];
     }
 
-    constructor(translateService, disableRangeUpdate, disableOldDataRemoval) {
+    constructor(translateService, disableRangeUpdate, disableOldDataRemoval, filter) {
+        this.filter = filter;
         this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
     }
 
@@ -248,10 +249,11 @@ export class ChartData {
         return `${relativeValue.toFixed(2)} ${sizes[i]}`;
     }
 
-    static formatNumber(value) {
-        if (!value) {
+    formatNumber(value) {
+        if (!value || !this.filter) {
             return;
         }
-        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        // This may look strange, but I made it like this for consistency. When/if fixing it will be easier to find.
+        return this.filter('currency')(value, '', 0);
     }
 }

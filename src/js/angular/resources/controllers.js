@@ -23,8 +23,8 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService',
-    function($scope, $rootScope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService', '$filter',
+    function($scope, $rootScope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService, $filter) {
         const POLLING_INTERVAL = 2000;
         const MAX_RETRIES = 3;
 
@@ -53,7 +53,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
             },
             charts: {
                 cpuLoad: new CpuLoadChart($translate),
-                fileDescriptors: new FileDescriptorsChart($translate),
+                fileDescriptors: new FileDescriptorsChart($translate, $filter),
                 heapMemory: new HeapMemoryChart($translate),
                 offHeapMemory: new NonHeapMemoryChart($translate),
                 diskStorage: new DiskStorageChart($translate)
@@ -78,7 +78,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
                 retries: 0
             },
             charts: {
-                globalCacheChart: new GlobalCacheChart($translate)
+                globalCacheChart: new GlobalCacheChart($translate, $filter)
             }
         };
         $scope.clusterHealthData = {
