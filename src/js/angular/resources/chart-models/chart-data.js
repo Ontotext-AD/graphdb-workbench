@@ -1,5 +1,3 @@
-import {formatLocale} from "d3-format";
-
 export class ChartData {
     /**
      * Defines the default multiplier for chart overhead. The space above the maximum value.
@@ -21,11 +19,6 @@ export class ChartData {
 
     constructor(translateService, disableRangeUpdate, disableOldDataRemoval) {
         this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
-        const locale = {
-            thousands: " ",
-            grouping: [3]
-        };
-        this.numberFormatter = formatLocale(locale).format(",");
     }
 
     initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval, resetData = true) {
@@ -253,5 +246,12 @@ export class ChartData {
 
         const relativeValue = parseFloat(value) / Math.pow(k, i);
         return `${relativeValue.toFixed(2)} ${sizes[i]}`;
+    }
+
+    static formatNumber(value) {
+        if (!value) {
+            return;
+        }
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     }
 }

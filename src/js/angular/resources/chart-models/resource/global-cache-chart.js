@@ -6,7 +6,7 @@ export class GlobalCacheChart extends ChartData {
     }
 
     chartSetup(chartOptions) {
-        chartOptions.chart.yAxis.tickFormat = (d) => this.numberFormatter(d);
+        chartOptions.chart.yAxis.tickFormat = (d) => GlobalCacheChart.formatNumber(d);
     }
 
     getTitle() {

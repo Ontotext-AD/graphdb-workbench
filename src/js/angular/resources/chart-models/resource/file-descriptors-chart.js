@@ -6,7 +6,7 @@ export class FileDescriptorsChart extends ChartData {
     }
 
     chartSetup(chartOptions) {
-        chartOptions.chart.yAxis.tickFormat = (d) => this.numberFormatter(d);
+        chartOptions.chart.yAxis.tickFormat = (d) => FileDescriptorsChart.formatNumber(d);
         chartOptions.chart.color = [chartOptions.chart.color[1]];
     }
 
@@ -28,7 +28,7 @@ export class FileDescriptorsChart extends ChartData {
         dataHolder[0].values.push([timestamp, data.openFileDescriptors]);
         const subTitleKeyValues = [{
             label: this.translateService.instant('resource.system.file_descriptors.max'),
-            value: this.numberFormatter(data.maxFileDescriptors)
+            value: FileDescriptorsChart.formatNumber(data.maxFileDescriptors)
         }];
         this.setSubTitle(subTitleKeyValues);
     }
