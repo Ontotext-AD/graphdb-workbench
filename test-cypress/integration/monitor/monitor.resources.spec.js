@@ -10,7 +10,7 @@ describe('Monitor Resources', () => {
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/monitor/resources');
+        cy.visit('/monitor/system');
         cy.window();
 
         // Wait for loaders to disappear

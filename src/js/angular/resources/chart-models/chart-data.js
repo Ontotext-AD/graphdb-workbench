@@ -57,14 +57,14 @@ export class ChartData {
 
     setSubTitle(keyValues) {
         this.chartOptions.title.enable = true;
-        const subTitle = keyValues.map((keyValue) => {
-            let values = keyValue.value;
-            if (Array.isArray(keyValue.value)) {
-                values = keyValue.value.join('/');
+        const subTitleElements = keyValues.map((keyValue) => {
+            if (Array.isArray(keyValue.value) && !keyValue.value.length) {
+                return;
             }
-            return keyValue.label + (keyValue.value !== undefined ? `<span class="data-value">${values}</span>` : '');
+            const values = Array.isArray(keyValue.value) ? keyValue.value.join('/') : keyValue.value;
+            return keyValue.label + (values !== undefined ? `<span class="data-value">${values}</span>` : '');
         });
-        this.chartOptions.title.html = subTitle.map((subTitleElement) => `<span class="info-element">${subTitleElement}</span>`);
+        this.chartOptions.title.html = subTitleElements.map((subTitleElement) => `<span class="info-element">${subTitleElement}</span>`);
     }
 
     /**
