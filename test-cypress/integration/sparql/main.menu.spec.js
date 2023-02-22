@@ -64,9 +64,9 @@ describe('Main menu tests', function () {
                         redirect: '/queries'
                     },
                     {
-                        name: 'Resources',
+                        name: 'System',
                         visible: false,
-                        redirect: '/resources'
+                        redirect: '/system'
                     }
                 ]
             },

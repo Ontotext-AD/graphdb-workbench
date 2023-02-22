@@ -10,10 +10,6 @@ export class ConnectionsChart extends ChartData {
         };
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.connections.label');
-    }
-
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.connections.active'),

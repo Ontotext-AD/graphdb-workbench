@@ -192,18 +192,18 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
-            expect($scope.resourceMonitorData.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550]]}])
-            expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
-            expect($scope.resourceMonitorData.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392]]}])
-            expect($scope.resourceMonitorData.diskStorage.dataHolder).toEqual([{key: "Used", values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
+            expect($scope.resourceMonitorData.charts.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
+            expect($scope.resourceMonitorData.charts.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550]]}])
+            expect($scope.resourceMonitorData.charts.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
+            expect($scope.resourceMonitorData.charts.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392]]}])
+            expect($scope.resourceMonitorData.charts.diskStorage.dataHolder).toEqual([{key: "Used", color: '#E84E0F', values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', color: '#003663', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '19.6955']]}])
-            expect($scope.resourceMonitorData.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550], [today, 550]]}])
-            expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496], [today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560], [today, 212264560]]}])
-            expect($scope.resourceMonitorData.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440], [today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392], [today, 122066392]]}])
-            expect($scope.resourceMonitorData.diskStorage.dataHolder).toEqual([{key: "Used", values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
+            expect($scope.resourceMonitorData.charts.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '19.6955']]}])
+            expect($scope.resourceMonitorData.charts.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550], [today, 550]]}])
+            expect($scope.resourceMonitorData.charts.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496], [today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560], [today, 212264560]]}])
+            expect($scope.resourceMonitorData.charts.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440], [today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392], [today, 122066392]]}])
+            expect($scope.resourceMonitorData.charts.diskStorage.dataHolder).toEqual([{key: "Used", color: '#E84E0F', values: [['Data', 0.9574564407462561], ['Work',0.9574564407462561], ['Logs', 0.9574564407462561]]}, {key: 'Free', color: '#003663', values: [['Data', 0.042543559253743896], ['Work', 0.042543559253743896], ['Logs', 0.042543559253743896]]}])
         });
 
         it('should set performance monitor charts data correct', function () {
@@ -212,17 +212,17 @@ describe('=> ResourcesCtrl tests', function () {
             var today = new Date();
 
             $httpBackend.flush();
-            expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0]]}, {key: "Open connections", values: [[today, 0]]}]);
-            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122]]}]);
-            expect($scope.performanceMonitorData.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
-            expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759]]}, {key: 'Miss', values: [[today, 558]]}]);
+            expect($scope.performanceMonitorData.charts.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0]]}, {key: "Open connections", values: [[today, 0]]}]);
+            expect($scope.performanceMonitorData.charts.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122]]}]);
+            expect($scope.performanceMonitorData.charts.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0]]}]);
+            expect($scope.structuresMonitorData.charts.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759]]}, {key: 'Miss', values: [[today, 558]]}]);
             $timeout.flush(2001);
             $httpBackend.flush();
 
-            expect($scope.performanceMonitorData.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0], [today, 0]]}, {key: "Open connections", values: [[today, 0], [today, 0]]}]);
-            expect($scope.performanceMonitorData.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
-            expect($scope.performanceMonitorData.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
-            expect($scope.structuresMonitorData.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
+            expect($scope.performanceMonitorData.charts.connectionsChart.dataHolder).toEqual([{key: "Active transactions", values: [[today, 0], [today, 0]]}, {key: "Open connections", values: [[today, 0], [today, 0]]}]);
+            expect($scope.performanceMonitorData.charts.epoolChart.dataHolder).toEqual([{key: "Reads", type: 'line', yAxis: 1, values: [[today, 0, 10504], [today, 0, 10504]]}, {key: "Writes", type: 'line', yAxis: 2, values: [[today, 0, 122], [today, 0, 122]]}]);
+            expect($scope.performanceMonitorData.charts.queriesChart.dataHolder).toEqual([{key: "Running queries", values: [[today, 0], [today, 0]]}]);
+            expect($scope.structuresMonitorData.charts.globalCacheChart.dataHolder).toEqual([{key: "Hit", values: [[today, 5759], [today, 5759]]}, {key: 'Miss', values: [[today, 558], [today, 558]]}]);
         });
 
         it('should set cluster health monitor charts data correct', function () {
@@ -231,19 +231,19 @@ describe('=> ResourcesCtrl tests', function () {
             var today = new Date();
 
             $httpBackend.flush();
-            expect($scope.clusterHealthChart.dataHolder).toEqual([
-                {key: 'In sync', values: [[today, 3]]},
-                {key: 'Syncing', color: '#ff5508', values: [[today, 0]]},
-                {key: 'Out of sync', color: '#f52121', values: [[today, 0]]},
+            expect($scope.clusterHealthData.charts.clusterHealthChart.dataHolder).toEqual([
+                {key: 'In sync', color: '#003663', values: [[today, 3]]},
+                {key: 'Syncing', color: '#02A99A', values: [[today, 0]]},
+                {key: 'Out of sync', color: '#E84E0F', values: [[today, 0]]},
                 {key: 'Disconnected', color: '#999999', values: [[today, 0]]}
             ]);
             $timeout.flush(2001);
             $httpBackend.flush();
 
-            expect($scope.clusterHealthChart.dataHolder).toEqual([
-                {key: 'In sync', values: [[today, 3], [today, 3]]},
-                {key: 'Syncing', color: '#ff5508', values: [[today, 0], [today, 0]]},
-                {key: 'Out of sync', color: '#f52121', values: [[today, 0], [today, 0]]},
+            expect($scope.clusterHealthData.charts.clusterHealthChart.dataHolder).toEqual([
+                {key: 'In sync', color: '#003663', values: [[today, 3], [today, 3]]},
+                {key: 'Syncing', color: '#02A99A', values: [[today, 0], [today, 0]]},
+                {key: 'Out of sync', color: '#E84E0F', values: [[today, 0], [today, 0]]},
                 {key: 'Disconnected', color: '#999999', values: [[today, 0], [today, 0]]}
             ]);
         });
@@ -257,8 +257,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
-            expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 39.391])
+            expect($scope.resourceMonitorData.charts.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955']]}])
+            expect($scope.resourceMonitorData.charts.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 39.391])
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
@@ -293,8 +293,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '51.6955']]}]);
-            expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 100]);
+            expect($scope.resourceMonitorData.charts.cpuLoad.dataHolder).toEqual([{key: "System CPU load", values: [[today, '19.6955'], [today, '51.6955']]}]);
+            expect($scope.resourceMonitorData.charts.cpuLoad.chartOptions.chart.yDomain).toEqual([0, 100]);
         });
 
         it('should set file descriptors yDomain to 0, max*2', function () {
@@ -306,8 +306,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550]]}])
-            expect($scope.resourceMonitorData.fileDescriptors.chartOptions.chart.yDomain).toEqual([0, 1100])
+            expect($scope.resourceMonitorData.charts.fileDescriptors.dataHolder).toEqual([{key: "Open file descriptors", area: 'true', values: [[today, 550]]}])
+            expect($scope.resourceMonitorData.charts.fileDescriptors.chartOptions.chart.yDomain).toEqual([0, 1100])
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
@@ -342,7 +342,7 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.fileDescriptors.chartOptions.chart.yDomain).toEqual([0, 1200])
+            expect($scope.resourceMonitorData.charts.fileDescriptors.chartOptions.chart.yDomain).toEqual([0, 1200])
         })
 
         it('should set heap memory yDomain to 0, max*1.2', function () {
@@ -354,8 +354,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(703594496*1.2)]);
+            expect($scope.resourceMonitorData.charts.heapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 703594496]]}, {key: 'Used memory', area: 'true', values: [[today, 212264560]]}])
+            expect($scope.resourceMonitorData.charts.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(703594496*1.2)]);
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
@@ -390,7 +390,7 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(783594496*1.2)])
+            expect($scope.resourceMonitorData.charts.heapMemory.chartOptions.chart.yDomain).toEqual([0, Math.round(783594496*1.2)])
         })
 
         it('should set non-heap memory yDomain to 0, max*1.2', function () {
@@ -402,8 +402,8 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2001);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392]]}])
-            expect($scope.resourceMonitorData.offHeapMemory.chartOptions.chart.yDomain).toEqual([0, 124477440*1.2])
+            expect($scope.resourceMonitorData.charts.offHeapMemory.dataHolder).toEqual([{key: "Committed memory", values: [[today, 124477440]]}, {key: 'Used memory', area: 'true', values: [[today, 122066392]]}])
+            expect($scope.resourceMonitorData.charts.offHeapMemory.chartOptions.chart.yDomain).toEqual([0, 124477440*1.2])
 
             httpGetResourcesData.respond(200, {
                 "heapMemoryUsage": {
@@ -438,7 +438,7 @@ describe('=> ResourcesCtrl tests', function () {
 
             $timeout.flush(2000);
             $httpBackend.flush();
-            expect($scope.resourceMonitorData.offHeapMemory.chartOptions.chart.yDomain).toEqual([0, 164477440*1.2])
+            expect($scope.resourceMonitorData.charts.offHeapMemory.chartOptions.chart.yDomain).toEqual([0, 164477440*1.2])
         })
     });
 
@@ -483,11 +483,11 @@ describe('=> ResourcesCtrl tests', function () {
             $timeout.flush(2001);
             $httpBackend.flush();
 
-            expect($scope.resourceMonitorData.cpuLoad.chartOptions.chart.yAxis.tickFormat(123)).toEqual('123%');
-            expect($scope.resourceMonitorData.fileDescriptors.chartOptions.chart.yAxis.tickFormat(50)).toEqual(50);
-            expect($scope.resourceMonitorData.heapMemory.chartOptions.chart.yAxis.tickFormat(8589934592)).toEqual('8.00 GB');
-            expect($scope.resourceMonitorData.offHeapMemory.chartOptions.chart.yAxis.tickFormat(265289728)).toEqual('253.00 MB');
-            expect($scope.resourceMonitorData.diskStorage.chartOptions.chart.yAxis.tickFormat(0.5)).toEqual('50.00%');
+            expect($scope.resourceMonitorData.charts.cpuLoad.chartOptions.chart.yAxis.tickFormat(123)).toEqual('123%');
+            expect($scope.resourceMonitorData.charts.fileDescriptors.chartOptions.chart.yAxis.tickFormat(50)).toEqual('50');
+            expect($scope.resourceMonitorData.charts.heapMemory.chartOptions.chart.yAxis.tickFormat(8589934592)).toEqual('8.00 GB');
+            expect($scope.resourceMonitorData.charts.offHeapMemory.chartOptions.chart.yAxis.tickFormat(265289728)).toEqual('253.00 MB');
+            expect($scope.resourceMonitorData.charts.diskStorage.chartOptions.chart.yAxis.tickFormat(0.5)).toEqual('50.00%');
         });
     });
 
