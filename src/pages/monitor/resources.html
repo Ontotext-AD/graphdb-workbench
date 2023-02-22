@@ -19,56 +19,96 @@
 </h1>
 
 <div id="wb-monitoringResources" class="ot-owlim-resources">
-    <div class="row ng-scope" ng-show="!loader && error">
-        <div class="alert alert-danger errors">
-            <div class="error" ng-repeat="monitor in monitors" ng-if="monitor.error.hasError">
-                {{'common.error' | translate}}: {{monitor.error.message}} {{'monitor.retrying' | translate: {retry: monitor.error.retries} }}
-            </div>
-            <br/>
-            {{'refresh.to.retry' | translate}}
-        </div>
-    </div>
-
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
 
     <div ng-if="!loader" class="graphics row">
                 <div class="monitor-tabs">
                     <ul class="nav nav-tabs">
                         <li class="resource-tab nav-item">
-                            <span class="nav-link" ng-click="switchTab('resourceMonitor')" ng-class="activeTab == 'resourceMonitor' ? 'active':''">{{'monitor.resource' | translate}}</span>
+                            <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.RESOURCE_MONITOR)" ng-class="activeTab == AVAILABLE_TABS.RESOURCE_MONITOR ? 'active':''">{{'monitor.resource' | translate}}</span>
                         </li>
                         <li class="performance-tab nav-item">
-                            <span class="nav-link" ng-click="switchTab('performanceMonitor')" ng-class="activeTab == 'performanceMonitor' ? 'active':''">{{'monitor.performance.label' | translate}}</span>
+                            <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.PERFORMANCE_MONITOR)" ng-class="activeTab == AVAILABLE_TABS.PERFORMANCE_MONITOR ? 'active':''">{{'monitor.performance.label' | translate}}</span>
                         </li>
                         <li class="cluster-tab nav-item">
-                            <span class="nav-link" ng-click="switchTab('clusterHealth')" ng-class="activeTab == 'clusterHealth' ? 'active':''">{{'monitor.cluster' | translate}}</span>
+                            <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.CLUSTER_HEALTH)" ng-class="activeTab == AVAILABLE_TABS.CLUSTER_HEALTH ? 'active':''">{{'monitor.cluster' | translate}}</span>
                         </li>
                     </ul>
                     <div class="tabs ml-2 mr-2">
-                        <div class="tab-pane fade in" ng-if="activeTab === 'resourceMonitor'" id="resourceTab">
+                        <div class="tab-pane fade in" ng-if="activeTab === AVAILABLE_TABS.RESOURCE_MONITOR" id="resourceTab">
                             <div class="row mt-2">
                                 <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="resourceMonitorData.cpuLoad.chartOptions" data="resourceMonitorData.cpuLoad.dataHolder"></div>
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resource.system.cpu_load.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resource.system.cpu_load.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                            <span class="icon-info"></span>
+                                        </span>
+                                    </div>
+                                    <div ng-if="resourceMonitorData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: resourceMonitorData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!resourceMonitorData.error.hasError" nvd3 options="resourceMonitorData.charts.cpuLoad.chartOptions" data="resourceMonitorData.charts.cpuLoad.dataHolder"></div>
                                 </div>
                                 <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="resourceMonitorData.fileDescriptors.chartOptions" data="resourceMonitorData.fileDescriptors.dataHolder"></div>
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resource.system.file_descriptors.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resource.system.file_descriptors.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                            <span class="icon-info"></span>
+                                        </span>
+                                    </div>
+                                    <div ng-if="resourceMonitorData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: resourceMonitorData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!resourceMonitorData.error.hasError" nvd3 options="resourceMonitorData.charts.fileDescriptors.chartOptions" data="resourceMonitorData.charts.fileDescriptors.dataHolder"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="resourceMonitorData.heapMemory.chartOptions" data="resourceMonitorData.heapMemory.dataHolder"></div>
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resource.memory.heap.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resource.memory.heap.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                            <span class="icon-info"></span>
+                                        </span>
+                                    </div>
+                                    <div ng-if="resourceMonitorData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: resourceMonitorData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!resourceMonitorData.error.hasError" nvd3 options="resourceMonitorData.charts.heapMemory.chartOptions" data="resourceMonitorData.charts.heapMemory.dataHolder"></div>
                                 </div>
                                 <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="resourceMonitorData.offHeapMemory.chartOptions" data="resourceMonitorData.offHeapMemory.dataHolder"></div>
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resource.memory.non_heap.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resource.memory.non_heap.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                            <span class="icon-info"></span>
+                                        </span>
+                                    </div>
+                                    <div ng-if="resourceMonitorData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: resourceMonitorData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!resourceMonitorData.error.hasError" nvd3 options="resourceMonitorData.charts.offHeapMemory.chartOptions" data="resourceMonitorData.charts.offHeapMemory.dataHolder"></div>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div id="diskStorage" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="resourceMonitorData.diskStorage.chartOptions" data="resourceMonitorData.diskStorage.dataHolder"></div>
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resource.storage.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resource.storage.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                            <span class="icon-info"></span>
+                                        </span>
+                                    </div>
+                                    <div ng-if="resourceMonitorData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: resourceMonitorData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!resourceMonitorData.error.hasError" nvd3 options="resourceMonitorData.charts.diskStorage.chartOptions" data="resourceMonitorData.charts.diskStorage.dataHolder"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade in" ng-if="activeTab === 'performanceMonitor'" id="performanceMonitorTab">
+                        <div class="tab-pane fade in" ng-if="activeTab === AVAILABLE_TABS.PERFORMANCE_MONITOR" id="performanceMonitorTab">
                             <div class="row mt-2">
                                 <div class="alert lead alert-info" ng-show="!getActiveRepository()">
                                     {{'monitor.performance.no_repository' | translate}}
@@ -77,31 +117,81 @@
                             <div ng-if="getActiveRepository()">
                                 <div class="row mt-2">
                                     <div id="activeQueries" class="col-lg-12 col-xl-6">
-                                        <div nvd3 options="performanceMonitorData.queriesChart.chartOptions" data="performanceMonitorData.queriesChart.dataHolder"></div>
+                                        <div class="title h4" style="text-align: center;">
+                                            {{'resource.queries.label' | translate}}
+                                            <span class="btn btn-link" popover="{{'resource.queries.tooltip' | translate}}" popover-trigger="mouseenter"
+                                                  popover-placement="bottom">
+                                                <span class="icon-info"></span>
+                                            </span>
+                                        </div>
+                                        <div ng-if="performanceMonitorData.error.hasError" class="alert alert-danger errors">
+                                            {{'common.error' | translate}}: {{resourceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: performanceMonitorData.error.retries} }}
+                                        </div>
+                                        <div ng-if="!performanceMonitorData.error.hasError" nvd3 options="performanceMonitorData.charts.queriesChart.chartOptions" data="performanceMonitorData.charts.queriesChart.dataHolder"></div>
                                     </div>
-                                    <div id="globalCache" class="col-lg-12 col-xl-6">
-                                        <div nvd3 options="structuresMonitorData.globalCacheChart.chartOptions" data="structuresMonitorData.globalCacheChart.dataHolder"></div>
+                                    <div id="connections" class="col-lg-12 col-xl-6">
+                                        <div class="title h4" style="text-align: center;">
+                                            {{'resource.connections.label' | translate}}
+                                            <span class="btn btn-link" popover="{{'resource.connections.tooltip' | translate}}" popover-trigger="mouseenter"
+                                                  popover-placement="bottom">
+                                                <span class="icon-info"></span>
+                                            </span>
+                                        </div>
+                                        <div ng-if="performanceMonitorData.error.hasError" class="alert alert-danger errors">
+                                            {{'common.error' | translate}}: {{performanceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: performanceMonitorData.error.retries} }}
+                                        </div>
+                                        <div ng-if="!performanceMonitorData.error.hasError" nvd3 options="performanceMonitorData.charts.connectionsChart.chartOptions" data="performanceMonitorData.charts.connectionsChart.dataHolder"></div>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div id="epool" class="col-lg-12 col-xl-6">
-                                        <div nvd3 options="performanceMonitorData.epoolChart.chartOptions" data="performanceMonitorData.epoolChart.dataHolder"></div>
+                                        <div class="title h4" style="text-align: center;">
+                                            {{'resource.epool.label' | translate}}
+                                            <span class="btn btn-link" popover="{{'resource.epool.tooltip' | translate}}" popover-trigger="mouseenter"
+                                                  popover-placement="bottom">
+                                                <span class="icon-info"></span>
+                                            </span>
+                                        </div>
+                                        <div ng-if="performanceMonitorData.error.hasError" class="alert alert-danger errors">
+                                            {{'common.error' | translate}}: {{performanceMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: performanceMonitorData.error.retries} }}
+                                        </div>
+                                        <div ng-if="!performanceMonitorData.error.hasError" nvd3 options="performanceMonitorData.charts.epoolChart.chartOptions" data="performanceMonitorData.charts.epoolChart.dataHolder"></div>
                                     </div>
-                                    <div id="connections" class="col-lg-12 col-xl-6">
-                                        <div nvd3 options="performanceMonitorData.connectionsChart.chartOptions" data="performanceMonitorData.connectionsChart.dataHolder"></div>
+                                    <div id="globalCache" class="col-lg-12 col-xl-6">
+                                        <div class="title h4" style="text-align: center;">
+                                            {{'resources.global_cache.label' | translate}}
+                                            <span class="btn btn-link" popover="{{'resources.global_cache.tooltip' | translate}}" popover-trigger="mouseenter"
+                                                  popover-placement="bottom">
+                                                <span class="icon-info"></span>
+                                            </span>
+                                        </div>
+                                        <div ng-if="structuresMonitorData.error.hasError" class="alert alert-danger errors">
+                                            {{'common.error' | translate}}: {{structuresMonitorData.error.message}} {{'monitor.retrying' | translate: {retry: structuresMonitorData.error.retries} }}
+                                        </div>
+                                        <div ng-if="!structuresMonitorData.error.hasError" nvd3 options="structuresMonitorData.charts.globalCacheChart.chartOptions" data="structuresMonitorData.charts.globalCacheChart.dataHolder"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade in" ng-if="activeTab === 'clusterHealth'" id="clusterHealthMonitorTab">
+                        <div class="tab-pane fade in" ng-if="activeTab === AVAILABLE_TABS.CLUSTER_HEALTH" id="clusterHealthMonitorTab">
                             <div class="row mt-2">
                                 <div class="alert lead alert-info" ng-show="!hasCluster">
                                     {{'monitor.cluster.no_cluster' | translate}}
                                 </div>
                             </div>
                             <div ng-if="hasCluster" class="row mt-2">
-                                <div id="clusterHealth" class="col-lg-12 col-xl-6">
-                                    <div nvd3 options="clusterHealthChart.chartOptions" data="clusterHealthChart.dataHolder"></div>
+                                <div id="clusterHealth" class="col-lg-12">
+                                    <div class="title h4" style="text-align: center;">
+                                        {{'resources.cluster_health.label' | translate}}
+                                        <span class="btn btn-link" popover="{{'resources.cluster_health.tooltip' | translate}}" popover-trigger="mouseenter"
+                                              popover-placement="bottom">
+                                                <span class="icon-info"></span>
+                                            </span>
+                                    </div>
+                                    <div ng-if="clusterHealthData.error.hasError" class="alert alert-danger errors">
+                                        {{'common.error' | translate}}: {{clusterHealthData.error.message}} {{'monitor.retrying' | translate: {retry: clusterHealthData.error.retries} }}
+                                    </div>
+                                    <div ng-if="!clusterHealthData.error.hasError" nvd3 options="clusterHealthData.charts.clusterHealthChart.chartOptions" data="clusterHealthData.charts.clusterHealthChart.dataHolder"></div>
                                 </div>
                             </div>
                         </div>

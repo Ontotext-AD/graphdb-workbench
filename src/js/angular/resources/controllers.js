@@ -23,37 +23,75 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService',
-    function($scope, $rootScope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService', '$filter',
+    function($scope, $rootScope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService, $filter) {
         const POLLING_INTERVAL = 2000;
         const MAX_RETRIES = 3;
 
+        $scope.AVAILABLE_TABS = Object.freeze({
+            'RESOURCE_MONITOR': 'resource',
+            'PERFORMANCE_MONITOR': 'performance',
+            'CLUSTER_HEALTH': 'cluster'
+        });
+
+        const urlFragment = window.location.hash.slice(1);
+        const foundTab = Object.keys($scope.AVAILABLE_TABS).find((key) => $scope.AVAILABLE_TABS[key] === urlFragment);
+        $scope.activeTab = $scope.AVAILABLE_TABS[foundTab] || $scope.AVAILABLE_TABS.RESOURCE_MONITOR;
+
         $rootScope.$on('$translateChangeSuccess', function (event, args) {
-            Object.values($scope.resourceMonitorData).forEach((chart) => chart.refresh());
-            Object.values($scope.performanceMonitorData).forEach((chart) => chart.refresh());
-            Object.values($scope.structuresMonitorData).forEach((chart) => chart.refresh());
-            $scope.clusterHealthChart.refresh();
+            const allDataHolders = [$scope.resourceMonitorData, $scope.performanceMonitorData, $scope.structuresMonitorData, $scope.clusterHealthData];
+            allDataHolders.forEach((chartHolder) => {
+                Object.values(chartHolder.charts).forEach((chart) => chart.refresh());
+            });
         });
 
         $scope.resourceMonitorData = {
-            cpuLoad: new CpuLoadChart($translate),
-            fileDescriptors: new FileDescriptorsChart($translate),
-            heapMemory: new HeapMemoryChart($translate),
-            offHeapMemory: new NonHeapMemoryChart($translate),
-            diskStorage: new DiskStorageChart($translate)
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            charts: {
+                cpuLoad: new CpuLoadChart($translate),
+                fileDescriptors: new FileDescriptorsChart($translate, $filter),
+                heapMemory: new HeapMemoryChart($translate),
+                offHeapMemory: new NonHeapMemoryChart($translate),
+                diskStorage: new DiskStorageChart($translate)
+            }
         };
         $scope.performanceMonitorData = {
-            connectionsChart: new ConnectionsChart($translate),
-            epoolChart: new EpoolChart($translate),
-            queriesChart: new QueriesChart($translate)
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            charts: {
+                connectionsChart: new ConnectionsChart($translate),
+                epoolChart: new EpoolChart($translate),
+                queriesChart: new QueriesChart($translate)
+            }
         };
         $scope.structuresMonitorData = {
-            globalCacheChart: new GlobalCacheChart($translate)
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            charts: {
+                globalCacheChart: new GlobalCacheChart($translate, $filter)
+            }
         };
-        $scope.clusterHealthChart = new ClusterHealthChart($translate);
+        $scope.clusterHealthData = {
+            error: {
+                hasError: false,
+                message: '',
+                retries: 0
+            },
+            charts: {
+                clusterHealthChart: new ClusterHealthChart($translate)
+            }
+        };
 
-        $scope.activeTab = 'resourceMonitor';
-        $scope.error = true;
         $scope.hasCluster = false;
 
         const hasMonitorError = (errorHolder) => {
@@ -64,6 +102,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
 
         $scope.switchTab = (tab) => {
             $scope.activeTab = tab;
+            window.location.hash = tab;
         };
 
         $scope.getActiveRepository = function() {
@@ -71,14 +110,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
         };
 
         const getResourceMonitorData = function() {
-            return MonitoringRestService.monitorResources()
-                .then(function(response) {
-                    processResponse(response, (timestamp, data) => {
-                        Object.values($scope.resourceMonitorData).forEach((chart) => {
-                            chart.addData(timestamp, data);
-                        });
-                    });
-                });
+            return MonitoringRestService.monitorResources();
         };
         const getQueryMonitor = function() {
             const activeRepository = $scope.getActiveRepository();
@@ -88,11 +120,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
             return $q.all([getPerformanceMonitorData(activeRepository), getActiveQueryMonitor(activeRepository)])
                 .then((response) => {
                     const [performanceData, activeQueryData] = response;
-                    processResponse({data: {performanceData, activeQueryData}}, (timestamp, data) => {
-                        Object.values($scope.performanceMonitorData).forEach((chart) => {
-                            chart.addData(timestamp, data);
-                        });
-                    });
+                    return {data: {performanceData, activeQueryData}};
                 });
         };
         const getPerformanceMonitorData = function(activeRepository) {
@@ -113,33 +141,26 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
                 return Promise.resolve();
             }
 
-            return MonitoringRestService.monitorStructures(activeRepository)
-                .then(function(response) {
-                    processResponse(response, (timestamp, data) => {
-                        Object.values($scope.structuresMonitorData).forEach((chart) => {
-                            chart.addData(timestamp, data);
-                        });
-                    });
-                });
+            return MonitoringRestService.monitorStructures(activeRepository);
         };
         const getClusterMonitorData = function() {
-            return MonitoringRestService.monitorCluster()
-                .then(function(response) {
-                    processResponse(response, (timestamp, data) => $scope.clusterHealthChart.addData(timestamp, data));
-                });
+            return MonitoringRestService.monitorCluster();
         };
 
         const getData = (monitor) => {
-            if (hasMonitorError(monitor.error)) {
-                if (monitor.error.retries === MAX_RETRIES) {
+            if (hasMonitorError(monitor.chartsHolder.error)) {
+                if (monitor.chartsHolder.error.retries === MAX_RETRIES) {
                     if (monitor.poll) {
                         $timeout.cancel(monitor.poll);
                     }
                     return Promise.resolve();
                 }
-                monitor.error.retries++;
+                monitor.chartsHolder.error.retries++;
             }
             return monitor.fetchFn()
+                .then(function(response) {
+                    processResponse(response, monitor);
+                })
                 .then(() => {
                     clearMonitorError(monitor);
                 })
@@ -153,31 +174,36 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
                     monitor.poll = $timeout(() => getData(monitor), POLLING_INTERVAL);
                 });
         };
-        const processResponse = (response, dataSetter) => {
+        const processResponse = (response, monitor, dataSetter) => {
             const data = response.data;
             if (data) {
-                setChartData(data, dataSetter);
+                setChartData(data, monitor, dataSetter);
             }
         };
-        const setChartData = (data, dataSetter) => {
+        const setChartData = (data, monitor, dataSetter) => {
             const timestamp = new Date();
-            dataSetter(timestamp, data);
+            if (dataSetter) {
+                dataSetter(timestamp, data);
+            } else {
+                Object.values(monitor.chartsHolder.charts).forEach((chart) => {
+                    chart.addData(timestamp, data);
+                });
+            }
         };
         const setMonitorError = (monitor, error) => {
-            monitor.error.hasError = !!error;
-            if (monitor.error.hasError) {
-                monitor.error.message = getError(error);
+            monitor.chartsHolder.error.hasError = !!error;
+            if (monitor.chartsHolder.error.hasError) {
+                monitor.chartsHolder.error.message = getError(error);
             }
-            $scope.error = Object.values($scope.monitors).some((mon) => mon.error.hasError);
         };
         const clearMonitorError = (monitor) => {
-            monitor.error.hasError = false;
-            monitor.error.message = '';
-            $scope.error = Object.values($scope.monitors).some((mon) => mon.error.hasError);
+            monitor.chartsHolder.error.hasError = false;
+            monitor.chartsHolder.error.message = '';
         };
 
         $scope.monitors = [];
         $scope.monitors.push({
+            chartsHolder: $scope.resourceMonitorData,
             error: {
                 hasError: false,
                 message: '',
@@ -187,6 +213,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
             poll: null
         });
         $scope.monitors.push({
+            chartsHolder: $scope.structuresMonitorData,
             error: {
                 hasError: false,
                 message: '',
@@ -197,6 +224,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
         });
 
         $scope.monitors.push({
+            chartsHolder: $scope.performanceMonitorData,
             error: {
                 hasError: false,
                 message: '',
@@ -210,11 +238,8 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$rootScope', '$timeout', '
             .then(() => {
                 $scope.hasCluster = true;
                 const clusterMonitor = {
-                    error: {
-                        hasError: false,
-                        message: '',
-                        retries: 0
-                    },
+                    chartsHolder: $scope.clusterHealthData,
+
                     fetchFn: getClusterMonitorData,
                     poll: null
                 };

@@ -1,12 +1,13 @@
 PluginRegistry.add('route', {
-    'url': '/monitor/resources',
+    'url': '/monitor/system',
     'module': 'graphdb.framework.jmx.resources',
     'path': 'resources/app',
     'chunk': 'resources',
     'controller': 'ResourcesCtrl',
     'templateUrl': 'pages/monitor/resources.html',
     'title': 'view.resource.monitoring.title',
-    'helpInfo': 'view.resource.monitoring.helpInfo'
+    'helpInfo': 'view.resource.monitoring.helpInfo',
+    'reloadOnSearch': false
 });
 
 PluginRegistry.add('main.menu', {
@@ -22,7 +23,7 @@ PluginRegistry.add('main.menu', {
         }, {
             label: 'Resources',
             labelKey: 'menu.resources.label',
-            href: 'monitor/resources',
+            href: 'monitor/system',
             // Added role requirement here to assert that users cannot see Resources menu item
             role: 'ROLE_MONITORING',
             order: 2,

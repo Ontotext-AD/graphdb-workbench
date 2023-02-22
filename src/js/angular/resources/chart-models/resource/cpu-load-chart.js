@@ -10,10 +10,6 @@ export class CpuLoadChart extends ChartData {
         };
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.system.cpu_load.label');
-    }
-
     createDataHolder() {
         return [{
             key: this.translateService.instant('resource.system.cpu_load.label'),

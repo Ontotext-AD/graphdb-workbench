@@ -13,7 +13,12 @@ export class ChartData {
         return 10;
     }
 
-    constructor(translateService, disableRangeUpdate, disableOldDataRemoval) {
+    static get COLORS() {
+        return ['#003663', '#E84E0F', '#02A99A', '#999999'];
+    }
+
+    constructor(translateService, disableRangeUpdate, disableOldDataRemoval, filter) {
+        this.filter = filter;
         this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
     }
 
@@ -51,25 +56,16 @@ export class ChartData {
         });
     }
 
-    /**
-     * Must implement
-     * @return {string} the title name
-     */
-    getTitle() {
-        return 'No chart title set';
-    }
-
-    setTitle(title) {
+    setSubTitle(keyValues) {
         this.chartOptions.title.enable = true;
-        this.chartOptions.title.text = title;
-    }
-
-    getSubTitle() {
-    }
-
-    setSubTitle(subTitle) {
-        this.chartOptions.subtitle.enable = true;
-        this.chartOptions.subtitle.html = subTitle;
+        const subTitleElements = keyValues.map((keyValue) => {
+            if (Array.isArray(keyValue.value) && !keyValue.value.length) {
+                return;
+            }
+            const values = Array.isArray(keyValue.value) ? keyValue.value.join('/') : keyValue.value;
+            return keyValue.label + (values !== undefined ? `<span class="data-value">${values}</span>` : '');
+        });
+        this.chartOptions.title.html = subTitleElements.map((subTitleElement) => `<span class="info-element">${subTitleElement}</span>`);
     }
 
     /**
@@ -93,13 +89,9 @@ export class ChartData {
      * @param newData the new data
      */
     addData(timestamp, newData) {
-        if (!this.disableOldDataRemoval) {
-            this.removeOldData(this.dataHolder, this.range);
-        }
+        this.removeOldData(this.dataHolder, this.range);
         this.addNewData(this.dataHolder, timestamp, newData, this.isFirstLoad());
-        if (!this.disableRangeUpdate) {
-            this.updateRange(this.dataHolder);
-        }
+        this.updateRange(this.dataHolder);
         if (this.firstLoad) {
             this.firstLoad = false;
         }
@@ -111,6 +103,9 @@ export class ChartData {
      * @param range the number of entries to keep
      */
     removeOldData(dataHolder, range) {
+        if (this.disableOldDataRemoval) {
+            return;
+        }
         if (dataHolder[0].values.length > range) {
             dataHolder.forEach((data) => data.values.shift());
         }
@@ -133,6 +128,9 @@ export class ChartData {
      * @param multiplier
      */
     updateRange(dataHolder, multiplier) {
+        if (this.disableRangeUpdate) {
+            return;
+        }
         const [domainUpperBound] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
         this.chartOptions.chart.yDomain = [0, domainUpperBound];
     }
@@ -178,16 +176,12 @@ export class ChartData {
                 legend: {
                     maxKeyLength: 100
                 },
-                color: d3.scale.category10().range()
+                color: ChartData.COLORS
             },
             title: {
                 enable: true,
-                text: this.getTitle()
-            },
-            subtitle: {
                 className: 'chart-additional-info',
-                enable: true,
-                text: this.getSubTitle()
+                html: ' '
             }
         };
     }
@@ -239,5 +233,27 @@ export class ChartData {
     static getIntegerRangeForValues(dataHolder, multiplier) {
         const [maxChartValue, divisions] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
         return d3.range(0, maxChartValue + 1, divisions);
+    }
+
+    static formatBytesValue(value, dataHolder) {
+        let maxChartValue = value;
+        if (dataHolder) {
+            maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
+        }
+
+        const k = 1024;
+        const i = Math.floor(Math.log(maxChartValue) / Math.log(k));
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const relativeValue = parseFloat(value) / Math.pow(k, i);
+        return `${relativeValue.toFixed(2)} ${sizes[i]}`;
+    }
+
+    formatNumber(value) {
+        if (!value || !this.filter) {
+            return;
+        }
+        // This may look strange, but I made it like this for consistency. When/if fixing it will be easier to find.
+        return this.filter('currency')(value, '', 0);
     }
 }
