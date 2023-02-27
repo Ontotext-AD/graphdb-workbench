@@ -76,7 +76,7 @@
                         </span>
                     </label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <select tooltip="{{'jdbc.sql.type.hint' | translate}}"
+                        <select uib-tooltip="{{'jdbc.sql.type.hint' | translate}}"
                                 tooltip-placement="top" tooltip-trigger="mouseenter"
                                 class="form-control" id="sql-type" ng-model="column.column_type"
                                 ng-options="type as getTypeLabel(type) for type in sqlTypes track by type"
@@ -84,30 +84,30 @@
                                 ng-disabled="!canWriteActiveRepo()"></select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <input tooltip="{{'jdbc.sql.type.precision.hint' | translate}}"
+                        <input uib-tooltip="{{'jdbc.sql.type.precision.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <input tooltip="{{'jdbc.sql.type.scale.hint' | translate}}"
+                        <input uib-tooltip="{{'jdbc.sql.type.scale.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <div class="form-control b-0">
-                            <input tooltip="{{'jdbc.not.null.check.hint' | translate}}"
+                            <input uib-tooltip="{{'jdbc.not.null.check.hint' | translate}}"
                                    tooltip-placement="top" tooltip-trigger="mouseenter"
                                    type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isLiteral(column.column_type) ? '' : 'hidden'"  ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
-                        <input tooltip="{{'jdbc.literal.creation.and.filtering.hint' | translate}}"
+                        <input uib-tooltip="{{'jdbc.literal.creation.and.filtering.hint' | translate}}"
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"
-                                class="btn btn-link delete-column-btn" tooltip="{{'jdbc.delete.column' | translate}}" ng-if="canWriteActiveRepo()"><span
+                                class="btn btn-link delete-column-btn" uib-tooltip="{{'jdbc.delete.column' | translate}}" ng-if="canWriteActiveRepo()"><span
                             class="icon-trash"></span>
                         </button>
                     </div>

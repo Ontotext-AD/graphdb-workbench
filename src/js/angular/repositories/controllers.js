@@ -726,9 +726,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.autofocusId = 'autofocus';
 }
 
-EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate'];
+EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate'];
 
-function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService, file, toastr, $translate) {
+function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate) {
 
     if (file) {
         RepositoriesRestService.getRepositoryFileContent(file).success(function (data) {
@@ -740,14 +740,14 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     }
 
     $scope.ok = function () {
-        $modalInstance.close({
+        $uibModalInstance.close({
             content: $scope.fileContent,
             fileLocation: file
         });
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 

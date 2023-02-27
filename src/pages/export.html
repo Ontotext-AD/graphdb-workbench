@@ -66,7 +66,7 @@
 					</div>
 					<button type="button" class="btn btn-secondary clear-repository-btn"
 						ng-click="dropRepository()"
-						tooltip="{{'removes.data.from.repo.label' | translate}}" tooltip-placement="top"
+						uib-tooltip="{{'removes.data.from.repo.label' | translate}}" tooltip-placement="top"
 						ng-disabled="!canWriteActiveRepo(true)">
 						<span class="icon-trash"></span> {{'clear.repo.label' | translate}}
 					</button>
@@ -86,11 +86,11 @@
 						<thead>
 							<tr>
 								<th id="selectionColumn" class="text-nowrap" style="width: 100px">
-									<label class="form-check-label" tooltip="{{'select.all.tooltip' | translate}}">
+									<label class="form-check-label" uib-tooltip="{{'select.all.tooltip' | translate}}">
 										<input class="form-check-input" type="checkbox" ng-model="selectedAll" ng-click="checkAll()">
 									</label>
 									<div class="btn-group btn-group-sm" uib-dropdown>
-										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()">
+										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle uib-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()">
 											<span class="icon-export"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
@@ -102,7 +102,7 @@
 									</div>
 									<button type="button" class="btn btn-link secondary"
 										ng-click="dropContext()"
-										tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
+										uib-tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
 										<span class="fa fa-trash-o"></span>
 									</button>
@@ -134,7 +134,7 @@
 							<td>
 
 								<div class="btn-group" uib-dropdown>
-									<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle tooltip="{{'export.graph.label' | translate}}"
+									<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle uib-tooltip="{{'export.graph.label' | translate}}"
                                             ng-disabled="!graph.contextID.uri">
 										<span class="icon-export"></span>
 									</button>
@@ -148,7 +148,7 @@
 
 								<button class="btn btn-link secondary delete-graph-btn"
 									ng-click="dropContext(graph)"
-									tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
+									uib-tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
 									ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
 									<span class="fa fa-trash-o fa-lg"></span>
 								</button>

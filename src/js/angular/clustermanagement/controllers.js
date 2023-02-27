@@ -460,7 +460,7 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
         return ClusterRestService.createCluster($scope.clusterConfiguration)
             .then(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
-                $modalInstance.close();
+                $uibModalInstance.close();
             })
             .catch(function (error) {
                 handleErrors(error.data, error.status);
@@ -536,27 +536,27 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-DeleteClusterCtrl.$inject = ['$scope', '$modalInstance'];
+DeleteClusterCtrl.$inject = ['$scope', '$uibModalInstance'];
 
-function DeleteClusterCtrl($scope, $modalInstance) {
+function DeleteClusterCtrl($scope, $uibModalInstance) {
     $scope.forceDelete = false;
 
     $scope.ok = function () {
-        $modalInstance.close($scope.forceDelete);
+        $uibModalInstance.close($scope.forceDelete);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-RemoteLocationsService.$inject = ['$http', 'toastr', '$modal', 'LocationsRestService', '$translate'];
+RemoteLocationsService.$inject = ['$http', 'toastr', '$uibModal', 'LocationsRestService', '$translate'];
 
-function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $translate) {
+function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, $translate) {
     return {
         addLocation: addLocation,
         getLocationsWithRpcAddresses: getLocationsWithRpcAddresses
@@ -627,7 +627,7 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
 
     function addLocation() {
         let newLocation;
-        return $modal.open({
+        return $uibModal.open({
             templateUrl: 'js/angular/templates/modal/add-location.html',
             windowClass: 'addLocationDialog',
             controller: 'AddLocationFromClusterCtrl'
@@ -664,9 +664,9 @@ function RemoteLocationsService($http, toastr, $modal, LocationsRestService, $tr
     }
 }
 
-AddLocationFromClusterCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
+AddLocationFromClusterCtrl.$inject = ['$scope', '$uibModalInstance', 'toastr', 'productInfo', '$translate'];
 
-function AddLocationFromClusterCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
+function AddLocationFromClusterCtrl($scope, $uibModalInstance, toastr, productInfo, $translate) {
     //TODO: This, along with the view are duplicated from repositories page. Must be extracted for re-usability.
     $scope.newLocation = {
         'uri': '',
@@ -688,17 +688,17 @@ function AddLocationFromClusterCtrl($scope, $modalInstance, toastr, productInfo,
             toastr.error($translate.instant('location.cannot.be.empty.error'));
             return;
         }
-        $modalInstance.close($scope.newLocation);
+        $uibModalInstance.close($scope.newLocation);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-EditClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data'];
+EditClusterCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data'];
 
-function EditClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data) {
+function EditClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService, toastr, $translate, data) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.edit_page_title');
     $scope.errors = [];
     $scope.clusterConfiguration = angular.copy(data.clusterConfiguration);
@@ -709,7 +709,7 @@ function EditClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, t
         return ClusterRestService.updateCluster($scope.clusterConfiguration)
             .then(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.update_success'));
-                $modalInstance.close();
+                $uibModalInstance.close();
             })
             .catch(function (response) {
                 handleErrors(response.data, response.status);
@@ -756,7 +756,7 @@ function EditClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, t
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
@@ -764,9 +764,9 @@ const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
 };
 
-AddNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data', '$modal', 'RemoteLocationsService'];
+AddNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$uibModal', 'RemoteLocationsService'];
 
-function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, RemoteLocationsService) {
+function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLocationsService) {
     const clusterConfiguration = angular.copy(data.clusterConfiguration);
     const clusterModel = angular.copy(data.clusterModel);
     $scope.nodes = [];
@@ -798,17 +798,17 @@ function AddNodesDialogCtrl($scope, $modalInstance, data, $modal, RemoteLocation
     };
 
     $scope.ok = function () {
-        $modalInstance.close($scope.nodes);
+        $uibModalInstance.close($scope.nodes);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-RemoveNodesDialogCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+RemoveNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 
-function RemoveNodesDialogCtrl($scope, $modalInstance, data) {
+function RemoveNodesDialogCtrl($scope, $uibModalInstance, data) {
     const clusterModel = angular.copy(data.clusterModel);
 
     $scope.clusterNodes = clusterModel.nodes;
@@ -828,10 +828,10 @@ function RemoveNodesDialogCtrl($scope, $modalInstance, data) {
 
     $scope.ok = function () {
         const nodesToRemove = $scope.clusterNodes.filter((node) => node.shouldRemove);
-        $modalInstance.close(nodesToRemove);
+        $uibModalInstance.close(nodesToRemove);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }

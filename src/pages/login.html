@@ -16,7 +16,7 @@
 					</div>
 					<div class="form-group mb-2"  ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+							<span class="input-group-addon" uib-tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 							<input id="wb-login-password" type="password" placeholder="{{'your.password.placeholder' | translate}}" ng-model="$parent.password" class="form-control form-control-lg" required ng-blur="wrongCredentials = false">
 						</div>
 					</div>

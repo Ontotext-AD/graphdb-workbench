@@ -306,7 +306,7 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
+                        <label uib-tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
                             {{'sidepanel.show.pred.labels.as.links.titles' | translate}}
                         </label>
@@ -319,7 +319,7 @@
                                      tooltip-placement="bottom"
                                      tooltip-trigger="mouseenter"><span class="nav-link">{{'types.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
+                            <label uib-tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.preferred.type.placeholder' | translate}}"
@@ -329,7 +329,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
+                                <label uib-tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
                                     {{'sidepanel.show.preferred.types.nodes.only' | translate}}
                                 </label>
@@ -337,7 +337,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
+                            <label uib-tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.ignored.type.placeholder' | translate}}"
@@ -352,7 +352,7 @@
                                      tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">{{'predicates.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <div>
-                                <label tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
+                                <label uib-tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
 
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -363,7 +363,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
+                                <label uib-tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
                                     {{'sidepanel.show.preferred.predicates.only' | translate}}
                                 </label>
@@ -371,7 +371,7 @@
                         </div>
 
                         <div class="form-group ">
-                            <label tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
+                            <label uib-tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -392,7 +392,7 @@
 
                 <script type="text/ng-template" id="ignored-predicates-template">
                     <div class="tag-template">
-                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'sidepanel.wildcard.iris' : '' | translate}}">
+                        <div uib-tooltip="{{$getDisplayText().endsWith('*') ? 'sidepanel.wildcard.iris' : '' | translate}}">
                             <span>{{$getDisplayText()}}</span>
                             <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
                         </div>
@@ -421,7 +421,7 @@
 
             <div class="media mb-1">
                 <div class="media-left"
-                     tooltip="{{'labels.label' | translate}}"
+                     uib-tooltip="{{'labels.label' | translate}}"
                      tooltip-placement="top"
                      tooltip-trigger="mouseenter">
                     <em class="icon-tag icon-lg" aria-hidden="true"></em>

@@ -864,14 +864,14 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         });
     }]);
 
-securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $modalInstance, username) {
+securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
     $scope.username = username;
 
     $scope.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }]);

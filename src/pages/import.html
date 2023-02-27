@@ -27,7 +27,7 @@
                     ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a></li>
         </ul>
         <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
-            <button type="button" ng-click="isCollapsed = false" tooltip="{{'common.close' | translate}}" class="close"
+            <button type="button" ng-click="isCollapsed = false" uib-tooltip="{{'common.close' | translate}}" class="close"
                     aria-label="Close"></button>
             <div ng-include="templateUrl"></div>
         </div>

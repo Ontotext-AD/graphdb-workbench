@@ -7,7 +7,7 @@
     <div class="form-group">
         <textarea id="wb-import-textarea" class="form-control" rows="10" ng-model="rdfText"
                   placeholder="{{'text.snippet.text.aria.placeholder' | translate}}"
-                  popover="{{'import.rdf.data.here' | translate}}"
+                  uib-popover="{{'import.rdf.data.here' | translate}}"
                   popover-placement="bottom"
                   popover-trigger="focus"></textarea>
     </div>
@@ -16,7 +16,7 @@
 <div class="modal-footer">
     <div class="mb-1">
         <span
-            popover="{{'import.enable.for.auto.start' | translate}}"
+            uib-popover="{{'import.enable.for.auto.start' | translate}}"
             popover-trigger="mouseenter"
             popover-placement="top">
             <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>

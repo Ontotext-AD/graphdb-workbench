@@ -44,7 +44,7 @@
                         {{'computing.loader.msg' | translate}}
                     </span>
                     <button class="btn btn-link btn-sm" ng-click="interruptComputation()"
-                            tooltip="{{'interrupt.indexing.tooltip' | translate}}" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+                            uib-tooltip="{{'interrupt.indexing.tooltip' | translate}}" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
                 </span>
 
                 <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="icon-warning icon-lg"></em> {{currentRankStatus}}</span>
@@ -65,7 +65,7 @@
 			<div id="toggleFilterMode">
 				<h3 class="d-inline-block mr-1">{{'filtering.header' | translate}}</h3>
 				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span>
-                <span tooltip="{{'click.to' | translate}} {{filteringEnabled ? 'disable' : 'enable' | translate}} {{'filtering' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
+                <span uib-tooltip="{{'click.to' | translate}} {{filteringEnabled ? 'disable' : 'enable' | translate}} {{'filtering' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
                     <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
                     <label for="toggleFilterMode"></label>
                 </span>
@@ -78,7 +78,7 @@
 					<div id="toggleIncludeExplicit" class="d-inline-block mr-2">
 						{{'include.explicit.header' | translate}}
 						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'yes' : 'no' | translate}}</span>
-                        <span tooltip="{{'click.to' | translate}} {{includeExplicit ? 'exclude' : 'include' | translate}} {{'explicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
+                        <span uib-tooltip="{{'click.to' | translate}} {{includeExplicit ? 'exclude' : 'include' | translate}} {{'explicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeExplicit"/>
 	                    <label for="toggleIncludeExplicit"></label>
 	                </span>
@@ -87,7 +87,7 @@
 					<div id="toggleIncludeImplicit" class="d-inline-block">
 						{{'include.implicit.header' | translate}}
 						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'yes' : 'no' | translate}}</span>
-						<span tooltip="{{'click.to' | translate}} {{includeImplicit ? 'exclude' : 'include' | translate}} {{'implicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
+						<span uib-tooltip="{{'click.to' | translate}} {{includeImplicit ? 'exclude' : 'include' | translate}} {{'implicit.statements' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeImplicit"/>
 	                    <label for="toggleIncludeImplicit"></label>
 	                </span>
