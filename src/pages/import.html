@@ -4,7 +4,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -26,7 +26,7 @@
                     ng-class="viewType == 'server' ? 'active' : ''" href
                     ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a></li>
         </ul>
-        <div collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
+        <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
             <button type="button" ng-click="isCollapsed = false" tooltip="{{'common.close' | translate}}" class="close"
                     aria-label="Close"></button>
             <div ng-include="templateUrl"></div>
@@ -38,7 +38,7 @@
                 <div class="row mb-2 upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
-                             popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
+                             uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom"
                              guide-selector="uploadRdfFileButton">
@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()"
-                             popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
+                             uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                             <em class="icon-link icon-lg pull-left"></em>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
                         <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()"
-                             popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
+                             uib-popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                         <em class="icon-edit icon-lg pull-left"></em>

@@ -404,8 +404,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
         };
     }
 ])
-    .config(['$tooltipProvider', function ($tooltipProvider) {
-    $tooltipProvider.options({appendToBody: true});
+    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+    $uibTooltipProvider.options({appendToBody: true});
 }]);
 
 

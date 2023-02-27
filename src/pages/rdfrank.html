@@ -5,7 +5,7 @@
 	<h1>
 		{{title}}
 		<em class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></em>
@@ -94,22 +94,22 @@
 					</div>
 				</div>
 
-				<tabset active="active" ng-show="filteringEnabled">
-					<tab>
-						<tab-heading class="nav-item"
+				<uib-tabset active="active" ng-show="filteringEnabled">
+					<uib-tab>
+						<uib-tab-heading class="nav-item"
 									 tooltip-placement="bottom"
-									 tooltip-trigger="mouseenter"><span class="nav-link">{{'graphs.label' | translate}}</span></tab-heading>
+									 tooltip-trigger="mouseenter"><span class="nav-link">{{'graphs.label' | translate}}</span></uib-tab-heading>
 						<div class="included-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]"></div>
 						<div class="excluded-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]"></div>
-					</tab>
-					<tab>
-						<tab-heading class="nav-item"
+					</uib-tab>
+					<uib-tab>
+						<uib-tab-heading class="nav-item"
 									 tooltip-placement="bottom"
-									 tooltip-trigger="mouseenter"><span class="nav-link">{{'predicates.label' | translate}}</span></tab-heading>
+									 tooltip-trigger="mouseenter"><span class="nav-link">{{'predicates.label' | translate}}</span></uib-tab-heading>
 						<div class="included-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]"></div>
 						<div class="excluded-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]"></div>
-					</tab>
-				</tabset>
+					</uib-tab>
+				</uib-tabset>
 
 			</div>
         </div>

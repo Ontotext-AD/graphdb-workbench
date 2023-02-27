@@ -39,10 +39,10 @@ export const LinkState = {
     NO_CONNECTION: 'NO_CONNECTION'
 };
 
-ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
+ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope'];
 
-function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
+function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce,
     $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope) {
     $scope.loader = true;
     $scope.isLeader = false;
@@ -196,7 +196,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.showCreateClusterDialog = function () {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
             controller: 'CreateClusterCtrl',
             size: 'lg',
@@ -216,7 +216,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.showDeleteDialog = () => {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-delete-dialog.html',
             controller: 'DeleteClusterCtrl'
         });
@@ -254,7 +254,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.showEditConfigurationDialog = () => {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-edit-dialog.html',
             controller: 'EditClusterCtrl',
             size: 'lg',
@@ -298,7 +298,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     }
 
     $scope.showAddNodeToClusterDialog = () => {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/add-nodes-dialog.html',
             controller: 'AddNodesDialogCtrl',
             size: 'lg',
@@ -336,7 +336,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     };
 
     $scope.showRemoveNodesFromClusterDialog = () => {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/remove-nodes-dialog.html',
             controller: 'RemoveNodesDialogCtrl',
             size: 'lg',
@@ -431,10 +431,10 @@ const getAdvancedOptionsClass = function () {
     return 'fa fa-angle-right';
 };
 
-CreateClusterCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data', '$modal',
+CreateClusterCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'ClusterRestService', 'toastr', '$translate', 'data', '$uibModal',
     'RemoteLocationsService', '$rootScope'];
 
-function CreateClusterCtrl($scope, $modalInstance, $timeout, ClusterRestService, toastr, $translate, data, $modal, RemoteLocationsService, $rootScope) {
+function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService, toastr, $translate, data, $uibModal, RemoteLocationsService, $rootScope) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.create_page_title');
     $scope.autofocusId = 'autofocus';
     $scope.errors = [];

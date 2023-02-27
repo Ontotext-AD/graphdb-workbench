@@ -12,7 +12,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -70,7 +70,7 @@
                 </div>
                 <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">
-                        <span tooltip="{{'jdbc.column.names.hint' | translate}}"
+                        <span uib-tooltip="{{'jdbc.column.names.hint' | translate}}"
                               tooltip-placement="top" tooltip-trigger="mouseenter">
                             {{column.column_name | uppercase}}
                         </span>
@@ -117,7 +117,7 @@
             <div class="clearfix">
                 <div class="pull-right">
                     <button ng-if="page === 2 && canWriteActiveRepo()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
-                            popover="{{'jdbc.column.suggestions' | translate}}"
+                            uib-popover="{{'jdbc.column.suggestions' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         {{'common.suggest' | translate}}
@@ -135,21 +135,21 @@
         </div>
     </div>
     <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
-            popover="{{'jdbc.save.configuration' | translate}}"
+            uib-popover="{{'jdbc.save.configuration' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter"
             ng-if="canWriteActiveRepo()">
         {{'common.save.btn' | translate}}
     </button>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="{{'jdbc.cancel.configuration' | translate}}"
+       uib-popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
         {{'common.cancel.btn' | translate}}
     </a>
     <a ng-href="jdbc" class="btn btn-lg btn-secondary"
-       popover="{{'jdbc.cancel.configuration' | translate}}"
+       uib-popover="{{'jdbc.cancel.configuration' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">
@@ -157,7 +157,7 @@
     </a>
     <div class="pull-right">
         <button class="btn btn-lg preview-btn" ng-click="getPreview()"
-                popover="{{'jdbc.preview.configuration' | translate}}"
+                uib-popover="{{'jdbc.preview.configuration' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter">
             {{'common.preview' | translate}}

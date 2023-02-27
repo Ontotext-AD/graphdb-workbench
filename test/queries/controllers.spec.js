@@ -108,7 +108,7 @@ describe('=> QueriesCtrl tests', function () {
         $scope = $rootScope.$new();
         var controller = $controller('QueriesCtrl', {
             $scope: $scope,
-            $modal: modalInstance,
+            $uibModal: modalInstance,
             ModalService: {
                 openSimpleModal: function () {
                     return modalInstance;

@@ -19,8 +19,8 @@ const modules = [
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$modal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService',
-    function ($scope, $http, toastr, $interval, $repositories, $modal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService',
+    function ($scope, $http, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -213,7 +213,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 options.keyboard = false;
             }
 
-            const modalInstance = $modal.open(options);
+            const modalInstance = $uibModal.open(options);
 
 
             modalInstance.result.then(function (settings) {
@@ -430,7 +430,7 @@ importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller',
     $scope.init();
 }]);
 
-importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$modal', '$translate', function ($scope, Upload, $http, toastr, $controller, $modal, $translate) {
+importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$controller', '$uibModal', '$translate', function ($scope, Upload, $http, toastr, $controller, $uibModal, $translate) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'upload';
@@ -593,7 +593,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
         if (file) {
             scope.rdfText = file.data;
         }
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/textSnippet.html',
             controller: 'TextCtrl',
             resolve: {
@@ -627,7 +627,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     };
 
     $scope.rdfDataFromURL = function () {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/urlImport.html',
             controller: 'UrlCtrl',
             scope: $scope
@@ -651,16 +651,16 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
     $scope.init();
 }]);
 
-importCtrl.controller('UrlCtrl', ['$scope', '$modalInstance', 'toastr', function ($scope, $modalInstance) {
+importCtrl.controller('UrlCtrl', ['$scope', '$uibModalInstance', 'toastr', function ($scope, $uibModalInstance) {
     $scope.importFormat = {name: 'Auto', type: ''};
     $scope.startImport = true;
 
     $scope.cancel = function () {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
     };
 
     $scope.ok = function () {
-        $modalInstance.close({
+        $uibModalInstance.close({
             url: $scope.dataUrl,
             format: $scope.importFormat.type,
             startImport: $scope.startImport
@@ -668,7 +668,7 @@ importCtrl.controller('UrlCtrl', ['$scope', '$modalInstance', 'toastr', function
     };
 }]);
 
-importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format', function ($scope, $modalInstance, text, format) {
+importCtrl.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 'format', function ($scope, $uibModalInstance, text, format) {
     $scope.importFormats = [
         {name: 'RDF/JSON', type: 'application/rdf+json'},
         {name: 'JSON-LD', type: 'application/ld+json'},
@@ -692,11 +692,11 @@ importCtrl.controller('TextCtrl', ['$scope', '$modalInstance', 'text', 'format',
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
     };
 
     $scope.ok = function () {
-        $modalInstance.close({
+        $uibModalInstance.close({
             text: $scope.rdfText,
             format: $scope.importFormat.type,
             startImport: $scope.startImport
@@ -721,8 +721,8 @@ importCtrl.controller('TabCtrl', ['$scope', '$location', function ($scope, $loca
     $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
 }]);
 
-importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate',
-    function ($scope, $modalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, $translate) {
+importCtrl.controller('SettingsModalCtrl', ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate',
+    function ($scope, $uibModalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, $translate) {
     $scope.hasError = function (error, input) {
         return _.find(error, function (o) {
             return input === o['$name'];
@@ -765,13 +765,13 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$modalInstance', 'toastr'
 
         if ($scope.settingsForm.$valid) {
             fixSettings();
-            $modalInstance.close($scope.settings);
+            $uibModalInstance.close($scope.settings);
         }
     };
 
     $scope.cancel = function () {
         fixSettings();
-        $modalInstance.dismiss($scope.settings);
+        $uibModalInstance.dismiss($scope.settings);
     };
 
     $scope.reset = function () {

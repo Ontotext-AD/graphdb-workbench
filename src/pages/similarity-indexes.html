@@ -5,7 +5,7 @@
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
-			  popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+			  uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 			  popover-trigger="mouseenter"
 			  popover-placement="bottom-right"
 			  popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -46,9 +46,9 @@
                             <a class="lead index-name" ng-href="{{(index.status == 'BUILT' || index.status == 'REBUILDING' || index.status == 'OUTDATED') ? '#' : ''}}" ng-click="goToSimilarityIndex(index)">{{index.name}}</a>
 						</td>
 						<td>
-							<span class="tag tag-default" ng-show="index.type == 'text'" tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="index.type == 'predication'" tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="index.type == 'textLiteral'" tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="index.type == 'text'" uib-tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="index.type == 'predication'" uib-tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="index.type == 'textLiteral'" uib-tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
 						</td>
 
 						<td class="text-xs-right">

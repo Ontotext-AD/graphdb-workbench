@@ -12,7 +12,7 @@
     <h1>
         {{editSearchQuery ? (viewType === 'text' ? 'edit.search.query':(page === 2 ? 'edit.search.query' : 'edit.analogical.query')) : title | translate}}
         <span ng-hide="editSearchQuery" class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -86,7 +86,7 @@
         <div class="card-block">
 
             <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-              <span class="icon-help" popover="{{'toggle.help' | translate}}" popover-placement="top" popover-trigger="mouseenter"></span>
+              <span class="icon-help" uib-popover="{{'toggle.help' | translate}}" popover-placement="top" popover-trigger="mouseenter"></span>
               <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span>
             </button>
 
@@ -109,7 +109,7 @@
             </ul>
 
             <div>
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 1">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 1">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.determines.data.index' | translate}}
@@ -129,7 +129,7 @@
                     {{'query.execution.info' | translate}}
                 </div>
 
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 2">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 2">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.on.search' | translate}}
@@ -138,7 +138,7 @@
                     {{'query.execution.on.search' | translate}}
                 </div>
 
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 3">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 3">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.analogical.search' | translate}}
@@ -172,19 +172,19 @@
             <div class="clearfix">
                 <div class="pull-right">
                     <a ng-href="similarity" class="btn btn-lg btn-secondary"
-                       popover="{{getCloseBtnMsg()}}"
+                       uib-popover="{{getCloseBtnMsg()}}"
                        popover-placement="top"
                        popover-trigger="mouseenter">
                         {{'common.cancel.btn' | translate}}
                     </a>
                     <button ng-if="!editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
-                            popover="{{'create.index.label' | translate}}"
+                            uib-popover="{{'create.index.label' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         {{'common.create.btn' | translate}}
                     </button>
                     <button ng-if="editSearchQuery" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
-                            popover="{{'core.edit.query' | translate}}"
+                            uib-popover="{{'core.edit.query' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         {{'common.save.btn' | translate}}
@@ -193,13 +193,13 @@
                 <div class="pull-left">
                   <button ng-if="!editSearchQuery" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">{{'view.index.query' | translate}}</button>
                   <button class="btn btn-link test-query-btn" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
-                          popover="{{'preview.results' | translate}}"
+                          uib-popover="{{'preview.results' | translate}}"
                           popover-placement="top"
                           popover-trigger="mouseenter">
                       {{'test.query.btn' | translate}}
                   </button>
                   <button class="btn btn-link" ng-click="showEditor()" ng-show="viewMode == 'editor' && page == 1"
-                          popover="{{'closes.preview' | translate}}"
+                          uib-popover="{{'closes.preview' | translate}}"
                           popover-placement="top"
                           popover-trigger="mouseenter">
                       {{'core.edit.query' | translate}}

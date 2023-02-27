@@ -15,8 +15,8 @@
         <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                 data-toggle="dropdown"
                 aria-expanded="false">
-            <a dropdown-toggle>
-				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
+            <a uib-dropdown-toggle>
+				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" uib-tooltip="{{'select.graph.label' | translate}}">
 					{{getSelGraphValue() | translate}}
 				</span>
             </a>
@@ -42,7 +42,7 @@
 
 	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
 		ng-click="hidePrefixes = !hidePrefixes"
-		tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
+		uib-tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="fa fa-2x"
@@ -50,7 +50,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 focus-diagram-btn"
-		tooltip="{{'focus.diagram.tooltip' | translate}}"
+		uib-tooltip="{{'focus.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
@@ -58,7 +58,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
-		tooltip="{{'reload.diagram.tooltip' | translate}}"
+		uib-tooltip="{{'reload.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
@@ -66,7 +66,7 @@
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
-		tooltip="{{'export.diagram.tooltip' | translate}}"
+		uib-tooltip="{{'export.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="icon-export icon-2x"></em>
@@ -77,7 +77,7 @@
 <h1>
 	{{title}}
 	<span class="btn btn-link"
-	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 	   popover-trigger="mouseenter"
 	   popover-placement="bottom-right"
 	   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -99,7 +99,7 @@
 		<p class="slider-help-button">
 			{{'class.count.label' | translate}}
 			<span class="btn btn-link help-button"
-				  popover-template="'js/angular/graphexplore/templates/rdfClassHierarchyClassCountSliderHelpTemplate.html'"
+				  uib-popover-template="'js/angular/graphexplore/templates/rdfClassHierarchyClassCountSliderHelpTemplate.html'"
 				  popover-trigger="mouseenter"
 				  popover-placement="bottom-right"
 				  popover-append-to-body="true">
@@ -114,7 +114,7 @@
 		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
-						tooltip="{{'reload.diagram.tooltip' | translate}}"
+						uib-tooltip="{{'reload.diagram.tooltip' | translate}}"
 						tooltip-placement="bottom"
 						tooltip-trigger="mouseenter"
 						ng-click="confirmReloadClassHierarchy()">

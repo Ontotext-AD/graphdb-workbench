@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.repositories.fedx-repo.directive', [])
     .directive('fedxRepo', fedxRepoDirective);
 
-fedxRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', '$translate'];
+fedxRepoDirective.$inject = ['$uibModal', 'RepositoriesRestService', 'toastr', '$translate'];
 
-function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) {
+function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translate) {
     return {
         restrict: 'E',
         scope: true,
@@ -168,7 +168,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
                 writable: "false"
             }
 
-            $scope.$modalInstance = $modal.open({
+            $scope.$uibModalInstance = $uibModal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope,
             });
@@ -210,7 +210,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
                 }
             }
 
-            $scope.$modalInstance = $modal.open({
+            $scope.$uibModalInstance = $uibModal.open({
                 templateUrl: 'js/angular/templates/modal/add-fedx-remote-repo.html',
                 scope: $scope
             });
@@ -236,7 +236,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
         }
 
         $scope.cancel = function () {
-            $scope.$modalInstance.dismiss('cancel');
+            $scope.$uibModalInstance.dismiss('cancel');
         };
 
         function updateMembers(member) {
@@ -276,7 +276,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
                     && el.repositoryServer === member.repositoryServer)) {
                     let resolvedName = $scope.resolveName(member);
                     toastr.error($translate.instant('fedx.repo.already.added.member.error', {name: resolvedName}));
-                    $scope.$modalInstance.close();
+                    $scope.$uibModalInstance.close();
                     return;
                 }
                 $scope.fedxMembers = $scope.fedxMembers.filter(el => el.repositoryName !== member.repositoryName
@@ -294,7 +294,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
                 if (checkEditMode() && $scope.fedxMembers.find(el => el.endpoint === member.endpoint)) {
                     let resolvedName = $scope.resolveName(member);
                     toastr.error($translate.instant('fedx.repo.already.added.sparql.endpoint.error', {name: resolvedName}));
-                    $scope.$modalInstance.close();
+                    $scope.$uibModalInstance.close();
                     return;
                 }
 
@@ -303,7 +303,7 @@ function fedxRepoDirective($modal, RepositoriesRestService, toastr, $translate) 
 
             updateMembers(member);
             populateKnownRepos();
-            $scope.$modalInstance.close();
+            $scope.$uibModalInstance.close();
         };
 
         $scope.$on('changedLocation', function () {

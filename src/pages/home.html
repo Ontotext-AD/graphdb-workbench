@@ -7,7 +7,7 @@
         <div class="col-lg-12">
             <div class="card mt-2">
                 <div class="card-block">
-                    <button type="button" tooltip="{{'common.close' | translate}}" class="close" aria-label="Close"
+                    <button type="button" uib-tooltip="{{'common.close' | translate}}" class="close" aria-label="Close"
                             ng-click="declineTutorial()"></button>
                     <div class="pages-wrapper">
                         <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
@@ -32,7 +32,7 @@
     </div>
     <div class="row mb-3" ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak>
         <div class="col-lg-12 home-rdf-resource-search">
-            <h3 id="view-resource-label-home"><span  tooltip="{{'view.rdf.data.text.visual.graph.header' | translate}}" tooltip-placement="right">{{'view.resource.label' | translate}}</span></h3>
+            <h3 id="view-resource-label-home"><span  uib-tooltip="{{'view.rdf.data.text.visual.graph.header' | translate}}" tooltip-placement="right">{{'view.resource.label' | translate}}</span></h3>
             <div class="card">
                 <div class="card-block" ng-keydown="onKeyDown($event)">
                     <search-resource-input
@@ -55,13 +55,13 @@
 
     <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
         <div class="col-lg-6">
-            <h3 id="active-repo-label-home"><span tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
+            <h3 id="active-repo-label-home"><span uib-tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
             <div class="card active-repo-card"
                  ng-show="canReadRepo(getActiveRepositoryObject())">
                 <div class="card-block">
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
-                        <button type="button" tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
+                        <button type="button" uib-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
                         <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" tooltip="{{'repoTooltips.editRepository' | translate}}"

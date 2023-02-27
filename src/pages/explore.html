@@ -6,11 +6,11 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
-            <a href="{{details.uri}}" tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
+            <a href="{{details.uri}}" uib-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
 
-            <a tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
+            <a uib-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link">
                 <span class="icon-edit"></span>
@@ -31,7 +31,7 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
+            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" uib-tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
                 {{getRdfStarLocalNames(tripleParam)}}
             </a>
         </h1>
@@ -54,7 +54,7 @@
                 ng-class="loading ? 'disabled' : ''"
                 ng-show="inference != 'explicit'"
                 ng-click="sameAs = !sameAs; exploreResource()"
-                popover="{{'sidepanel.expand.results.sameas' | translate}}: {{sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
+                uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
             <span class="icon-2-5x"
@@ -63,14 +63,14 @@
 
         <button type="button" class="btn btn-sm" ng-model="blanks"
                 ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
-                btn-checkbox btn-checkbox-true="true"
+                uib-btn-checkbox btn-checkbox-true="true"
                 btn-checkbox-false="false" ng-change="exploreResource()">
             {{'show.blank.nodes.label' | translate}}
         </button>
 
-        <div class="btn-group" dropdown is-open="isopen">
+        <div class="btn-group" uib-dropdown is-open="isopen">
             <button type="button" ng-class="loading ? 'disabled' : ''" class="btn btn-sm btn-secondary dropdown-toggle"
-                    dropdown-toggle>
+                    uib-dropdown-toggle>
                 {{'download.as.label' | translate}}
             </button>
             <ul class="dropdown-menu small" role="menu">
@@ -81,7 +81,7 @@
         </div>
 
         <button type="button" role="button" class="btn btn-primary btn-sm"
-                popover="{{'explore.graph.visually.popover' | translate}}"
+                uib-popover="{{'explore.graph.visually.popover' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
                 ng-click="goToGraphsViz()" guide-selector="explore-visual">

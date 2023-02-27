@@ -167,20 +167,20 @@
 					<div class="card-block">
 						<h3>{{'security.user.role' | translate}}</h3>
 						<label class="mr-1"
-							   popover-template="'popover-content-user.html'"
+							   uib-popover-template="'popover-content-user.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="hasEditRestrictions()" >
 							{{'security.user.label' | translate}}
 						</label>
 						<label class="mr-1"
-							   popover-template="'popover-content-repo-manager.html'"
+							   uib-popover-template="'popover-content-repo-manager.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="hasEditRestrictions()">
 							{{'security.repo.manager.label' | translate}}
 						</label>
-						<label popover-template="'popover-content-admin.html'"
+						<label uib-popover-template="'popover-content-admin.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="hasEditRestrictions()">

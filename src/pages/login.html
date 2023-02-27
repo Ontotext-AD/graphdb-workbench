@@ -10,7 +10,7 @@
 
 					<div class="form-group mb-2" ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+							<span class="input-group-addon" uib-tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
 							<input id="wb-login-username" ng-model="$parent.username" placeholder="{{'your.name.placeholder' | translate}}" type="text" class="form-control form-control-lg" autofocus required ng-blur="wrongCredentials = false">
 						</div>
 					</div>

@@ -6,7 +6,7 @@
 <h1>
 	{{title}}
 	<span class="btn btn-link"
-	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   uib-uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 	   popover-trigger="mouseenter"
 	   popover-placement="bottom-right"
 	   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -25,8 +25,8 @@
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                     data-toggle="dropdown"
                     aria-expanded="false">
-                <a dropdown-toggle>
-                    <span tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="{{'select.graph.label' | translate}}">
+                <a uib-dropdown-toggle>
+                    <span tooltip-trigger="mouseenter" tooltip-placement="bottom" uib-tooltip="{{'select.graph.label' | translate}}">
                         {{getSelectedGraphValue() | translate}}
                     </span>
                 </a>
@@ -44,13 +44,13 @@
             <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
                  ng-show="allNotFilteredClasses.length > 0"
                ng-click="removeAllClasses()"
-               tooltip="{{'remove.classes.label' | translate}}"
+               uib-tooltip="{{'remove.classes.label' | translate}}"
                tooltip-trigger="mouseenter"
                tooltip-placement="bottom">
              <em class="icon-close icon-2x"></em>
          </button>
         <button class="btn btn-link p-0 reload-diagram-btn" type="button"
-             tooltip="{{'reload.diagram.tooltip' | translate}}"
+             uib-tooltip="{{'reload.diagram.tooltip' | translate}}"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter"
               ng-click="confirmCalculateDependencies()">
@@ -58,7 +58,7 @@
         </button>
         <a href id="download-svg" class="btn btn-link p-0 export-diagram-btn"
            ng-show="allNotFilteredClasses.length > 0"
-           tooltip="{{'export.diagram.tooltip' | translate}}"
+           uib-tooltip="{{'export.diagram.tooltip' | translate}}"
               tooltip-placement="bottom"
               tooltip-trigger="mouseenter">
             <em class="icon-export icon-2x"></em>
@@ -138,7 +138,7 @@
                                 {{(mode == "all") ? class.inConnectionsSum + class.outConnectionsSum -
                                 class.selfConnections : class.inConnectionsSum + class.outConnectionsSum | humanize}}
                             </div>
-                            <div class="related-arrow col-sm-1 col-md-1" tooltip="{{'related.classes.label' | translate}}" tooltip-trigger="mouseenter"
+                            <div class="related-arrow col-sm-1 col-md-1" uib-tooltip="{{'related.classes.label' | translate}}" tooltip-trigger="mouseenter"
                                  ng-click="showClass(class)">
                                 <em class="fa fa-exchange pointer related-classes"
                                    ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
@@ -149,10 +149,10 @@
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
-                            <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
+                            <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" uib-tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
                                 <em class="fa fa-plus" role="button"></em>
                             </div>
-                            <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" tooltip="{{'remove.class.label' | translate}}"
+                            <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" uib-tooltip="{{'remove.class.label' | translate}}"
                                   tooltip-trigger="mouseenter">
                                 <em class="fa fa-minus-circle" role="button"></em>
                             </div>
@@ -192,10 +192,10 @@
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
-                            <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
+                            <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" uib-tooltip="{{'add.class.label' | translate}}" tooltip-trigger="mouseenter">
                                 <em class="fa fa-plus" role="button"></em>
                             </div>
-                            <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" tooltip="{{'remove.class.label' | translate}}"
+                            <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" uib-tooltip="{{'remove.class.label' | translate}}"
                                  tooltip-trigger="mouseenter">
                                 <em class="fa fa-minus-circle" role="button"></em>
                             </div>

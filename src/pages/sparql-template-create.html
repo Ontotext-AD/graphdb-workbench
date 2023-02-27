@@ -12,7 +12,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -47,21 +47,21 @@
         </div>
     </div>
     <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
-            popover="{{'save.sparql.template.tooltip' | translate}}"
+            uib-popover="{{'save.sparql.template.tooltip' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter"
             ng-if="canWriteActiveRepo()">
         {{'common.save.btn' | translate}}
     </button>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+       uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
         {{'common.cancel.btn' | translate}}
     </a>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
-       popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+       uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">

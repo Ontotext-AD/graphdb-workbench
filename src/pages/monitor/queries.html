@@ -8,7 +8,7 @@
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -79,7 +79,7 @@
 									<div>{{query.numberOfOperations}} {{'operations.label' | translate}}</div>
 								</td>
 								<td>
-									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'query.abort.request' : 'update.requested') : (query.type == 'QUERY' ? 'click.to.abort.query' : 'click.to.abort.update') | translate}}"
+									<div disabled-wrapper uib-popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'query.abort.request' : 'update.requested') : (query.type == 'QUERY' ? 'click.to.abort.query' : 'click.to.abort.update') | translate}}"
 										 popover-trigger="mouseenter"
 										 popover-placement="bottom">
 										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->

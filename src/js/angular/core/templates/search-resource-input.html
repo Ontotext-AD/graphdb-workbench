@@ -17,10 +17,10 @@
         </button>
     </span>
     <span ng-if="radioButtons" class="input-group-btn">
-        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
+        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" uib-btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
             {{textButtonLabel | translate}}
         </button>
-        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
+        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" uib-btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
             {{visualButtonLabel | translate}}
         </button>
     </span>
