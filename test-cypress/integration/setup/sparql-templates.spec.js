@@ -93,7 +93,11 @@ describe('SPARQL Templates', () => {
         //Change query to the default template again
         cy.pasteQuery(DEFAULT_QUERY);
         verifyQueryAreaEquals(DEFAULT_QUERY);
-        getSaveButton().click();
+        getSaveButton()
+            .click()
+            .then(() => {
+                cy.waitUntil(() => cy.get('.edit-query-btn').should('be.visible'));
+            });
         //Verify change to default template is persisted
         getEditTemplateButton(TEMPLATE_NAME);
         cy.waitUntilQueryIsVisible();
