@@ -10,7 +10,7 @@
                ng-change="graphExists = false"
                placeholder="{{'save.graph.enter.name' | translate}}" ng-maxlength="100"/>
         <label for="share-graph"
-               tooltip="{{'save.graph.visible.graph' | translate}}">
+               uib-tooltip="{{'save.graph.visible.graph' | translate}}">
             <input id="share-graph" type="checkbox" ng-model="graph.shared">
             {{'save.graph.share.graph' | translate}}
         </label>

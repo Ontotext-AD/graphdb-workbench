@@ -199,7 +199,7 @@ class ImportSteps {
     static verifyImportStatusDetails(fileToSelect, details) {
         ImportSteps.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then(infoIconEl => {
             cy.wrap(infoIconEl).should('be.visible');
-            cy.wrap(infoIconEl).trigger('mouseover');
+            cy.wrap(infoIconEl).trigger('mouseenter');
 
             cy.get('.popover-content').then(content => {
                 cy.wrap(content).should('be.visible');

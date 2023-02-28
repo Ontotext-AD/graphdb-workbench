@@ -7,7 +7,7 @@
     {{title}}
     <span class="btn btn-link"
           ng-class="{ 'help-button': showExternalElements, 'help-button-disabled': !showExternalElements && !(!loader && !classHierarchyData.children.length) }"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
           popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -18,7 +18,7 @@
          ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
         <button class="btn btn-link p-0" type="button"
 			ng-click="goToClassHierarchyView()"
-			tooltip="{{'back.to.class.hierarchy.label' | translate}}"
+			uib-tooltip="{{'back.to.class.hierarchy.label' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
             <em class="icon-arrow-left icon-2x"></em>
@@ -26,7 +26,7 @@
 
 		<button class="btn btn-link p-0 compact-mode-toggle" type="button"
 			ng-click="toggleCollapseEdgesState()"
-			tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
+			uib-tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="fa fa-2x"
@@ -34,7 +34,7 @@
         </button>
 
 		<a id="download-svg" href class="btn btn-link p-0"
-			tooltip="{{'export.diagram.tooltip' | translate}}"
+			uib-tooltip="{{'export.diagram.tooltip' | translate}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="icon-export icon-2x"></em>
