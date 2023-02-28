@@ -130,7 +130,7 @@ describe('==> Controllers tests', function () {
             var controller = $controller('UsersCtrl', {
                 $scope: $scope,
                 $window: windowMock,
-                $modal: modalInstance,
+                $uibModal: modalInstance,
                 ModalService: {
                     openSimpleModal: function () {
                         return modalInstance;
@@ -199,7 +199,7 @@ describe('==> Controllers tests', function () {
                 expect(toggleFreeAccess).toEqual({isFreeAccessDisabled: false, authorities: []})
             });
 
-            it('should open $modal and call $jwtAuth.toggleFreeAccess() on $modal.close', function () {
+            it('should open $uibModal and call $jwtAuth.toggleFreeAccess() on $uibModal.close', function () {
                 $httpBackend.expectGET('rest/security/free-access');
                 $jwtAuth.isFreeAccessEnabled = function () {
                     return false;
@@ -217,7 +217,7 @@ describe('==> Controllers tests', function () {
         });
 
         describe('$scope.removeUser()', function () {
-            it('should open $modal and call $http.delete on $modal.close', function () {
+            it('should open $uibModal and call $http.delete on $uibModal.close', function () {
                 $httpBackend.flush();
                 $httpBackend.expectDELETE('rest/security/users/username').respond(200, '');
                 $scope.getUsers = jasmine.createSpy('scope.getUsers');
@@ -228,7 +228,7 @@ describe('==> Controllers tests', function () {
                 expect($scope.getUsers).toHaveBeenCalled();
             });
 
-            it('should open $modal and not call $http.delete on $modal.dismiss', function () {
+            it('should open $uibModal and not call $http.delete on $uibModal.dismiss', function () {
                 $httpBackend.flush();
                 $scope.getUsers = jasmine.createSpy('scope.getUsers');
                 $scope.removeUser('username');
@@ -256,7 +256,7 @@ describe('==> Controllers tests', function () {
             };
 
             var controller = $controller('DefaultAuthoritiesCtrl', {
-                $scope: $scope, $modalInstance: modalInstance,
+                $scope: $scope, $uibModalInstance: modalInstance,
                 data: {
                     defaultAuthorities: function () {
                         return {}

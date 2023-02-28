@@ -6,9 +6,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$uibModal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $uibModal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -269,7 +269,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             .replace('?givenObject', iriForQuery($scope.analogicalObject))
             .replace('?searchSubject', iriForQuery($scope.searchSubject));
 
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
@@ -308,7 +308,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             viewType: index.type,
             indexAnalyzer: index.analyzer
         }).success(function (query) {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {

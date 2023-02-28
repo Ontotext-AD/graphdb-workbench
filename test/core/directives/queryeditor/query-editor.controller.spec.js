@@ -12,7 +12,7 @@ describe('QueryEditor', function () {
         let $timeout;
         let toastr;
         let $repositories;
-        let $modal;
+        let $uibModal;
         let ModalService;
         let SparqlRestService;
         let $filter;
@@ -26,12 +26,12 @@ describe('QueryEditor', function () {
         let createController;
         let $httpBackend;
 
-        beforeEach(angular.mock.inject(function (_$rootScope_, _$timeout_, _toastr_, _$repositories_, _$modal_, _ModalService_, _SparqlRestService_, _$filter_, _$window_, _$jwtAuth_, _RDF4JRepositoriesRestService_, _MonitoringRestService_, _LocalStorageAdapter_, _LSKeys_, $q, _$controller_, _$httpBackend_) {
+        beforeEach(angular.mock.inject(function (_$rootScope_, _$timeout_, _toastr_, _$repositories_, _$uibModal_, _ModalService_, _SparqlRestService_, _$filter_, _$window_, _$jwtAuth_, _RDF4JRepositoriesRestService_, _MonitoringRestService_, _LocalStorageAdapter_, _LSKeys_, $q, _$controller_, _$httpBackend_) {
             $scope = _$rootScope_.$new();
             $timeout = _$timeout_;
             toastr = _toastr_;
             $repositories = _$repositories_;
-            $modal = new FakeModal($q, _$rootScope_);
+            $uibModal = new FakeModal($q, _$rootScope_);
             ModalService = _ModalService_;
             SparqlRestService = _SparqlRestService_;
             $filter = _$filter_;
@@ -49,7 +49,7 @@ describe('QueryEditor', function () {
                 $timeout,
                 toastr,
                 $repositories,
-                $modal,
+                $uibModal,
                 ModalService,
                 SparqlRestService,
                 $filter,

@@ -9,7 +9,7 @@
             <label class="col-lg-3 col-form-label">
                 {{'import.label.base.iri' | translate}}
                 <span class="btn btn-link p-0"
-                      popover="{{'import.popover.relative.iri' | translate}}"
+                      uib-popover="{{'import.popover.relative.iri' | translate}}"
                       popover-trigger="mouseenter"
                       popover-placement="right">
                                 <em class="icon icon-info"></em>
@@ -26,7 +26,7 @@
             <label class="col-lg-3 col-form-label">
                 {{'import.target.graphs' | translate}}
                 <span class="btn btn-link p-0"
-                      popover="{{'import.into.graphs' | translate}}"
+                      uib-popover="{{'import.into.graphs' | translate}}"
                       popover-trigger="mouseenter"
                       popover-placement="right">
                                 <em class="icon icon-info"></em>
@@ -34,21 +34,21 @@
             </label>
             <div class="col-lg-9">
                 <div>
-                    <label popover="{{'import.by.data.source' | translate}}"
+                    <label uib-popover="{{'import.by.data.source' | translate}}"
                            popover-trigger="mouseenter">
                         <input type="radio" class="from-data-btn" ng-model="target" value="data"
                                ng-change="settingsForm.context.$setValidity('validateUri', true)">
                         {{'import.from.data' | translate}}
                     </label>
                     &nbsp;
-                    <label popover="{{'import.into.default.graph' | translate}}"
+                    <label uib-popover="{{'import.into.default.graph' | translate}}"
                            popover-trigger="mouseenter">
                         <input type="radio" class="default-graph-btn" ng-model="target" value="default"
                                ng-change="settingsForm.context.$setValidity('validateUri', true)">
                         {{'import.default.graph' | translate}}
                     </label>
                     &nbsp;
-                    <label popover="{{'import.into.user.graph' | translate}}"
+                    <label uib-popover="{{'import.into.user.graph' | translate}}"
                            popover-trigger="mouseenter">
                         <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
                         {{'import.named.graph' | translate}}
@@ -64,7 +64,7 @@
         <div class="form-group row">
             <div class="col-lg-9 offset-lg-3">
                 <label class="col-form-label"
-                       popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
+                       uib-popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
                        popover-trigger="mouseenter"
                        popover-placement="top">
                     <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
@@ -76,7 +76,7 @@
             <label class="col-lg-3 col-form-label">
                 {{'import.replaced.graphs' | translate}}
                 <span class="btn btn-link p-0"
-                      popover="{{'import.replaced.graphs.for.update' | translate}}"
+                      uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
                       popover-trigger="mouseenter"
                       popover-placement="right">
                                 <em class="icon icon-info"></em>
@@ -93,17 +93,17 @@
                         <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
                                placeholder="http://example.com/graph..."
                                ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
-                               popover="{{'import.graph.wildcard' | translate}}"
+                               uib-popover="{{'import.graph.wildcard' | translate}}"
                                popover-placement="top"
                                popover-trigger="mouseenter">
                     </div>
                     <div class="col-lg-3 col-lg-no-padding">
-                        <div class="btn-group" dropdown>
+                        <div class="btn-group" uib-dropdown>
                             <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
                                 <span class="icon-plus"></span> {{'import.add.graph' | translate}}
                             </button>
                             <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
-                                    dropdown-toggle>
+                                    uib-dropdown-toggle>
                                 <span class="sr-only"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
@@ -159,7 +159,7 @@
                         <label>
                             <input name="preserveBNodeIDs" type="checkbox"
                                    ng-model="settings['parserSettings']['preserveBNodeIds']"
-                                   popover="{{'import.assign.own.bnode.ids' | translate}}"
+                                   uib-popover="{{'import.assign.own.bnode.ids' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.preserve.bnode.ids' | translate}}
                         </label>
@@ -173,7 +173,7 @@
                         <label>
                             <input name="failOnUnknownDataTypes" type="checkbox"
                                    ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
-                                   popover="{{'import.fail.unknown.datatype' | translate}}"
+                                   uib-popover="{{'import.fail.unknown.datatype' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.fail.parsing.if.unrecognised' | translate}}
                         </label>
@@ -182,7 +182,7 @@
                         <label>
                             <input name="verifyDataTypeValues" type="checkbox"
                                    ng-model="settings['parserSettings']['verifyDataTypeValues']"
-                                   popover="{{'import.validate.recognised' | translate}}"
+                                   uib-popover="{{'import.validate.recognised' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.verify.recognised' | translate}}
                         </label>
@@ -191,7 +191,7 @@
                         <label>
                             <input name="normalizeDataTypeValues" type="checkbox"
                                    ng-model="settings['parserSettings']['normalizeDataTypeValues']"
-                                   popover="{{'import.normalize.recognised' | translate}}"
+                                   uib-popover="{{'import.normalize.recognised' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.normalize.recognised' | translate}}
                         </label>
@@ -206,7 +206,7 @@
                         <label>
                             <input name="failOnUnknownLanguageTags" type="checkbox"
                                    ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
-                                   popover="{{'import.fail.lang.unknown' | translate}}"
+                                   uib-popover="{{'import.fail.lang.unknown' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.fail.parsing.lang.unknown' | translate}}
                         </label>
@@ -215,7 +215,7 @@
                         <label>
                             <input name="verifyLanguageTags" type="checkbox"
                                    ng-model="settings['parserSettings']['verifyLanguageTags']"
-                                   popover="{{'import.validate.lang.tags' | translate}}"
+                                   uib-popover="{{'import.validate.lang.tags' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.verify.language' | translate}}
                         </label>
@@ -224,7 +224,7 @@
                         <label>
                             <input name="normalizeLanguageTags" type="checkbox"
                                    ng-model="settings['parserSettings']['normalizeLanguageTags']"
-                                   popover="{{'import.normalize.lang.tags' | translate}}"
+                                   uib-popover="{{'import.normalize.lang.tags' | translate}}"
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> {{'import.normalize.recognized.tags' | translate}}
                         </label>
@@ -238,7 +238,7 @@
                     <label>
                         <input name="stopOnError" type="checkbox"
                                ng-model="settings['parserSettings']['stopOnError']"
-                               popover="{{'import.parser.stops.on.error' | translate}}"
+                               uib-popover="{{'import.parser.stops.on.error' | translate}}"
                                popover-trigger="mouseenter"
                                popover-placement="bottom"> {{'import.should.stop.on.error' | translate}}
                     </label>
@@ -251,7 +251,7 @@
             <div class="col-lg-9 col-form-label">
                 <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
                 <label for="force-serial"
-                       popover="{{'import.forces.serial.statements' | translate}}"
+                       uib-popover="{{'import.forces.serial.statements' | translate}}"
                        popover-placement="bottom"
                        popover-trigger="mouseenter">{{'import.force.serial.pipeline' | translate}}</label>
             </div>

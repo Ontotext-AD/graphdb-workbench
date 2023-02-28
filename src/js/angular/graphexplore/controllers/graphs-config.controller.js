@@ -8,9 +8,9 @@ angular
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
+function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
 
     $scope.page = 1;
     $scope.totalPages = 5;

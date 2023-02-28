@@ -8,7 +8,7 @@
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -31,7 +31,7 @@
 			<div ng-hide="loader || error">
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-click="togglePause()"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
-						tooltip="{{'temp.pause' | translate}}"
+						uib-tooltip="{{'temp.pause' | translate}}"
 						tooltip-placement="left">
 						{{paused ? 'paused.btn' : 'pause.btn' | translate}}
 					</button>
@@ -73,13 +73,13 @@
 									<div ng-if="query.sparqlString.length > stringLimit && !expanded[query.trackId]" class="query-string">{{query.sparqlString | limitTo: stringLimit}}...</div>
 									<div ng-if="query.sparqlString.length <= stringLimit || expanded[query.trackId]" class="query-string">{{query.sparqlString}}</div>
 								</td>
-								<td><span tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
+								<td><span uib-tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
 								<td>
 									<p>{{query.state}}</p>
 									<div>{{query.numberOfOperations}} {{'operations.label' | translate}}</div>
 								</td>
 								<td>
-									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'query.abort.request' : 'update.requested') : (query.type == 'QUERY' ? 'click.to.abort.query' : 'click.to.abort.update') | translate}}"
+									<div disabled-wrapper uib-popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'query.abort.request' : 'update.requested') : (query.type == 'QUERY' ? 'click.to.abort.query' : 'click.to.abort.update') | translate}}"
 										 popover-trigger="mouseenter"
 										 popover-placement="bottom">
 										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->

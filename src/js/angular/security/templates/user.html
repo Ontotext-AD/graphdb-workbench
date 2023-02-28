@@ -42,14 +42,14 @@
 						<h3>{{'view.login.title' | translate}}</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="{{'security.table.username' | translate}}" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
 								<input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="{{'security.password.placeholder' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
 							</div>
@@ -57,7 +57,7 @@
 						</div>
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="{{'security.password.confirm' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="{{'security.password.confirm' | translate}}" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
@@ -83,7 +83,7 @@
 									{{user.appSettings.DEFAULT_SAMEAS ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
-							<span tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : 'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span uib-tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : 'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
 								  class="switch mr-0">
 								<input  id="sameAsCheck" type="checkbox" class="switch"
@@ -101,7 +101,7 @@
 									{{user.appSettings.DEFAULT_INFERENCE ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
 							</span>
-							<span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span uib-tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
 								  class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
@@ -116,7 +116,7 @@
 								<span class="tag {{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'tag-primary' : 'tag-default'}}">
 									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'common.on.btn' : 'common.off.btn' | translate}}
 								</span>
-                                <span tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                <span uib-tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
                                       ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"
                                       class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
@@ -142,7 +142,7 @@
 				<div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
 					<div class="card-block">
 						<h3>{{'security.workbench.settings.title' | translate}}
-							<em class="icon-info text-primary small" tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
+							<em class="icon-info text-primary small" uib-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
 
 						<div class="mb-1">
 							<label class="col-lg-5">{{'security.workbench.settings.theme.label' | translate}}</label>
@@ -167,20 +167,20 @@
 					<div class="card-block">
 						<h3>{{'security.user.role' | translate}}</h3>
 						<label class="mr-1"
-							   popover-template="'popover-content-user.html'"
+							   uib-popover-template="'popover-content-user.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="hasEditRestrictions()" >
 							{{'security.user.label' | translate}}
 						</label>
 						<label class="mr-1"
-							   popover-template="'popover-content-repo-manager.html'"
+							   uib-popover-template="'popover-content-repo-manager.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="hasEditRestrictions()">
 							{{'security.repo.manager.label' | translate}}
 						</label>
-						<label popover-template="'popover-content-admin.html'"
+						<label uib-popover-template="'popover-content-admin.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="hasEditRestrictions()">
@@ -201,14 +201,14 @@
 							<thead>
 								<tr>
 									<th id="repositoryIdColumn">{{'security.repository.title' | translate}}</th>
-									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" tooltip="{{'security.tooltip.read' | translate}}" tooltip-trigger="mouseenter"></em></th>
-									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" tooltip="{{'security.tooltip.write' | translate}}" tooltip-trigger="mouseenter"></em></th>
+									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" uib-tooltip="{{'security.tooltip.read' | translate}}" tooltip-trigger="mouseenter"></em></th>
+									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" uib-tooltip="{{'security.tooltip.write' | translate}}" tooltip-trigger="mouseenter"></em></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>{{'security.any.data.repo' | translate}}
-										<em class="icon-info text-primary" tooltip="{{'security.data.repos' | translate}}"></em>
+										<em class="icon-info text-primary" uib-tooltip="{{'security.data.repos' | translate}}"></em>
 									</td>
 									<td class="text-xs-center">
                                         <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">

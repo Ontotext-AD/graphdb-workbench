@@ -9,7 +9,7 @@
 <h1>
     {{title}}
     <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
           popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -42,7 +42,7 @@
 
 <div>
     <button ng-show="page != 1" type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-        <span class="icon-help" popover="{{'toggle.help' | translate}}"
+        <span class="icon-help" uib-popover="{{'toggle.help' | translate}}"
                                 popover-placement="top"
                                 popover-trigger="mouseenter">
         </span>
@@ -130,7 +130,7 @@
                     </div>
                 </div>
                 <!-- help info boxes -->
-                <div collapse="helpHidden" class="alert alert-info no-icon p-1 mb-2" ng-if="page != 1">
+                <div uib-collapse="helpHidden" class="alert alert-info no-icon p-1 mb-2" ng-if="page != 1">
                     <div class="d-flex" ng-if="page == 2">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
@@ -326,32 +326,32 @@
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
     <div>
         <label for="share-graph-config"
-               tooltip="{{'visual.graph.other.users.see' | translate}}">
+               uib-tooltip="{{'visual.graph.other.users.see' | translate}}">
             <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared">
             {{'share.visual.graph' | translate}}
         </label>
     </div>
     <div class="pull-left">
         <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
-            popover="{{'closes.config.save' | translate}}"
+            uib-popover="{{'closes.config.save' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
             {{'common.save.btn' | translate}}
         </a>
         <button class="btn btn-lg btn-secondary" ng-click="showPreview()" ng-hide="viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-            popover="{{'preview.results' | translate}}"
+            uib-popover="{{'preview.results' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
             {{'common.preview' | translate}}
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="showEditor()" ng-show="viewMode == 'editor' && (page != 1 || newConfig.startMode == 'query')"
-            popover="{{'closes.preview' | translate}}"
+            uib-popover="{{'closes.preview' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
             {{'core.edit.query' | translate}}
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="revertEditor()" ng-disabled="!queryEditorIsDirty" ng-hide="!revertConfig || viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-                popover="{{'reverts.changes' | translate}}"
+                uib-popover="{{'reverts.changes' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter">
             {{'revert.changes.btn' | translate}}
@@ -359,17 +359,17 @@
     </div>
     <div class="pull-right">
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary"
-                popover="{{'previous.config.step' | translate}}"
+                uib-popover="{{'previous.config.step' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter"> <span class="icon-arrow-left"></span> {{'previous.btn' | translate}} </button>
 
         <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary"
-                popover="{{'next.config.step' | translate}}"
+                uib-popover="{{'next.config.step' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="icon-arrow-right"></span></button>
 
         <a ng-href="graphs-visualizations/" class="btn btn-lg btn-secondary"
-            popover="{{'closes.config.no.save' | translate}}"
+            uib-popover="{{'closes.config.no.save' | translate}}"
             popover-placement="top"
             popover-trigger="mouseenter">
             {{'common.cancel.btn' | translate}}

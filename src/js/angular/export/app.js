@@ -18,7 +18,7 @@ const modules = [
 
 const exportApp = angular.module('graphdb.framework.impex.export', modules);
 
-exportApp.config(['$tooltipProvider', function ($tooltipProvider) {
+exportApp.config(['$uibTooltipProvider', function ($uibTooltipProvider) {
     //Add custom event for Export repository DD tooltip
-    $tooltipProvider.setTriggers({'showExportDDTooltip': 'showExportDDTooltip'});
+    $uibTooltipProvider.setTriggers({'showExportDDTooltip': 'showExportDDTooltip'});
 }]);

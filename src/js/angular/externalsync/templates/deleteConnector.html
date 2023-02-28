@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body">
     <p>{{'delete.connector.paragraph' | translate}}</p>
-    <span popover="{{'delete.connector.popover' | translate}}{{popoverMsg}}"
+    <span uib-popover="{{'delete.connector.popover' | translate}}{{popoverMsg}}"
          popover-trigger="mouseenter"
          popover-placement="bottom">
         <input id="force-delete" type="checkbox" ng-model="force"><label for="force-delete">&nbsp;{{'delete.connector.force.checkbox' | translate}}</label>
