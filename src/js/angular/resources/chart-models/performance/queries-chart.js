@@ -1,12 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class QueriesChart extends ChartData {
-    constructor(translateService, chartOptions) {
-        super(translateService, chartOptions, false, false);
-    }
-
-    getTitle() {
-        return this.translateService.instant('resource.queries.label');
+    constructor(translateService) {
+        super(translateService, false, false);
     }
 
     chartSetup(chartOptions) {
@@ -27,6 +23,13 @@ export class QueriesChart extends ChartData {
 
         const slowQueries = performanceData.queries.slow;
         const suboptimal = performanceData.queries.suboptimal;
-        this.setSubTitle(this.translateService.instant('resource.queries.slow_and_suboptimal', {slowQueries, suboptimal}));
+        const subTitleKeyValues = [{
+            label: this.translateService.instant('resource.queries.slow'),
+            value: slowQueries
+        }, {
+            label: this.translateService.instant('resource.queries.suboptimal'),
+            value: suboptimal
+        }];
+        this.setSubTitle(subTitleKeyValues);
     }
 }
