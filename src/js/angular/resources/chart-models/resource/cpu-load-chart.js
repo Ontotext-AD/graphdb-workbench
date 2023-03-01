@@ -1,13 +1,17 @@
 import {ChartData} from "../chart-data";
 
 export class CpuLoadChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, false, false);
     }
     chartSetup(chartOptions) {
         chartOptions.chart.yAxis.tickFormat = function (d) {
             return d + '%';
         };
+    }
+
+    getTitle() {
+        return this.translateService.instant('resource.system.cpu_load.label');
     }
 
     createDataHolder() {

@@ -1,12 +1,8 @@
 import {ChartData} from '../chart-data';
 
 export class GlobalCacheChart extends ChartData {
-    constructor(translateService, filter) {
-        super(translateService, false, false, filter);
-    }
-
-    chartSetup(chartOptions) {
-        chartOptions.chart.yAxis.tickFormat = (d) => this.formatNumber(d);
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, false, false);
     }
 
     getTitle() {

@@ -1,13 +1,17 @@
 import {ChartData} from "../chart-data";
 
 export class ConnectionsChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, false, false);
     }
     chartSetup(chartOptions) {
         chartOptions.chart.yAxis.tickValues = () => {
             return ConnectionsChart.getIntegerRangeForValues(this.dataHolder);
         };
+    }
+
+    getTitle() {
+        return this.translateService.instant('resource.connections.label');
     }
 
     createDataHolder() {

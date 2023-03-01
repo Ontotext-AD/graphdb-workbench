@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class EpoolChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, false, false);
     }
     chartSetup(chartOptions) {
         const customChartOptions = {
