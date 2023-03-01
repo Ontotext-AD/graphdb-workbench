@@ -1,12 +1,13 @@
 import {ChartData} from "../chart-data";
 
 export class FileDescriptorsChart extends ChartData {
-    constructor(translateService, chartOptions) {
-        super(translateService, chartOptions, false, false);
+    constructor(translateService, filter) {
+        super(translateService, false, false, filter);
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.system.file_descriptors.label');
+    chartSetup(chartOptions) {
+        chartOptions.chart.yAxis.tickFormat = (d) => this.formatNumber(d);
+        chartOptions.chart.color = [chartOptions.chart.color[1]];
     }
 
     createDataHolder() {
@@ -18,14 +19,18 @@ export class FileDescriptorsChart extends ChartData {
     }
     addNewData(dataHolder, timestamp, data) {
         if (!data.openFileDescriptors) {
-            this.setSubTitle(this.translateService.instant('resource.system.file_descriptors.only_unix'));
+            const subTitleKeyValues = [{
+                label: this.translateService.instant('resource.system.file_descriptors.only_unix')
+            }];
+            this.setSubTitle(subTitleKeyValues);
             return;
         }
         dataHolder[0].values.push([timestamp, data.openFileDescriptors]);
-        if (!this.chartOptions.title.enable) {
-            this.chartOptions.title.enable = true;
-        }
-        this.setSubTitle(this.translateService.instant('resource.system.file_descriptors.max', {max: data.maxFileDescriptors}));
+        const subTitleKeyValues = [{
+            label: this.translateService.instant('resource.system.file_descriptors.max'),
+            value: this.formatNumber(data.maxFileDescriptors)
+        }];
+        this.setSubTitle(subTitleKeyValues);
     }
     updateRange(dataHolder) {
         super.updateRange(dataHolder, 2);
