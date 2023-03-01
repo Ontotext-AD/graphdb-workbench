@@ -10,7 +10,7 @@ describe('Monitor Resources', () => {
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/monitor/system');
+        cy.visit('/monitor/resources');
         cy.window();
 
         // Wait for loaders to disappear
@@ -127,7 +127,8 @@ describe('Monitor Resources', () => {
         verifyCharts(charts);
     });
 
-    it('Should show info for non existing cluster', () => {
+    it('Should show info and no error for non existing cluster', () => {
+        getErrorsPane().should('not.be.visible');
         getTabButtons().eq(2).click();
         cy.get('.alert-info').should('be.visible').and('contain', 'Charts are not available because GraphDB is not in cluster configuration');
     });

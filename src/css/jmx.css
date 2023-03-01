@@ -40,12 +40,6 @@
 .chart-additional-info {
   text-align: right !important;
   margin-right: 80px;
-  min-height: 24px;
+  height: 24px;
   font-weight: 400;
-  overflow-wrap: break-word;
-}
-
-.chart-additional-info .info-element {
-  white-space: nowrap;
-  margin: 0 4px;
 }

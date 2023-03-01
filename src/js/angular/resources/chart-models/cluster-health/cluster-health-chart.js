@@ -1,8 +1,8 @@
 import {ChartData} from '../chart-data';
 
 export class ClusterHealthChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, true, false);
+    constructor(translateService, chartOptions) {
+        super(translateService, chartOptions, true, false);
         this.nodesCount = 0;
     }
     chartSetup(chartOptions) {
@@ -28,22 +28,20 @@ export class ClusterHealthChart extends ChartData {
     }
 
     createDataHolder() {
-        const [blue, orange, green, grey] = ClusterHealthChart.COLORS;
         return [{
             key: this.translateService.instant('resources.cluster_health.in_sync'),
-            color: blue,
             values: []
         }, {
             key: this.translateService.instant('resources.cluster_health.syncing'),
-            color: green,
+            color: '#ff5508',
             values: []
         }, {
             key: this.translateService.instant('resources.cluster_health.out_sync'),
-            color: orange,
+            color: '#f52121',
             values: []
         }, {
             key: this.translateService.instant('resources.cluster_health.disconnected'),
-            color: grey,
+            color: '#999999',
             values: []
         }];
     }
@@ -57,17 +55,11 @@ export class ClusterHealthChart extends ChartData {
         nodesDisconnected.values.push([timestamp, nodesStatus.nodesDisconnected]);
         nodesSyncing.values.push([timestamp, nodesStatus.nodesSyncing]);
 
-        const subTitleKeyValues = [{
-            label: this.translateService.instant('resource.cluster_health.leader_elections'),
-            value: data.term
-        }, {
-            label: this.translateService.instant('resource.cluster_health.recoveries'),
-            value: data.failureRecoveriesCount
-        }, {
-            label: this.translateService.instant('resource.cluster_health.failed_transactions'),
-            value: data.failedTransactionsCount
-        }];
-
-        this.setSubTitle(subTitleKeyValues);
+        const subTitleValues = {
+            leaderElections: data.term,
+            failedRecoveries: data.failureRecoveriesCount,
+            failedTransactions: data.failedTransactionsCount
+        };
+        this.setSubTitle(this.translateService.instant('resource.cluster_health.additional_data', subTitleValues));
     }
 }
