@@ -1,4 +1,4 @@
-import {merge} from "lodash";
+import {isNumber, merge} from "lodash";
 import {
     savedQueriesResponseMapper,
     queryPayloadFromEvent,
@@ -48,7 +48,9 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 headers: () => {
                     return headers;
                 },
-                prefixes: $scope.prefixes
+                prefixes: $scope.prefixes,
+                pageSize: 1000,
+                maxPersistentResponseSize: 500000
             };
         }
     };
@@ -66,16 +68,6 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     $scope.$on('language-changed', function (event, args) {
         $scope.language = args.locale;
     });
-
-    /**
-     * Handles the queryExecuted event emitted by the ontotext-yasgui. The event is fired immediately before sending the
-     * request and the request object can be altered here and it will be sent with these changes.
-     * @param {object} event The event payload containing the query and the request object.
-     */
-    $scope.queryExecuted = (event) => {
-        updateRequestHeaders(event.detail.request);
-        changeEndpointByQueryType(event.detail.queryMode, event.detail.request);
-    };
 
     /**
      * Handles the createSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
@@ -300,6 +292,78 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     // ================================
     // =     Setup output handlers    =
     // ================================
+
+    /**
+     * Handles the "query" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+     * request and the request object can be altered here, and it will be sent with these changes.
+     * @param {object} queryResponseEvent - the event payload containing the query and the request object.
+     */
+    function queryHandler(queryResponseEvent) {
+        updateRequestHeaders(queryResponseEvent.request);
+        changeEndpointByQueryType(queryResponseEvent.queryMode, queryResponseEvent.request);
+        const pageNumber = queryResponseEvent.request._data['pageNumber'] ? parseInt(queryResponseEvent.request._data['pageNumber']) : undefined;
+        queryResponseEvent.request._data['pageNumber'] = undefined;
+        const pageSize = queryResponseEvent.request._data['pageSize'] ? parseInt(queryResponseEvent.request._data['pageSize']) : undefined;
+        queryResponseEvent.request._data['pageSize'] = undefined;
+        if (pageSize && pageNumber) {
+            queryResponseEvent.request._data['offset'] = (pageNumber - 1) * (pageSize -1);
+            queryResponseEvent.request._data['limit'] = pageSize;
+        }
+    }
+    outputHandlers.set(EventDataType.QUERY, queryHandler);
+
+    /**
+     * Handles the "countQuery" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+     * count query request and the request object can be altered here, and it will be sent with these changes.
+     * @param {object} countQueryResponseEvent - the event payload containing the query and the request object.
+     */
+    function countQueryResponseHandler(countQueryResponseEvent) {
+        updateRequestHeaders(countQueryResponseEvent.request);
+        changeEndpointByQueryType(countQueryResponseEvent.queryMode, countQueryResponseEvent.request);
+        countQueryResponseEvent.request._data['pageSize'] = undefined;
+        countQueryResponseEvent.request._data['pageNumber'] = undefined;
+        countQueryResponseEvent.request._data['count'] = 1;
+    }
+    outputHandlers.set(EventDataType.COUNT_QUERY, countQueryResponseHandler);
+
+    function extractTotalElements(countResponse) {
+        if (!countResponse || !countResponse.body) {
+            return -1;
+        }
+        const body = countResponse.body;
+        if (body['http://www.ontotext.com/']) {
+            return body['http://www.ontotext.com/']['http://www.ontotext.com/'][0].value;
+        }
+
+        if (isNumber(body)) {
+            return body;
+        }
+
+        if (body.results && body.results.bindings) {
+            const result = body.results.bindings[0];
+            const vars = body.head.vars;
+            const bindingVars = Object.keys(result).filter(function(b) {
+                return vars.indexOf(b) > -1;
+            });
+            if (bindingVars.length > 0) {
+                return result[bindingVars[0]].value;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Handles the "countQueryResponse" event emitted by the ontotext-yasgui. The event is fired immediately after receiving the
+     * count query response and the response have to be parsed if needed. As result of response parsing the body of the response have to
+     * contain "totalElements".
+     * @param {object} countQueryResponseEvent - the event payload containing the response of count query.
+     */
+    function extractTotalElementsHandler(countQueryResponseEvent) {
+        const countResponse = countQueryResponseEvent.response;
+        countQueryResponseEvent.response.body.totalElements = extractTotalElements(countResponse);
+    }
+    outputHandlers.set(EventDataType.COUNT_QUERY_RESPONSE, extractTotalElementsHandler);
+
     function downloadAsHandler(downloadAsEvent) {
         const handler = downloadAsPluginNameToEventHandler.get(downloadAsEvent.pluginName);
         if (handler) {
