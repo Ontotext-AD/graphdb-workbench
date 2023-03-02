@@ -27,6 +27,10 @@ export class YasrSteps {
         return this.getResultRow(rowNumber).find('td').eq(cellNumber);
     }
 
+    static getResultLink(rowNumber, cellNumber) {
+        return YasrSteps.getResultCell(rowNumber, cellNumber).find('a');
+    }
+
     static hoverCell(rowNumber, cellNumber) {
         this.getResultCell(rowNumber, cellNumber).realHover();
     }
@@ -56,5 +60,9 @@ export class YasrSteps {
 
     static getDownloadAsOption(number) {
         return this.getDownloadAsDropdown().find('.ontotext-dropdown-menu-item').eq(number);
+    }
+
+    static getPagination() {
+        return YasrSteps.getYasr().find('.ontotext-pagination');
     }
 }
