@@ -8,9 +8,40 @@ export const toYasguiOutputModel = ($event) => {
             return buildDownloadAsModel(eventData);
         case EventDataType.NOTIFICATION_MESSAGE:
             return buildNotificationMessageModel(eventData);
+        case EventDataType.COUNT_QUERY:
+            return buildCountQueryModel(eventData);
+        case EventDataType.COUNT_QUERY_RESPONSE:
+            return buildCountQueryResponseModel(eventData);
+        case EventDataType.QUERY:
+            return buildQueryModel(eventData);
         default:
             return eventData;
     }
+};
+
+export const buildCountQueryResponseModel = (eventData) => {
+    return {
+        TYPE: eventData.TYPE,
+        response: eventData.payload.response
+    };
+};
+
+export const buildQueryModel = (eventData) => {
+    return {
+        TYPE: eventData.TYPE,
+        query: eventData.payload.query,
+        queryMode: eventData.payload.queryMode,
+        request: eventData.payload.request
+    };
+};
+
+export const buildCountQueryModel = (eventData) => {
+    return {
+        TYPE: eventData.TYPE,
+        query: eventData.payload.query,
+        queryMode: eventData.payload.queryMode,
+        request: eventData.payload.request
+    };
 };
 
 export const buildDownloadAsModel = (eventData) => {
