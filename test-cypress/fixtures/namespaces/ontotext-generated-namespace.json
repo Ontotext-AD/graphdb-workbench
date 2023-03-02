@@ -1,0 +1,22 @@
+{
+    "head" : {
+        "vars" : [
+            "prefix",
+            "namespace"
+        ]
+    },
+    "results" : {
+        "bindings" : [
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "ontogen"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://ontotext-yasgui/generated-yri#"
+                }
+            }
+        ]
+    }
+}
