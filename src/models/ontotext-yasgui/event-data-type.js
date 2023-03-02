@@ -3,5 +3,8 @@
  */
 export const EventDataType = {
     'DOWNLOAD_AS': 'downloadAs',
-    'NOTIFICATION_MESSAGE': 'notificationMessage'
+    'NOTIFICATION_MESSAGE': 'notificationMessage',
+    'QUERY': 'query',
+    'COUNT_QUERY': 'countQuery',
+    'COUNT_QUERY_RESPONSE': 'countQueryResponse'
 };
