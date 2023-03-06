@@ -270,7 +270,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload, $tr
             if (field === 'port' && $scope.selectedDriver.portRequired) {
                 field = 'portIfRequired';
             }
-            return $scope.repoTooltips.ontop[field];
+            return $translate.instant('repoTooltips.ontop.' + field);
         };
 
         $scope.editOntopRepo = function () {
