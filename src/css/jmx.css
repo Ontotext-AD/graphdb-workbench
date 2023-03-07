@@ -49,3 +49,7 @@
   white-space: nowrap;
   margin: 0 4px;
 }
+
+.nv-multiBarHorizontalChart .nv-bar {
+  fill-opacity: 0.5;
+}
