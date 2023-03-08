@@ -1,24 +1,6 @@
 import {EventData} from "../../../models/ontotext-yasgui/event-data";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 
-export const toYasguiOutputModel = ($event) => {
-    const eventData = toEventData($event);
-    switch (eventData.TYPE) {
-        case EventDataType.DOWNLOAD_AS:
-            return buildDownloadAsModel(eventData);
-        case EventDataType.NOTIFICATION_MESSAGE:
-            return buildNotificationMessageModel(eventData);
-        case EventDataType.COUNT_QUERY:
-            return buildCountQueryModel(eventData);
-        case EventDataType.COUNT_QUERY_RESPONSE:
-            return buildCountQueryResponseModel(eventData);
-        case EventDataType.QUERY:
-            return buildQueryModel(eventData);
-        default:
-            return eventData;
-    }
-};
-
 export const buildCountQueryResponseModel = (eventData) => {
     return {
         TYPE: eventData.TYPE,
@@ -66,6 +48,24 @@ export const buildNotificationMessageModel = (eventData) => {
 
 export const toEventData = ($event) => {
     return new EventData($event.detail.TYPE, $event.detail.payload);
+};
+
+export const toYasguiOutputModel = ($event) => {
+    const eventData = toEventData($event);
+    switch (eventData.TYPE) {
+        case EventDataType.DOWNLOAD_AS:
+            return buildDownloadAsModel(eventData);
+        case EventDataType.NOTIFICATION_MESSAGE:
+            return buildNotificationMessageModel(eventData);
+        case EventDataType.COUNT_QUERY:
+            return buildCountQueryModel(eventData);
+        case EventDataType.COUNT_QUERY_RESPONSE:
+            return buildCountQueryResponseModel(eventData);
+        case EventDataType.QUERY:
+            return buildQueryModel(eventData);
+        default:
+            return eventData;
+    }
 };
 
 export const downloadAsFile = (filename, contentType, content) => {
