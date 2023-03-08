@@ -1,50 +1,10 @@
 import {EventData} from "../../../models/ontotext-yasgui/event-data";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
-
-export const buildCountQueryResponseModel = (eventData) => {
-    return {
-        TYPE: eventData.TYPE,
-        response: eventData.payload.response
-    };
-};
-
-export const buildQueryModel = (eventData) => {
-    return {
-        TYPE: eventData.TYPE,
-        query: eventData.payload.query,
-        queryMode: eventData.payload.queryMode,
-        request: eventData.payload.request
-    };
-};
-
-export const buildCountQueryModel = (eventData) => {
-    return {
-        TYPE: eventData.TYPE,
-        query: eventData.payload.query,
-        queryMode: eventData.payload.queryMode,
-        request: eventData.payload.request
-    };
-};
-
-export const buildDownloadAsModel = (eventData) => {
-    return {
-        TYPE: eventData.TYPE,
-        contentType: eventData.payload.value,
-        pluginName: eventData.payload.pluginName,
-        query: eventData.payload.query,
-        infer: eventData.payload.infer,
-        sameAs: eventData.payload.sameAs
-    };
-};
-
-export const buildNotificationMessageModel = (eventData) => {
-    return {
-        TYPE: eventData.TYPE,
-        message: eventData.payload.message,
-        code: eventData.payload.code,
-        messageType: eventData.payload.messageType
-    };
-};
+import {QueryRequestEvent} from "../../../models/ontotext-yasgui/query-request-event";
+import {CountQueryResponseEvent} from "../../../models/ontotext-yasgui/count-query-response-event";
+import {CountQueryRequestEvent} from "../../../models/ontotext-yasgui/count-query-request-event";
+import {DownloadAsEvent} from "../../../models/ontotext-yasgui/download-as-event";
+import {NotificationMessageEvent} from "../../../models/ontotext-yasgui/notification-message-event";
 
 export const toEventData = ($event) => {
     return new EventData($event.detail.TYPE, $event.detail.payload);
@@ -54,15 +14,15 @@ export const toYasguiOutputModel = ($event) => {
     const eventData = toEventData($event);
     switch (eventData.TYPE) {
         case EventDataType.DOWNLOAD_AS:
-            return buildDownloadAsModel(eventData);
+            return new DownloadAsEvent(eventData);
         case EventDataType.NOTIFICATION_MESSAGE:
-            return buildNotificationMessageModel(eventData);
+            return new NotificationMessageEvent(eventData);
         case EventDataType.COUNT_QUERY:
-            return buildCountQueryModel(eventData);
+            return new CountQueryRequestEvent(eventData);
         case EventDataType.COUNT_QUERY_RESPONSE:
-            return buildCountQueryResponseModel(eventData);
+            return new CountQueryResponseEvent(eventData);
         case EventDataType.QUERY:
-            return buildQueryModel(eventData);
+            return new QueryRequestEvent(eventData);
         default:
             return eventData;
     }
