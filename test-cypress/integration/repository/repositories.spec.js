@@ -956,8 +956,7 @@ describe('Repositories', () => {
     function compareDriverDownloadUrl(expectedUrl){
         cy.get('.uri')
             .should('be.visible')
-            .and('have.attr', 'href')
-            .and('contain', expectedUrl);
+            .and('have.attr', 'href', expectedUrl);
     }
 
     function getSHACLRepositoryCheckbox(){
