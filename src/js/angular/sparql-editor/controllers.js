@@ -266,13 +266,13 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         });
     };
 
-    function setPrefixes(namespacesResponse) {
+    const setPrefixes = (namespacesResponse) => {
         const usedPrefixes = {};
         namespacesResponse.data.results.bindings.forEach(function (e) {
             usedPrefixes[e.prefix.value] = e.namespace.value;
         });
         $scope.prefixes = usedPrefixes;
-    }
+    };
 
     // Initialization and bootstrap
     function init() {
@@ -298,7 +298,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      * request and the request object can be altered here, and it will be sent with these changes.
      * @param {object} queryResponseEvent - the event payload containing the query and the request object.
      */
-    function queryHandler(queryResponseEvent) {
+    const queryHandler = (queryResponseEvent) => {
         updateRequestHeaders(queryResponseEvent.request);
         changeEndpointByQueryType(queryResponseEvent.queryMode, queryResponseEvent.request);
         const pageNumber = queryResponseEvent.request._data['pageNumber'] ? parseInt(queryResponseEvent.request._data['pageNumber']) : undefined;
@@ -309,7 +309,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
             queryResponseEvent.request._data['offset'] = (pageNumber - 1) * (pageSize -1);
             queryResponseEvent.request._data['limit'] = pageSize;
         }
-    }
+    };
     outputHandlers.set(EventDataType.QUERY, queryHandler);
 
     /**
@@ -317,16 +317,16 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      * count query request and the request object can be altered here, and it will be sent with these changes.
      * @param {object} countQueryResponseEvent - the event payload containing the query and the request object.
      */
-    function countQueryResponseHandler(countQueryResponseEvent) {
+    const countQueryResponseHandler = (countQueryResponseEvent) => {
         updateRequestHeaders(countQueryResponseEvent.request);
         changeEndpointByQueryType(countQueryResponseEvent.queryMode, countQueryResponseEvent.request);
         countQueryResponseEvent.request._data['pageSize'] = undefined;
         countQueryResponseEvent.request._data['pageNumber'] = undefined;
         countQueryResponseEvent.request._data['count'] = 1;
-    }
+    };
     outputHandlers.set(EventDataType.COUNT_QUERY, countQueryResponseHandler);
 
-    function extractTotalElements(countResponse) {
+    const extractTotalElements = (countResponse) => {
         if (!countResponse || !countResponse.body) {
             return -1;
         }
@@ -350,7 +350,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
             }
         }
         return -1;
-    }
+    };
 
     /**
      * Handles the "countQueryResponse" event emitted by the ontotext-yasgui. The event is fired immediately after receiving the
@@ -358,21 +358,21 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      * contain "totalElements".
      * @param {object} countQueryResponseEvent - the event payload containing the response of count query.
      */
-    function extractTotalElementsHandler(countQueryResponseEvent) {
+    const extractTotalElementsHandler = (countQueryResponseEvent) => {
         const countResponse = countQueryResponseEvent.response;
         countQueryResponseEvent.response.body.totalElements = extractTotalElements(countResponse);
-    }
+    };
     outputHandlers.set(EventDataType.COUNT_QUERY_RESPONSE, extractTotalElementsHandler);
 
-    function downloadAsHandler(downloadAsEvent) {
+    const downloadAsHandler = (downloadAsEvent) => {
         const handler = downloadAsPluginNameToEventHandler.get(downloadAsEvent.pluginName);
         if (handler) {
             handler(downloadAsEvent);
         }
-    }
+    };
     outputHandlers.set(EventDataType.DOWNLOAD_AS, downloadAsHandler);
 
-    function notificationMessageHandler(notificationMessageEvent) {
+    const notificationMessageHandler = (notificationMessageEvent) => {
         if (NotificationMessageType.SUCCESS === notificationMessageEvent.messageType) {
             toastr.success(notificationMessageEvent.message);
         } else if (NotificationMessageType.WARNING === notificationMessageEvent.messageType) {
@@ -380,12 +380,12 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         } else if (NotificationMessageType.ERROR === notificationMessageEvent.messageType) {
             toastr.error(notificationMessageEvent.message);
         }
-    }
+    };
     outputHandlers.set(EventDataType.NOTIFICATION_MESSAGE, notificationMessageHandler);
     // ================================
     // =   Setup download handlers    =
     // ================================
-    function downloadCurrentResults(downloadAsEvent) {
+    const downloadCurrentResults = (downloadAsEvent) => {
         if ("application/sparql-results+json" === downloadAsEvent.contentType) {
             ontoElement.getEmbeddedResultAsJson()
                 .then((response) => {
@@ -398,15 +398,15 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                     downloadAsFile(`${getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response);
                 });
         }
-    }
+    };
     downloadAsPluginNameToEventHandler.set('response', downloadCurrentResults);
 
-    function getFileTimePrefix() {
+    const getFileTimePrefix = () => {
         const now = new Date();
         return `${now.toLocaleDateString($scope.language)}_${now.toLocaleTimeString($scope.language)}`;
-    }
+    };
 
-    function downloadThroughServer(downloadAsEvent) {
+    const downloadThroughServer = (downloadAsEvent) => {
         const query = downloadAsEvent.query;
         const infer = downloadAsEvent.infer;
         const sameAs = downloadAsEvent.sameAs;
@@ -423,7 +423,7 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
         $('#wb-auth-token').val(authToken);
         $('#wb-download-accept').val(accept);
         $wbDownload.submit();
-    }
+    };
     downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
     init();
