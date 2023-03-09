@@ -568,7 +568,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
-        compareDriverDownloadUrl('https://jdbc.postgresql.org/download.html');
+        compareDriverDownloadUrl('https://jdbc.postgresql.org/download');
 
         //Select Oracle driver type and verify elements and download url (if available)
         selectDatabaseDriver('Oracle');
@@ -956,8 +956,7 @@ describe('Repositories', () => {
     function compareDriverDownloadUrl(expectedUrl){
         cy.get('.uri')
             .should('be.visible')
-            .and('have.attr', 'href')
-            .and('contain', expectedUrl);
+            .and('have.attr', 'href', expectedUrl);
     }
 
     function getSHACLRepositoryCheckbox(){
