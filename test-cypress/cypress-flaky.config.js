@@ -5,7 +5,7 @@ module.exports = defineConfig({
     fixturesFolder: 'fixtures',
     screenshotsFolder: 'report/screenshots',
     videosFolder: 'report/videos',
-    video: false,
+    video: true,
     defaultCommandTimeout: 15000,
     numTestsKeptInMemory: 10,
     e2e: {
