@@ -12,6 +12,7 @@
 // the project's config changing)
 
 const _ = require("lodash");
+const del = require('del');
 module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
@@ -29,8 +30,6 @@ module.exports = (on, config) => {
     });
 
     // keep only the videos for the failed specs
-    const _ = require('lodash');
-    const del = require('del');
     on('after:spec', (spec, results) => {
         if (results && results.video) {
             // Do we have failures for any retry attempts?
