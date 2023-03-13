@@ -6,7 +6,6 @@ module.exports = defineConfig({
     screenshotsFolder: 'report/screenshots',
     videosFolder: 'report/videos',
     video: true,
-    videoUploadOnPasses: false,
     defaultCommandTimeout: 15000,
     numTestsKeptInMemory: 10,
     e2e: {
