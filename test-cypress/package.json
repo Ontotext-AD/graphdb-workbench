@@ -33,6 +33,7 @@
         "graphdb-workbench-cypress": "bin/graphdb-workbench-cypress"
     },
     "devDependencies": {
+        "del": "^6.0.0",
         "minimist": "^1.2.5"
     },
     "resolutions": {
