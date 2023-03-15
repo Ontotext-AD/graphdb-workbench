@@ -14,9 +14,33 @@ angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
-SparqlEditorCtrl.$inject = ['$scope', '$location', '$jwtAuth', '$repositories', 'toastr', '$translate', 'SparqlRestService', 'ShareQueryLinkService', '$languageService', 'RDF4JRepositoriesRestService'];
+SparqlEditorCtrl.$inject = [
+    '$scope',
+    '$q',
+    '$location',
+    '$jwtAuth',
+    '$repositories',
+    'toastr',
+    '$translate',
+    'SparqlRestService',
+    'AutocompleteRestService',
+    'ShareQueryLinkService',
+    '$languageService',
+    'RDF4JRepositoriesRestService'
+];
 
-function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $translate, SparqlRestService, ShareQueryLinkService, $languageService, RDF4JRepositoriesRestService) {
+function SparqlEditorCtrl($scope,
+                          $q,
+                          $location,
+                          $jwtAuth,
+                          $repositories,
+                          toastr,
+                          $translate,
+                          SparqlRestService,
+                          AutocompleteRestService,
+                          ShareQueryLinkService,
+                          $languageService,
+                          RDF4JRepositoriesRestService) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -36,7 +60,6 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     // =========================
     // Public functions
     // =========================
-
     $scope.updateConfig = () => {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository) {
@@ -50,7 +73,13 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 prefixes: $scope.prefixes,
                 pageSize: 1000,
                 maxPersistentResponseSize: 500000,
-                isVirtualRepository: $repositories.isActiveRepoOntopType()
+                isVirtualRepository: $repositories.isActiveRepoOntopType(),
+                yasqeAutocomplete: {
+                    LocalNamesAutocompleter: (term) => {
+                        const canceler = $q.defer();
+                        return autocompleteLocalNames(term, canceler);
+                    }
+                }
             };
         }
     };
@@ -167,6 +196,14 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
     // =========================
     // Private function
     // =========================
+
+    const autocompleteLocalNames = (term, canceler) => {
+        return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
+            .then(function (results) {
+                canceler = null;
+                return results.data;
+            });
+    };
 
     const updateRequestHeaders = (req) => {
         const authToken = $jwtAuth.getAuthToken();
@@ -287,6 +324,8 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 // on repo change do the same as above
                 // focus on the active editor on init
             });
+        // TODO: we should also watch for changes in namespaces
+        // scope.$watch('namespaces', function () {});
     }
 
     // ================================
