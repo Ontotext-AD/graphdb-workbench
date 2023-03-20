@@ -1,9 +1,8 @@
 <div>
 	<div ng-hide="rdfsLabel == undefined" class="media mb-1">
 		<div class="media-left"
-			 uib-tooltip="rdfs:label"
-			 tooltip-placement="top"
-			 tooltip-trigger="mouseenter">
+			 gdb-tooltip="rdfs:label"
+			 tooltip-placement="top">
 			<i class="icon-tag icon-lg" aria-hidden="true"></i>
 		</div>
 		<div class="media-body">
@@ -12,9 +11,8 @@
 	</div>
     <div ng-if="rdfsComment" class="media mb-1">
         <div class="media-left"
-			uib-tooltip="rdfs:comment"
-			tooltip-placement="top"
-			tooltip-trigger="mouseenter">
+			 gdb-tooltip="rdfs:comment"
+			tooltip-placement="top">
 			<i class="icon-comment icon-lg" aria-hidden="true"></i>
         </div>
         <div class="media-body">

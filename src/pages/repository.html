@@ -21,7 +21,7 @@
                         <label for="locations" class="col-md-3 col-lg-2 col-form-label">
                             {{'repo.page.location.label' | translate}}
                         </label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" uib-tooltip="{{'repo.page.location.input.field.tooltip' | translate}}" tooltip-trigger="mouseenter">
+                        <div class="col-md-7 col-lg-6 col-xl-5" gdb-tooltip="{{'repo.page.location.input.field.tooltip' | translate}}">
                             <select ng-disabled="editRepoPage" class="form-control" id="locations"
                                     ng-model="repositoryInfo.location"
                                     ng-change="changedLocation()">
@@ -35,10 +35,10 @@
                     </div>
                     <div class="form-group row">
                         <label for="id" class="col-md-3 col-lg-2 col-form-label">{{'repo.id.label' | translate}}</label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" uib-tooltip="{{'repoTooltips.id' | translate}}">
+                        <div class="col-md-7 col-lg-6 col-xl-5" gdb-tooltip="{{'repoTooltips.id' | translate}}">
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
-                               ng-if="!canEditRepoId && editRepoPage" tooltip-trigger="mouseenter"
-                               uib-tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right"><span class="icon-edit"></span></a>
+                               ng-if="!canEditRepoId && editRepoPage"
+                               gdb-tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right"><span class="icon-edit"></span></a>
                             <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
                                    placeholder="{{'required.field' | translate}}" type="text" ng-model="repositoryInfo.id"
                                    required ng-attr-autofocus="{{ autofocusId }}" guide-selector="graphDBRepositoryIdInput">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-md-3 col-lg-2 col-form-label">{{'repo.description' | translate}}</label>
-                        <div class="col-md-7 col-lg-6 col-xl-5" uib-tooltip="{{'repoTooltips.title' | translate}}">
+                        <div class="col-md-7 col-lg-6 col-xl-5" gdb-tooltip="{{'repoTooltips.title' | translate}}">
                             <input class="form-control" type="text" name="title" id="title"
                                    ng-model="repositoryInfo.title">
                         </div>
@@ -57,7 +57,7 @@
                     <div class="form-group row"
                          ng-if="repositoryInfo.type != 'master' && repositoryInfo.type != 'ontop' && repositoryInfo.type != 'fedx'">
                         <div class="checkbox offset-md-3 offset-lg-2">
-                            <label class="padding-label" uib-tooltip="{{'repoTooltips.readOnly' | translate}}">
+                            <label class="padding-label" gdb-tooltip="{{'repoTooltips.readOnly' | translate}}">
                                 <input id="readOnly" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                        ng-model="repositoryInfo.params.readOnly.value"/>
                                 {{repositoryInfo.params.readOnly.label}}
@@ -79,10 +79,10 @@
                                 {{repositoryInfo.params.ruleset.label}}
                                 <div class="ruleset-warning icon-warning icon-2x"
                                     ng-if="rulesetWarning()"
-                                    uib-tooltip="{{rulesetWarning()}}"
+                                    gdb-tooltip="{{rulesetWarning()}}"
                                     tooltip-placement="top"></div>
                             </label>
-                            <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" uib-tooltip="{{'repoTooltips.ruleset' | translate}}" tooltip-trigger="mouseenter">
+                            <div class="col-xs-6 col-md-4 col-lg-3 wrapper-div" gdb-tooltip="{{'repoTooltips.ruleset' | translate}}">
                                 <select ng-disabled="editRepoPage" class="form-control" id="ruleset"
                                         ng-model="repositoryInfo.params.ruleset.value"
                                         ng-change="repositoryInfo.params.disableSameAs.value = repositoryInfo.params.ruleset.value.indexOf('owl') === 0 ? 'false' : 'true'"
@@ -94,8 +94,7 @@
                                     <div ngf-select ngf-change="uploadRuleset($files)" ngf-multiple="false"
                                          class="selectFiles pointer clearfix"
                                          accept=".pie"
-                                         uib-tooltip="{{'upload.custom.ruleset.file' | translate}}"
-                                         tooltip-trigger="mouseenter">
+                                         gdb-tooltip="{{'upload.custom.ruleset.file' | translate}}">
                                         <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></em>&nbsp;
                                         <div ng-show="uploadFileLoader" onto-loader size="24"
                                              class="spinner-container ot-loader"></div>
@@ -109,7 +108,7 @@
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
                                 <label class="padding-label"
-                                       uib-tooltip="{{'repoTooltips.disableSameAs' | translate}}">
+                                       gdb-tooltip="{{'repoTooltips.disableSameAs' | translate}}">
                                     <input id="disableSameAs"
                                            ng-disabled="editRepoPage || repositoryInfo.params.ruleset.value === 'empty'"
                                            type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
@@ -120,7 +119,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.checkForInconsistencies' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.checkForInconsistencies' | translate}}">
                                     <input id="checkForInconsistencies" type="checkbox" ng-true-value="'true'"
                                            ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.checkForInconsistencies.value"/>
@@ -131,14 +130,14 @@
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
                                 <label class="padding-label"
-                                       uib-tooltip="{{'repoTooltips.isShacl' | translate}}">
+                                       gdb-tooltip="{{'repoTooltips.isShacl' | translate}}">
                                     <input id="isShacl" ng-disabled="editRepoPage" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.isShacl.value"/>
                                     {{repositoryInfo.params.isShacl.label}}
                                 </label>
                                 <label class="padding-label wrapper-div"
-                                       uib-tooltip="{{'repoTooltips.shaclOptions.additional' | translate}}">
+                                       gdb-tooltip="{{'repoTooltips.shaclOptions.additional' | translate}}">
                                     <i class="{{getShaclOptionsClass()}}"
                                        aria-hidden="true"></i>
                                     <button class="text-btn"
@@ -153,7 +152,7 @@
                         <div ng-if="repositoryInfo.params.isShacl.value === 'true'" id="shaclOptions" class="collapse pb-1">
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" uib-tooltip="{{'repoTooltips.shaclOptions.cacheSelectNodes' | translate}}">
+                                    <label class="col-lg-4" gdb-tooltip="{{'repoTooltips.shaclOptions.cacheSelectNodes' | translate}}">
                                         <input id="cacheSelectNodes" name="cacheSelectNodes" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.cacheSelectNodes.value"/>
@@ -162,7 +161,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="col-lg-4"
-                                           uib-tooltip="{{repoTooltips.shaclOptions.dashDataShapes}}">
+                                           gdb-tooltip="{{repoTooltips.shaclOptions.dashDataShapes}}">
                                         <input id="dashDataShapes" name="dashDataShapes" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.dashDataShapes.value"/>
@@ -173,7 +172,7 @@
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="col-lg-4"
-                                           uib-tooltip="{{'repoTooltips.shaclOptions.logValidationPlans' | translate}}">
+                                           gdb-tooltip="{{'repoTooltips.shaclOptions.logValidationPlans' | translate}}">
                                         <input id="logValidationPlans" name="logValidationPlans" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.logValidationPlans.value"/>
@@ -182,7 +181,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           uib-tooltip="{{'repoTooltips.shaclOptions.logValidationViolations' | translate}}">
+                                           gdb-tooltip="{{'repoTooltips.shaclOptions.logValidationViolations' | translate}}">
                                         <input id="logValidationViolations" name="logValidationViolations"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.logValidationViolations.value"/>
@@ -192,7 +191,7 @@
                             </div>
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
-                                    <label class="col-lg-4" uib-tooltip="{{'repoTooltips.shaclOptions.parallelValidation' | translate}}">
+                                    <label class="col-lg-4" gdb-tooltip="{{'repoTooltips.shaclOptions.parallelValidation' | translate}}">
                                         <input id="parallelValidation" name="parallelValidation" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.parallelValidation.value"/>
@@ -201,7 +200,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           uib-tooltip="{{'repoTooltips.shaclOptions.globalLogValidationExecution' | translate}}">
+                                           gdb-tooltip="{{'repoTooltips.shaclOptions.globalLogValidationExecution' | translate}}">
                                         <input id="globalLogValidationExecution" name="globalLogValidationExecution"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.globalLogValidationExecution.value"/>
@@ -212,7 +211,7 @@
                             <div class="row">
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="col-lg-4"
-                                           uib-tooltip="{{'repoTooltips.shaclOptions.performanceLogging' | translate}}">
+                                           gdb-tooltip="{{'repoTooltips.shaclOptions.performanceLogging' | translate}}">
                                         <input id="performanceLogging" name="performanceLogging" type="checkbox"
                                                ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.performanceLogging.value"/>
@@ -221,7 +220,7 @@
                                 </div>
                                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-3">
                                     <label class="padding-label"
-                                           uib-tooltip="{{'repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions' | translate}}">
+                                           gdb-tooltip="{{'repoTooltips.shaclOptions.eclipseRdf4jShaclExtensions' | translate}}">
                                         <input id="eclipseRdf4jShaclExtensions" name="eclipseRdf4jShaclExtensions"
                                                type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                                ng-model="repositoryInfo.params.eclipseRdf4jShaclExtensions.value"/>
@@ -261,7 +260,7 @@
                                     <div class="offset-xs-1 offset-md-4 offset-lg-3">
                                         <label
                                             class="col-lg-2 col-form-label">{{repositoryInfo.params.shapesGraph.label | translate}}</label>
-                                        <div class="col-lg-6" uib-tooltip="{{'repoTooltips.shaclOptions.shapesGraph' | translate}}">
+                                        <div class="col-lg-6" gdb-tooltip="{{'repoTooltips.shaclOptions.shapesGraph' | translate}}">
                                             <input class="form-control" id="shapesGraph" type="text" name="shapesGraph"
                                                    ng-model="repositoryInfo.params.shapesGraph.value"/>
                                         </div>
@@ -274,12 +273,12 @@
                             <label
                                 class="col-md-3 col-lg-2">{{repositoryInfo.params.entityIdSize.label}}</label>
                             <div class="radio">
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.entityIdSize' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize32" type="radio" value="32" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     32-bit
                                 </label>
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.entityIdSize' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.entityIdSize' | translate}}">
                                     <input id="entityIdSize40" type="radio" value="40" ng-disabled="editRepoPage"
                                            ng-model="repositoryInfo.params.entityIdSize.value"/>
                                     40-bit
@@ -288,7 +287,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.enableContextIndex' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.enableContextIndex' | translate}}">
                                     <input id="enableContextIndex" name="enableContextIndex" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.enableContextIndex.value"/>
@@ -298,7 +297,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.enablePredicateList' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.enablePredicateList' | translate}}">
                                     <input id="enablePredicateList" name="enablePredicateList" ng-true-value="'true'"
                                            ng-false-value="'false'" type="checkbox"
                                            ng-model="repositoryInfo.params.enablePredicateList.value"
@@ -309,7 +308,7 @@
                         </div>
                         <div class="form-group row indented-div">
                             <div class="checkbox offset-md-3 offset-lg-2">
-                                <label class="padding-label" uib-tooltip="{{'repoTooltips.enableFtsIndex' | translate}}">
+                                <label class="padding-label" gdb-tooltip="{{'repoTooltips.enableFtsIndex' | translate}}">
                                     <input id="enableFtsIndex" name="enableFtsIndex" ng-true-value="'true'"
                                            ng-false-value="'false'" type="checkbox"
                                            ng-model="repositoryInfo.params.enableFtsIndex.value"/>
@@ -320,7 +319,7 @@
                         <div class="form-group row indented-div">
                             <label
                                     class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsIndexes.label' | translate}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.ftsIndexes' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.ftsIndexes' | translate}}">
                                 <input class="form-control" id="ftsIndexes" type="text" name="ftsIndexes"
                                        ng-model="repositoryInfo.params.ftsIndexes.value"
                                        ng-disabled="repositoryInfo.params.enableFtsIndex.value === 'false'"/>
@@ -329,7 +328,7 @@
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsStringLiteralsIndex.label' | translate}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.ftsStringLiteralsIndex' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.ftsStringLiteralsIndex' | translate}}">
                                 <input class="form-control" id="ftsStringLiteralsIndex" type="text"
                                        name="ftsStringLiteralsIndex"
                                        ng-model="repositoryInfo.params.ftsStringLiteralsIndex.value"
@@ -339,7 +338,7 @@
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsIrisIndex.label' | translate}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.ftsIrisIndex' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.ftsIrisIndex' | translate}}">
                                 <input class="form-control" id="ftsIrisIndex" type="text"
                                        name="ftsIrisIndex"
                                        ng-model="repositoryInfo.params.ftsIrisIndex.value"
@@ -350,7 +349,7 @@
                             <!-- TODO enable when the configuration should be shown -->
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsDefaultAnalyzer.label' | translate}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.ftsDefaultAnalyzer' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.ftsDefaultAnalyzer' | translate}}">
                                 <input class="form-control" id="ftsDefaultAnalyzer" type="text"
                                        name="ftsDefaultAnalyzer"
                                        ng-model="repositoryInfo.params.ftsDefaultAnalyzer.value"
@@ -361,13 +360,13 @@
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.queryTimeout' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.queryTimeout' | translate}}">
                                 <input class="form-control" id="queryTimeout" type="number" step="1"
                                        ng-model="repositoryInfo.params.queryTimeout.value"
                                        ng-change="validateNumberInput()"/>
                             </div>
                             <div class="checkbox offset-xs-3 offset-md-2">
-                                <label class="padding-label col-form-label" uib-tooltip="{{'repoTooltips.throwQueryEvaluationExceptionOnTimeout' | translate}}">
+                                <label class="padding-label col-form-label" gdb-tooltip="{{'repoTooltips.throwQueryEvaluationExceptionOnTimeout' | translate}}">
                                     <input id="throwQueryEvaluationExceptionOnTimeout" type="checkbox"
                                            ng-true-value="'true'" ng-false-value="'false'"
                                            ng-model="repositoryInfo.params.throwQueryEvaluationExceptionOnTimeout.value"/>
@@ -378,7 +377,7 @@
                         <div class="form-group row indented-div">
                             <label
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
-                            <div class="col-xs-3 col-md-2" uib-tooltip="{{'repoTooltips.queryLimitResults' | translate}}">
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.queryLimitResults' | translate}}">
                                 <input class="form-control" id="queryLimitResults" type="number" step="1"
                                        ng-model="repositoryInfo.params.queryLimitResults.value"
                                        ng-change="validateNumberInput()"/>
@@ -387,7 +386,7 @@
                         <div class="form-group row indented-div" ng-if="repositoryInfo.type == 'worker'">
                             <label
                                 class="col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.nonInterpretablePredicates.label}}</label>
-                            <div class="col-md-7 col-lg-6 col-xl-5" uib-tooltip="{{'repoTooltips.nonInterpretablePredicates' | translate}}">
+                            <div class="col-md-7 col-lg-6 col-xl-5" gdb-tooltip="{{'repoTooltips.nonInterpretablePredicates' | translate}}">
 									<textarea class="form-control" id="nonInterpretablePredicates"
                                               name="nonInterpretablePredicates"
                                               ng-model="repositoryInfo.params.nonInterpretablePredicates.value"
@@ -400,7 +399,7 @@
                     <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
                     <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && editRepoPage">
                         <div class="checkbox col-xs-12">
-                            <label uib-tooltip="{{'restart.repo.check.tooltip' | translate}}">
+                            <label gdb-tooltip="{{'restart.repo.check.tooltip' | translate}}">
                                 <input id="restartRepo" name="restartRepo"
                                        type="checkbox"
                                        ng-model="repositoryInfo.restartRequested"

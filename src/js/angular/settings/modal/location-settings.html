@@ -11,8 +11,8 @@
 		<div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
 
 			<div class="form-check">
-				<label uib-tooltip="{{'click.to' | translate}} {{settings.statistics ? 'disable' : 'enable' | translate}} {{'this.setting' | translate}}"
-					   tooltip-placement="top" tooltip-trigger="mouseenter" class="form-check-label">
+				<label gdb-tooltip="{{'click.to' | translate}} {{settings.statistics ? 'disable' : 'enable' | translate}} {{'this.setting' | translate}}"
+					   tooltip-placement="top" class="form-check-label">
 					<input type="checkbox" ng-model="settings.statistics" class="form-check-input">
 					{{'send.anonymous.statistics' | translate}}
 				</label>

@@ -25,24 +25,24 @@
     <div class="action-buttons">
         <button type="button" class="btn btn-secondary delete-cluster-btn mr-2"
                 ng-click="showDeleteDialog()"
-                uib-tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
+                gdb-tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
                 tooltip-placement="bottom">
             <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
         </button>
         <button type="button" class="btn btn-primary add-node-btn" ng-if="currentNode.nodeState === NodeState.LEADER"
                 ng-click="showAddNodeToClusterDialog()"
-                uib-tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+                gdb-tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
             <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
         </button>
         <button type="button" class="btn btn-secondary remove-node-btn mr-2" ng-if="currentNode.nodeState === NodeState.LEADER"
                 ng-click="showRemoveNodesFromClusterDialog()"
-                uib-tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+                gdb-tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
             <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
         </button>
     </div>
     <button class="btn btn-link"
             ng-click="toggleSidePanel()"
-            uib-tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
+            gdb-tooltip="{{'cluster_management.buttons.show_cluster_settings_tooltip' | translate}}"
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
 </div>
 
@@ -76,7 +76,7 @@
     <div id="toggle-legend-button" class="toggle-legend-btn">
         <button class="btn btn-link"
                 ng-click="toggleLegend()"
-                uib-tooltip="{{'cluster_management.cluster_page.toggle_legend_btn' | translate}}"
+                gdb-tooltip="{{'cluster_management.cluster_page.toggle_legend_btn' | translate}}"
                 tooltip-placement="right">
             <span class="icon-help toggle-legend-icon"></span>
         </button>
@@ -100,7 +100,7 @@
             <button type="button" class="btn btn-primary delete-cluster-btn"
                     ng-if="currentNode.nodeState === NodeState.LEADER"
                     ng-click="showEditConfigurationDialog()"
-                    uib-tooltip="{{'cluster_management.buttons.edit_cluster_tooltip' | translate}}"
+                    gdb-tooltip="{{'cluster_management.buttons.edit_cluster_tooltip' | translate}}"
                     tooltip-placement="bottom">
                 <span class="icon-edit mr-1"></span>{{'cluster_management.buttons.edit_cluster' | translate}}
             </button>
@@ -108,7 +108,7 @@
         <div class="datasource mb-1">
             <div class="item clearfix break-word-alt small">
                 {{'cluster_management.cluster_configuration_properties.election_min_timeout' | translate}}
-                <em class="icon-info text-primary" uib-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}"></em>
+                <em class="icon-info text-primary" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
                 <span>{{clusterConfiguration.electionMinTimeout | number}}</span>
@@ -117,7 +117,7 @@
         <div class="datasource mb-1">
             <div class="item clearfix break-word-alt small">
                 {{'cluster_management.cluster_configuration_properties.election_range_timeout' | translate}}
-                <em class="icon-info text-primary" uib-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}"></em>
+                <em class="icon-info text-primary" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
                 <span>{{clusterConfiguration.electionRangeTimeout | number}}</span>
@@ -126,7 +126,7 @@
         <div class="datasource mb-1">
             <div class="item clearfix break-word-alt small">
                 {{'cluster_management.cluster_configuration_properties.heartbeat_interval' | translate}}
-                <em class="icon-info text-primary" uib-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}"></em>
+                <em class="icon-info text-primary" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
                 <span>{{clusterConfiguration.heartbeatInterval | number}}</span>
@@ -135,7 +135,7 @@
         <div class="datasource mb-1">
             <div class="item clearfix break-word-alt small">
                 {{'cluster_management.cluster_configuration_properties.message_size_kb' | translate}}
-                <em class="icon-info text-primary" uib-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}"></em>
+                <em class="icon-info text-primary" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
                 <span>{{clusterConfiguration.messageSizeKB | number}}</span>
@@ -144,7 +144,7 @@
         <div class="datasource mb-1">
             <div class="item clearfix break-word-alt small">
                 {{'cluster_management.cluster_configuration_properties.verification_timeout' | translate}}
-                <em class="icon-info text-primary" uib-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}"></em>
+                <em class="icon-info text-primary" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}"></em>
             </div>
             <div class="data-value">
                 <span>{{clusterConfiguration.verificationTimeout | number}}</span>

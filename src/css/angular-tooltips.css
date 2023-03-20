@@ -1,0 +1,144 @@
+.angular-tooltip {
+  transition: opacity 500ms;
+  opacity: 0;
+
+  position: absolute;
+  background: var(--onto-blue);
+  z-index: 9999;
+  padding: 3px 8px;
+  border: none;
+  color: #FFFFFF;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  max-width: 500px;
+  border-radius: 0;
+  text-decoration: none;
+  text-align: center;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-break: auto;
+  line-height: 1.5;
+  font-size: .875rem;
+}
+
+.angular-tooltip.angular-tooltip-fade-in {
+  opacity: 0.9;
+}
+
+.angular-tooltip:after {
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.angular-tooltip:after {
+  border-color: transparent;
+  border-width: 5px;
+}
+
+.angular-tooltip.angular-tooltip-top:after {
+  top: 100%;
+  left: 50%;
+
+  margin-left: -5px;
+  border-top-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-top-left:after {
+  top: 100%;
+  left: calc(100% - 8px);
+
+  margin-left: -5px;
+  border-top-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-top-right:after {
+  top: 100%;
+  right: calc(100% - 8px);
+
+  margin-right: -5px;
+  border-top-color: var(--onto-blue);
+}
+
+
+.angular-tooltip.angular-tooltip-right-top:after {
+  top: calc(100% - 8px);
+  right: 100%;
+
+  margin-top: -5px;
+  border-right-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-right:after {
+  top: 50%;
+  right: 100%;
+
+  margin-top: -5px;
+  border-right-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-right-bottom:after {
+  bottom: calc(100% - 8px);
+  right: 100%;
+
+  margin-bottom: -5px;
+  border-right-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-bottom:after {
+  bottom: 100%;
+  left: 50%;
+
+  margin-left: -5px;
+  border-bottom-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-bottom-left:after {
+  bottom: 100%;
+  left: calc(100% - 8px);
+
+  margin-left: -5px;
+  border-bottom-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-bottom-right:after {
+  bottom: 100%;
+  right: calc(100% - 8px);
+
+  margin-right: -5px;
+  border-bottom-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-left:after {
+  top: 50%;
+  left: 100%;
+
+  margin-top: -5px;
+  border-left-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-left-bottom:after {
+  bottom: calc(100% - 8px);
+  left: 100%;
+
+  margin-bottom: -5px;
+  border-left-color: var(--onto-blue);
+}
+
+.angular-tooltip.angular-tooltip-left-top:after {
+  top: calc(100% - 8px);
+  left: 100%;
+
+  margin-top: -5px;
+  border-left-color: var(--onto-blue);
+}
+
+
