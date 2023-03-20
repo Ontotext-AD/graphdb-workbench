@@ -261,6 +261,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         }
 
         $scope.isRequiredOntopRepoFile = function(file) {
+         //   console.log("LOGFILE:" + $scope.repositoryInfo.params[file].label);
             return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
         };
 
