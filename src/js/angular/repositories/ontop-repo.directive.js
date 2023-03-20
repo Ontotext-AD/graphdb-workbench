@@ -39,7 +39,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         $scope.supportedDriversData = [];
         $scope.ontopRepoFileLabels =
             {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file',
-                constraintFile: 'constraint file', dbMetadataFile: 'DB metadata file'};
+                constraintFile: 'constraint file', lensesFile: 'lenses file', dbMetadataFile: 'DB metadata file'};
         $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
         $scope.ontopRepoFiles.forEach(function(key) {
             if ($scope.repositoryInfo.params[key]) {
@@ -261,6 +261,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         }
 
         $scope.isRequiredOntopRepoFile = function(file) {
+         //   console.log("LOGFILE:" + $scope.repositoryInfo.params[file].label);
             return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
         };
 

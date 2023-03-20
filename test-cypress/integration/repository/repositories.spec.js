@@ -377,10 +377,12 @@ describe('Repositories', () => {
         getOntologyFileField().should('be.visible');
         getPropertiesFileField().should('be.visible');
         getConstraintFileField().should('be.visible');
+        getLensesFileField().should('be.visible');
         getOBDAUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getOntologyUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getPropertiesUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getConstraintUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
+        getLensesUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
     });
 
     //Create Ontop repository and test ontop functionality
@@ -433,6 +435,11 @@ describe('Repositories', () => {
                     constraintFile: {
                         label: 'Constraint file',
                         name: 'constraintFile',
+                        value: ''
+                    },
+                    lensesFile: {
+                        label: 'Lenses file',
+                        name: 'lensesFile',
                         value: ''
                     },
                     id: {
@@ -525,6 +532,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
 
         //Select MySQL driver type and verify elements and download url (if available)
@@ -541,6 +549,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
         compareDriverDownloadUrl('https://dev.mysql.com/downloads/connector/j/');
@@ -559,6 +568,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
         compareDriverDownloadUrl('https://jdbc.postgresql.org/download');
@@ -577,6 +587,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
         compareDriverDownloadUrl('https://www.cdata.com/drivers/oracledb/jdbc/');
@@ -595,6 +606,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
         compareDriverDownloadUrl('https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server');
@@ -613,6 +625,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
         //verify driver download url
         compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
@@ -911,6 +924,10 @@ describe('Repositories', () => {
         return cy.get('div').contains("Constraint file");
     }
 
+    function getLensesFileField() {
+        return cy.get('div').contains("Lenses file");
+    }
+
     function getOBDAUploadButton() {
         return cy.get('span[for="obdaFile"]').contains("Upload file...");
     }
@@ -925,6 +942,10 @@ describe('Repositories', () => {
 
     function getConstraintUploadButton() {
         return cy.get('span[for="constraintFile"]').contains("Upload file...");
+    }
+
+    function getLensesUploadButton() {
+        return cy.get('span[for="lensesFile"]').contains("Upload file...");
     }
 
     function getOntopFunctionalityDisabledMessage() {

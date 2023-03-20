@@ -1040,6 +1040,7 @@
     "repoTooltips.ontop.obdaFile": "Décrit le mappage de SQL au RDF dans l'OBDA ou le format R2RML.",
     "repoTooltips.ontop.owlFile": "Spécifie les relations entre les classes et les propriétés dans le graphe RDF cosntruit. Il peut être dans n'importe quel format RDF supporté.",
     "repoTooltips.ontop.constraintFile": "Spécifie le remplacement des clés primaires et étrangères SQL.",
+    "repoTooltips.ontop.lensesFile": "",
     "repoTooltips.ontop.dbMetadataFile": "Spécifie les métadonnées pour la base de données SQL.",
     "repoTooltips.ontop.testConn": "Tente d'établir une connexion avec la base de données SQL pour vérifier si la configuration fournie est correcte.",
     "repoTooltips.fedx.repositoryNotExistWarning": "Le membre du dépôt a été supprimé des dépôts locaux.",
