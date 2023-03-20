@@ -12,7 +12,7 @@
         <div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
 
 			<div class="form-check">
-				<label uib-tooltip="Click to {{settings.statistics ? 'disable' : 'enable'}} this setting"
+				<label gdb-tooltip="Click to {{settings.statistics ? 'disable' : 'enable'}} this setting"
 					   tooltip-placement="top" tooltip-trigger="mouseenter" class="form-check-label">
 					<input type="checkbox" ng-model="settings.statistics" class="form-check-input">
 					Send anonymous usage statistics to Ontotext

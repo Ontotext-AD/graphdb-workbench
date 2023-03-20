@@ -4,14 +4,14 @@
     <div ng-show="showTable()" class="mb-1 clearfix">
         <div class="pull-right form-inline">
             <div class="btn-group d-inline mr-1" ng-show="viewType === 'server'">
-                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'file'" uib-tooltip="Show files only">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'file'" gdb-tooltip="Show files only">
                     <em class="icon-file"></em>
                 </button>
-                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'all'" uib-tooltip="Show both files and directories">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'all'" gdb-tooltip="Show both files and directories">
                     <em class="icon-file"></em>
                     <em class="icon-folder"></em>
                 </button>
-                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'directory'" uib-tooltip="Show directories only">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'directory'" gdb-tooltip="Show directories only">
                     <em class="icon-folder"></em>
                 </button>
             </div>
@@ -25,7 +25,7 @@
         <form class="form-inline">
             <div class="btn btn-link">
                 <input class="form-check-input select-all-files" type="checkbox" ng-click="selectAllFiles()" ng-model="checkAll"
-                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" uib-tooltip="Select all">
+                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" gdb-tooltip="Select all">
             </div>
             <div class="btn-group" uib-dropdown ng-hide="!hasImportable() || !batch"
                  uib-popover="Import the selected items"
@@ -99,7 +99,7 @@
                                 ng-click="resetStatus([file.name])"
                                 ng-show="file.status === 'DONE' || file.status === 'ERROR'"
                                 ng-disabled="batch"
-                                uib-tooltip="Reset status" tooltip-trigger="mouseenter">
+                                gdb-tooltip="Reset status" tooltip-trigger="mouseenter">
                             <span class="icon-close"></span>
                         </button>
                         <span class="icon-info text-secondary import-status-info"
@@ -151,7 +151,7 @@
                         ng-disabled="file.status === 'INTERRUPTING'"
                         ng-cloak
                         ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
-                        uib-tooltip="Interrupt import" tooltip-trigger="mouseenter"
+                        gdb-tooltip="Interrupt import" tooltip-trigger="mouseenter"
                         tooltip-append-to-body="true">
                     <span class="icon-close"></span>
                     Abort

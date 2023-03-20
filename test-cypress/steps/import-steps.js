@@ -27,10 +27,14 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static closePopover() {
+        cy.get('.popover.in').click();
+    }
+
     static openImportURLDialog(importURL) {
-        cy.get('#import-user .import-from-url-btn').click()
-            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
-            .trigger('mouseout', {force: true});
+        cy.get('#import-user .import-from-url-btn').click();
+        // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
+        ImportSteps.closePopover();
         ImportSteps.getModal()
             .find('.url-import-form input[name="dataUrl"]')
             .type(importURL)
@@ -64,7 +68,7 @@ class ImportSteps {
     }
 
     static fillRDFTextSnippet(snippet) {
-        ImportSteps.getSnippetTextarea().type(snippet, { parseSpecialCharSequences: false }).should('have.value', snippet);
+        ImportSteps.getSnippetTextarea().type(snippet, {parseSpecialCharSequences: false}).should('have.value', snippet);
 
         return ImportSteps;
     }
@@ -128,8 +132,7 @@ class ImportSteps {
 
     static importFromSettingsDialog() {
         // Dialog should disappear
-        ImportSteps.getModal().
-        find('.modal-footer > .btn-primary')
+        ImportSteps.getModal().find('.modal-footer > .btn-primary')
             .should('exist')
             .click()
             .should('not.exist');

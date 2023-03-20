@@ -8,10 +8,10 @@
         </div>
         <h1>
             Edit
-            <a href="{{details.uri}}" uib-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
+            <a href="{{details.uri}}" gdb-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
-            <a class="btn btn-link" uib-tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
+            <a class="btn btn-link" gdb-tooltip="Cancel" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
         </h1>
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
@@ -151,11 +151,11 @@
                         <form editable-form name="rowform" class="form-buttons form-inline" ng-show="rowform.$visible"
                               shown="inserted == statement">
                             <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-link px-0"
-                                    uib-tooltip="Save">
+                                    gdb-tooltip="Save">
                                 <em class="icon-check"></em>
                             </button>
                             <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
-                                    class="btn btn-link px-0 secondary" uib-tooltip="Cancel">
+                                    class="btn btn-link px-0 secondary" gdb-tooltip="Cancel">
                                 <em class="icon-close"></em>
                             </button>
                         </form>
@@ -175,12 +175,12 @@
     <div class="text-xs-right">
 		<button class="btn btn-secondary"
 			ng-disabled="statements.length == 0"
-			uib-tooltip="View the resource graph in TriG format"
+			gdb-tooltip="View the resource graph in TriG format"
 			ng-click="viewTrig()">
 			View TriG
 		</button>
 		<button class="btn btn-primary"
-			uib-tooltip="Save changes"
+			gdb-tooltip="Save changes"
 			ng-click="save()">
 			Save
 		</button>
