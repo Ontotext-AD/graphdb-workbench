@@ -18,7 +18,7 @@
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
-                    uib-tooltip="Reload all connector information" tooltip-placement="left">
+                    gdb-tooltip="Reload all connector information" tooltip-placement="left">
                 <em class="icon-reload"></em>
             </button>
         </div>
@@ -33,17 +33,17 @@
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
 										ng-click="copyConnector(connector, exist)"
-										uib-tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
+										gdb-tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-copy"></em>
 									</button>
 									<button class="btn btn-link p-0" type="button"
 										ng-click="repair(exist, connector)"
-										uib-tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
+										gdb-tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-reload"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										ng-click="delete(exist, connector)"
-										uib-tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
+										gdb-tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-trash"></em>
                                     </button>
 								</div>

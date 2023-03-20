@@ -6,11 +6,11 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
-            <a href="{{details.uri}}" uib-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
+            <a href="{{details.uri}}" gdb-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
 
-            <a uib-tooltip="Edit resource" href="resource/edit?uri={{details.encodeURI}}"
+            <a gdb-tooltip="Edit resource" href="resource/edit?uri={{details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link">
                 <span class="icon-edit"></span>
@@ -31,7 +31,7 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" uib-tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
+            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" gdb-tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
                 {{getRdfStarLocalNames(tripleParam)}}
             </a>
         </h1>

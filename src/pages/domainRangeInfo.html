@@ -18,7 +18,7 @@
          ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
         <button class="btn btn-link p-0" type="button"
 			ng-click="goToClassHierarchyView()"
-			uib-tooltip="Back to Class Hierarchy diagram"
+			gdb-tooltip="Back to Class Hierarchy diagram"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
             <em class="icon-arrow-left icon-2x"></em>
@@ -26,7 +26,7 @@
 
 		<button class="btn btn-link p-0 compact-mode-toggle" type="button"
 			ng-click="toggleCollapseEdgesState()"
-			tooltip="{{collapseEdges ? 'Show all predicates' : 'Show collapsed predicates'}}"
+			gdb-tooltip="{{collapseEdges ? 'Show all predicates' : 'Show collapsed predicates'}}"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="fa fa-2x"
@@ -34,7 +34,7 @@
         </button>
 
 		<a id="download-svg" href class="btn btn-link p-0"
-			tooltip="Export Diagram"
+			gdb-tooltip="Export Diagram"
 			tooltip-placement="bottom"
 			tooltip-trigger="mouseenter">
 			<em class="icon-export icon-2x"></em>

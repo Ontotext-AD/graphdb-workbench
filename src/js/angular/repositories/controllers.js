@@ -284,7 +284,7 @@ function LocationsAndRepositoriesCtrl($scope, $uibModal, toastr, $repositories, 
         ModalService.openSimpleModal({
             title: 'Confirm delete',
             message: `<p>Are you sure you want to delete the repository <strong>${repositoryId}</strong>?</p>
-                      <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
+                      <p><span class="icon-2x icon-warning" style="color: #d54a33"></span>
                             All data in the repository will be lost.</p>`,
             warning: true
         }).result

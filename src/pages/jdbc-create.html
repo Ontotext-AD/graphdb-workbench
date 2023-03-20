@@ -70,13 +70,13 @@
                 </div>
                 <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">
-                        <span uib-tooltip="The column names are derived from the projection variables of the SPARQL query."
+                        <span gdb-tooltip="The column names are derived from the projection variables of the SPARQL query."
                               tooltip-placement="top" tooltip-trigger="mouseenter">
                             {{column.column_name | uppercase}}
                         </span>
                     </label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
-                        <select uib-tooltip="Sets the SQL type. VARCHAR's variants IRI and String are the same on the SQL side but handled differently on the SPARQL side."
+                        <select gdb-tooltip="Sets the SQL type. VARCHAR's variants IRI and String are the same on the SQL side but handled differently on the SPARQL side."
                                 tooltip-placement="top" tooltip-trigger="mouseenter"
                                 class="form-control" id="sql-type" ng-model="column.column_type"
                                 ng-options="type as getTypeLabel(type) for type in sqlTypes track by type"
@@ -84,30 +84,30 @@
                                 ng-disabled="!canWriteActiveRepo()"></select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
-                        <input uib-tooltip="Sets the precision of the SQL type. For VARCHAR it is only informational and will not be enforced in any way."
+                        <input gdb-tooltip="Sets the precision of the SQL type. For VARCHAR it is only informational and will not be enforced in any way."
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
-                        <input uib-tooltip="Sets the scale of the SQL type, e.g. DECIMAL(10, 2)."
+                        <input gdb-tooltip="Sets the scale of the SQL type, e.g. DECIMAL(10, 2)."
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <div class="form-control b-0">
-                            <input uib-tooltip="If unchecked the column will be defined as NOT NULL. Nullability is only informational and not enforced in any way."
+                            <input gdb-tooltip="If unchecked the column will be defined as NOT NULL. Nullability is only informational and not enforced in any way."
                                    tooltip-placement="top" tooltip-trigger="mouseenter"
                                    type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isLiteral(column.column_type) ? '' : 'hidden'"  ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
-                        <input uib-tooltip="Controls how literals are created for filtering on the SPARQL side. Leave empty for a plain literal, enter an IRI for a typed literal, or enter a language tag prefixed by @ for a language-tagged literal."
+                        <input gdb-tooltip="Controls how literals are created for filtering on the SPARQL side. Leave empty for a plain literal, enter an IRI for a typed literal, or enter a language tag prefixed by @ for a language-tagged literal."
                                tooltip-placement="top" tooltip-trigger="mouseenter"
                                class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"
-                                class="btn btn-link delete-column-btn" uib-tooltip="Delete column" ng-if="canWriteActiveRepo()"><span
+                                class="btn btn-link delete-column-btn" gdb-tooltip="Delete column" ng-if="canWriteActiveRepo()"><span
                             class="icon-trash"></span>
                         </button>
                     </div>

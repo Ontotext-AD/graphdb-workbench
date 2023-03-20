@@ -11,20 +11,20 @@
 		<div class="pull-right">
 			<span id="toggle-security" class="mr-1">
 				<span class="security-switch-label">Security is <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'ON' : 'OFF'}}</span></span>
-				<span uib-tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
+				<span gdb-tooltip="Click to {{securityEnabled() ? 'disable' : 'enable'}} security" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
-					<label for="toggleSecurity"></label>
+					<label for="toggle-security"></label>
 				</span>
 			</span>
 			<span ng-show="securityEnabled()" id="toggle-freeaccess">
 				<span>Free Access is <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'ON' : 'OFF'}}</span></span>
-				<span uib-tooltip="Click to {{freeAccessEnabled() ? 'disable' : 'enable'}} free access to non-admin functionality" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
+				<span gdb-tooltip="Click to {{freeAccessEnabled() ? 'disable' : 'enable'}} free access to non-admin functionality" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
-					<label for="toggleFreeAccess"></label>
+					<label for="toggle-freeaccess"></label>
 				</span>
 				<span ng-show="freeAccessEnabled()">
 					Free Access Settings
-					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><em class="icon-settings" uib-tooltip="Free access configuration" ng-click="editFreeAccess()"></em></a>
+					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><em class="icon-settings" gdb-tooltip="Free access configuration" ng-click="editFreeAccess()"></em></a>
 				</span>
 			</span>
 		</div>
@@ -56,8 +56,8 @@
 				<td class="user-type">{{user.userTypeDescription}}</td>
 				<td class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
-						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" uib-tooltip="{{rights.read ? 'Has read access' : 'Does not have read access'}}"></em>
-						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" uib-tooltip="{{rights.read ? 'Has write access' : 'Does not have write access'}}"></em>
+						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'Has read access' : 'Does not have read access'}}"></em>
+						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'Has write access' : 'Does not have write access'}}"></em>
 						{{repo}}
 					</div>
 					<div ng-show="user.userType !== 'user'">Unrestricted</div>
@@ -66,10 +66,10 @@
 				<td class="actions-bar">
 					<span>
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
-                            <em class="icon-edit" uib-tooltip="Edit user"></em>
+                            <em class="icon-edit" gdb-tooltip="Edit user"></em>
                         </a>
 						<a class="btn btn-link secondary delete-user-btn" ng-show="user.username != 'admin'" href ng-click="removeUser(user.username)">
-                            <em class="icon-trash" uib-tooltip="Delete user"></em>
+                            <em class="icon-trash" gdb-tooltip="Delete user"></em>
                         </a>
 					</span>
 				</td>

@@ -17,19 +17,19 @@
 			<div ng-show="hasActiveLocation()">
 				<div class="pull-left">
 					<strong>Repositories from: </strong>
-					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" uib-tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></em>
+					<em ng-show="getDegradedReason()" class="icon-warning icon-lg text-warning" gdb-tooltip="{{getDegradedReason()}} Some operations may not be performed." tooltip-placement="right"></em>
 					<span class="mr-1">{{getActiveLocation().label}}</span>
 				</div>
 				<div class="actions-bar-inline pull-right">
 					<button
-						uib-tooltip="Edit common settings for these repositories"
+						gdb-tooltip="Edit common settings for these repositories"
 						tooltip-placement="top" tooltip-trigger="mouseenter"
 						class="btn btn-link px-0"
 						ng-click="openActiveLocationSettings()">
 						<span class="icon-settings"></span>
 					</button>
 					<a class="btn btn-link px-0 pull-right" href="license"
-						uib-tooltip="View or update license for these repositories"
+						gdb-tooltip="View or update license for these repositories"
 						tooltip-placement="top" tooltip-trigger="mouseenter">
 						<span class="icon-key"></span>
 					</a>
@@ -54,12 +54,12 @@
 								ng-repeat="repository in getRepositories() | orderBy: ['type === \'system\'', 'id']"
 								ng-class="{'table-info text-secondary': getActiveRepository() == repository.id}">
 								<td width="25">
-									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" uib-tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
+									<span role="button" class="icon-connection-off icon-lg text-secondary m-0" gdb-tooltip="Connect repository" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-click="setRepository(repository.id)"
 										  ng-if="getActiveRepository() !== repository.id"
 										  data-repository-id="{{repository.id}}"></span>
 									<span role="button" class="icon-connection-on icon-lg text-tertiary"
-										  uib-tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
+										  gdb-tooltip="Connected" tooltip-placement="top" tooltip-trigger="mouseenter"
 										  ng-if="getActiveRepository() === repository.id"></span>
 								</td>
 								<td>
@@ -76,18 +76,18 @@
 								<td width="150" class="text-nowrap repository-actions">
 									<button class="btn btn-link p-0"
 											ng-click="copyToClipboard(repository.externalUrl)"
-											uib-tooltip="Copy repository URL to clipboard">
+											gdb-tooltip="Copy repository URL to clipboard">
 										<span class="icon-link"></span>
 									</button>
 									<span ng-show="getDegradedReason()">
 										<em class="icon-warning icon-lg text-warning"
-											uib-tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
+											gdb-tooltip="{{getDegradedReason()}} Editing or deleting this repository is not supported."
 											tooltip-placement="top" tooltip-trigger="mouseenter"></em>
 									</span>
 									<span ng-hide="repository.type === 'system' || getDegradedReason()">
 										<a class="btn btn-link p-0 edit-repository-btn"
 											href="repository/edit/{{repository.id}}"
-											uib-tooltip="Edit repository"
+											gdb-tooltip="Edit repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter">
 											<span class="icon-edit"></span>
@@ -95,20 +95,20 @@
 										<a class="btn btn-link p-0 download-turtle-config download-repository-config-btn" ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                 rel="noopener"
 												target="_blank"
-												uib-tooltip="Download repository configuration as Turtle"
+												gdb-tooltip="Download repository configuration as Turtle"
 												tooltip-placement="top"
 												tooltip-trigger="mouseenter">
 												<em class="icon-download"></em>
 										</a>
                                         <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                           uib-tooltip="Restart repository {{repository.id}}"
+                                           gdb-tooltip="Restart repository {{repository.id}}"
                                            tooltip-placement="top"
                                            tooltip-trigger="mouseenter"
                                            ng-click="restartRepository(repository.id)">
 												<span class="icon-reload"></span>
 										</button>
 										<button class="btn btn-link p-0 secondary delete-repository-btn" type="button"
-											uib-tooltip="Delete repository"
+											gdb-tooltip="Delete repository"
 											tooltip-placement="top"
 											tooltip-trigger="mouseenter"
 											ng-click="deleteRepository(repository.id)">
@@ -120,7 +120,7 @@
 									<button class="btn btn-link p-0 pin-repository-btn" ng-hide="repository.type === 'system'"
 										ng-click="toggleDefaultRepository(repository.id)"
 										ng-class="getDefaultRepository() === repository.id ? 'active' : ''"
-										uib-tooltip="Set as default repository">
+										gdb-tooltip="Set as default repository">
 										<em class="icon-pin"></em>
 									</button>
 								</td>
@@ -152,12 +152,12 @@
 							<td width="25">
 
 								<span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-									  uib-tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									  gdb-tooltip="Activate location" tooltip-placement="top" tooltip-trigger="mouseenter"
 									  ng-click="activateLocation(location)"
 									  ng-if="!location.active"></span>
 
 								<span class="icon-connection-on icon-lg text-tertiary"
-									uib-tooltip="Activated" tooltip-placement="top" tooltip-trigger="mouseenter"
+									gdb-tooltip="Activated" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-if="location.active"></span>
 
 							</td>
@@ -169,13 +169,13 @@
 							</td>
 							<td width="150" class="text-nowrap">
 								<button class="btn btn-link p-0"
-									uib-tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									gdb-tooltip="Edit location" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.local"
 									ng-click="editLocation(location)">
 									<em class="icon-edit"></em>
 								</button>
 								<button class="btn btn-link p-0 secondary"
-									uib-tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
+									gdb-tooltip="Detach location" tooltip-placement="top" tooltip-trigger="mouseenter"
 									ng-hide="location.system"
 									ng-click="deleteLocation(location.uri)">
 									<em class="icon-close"></em>

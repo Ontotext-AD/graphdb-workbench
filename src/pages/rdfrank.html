@@ -43,7 +43,7 @@
                         Computing...
                     </span>
                     <button class="btn btn-link btn-sm" ng-click="interruptComputation()"
-                            uib-tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+                            gdb-tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
                 </span>
 
                 <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="icon-warning icon-lg"></em> {{currentRankStatus}}</span>
@@ -64,7 +64,7 @@
 			<div id="toggleFilterMode">
 				<h3 class="d-inline-block mr-1">Filtering</h3>
 				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span uib-tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
+				<span gdb-tooltip="Click to {{filteringEnabled ? 'disable' : 'enable'}} filtering" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
                     <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
                     <label for="toggleFilterMode"></label>
                 </span>
@@ -77,7 +77,7 @@
 					<div id="toggleIncludeExplicit" class="d-inline-block mr-2">
 						Include Explicit
 						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'YES' : 'NO'}}</span></span>
-						<span uib-tooltip="Click to {{includeExplicit ? 'exclude' : 'include'}} Explicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
+						<span gdb-tooltip="Click to {{includeExplicit ? 'exclude' : 'include'}} Explicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeExplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeExplicit"/>
 	                    <label for="toggleIncludeExplicit"></label>
 	                </span>
@@ -86,7 +86,7 @@
 					<div id="toggleIncludeImplicit" class="d-inline-block">
 						Include Implicit
 						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'YES' : 'NO'}}</span></span>
-						<span uib-tooltip="Click to {{includeImplicit ? 'exclude' : 'include'}} implicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
+						<span gdb-tooltip="Click to {{includeImplicit ? 'exclude' : 'include'}} implicit statements" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIncludeImplicit()" class="switch">
 	                    <input type="checkbox" class="switch" ng-checked="includeImplicit"/>
 	                    <label for="toggleIncludeImplicit"></label>
 	                </span>

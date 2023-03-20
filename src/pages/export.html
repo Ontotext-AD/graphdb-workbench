@@ -66,7 +66,7 @@
 					</div>
 					<button type="button" class="btn btn-secondary clear-repository-btn"
 						ng-click="dropRepository()"
-						uib-tooltip="Removes all data from the current repository" tooltip-placement="top"
+						gdb-tooltip="Removes all data from the current repository" tooltip-placement="top"
 						ng-disabled="!canWriteActiveRepo(true)">
 						<span class="icon-trash"></span> Clear repository
 					</button>
@@ -86,11 +86,11 @@
 						<thead>
 							<tr>
 								<th id="selectionColumn" class="text-nowrap" style="width: 100px">
-									<label class="form-check-label" uib-tooltip="Select all">
+									<label class="form-check-label" gdb-tooltip="Select all">
 										<input class="form-check-input" type="checkbox" ng-model="selectedAll" ng-click="checkAll()">
 									</label>
 									<div class="btn-group btn-group-sm" uib-dropdown>
-										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle uib-tooltip="Export selected graphs" ng-disabled="!hasMultipleSelected()">
+										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle gdb-tooltip="Export selected graphs" ng-disabled="!hasMultipleSelected()">
 											<span class="icon-export"></span>
 										</button>
 										<ul class="dropdown-menu" role="menu">
@@ -102,7 +102,7 @@
 									</div>
 									<button type="button" class="btn btn-link secondary"
 										ng-click="dropContext()"
-										uib-tooltip="Removes all data from the selected graphs" tooltip-placement="top"
+										gdb-tooltip="Removes all data from the selected graphs" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
 										<span class="fa fa-trash-o"></span>
 									</button>
@@ -134,7 +134,7 @@
 							<td>
 
 								<div class="btn-group" uib-dropdown>
-									<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle uib-tooltip="Export graph"
+									<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle gdb-tooltip="Export graph"
                                             ng-disabled="!graph.contextID.uri">
 										<span class="icon-export"></span>
 									</button>
@@ -148,7 +148,7 @@
 
 								<button class="btn btn-link secondary delete-graph-btn"
 									ng-click="dropContext(graph)"
-									uib-tooltip="Removes all data from this graph" tooltip-placement="top"
+									gdb-tooltip="Removes all data from this graph" tooltip-placement="top"
 									ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
 									<span class="fa fa-trash-o fa-lg"></span>
 								</button>

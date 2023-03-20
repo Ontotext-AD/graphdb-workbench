@@ -4,7 +4,7 @@
         <div class="col-lg-12">
             <div class="card mt-2">
                 <div class="card-block">
-                    <button type="button" uib-tooltip="Close" class="close" aria-label="Close"
+                    <button type="button" gdb-tooltip="Close" class="close" aria-label="Close"
                             ng-click="declineTutorial()"></button>
                     <div class="pages-wrapper">
                         <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
@@ -29,7 +29,7 @@
     </div>
     <div class="row mb-3" ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak>
         <div class="col-lg-12 home-rdf-resource-search">
-            <h3><span  uib-tooltip="View RDF data as a text table or as a visual graph" tooltip-placement="right">View resource</span></h3>
+            <h3><span  gdb-tooltip="View RDF data as a text table or as a visual graph" tooltip-placement="right">View resource</span></h3>
             <div class="card">
                 <div class="card-block" ng-keydown="onKeyDown($event)">
                     <search-resource-input
@@ -52,32 +52,32 @@
 
     <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
         <div class="col-lg-6">
-            <h3><span uib-tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
+            <h3><span gdb-tooltip="View information about the current active repository" tooltip-placement="top">Active repository</span></h3>
             <div class="card active-repo-card"
                  ng-show="canReadRepo(getActiveLocation(), getActiveRepository())">
                 <div class="card-block">
                     <h6>{{getActiveLocation().label}}</h6>
                     <div class="actions-bar pull-right">
-                        <button type="button" uib-tooltip="Copy repository URL to clipboard" class="btn btn-link"
+                        <button type="button" gdb-tooltip="Copy repository URL to clipboard" class="btn btn-link"
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
-                        <button type="button" ng-click="goToEditRepo(getActiveRepository())" class="btn btn-link" uib-tooltip="Edit repository"
+                        <button type="button" ng-click="goToEditRepo(getActiveRepository())" class="btn btn-link" gdb-tooltip="Edit repository"
                            ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
                             <em class="icon-warning icon-lg text-warning"
-                               uib-tooltip="{{getDegradedReason()}} Editing this repository is not supported."
+                               gdb-tooltip="{{getDegradedReason()}} Editing this repository is not supported."
                                tooltip-placement="top" tooltip-trigger="mouseenter"></em>
                         </span>
-                        <button type="button" uib-tooltip="Refresh repository info" class="btn btn-link"
+                        <button type="button" gdb-tooltip="Refresh repository info" class="btn btn-link"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
                                 ng-click="getActiveRepositorySize()"><span class="icon-reload"></span>
                         </button>
                     </div>
                     <h3 class="card-title ellipsis-block">
                         <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
-                           uib-tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} repository with {{canWriteActiveRepo() ? 'read/write' : 'read-only'}} access"></em>
+                           gdb-tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} repository with {{canWriteActiveRepo() ? 'read/write' : 'read-only'}} access"></em>
                         {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
                     </h3>
                     <div ng-if="activeRepositorySize && !activeRepositorySizeError">
@@ -131,7 +131,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <h3><span uib-tooltip="Execute a saved SPARQL query directly" tooltip-placement="top">Saved SPARQL queries</span></h3>
+            <h3><span gdb-tooltip="Execute a saved SPARQL query directly" tooltip-placement="top">Saved SPARQL queries</span></h3>
             <div class="card"
                  ng-cloak>
                 <div>
@@ -151,7 +151,7 @@
 
     <div class="row mb-3">
         <div class="col-lg-12">
-            <h3><span uib-tooltip="View information about the installed GraphDB license" tooltip-placement="right">License</span></h3>
+            <h3><span gdb-tooltip="View information about the installed GraphDB license" tooltip-placement="right">License</span></h3>
             <div class="card">
                 <h4 class="card-header">GraphDB {{productTypeHuman}} Edition</h4>
                 <!-- appears only when there is a problem with the license -->

@@ -22,17 +22,17 @@
         <div class="form-group row">
             <label class="col-md-4 col-form-label">Authentication type</label>
             <div class="col-md-8">
-                <label class="col-form-label" uib-tooltip="No authentication used with remote location">
+                <label class="col-form-label" gdb-tooltip="No authentication used with remote location">
                     <input type="radio" name="authType" ng-model="newLocation.authType" value="none"/>
                     None
                 </label>
                 &nbsp;
-                <label class="col-form-label" uib-tooltip="Basic authentication with username/password. User must be an admin">
+                <label class="col-form-label" gdb-tooltip="Basic authentication with username/password. User must be an admin">
                     <input type="radio" name="authType" ng-model="newLocation.authType" value="basic"/>
                     Basic auth
                 </label>
                 &nbsp;
-                <label class="col-form-label" uib-tooltip="Signature authentication with shared secret">
+                <label class="col-form-label" gdb-tooltip="Signature authentication with shared secret">
                     <input type="radio" name="authType" ng-model="newLocation.authType" value="signature"/>
                     Signature
                 </label>
