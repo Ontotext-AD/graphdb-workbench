@@ -40,12 +40,12 @@
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="sparql-template/create?templateID={{templateID}}"
-                                       uib-tooltip="{{'edit.sparql.template.tooltip' | translate}}">
+                                       gdb-tooltip="{{'edit.sparql.template.tooltip' | translate}}">
                                         <em class="icon-edit"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(templateID)"
-                                    class="btn btn-link delete-configuration-btn" uib-tooltip="{{'delete.sparql.template.tooltip' | translate}}"><span
+                                    class="btn btn-link delete-configuration-btn" gdb-tooltip="{{'delete.sparql.template.tooltip' | translate}}"><span
                                 class="icon-trash"></span>
                             </button>
                         </td>

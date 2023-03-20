@@ -7,7 +7,7 @@
         <div class="col-lg-12">
             <div class="card mt-2">
                 <div class="card-block">
-                    <button type="button" uib-tooltip="{{'common.close' | translate}}" class="close" aria-label="Close"
+                    <button type="button" gdb-tooltip="{{'common.close' | translate}}" class="close" aria-label="Close"
                             ng-click="declineTutorial()"></button>
                     <div class="pages-wrapper">
                         <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
@@ -32,7 +32,7 @@
     </div>
     <div class="row mb-3" ng-if="getActiveRepository() && !isLoadingLocation() && hasActiveLocation()" ng-cloak>
         <div class="col-lg-12 home-rdf-resource-search">
-            <h3 id="view-resource-label-home"><span  uib-tooltip="{{'view.rdf.data.text.visual.graph.header' | translate}}" tooltip-placement="right">{{'view.resource.label' | translate}}</span></h3>
+            <h3 id="view-resource-label-home"><span  gdb-tooltip="{{'view.rdf.data.text.visual.graph.header' | translate}}" tooltip-placement="right">{{'view.resource.label' | translate}}</span></h3>
             <div class="card">
                 <div class="card-block" ng-keydown="onKeyDown($event)">
                     <search-resource-input
@@ -55,32 +55,32 @@
 
     <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
         <div class="col-lg-6">
-            <h3 id="active-repo-label-home"><span uib-tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
+            <h3 id="active-repo-label-home"><span gdb-tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
             <div class="card active-repo-card"
                  ng-show="canReadRepo(getActiveRepositoryObject())">
                 <div class="card-block">
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
-                        <button type="button" uib-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
+                        <button type="button" gdb-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
                                 ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
                         </button>
-                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" uib-tooltip="{{'repoTooltips.editRepository' | translate}}"
+                        <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
                                 ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
                             <span class="icon-edit"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
                             <em class="icon-warning icon-lg text-warning"
-                                uib-tooltip="{{getDegradedReason()}} {{'not.supported.repo.edit.label' | translate}}"
-                                tooltip-placement="top" tooltip-trigger="mouseenter"></em>
+                                gdb-tooltip="{{getDegradedReason()}} {{'not.supported.repo.edit.label' | translate}}"
+                                tooltip-placement="top"></em>
                         </span>
-                        <button type="button" uib-tooltip="{{'refresh.repo.info' | translate}}" class="btn btn-link"
+                        <button type="button" gdb-tooltip="{{'refresh.repo.info' | translate}}" class="btn btn-link"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
                                 ng-click="getActiveRepositorySize()"><span class="icon-reload"></span>
                         </button>
                     </div>
                     <h3 class="card-title ellipsis-block repo-info-home">
                         <em class="icon-2x" ng-class="'icon-repo-' + getActiveRepositoryObject().type"
-                            uib-tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
+                            gdb-tooltip="{{toHumanReadableType(getActiveRepositoryObject().type)}} {{'repository.with.label' | translate}} {{canWriteActiveRepo() ? 'read.write' : 'read.only' | translate}} {{'access' | translate}}"></em>
                         <div>
                             {{getActiveRepository()}}<small ng-show="getActiveRepositoryObject().title"><span class="small"> &middot; {{getActiveRepositoryObject().title}}</span></small>
                         </div>
@@ -132,7 +132,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <h3 id="saved-queries-label-home"><span uib-tooltip="{{'saved.sparql.queries.tooltip' | translate}}" tooltip-placement="top">{{'saved.sparql.queries.label' | translate}}</span></h3>
+            <h3 id="saved-queries-label-home"><span gdb-tooltip="{{'saved.sparql.queries.tooltip' | translate}}" tooltip-placement="top">{{'saved.sparql.queries.label' | translate}}</span></h3>
             <div class="card"
                  ng-cloak>
                 <div>
@@ -152,7 +152,7 @@
 
     <div class="row mb-3">
         <div class="col-lg-12">
-            <h3 id="license-label-home"><span uib-tooltip="{{'menu.license.tooltip' | translate}}" tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
+            <h3 id="license-label-home"><span gdb-tooltip="{{'menu.license.tooltip' | translate}}" tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
             <div class="card">
                 <h4 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h4>
                 <!-- appears only when there is a problem with the license -->

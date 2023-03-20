@@ -27,32 +27,32 @@
                         <div class="pull-left">
                             <strong>{{'repos.from' | translate}}</strong>
                             <em ng-if="location.degradedReason" class="icon-warning icon-lg text-warning"
-                                uib-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
+                                gdb-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
                                 tooltip-placement="right"></em>
                             <span class="mr-1">{{location.label}}</span>
                         </div>
                         <div ng-if="location.local" class="actions-bar-inline pull-right">
                             <button
-                                uib-tooltip="{{'repos.edit.common.settings' | translate}}"
-                                tooltip-placement="top" tooltip-trigger="mouseenter"
+                                gdb-tooltip="{{'repos.edit.common.settings' | translate}}"
+                                tooltip-placement="top"
                                 class="btn btn-link px-0"
                                 ng-click="openActiveLocationSettings()">
                                 <span class="icon-settings"></span>
                             </button>
                             <a class="btn btn-link px-0 pull-right" href="license"
-                               uib-tooltip="{{'repos.view.update.licenses' | translate}}"
-                               tooltip-placement="top" tooltip-trigger="mouseenter">
+                               gdb-tooltip="{{'repos.view.update.licenses' | translate}}"
+                               tooltip-placement="top">
                                 <span class="icon-key"></span>
                             </a>
                         </div>
                         <div ng-if="isAdmin() && !location.local" class="actions-bar-inline pull-right">
                             <button class="btn btn-link p-0"
-                                    uib-tooltip="{{'edit.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                    gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
                                     ng-click="editLocation(location)">
                                 <em class="icon-edit"></em>
                             </button>
                             <button class="btn btn-link p-0 secondary"
-                                    uib-tooltip="{{'detach.location' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                    gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
                                     ng-click="deleteLocation(location.uri)">
                                 <em class="icon-close"></em>
                             </button>
@@ -75,15 +75,13 @@
                                     ng-class="{'table-info text-secondary': isRepoActive(repository)}">
                                     <td width="25">
                                         <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-                                              uib-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
-                                              tooltip-trigger="mouseenter"
+                                              gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
                                               data-repository-id="{{repository}}"
                                               guide-selector="repository-{{repository.id}}-plug"></span>
                                         <span role="button" class="icon-connection-on icon-lg text-tertiary"
-                                              uib-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
-                                              tooltip-trigger="mouseenter"
+                                              gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                               ng-if="isRepoActive(repository)"></span>
                                     </td>
                                     <td>
@@ -102,43 +100,39 @@
                                     <td width="150" class="text-nowrap repository-actions">
                                         <button class="btn btn-link p-0"
                                                 ng-click="copyToClipboard(repository.externalUrl)"
-                                                uib-tooltip="{{'copy.repo.url' | translate}}">
+                                                gdb-tooltip="{{'copy.repo.url' | translate}}">
                                             <span class="icon-link"></span>
                                         </button>
                                         <span ng-if="location.degradedReason">
                                             <em class="icon-warning icon-lg text-warning"
-                                                uib-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
-                                                tooltip-placement="top" tooltip-trigger="mouseenter"></em>
+                                                gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
+                                                tooltip-placement="top"></em>
                                         </span>
                                         <span ng-if="repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
-                                               uib-tooltip="{{'repoTooltips.editRepository' | translate}}"
-                                               tooltip-placement="top"
-                                               tooltip-trigger="mouseenter">
+                                               gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
+                                               tooltip-placement="top">
                                                 <span class="icon-edit"></span>
                                             </a>
                                             <a class="btn btn-link p-0 download-turtle-config download-repository-config-btn"
                                                ng-href="{{getRepositoryDownloadLink(repository)}}"
                                                rel="noopener"
                                                target="_blank"
-                                               uib-tooltip="{{'download.repo.config' | translate}}"
-                                               tooltip-placement="top"
-                                               tooltip-trigger="mouseenter">
+                                               gdb-tooltip="{{'download.repo.config' | translate}}"
+                                               tooltip-placement="top">
                                                     <em class="icon-download"></em>
                                             </a>
                                             <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                    uib-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
+                                                    gdb-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
                                                     tooltip-placement="top"
-                                                    tooltip-trigger="mouseenter"
                                                     ng-click="restartRepository(repository)">
                                                     <span class="icon-reload"></span>
                                             </button>
                                             <button class="btn btn-link p-0 secondary delete-repository-btn"
                                                     type="button"
-                                                    uib-tooltip="{{'delete.repo' | translate}}"
+                                                    gdb-tooltip="{{'delete.repo' | translate}}"
                                                     tooltip-placement="top"
-                                                    tooltip-trigger="mouseenter"
                                                     ng-click="deleteRepository(repository)">
                                                 <em class="icon-trash"></em>
                                             </button>
@@ -149,7 +143,7 @@
                                                 ng-if="repository.type !== 'system' && location.active"
                                                 ng-click="toggleDefaultRepository(repository.id)"
                                                 ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
-                                                uib-tooltip="{{'set.as.default.repo' | translate}}">
+                                                gdb-tooltip="{{'set.as.default.repo' | translate}}">
                                             <em class="icon-pin"></em>
                                         </button>
                                     </td>

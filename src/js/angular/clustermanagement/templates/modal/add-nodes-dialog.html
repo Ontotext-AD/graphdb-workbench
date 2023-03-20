@@ -24,7 +24,7 @@
                 <div class="pre-scrollable locations-list mb-1">
                     <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
                          ng-class="!location.rpcAddress ? 'list-group-item-danger' : ''"
-                         uib-tooltip="{{location.rpcAddress ? '' : 'cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error} }}"
+                         gdb-tooltip="{{location.rpcAddress ? '' : 'cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error} }}"
                          ng-click="addNodeToList(location)">
                         <div class="logo-image"></div>
                         {{location.endpoint}}
@@ -39,7 +39,7 @@
                 <ul ng-if="nodes.length" class="list-group nodes-list">
                     <li ng-repeat="node in nodes" class="list-group-item list-group-item-action list-group-item-node">
                         <a ng-click="removeNodeFromList($index, node)" class="d-flex justify-content-between align-items-center"
-                           uib-tooltip="{{'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top">
+                           gdb-tooltip="{{'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top">
                             <div class="location-item">
                                 <div class="logo-image"></div>
                                 {{node.endpoint}}

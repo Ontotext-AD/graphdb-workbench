@@ -22,17 +22,17 @@
                 <div class="form-group" style="width: 130px;">
                     <input id="wb-namespaces-prefix"
                            type="text" ng-model="namespace.prefix" placeholder="examplePrefix"
-                           class="form-control" tooltip-trigger="mouseenter" uib-tooltip="{{'prefix.label' | translate}}" style="width: 130px;"/>
+                           class="form-control" gdb-tooltip="{{'prefix.label' | translate}}" style="width: 130px;"/>
                 </div>
                 <div class="form-group" style="width: 260px;">
                     <input required id="wb-namespaces-namespace"
                            type="url" ng-model="namespace.namespace"
                            placeholder="http://example.com/data#" class="form-control"
-                           tooltip-trigger="mouseenter" uib-tooltip="{{'namespace.label' | translate}}" style="width: 260px;"/>
+                           gdb-tooltip="{{'namespace.label' | translate}}" style="width: 260px;"/>
                 </div>
                 <button id="wb-namespaces-addNamespace" type="submit" ng-click="addNamespace()"
                         class="btn btn-primary add-namespace"
-                        tooltip-trigger="mouseenter" uib-tooltip="{{'add.namespace.label' | translate}}">
+                        gdb-tooltip="{{'add.namespace.label' | translate}}">
                     <span class="icon-plus"></span>
                     {{'add.namespace.label' | translate}}
                 </button>
@@ -59,7 +59,7 @@
         <div ng-show="namespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-result-header">
             <span class="pull-left">
                 <input type="text" class="form-control namespaces-filter" placeholder="{{'search.namespaces.label' | translate}}"
-                       ng-model="searchNamespaces" tooltip-trigger="mouseenter" uib-tooltip="{{'common.search.btn' | translate}}"
+                       ng-model="searchNamespaces" gdb-tooltip="{{'common.search.btn' | translate}}"
                        ng-change="onNamespaceSearch()">
             </span>
             <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
@@ -75,8 +75,8 @@
                                ng-click="checkAll();checkIfSelectedNamespace()" ng-disabled="!canWriteActiveRepo()">
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
-                            ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
-                            uib-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="icon-trash"></span></button>
+                            ng-disabled="!canWriteActiveRepo() || !haveSelected"
+                            gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="icon-trash"></span></button>
                 </th>
                 <th id="prefixColumn" style="width: 20%">{{'prefix.label' | translate}}</th>
                 <th id="uriColumn">{{'iri.label' | translate}}</th>
@@ -110,17 +110,17 @@
                           ng-show="rowform.$visible" class="d-inline-block"
                           shown="inserted === namespace">
                         <button type="submit" class="btn btn-primary" ng-disabled="rowform.$waiting"
-                                tooltip-trigger="mouseenter" uib-tooltip="{{'common.save.btn' | translate}}"><span class="icon-save"></span></button>
+                                gdb-tooltip="{{'common.save.btn' | translate}}"><span class="icon-save"></span></button>
                         <button type="button" class="btn btn-secondary" ng-disabled="rowform.$waiting"
-                                ng-click="rowform.$cancel()" tooltip-trigger="mouseenter" uib-tooltip="{{'common.cancel.btn' | translate}}"><span
+                                ng-click="rowform.$cancel()" gdb-tooltip="{{'common.cancel.btn' | translate}}"><span
                                 class="icon-close"></span></button>
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
-                    <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
-                            uib-tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
+                    <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()"
+                            gdb-tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
-                            ng-disabled="{{!canWriteActiveRepo()}}" tooltip-trigger="mouseenter" uib-tooltip="{{'delete.namespace' | translate}}"
+                            ng-disabled="{{!canWriteActiveRepo()}}" gdb-tooltip="{{'delete.namespace' | translate}}"
                             data-cy="{{'delete-pref_' + namespace.prefix}}">
                         <span class="icon-trash"></span></button>
                 </td>

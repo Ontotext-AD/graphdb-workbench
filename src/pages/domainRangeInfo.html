@@ -17,26 +17,23 @@
     <div class="toolbar-holder pull-right"
          ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
         <button class="btn btn-link p-0" type="button"
-			ng-click="goToClassHierarchyView()"
-			uib-tooltip="{{'back.to.class.hierarchy.label' | translate}}"
-			tooltip-placement="bottom"
-			tooltip-trigger="mouseenter">
+                ng-click="goToClassHierarchyView()"
+                gdb-tooltip="{{'back.to.class.hierarchy.label' | translate}}"
+                tooltip-placement="bottom">
             <em class="icon-arrow-left icon-2x"></em>
         </button>
 
-		<button class="btn btn-link p-0 compact-mode-toggle" type="button"
-			ng-click="toggleCollapseEdgesState()"
-			uib-tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
-			tooltip-placement="bottom"
-			tooltip-trigger="mouseenter">
-			<em class="fa fa-2x"
-				ng-class="{'fa-toggle-off': collapseEdges, 'fa-toggle-on':!collapseEdges}"></em>
+        <button class="btn btn-link p-0 compact-mode-toggle" type="button"
+                ng-click="toggleCollapseEdgesState()"
+                gdb-tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
+                tooltip-placement="bottom">
+            <em class="fa fa-2x"
+                ng-class="{'fa-toggle-off': collapseEdges, 'fa-toggle-on':!collapseEdges}"></em>
         </button>
 
-		<a id="download-svg" href class="btn btn-link p-0"
-			uib-tooltip="{{'export.diagram.tooltip' | translate}}"
-			tooltip-placement="bottom"
-			tooltip-trigger="mouseenter">
+        <a id="download-svg" href class="btn btn-link p-0"
+           gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
+           tooltip-placement="bottom">
 			<em class="icon-export icon-2x"></em>
 		</a>
     </div>
