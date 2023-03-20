@@ -16,7 +16,7 @@
                 data-toggle="dropdown"
                 aria-expanded="false">
             <a uib-dropdown-toggle>
-				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" uib-tooltip="{{'select.graph.label' | translate}}">
+				<span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
 					{{getSelGraphValue() | translate}}
 				</span>
             </a>
@@ -42,33 +42,29 @@
 
 	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
 		ng-click="hidePrefixes = !hidePrefixes"
-		uib-tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
-		tooltip-placement="bottom"
-		tooltip-trigger="mouseenter">
+		gdb-tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
+		tooltip-placement="bottom">
 		<em class="fa fa-2x"
 			ng-class="{'fa-toggle-on': hidePrefixes, 'fa-toggle-off': !hidePrefixes}"></em>
 	</button>
 
 	<button class="btn btn-link p-0 focus-diagram-btn"
-		uib-tooltip="{{'focus.diagram.tooltip' | translate}}"
+		gdb-tooltip="{{'focus.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
-		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
 		<em class="icon-zoom-out icon-2x"></em>
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
-		uib-tooltip="{{'reload.diagram.tooltip' | translate}}"
+		gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
-		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
 		<em class="icon-reload icon-2x"></em>
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
-		uib-tooltip="{{'export.diagram.tooltip' | translate}}"
-		tooltip-placement="bottom"
-		tooltip-trigger="mouseenter">
+		gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
+		tooltip-placement="bottom">
 		<em class="icon-export icon-2x"></em>
 	</a>
 
@@ -114,9 +110,8 @@
 		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
-						uib-tooltip="{{'reload.diagram.tooltip' | translate}}"
+						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 						tooltip-placement="bottom"
-						tooltip-trigger="mouseenter"
 						ng-click="confirmReloadClassHierarchy()">
 					<em class="icon-reload icon-2x"></em>
 				</button>

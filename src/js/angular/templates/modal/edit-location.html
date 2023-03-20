@@ -9,17 +9,17 @@
         <div class="form-group row">
             <label class="col-md-4 col-form-label">{{'auth.type.header' | translate}}</label>
             <div class="col-md-8">
-                <label class="col-form-label" uib-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
+                <label class="col-form-label" gdb-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="none"/>
                     {{'auth.type.none' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" uib-tooltip="{{'basic.auth.type.tooltip' | translate}}">
+                <label class="col-form-label" gdb-tooltip="{{'basic.auth.type.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="basic"/>
                     {{'auth.type.basic' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" uib-tooltip="{{'signature.auth.type.tooltip' | translate}}">
+                <label class="col-form-label" gdb-tooltip="{{'signature.auth.type.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="signature"/>
                     {{'auth.type.signature' | translate}}
                 </label>

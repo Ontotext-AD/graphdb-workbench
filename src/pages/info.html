@@ -57,7 +57,7 @@
 					</h5>
 
 					<div uib-collapse="!isHelpVisible" class="alert alert-info server-report-help">
-						<button type="button" ng-click="isHelpVisible = false" uib-tooltip="{{'common.close' | translate}}" class="close"
+						<button type="button" ng-click="isHelpVisible = false" gdb-tooltip="{{'common.close' | translate}}" class="close"
 								aria-label="Close"></button>
 						{{'server.report.help.info.title' | translate}}
 						<ul>
@@ -81,11 +81,11 @@
 
 					<div class="pt-1 pb-3 reports-toobar">
 						<div class="btn-group">
-							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" uib-tooltip="{{'new.server.report.tooltip' | translate}}">
+							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" gdb-tooltip="{{'new.server.report.tooltip' | translate}}">
 								<em class="icon-monitoring"></em>
 								{{'new.server.report' | translate}}
 							</button>
-							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" uib-tooltip="{{'download.server.report.tooltip' | translate}}">
+							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" gdb-tooltip="{{'download.server.report.tooltip' | translate}}">
 								<em class="icon-download"></em>
 								{{'common.download' | translate}}
 							</button>
