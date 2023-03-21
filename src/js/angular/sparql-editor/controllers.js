@@ -391,6 +391,8 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
             toastr.warning(notificationMessageEvent.message);
         } else if (NotificationMessageType.ERROR === notificationMessageEvent.messageType) {
             toastr.error(notificationMessageEvent.message);
+        } else if (NotificationMessageType.INFO === notificationMessageEvent.messageType) {
+            toastr.info(notificationMessageEvent.message);
         }
     };
     outputHandlers.set(EventDataType.NOTIFICATION_MESSAGE, notificationMessageHandler);
