@@ -1,4 +1,4 @@
-import {isNumber, merge} from "lodash";
+import {isFunction, merge} from "lodash";
 import {
     savedQueriesResponseMapper,
     queryPayloadFromEvent,
@@ -9,7 +9,6 @@ import {QueryMode} from "../utils/query-types";
 import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
-import {NotificationMessageType} from "../../../models/ontotext-yasgui/notification-message-type";
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
@@ -385,14 +384,9 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
      * @param {NotificationMessageEvent} notificationMessageEvent - the "ontotext-yasgui-web-component" event.
      */
     const notificationMessageHandler = (notificationMessageEvent) => {
-        if (NotificationMessageType.SUCCESS === notificationMessageEvent.messageType) {
-            toastr.success(notificationMessageEvent.message);
-        } else if (NotificationMessageType.WARNING === notificationMessageEvent.messageType) {
-            toastr.warning(notificationMessageEvent.message);
-        } else if (NotificationMessageType.ERROR === notificationMessageEvent.messageType) {
-            toastr.error(notificationMessageEvent.message);
-        } else if (NotificationMessageType.INFO === notificationMessageEvent.messageType) {
-            toastr.info(notificationMessageEvent.message);
+        const notifyFunction = toastr[notificationMessageEvent.messageType];
+        if (isFunction(notifyFunction)) {
+            notifyFunction(notificationMessageEvent.message);
         }
     };
     outputHandlers.set(EventDataType.NOTIFICATION_MESSAGE, notificationMessageHandler);
