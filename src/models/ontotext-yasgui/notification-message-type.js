@@ -4,5 +4,6 @@
 export const NotificationMessageType = {
     'SUCCESS': 'success',
     'WARNING': 'warning',
-    'ERROR': 'error'
+    'ERROR': 'error',
+    'INFO': 'info'
 };
