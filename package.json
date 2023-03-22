@@ -12,7 +12,9 @@
         "test:coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
         "test:acceptance": "export $(cat .env | xargs) && scripts/run-cypress-tests.sh",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
+        "license-report": "license-checker --production --json --customPath license-checker-format.json --out dist/license-checker.json",
+        "postbuild": "npm run license-report && cd static-workbench-licenses && npm install && npm run license-report"
     },
     "files": [
         "dist/"
@@ -64,6 +66,7 @@
         "karma-webpack": "^4.0.2",
         "less": "^3.10.3",
         "less-loader": "^5.0.0",
+        "license-checker": "^25.0.1",
         "mini-css-extract-plugin": "^0.8.0",
         "minimist": "^1.2.5",
         "optimize-css-assets-webpack-plugin": "^5.0.3",

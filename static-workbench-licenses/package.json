@@ -1,0 +1,20 @@
+{
+    "name": "static-workbench-licenses",
+    "version": "1.0.0",
+    "description": "Dummy module to collect a license report for non-NPM dependencies",
+    "scripts": {
+        "license-report": "license-checker --production --json --customPath ../license-checker-format.json --out ../dist/license-checker-static.json"
+    },
+    "dependencies": {
+        "angucomplete-alt": "^3.0.0",
+        "angular": "^1.8.3",
+        "bootstrap": "^3.4.1",
+        "d3-tip": "^0.9.1",
+        "file-saver": "^2.0.5",
+        "yasgui-yasqe": "^2.11.22",
+        "yasgui-yasr": "^2.4.12"
+    },
+    "devDependencies": {
+        "license-checker": "^25.0.1"
+    }
+}
