@@ -49,7 +49,8 @@ function SparqlEditorCtrl($scope, $location, $jwtAuth, $repositories, toastr, $t
                 },
                 prefixes: $scope.prefixes,
                 pageSize: 1000,
-                maxPersistentResponseSize: 500000
+                maxPersistentResponseSize: 500000,
+                isVirtualRepository: $repositories.isActiveRepoOntopType()
             };
         }
     };
