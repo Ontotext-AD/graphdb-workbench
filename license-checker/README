@@ -1,0 +1,4 @@
+The file license-checker-static.json contains a list of dependencies that are included via static files
+in various directories. It is used only as a reference and will not affect functionality in any way.
+
+The file will be copied to dist/ on build.
