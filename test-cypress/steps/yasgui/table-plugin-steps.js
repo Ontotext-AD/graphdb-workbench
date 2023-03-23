@@ -22,4 +22,8 @@ export class TablePluginSteps {
     static clickOutsideCopyLinkDialog() {
         cy.get('body').click(0, 0);
     }
+
+    static getQueryResultInfo() {
+        return cy.get('.tabPanel.active .yasr_response_chip');
+    }
 }
