@@ -15,9 +15,9 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$modal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService', 'GuidesService'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService', 'GuidesService'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $modal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $uibModal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
 
     let callbackOnChange;
 
@@ -364,7 +364,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             };
                             progressScope.getHumanReadableSeconds = scope.getHumanReadableSeconds;
 
-                            connectorProgressModal = $modal.open({
+                            connectorProgressModal = $uibModal.open({
                                 templateUrl: 'pages/connectorProgress.html',
                                 controller: 'CreateProgressCtrl',
                                 size: 'lg',

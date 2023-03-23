@@ -12,7 +12,7 @@
 <h1>
     {{title}}
     <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
           popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -40,7 +40,7 @@
                                 <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.system.cpu_load.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resource.system.cpu_load.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resource.system.cpu_load.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                             <span class="icon-info"></span>
                                         </span>
@@ -53,7 +53,7 @@
                                 <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.system.file_descriptors.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resource.system.file_descriptors.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resource.system.file_descriptors.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                             <span class="icon-info"></span>
                                         </span>
@@ -68,7 +68,7 @@
                                 <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.memory.heap.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resource.memory.heap.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resource.memory.heap.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                             <span class="icon-info"></span>
                                         </span>
@@ -81,7 +81,7 @@
                                 <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.memory.non_heap.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resource.memory.non_heap.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resource.memory.non_heap.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                             <span class="icon-info"></span>
                                         </span>
@@ -96,7 +96,7 @@
                                 <div id="diskStorage" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.storage.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resource.storage.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resource.storage.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                             <span class="icon-info"></span>
                                         </span>
@@ -119,7 +119,7 @@
                                     <div id="activeQueries" class="col-lg-12 col-xl-6">
                                         <div class="title h4" style="text-align: center;">
                                             {{'resource.queries.label' | translate}}
-                                            <span class="btn btn-link" popover="{{'resource.queries.tooltip' | translate}}" popover-trigger="mouseenter"
+                                            <span class="btn btn-link" uib-popover="{{'resource.queries.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
                                                 <span class="icon-info"></span>
                                             </span>
@@ -132,7 +132,7 @@
                                     <div id="connections" class="col-lg-12 col-xl-6">
                                         <div class="title h4" style="text-align: center;">
                                             {{'resource.connections.label' | translate}}
-                                            <span class="btn btn-link" popover="{{'resource.connections.tooltip' | translate}}" popover-trigger="mouseenter"
+                                            <span class="btn btn-link" uib-popover="{{'resource.connections.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
                                                 <span class="icon-info"></span>
                                             </span>
@@ -147,7 +147,7 @@
                                     <div id="epool" class="col-lg-12 col-xl-6">
                                         <div class="title h4" style="text-align: center;">
                                             {{'resource.epool.label' | translate}}
-                                            <span class="btn btn-link" popover="{{'resource.epool.tooltip' | translate}}" popover-trigger="mouseenter"
+                                            <span class="btn btn-link" uib-popover="{{'resource.epool.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
                                                 <span class="icon-info"></span>
                                             </span>
@@ -160,7 +160,7 @@
                                     <div id="globalCache" class="col-lg-12 col-xl-6">
                                         <div class="title h4" style="text-align: center;">
                                             {{'resources.global_cache.label' | translate}}
-                                            <span class="btn btn-link" popover="{{'resources.global_cache.tooltip' | translate}}" popover-trigger="mouseenter"
+                                            <span class="btn btn-link" uib-popover="{{'resources.global_cache.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
                                                 <span class="icon-info"></span>
                                             </span>
@@ -183,7 +183,7 @@
                                 <div id="clusterHealth" class="col-lg-12">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resources.cluster_health.label' | translate}}
-                                        <span class="btn btn-link" popover="{{'resources.cluster_health.tooltip' | translate}}" popover-trigger="mouseenter"
+                                        <span class="btn btn-link" uib-popover="{{'resources.cluster_health.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
                                                 <span class="icon-info"></span>
                                             </span>

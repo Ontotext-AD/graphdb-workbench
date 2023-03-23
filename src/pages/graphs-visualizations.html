@@ -8,7 +8,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -23,58 +23,51 @@
 
     <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
-                tooltip="{{'visual.graph.home.label' | translate}}"
+                gdb-tooltip="{{'visual.graph.home.label' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-click="goToHome()">
             <em class="icon-arrow-up icon-2x"></em>
         </button>
         <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link p-0"
-                tooltip="{{'search.another.resource.label' | translate}}"
+                gdb-tooltip="{{'search.another.resource.label' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="searchVisible = !searchVisible">
             <em class="icon-search icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{'visual.graph.rotate.graph.left' | translate}}"
+                gdb-tooltip="{{'visual.graph.rotate.graph.left' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(true)">
             <em class="icon-rotate-left icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{'visual.graph.rotate.graph.right' | translate}}"
+                gdb-tooltip="{{'visual.graph.rotate.graph.right' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(false)">
             <em class="icon-rotate-right icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{numberOfPinnedNodes > 0 ? 'visual.graph.unpin.nodes' : 'visual.graph.pin.down.nodes' | translate}}"
+                gdb-tooltip="{{numberOfPinnedNodes > 0 ? 'visual.graph.unpin.nodes' : 'visual.graph.pin.down.nodes' | translate}}"
                 ng-class="numberOfPinnedNodes > 0 ? 'active' : ''"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
                 ng-click="togglePinAllNodes()">
             <em class="icon-pin icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{'visual.save.graph.snapshot' | translate}}"
+                gdb-tooltip="{{'visual.save.graph.snapshot' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-if="isUser() && !embedded"
                 ng-disabled="!nodeSelected"
                 ng-click="saveOrUpdateGraph()" data-cy="save-or-update-graph">
             <em class="icon-save icon-2x" ></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{'visual.graph.click.configure.view' | translate}}"
+                gdb-tooltip="{{'visual.graph.click.configure.view' | translate}}"
                 tooltip-placement="bottom"
-                tooltip-trigger="mouseenter"
                 ng-if="isUser()"
                 ng-click="showSettings()">
             <em class="icon-settings icon-2x visual-graph-settings-btn"></em>
@@ -138,21 +131,21 @@
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
                                     <a href ng-click="goToGraphConfig(config)">
-                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="{{'visual.config.search.box.starting.point' | translate}}" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="{{'visual.config.fixed.resource.starting.point' | translate}}" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" data-cy="graph-config-starting-point-query-results" width="64" popover="{{'visual.config.query.results.starting.point' | translate}}" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" uib-popover="{{'visual.config.search.box.starting.point' | translate}}" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" uib-popover="{{'visual.config.fixed.resource.starting.point' | translate}}" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" data-cy="graph-config-starting-point-query-results" width="64" uib-popover="{{'visual.config.query.results.starting.point' | translate}}" popover-trigger="mouseenter">
                                     </a>
                                 </td>
                                 <td>
                                     <h5>
-                                        <a href ng-click="goToGraphConfig(config)" popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
+                                        <a href ng-click="goToGraphConfig(config)" uib-popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
                                     </h5>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config"><span class="icon-trash"></span></button>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config"><span class="icon-trash"></span></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -176,19 +169,19 @@
                                 </td>
                                 <td class="text-xs-right">
                                     <button class="btn btn-link"
-                                            tooltip="{{'visual.get.graph.url' | translate}}" tooltip-trigger="mouseenter"
+                                            gdb-tooltip="{{'visual.get.graph.url' | translate}}"
                                             ng-click="copyToClipboardSavedGraph(graph)" data-cy="copy-to-clipboard-saved-graph">
                                         <span class="icon-link"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal.username"
-                                            tooltip="{{'visual.rename.graph' | translate}}" tooltip-trigger="mouseenter"
+                                            gdb-tooltip="{{'visual.rename.graph' | translate}}"
                                             ng-click="renameSavedGraph(graph)" data-cy="rename-saved-graph">
                                         <span class="icon-edit"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal.username"
-                                            tooltip="{{'visual.delete.graph' | translate}}" tooltip-trigger="mouseenter"
+                                            gdb-tooltip="{{'visual.delete.graph' | translate}}"
                                             ng-click="deleteSavedGraph(graph)" data-cy="delete-saved-graph">
                                         <span class="icon-trash"></span>
                                     </button>
@@ -245,7 +238,7 @@
 
             <div>
                 <div class="form-group mb-2">
-                    <label tooltip="{{'sidepanel.limit.links.tooltip' | translate}}">{{'sidepanel.maximum.links' | translate}}</label>
+                    <label gdb-tooltip="{{'sidepanel.limit.links.tooltip' | translate}}">{{'sidepanel.maximum.links' | translate}}</label>
                     <div class="form-inline">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
                                 ng-click="changeLimit(-1)">
@@ -261,13 +254,13 @@
                         </button>
                         <span style="margin-top: 5px" ng-if="invalidLimit"
                               class="idError alert alert-danger"
-                              tooltip="{{INVALID_LINKS_TOOLTIP}}">
+                              gdb-tooltip="{{INVALID_LINKS_TOOLTIP}}">
                             {{INVALID_LINKS_MSG}}
                         </span>
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}">{{'sidepanel.preferred.languages' | translate}}</label>
+                    <label gdb-tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}">{{'sidepanel.preferred.languages' | translate}}</label>
                     <div class="input-group preferred-languages">
                         <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="{{'sidepanel.add.language.tag' | translate}}"></tags-input>
@@ -275,15 +268,15 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="{{'sidepanel.include.schema.statements.tooltip' | translate}}">
-                        <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
+                        <label gdb-tooltip="{{'sidepanel.include.schema.statements.tooltip' | translate}}">
+                            <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
                             {{'sidepanel.include.schema.statements' | translate}}
                         </label>
                     </div>
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="{{'sidepanel.include.inferred.statements.tooltip' | translate}}">
+                        <label gdb-tooltip="{{'sidepanel.include.inferred.statements.tooltip' | translate}}">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
                             {{'sidepanel.include.inferred.statements' | translate}}
                         </label>
@@ -293,7 +286,7 @@
 
 
                 <div class="form-group mb-2">
-                    <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : '' | translate}}">
+                    <div class="checkbox" gdb-tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : '' | translate}}">
                         <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
@@ -306,20 +299,19 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
+                        <label gdb-tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
                             {{'sidepanel.show.pred.labels.as.links.titles' | translate}}
                         </label>
                     </div>
                 </div>
 
-                <tabset active="active" ng-show="shouldShowSettings()">
-                    <tab>
-                        <tab-heading class="nav-item"
-                                     tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link">{{'types.label' | translate}}</span></tab-heading>
+                <uib-tabset active="active" ng-show="shouldShowSettings()">
+                    <uib-tab>
+                        <uib-tab-heading class="nav-item"
+                                     tooltip-placement="bottom"><span class="nav-link">{{'types.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.preferred.type.placeholder' | translate}}"
@@ -329,7 +321,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
+                                <label gdb-tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
                                     {{'sidepanel.show.preferred.types.nodes.only' | translate}}
                                 </label>
@@ -337,7 +329,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.ignored.type.placeholder' | translate}}"
@@ -345,14 +337,13 @@
                                             on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
-                    </tab>
-                    <tab>
-                        <tab-heading class="nav-item"
-                                     tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">{{'predicates.label' | translate}}</span></tab-heading>
+                    </uib-tab>
+                    <uib-tab>
+                        <uib-tab-heading class="nav-item"
+                                     tooltip-placement="bottom"><span class="nav-link predicates-tab">{{'predicates.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <div>
-                                <label tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
+                                <label gdb-tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
 
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -363,7 +354,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
+                                <label gdb-tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
                                     {{'sidepanel.show.preferred.predicates.only' | translate}}
                                 </label>
@@ -371,7 +362,7 @@
                         </div>
 
                         <div class="form-group ">
-                            <label tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -382,8 +373,8 @@
                                             tag-class="getTagClass($tag.text)"></tags-input>
                             </div>
                         </div>
-                    </tab>
-                </tabset>
+                    </uib-tab>
+                </uib-tabset>
 
                 <div class="mt-1">
                     <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">{{'common.reset' | translate}}</button>
@@ -392,7 +383,7 @@
 
                 <script type="text/ng-template" id="ignored-predicates-template">
                     <div class="tag-template">
-                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'sidepanel.wildcard.iris' : '' | translate}}">
+                        <div gdb-tooltip="{{$getDisplayText().endsWith('*') ? 'sidepanel.wildcard.iris' : '' | translate}}">
                             <span>{{$getDisplayText()}}</span>
                             <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
                         </div>
@@ -421,9 +412,8 @@
 
             <div class="media mb-1">
                 <div class="media-left"
-                     tooltip="{{'labels.label' | translate}}"
-                     tooltip-placement="top"
-                     tooltip-trigger="mouseenter">
+                     gdb-tooltip="{{'labels.label' | translate}}"
+                     tooltip-placement="top">
                     <em class="icon-tag icon-lg" aria-hidden="true"></em>
                 </div>
                 <div class="media-body">

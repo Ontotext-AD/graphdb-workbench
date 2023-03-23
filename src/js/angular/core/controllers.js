@@ -4,24 +4,24 @@ angular
     .controller('SimpleModalCtrl', SimpleModalCtrl)
     .controller('ViewQueryCtrl', ViewQueryCtrl);
 
-SimpleModalCtrl.$inject = ['$scope', '$modalInstance', 'title', 'message'];
+SimpleModalCtrl.$inject = ['$scope', '$uibModalInstance', 'title', 'message'];
 
-function SimpleModalCtrl($scope, $modalInstance, title, message) {
+function SimpleModalCtrl($scope, $uibModalInstance, title, message) {
     $scope.title = title;
     $scope.message = message;
 
     $scope.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-CopyToClipboardModalCtrl.$inject = ['$scope', '$modalInstance', 'uri', 'toastr', '$translate'];
+CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toastr', '$translate'];
 
-function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr, $translate) {
+function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $translate) {
     $scope.clipboardURI = uri;
 
     $scope.ok = function () {
@@ -33,20 +33,20 @@ function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr, $translat
         } catch (e) {
             toastr.error($translate.instant('modal.ctr.copy.not.supported.warning'));
         }
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-ViewQueryCtrl.$inject = ['$scope', '$modalInstance', 'query', 'toastr', '$translate'];
+ViewQueryCtrl.$inject = ['$scope', '$uibModalInstance', 'query', 'toastr', '$translate'];
 
-function ViewQueryCtrl($scope, $modalInstance, query, toastr, $translate) {
+function ViewQueryCtrl($scope, $uibModalInstance, query, toastr, $translate) {
     $scope.query = query;
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.selectQuery = function () {
@@ -57,7 +57,7 @@ function ViewQueryCtrl($scope, $modalInstance, query, toastr, $translate) {
         try {
             $scope.selectQuery();
             document.execCommand('copy');
-            $modalInstance.close();
+            $uibModalInstance.close();
             toastr.success($translate.instant('modal.ctr.copy.query.success'));
         } catch (e) {
             toastr.error($translate.instant('modal.ctr.copy.not.supported.warning'));

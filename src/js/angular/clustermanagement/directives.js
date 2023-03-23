@@ -403,10 +403,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
             }
         };
     }
-])
-    .config(['$tooltipProvider', function ($tooltipProvider) {
-    $tooltipProvider.options({appendToBody: true});
-}]);
+]);
 
 
 const getLegendNodes = function () {

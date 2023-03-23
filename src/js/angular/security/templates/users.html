@@ -1,7 +1,7 @@
 <h1>
 	{{title}}
 	<span class="btn btn-link"
-	   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+	   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 	   popover-trigger="mouseenter"
 	   popover-placement="bottom-right"
 	   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -11,20 +11,20 @@
 		<div class="pull-right">
 			<span id="toggle-security" class="mr-1">
 				<span class="security-switch-label">{{'security.is' | translate}} <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
-				<span tooltip="{{'click.to' | translate}} {{securityEnabled() ? 'disable' : 'enable' | translate}} {{'security.label' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleSecurity()" class="switch">
+				<span gdb-tooltip="{{'click.to' | translate}} {{securityEnabled() ? 'disable' : 'enable' | translate}} {{'security.label' | translate}}" tooltip-placement="top" ng-click="toggleSecurity()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
 					<label for="toggle-security"></label>
 				</span>
 			</span>
 			<span ng-show="securityEnabled()" id="toggle-freeaccess">
 				<span>{{'security.free.access.is' | translate}} <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
-				<span tooltip="{{'click.to' | translate}} {{freeAccessEnabled() ? 'disable' : 'enable' | translate}} {{'security.free.access.non.admin' | translate}}" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleFreeAccess()" class="switch">
+				<span gdb-tooltip="{{'click.to' | translate}} {{freeAccessEnabled() ? 'disable' : 'enable' | translate}} {{'security.free.access.non.admin' | translate}}" tooltip-placement="top" ng-click="toggleFreeAccess()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
 					<label for="toggle-freeaccess"></label>
 				</span>
 				<span ng-show="freeAccessEnabled()">
 					{{'security.free.access.settings' | translate}}
-					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><em class="icon-settings" tooltip="{{'security.free.access.config.title' | translate}}" ng-click="editFreeAccess()"></em></a>
+					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><em class="icon-settings" gdb-tooltip="{{'security.free.access.config.title' | translate}}" ng-click="editFreeAccess()"></em></a>
 				</span>
 			</span>
 		</div>
@@ -56,8 +56,8 @@
 				<td class="user-type">{{user.userTypeDescription}}</td>
 				<td class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
-						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'security.has.read.access' : 'security.no.read.access' | translate}}"></em>
-						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" tooltip="{{rights.read ? 'security.has.write.access' : 'security.no.write.access' | translate}}"></em>
+						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.read.access' : 'security.no.read.access' | translate}}"></em>
+						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.write.access' : 'security.no.write.access' | translate}}"></em>
 						{{repo}}
 					</div>
 					<div ng-show="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
@@ -66,10 +66,10 @@
 				<td class="actions-bar">
 					<span>
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
-                            <em class="icon-edit" tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
+                            <em class="icon-edit" gdb-tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
                         </a>
 						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" ng-show="!hasExternalAuth()" href ng-click="removeUser(user.username)">
-                            <em class="icon-trash" tooltip="{{'security.delete.user.tooltip' | translate}}"></em>
+                            <em class="icon-trash" gdb-tooltip="{{'security.delete.user.tooltip' | translate}}"></em>
                         </a>
 					</span>
 				</td>

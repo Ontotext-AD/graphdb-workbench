@@ -2,15 +2,15 @@
 <h1>
     {{title}}
     <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom"
           popover-append-to-body="true"><span class="icon-info"></span></span>
 </h1>
 
 <div ng-show="displayedGuides.length > 0" class="clearfix">
-    <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
-        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+    <div class="btn-group pull-right namespaces-per-page-menu" uib-dropdown>
+        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
             <span>{{pageSize}}</span>
         </button>
         <ul class="dropdown-menu small">
@@ -39,7 +39,7 @@
     </thead>
     <tr ng-repeat="guide in displayedGuides | orderBy: ['guideLevel', 'order']" loader-post-repeat-directive>
         <td>
-            <div class="lead" popover="{{guide.translatedGuideDescription}}" popover-placement="top" popover-trigger="mouseenter">
+            <div class="lead" uib-popover="{{guide.translatedGuideDescription}}" popover-placement="top" popover-trigger="mouseenter">
                 <div>{{guide.translatedGuideName}}</div>
                 <div class=" text-overflow text-overflow-by-vw text-muted small" ng-if="guide.translatedGuideDescription">{{guide.translatedGuideDescription}}</div>
             </div>
@@ -48,8 +48,8 @@
             {{ guide.guideLevelLabel | translate }}
         </td>
         <td>
-            <button class="btn btn-link" ng-click="startGuide(guide)" tooltip-trigger="mouseenter"
-                    tooltip="{{'view.guides.action.start' | translate}}"><span class="icon-play"></span></button>
+            <button class="btn btn-link" ng-click="startGuide(guide)"
+                    gdb-tooltip="{{'view.guides.action.start' | translate}}"><span class="icon-play"></span></button>
         </td>
     </tr>
     <tbody>

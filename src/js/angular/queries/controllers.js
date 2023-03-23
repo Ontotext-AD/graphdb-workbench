@@ -7,8 +7,8 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
     'graphdb.framework.rest.monitoring.service'
 ]);
 
-queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService', '$translate',
-    function ($scope, $modal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate) {
+queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService', '$translate',
+    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;
@@ -142,13 +142,13 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$modal', 'toastr', '$interval'
     }]);
 
 
-queriesCtrl.controller('DeleteQueryCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+queriesCtrl.controller('DeleteQueryCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
 
     $scope.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }]);

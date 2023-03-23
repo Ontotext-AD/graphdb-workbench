@@ -3,7 +3,7 @@
     <h1>
         {{title}} {{'for.repository' | translate}} {{getActiveRepository()}}
         <em class="btn btn-link"
-            popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+            uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
             popover-trigger="mouseenter"
             popover-placement="bottom-right"
             popover-append-to-body="true"><span class="icon-info"></span></em>
@@ -22,7 +22,7 @@
     <div class="search-bar" ng-show="plugins.length > 0 && !loader">
             <span class="pull-left" id="searchbox-plugins">
                 <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
-                       ng-model="searchPluginsTerm" tooltip-trigger="mouseenter" tooltip="{{'common.search.btn' | translate}}"
+                       ng-model="searchPluginsTerm" gdb-tooltip="{{'common.search.btn' | translate}}"
                        ng-change="onSearchTermChanged()">
             </span>
         <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{displayedPlugins.length}} {{'results.label' | translate}}</span>
@@ -39,8 +39,8 @@
                     <span id="toggleAndTag">
                     <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'common.on.btn' :
                         'common.off.btn' | translate}}</span>
-                    <span tooltip="{{'click.to' | translate}} {{plugin.enabled ? 'deactivate' : 'activate' | translate}} {{plugin.name}}"
-                          tooltip-placement="top" tooltip-trigger="mouseenter"
+                    <span gdb-tooltip="{{'click.to' | translate}} {{plugin.enabled ? 'deactivate' : 'activate' | translate}} {{plugin.name}}"
+                          tooltip-placement="top"
                           ng-click="togglePlugin(plugin.name, plugin.enabled)"
                           class="switch enable-plugins-switch plugins-switch">
                     <input type="checkbox" class="switch"

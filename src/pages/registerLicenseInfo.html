@@ -3,7 +3,7 @@
 <h1>
 	{{title}}
 	<span class="btn btn-link"
-		popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		popover-trigger="mouseenter"
 		popover-placement="bottom-right"
 		popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -27,10 +27,8 @@
 		class="btn btn-outline-primary btn-lg text-xs-left mb-2"
 		accept="license">
 		<em class="icon-upload icon-lg pull-left"
-			tooltip="{{'select.license.tooltip' | translate}}"
-			tooltip-trigger="mouseenter"
-			tooltip-placement="top-right"
-			tooltip-append-to-body="true">
+			gdb-tooltip="{{'select.license.tooltip' | translate}}"
+			tooltip-placement="top-right">
 		</em>
 
 		<div class="pull-left upload-license-btn-info">
@@ -43,7 +41,7 @@
 	<div class="form-group">
 		<label><em>or</em>{{'alternative.label' | translate}}</label>
 		<textarea class="form-control" rows="15" ng-model="licenseCode" placeholder="{{sample}}"
-			popover="{{'alternative.set.license.option.popover' | translate}}"
+			uib-popover="{{'alternative.set.license.option.popover' | translate}}"
 			popover-placement="bottom"
 popover-trigger="focus"></textarea>
 	</div>

@@ -30,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$modal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
-    function ($scope, $http, $repositories, toastr, $modal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
+namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$uibModal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
+    function ($scope, $http, $repositories, toastr, $uibModal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -338,14 +338,14 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         }
     }]);
 
-namespaces.controller('StandartModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+namespaces.controller('StandartModalCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
 
     $scope.ok = function () {
         const result = true;
-        $modalInstance.close(result);
+        $uibModalInstance.close(result);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }]);

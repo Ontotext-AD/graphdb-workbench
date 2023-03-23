@@ -140,10 +140,10 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$modal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService',
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService',
     'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
 
-function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService,
+function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService,
     LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
     $scope.loader = true;
 
@@ -215,7 +215,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
     };
 
     $scope.addLocation = function () {
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'js/angular/templates/modal/add-location.html',
             windowClass: 'addLocationDialog',
             controller: 'AddLocationCtrl'
@@ -241,7 +241,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
     };
 
     $scope.editLocation = function (location) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/templates/modal/edit-location.html',
             controller: 'EditLocationCtrl',
             resolve: {
@@ -345,7 +345,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
     };
 
     $scope.fromFile = function () {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/templates/modal/upload-repository-config.html',
             controller: 'UploadRepositoryConfigCtrl'
         });
@@ -356,7 +356,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
 
     //Delete repository
     $scope.openActiveLocationSettings = function () {
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'js/angular/settings/modal/location-settings.html',
             controller: 'ActiveLocationSettingsCtrl'
         });
@@ -398,9 +398,9 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $modal, toastr, $repos
     };
 }
 
-UploadRepositoryConfigCtrl.$inject = ['$scope', '$modalInstance', 'Upload', 'toastr', '$translate'];
+UploadRepositoryConfigCtrl.$inject = ['$scope', '$uibModalInstance', 'Upload', 'toastr', '$translate'];
 
-function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr, $translate) {
+function UploadRepositoryConfigCtrl($scope, $uibModalInstance, Upload, toastr, $translate) {
     $scope.upload = function (files) {
         if (files && files.length) {
             $scope.uploadFile = files[0];
@@ -416,7 +416,7 @@ function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr, $tra
             })
                 .success(function () {
                     $scope.uploadFileLoader = false;
-                    $modalInstance.close();
+                    $uibModalInstance.close();
                 })
                 .error(function (data) {
                     const msg = getError(data);
@@ -426,13 +426,13 @@ function UploadRepositoryConfigCtrl($scope, $modalInstance, Upload, toastr, $tra
         }
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-AddLocationCtrl.$inject = ['$scope', '$modalInstance', 'toastr', 'productInfo', '$translate'];
+AddLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'toastr', 'productInfo', '$translate'];
 
-function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate) {
+function AddLocationCtrl($scope, $uibModalInstance, toastr, productInfo, $translate) {
 
     $scope.newLocation = {
         'uri': '',
@@ -454,27 +454,27 @@ function AddLocationCtrl($scope, $modalInstance, toastr, productInfo, $translate
             toastr.error($translate.instant('location.cannot.be.empty.error'));
             return;
         }
-        $modalInstance.close($scope.newLocation);
+        $uibModalInstance.close($scope.newLocation);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-EditLocationCtrl.$inject = ['$scope', '$modalInstance', 'location', 'productInfo'];
+EditLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'location', 'productInfo'];
 
-function EditLocationCtrl($scope, $modalInstance, location, productInfo) {
+function EditLocationCtrl($scope, $uibModalInstance, location, productInfo) {
 
     $scope.editedLocation = angular.copy(location);
     $scope.docBase = getDocBase(productInfo);
 
     $scope.ok = function () {
-        $modalInstance.close($scope.editedLocation);
+        $uibModalInstance.close($scope.editedLocation);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
@@ -726,9 +726,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.autofocusId = 'autofocus';
 }
 
-EditRepositoryFileCtrl.$inject = ['$scope', '$modalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate'];
+EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate'];
 
-function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService, file, toastr, $translate) {
+function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate) {
 
     if (file) {
         RepositoriesRestService.getRepositoryFileContent(file).success(function (data) {
@@ -740,14 +740,14 @@ function EditRepositoryFileCtrl($scope, $modalInstance, RepositoriesRestService,
     }
 
     $scope.ok = function () {
-        $modalInstance.close({
+        $uibModalInstance.close({
             content: $scope.fileContent,
             fileLocation: file
         });
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 

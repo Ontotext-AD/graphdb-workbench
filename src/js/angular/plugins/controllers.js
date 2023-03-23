@@ -8,9 +8,9 @@ angular
     .module('graphdb.framework.plugins.controllers', modules)
     .controller('PluginsCtrl', PluginsCtrl);
 
-PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$modal', '$timeout', 'PluginsRestService', '$translate'];
+PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'PluginsRestService', '$translate'];
 
-function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $modal, $timeout, PluginsRestService, $translate) {
+function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $timeout, PluginsRestService, $translate) {
 
     let timer;
 

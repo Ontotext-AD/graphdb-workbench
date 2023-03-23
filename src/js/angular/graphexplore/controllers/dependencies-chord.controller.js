@@ -28,8 +28,8 @@ Object.defineProperty(global, 'allGraphs', {
 angular
     .module('graphdb.framework.graphexplore.controllers.dependencies', modules)
     .controller('DependenciesChordCtrl', DependenciesChordCtrl)
-    .config(['$tooltipProvider', function ($tooltipProvider) {
-        $tooltipProvider.options({appendToBody: true});
+    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+        $uibTooltipProvider.options({appendToBody: true});
     }])
     .filter('humanize', function () {
         return humanize;

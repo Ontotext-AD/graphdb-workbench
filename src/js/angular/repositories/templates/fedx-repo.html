@@ -11,25 +11,25 @@
                             <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                             {{resolveName(member)}}
                         </span>
-                        <span class="icon-warning" ng-if="!checkIfRepoExist(member)" tooltip="{{'repoTooltips.fedx.repositoryNotExistWarning' | translate}}"> </span>
+                        <span class="icon-warning" ng-if="!checkIfRepoExist(member)" gdb-tooltip="{{'repoTooltips.fedx.repositoryNotExistWarning' | translate}}"> </span>
                     </div>
                     <div class="actions">
                         <button class="btn btn-link p-0 edit-repository-btn" type="button">
                                 <span id="{{member.repositoryName}}-icon-edit" class="icon-edit"
                                       ng-click="editFedXRepository(member)"
                                       ng-if="member.store !== 'NativeStore'"
-                                      tooltip="{{'repoTooltips.editRepository' | translate}}"></span>
+                                      gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"></span>
                         </button>
                         <button class="btn btn-link p-0 secondary" type="button">
                                 <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
                                       class="icon-close"
-                                      tooltip="{{'repoTooltips.fedx.removeMember' | translate}}"></span>
+                                      gdb-tooltip="{{'repoTooltips.fedx.removeMember' | translate}}"></span>
                         </button>
                         <button class="btn btn-link p-0 secondary">
                                 <span id="{{member.repositoryName}}-icon-writable"
                                       ng-click="setWritableRepo(member)"
                                       class="icon-import{{getActiveClass(member)}}"
-                                      tooltip="{{'repoTooltips.fedx.setAsWritable' | translate}}"></span>
+                                      gdb-tooltip="{{'repoTooltips.fedx.setAsWritable' | translate}}"></span>
                         </button>
                     </div>
                 </li>
@@ -45,7 +45,7 @@
 
                     <a id="{{repository.id}}-a"
                        ng-click="addMember(repository)"
-                       tooltip="{{'repoTooltips.fedx.localReposInstructions' | translate}}">
+                       gdb-tooltip="{{'repoTooltips.fedx.localReposInstructions' | translate}}">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type" class="fedx-repo-member-icon"></em>
                             {{repository.id}}
@@ -65,8 +65,7 @@
         <div class="pb-1">
             <div class="form-group row">
                 <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-include-inferred">
-                    <label
-                        tooltip="{{'repoTooltips.fedx.withIncludeInferredDefault' | translate}}">
+                    <label gdb-tooltip="{{'repoTooltips.fedx.withIncludeInferredDefault' | translate}}">
                         <input id="includeInferredDefault" name="includeInferredDefault" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
                                ng-model="repositoryInfo.params.includeInferredDefault.value"/>
@@ -74,7 +73,7 @@
                     </label>
                 </div>
                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-2">
-                    <label class="padding-label" tooltip="{{'repoTooltips.fedx.withEnableServiceAsBoundJoin' | translate}}">
+                    <label class="padding-label" gdb-tooltip="{{'repoTooltips.fedx.withEnableServiceAsBoundJoin' | translate}}">
                         <input id="enableServiceAsBoundJoin"
                                name="enableServiceAsBoundJoin" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -85,8 +84,7 @@
             </div>
             <div class="form-group row">
                 <div class="checkbox offset-xs-1 offset-md-4 indented-div checkbox-param-padded">
-                    <label
-                        tooltip="{{'repoTooltips.fedx.withLogQueries' | translate}}">
+                    <label gdb-tooltip="{{'repoTooltips.fedx.withLogQueries' | translate}}">
                         <input id="isLogQueries" name="isLogQueries" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
                                ng-model="repositoryInfo.params.isLogQueries.value"/>
@@ -94,7 +92,7 @@
                     </label>
                 </div>
                 <div class="checkbox offset-xs-1 offset-md-4 offset-lg-2">
-                    <label class="padding-label" tooltip="{{'repoTooltips.fedx.withDebugQueryPlan' | translate}}">
+                    <label class="padding-label" gdb-tooltip="{{'repoTooltips.fedx.withDebugQueryPlan' | translate}}">
                         <input id="debugQueryPlan"
                                name="debugQueryPlan" type="checkbox"
                                ng-true-value="'true'" ng-false-value="'false'"
@@ -117,7 +115,7 @@
                                ng-model="repositoryInfo.params.queryTimeout.value"
                                class="form-control"
                                required
-                               tooltip="{{'repoTooltips.fedx.enforceMaxQueryTime' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.enforceMaxQueryTime' | translate}}"/>
                     </div>
                 </div>
                 <div class="offset-xs-1 offset-md-4 indented-div">
@@ -131,7 +129,7 @@
                                ng-model="repositoryInfo.params.boundJoinBlockSize.value"
                                class="form-control"
                                required
-                               tooltip="{{'repoTooltips.fedx.withBoundJoinBlockSize' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.withBoundJoinBlockSize' | translate}}"/>
                     </div>
                 </div>
             </div>
@@ -147,7 +145,7 @@
                                ng-model="repositoryInfo.params.joinWorkerThreads.value"
                                class="form-control"
                                required
-                               tooltip="{{'repoTooltips.fedx.withJoinWorkerThreads' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.withJoinWorkerThreads' | translate}}"/>
                     </div>
                 </div>
                 <div class="offset-xs-1 offset-md-4 indented-div">
@@ -161,7 +159,7 @@
                                ng-model="repositoryInfo.params.leftJoinWorkerThreads.value"
                                class="form-control"
                                required
-                               tooltip="{{'repoTooltips.fedx.withLeftJoinWorkerThreads' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.withLeftJoinWorkerThreads' | translate}}"/>
                     </div>
                 </div>
             </div>
@@ -183,7 +181,7 @@
                                ng-model="repositoryInfo.params.unionWorkerThreads.value"
                                class="form-control"
                                required
-                               tooltip="{{'repoTooltips.fedx.unionWorkerThreads' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.unionWorkerThreads' | translate}}"/>
                     </div>
                 </div>
             </div>
@@ -195,7 +193,7 @@
                     <div class="col-lg-7 col-xl-7">
                         <input id="cache-spec" class="form-control"
                                ng-model="repositoryInfo.params['sourceCacheSpec'].value"
-                               tooltip="{{'repoTooltips.fedx.withSourceSelectionCacheSpec' | translate}}"/>
+                               gdb-tooltip="{{'repoTooltips.fedx.withSourceSelectionCacheSpec' | translate}}"/>
                     </div>
                 </div>
             </div>

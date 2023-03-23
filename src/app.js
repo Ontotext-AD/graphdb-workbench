@@ -7,6 +7,7 @@ import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
+import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -26,6 +27,7 @@ const modules = [
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
+    'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.guides.services'
 ];
 
@@ -35,7 +37,7 @@ const providers = [
     '$menuItemsProvider',
     'toastrConfig',
     'localStorageServiceProvider',
-    '$tooltipProvider',
+    '$uibTooltipProvider',
     '$httpProvider',
     '$templateRequestProvider',
     '$translateProvider'
@@ -50,7 +52,7 @@ const moduleDefinition = function (productInfo) {
                   $menuItemsProvider,
                   toastrConfig,
                   localStorageServiceProvider,
-                  $tooltipProvider,
+                  $uibTooltipProvider,
                   $httpProvider,
                   $templateRequestProvider,
                   $translateProvider) {
@@ -124,8 +126,8 @@ const moduleDefinition = function (productInfo) {
             $locationProvider.html5Mode(true);
 
             // Extra triggers for tooltip/popover so we can do fancier stuff (see core-errors for example)
-            $tooltipProvider.setTriggers({'show': 'hide'});
-            $tooltipProvider.options({appendToBody: true});
+            $uibTooltipProvider.setTriggers({'show': 'hide'});
+            $uibTooltipProvider.options({appendToBody: true});
 
             // Due to angular weirdness and what gets injected where we can't inject the productInfo constant
             // at the time of module creation so we pass it to $menuItemsProvider. The info can be used

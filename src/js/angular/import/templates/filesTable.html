@@ -4,14 +4,14 @@
     <div ng-show="showTable()" class="mb-1 clearfix">
         <div class="pull-right form-inline">
             <div class="btn-group d-inline mr-1" ng-show="viewType === 'server'">
-                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'file'" tooltip="{{'import.show.files.only' | translate}}">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'file'" gdb-tooltip="{{'import.show.files.only' | translate}}">
                     <em class="icon-file"></em>
                 </button>
-                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'all'" tooltip="{{'import.show.files.directories' | translate}}">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'all'" gdb-tooltip="{{'import.show.files.directories' | translate}}">
                     <em class="icon-file"></em>
                     <em class="icon-folder"></em>
                 </button>
-                <button type="button" class="btn btn-secondary" ng-model="showItems" btn-radio="'directory'" tooltip="{{'import.show.directories.only' | translate}}">
+                <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'directory'" gdb-tooltip="{{'import.show.directories.only' | translate}}">
                     <em class="icon-folder"></em>
                 </button>
             </div>
@@ -25,14 +25,14 @@
         <form class="form-inline">
             <div class="btn btn-link">
                 <input class="form-check-input select-all-files" type="checkbox" ng-click="selectAllFiles()" ng-model="checkAll"
-                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" tooltip="{{'select.all.tooltip' | translate}}">
+                       ng-disabled="!hasImportable()" ng-change="switchBatch(true)" gdb-tooltip="{{'select.all.tooltip' | translate}}">
             </div>
-            <div class="btn-group" dropdown ng-hide="!hasImportable() || !batch"
-                 popover="{{'import.selected.items' | translate}}"
+            <div class="btn-group" uib-dropdown ng-hide="!hasImportable() || !batch"
+                 uib-popover="{{'import.selected.items' | translate}}"
                  popover-trigger="mouseenter"
                  popover-placement="top">
                 <button type="button" class="btn btn-primary import-btn" ng-click="setSettingsFor('')"><span class="icon-import"></span> {{'common.import' | translate}}</button>
-                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle import-dropdown-btn" dropdown-toggle>
+                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle import-dropdown-btn" uib-dropdown-toggle>
                     <span class="sr-only"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
@@ -42,7 +42,7 @@
             <button id="wb-import-clearStatuses"
                     ng-show="batch && showClearStatuses"
                     class="btn btn-secondary" type="button" ng-click="resetStatusSelected()"
-                    popover="{{'import.reset.last.imported' | translate}}"
+                    uib-popover="{{'import.reset.last.imported' | translate}}"
                     popover-trigger="mouseenter"
                     popover-placement="top">
                 {{'import.reset.status' | translate}}
@@ -50,7 +50,7 @@
             <button id="wb-import-removeEntries"
                     ng-show="batch && viewType === 'user'"
                     class="btn btn-secondary" type="button" ng-click="removeEntrySelected()"
-                    popover="{{'import.remove.selected' | translate}}"
+                    uib-popover="{{'import.remove.selected' | translate}}"
                     popover-trigger="mouseenter"
                     popover-placement="top">
                 {{'import.remove.btn' | translate}}
@@ -99,12 +99,12 @@
                                 ng-click="resetStatus([file.name])"
                                 ng-show="file.status === 'DONE' || file.status === 'ERROR'"
                                 ng-disabled="batch"
-                                tooltip="{{'import.reset.status' | translate}}" tooltip-trigger="mouseenter">
+                                gdb-tooltip="{{'import.reset.status' | translate}}">
                             <span class="icon-close"></span>
                         </button>
                         <span class="icon-info text-secondary import-status-info"
                               popover-class="impex-popover"
-                              popover-template="popoverTemplateUrl"
+                              uib-popover-template="popoverTemplateUrl"
                               popover-trigger="mouseenter"
                               popover-placement="right"
                               popover-append-to-body="true"
@@ -152,8 +152,7 @@
                         ng-disabled="file.status === 'INTERRUPTING'"
                         ng-cloak
                         ng-show="file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
-                        tooltip="{{'filesTable.interrupt.import' | translate}}" tooltip-trigger="mouseenter"
-                        tooltip-append-to-body="true">
+                        gdb-tooltip="{{'filesTable.interrupt.import' | translate}}">
                     <span class="icon-close"></span>
                     {{'import.abort.btn' | translate}}
                 </button>

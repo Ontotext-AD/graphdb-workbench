@@ -712,10 +712,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         let extraTitle = '';
         if (stepDescription.stepsTotalN > 1) {
             const progress = document.createElement('span');
-            progress.setAttribute('tooltip', $translate.instant('guide.block.progress.tooltip', {action: title}));
+            progress.setAttribute('gdb-tooltip', $translate.instant('guide.block.progress.tooltip', {action: title}));
             progress.setAttribute('tooltip-placement', 'bottom');
-            progress.setAttribute('tooltip-trigger', 'mouseenter');
-            progress.setAttribute('tooltip-append-to-body', 'false');
             progress.innerText = $translate.instant('guide.block.progress', {
                 n: stepDescription.stepN + 1,
                 nn: stepDescription.stepsTotalN
@@ -824,10 +822,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         const progressText = document.createElement('span');
         progressText.className = 'text-muted';
         progressText.innerText = $translate.instant('guide.total.progress', {n: steps.indexOf(currentStep) + 1, nn: steps.length});
-        progressText.setAttribute('tooltip', $translate.instant('guide.total.progress.tooltip'));
+        progressText.setAttribute('gdb-tooltip', $translate.instant('guide.total.progress.tooltip'));
         progressText.setAttribute('tooltip-placement', 'left');
-        progressText.setAttribute('tooltip-trigger', 'mouseenter');
-        progressText.setAttribute('tooltip-append-to-body', 'false');
         progress.appendChild(progressText);
 
         content.appendChild(progress);
@@ -854,10 +850,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
         const typeIcon = document.createElement('span');
         typeIcon.className = 'shepherd-step-type icon-' + iconName + ' icon-1-25x';
-        typeIcon.setAttribute('tooltip', $translate.instant('guide.step-type.' + iconTooltip));
+        typeIcon.setAttribute('gdb-tooltip', $translate.instant('guide.step-type.' + iconTooltip));
         typeIcon.setAttribute('tooltip-placement', 'bottom-right');
-        typeIcon.setAttribute('tooltip-trigger', 'mouseenter');
-        typeIcon.setAttribute('tooltip-append-to-body', 'false');
 
         angular.element(currentStepElement.querySelector('.shepherd-header')).prepend(typeIcon);
     };

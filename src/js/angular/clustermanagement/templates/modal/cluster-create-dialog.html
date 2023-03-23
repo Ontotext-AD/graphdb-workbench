@@ -14,7 +14,7 @@
                     <ul ng-if="selectedLocations && selectedLocations.length" class="list-group nodes-list">
                         <li ng-repeat="node in selectedLocations" class="list-group-item list-group-item-action" ng-class="{'list-group-item-node': !node.isLocal}">
                             <a ng-click="removeNodeFromList($index, node)" class="d-flex justify-content-between align-items-center"
-                               tooltip="{{node.isLocal ? '' : 'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top">
+                               gdb-tooltip="{{node.isLocal ? '' : 'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}" tooltip-placement="top">
                                 <div class="location-item">
                                     <div class="logo-image"></div>
                                     {{node.endpoint}}
@@ -31,7 +31,7 @@
                     <div class="locations-list mb-1">
                         <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
                              ng-class="location.error ? 'list-group-item-danger' : ''"
-                             tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
+                             gdb-tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
                              ng-click="addNodeToList(location)">
                             <div class="logo-image"></div>
                             {{location.endpoint}}
@@ -44,7 +44,7 @@
             <div class="form-group">
                 <div class="indented-div">
                         <span class="padding-label wrapper-div"
-                              tooltip="{{'cluster_management.cluster_page.advanced_options_tooltip' | translate}}">
+                              gdb-tooltip="{{'cluster_management.cluster_page.advanced_options_tooltip' | translate}}">
                             <button type="button" class="text-btn" data-toggle="collapse" style="text-align: left" data-target="#advancedOptions">
                                 <i class="{{getAdvancedOptionsClass()}} advanced-options-toggle" aria-hidden="true"></i>
                                 {{'cluster_management.cluster_page.advanced_options' | translate}}
@@ -56,7 +56,7 @@
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.electionMinTimeout.$invalid}">
                             <label for="election-minimum-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_min_timeout' | translate}}*</label>
-                            <div class="col-xs-8" tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}">
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}">
                                 <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.electionMinTimeout"
                                        required id="election-minimum-timeout" min="0" pattern="[0-9]+" name="electionMinTimeout">
                                 <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionMinTimeout.$error.required">{{'required.field' | translate}}</div>
@@ -68,7 +68,7 @@
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.electionRangeTimeout.$invalid}">
                             <label for="election-range-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_range_timeout' | translate}}*</label>
-                            <div class="col-xs-8" tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}">
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}">
                                 <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.electionRangeTimeout"
                                        required id="election-range-timeout" min="0" pattern="[0-9]+" name="electionRangeTimeout">
                                 <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionRangeTimeout.$error.required">{{'required.field' | translate}}</div>
@@ -80,7 +80,7 @@
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.heartbeatInterval.$invalid}">
                             <label for="heartbeat-interval" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.heartbeat_interval' | translate}}*</label>
-                            <div class="col-xs-8" tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}">
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}">
                                 <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.heartbeatInterval"
                                        required id="heartbeat-interval" min="0" pattern="[0-9]+" name="heartbeatInterval">
                                 <div class="form-control-feedback" ng-show="clusterConfigurationForm.heartbeatInterval.$error.required">{{'required.field' | translate}}</div>
@@ -92,7 +92,7 @@
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.messageSizeKB.$invalid}">
                             <label for="message-size" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.message_size_kb' | translate}}*</label>
-                            <div class="col-xs-8" tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}">
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}">
                                 <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.messageSizeKB"
                                        required id="message-size" min="0" pattern="[0-9]+" name="messageSizeKB">
                                 <div class="form-control-feedback" ng-show="clusterConfigurationForm.messageSizeKB.$error.required">{{'required.field' | translate}}</div>
@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.verificationTimeout.$invalid}">
                             <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.verification_timeout' | translate}}*</label>
-                            <div class="col-xs-8" tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}">
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}">
                                 <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.verificationTimeout"
                                        required id="verification-timeout" min="0" pattern="[0-9]+" name="verificationTimeout">
                                 <div class="form-control-feedback" ng-show="clusterConfigurationForm.verificationTimeout.$error.required">{{'required.field' | translate}}</div>
