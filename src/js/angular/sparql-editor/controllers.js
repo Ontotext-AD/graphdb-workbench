@@ -9,9 +9,15 @@ import {QueryMode} from "../utils/query-types";
 import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
+import 'angular/rest/connectors.rest.service';
+
+const modules = [
+    'ui.bootstrap',
+    'graphdb.framework.rest.connectors.service'
+];
 
 angular
-    .module('graphdb.framework.sparql-editor.controllers', ['ui.bootstrap'])
+    .module('graphdb.framework.sparql-editor.controllers', modules)
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
 SparqlEditorCtrl.$inject = [
@@ -26,8 +32,8 @@ SparqlEditorCtrl.$inject = [
     'AutocompleteRestService',
     'ShareQueryLinkService',
     '$languageService',
-    'RDF4JRepositoriesRestService'
-];
+    'RDF4JRepositoriesRestService',
+    'ConnectorsRestService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -40,7 +46,7 @@ function SparqlEditorCtrl($scope,
                           AutocompleteRestService,
                           ShareQueryLinkService,
                           $languageService,
-                          RDF4JRepositoriesRestService) {
+                          RDF4JRepositoriesRestService, ConnectorsRestService) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -79,9 +85,27 @@ function SparqlEditorCtrl($scope,
                         const canceler = $q.defer();
                         return autocompleteLocalNames(term, canceler);
                     }
-                }
+                },
+                getRepositoryStatementsCount: getRepositoryStatementsCount
             };
         }
+    };
+
+    const getRepositoryStatementsCount = () => {
+        return new Promise(function (resolve) {
+            RDF4JRepositoriesRestService.getRepositorySize()
+                .success(function (data) {
+                    resolve(parseInt(data));
+                })
+                .error(function (data) {
+                    const params = {
+                        repo: $repositories.getActiveRepository(),
+                        error: getError(data)
+                    };
+                    toastr.warning($translate.instant('query.editor.repo.size.error', params));
+                    resolve();
+                });
+        });
     };
 
     // =========================
