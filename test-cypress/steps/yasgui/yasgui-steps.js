@@ -12,6 +12,10 @@ export class YasguiSteps {
         cy.get('button.addTab').click();
     }
 
+    static closeTab(index) {
+        this.getTabs().eq(index).find('.closeTab').click();
+    }
+
     static getTabs() {
         return cy.get('.tab');
     }
@@ -20,8 +24,17 @@ export class YasguiSteps {
         return cy.get('.tab.active');
     }
 
+    static getCurrentTabTitle() {
+        return this.getCurrentTab().find('[role=tab] > span');
+    }
+
     static openTab(index) {
         this.getTabs().eq(index).click();
+    }
+
+    static openTabContextMenu(index) {
+        this.getTabs().eq(index).rightclick();
+        return TabContextMenu.getContextMenu();
     }
 
     static getTabQuery(tabIndex) {
@@ -156,5 +169,19 @@ export class YasguiSteps {
 
     static confirmDeleteOperation() {
         this.getDeleteQueryConfirmation().find('.confirm-button').click();
+    }
+}
+
+export class TabContextMenu {
+    static getContextMenu() {
+        return cy.get('.yasgui .context-menu');
+    }
+
+    static closeTab() {
+        this.getContextMenu().contains('Close Tab').click();
+    }
+
+    static closeOtherTabs() {
+        this.getContextMenu().contains('Close other tabs').click();
     }
 }
