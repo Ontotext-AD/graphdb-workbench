@@ -32,6 +32,6 @@ services:
     environment:
       - CYPRESS_baseUrl=http://workbench
     volumes:
-      - ./coverage:/workbench/test-cypress/coverage
-      - ./cypress:/workbench/test-cypress/cypress
-      - ./report:/workbench/test-cypress/report
+      - ./coverage:/workbench/tests-cypress/coverage
+      - ./cypress:/workbench/tests-cypress/cypress
+      - ./report:/workbench/tests-cypress/report
