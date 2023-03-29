@@ -11,8 +11,8 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const _ = require("lodash");
 const del = require('del');
+
 module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
@@ -33,8 +33,8 @@ module.exports = (on, config) => {
     on('after:spec', (spec, results) => {
         if (results && results.video) {
             // Do we have failures for any retry attempts?
-            const failures = _.some(results.tests, (test) => {
-                return _.some(test.attempts, {state: 'failed'});
+            const failures = results.tests.some((test) => {
+                return test.attempts.some((attempt) => attempt.state === 'failed');
             });
             if (!failures) {
                 // delete the video if the spec passed and no tests retried

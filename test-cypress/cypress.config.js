@@ -16,6 +16,10 @@ module.exports = defineConfig({
         },
         baseUrl: 'http://localhost:9000',
         specPattern: 'integration/**/*.{js,jsx,ts,tsx}',
-        supportFile: 'support/index.js'
+        supportFile: 'support/index.js',
+        reporter: "cypress-multi-reporters",
+        reporterOptions: {
+            configFile: 'cypress-reporter-config.json'
+        }
     }
 });
