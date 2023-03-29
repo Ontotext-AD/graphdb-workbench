@@ -68,7 +68,7 @@ describe('Monitor Resources', () => {
     }
 
     it('Should display monitor tabs ', () => {
-        const tabs = ['Resource monitoring', 'Performance', 'Cluster health'];
+        const tabs = ['Resource moni8toring', 'Performance', 'Cluster health'];
 
         // Graphics container should be present
         getTabsPanel().should('be.visible');
