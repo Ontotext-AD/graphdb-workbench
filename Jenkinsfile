@@ -57,6 +57,8 @@ pipeline {
 
           // Fix coverage permissions
           sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
+          sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
+          sh "sudo chown -R \$(id -u):\$(id -g) report/"
 
           // Move up to be picked by Sonar
 //           sh "mv test-cypress/coverage/ cypress-coverage/"
@@ -70,9 +72,15 @@ pipeline {
 
   post {
     always {
-        sh "docker-compose down -v --remove-orphans --rmi=local || true"
+      // upload failed tests report and artifacts
+      junit allowEmptyResults: true, testResults: 'cypress/results/**/*.xml'
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'report/screenshots/**/*.png, report/videos/**/*.mp4, cypress/logs/*.log'
+
+      sh "docker-compose down -v --remove-orphans --rmi=local || true"
       // clean root owned resources from docker volumes, just in case
-      sh "sudo rm -rf ./test-cypress/coverage"
+      sh "sudo rm -rf ./coverage"
+      sh "sudo rm -rf ./cypress"
+      sh "sudo rm -rf ./report"
     }
   }
 }

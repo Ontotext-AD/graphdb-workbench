@@ -5,7 +5,7 @@ module.exports = defineConfig({
     fixturesFolder: 'fixtures',
     screenshotsFolder: 'report/screenshots',
     videosFolder: 'report/videos',
-    video: false,
+    video: true,
     defaultCommandTimeout: 15000,
     numTestsKeptInMemory: 10,
     e2e: {
@@ -16,6 +16,10 @@ module.exports = defineConfig({
         },
         baseUrl: 'http://localhost:9000',
         specPattern: 'integration/**/*.{js,jsx,ts,tsx}',
-        supportFile: 'support/index.js'
+        supportFile: 'support/index.js',
+        reporter: "cypress-multi-reporters",
+        reporterOptions: {
+            configFile: 'cypress-reporter-config.json'
+        }
     }
 });
