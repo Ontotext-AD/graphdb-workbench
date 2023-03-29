@@ -33,7 +33,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getResultsOnlyBtn().should('contain', 'Résultats seulement');
         });
 
-        it.only('should change "Download as" dropdown label. Test "GDB-8100" bug.', () => {
+        it('should change "Download as" dropdown label. Test "GDB-8100" bug.', () => {
 
             // When I visit a page with YASQE and YASR in it,
             // and execute a query.
