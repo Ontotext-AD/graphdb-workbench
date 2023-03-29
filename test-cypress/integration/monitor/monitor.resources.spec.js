@@ -68,7 +68,7 @@ describe('Monitor Resources', () => {
     }
 
     it('Should display monitor tabs ', () => {
-        const tabs = ['Resource moni8toring', 'Performance', 'Cluster health'];
+        const tabs = ['Resource monitoring', 'Performance', 'Cluster health'];
 
         // Graphics container should be present
         getTabsPanel().should('be.visible');
@@ -82,7 +82,7 @@ describe('Monitor Resources', () => {
 
     it('Resource monitoring tab should show cpu, file, storage and memory charts', () => {
         const charts = [{
-            id: 'CPUUsageGraphic',
+            id: 'CPUUsageG4raphic',
             label: 'System CPU load',
             type: 'nv-lineChart'
         }, {

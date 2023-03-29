@@ -78,9 +78,9 @@ pipeline {
 
       sh "docker-compose down -v --remove-orphans --rmi=local || true"
       // clean root owned resources from docker volumes, just in case
-      sh "sudo rm -rf ./tests-cypress/coverage"
-      sh "sudo rm -rf ./tests-cypress/cypress"
-      sh "sudo rm -rf ./tests-cypress/report"
+      sh "sudo rm -rf ./coverage"
+      sh "sudo rm -rf ./cypress"
+      sh "sudo rm -rf ./report"
     }
   }
 }
