@@ -662,8 +662,9 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         RepositoriesRestService.createRepository($scope.repositoryInfo)
             .then(function () {
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
-                return $repositories.init().then(() => $scope.goBackToPreviousLocation());
+                return $repositories.init();
             })
+            .then(() => $scope.goBackToPreviousLocation())
             .catch(function (error) {
                 const msg = getError(error.data);
                 toastr.error(msg, $translate.instant('common.error'));
