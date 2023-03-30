@@ -1,5 +1,6 @@
 import HomeSteps from "../../steps/home-steps";
 import ImportSteps from "../../steps/import-steps";
+import {REPOSITORIES_URL} from "../../support/repository-commands";
 
 describe('Repositories', () => {
 
@@ -42,7 +43,7 @@ describe('Repositories', () => {
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
         cy.intercept('/rest/locations?filterClusterLocations=true').as('getLocations');
-        cy.intercept('/rest/repositories/all').as('getRepositories');
+        cy.intercept(REPOSITORIES_URL + 'all').as('getRepositories');
 
         cy.visit('/repository');
         waitLoader();
@@ -463,7 +464,7 @@ describe('Repositories', () => {
             };
             cy.request({
                 method: 'POST',
-                url: 'http://localhost:9000/rest/repositories',
+                url: REPOSITORIES_URL,
                 body,
                 headers: {'Content-Type': 'application/json;charset=UTF-8'}
             });
@@ -722,7 +723,7 @@ describe('Repositories', () => {
 
     function uploadConfigurationFile(file, filename) {
         const fileType = '';
-        const url = 'http://localhost:9000/rest/repositories/file/upload';
+        const url = REPOSITORIES_URL + 'file/upload';
         const blob = Cypress.Blob.binaryStringToBlob(file, fileType);
         const formData = new FormData();
         formData.set('file', blob, filename);
