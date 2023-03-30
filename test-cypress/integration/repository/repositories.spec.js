@@ -1,5 +1,6 @@
 import HomeSteps from "../../steps/home-steps";
 import ImportSteps from "../../steps/import-steps";
+import {REPOSITORIES_URL} from "../../support/repository-commands";
 
 describe('Repositories', () => {
 
@@ -42,7 +43,7 @@ describe('Repositories', () => {
     beforeEach(() => {
         repositoryId = 'repo-' + Date.now();
         cy.intercept('/rest/locations?filterClusterLocations=true').as('getLocations');
-        cy.intercept('/rest/repositories/all').as('getRepositories');
+        cy.intercept(REPOSITORIES_URL + 'all').as('getRepositories');
 
         cy.visit('/repository');
         waitLoader();
@@ -382,131 +383,120 @@ describe('Repositories', () => {
         getConstraintUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
     });
 
-    // Remove skip, when https://gitlab.ontotext.com/graphdb-team/graphdb/-/merge_requests/1584 is merged
     //Create Ontop repository and test ontop functionality
-    it.skip('should create an Ontop repository', () => {
+    it('should create an Ontop repository', () => {
         let obdaFileUpload = '';
         let ontologyFileUpload = '';
         let propertiesFileUpload = '';
-        const url = 'http://localhost:9000/rest/repositories/file/upload';
-        const fileType = '';
         const virtualRepoName = 'virtual-repo-' + Date.now();
 
-        // upload obda file
         cy.fixture('ontop/university-complete.obda', 'binary').then((file) => {
-            Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
-                const formData = new FormData();
-                formData.set('file', blob, 'university-complete.obda');
-
-                cy.form_request(url, formData).then(response => {
-                    return obdaFileUpload = response.response.body.fileLocation;
-                });
+            // upload obda file
+            return uploadConfigurationFile(file, 'university-complete.obda').then((response) => {
+                obdaFileUpload = response.response.body.fileLocation;
             });
         }).then(() => {
             // upload ontology file
-            cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
-                Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
-                    const formData = new FormData();
-                    formData.set('file', blob, 'university-complete.ttl');
-
-                    cy.form_request(url, formData).then(response => {
-                        return ontologyFileUpload = response.response.body.fileLocation;
-                    });
-                });
-            }).then(() => {
-                // upload property file
-                cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
-                    Cypress.Blob.binaryStringToBlob(file, fileType).then((blob) => {
-                        const formData = new FormData();
-                        formData.set('file', blob, 'university-complete.properties');
-
-                        cy.form_request(url, formData).then(response => {
-                            return propertiesFileUpload = response.response.body.fileLocation;
-                        });
-                    });
-                });
-            }).then(() => {
-                const body = {
-                    id: virtualRepoName,
-                    title: '',
-                    type: 'ontop',
-                    params: {
-                        propertiesFile: {
-                            label: 'JDBC properties file',
-                            name: 'propertiesFile',
-                            value: propertiesFileUpload
-                        },
-                        isShacl: {
-                            label: 'Supports SHACL validation',
-                            name: 'isShacle',
-                            value: false
-                        },
-                        owlFile: {
-                            label: 'Ontology file',
-                            name: 'owlFile',
-                            value: ontologyFileUpload
-                        },
-                        constraintFile: {
-                            label: 'Constraint file',
-                            name: 'constraintFile',
-                            value: ''
-                        },
-                        id: {
-                            label: 'Repository ID',
-                            name: 'id',
-                            value: 'ontop-repo'
-                        },
-                        title: {
-                            label: "Repository title",
-                            name: "title",
-                            value: "Ontop virtual store"
-                        },
-                        obdaFile: {
-                            label: "OBDA or R2RML file",
-                            name: "obdaFile",
-                            value: obdaFileUpload
-                        }
-                    }
-                };
-
-                cy.request({
-                    method: 'POST',
-                    url: 'http://localhost:9000/rest/repositories',
-                    body,
-                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
-                }).then(response => {
-                    console.log(response);
+            return cy.fixture('ontop/university-complete.ttl', 'binary').then((file) => {
+                return uploadConfigurationFile(file, 'university-complete.ttl').then((response) => {
+                    ontologyFileUpload = response.response.body.fileLocation;
                 });
             });
+        }).then(() => {
+            // upload property file
+            return cy.fixture('ontop/university-complete.properties', 'binary').then((file) => {
+                return uploadConfigurationFile(file, 'university-complete.properties').then((response) => {
+                    propertiesFileUpload = response.response.body.fileLocation;
+                });
+            });
+        }).then(() => {
+            const body = {
+                id: virtualRepoName,
+                title: '',
+                type: 'ontop',
+                params: {
+                    propertiesFile: {
+                        label: 'JDBC properties file',
+                        name: 'propertiesFile',
+                        value: propertiesFileUpload
+                    },
+                    isShacl: {
+                        label: 'Supports SHACL validation',
+                        name: 'isShacle',
+                        value: false
+                    },
+                    owlFile: {
+                        label: 'Ontology file',
+                        name: 'owlFile',
+                        value: ontologyFileUpload
+                    },
+                    constraintFile: {
+                        label: 'Constraint file',
+                        name: 'constraintFile',
+                        value: ''
+                    },
+                    id: {
+                        label: 'Repository ID',
+                        name: 'id',
+                        value: 'ontop-repo'
+                    },
+                    title: {
+                        label: "Repository title",
+                        name: "title",
+                        value: "Ontop virtual store"
+                    },
+                    obdaFile: {
+                        label: "OBDA or R2RML file",
+                        name: "obdaFile",
+                        value: obdaFileUpload
+                    },
+                    dbMetadataFile: {
+                        "name": "dbMetadataFile",
+                        "label": "DB metadata file",
+                        "value": ""
+                    },
+                    additionalProperties: {
+                        "label": "Additional Ontop/JDBC properties",
+                        "name": "additionalProperties",
+                        "value": ""
+                    }
+                }
+            };
+            cy.request({
+                method: 'POST',
+                url: REPOSITORIES_URL,
+                body,
+                headers: {'Content-Type': 'application/json;charset=UTF-8'}
+            });
+
+            cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
+
+            //Check workbench restricted sections when connected to an Ontop repository
+            selectRepoFromDropdown(virtualRepoName);
+            cy.visit("/import");
+            getOntopFunctionalityDisabledMessage();
+            cy.visit("/monitor/queries");
+            getOntopFunctionalityDisabledMessage();
+            cy.visit("/connectors");
+            getOntopFunctionalityDisabledMessage();
+            cy.visit("/autocomplete");
+            getOntopFunctionalityDisabledMessage();
+            cy.visit("/rdfrank");
+            getOntopFunctionalityDisabledMessage();
+            cy.visit("/jdbc");
+            getOntopFunctionalityDisabledMessage();
+
+            //TODO - uncomment following when org.h2.Driver is added to the class path of the instance
+            //
+            // //Check that Inference and SameAs are disabled also that explain plan is not supported.
+            // cy.visit("/sparql");
+            // cy.get('.ot-splash').should('not.exist'); //wait until SPARQL page is loaded completely
+            //
+            // //check that Inference and SameAs buttons are disabled.
+            // cy.get('#inference').should('be', 'visible').and('be', 'disabled');
+            // cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
+            cy.deleteRepository(virtualRepoName);
         });
-
-        cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
-
-        //Check workbench restricted sections when connected to an Ontop repository
-        selectRepoFromDropdown(virtualRepoName);
-        cy.visit("/import");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/monitor/queries");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/connectors");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/autocomplete");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/rdfrank");
-        getOntopFunctionalityDisabledMessage();
-        cy.visit("/jdbc");
-        getOntopFunctionalityDisabledMessage();
-
-        //TODO - uncomment following when org.h2.Driver is added to the class path of the instance
-        //
-        // //Check that Inference and SameAs are disabled also that explain plan is not supported.
-        // cy.visit("/sparql");
-        // cy.get('.ot-splash').should('not.exist'); //wait until SPARQL page is loaded completely
-        //
-        // //check that Inference and SameAs buttons are disabled.
-        // cy.get('#inference').should('be', 'visible').and('be', 'disabled');
-        // cy.get('#sameAs').should('be', 'visible').and('be', 'disabled');
-        cy.deleteRepository(virtualRepoName);
     });
 
     it('should verify different virtual repository RDBMS provider elements', () => {
@@ -532,6 +522,7 @@ describe('Repositories', () => {
 
         testOntopConfigurationElementsVisibility('Database driver', '#driverType');
         testOntopConfigurationElementsVisibility('JDBC properties file*', '#propertiesFile');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -547,6 +538,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Password', '#password');
         testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
         testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -564,6 +556,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Password', '#password');
         testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
         testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -581,6 +574,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Password', '#password');
         testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
         testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -598,6 +592,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Password', '#password');
         testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
         testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -615,6 +610,7 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Password', '#password');
         testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
         testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
@@ -724,6 +720,15 @@ describe('Repositories', () => {
             .importFromSettingsDialog()
             .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
+
+    function uploadConfigurationFile(file, filename) {
+        const fileType = '';
+        const url = REPOSITORIES_URL + 'file/upload';
+        const blob = Cypress.Blob.binaryStringToBlob(file, fileType);
+        const formData = new FormData();
+        formData.set('file', blob, filename);
+        return cy.form_request(url, formData);
+    }
 
     function assertRepositoryStatus(repositoryId, status) {
         cy.waitUntil(() =>
@@ -924,7 +929,7 @@ describe('Repositories', () => {
 
     function getOntopFunctionalityDisabledMessage() {
         return cy.get('.repository-errors div.alert')
-            .should('be', 'visible')
+            .should('be.visible')
             .and('contain', 'Some functionalities are not available because')
             .and('contain', ' is read-only Virtual Repository');
     }

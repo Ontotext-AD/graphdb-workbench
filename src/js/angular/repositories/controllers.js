@@ -568,7 +568,8 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     }
 
     $scope.getConfig = function (repoType) {
-        RepositoriesRestService.getRepositoryConfiguration(repoType).success(function (data) {
+        RepositoriesRestService.getRepositoryConfiguration(repoType).then(function (resp) {
+            const data = resp.data;
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
@@ -581,7 +582,7 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
                 // Focus the ID field
                 angular.element(document).find('#id').focus();
             }, 50);
-        }).error(function (data) {
+        }).catch(function (data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
@@ -661,15 +662,15 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
         RepositoriesRestService.createRepository($scope.repositoryInfo)
             .then(function () {
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
-                $repositories.init();
+                return $repositories.init();
             })
+            .then(() => $scope.goBackToPreviousLocation())
             .catch(function (error) {
                 const msg = getError(error.data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
             .finally(() => {
                 $scope.loader = false;
-                $scope.goBackToPreviousLocation();
             });
     };
 
