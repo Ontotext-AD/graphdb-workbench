@@ -10,10 +10,12 @@ import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import 'angular/rest/connectors.rest.service';
+import 'services/ontotext-yasgui-web-component.service.js';
 
 const modules = [
     'ui.bootstrap',
-    'graphdb.framework.rest.connectors.service'
+    'graphdb.framework.rest.connectors.service',
+    'graphdb.framework.ontotext-yasgui-web-component'
 ];
 
 angular
@@ -33,7 +35,8 @@ SparqlEditorCtrl.$inject = [
     'ShareQueryLinkService',
     '$languageService',
     'RDF4JRepositoriesRestService',
-    'ConnectorsRestService'];
+    'ConnectorsRestService',
+    'OntotextYasguiWebComponentService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -46,7 +49,9 @@ function SparqlEditorCtrl($scope,
                           AutocompleteRestService,
                           ShareQueryLinkService,
                           $languageService,
-                          RDF4JRepositoriesRestService, ConnectorsRestService) {
+                          RDF4JRepositoriesRestService,
+                          ConnectorsRestService,
+                          ontotextYasguiWebComponentService) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -86,23 +91,10 @@ function SparqlEditorCtrl($scope,
                         return autocompleteLocalNames(term, canceler);
                     }
                 },
-                getRepositoryStatementsCount: getRepositoryStatementsCount
+                getRepositoryStatementsCount: ontotextYasguiWebComponentService.getRepositoryStatementsCount,
+                onAbortQuery: ontotextYasguiWebComponentService.onAbortQuery
             };
         }
-    };
-
-    const getRepositoryStatementsCount = () => {
-        // A promise is returned because the $http of  angularjs use HttpPromise and its behavior is different than we expect.
-        // Here is an article that describes the problems AngularJS HttpPromise methods break promise chain {@link https://medium.com/@ExplosionPills/angularjs-httppromise-methods-break-promise-chain-950c85fa1fe7}
-        return RDF4JRepositoriesRestService.getRepositorySize()
-            .then((response) => Promise.resolve(parseInt(response.data)))
-            .catch(function (data) {
-                const params = {
-                    repo: $repositories.getActiveRepository(),
-                    error: getError(data)
-                };
-                toastr.warning($translate.instant('query.editor.repo.size.error', params));
-            });
     };
 
     // =========================
