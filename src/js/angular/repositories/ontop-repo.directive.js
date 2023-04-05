@@ -17,6 +17,9 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
 
     function linkFunc($scope) {
 
+        // A link to all Ontop configuration keys
+        $scope.ontoProperiesLink = 'https://ontop-vkg.org/guide/advanced/configuration.html';
+
         $scope.selectedDriver = {
             driverType: "generic",
             driverName: "Generic JDBC Driver",
