@@ -170,6 +170,10 @@ export class YasguiSteps {
     static confirmDeleteOperation() {
         this.getDeleteQueryConfirmation().find('.confirm-button').click();
     }
+
+    static getTooltipRoot() {
+        return cy.get('div[data-tippy-root]');
+    }
 }
 
 export class TabContextMenu {
