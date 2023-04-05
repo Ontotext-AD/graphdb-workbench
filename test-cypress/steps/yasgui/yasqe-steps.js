@@ -71,4 +71,16 @@ export class YasqeSteps {
     static shareQuery() {
         this.getShareQueryButton().click();
     }
+
+    static getAbortQueryButton() {
+        return cy.get('.abort-button');
+    }
+
+    static hoverOverAbortQueryButton() {
+        YasqeSteps.getAbortQueryButton().realHover();
+    }
+
+    static getAbortQueryTooltip() {
+        return YasqeSteps.getAbortQueryButton().parent();
+    }
 }
