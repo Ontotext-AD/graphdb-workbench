@@ -57,13 +57,20 @@
             {{'ontop.repo.properties.label' | translate}}
         </label>
         <div class="col-xs-8 col-md-5 col-lg-4">
-            <div class="mb-1" uib-tooltip="{{'ontop.repo.properties.tooltip' | translate}}">
+            <div class="mb-1" gdb-tooltip="{{'ontop.repo.properties.tooltip' | translate}}">
                 <textarea class="form-control" rows="3" maxlength="1000"
                           id="additionalProperties"
                           ng-model="repositoryInfo.params.additionalProperties.value"
                           placeholder="{{'ontop.repo.properties.placeholder' | translate}}">
                 </textarea>
             </div>
+        </div>
+        <div class="col-xs-12 col-md-4">
+            <a class="uri"
+               href="{{ontopProperiesLink}}"
+               style="text-decoration: underline;">
+                {{'ontop.repo.properties.configuration.link' | translate}}
+            </a>
         </div>
     </div>
 

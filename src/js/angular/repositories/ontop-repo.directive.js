@@ -1,5 +1,8 @@
 import {getFileName} from "./controllers";
 
+// A link to Ontop's website with all Ontop configuration keys
+const ONTOP_PROPERTIES_LINK = 'https://ontop-vkg.org/guide/advanced/configuration.html';
+
 angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
@@ -16,7 +19,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
     };
 
     function linkFunc($scope) {
-
+        $scope.ontopProperiesLink = ONTOP_PROPERTIES_LINK;
         $scope.selectedDriver = {
             driverType: "generic",
             driverName: "Generic JDBC Driver",
