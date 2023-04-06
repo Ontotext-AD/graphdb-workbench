@@ -8,7 +8,7 @@ OntotextYasguiWebComponentService.$inject = ['MonitoringRestService', 'RDF4JRepo
 
 function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositoriesRestService, $repositories, toastr, $translate) {
 
-    const onAbortQuery = (req) => {
+    const onQueryAborted = (req) => {
         if (req) {
             const repository = req.url.substring(req.url.lastIndexOf('/') + 1);
             const currentTrackAlias = req.header['X-GraphDB-Track-Alias'];
@@ -32,7 +32,7 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
     };
 
     return {
-        onAbortQuery,
+        onQueryAborted,
         getRepositoryStatementsCount
     };
 }
