@@ -12,6 +12,8 @@ export class QueryRequestEvent {
         this.TYPE = eventData.TYPE;
         this.query = eventData.payload.query;
         this.queryMode = eventData.payload.queryMode;
+        this.queryType = eventData.payload.queryType;
+        this.pageSize = eventData.payload.pageSize;
         this.request = eventData.payload.request;
     }
 
