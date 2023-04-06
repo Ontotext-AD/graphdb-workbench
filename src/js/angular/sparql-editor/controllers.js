@@ -5,12 +5,13 @@ import {
     savedQueryResponseMapper, buildQueryModel
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
-import {QueryMode} from "../utils/query-types";
+import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {downloadAsFile, toYasguiOutputModel} from "../utils/yasgui-utils";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import 'angular/rest/connectors.rest.service';
 import 'services/ontotext-yasgui-web-component.service.js';
+import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 
 const modules = [
     'ui.bootstrap',
@@ -218,26 +219,33 @@ function SparqlEditorCtrl($scope,
             });
     };
 
-    const updateRequestHeaders = (req) => {
+    const updateRequestHeaders = (req, queryMode, queryType, pageSize) => {
         const authToken = $jwtAuth.getAuthToken();
         if (authToken) {
             req.header['Authorization'] = authToken;
         }
-        // TODO: implement
-        // headers['X-GraphDB-Catch'] = scope.currentTabConfig.pageSize + '; throw';
+        req.header['X-GraphDB-Catch'] = `${pageSize}; throw`;
         // Generates a new tracking alias for queries based on time
         $scope.currentTrackAlias = `query-editor-${performance.now()}-${Date.now()}`;
         req.header['X-GraphDB-Track-Alias'] = $scope.currentTrackAlias;
         req.header['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
         req.header['X-Requested-With'] = 'XMLHttpRequest';
+
+        if (QueryMode.UPDATE === queryMode) {
+            req.header['Accept'] = 'text/plain,/;q=0.9';
+        } else if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+            req.header['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8';
+        } else {
+            req.header['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
+        }
     };
 
     const changeEndpointByQueryType = (queryMode, request) => {
         // if query mode is 'query' -> '/repositories/repo-name'
         // if query mode is 'update' -> '/repositories/repo-name/statements'
-        if (queryMode === QueryMode.update) {
+        if (queryMode === QueryMode.UPDATE) {
             request.url = getMutationEndpoint();
-        } else if (queryMode === QueryMode.query) {
+        } else if (queryMode === QueryMode.QUERY) {
             request.url = getQueryEndpoint();
         }
     };
@@ -351,7 +359,7 @@ function SparqlEditorCtrl($scope,
      * @param {QueryRequestEvent} queryResponse - the event payload containing the query and the request object.
      */
     const queryHandler = (queryResponse) => {
-        updateRequestHeaders(queryResponse.request);
+        updateRequestHeaders(queryResponse.request, queryResponse.queryMode, queryResponse.queryType, queryResponse.pageSize);
         changeEndpointByQueryType(queryResponse.queryMode, queryResponse.request);
         const pageNumber = queryResponse.getPageNumber();
         const pageSize = queryResponse.getPageSize();
@@ -370,7 +378,7 @@ function SparqlEditorCtrl($scope,
      * @param {CountQueryRequestEvent} countQueryRequest - the event payload containing the query and the request object.
      */
     const countQueryRequestHandler = (countQueryRequest) => {
-        updateRequestHeaders(countQueryRequest.request);
+        updateRequestHeaders(countQueryRequest. request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
         changeEndpointByQueryType(countQueryRequest.queryMode, countQueryRequest.request);
         countQueryRequest.setPageSize(undefined);
         countQueryRequest.setPageNumber(undefined);
