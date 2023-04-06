@@ -92,7 +92,7 @@ function SparqlEditorCtrl($scope,
                     }
                 },
                 getRepositoryStatementsCount: ontotextYasguiWebComponentService.getRepositoryStatementsCount,
-                onAbortQuery: ontotextYasguiWebComponentService.onAbortQuery
+                onQueryAborted: ontotextYasguiWebComponentService.onQueryAborted
             };
         }
     };
