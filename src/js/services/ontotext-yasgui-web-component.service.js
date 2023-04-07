@@ -1,12 +1,14 @@
+import {QueryType} from "../../models/ontotext-yasgui/query-type";
+
 const modules = [];
 
 angular
     .module('graphdb.framework.ontotext-yasgui-web-component', modules)
     .factory('OntotextYasguiWebComponentService', OntotextYasguiWebComponentService);
 
-OntotextYasguiWebComponentService.$inject = ['MonitoringRestService', 'RDF4JRepositoriesRestService', '$repositories', 'toastr', '$translate'];
+OntotextYasguiWebComponentService.$inject = ['MonitoringRestService', 'RDF4JRepositoriesRestService', '$repositories', 'toastr', '$translate', '$location'];
 
-function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositoriesRestService, $repositories, toastr, $translate) {
+function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositoriesRestService, $repositories, toastr, $translate, $location) {
 
     const onQueryAborted = (req) => {
         if (req) {
@@ -31,8 +33,60 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
             });
     };
 
+    /**
+     * Handles {@link EventDataType.EXPLORE_VISUAL_GRAPH} event emitted by "ontotext-yasgui-web-component".
+     * The event is fired when the "Visual" button is clicked on.
+     *
+     * @param {ExploreVisualGraphEvent} exploreVisualGraphEvent - the "ontotext-yasgui-web-component" event.
+     */
+    const exploreVisualGraphHandler = (exploreVisualGraphEvent) => {
+        const paramsToParse = {
+            query: exploreVisualGraphEvent.query,
+            sameAs: exploreVisualGraphEvent.sameAs,
+            inference: exploreVisualGraphEvent.inference
+        };
+
+        $location.path('graphs-visualizations').search(paramsToParse);
+    };
+
+    const exploreVisualGraphYasrToolbarElementBuilder = {
+        createElement: (yasr) => {
+            const buttonName = document.createElement('span');
+            buttonName.classList.add("explore-visual-graph-button-name");
+            const exploreVisualButtonWrapperElement = document.createElement('div');
+            exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
+            exploreVisualButtonWrapperElement.classList.add("icon-data");
+            exploreVisualButtonWrapperElement.onclick = function () {
+                const paramsToParse = {
+                    query: yasr.yasqe.getValue(),
+                    sameAs: yasr.yasqe.getSameAs(),
+                    inference: yasr.yasqe.getInfer()
+                };
+                $location.path('graphs-visualizations').search(paramsToParse);
+            };
+            exploreVisualButtonWrapperElement.appendChild(buttonName);
+            return exploreVisualButtonWrapperElement;
+        },
+        updateElement: (element, yasr) => {
+            element.classList.add('hidden');
+            if (!yasr.hasResults()) {
+                return;
+            }
+            const queryType = yasr.yasqe.getQueryType();
+
+            if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                element.classList.remove('hidden');
+            }
+            element.querySelector('.explore-visual-graph-button-name').innerText = $translate.instant("query.editor.visual.btn");
+        },
+        getOrder: () => {
+            return 2;
+        }
+    }
+
     return {
         onQueryAborted,
-        getRepositoryStatementsCount
+        getRepositoryStatementsCount,
+        exploreVisualGraphYasrToolbarElementBuilder
     };
 }
