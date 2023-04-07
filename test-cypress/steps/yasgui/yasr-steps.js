@@ -65,4 +65,12 @@ export class YasrSteps {
     static getPagination() {
         return YasrSteps.getYasr().find('.ontotext-pagination');
     }
+
+    static getYasrToolbar() {
+        return YasrSteps.getYasr().find('.yasr-toolbar');
+    }
+
+    static getVisualButton() {
+        return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button-name');
+    }
 }
