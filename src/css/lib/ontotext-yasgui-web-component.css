@@ -1,0 +1,27 @@
+@import "../common.css";
+
+.hidden {
+    display: none;
+}
+.explore-visual-graph-button {
+    font-size: 1.2em;
+    font-weight: 400;
+    padding: 14px 6px 14px 6px;
+    border: none;
+    outline: none;
+    color: #FFFFFF;
+    background-color: var(--onto-orange);
+}
+.explore-visual-graph-button:hover {
+    cursor: pointer;
+}
+
+.yasr-toolbar {
+    padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .explore-visual-graph-button-name {
+        display: none;
+    }
+}

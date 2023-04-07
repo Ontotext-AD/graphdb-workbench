@@ -93,7 +93,8 @@ function SparqlEditorCtrl($scope,
                     }
                 },
                 getRepositoryStatementsCount: ontotextYasguiWebComponentService.getRepositoryStatementsCount,
-                onQueryAborted: ontotextYasguiWebComponentService.onQueryAborted
+                onQueryAborted: ontotextYasguiWebComponentService.onQueryAborted,
+                yasrToolbarPlugins: [ontotextYasguiWebComponentService.exploreVisualGraphYasrToolbarElementBuilder]
             };
         }
     };
@@ -378,7 +379,7 @@ function SparqlEditorCtrl($scope,
      * @param {CountQueryRequestEvent} countQueryRequest - the event payload containing the query and the request object.
      */
     const countQueryRequestHandler = (countQueryRequest) => {
-        updateRequestHeaders(countQueryRequest. request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
+        updateRequestHeaders(countQueryRequest.request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
         changeEndpointByQueryType(countQueryRequest.queryMode, countQueryRequest.request);
         countQueryRequest.setPageSize(undefined);
         countQueryRequest.setPageNumber(undefined);
@@ -403,15 +404,14 @@ function SparqlEditorCtrl($scope,
             if (body) {
                 const result = body.results.bindings[0];
                 const vars = body.head.vars;
-                const bindingVars = Object.keys(result).filter(function (b) {
-                    return vars.indexOf(b) > -1;
+                const bindingVar = Object.keys(result).find(function (b) {
+                    return vars.indexOf(b) > -1 && !isNaN(result[b].value);
                 });
-                if (bindingVars.length > 0) {
-                    return result[bindingVars[0]].value;
+                if (bindingVar.length > 0) {
+                    return result[bindingVar].value;
                 }
             }
         }
-        return -1;
     };
 
     /**
@@ -468,7 +468,7 @@ function SparqlEditorCtrl($scope,
                 });
         }
     };
-    downloadAsPluginNameToEventHandler.set('response', downloadCurrentResults);
+    downloadAsPluginNameToEventHandler.set('extended_response', downloadCurrentResults);
 
     const getFileTimePrefix = () => {
         const now = new Date();
