@@ -11,12 +11,15 @@ import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import 'angular/rest/connectors.rest.service';
 import 'services/ontotext-yasgui-web-component.service.js';
+import 'angular/externalsync/controllers';
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
+import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../models/ontotext-yasgui/before-update-query-result";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
-    'graphdb.framework.ontotext-yasgui-web-component'
+    'graphdb.framework.ontotext-yasgui-web-component',
+    'graphdb.framework.externalsync.controllers'
 ];
 
 angular
@@ -37,7 +40,8 @@ SparqlEditorCtrl.$inject = [
     '$languageService',
     'RDF4JRepositoriesRestService',
     'ConnectorsRestService',
-    'OntotextYasguiWebComponentService'];
+    'OntotextYasguiWebComponentService',
+    '$uibModal'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -52,7 +56,8 @@ function SparqlEditorCtrl($scope,
                           $languageService,
                           RDF4JRepositoriesRestService,
                           ConnectorsRestService,
-                          ontotextYasguiWebComponentService) {
+                          ontotextYasguiWebComponentService,
+                          $uibModal) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -68,6 +73,7 @@ function SparqlEditorCtrl($scope,
     $scope.prefixes = {};
     const outputHandlers = new Map();
     const downloadAsPluginNameToEventHandler = new Map();
+    const tabIdToConnectorProgressModalMapping = new Map();
 
     // =========================
     // Public functions
@@ -94,7 +100,9 @@ function SparqlEditorCtrl($scope,
                 },
                 getRepositoryStatementsCount: ontotextYasguiWebComponentService.getRepositoryStatementsCount,
                 onQueryAborted: ontotextYasguiWebComponentService.onQueryAborted,
-                yasrToolbarPlugins: [ontotextYasguiWebComponentService.exploreVisualGraphYasrToolbarElementBuilder]
+                yasrToolbarPlugins: [ontotextYasguiWebComponentService.exploreVisualGraphYasrToolbarElementBuilder],
+                beforeUpdateQuery: getBeforeUpdateQueryHandler(),
+                i18n: ontotextYasguiWebComponentService.getTranslations()
             };
         }
     };
@@ -211,6 +219,82 @@ function SparqlEditorCtrl($scope,
     // =========================
     // Private function
     // =========================
+    const getBeforeUpdateQueryHandler = () => (query, tabId) => {
+        return new Promise(function (resolve, reject) {
+            ConnectorsRestService.checkConnector(query)
+                .then((res) => {
+                    if (!res.data.command) {
+                        resolve(resolve(new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS)));
+                        return;
+                    }
+
+                    if (!res.data.hasSupport) {
+                        const parameters = [
+                            {
+                                key: 'connectorName',
+                                value: res.data.connectorName
+                            },
+                            {
+                                key: 'pluginName',
+                                value: res.data.pluginName
+                            }
+                        ];
+                        resolve(new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters));
+                        return;
+                    }
+
+                    let customUpdateMessage;
+                    switch (res.data.command) {
+                        case 'create':
+                        case 'repair': {
+                            const repair = res.data.command === 'repair';
+                            const parameters = [{key: 'name', value: res.data.name}];
+                            const messageLabeKey = repair ? 'query.editor.repaired.connector' : 'created.connector';
+                            customUpdateMessage = new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, messageLabeKey, parameters);
+
+                            const progressScope = $scope.$new(true);
+
+                            // This duplicates code in the externalsync module but we can't get it from there
+                            progressScope.beingBuiltConnector = {
+                                percentDone: 0,
+                                status: {
+                                    processedEntities: 0,
+                                    estimatedEntities: 0,
+                                    indexedEntities: 0,
+                                    entitiesPerSecond: 0
+                                },
+                                actionName: repair ? $translate.instant('externalsync.repairing') : $translate.instant('externalsync.creating'),
+                                eta: "-",
+                                inline: false,
+                                iri: res.data.iri,
+                                name: res.data.name,
+                                doneCallback: function () {
+                                    connectorProgressModal.dismiss('cancel');
+                                }
+                            };
+                            progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
+
+                            const connectorProgressModal = $uibModal.open({
+                                templateUrl: 'pages/connectorProgress.html',
+                                controller: 'CreateProgressCtrl',
+                                size: 'lg',
+                                backdrop: 'static',
+                                scope: progressScope
+                            });
+                            tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+                        }
+                            break;
+                        case 'drop':
+                            customUpdateMessage = new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', [{key: 'name', value: res.data.name}]);
+                            break;
+                    }
+                    resolve(customUpdateMessage);
+                }).catch(() => {
+                // for some reason we couldn't check if this is a connector update, so just execute it
+                resolve();
+            });
+        });
+    };
 
     const autocompleteLocalNames = (term, canceler) => {
         return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
@@ -357,21 +441,35 @@ function SparqlEditorCtrl($scope,
     /**
      * Handles the "query" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
      * request and the request object can be altered here, and it will be sent with these changes.
-     * @param {QueryRequestEvent} queryResponse - the event payload containing the query and the request object.
+     * @param {QueryRequestEvent} queryRequest - the event payload containing the query and the request object.
      */
-    const queryHandler = (queryResponse) => {
-        updateRequestHeaders(queryResponse.request, queryResponse.queryMode, queryResponse.queryType, queryResponse.pageSize);
-        changeEndpointByQueryType(queryResponse.queryMode, queryResponse.request);
-        const pageNumber = queryResponse.getPageNumber();
-        const pageSize = queryResponse.getPageSize();
+    const queryHandler = (queryRequest) => {
+        updateRequestHeaders(queryRequest.request, queryRequest.queryMode, queryRequest.queryType, queryRequest.pageSize);
+        changeEndpointByQueryType(queryRequest.queryMode, queryRequest.request);
+        const pageNumber = queryRequest.getPageNumber();
+        const pageSize = queryRequest.getPageSize();
         if (pageSize && pageNumber) {
-            queryResponse.setOffset((pageNumber - 1) * (pageSize - 1));
-            queryResponse.setLimit(pageSize);
+            queryRequest.setOffset((pageNumber - 1) * (pageSize - 1));
+            queryRequest.setLimit(pageSize);
         }
-        queryResponse.setPageNumber(undefined);
-        queryResponse.setPageSize(undefined);
+        queryRequest.setPageNumber(undefined);
+        queryRequest.setPageSize(undefined);
     };
     outputHandlers.set(EventDataType.QUERY, queryHandler);
+
+
+    /**
+     * Handles the "queryExecuted" event emitted by ontotext-yasgui. The event is fired immediately after the request is executed, whether it succeeds or fails.
+     * @param {QueryExecutedEvent} queryExecutedRequest - the event payload.
+     */
+    const queryExecutedHandler = (queryExecutedRequest) => {
+        const connectorProgressModal = tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
+        if (connectorProgressModal) {
+            connectorProgressModal.dismiss();
+            tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
+        }
+    };
+    outputHandlers.set(EventDataType.QUERY_EXECUTED, queryExecutedHandler);
 
     /**
      * Handles the "countQuery" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
