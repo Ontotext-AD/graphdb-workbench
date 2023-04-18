@@ -10,6 +10,9 @@ OntotextYasguiWebComponentService.$inject = ['MonitoringRestService', 'RDF4JRepo
 
 function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositoriesRestService, $repositories, toastr, $translate, $location) {
 
+    const supportedLanguages = ['en', 'fr'];
+    let allTranslations;
+
     const onQueryAborted = (req) => {
         if (req) {
             const repository = req.url.substring(req.url.lastIndexOf('/') + 1);
@@ -84,9 +87,20 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
         }
     }
 
+    const getTranslations = () => {
+        if (!this.allTranslations) {
+            this.allTranslations = {}
+            supportedLanguages.forEach((langKey) => {
+                return this.allTranslations[langKey] = $translate.getTranslationTable(langKey);
+            });
+        }
+        return this.allTranslations;
+    }
+
     return {
         onQueryAborted,
         getRepositoryStatementsCount,
-        exploreVisualGraphYasrToolbarElementBuilder
+        exploreVisualGraphYasrToolbarElementBuilder,
+        getTranslations,
     };
 }
