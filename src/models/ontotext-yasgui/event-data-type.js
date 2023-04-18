@@ -6,5 +6,6 @@ export const EventDataType = {
     'NOTIFICATION_MESSAGE': 'notificationMessage',
     'QUERY': 'query',
     'COUNT_QUERY': 'countQuery',
-    'COUNT_QUERY_RESPONSE': 'countQueryResponse'
+    'COUNT_QUERY_RESPONSE': 'countQueryResponse',
+    'QUERY_EXECUTED': 'queryExecuted'
 };
