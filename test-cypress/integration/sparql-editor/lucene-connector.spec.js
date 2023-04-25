@@ -5,13 +5,14 @@ import {ConnectorsStubs} from "../../stubs/yasgui/connectors-stubs";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {ErrorPluginSteps} from "../../steps/yasgui/plugin/error-plugin-steps";
 import {TablePluginSteps} from "../../steps/yasgui/table-plugin-steps";
+import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 
 describe('Connectors - Lucene', () => {
     let repositoryId;
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+        QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
 

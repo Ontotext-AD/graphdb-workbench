@@ -3,12 +3,13 @@ import {TabContextMenu, YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {ConfirmationDialogSteps} from "../../steps/yasgui/confirmation-dialog-steps";
+import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 
 describe('Yasgui tabs', () => {
 
     beforeEach(() => {
         const repositoryId = 'sparql-editor-' + Date.now();
-        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+        QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.intercept('/repositories/test-repo', {fixture: '/graphql-editor/default-query-response.json'}).as('getGuides');
