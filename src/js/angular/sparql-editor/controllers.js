@@ -219,76 +219,99 @@ function SparqlEditorCtrl($scope,
     // =========================
     // Private function
     // =========================
+
+    const createParameter = (key, value) => {
+        return {key, value};
+    };
+
+    const getCommandParameters = (response) => {
+        return [createParameter('name', response.data.name)];
+    };
+
+    const toNoCommandResponse = () => {
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS);
+    };
+
+    const toHasNotSupport = (response) => {
+        const parameters = [
+            createParameter('connectorName', response.data.connectorName),
+            createParameter('pluginName', response.data.pluginName)
+        ];
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters);
+    };
+
+    const createConnectorProgressDialog = (actionName, iri, connectorName) => {
+        const progressScope = $scope.$new(true);
+
+        // This duplicates code in the externalsync module but we can't get it from there
+        progressScope.beingBuiltConnector = {
+            percentDone: 0,
+            status: {
+                processedEntities: 0,
+                estimatedEntities: 0,
+                indexedEntities: 0,
+                entitiesPerSecond: 0
+            },
+            actionName,
+            eta: "-",
+            inline: false,
+            iri,
+            name: connectorName,
+            doneCallback: function () {
+                connectorProgressModal.dismiss('cancel');
+            }
+        };
+        progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
+
+        const connectorProgressModal = $uibModal.open({
+            templateUrl: 'pages/connectorProgress.html',
+            controller: 'CreateProgressCtrl',
+            size: 'lg',
+            backdrop: 'static',
+            scope: progressScope
+        });
+        return connectorProgressModal;
+    };
+
+    const toCreateCommandResponse = (response, tabId) => {
+        const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), response.data.iri, response.data.name);
+        tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'created.connector', getCommandParameters(response));
+    };
+
+    const toRepairCommandResponse = (response, tabId) => {
+        const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
+        tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'query.editor.repaired.connector', getCommandParameters(response));
+    };
+
+    const toDropCommandResponse = (response) => {
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', getCommandParameters(response));
+    };
+
     const getBeforeUpdateQueryHandler = () => (query, tabId) => {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve) {
             ConnectorsRestService.checkConnector(query)
-                .then((res) => {
-                    if (!res.data.command) {
-                        resolve(resolve(new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS)));
+                .then((response) => {
+                    if (!response.data.command) {
+                        resolve(toNoCommandResponse());
                         return;
                     }
-
-                    if (!res.data.hasSupport) {
-                        const parameters = [
-                            {
-                                key: 'connectorName',
-                                value: res.data.connectorName
-                            },
-                            {
-                                key: 'pluginName',
-                                value: res.data.pluginName
-                            }
-                        ];
-                        resolve(new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters));
+                    if (!response.data.hasSupport) {
+                        resolve(toHasNotSupport(response));
                         return;
                     }
-
-                    let customUpdateMessage;
-                    switch (res.data.command) {
+                    switch (response.data.command) {
                         case 'create':
-                        case 'repair': {
-                            const repair = res.data.command === 'repair';
-                            const parameters = [{key: 'name', value: res.data.name}];
-                            const messageLabeKey = repair ? 'query.editor.repaired.connector' : 'created.connector';
-                            customUpdateMessage = new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, messageLabeKey, parameters);
-
-                            const progressScope = $scope.$new(true);
-
-                            // This duplicates code in the externalsync module but we can't get it from there
-                            progressScope.beingBuiltConnector = {
-                                percentDone: 0,
-                                status: {
-                                    processedEntities: 0,
-                                    estimatedEntities: 0,
-                                    indexedEntities: 0,
-                                    entitiesPerSecond: 0
-                                },
-                                actionName: repair ? $translate.instant('externalsync.repairing') : $translate.instant('externalsync.creating'),
-                                eta: "-",
-                                inline: false,
-                                iri: res.data.iri,
-                                name: res.data.name,
-                                doneCallback: function () {
-                                    connectorProgressModal.dismiss('cancel');
-                                }
-                            };
-                            progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
-
-                            const connectorProgressModal = $uibModal.open({
-                                templateUrl: 'pages/connectorProgress.html',
-                                controller: 'CreateProgressCtrl',
-                                size: 'lg',
-                                backdrop: 'static',
-                                scope: progressScope
-                            });
-                            tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
-                        }
+                            resolve(toCreateCommandResponse(response, tabId));
+                            break;
+                        case 'repair':
+                            resolve(toRepairCommandResponse(response, tabId));
                             break;
                         case 'drop':
-                            customUpdateMessage = new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', [{key: 'name', value: res.data.name}]);
+                            resolve(toDropCommandResponse(response));
                             break;
                     }
-                    resolve(customUpdateMessage);
                 }).catch(() => {
                 // for some reason we couldn't check if this is a connector update, so just execute it
                 resolve();
