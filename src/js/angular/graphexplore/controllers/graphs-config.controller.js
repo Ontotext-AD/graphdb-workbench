@@ -513,7 +513,8 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
     // start of query operations
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
-        if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
+        if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT'
+            || window.editor.getQueryType() === 'DESCRIBE')) {
             toastr.warning($translate.instant('query.editor.warning.msg'));
             return;
         }

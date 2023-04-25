@@ -313,7 +313,8 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $uibModal, Mod
     function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery ;
         if (explain) {
-            if (!(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT')) {
+            if (!(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT'
+                || window.editor.getQueryType() === 'DESCRIBE')) {
                 toastr.warning($translate.instant('query.editor.warning.msg'));
                 return;
             }
