@@ -1,6 +1,7 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
+import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 
 describe('Show saved queries', () => {
 
@@ -8,7 +9,7 @@ describe('Show saved queries', () => {
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+        QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.intercept(`/repositories/${repositoryId}`, {fixture: '/graphql-editor/default-query-response.json'}).as('getGuides');
