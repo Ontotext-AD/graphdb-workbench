@@ -7,7 +7,7 @@ describe('Download results', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+        QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         QueryStubs.stubDefaultQueryResponse(repositoryId);
