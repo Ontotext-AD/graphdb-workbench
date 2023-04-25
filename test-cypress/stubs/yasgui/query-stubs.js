@@ -1,4 +1,7 @@
 export class QueryStubs {
+    static stubQueryCountResponse() {
+        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+    }
     static stubDefaultQueryResponse(repositoryId, withDelay = 0) {
         QueryStubs.stubQueryResponse(repositoryId, '/graphql-editor/default-query-response.json', withDelay);
     }
