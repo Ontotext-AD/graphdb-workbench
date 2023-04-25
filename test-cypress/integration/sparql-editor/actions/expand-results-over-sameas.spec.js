@@ -9,7 +9,7 @@ describe('Expand results over owl:sameAs', () => {
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
+        QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.intercept(`/repositories/${repositoryId}`, {fixture: '/graphql-editor/default-query-response.json'}).as('query');
