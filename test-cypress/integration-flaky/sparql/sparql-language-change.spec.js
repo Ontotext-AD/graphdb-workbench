@@ -1,4 +1,5 @@
 import SparqlSteps from '../../steps/sparql-steps';
+import {LanguageSelectorSteps} from "../../steps/language-selector-steps";
 
 describe('YASQE and YASR language change validation', () => {
     let repositoryId;
@@ -10,7 +11,7 @@ describe('YASQE and YASR language change validation', () => {
 
     afterEach(() => {
         // Change the language back to English
-        SparqlSteps.changeLanguage('en');
+        LanguageSelectorSteps.changeLanguage('en');
 
         cy.deleteRepository(repositoryId);
     });
@@ -32,7 +33,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getTabWithGoogleChartText().should('contain', 'Google Chart');
             SparqlSteps.getResultsDescription().should('contain', 'Showing results from');
 
-            SparqlSteps.changeLanguage('fr');
+            LanguageSelectorSteps.changeLanguage('fr');
 
             // The text in the labels should change
             SparqlSteps.getTabWithTableText().should('contain', 'Tableau');
