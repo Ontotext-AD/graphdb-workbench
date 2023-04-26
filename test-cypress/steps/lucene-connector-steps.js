@@ -1,9 +1,9 @@
 export class LuceneConnectorSteps {
-    static getCreateConnectorQuery() {
+    static getCreateConnectorQuery(connectorName) {
         return `PREFIX luc: <http://www.ontotext.com/connectors/lucene#> ` +
                 `PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#> ` +
                     `INSERT DATA { ` +
-                        `luc-index:my_index luc:createConnector ''' { ` +
+                        `luc-index:${connectorName} luc:createConnector ''' { ` +
                             `"types": [` +
                                 `"http://www.ontotext.com/example/wine#Wine"` +
                             `],` +
@@ -33,11 +33,11 @@ export class LuceneConnectorSteps {
                 `.}`;
     }
 
-    static getDeleteConnectorSteps() {
+    static getDeleteConnectorSteps(connectorName) {
         return `PREFIX luc: <http://www.ontotext.com/connectors/lucene#>` +
                 `PREFIX luc-index: <http://www.ontotext.com/connectors/lucene/instance#>` +
                 `INSERT DATA {` +
-                `  luc-index:my_index luc:dropConnector [] .` +
+                `  luc-index:${connectorName} luc:dropConnector [] .` +
                 `}`;
     }
 }

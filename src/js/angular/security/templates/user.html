@@ -90,7 +90,8 @@
 								  class="switch mr-0">
 								<input  id="sameAsCheck" type="checkbox" class="switch"
                                         ng-checked="user.appSettings.DEFAULT_SAMEAS"
-                                        ng-disabled="shouldDisableSameAs()"/>
+                                        ng-disabled="shouldDisableSameAs()"
+                                        data-cy="same-as-checkbox"/>
 								<label for="sameas-on"></label>
 							</span>
 							{{'security.default.editor.graph' | translate}}
@@ -106,7 +107,7 @@
 							<span gdb-tooltip="{{'security.tooltip.click.me' | translate}}" tooltip-placement="top"
 								  ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
 								  class="switch mr-0">
-								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
+								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE" data-cy="inference-checkbox"/>
 								<label for="inference-on"></label>
 							</span>
                             {{'security.default.editor.graph' | translate}}
