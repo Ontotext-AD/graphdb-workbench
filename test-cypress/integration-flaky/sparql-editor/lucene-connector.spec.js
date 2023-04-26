@@ -17,7 +17,7 @@ describe('Connectors - Lucene', () => {
         cy.presetRepository(repositoryId);
 
         SparqlEditorSteps.visitSparqlEditorPage();
-        YasguiSteps.getYasgui().should('be.visible');
+        YasqeSteps.getEditor().should('be.visible');
     });
 
     afterEach(() => {
@@ -29,7 +29,7 @@ describe('Connectors - Lucene', () => {
         ConnectorsStubs.stubLuceneHasNotSupport();
         YasqeSteps.clearEditor();
         YasqeSteps.writeInEditor(LuceneConnectorSteps.getCreateConnectorQuery());
-        YasqeSteps.executeQuery();
+        YasqeSteps.executeErrorQuery();
 
         // Then I expect error message to be displayed.
         ErrorPluginSteps.getErrorPluginBody().contains('No support for lucene-connector, lucene-connector connectors are not supported because the plugin Lucene is not active.');
@@ -38,29 +38,30 @@ describe('Connectors - Lucene', () => {
     it('should create Lucene connector.', () => {
         // When I execute create lucene connector query.
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(LuceneConnectorSteps.getCreateConnectorQuery());
-        YasqeSteps.executeQuery();
+        YasqeSteps.writeInEditor(LuceneConnectorSteps.getCreateConnectorQuery('my_index'));
+        YasqeSteps.executeQueryWithoutWaiteResult();
 
         // Then I expect Lucene connector to be created.
         TablePluginSteps.getQueryResultInfo().contains('Created connector my_index');
     });
 
     it('should delete Lucene connector.', () => {
+        const connectorName = 'connector_to_be_deleted';
         // Given a lucene connector is created.
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(LuceneConnectorSteps.getCreateConnectorQuery());
+        YasqeSteps.writeInEditor(LuceneConnectorSteps.getCreateConnectorQuery(connectorName));
         YasqeSteps.executeQuery();
 
         // Then I expect Lucene connector to be created.
         // This check is used to be sure that connector is created.
-        TablePluginSteps.getQueryResultInfo().contains('Created connector my_index');
+        TablePluginSteps.getQueryResultInfo().contains(`Created connector ${connectorName}`);
 
         // When I execute delete lucene connector query.
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(LuceneConnectorSteps.getDeleteConnectorSteps());
+        YasqeSteps.writeInEditor(LuceneConnectorSteps.getDeleteConnectorSteps(connectorName));
         YasqeSteps.executeQuery();
 
         // Then I expect Lucene connector to be created.
-        TablePluginSteps.getQueryResultInfo().contains('Deleted connector my_index');
+        TablePluginSteps.getQueryResultInfo().contains(`Deleted connector ${connectorName}`);
     });
 });
