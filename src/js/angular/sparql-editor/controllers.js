@@ -71,6 +71,8 @@ function SparqlEditorCtrl($scope,
     $scope.savedQueryConfig = undefined;
     $scope.language = $languageService.getLanguage();
     $scope.prefixes = {};
+    $scope.inferUserSetting = true;
+    $scope.sameAsUserSetting = true;
     const outputHandlers = new Map();
     const downloadAsPluginNameToEventHandler = new Map();
     const tabIdToConnectorProgressModalMapping = new Map();
@@ -90,6 +92,8 @@ function SparqlEditorCtrl($scope,
                 },
                 prefixes: $scope.prefixes,
                 pageSize: 1000,
+                infer: $scope.inferUserSetting,
+                sameAs: $scope.sameAsUserSetting,
                 maxPersistentResponseSize: 500000,
                 isVirtualRepository: $repositories.isActiveRepoOntopType(),
                 yasqeAutocomplete: {
@@ -440,10 +444,16 @@ function SparqlEditorCtrl($scope,
         $scope.prefixes = usedPrefixes;
     };
 
+    const setInferAndSameAs = (principal) => {
+        $scope.inferUserSetting = principal.appSettings.DEFAULT_INFERENCE;
+        $scope.sameAsUserSetting = principal.appSettings.DEFAULT_SAMEAS;
+    };
+
     // Initialization and bootstrap
     function init() {
-        RDF4JRepositoriesRestService.getRepositoryNamespaces()
-            .then((namespacesResponse) => {
+        Promise.all([$jwtAuth.getPrincipal(), RDF4JRepositoriesRestService.getRepositoryNamespaces()])
+            .then(([principal, namespacesResponse]) => {
+                setInferAndSameAs(principal);
                 setPrefixes(namespacesResponse);
             })
             .finally(() => {
