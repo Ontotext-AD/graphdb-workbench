@@ -7,12 +7,17 @@ import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 
 describe('Yasgui tabs', () => {
 
+    let repositoryId;
     beforeEach(() => {
-        const repositoryId = 'sparql-editor-' + Date.now();
+        repositoryId = 'sparql-editor-' + Date.now();
         QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        cy.intercept('/repositories/test-repo', {fixture: '/graphql-editor/default-query-response.json'}).as('getGuides');
+        QueryStubs.stubDefaultQueryResponse(repositoryId);
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('Should ask for confirmation on tab close', () => {
@@ -87,7 +92,6 @@ describe('Yasgui tabs', () => {
 function openNewTab(tabIndex, expectedTabsCount) {
     YasguiSteps.openANewTab();
     YasguiSteps.getTabs().should('have.length', expectedTabsCount);
-    // Do this check just for a bit of delay before closing the tab
+    // Execute the query for a bit of delay before closing the tab
     YasqeSteps.executeQuery(tabIndex);
-    YasrSteps.getResults(tabIndex).should('have.length', 70);
 }

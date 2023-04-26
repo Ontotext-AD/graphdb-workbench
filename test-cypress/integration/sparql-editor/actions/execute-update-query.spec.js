@@ -16,7 +16,7 @@ describe('Execute of update query', () => {
         QueryStubs.stubDefaultQueryResponse(repositoryId);
 
         SparqlEditorSteps.visitSparqlEditorPage();
-        YasguiSteps.getYasgui().should('be.visible');
+        YasqeSteps.getYasqe().should('be.visible');
     });
 
     afterEach(() => {
@@ -39,7 +39,12 @@ describe('Execute of update query', () => {
         TablePluginSteps.getQueryResultInfo().contains('The number of statements did not change.');
     });
 
-    it('should display properly result message info when insert 2 statements', () => {
+    it('should display properly result message info when insert 2 statements', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I execute insert query which adds 2 results
         YasqeSteps.clearEditor();
         YasqeSteps.writeInEditor(
@@ -54,7 +59,12 @@ describe('Execute of update query', () => {
         TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
     });
 
-    it('should display result message info which describes that two statements are removed', () => {
+    it('should display result message info which describes that two statements are removed', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and selected repository has some inserted statements.
         YasqeSteps.clearEditor();

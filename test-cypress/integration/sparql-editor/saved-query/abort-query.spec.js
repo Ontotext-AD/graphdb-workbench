@@ -5,6 +5,7 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 
 describe('Abort query', () => {
 
+    const FILE_TO_IMPORT = 'wine.rdf';
     let repositoryId;
 
     beforeEach(() => {
@@ -12,6 +13,7 @@ describe('Abort query', () => {
         QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
 
         SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.getYasgui().should('be.visible');
@@ -27,7 +29,7 @@ describe('Abort query', () => {
         YasqeSteps.clearEditor();
         YasqeSteps.writeInEditor(
             'select (count(*) as ?count) where {?s ?p ?o. ?s1 ?p1 ?o1. ?s2 ?p2 ?o2. ?s3 ?p3 ?o3.}');
-        YasqeSteps.executeQuery();
+        YasqeSteps.executeQueryWithoutWaiteResult();
 
         // Then I expect to an "Abort query" button to be displayed,
         YasqeSteps.getAbortQueryButton().should('exist');
