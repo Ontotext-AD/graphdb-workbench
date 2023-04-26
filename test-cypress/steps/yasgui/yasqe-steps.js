@@ -1,3 +1,5 @@
+import {YasrSteps} from "./yasr-steps";
+
 export class YasqeSteps {
     static getYasqe() {
         return cy.get('.yasqe');
@@ -7,8 +9,8 @@ export class YasqeSteps {
         return cy.get('.tabsList');
     }
 
-    static getEditor() {
-        return cy.get(".yasqe:visible");
+    static getEditor(yasqeIndex = 0) {
+        return cy.get(".yasqe").eq(yasqeIndex);
     }
 
     static getCodeMirror() {
@@ -24,6 +26,20 @@ export class YasqeSteps {
 
     static executeQuery(tabIndex = 0) {
         this.getExecuteQueryButton(tabIndex).eq(tabIndex).click();
+        YasrSteps.getResponseInfo(tabIndex)
+            .should('not.have.class', 'hidden')
+            .should('not.have.class', 'empty')
+            .should('be.visible');
+    }
+
+    static executeQueryWithoutWaiteResult(index = 0) {
+        this.getExecuteQueryButton(index).click();
+    }
+
+    static executeErrorQuery(index = 0) {
+        this.getExecuteQueryButton(index).click();
+        // Wait a wile for the response information to be present.
+        cy.get('.error-response-plugin').should('be.visible');
     }
 
     static clearEditor() {
@@ -82,5 +98,25 @@ export class YasqeSteps {
 
     static getAbortQueryTooltip() {
         return YasqeSteps.getAbortQueryButton().parent();
+    }
+
+    static getActionsToolbar() {
+        return YasqeSteps.getEditor().find('.yasqe_buttons');
+    }
+
+    static getActionButtonsTooltips() {
+        return YasqeSteps.getActionsToolbar().find('yasgui-tooltip');
+    }
+
+    static getActionButtonTooltip(index) {
+        return YasqeSteps.getActionButtonsTooltips().eq(index);
+    }
+
+    static getActionButtons() {
+        return YasqeSteps.getActionsToolbar().find('.custom-button');
+    }
+
+    static getActionButton(index) {
+        return YasqeSteps.getActionButtons().eq(index);
     }
 }

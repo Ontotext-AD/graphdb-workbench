@@ -1,10 +1,14 @@
 export class YasrSteps {
-    static getYasr() {
-        return cy.get('.yasr');
+    static getYasr(yasrIndex = 0) {
+        return cy.get('.yasr').eq(yasrIndex);
     }
 
     static getResultHeader() {
         return cy.get('.yasr_header');
+    }
+
+    static getResponseInfo(yasrIndex = 0) {
+        return YasrSteps.getYasr(yasrIndex).find('.yasr_response_chip');
     }
 
     static getErrorHeader() {
