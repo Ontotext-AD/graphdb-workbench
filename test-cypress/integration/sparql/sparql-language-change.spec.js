@@ -44,7 +44,7 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getDownloadBtn().should('contain', 'Download as');
 
             // When I change the language.
-            SparqlSteps.changeLanguage('fr');
+            LanguageSelectorSteps.changeLanguage('fr');
 
             // Then I expect 'Download as' to be translated to French.
             SparqlSteps.getDownloadBtn().should('contain', 'Téléchargement');
