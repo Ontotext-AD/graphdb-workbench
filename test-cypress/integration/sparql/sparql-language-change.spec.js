@@ -32,5 +32,27 @@ describe('YASQE and YASR language change validation', () => {
             SparqlSteps.getEditorAndResultsBtn().should('contain', 'Éditeur et résultats');
             SparqlSteps.getResultsOnlyBtn().should('contain', 'Résultats seulement');
         });
+
+        it('should change "Download as" dropdown label. Test "GDB-8100" bug.', () => {
+
+            // When I visit a page with YASQE and YASR in it,
+            // and execute a query.
+            SparqlSteps.executeQuery();
+
+            // Then I expect 'Download as' to be translated to English.
+            SparqlSteps.getDownloadBtn().should('contain', 'Download as');
+
+            // When I change the language.
+            SparqlSteps.changeLanguage('fr');
+
+            // Then I expect 'Download as' to be translated to French.
+            SparqlSteps.getDownloadBtn().should('contain', 'Téléchargement');
+
+            // When I rerun the query.
+            SparqlSteps.executeQuery();
+
+            // Then I expect 'Download as' to be translated to French.
+            SparqlSteps.getDownloadBtn().should('contain', 'Téléchargement');
+        });
     });
 });
