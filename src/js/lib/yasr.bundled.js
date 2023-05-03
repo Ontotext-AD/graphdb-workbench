@@ -54121,7 +54121,7 @@ module.exports={
         "spec": ">=1.4.1 <2.0.0",
         "type": "range"
       },
-      "/home/yordan/dev/ontotext/YASR-Ontotext"
+      "/home/boyan/Git/YASR-Ontotext"
     ]
   ],
   "_from": "yasgui-utils@>=1.4.1 <2.0.0",
@@ -54155,7 +54155,7 @@ module.exports={
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
   "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/home/yordan/dev/ontotext/YASR-Ontotext",
+  "_where": "/home/boyan/Git/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -57245,6 +57245,32 @@ var root = module.exports = function(yasr) {
 	return plugin;
 };
 
+var addWorldBreakTagAfterSpecialCharacters = function (text) {
+	return text.replace(/([_:/-](?![_:/-]))/g, "$1<wbr>");
+};
+
+var addWorldBreakTagBeforeSpecialCharacters = function (text) {
+	return text.replace(/(\^\^)/g, "<wbr>$1");
+};
+
+var addWordBreakToIRIs = function (text) {
+	return addWorldBreakTagAfterSpecialCharacters(text);
+}
+
+var addWordBreakToLiterals = function (text) {
+	const result = addWorldBreakTagBeforeSpecialCharacters(text);
+	return addWorldBreakTagAfterSpecialCharacters(result);
+}
+
+var getLang = function (literalBinding, defaultLang) {
+	if (literalBinding["xml:lang"]) {
+		return literalBinding["xml:lang"];
+	}
+	if (literalBinding["lang"]) {
+		return literalBinding["lang"];
+	}
+	return defaultLang;
+}
 
 var formatLiteral = function(yasr, plugin, literalBinding) {
 	var stringRepresentation = utils.escapeHtmlEntities(literalBinding.value);
@@ -57330,7 +57356,7 @@ var getEntityHTML = function(binding, context, isShacl, yasr) {
 
         localHref = localHref.replace(/'/g, "&#39;");
         href = href.replace(/'/g, "&#39;");
-        entityHtml = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + _.escape(visibleString) + "</a> " +
+        entityHtml = "<a title='" + href + "' class='uri' href='" + localHref + "'>" + addWordBreakToIRIs(_.escape(visibleString)) + "</a> " +
 		"<a class='fa fa-link share-result' data-clipboard-text='" + href + "' title='" + copyToClipBoardTranslation + "' href='#'></a>";
 		divClass = " class = 'uri-cell'";
 	} else if (binding.type === "triple") {
@@ -57349,7 +57375,7 @@ var getEntityHTML = function(binding, context, isShacl, yasr) {
 		entityHtml = "<p class='nonUri' style='border: none; background-color: transparent; padding: 0; margin: 0'>" + formatLiteralCustom(yasr, binding, true) + "</p>";
 		divClass = " class = 'literal-cell'";
 	}
-	return "<div" + divClass +  ">" + entityHtml + "</div>";
+	return `<div ${divClass} lang="${getLang(binding, 'xx')}">${entityHtml}</div>`;
 }
 
 var getTripleString = function(yasr, binding, forHtml) {
@@ -57365,10 +57391,9 @@ var getTripleString = function(yasr, binding, forHtml) {
 var formatLiteralCustom = function(yasr, literalBinding, forHtml) {
 	var stringRepresentation = utils.escapeHtmlEntities(literalBinding.value);
 	var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
-	if (literalBinding.type == "bnode") {
-		return "_:" + stringRepresentation;
-	}
-	else if (literalBinding["xml:lang"]) {
+	if ("bnode" === literalBinding.type) {
+		return addWordBreakToLiterals("_:" + stringRepresentation);
+	} else if (literalBinding["xml:lang"]) {
 		stringRepresentation = '"' + stringRepresentation + ((forHtml) ? '"<sup>': '"') + '@' + literalBinding["xml:lang"] + ((forHtml) ? '</sup>': '');
 	} else if (literalBinding["lang"]) {
 		stringRepresentation = '"' + stringRepresentation + ((forHtml) ? '"<sup>': '"' + '@') + literalBinding["lang"] + ((forHtml) ? '</sup>': '');
@@ -57384,7 +57409,8 @@ var formatLiteralCustom = function(yasr, literalBinding, forHtml) {
 
 		stringRepresentation = '"' + stringRepresentation + ((forHtml) ? '"<sup>': '"') + '^^' + dataType + ((forHtml) ? '</sup>': '');
 	}
-	return (stringRepresentation.indexOf('"') === 0) ? stringRepresentation : '"' + stringRepresentation + '"';
+	let customLiteral = (stringRepresentation.indexOf('"') === 0) ? stringRepresentation : '"' + stringRepresentation + '"';
+	return addWordBreakToLiterals(customLiteral);
 };
 
 
