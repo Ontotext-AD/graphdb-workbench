@@ -1644,6 +1644,7 @@
     "sparql.shortcuts.auto.indent.lines.less": "Indent current/selected line(s) less",
     "sparql.shortcuts.execute.query.update": "Execute query or update",
     "sparql.shortcuts.execute.explain.plan": "Execute explain plan for query",
+    "sparql.shortcuts.execute.explain-gpt.plan": "Explain query/result using ChatGPT",
     "sparql.shortcuts.create.new.tab": "Create a new unnamed tab",
     "sparql.shortcuts.create.saved.query": "Create a saved query from the current state",
     "sparql.shortcuts.switch.next.tab": "Switch to next tab",

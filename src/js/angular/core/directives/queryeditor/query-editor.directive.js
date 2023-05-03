@@ -83,11 +83,15 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         }
 
         function runQueryAction() {
-            scope.runQuery(false, false);
+            scope.runQuery(false);
         }
 
         function explainQueryAction() {
-            scope.runQuery(false, true);
+            scope.runQuery(false, 'explain');
+        }
+
+        function explainAlternativeQueryAction() {
+            scope.runQuery(false, 'gpt');
         }
 
         function goToNextTabAction() {
@@ -131,6 +135,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     "Cmd-Enter": runQueryAction,
                     "Shift-Ctrl-Enter": explainQueryAction,
                     "Shift-Cmd-Enter": explainQueryAction,
+                    "Ctrl-Alt-Enter": explainAlternativeQueryAction,
+                    "Cmd-Alt-Enter": explainAlternativeQueryAction,
                     "Ctrl-Alt-T": scope.addNewTab,
                     "Cmd-Alt-T": scope.addNewTab,
                     "Ctrl-S": saveQueryAction,
@@ -245,6 +251,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             // even though we have explainRequested in our scope too it doesn't always contain a fresh value
             if (scope.explainRequested && ('SELECT' === qType || 'CONSTRUCT' === qType || 'DESCRIBE' === qType)) {
                 data.push({name: 'explain', value: 'true'});
+                data.push({name: 'explainType', value: scope.explainRequested});
             }
             return data;
         };
