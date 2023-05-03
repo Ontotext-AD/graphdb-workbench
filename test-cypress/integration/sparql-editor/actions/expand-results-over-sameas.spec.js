@@ -12,10 +12,6 @@ describe('Expand results over owl:sameAs', () => {
         QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        cy.intercept(`/repositories/${repositoryId}`, {fixture: '/graphql-editor/default-query-response.json'}).as('query');
-
-        SparqlEditorSteps.visitSparqlEditorPage();
-        YasguiSteps.getYasgui().should('be.visible');
     });
 
     afterEach(() => {
@@ -23,6 +19,9 @@ describe('Expand results over owl:sameAs', () => {
     });
 
     it('Should be able to toggle expand results parameter', () => {
+        QueryStubs.stubInferAndSameAsDefaults(true, true);
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasguiSteps.getYasgui().should('be.visible');
         const queryDescription = new QueryStubDescription()
             .setRepositoryId(repositoryId)
             .setTotalElements(1);
@@ -49,5 +48,89 @@ describe('Expand results over owl:sameAs', () => {
         YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-off');
         YasqeSteps.executeQuery();
         cy.wait('@query-1_0_1001_1').its('request.body').should('contain', 'infer=false&sameAs=false');
+    });
+
+    it('should be enabled when infer is true and sameAs is true in user settings', () => {
+        QueryStubs.stubInferAndSameAsDefaults(true, true);
+
+        // When I visit a page with "ontotext-yasgui-web-component" in it.
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasguiSteps.getYasgui().should('be.visible');
+
+        // Then I expect that "sameAs" element to be enabled by default
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-on');
+        // and the tooltip of element describes that "sameAs" element is enabled.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: ON');
+
+        // When I open a new Tab.
+        YasguiSteps.openANewTab();
+
+        // Then I expect that "sameAs" element to be enabled in the new tab.
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-on');
+        // and the tooltip of element describes that "sameAs" element is enabled.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: ON');
+    });
+
+    it('should not be enabled when infer is true and sameAs is false in user settings', () => {
+        QueryStubs.stubInferAndSameAsDefaults(true, false);
+
+        // When I visit a page with "ontotext-yasgui-web-component" in it.
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasguiSteps.getYasgui().should('be.visible');
+
+        // Then I expect that "sameAs" element to be disabled by default
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+        // and the tooltip of element describes that "sameAs" element is disabled.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: OFF');
+
+        // When I open a new Tab.
+        YasguiSteps.openANewTab();
+
+        // Then I expect that "sameAs" element to be disabled in the new tab.
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+        // and the tooltip of element describes that "sameAs" element is disabled.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: OFF');
+    });
+
+    it('should not be enabled when infer is false and sameAs is true in user settings', () => {
+        QueryStubs.stubInferAndSameAsDefaults(false, true);
+
+        // When I visit a page with "ontotext-yasgui-web-component" in it.
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasguiSteps.getYasgui().should('be.visible');
+
+        // Then I expect that "sameAs" element to be disabled by default
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Requires \'Include Inferred\'!');
+        // and the tooltip of element describes that "infer" is required.
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+
+        // When I open a new Tab.
+        YasguiSteps.openANewTab();
+
+        // Then I expect that "sameAs" element to be disabled in the new tab,
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+        // and the tooltip of element describes that "infer" is required.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Requires \'Include Inferred\'!');
+    });
+
+    it('should not be enabled when infer is false and sameAs is false in user settings', () => {
+        QueryStubs.stubInferAndSameAsDefaults(false, false);
+
+        // When I visit a page with "ontotext-yasgui-web-component" in it.
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasguiSteps.getYasgui().should('be.visible');
+
+        // Then I expect that "sameAs" element to be disabled by default,
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+        // and the tooltip of element describes that "infer" is required.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Requires \'Include Inferred\'!');
+
+        // When I open a new Tab.
+        YasguiSteps.openANewTab();
+
+        // Then I expect that "sameAs" element to be disabled in the new tab,
+        YasqeSteps.getActionButton(4).should('have.class', 'icon-same-as-off');
+        // and the tooltip of element describes that "infer" is required.
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'data-tooltip', 'Requires \'Include Inferred\'!');
     });
 });
