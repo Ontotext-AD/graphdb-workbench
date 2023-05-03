@@ -1,4 +1,12 @@
+import {SecurityStubs} from "../security-stubs";
+
 export class QueryStubs {
+
+    static stubInferAndSameAsDefaults(infer = true, sameAs = true) {
+        SecurityStubs.stubInferAndSameAsDefaults();
+        SecurityStubs.stubUserSecurity(infer, sameAs);
+    }
+
     static stubQueryCountResponse() {
         cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
     }
