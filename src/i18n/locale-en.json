@@ -646,7 +646,7 @@
     "query.editor.autocomplete.hint": "Hint: \"abC\" matches \"abC*\", \"ab c*\" and \"ab-c*\"",
     "query.editor.progress.msg": "{{progressMessage}}... {{timeHuman}}",
     "query.editor.extra.msg": "\n{{extraMessage}}",
-    "query.editor.warning.msg": "Explain only works with SELECT or CONSTRUCT queries.",
+    "query.editor.warning.msg": "Explain only works with SELECT, CONSTRUCT and DESCRIBE queries.",
     "query.editor.virtual.repo.warning.msg": "Explain not supported for Virtual repositories.",
     "query.editor.virtual.repo.update.warning.msg": "Updates are not supported for Virtual repositories.",
     "query.editor.get.saved.queries.error": "Error! Could not get saved queries",

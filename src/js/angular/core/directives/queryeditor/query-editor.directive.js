@@ -243,7 +243,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 data.push({name: 'offset', value: scope.currentTabConfig.offset - 1});
             }
             // even though we have explainRequested in our scope too it doesn't always contain a fresh value
-            if (scope.explainRequested && ('SELECT' === qType || 'CONSTRUCT' === qType)) {
+            if (scope.explainRequested && ('SELECT' === qType || 'CONSTRUCT' === qType || 'DESCRIBE' === qType)) {
                 data.push({name: 'explain', value: 'true'});
             }
             return data;

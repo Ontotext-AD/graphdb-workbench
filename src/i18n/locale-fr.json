@@ -645,7 +645,7 @@
     "query.editor.autocomplete.hint": "Indice: \"abC\" correspond à \"abC*\", \"ab c*\" et \"ab-c*\".",
     "query.editor.progress.msg": "{{progressMessage}}... {{timeHuman}}",
     "query.editor.extra.msg": "\n{{extraMessage}}",
-    "query.editor.warning.msg": "Explain ne fonctionne qu'avec les requêtes SELECT ou CONSTRUCT.",
+    "query.editor.warning.msg": "Explain ne fonctionne qu'avec les requêtes SELECT, CONSTRUCT ou DESCRIBE.",
     "query.editor.virtual.repo.warning.msg": "Explain n'est pas pris en charge pour les dépôts virtuels.",
     "query.editor.virtual.repo.update.warning.msg": "Les mises à jour ne sont pas prises en charge pour les dépôts virtuels.",
     "query.editor.get.saved.queries.error": "Erreur ! Impossible de récupérer les requêtes sauvegardées",
