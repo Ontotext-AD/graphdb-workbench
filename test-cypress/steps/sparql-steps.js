@@ -149,6 +149,51 @@ class SparqlSteps {
     static getResultsDescription() {
         return cy.get('.results-description');
     }
+
+    static typeQuery(query, clear = true, parseSpecialCharSequences = false) {
+        if (clear) {
+            SparqlSteps.clearQuery();
+        }
+        // Using force because the textarea is not visible
+        SparqlSteps.getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
+    }
+
+    static clearQuery() {
+        // Using force because the textarea is not visible
+        SparqlSteps.getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+    }
+
+    static getQueryTextArea() {
+        return SparqlSteps.getQueryArea().find('textarea');
+    }
+
+    static getResultsWrapper() {
+        return cy.get('#yasr-inner .yasr_results');
+    }
+
+    static getTableResultRows() {
+        return SparqlSteps.getResultsWrapper().find('.resultsTable tbody tr');
+    }
+
+    static getResultCell(rowIndex, columnIndex) {
+        return SparqlSteps.getTableResultRows().eq(rowIndex).find('td').eq(columnIndex);
+    }
+
+    static getResultCellLink(rowIndex, columnIndex) {
+        return SparqlSteps.getResultCell(rowIndex, columnIndex).find('a').eq(0);
+    }
+
+    static getResultUriCell(rowIndex, columnIndex) {
+        return SparqlSteps.getResultCell(rowIndex, columnIndex).find('.uri-cell');
+    }
+
+    static getResultLiteralCell(rowIndex, columnIndex) {
+        return SparqlSteps.getResultCell(rowIndex, columnIndex).find('.literal-cell');
+    }
+
+    static getResultNoUriCell(rowIndex, columnIndex) {
+        return SparqlSteps.getResultCell(rowIndex, columnIndex).find('.nonUri');
+    }
 }
 
 export default SparqlSteps;
