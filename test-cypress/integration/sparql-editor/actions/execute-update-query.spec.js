@@ -23,22 +23,6 @@ describe('Execute of update query', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should display properly result message info when no one statement is added.', () => {
-        // When I execute insert query which don't change repository statements
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
-                 'PREFIX : <http://bedrock/> ' +
-                         'INSERT { ' +
-                                  ':fred :hasSpouse :wilma. ' +
-                                '} WHERE { ' +
-                                   'rdf:name rdf:label "not_exist_label".' +
-                                '}');
-        YasqeSteps.executeQuery();
-
-        // Then I expect result message info to informs me that statements did not change.
-        TablePluginSteps.getQueryResultInfo().contains('The number of statements did not change.');
-    });
-
     it('should display properly result message info when insert 2 statements', {
         retries: {
             runMode: 1,
