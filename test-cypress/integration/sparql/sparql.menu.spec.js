@@ -88,7 +88,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test modify default query', () => {
             // Run custom query returning 1001 results
-            typeQuery(DEFAULT_QUERY_MODIFIED);
+            SparqlSteps.typeQuery(DEFAULT_QUERY_MODIFIED);
 
             verifyQueryAreaEquals(DEFAULT_QUERY_MODIFIED);
 
@@ -109,7 +109,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute sparqlstar query', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
-            typeQuery(SPARQL_STAR_QUERY);
+            SparqlSteps.typeQuery(SPARQL_STAR_QUERY);
 
             verifyQueryAreaEquals(SPARQL_STAR_QUERY);
 
@@ -119,9 +119,9 @@ describe('SPARQL screen validation', () => {
 
             verifyResultsPageLength(104);
 
-            getTableResultRows().should('contain', '<<');
+            SparqlSteps.getTableResultRows().should('contain', '<<');
 
-            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+            SparqlSteps.getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
         });
 
         it('Test execute sparqlstar select with bind query', () => {
@@ -129,7 +129,7 @@ describe('SPARQL screen validation', () => {
 
             let selectQuery = 'select * {bind (<<?s ?p ?o>> as ?t) .}';
 
-            typeQuery(selectQuery);
+            SparqlSteps.typeQuery(selectQuery);
 
             verifyQueryAreaEquals(selectQuery);
 
@@ -139,9 +139,9 @@ describe('SPARQL screen validation', () => {
 
             verifyResultsPageLength(3);
 
-            getTableResultRows().should('contain', '<<');
+            SparqlSteps.getTableResultRows().should('contain', '<<');
 
-            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+            SparqlSteps.getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
         });
 
         it('Test execute sparqlstar insert query', () => {
@@ -149,7 +149,7 @@ describe('SPARQL screen validation', () => {
 
             let insertQuery = 'insert data {<<<urn:a> <urn:p> 1>> <urn:x> 2}';
 
-            typeQuery(insertQuery);
+            SparqlSteps.typeQuery(insertQuery);
 
             verifyQueryAreaEquals(insertQuery);
 
@@ -168,7 +168,7 @@ describe('SPARQL screen validation', () => {
             let selectQuery = "PREFIX bd: <http://bigdata.com/RDF#>\nPREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
                 "select * where {<<bd:bob foaf:mbox <mailto:bob@home>>> ?p ?o .}";
 
-            typeQuery(selectQuery);
+            SparqlSteps.typeQuery(selectQuery);
 
             verifyQueryAreaEquals(selectQuery);
 
@@ -178,7 +178,7 @@ describe('SPARQL screen validation', () => {
 
             verifyResultsPageLength(4);
 
-            getTableResultRows().should('contain', 'http://hr.example.com/employees/bob');
+            SparqlSteps.getTableResultRows().should('contain', 'http://hr.example.com/employees/bob');
         });
 
         it('Test execute sparqlstar delete query and search for deleted triple', () => {
@@ -188,7 +188,7 @@ describe('SPARQL screen validation', () => {
                 "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
                 "delete data {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
-            typeQuery(deleteQuery);
+            SparqlSteps.typeQuery(deleteQuery);
 
             verifyQueryAreaEquals(deleteQuery);
 
@@ -204,7 +204,7 @@ describe('SPARQL screen validation', () => {
                 "PREFIX dc: <http://purl.org/dc/terms/>\nPREFIX re: <http://reasoner.example.com/engines#>\n" +
                 "select * where {<<bd:alice foaf:knows bd:bob>> dc:source re:engine_1.}";
 
-            typeQuery(selectQuery);
+            SparqlSteps.typeQuery(selectQuery);
 
             verifyQueryAreaEquals(selectQuery);
 
@@ -232,15 +232,15 @@ describe('SPARQL screen validation', () => {
             cy.verifyResultsMessage('Showing results');
             cy.verifyResultsMessage('Query took');
 
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .should('be.visible');
 
             getResultPages().should('have.length', 1);
             verifyResultsPageLength(9);
 
-            getTableResultRows().should('contain', '<<');
+            SparqlSteps.getTableResultRows().should('contain', '<<');
 
-            getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
+            SparqlSteps.getTableResultRows().should('contain', 'http://bigdata.com/RDF#bob');
 
             // Confirm that all tabs Raw Response, Pivot Table, Google chart are enabled
             getTableResponseButton().should('be.visible').and('not.be.disabled');
@@ -252,7 +252,7 @@ describe('SPARQL screen validation', () => {
         it('Should check for XML star download format', () => {
             cy.importServerFile(repositoryId, RDF_STAR_FILE_TO_IMPORT);
 
-            typeQuery(SPARQL_STAR_QUERY);
+            SparqlSteps.typeQuery(SPARQL_STAR_QUERY);
 
             verifyQueryAreaEquals(SPARQL_STAR_QUERY);
 
@@ -288,7 +288,7 @@ describe('SPARQL screen validation', () => {
                 // Yasqe blows when inserting prefixes for some reason....
                 disableExceptions();
 
-                typeQuery(prefixQuery);
+                SparqlSteps.typeQuery(prefixQuery);
             });
 
             // Should have inserted the prefixes
@@ -298,7 +298,7 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.executeQuery();
 
             cy.getResultsMessage();
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .should('be.visible');
         });
 
@@ -311,7 +311,7 @@ describe('SPARQL screen validation', () => {
 
             cy.verifyResultsMessage('Showing results')
             cy.verifyResultsMessage('Query took');
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .should('be.visible');
 
             // Confirm that all tabs Raw Response, Pivot Table, Google chart are enabled
@@ -353,7 +353,7 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.executeQuery();
 
             cy.getResultsMessage();
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .should('be.visible');
 
             // Confirm that all tabs (Table, Pivot Table, Google chart) are disabled
@@ -375,18 +375,18 @@ describe('SPARQL screen validation', () => {
             verifyResultsPageLength(44);
             cy.pasteQuery(LIST_TEXT_MINING_SERVICES);
             cy.executeQuery();
-            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining/instance#gateService');
+            SparqlSteps.getTableResultRows().should('contain', 'http://www.ontotext.com/textmining/instance#gateService');
             cy.pasteQuery(LIST_TEXT_MINING_INSTANCE_CONFIG);
             cy.executeQuery();
-            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#Gate');
-            getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#connect');
-            getTableResultRows().should('contain', 'https://cloud-api.gate.ac.uk');
+            SparqlSteps.getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#Gate');
+            SparqlSteps.getTableResultRows().should('contain', 'http://www.ontotext.com/textmining#connect');
+            SparqlSteps.getTableResultRows().should('contain', 'https://cloud-api.gate.ac.uk');
             cy.pasteQuery(DROP_TEXT_MINING_INSTANCE);
             cy.executeQuery();
             cy.pasteQuery(LIST_TEXT_MINING_SERVICES);
             cy.executeQuery();
             getResultPages().should('have.length', 1);
-            getTableResultRows().should('contain', 'No data available in table');
+            SparqlSteps.getTableResultRows().should('contain', 'No data available in table');
         });
     });
 
@@ -416,7 +416,7 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.executeQuery();
 
             cy.verifyResultsMessage('1,000 of 7,065');
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .should('be.visible');
             verifyResultsPageLength(1000);
 
@@ -574,7 +574,7 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.executeQuery();
 
             // Wait until results are visible before verifying the download menu
-            getResultsWrapper().should('be.visible');
+            SparqlSteps.getResultsWrapper().should('be.visible');
             verifyResultsPageLength(70);
 
             openDownloadAsMenu();
@@ -593,12 +593,12 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.executeQuery();
 
             openRawResponse();
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .find('.CodeMirror-code')
                 .should('be.visible');
 
             openPivotTable();
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .find('.pivotTable table.pvtUi')
                 .should('be.visible');
 
@@ -606,7 +606,7 @@ describe('SPARQL screen validation', () => {
             disableExceptions();
 
             openGoogleChart();
-            getResultsWrapper()
+            SparqlSteps.getResultsWrapper()
                 .find('#yasr-inner_gchartWrapper .google-visualization-table')
                 .should('be.visible');
         });
@@ -929,11 +929,11 @@ describe('SPARQL screen validation', () => {
 
             const expectedQuery = queryBegin + wineUri + queryEnd;
 
-            clearQuery();
+            SparqlSteps.clearQuery();
 
-            typeQuery(queryBegin, false);
+            SparqlSteps.typeQuery(queryBegin, false);
             // TODO: Need to test Alt-Enter too
-            typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
+            SparqlSteps.typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
 
             getAutoSuggestHints()
                 .should('be.visible')
@@ -942,13 +942,13 @@ describe('SPARQL screen validation', () => {
                 .click()
                 .should('not.exist');
 
-            typeQuery(queryEnd, false);
+            SparqlSteps.typeQuery(queryEnd, false);
 
             verifyQueryAreaEquals(expectedQuery);
 
             SparqlSteps.executeQuery();
 
-            getResultsWrapper().should('be.visible');
+            SparqlSteps.getResultsWrapper().should('be.visible');
 
             verifyResultsPageLength(10);
         });
@@ -957,11 +957,11 @@ describe('SPARQL screen validation', () => {
             repositoryId = 'sparql-' + Date.now();
             SparqlSteps.createRepoAndVisit(repositoryId);
 
-            clearQuery();
+            SparqlSteps.clearQuery();
 
-            typeQuery(queryBegin, false);
+            SparqlSteps.typeQuery(queryBegin, false);
             // TODO: Need to test Alt-Enter too
-            typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
+            SparqlSteps.typeQuery('Dry' + Cypress.env('modifierKey') + ' ', false, true);
 
             getAutoSuggestHints().should('not.exist');
             getToast()
@@ -976,12 +976,8 @@ describe('SPARQL screen validation', () => {
     const YASR_SELECTOR = '#yasr';
     const YASR_INNER_SELECTOR = '#yasr-inner';
 
-    function getTableResultRows() {
-        return getResultsWrapper().find('.resultsTable tbody tr');
-    }
-
     function verifyResultsPageLength(resultLength) {
-        getTableResultRows()
+        SparqlSteps.getTableResultRows()
             .should('have.length', resultLength);
     }
 
@@ -1072,25 +1068,8 @@ describe('SPARQL screen validation', () => {
         });
     }
 
-    function getQueryTextArea() {
-        return SparqlSteps.getQueryArea().find('textarea');
-    }
-
     function getNoQueryRun() {
         return cy.get('#yasr-inner .no-query-run');
-    }
-
-    function clearQuery() {
-        // Using force because the textarea is not visible
-        getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-    }
-
-    function typeQuery(query, clear = true, parseSpecialCharSequences = false) {
-        if (clear) {
-            clearQuery();
-        }
-        // Using force because the textarea is not visible
-        getQueryTextArea().type(query, {force: true, parseSpecialCharSequences});
     }
 
     function goToPage(page) {
@@ -1214,10 +1193,6 @@ describe('SPARQL screen validation', () => {
         return cy.get('#wb-sparql-copyToClipboardQuery');
     }
 
-    function getResultsWrapper() {
-        return cy.get('#yasr-inner .yasr_results');
-    }
-
     function getResultsHeader() {
         return cy.get('#yasr .yasr_header');
     }
@@ -1248,7 +1223,7 @@ describe('SPARQL screen validation', () => {
     }
 
     function getBooleanResult() {
-        return getResultsWrapper().find('.booleanBootResult');
+        return SparqlSteps.getResultsWrapper().find('.booleanBootResult');
     }
 
     function getResultsDownloadButton() {
