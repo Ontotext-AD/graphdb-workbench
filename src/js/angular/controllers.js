@@ -828,7 +828,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         } else {
             setPrincipal();
             $licenseService.checkLicenseStatus();
-            $scope.getSavedQueries();
+            // Added timeout because, when the 'securityInit' event is fired after user logged-in.
+            // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
+            // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
+            setTimeout(function () {
+                $scope.getSavedQueries();
+            });
         }
     });
 
