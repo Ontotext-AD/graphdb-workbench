@@ -98,15 +98,16 @@
 }
 
 .yasr .uri-cell {
-  display: inline;
-  word-break: normal !important;
-  word-wrap: normal !important;
+    display: inline;
+    word-break: normal !important;
+    word-wrap: break-word !important;
 }
 
-@media screen and (max-width: 768px) {
-    .yasr .uri-cell {
-        word-wrap: break-word !important;
-    }
+.yasr .literal-cell {
+    word-wrap: break-word !important;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
 }
 
 .yasr .triple-cell {
