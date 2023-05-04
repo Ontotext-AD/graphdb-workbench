@@ -847,13 +847,22 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                         warning: true
                     }).result
                         .then(function () {
-                            scope.runQuery(false);
+                            autoExecuteQuery(true);
+                        }, function () {
+                            autoExecuteQuery(false);
                         });
                 } else {
                     scope.runQuery(false);
                 }
             }
         }
+
+        const autoExecuteQuery = (execute) => {
+            $location.search('execute', null);
+            if (execute) {
+                scope.runQuery(false);
+            }
+        };
 
         function loadQueryIntoExistingOrNewTab(query, infer, sameAs) {
             const tabId = scope.getExistingTabId(query);
