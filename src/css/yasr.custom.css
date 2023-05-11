@@ -99,12 +99,13 @@
 
 .yasr .uri-cell {
     display: inline;
-    word-break: normal !important;
-    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
 }
 
 .yasr .literal-cell {
-    word-wrap: break-word !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
     hyphens: auto;
