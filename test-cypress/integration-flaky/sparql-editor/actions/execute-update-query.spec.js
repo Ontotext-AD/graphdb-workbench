@@ -37,4 +37,47 @@ describe('Execute of update query', () => {
         // Then I expect result message info to informs me that statements did not change.
         TablePluginSteps.getQueryResultInfo().contains('The number of statements did not change.');
     });
+
+    it('should display result message info which describes that two statements are removed', () => {
+        // When I visit a page with "ontotext-yasgui-web-component" in it,
+        // and selected repository has some inserted statements.
+        YasqeSteps.clearEditor();
+        YasqeSteps.writeInEditor(
+            'PREFIX : <http://bedrock/> ' +
+            'INSERT DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+        // Wait statements to be inserted.
+        TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
+
+        // When I execute delete query which removes 2 results
+        YasqeSteps.clearEditor();
+        YasqeSteps.writeInEditor(
+            'PREFIX : <http://bedrock/> ' +
+            'DELETE DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+
+        // Then I expect result message info to informs me that 2 statements have been added.
+        TablePluginSteps.getQueryResultInfo().contains('Removed 2 statements.');
+    });
+
+    it('should display properly result message info when insert 2 statements', () => {
+        // When I execute insert query which adds 2 results
+        YasqeSteps.clearEditor();
+        YasqeSteps.writeInEditor(
+            'PREFIX : <http://bedrock/> ' +
+            'INSERT DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+
+        // Then I expect result message info to informs me that 2 statements have been added.
+        TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
+    });
 });

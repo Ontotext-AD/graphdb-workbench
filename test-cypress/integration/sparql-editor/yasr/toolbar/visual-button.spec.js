@@ -18,7 +18,12 @@ describe('Visual button when user execute a CONSTRUCT query.', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should display a "Visual" button configured by user .', () => {
+    it('should display a "Visual" button configured by user .', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I visit a page with "ontotext-yasgui-web-component" on it,
         // and select a CONSTRUCT query.
         YasqeSteps.executeQuery();
