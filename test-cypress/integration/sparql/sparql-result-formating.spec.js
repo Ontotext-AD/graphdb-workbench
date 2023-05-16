@@ -31,6 +31,9 @@ describe('Formatting of SPARQL result bindings.', () => {
         SparqlSteps.typeQuery('select * where { values (?x ) { ("some text "@en-GB) }}');
         SparqlSteps.executeQuery();
 
+        SparqlSteps.getResultNoUriCell(0, 1).then(function($el) {
+            expect($el.html()).to.eq('"some text "<sup>@en-GB</sup>');
+        });
         // Then I expect break-word is applied,
         SparqlSteps.getResultNoUriCell(0, 1).should('have.css', 'word-wrap', 'break-word');
         // language attribute is applied.
