@@ -57246,7 +57246,12 @@ var root = module.exports = function(yasr) {
 };
 
 var addWorldBreakTagAfterSpecialCharacters = function (text) {
-	return text.replace(/([_:/-](?![_:/-]))/g, "$1<wbr>");
+	// Add wbr tag after "_" or ":" only if they are not followed by "_", ":" or "-".
+	return text.replace(/([_:](?![_:/-]))/g, "$1<wbr>")
+		// Add wbr tag after "/" only if it is not preceded by "<" and not followed by "/", "_", ":" or "-"
+		.replace(/((?<!<)[/](?![_:/-]))/g, "$1<wbr>")
+		// Add wbr tag after "-" only if it is not preceded by "@" followed by characters regardless of the language and not followed by "/", "_", ":" or "-"
+		.replace(/((?<!@\p{L}*)[-](?![_:/-]))/gu, "$1<wbr>");
 };
 
 var addWorldBreakTagBeforeSpecialCharacters = function (text) {
