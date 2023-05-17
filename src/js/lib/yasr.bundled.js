@@ -57397,7 +57397,7 @@ var formatLiteralCustom = function(yasr, literalBinding, forHtml) {
 	var stringRepresentation = utils.escapeHtmlEntities(literalBinding.value);
 	var xmlSchemaNs = "http://www.w3.org/2001/XMLSchema#";
 	if ("bnode" === literalBinding.type) {
-		return addWordBreakToLiterals("_:" + stringRepresentation);
+		return "_:" + stringRepresentation;
 	} else if (literalBinding["xml:lang"]) {
 		stringRepresentation = '"' + stringRepresentation + ((forHtml) ? '"<sup>': '"') + '@' + literalBinding["xml:lang"] + ((forHtml) ? '</sup>': '');
 	} else if (literalBinding["lang"]) {
