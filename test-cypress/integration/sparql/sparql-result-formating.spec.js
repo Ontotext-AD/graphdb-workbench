@@ -1,4 +1,5 @@
 import SparqlSteps from "../../steps/sparql-steps";
+import {QueryStubs} from "../../stubs/query-stubs";
 
 describe('Formatting of SPARQL result bindings.', () => {
     let repositoryId;
@@ -68,5 +69,16 @@ describe('Formatting of SPARQL result bindings.', () => {
         // and language attribute is applied.
         SparqlSteps.getResultLiteralCell(0, 1).should('have.attr', 'lang', 'xx');
         SparqlSteps.getResultLiteralCell(0, 1).should('have.css', 'hyphens', 'auto');
+    });
+
+    it('should format bnode', () => {
+        // When I execute a query that returns bnode.
+        QueryStubs.stubSparqlHistoryResponse(repositoryId);
+        SparqlSteps.executeQuery();
+
+        // Then I expect the "_:" prefix of bnode to not be followed by <wbr> tag,
+        SparqlSteps.getResultNoUriCell(0, 1).then(function($el) {
+            expect($el.html()).to.eq('_:83222b124ff949648bd78ee778d22f601149');
+        });
     });
 });
