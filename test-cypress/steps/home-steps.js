@@ -40,10 +40,9 @@ class HomeSteps {
             .click({force: true});
     }
 
-    static verifyQueryLink(queryName, modifiesRepoModal, queryURL) {
+    static verifyQueryLink(queryName, modifiesRepoModal) {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
         modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.exist');
-        cy.url().should('eq', Cypress.config("baseUrl") + queryURL);
         HomeSteps.visitAndWaitLoader();
     }
 

@@ -235,10 +235,10 @@ describe('Home screen validation', () => {
             const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
-            HomeSteps.verifyQueryLink('Add statements', true, '/sparql?savedQueryName=Add%20statements&owner=admin&execute');
-            HomeSteps.verifyQueryLink('Clear graph', true, '/sparql?savedQueryName=Clear%20graph&owner=admin&execute');
-            HomeSteps.verifyQueryLink('Remove statements', true, '/sparql?savedQueryName=Remove%20statements&owner=admin&execute');
-            HomeSteps.verifyQueryLink('SPARQL Select template', false, '/sparql?savedQueryName=SPARQL%20Select%20template&owner=admin&execute');
+            HomeSteps.verifyQueryLink('Add statements', true);
+            HomeSteps.verifyQueryLink('Clear graph', true);
+            HomeSteps.verifyQueryLink('Remove statements', true);
+            HomeSteps.verifyQueryLink('SPARQL Select template', false);
 
             cy.deleteRepository(repositoryId);
         });
