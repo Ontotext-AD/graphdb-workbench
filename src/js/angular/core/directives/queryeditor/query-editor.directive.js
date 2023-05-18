@@ -867,6 +867,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 }
                 autoexecuteQueryIfRequested();
                 $location.search({});
+                // Replace current URL without adding a new history entry
+                $location.replace();
                 onHandler();
             });
 
