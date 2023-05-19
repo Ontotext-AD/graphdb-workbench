@@ -75,10 +75,27 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         $scope.selectDriverByType = function (driverType) {
+            $scope.constructCustomFiledForDriver(driverType);
+
             $scope.copyDriverProperties($scope.supportedDriversData
                 .find((driver) => driver.driverType === driverType));
             // Call concatURL with proper labelName to apply changes to url field
             $scope.concatURL('hostName', $scope);
+        };
+
+        $scope.constructCustomFiledForDriver= function (driver) {
+            switch (driver) {
+                case 'snowflake':
+                    $scope.supportedDriverLabels.hostName = 'Account identifier';
+                    $scope.supportedDriverLabels.databaseName = 'Warehouse';
+                    break;
+                case 'databricks':
+                    $scope.supportedDriverLabels.databaseName = 'HttpPath';
+                    break;
+                case 'dremio':
+                    $scope.supportedDriverLabels.databaseName = 'Schema';
+                    break;
+            }
         };
 
         $scope.copyDriverProperties = function (driver) {
