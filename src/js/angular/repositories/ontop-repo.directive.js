@@ -83,7 +83,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             $scope.concatURL('hostName', $scope);
         };
 
-        $scope.constructCustomFiledForDriver= function (driver) {
+        $scope.constructCustomFiledForDriver = function (driver) {
             switch (driver) {
                 case 'snowflake':
                     $scope.supportedDriverLabels.hostName = 'Account identifier';
@@ -94,6 +94,10 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     break;
                 case 'dremio':
                     $scope.supportedDriverLabels.databaseName = 'Schema';
+                    break;
+                default:
+                    $scope.supportedDriverLabels.databaseName = 'Database name';
+                    $scope.supportedDriverLabels.hostName = 'Hostname';
                     break;
             }
         };
