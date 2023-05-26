@@ -112,7 +112,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
 
         $scope.isReadOnly = function (labelName) {
             return labelName === 'driverClass' || labelName === 'url';
-        }
+        };
 
         $scope.editFile = function(file) {
             const modalInstance = $uibModal.open({
