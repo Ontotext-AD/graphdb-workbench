@@ -1,160 +1,96 @@
+import {SparqlTemplatesSteps} from "../../steps/setup/sparql-templates-steps";
+import {SparqlCreateUpdateSteps} from "../../steps/setup/sparql-create-update-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {ToasterSteps} from "../../steps/toaster-steps";
+
 describe('SPARQL Templates', () => {
 
     let repositoryId;
-    const TEMPLATE_NAME = "http://example.com/salary_template";
-    const SPARQL_TEMPLATE = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-        "PREFIX factory: <http://factory/>\n" +
-        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
-        "PREFIX spif: <http://spinrdf.org/spif#>\n" +
-        "INSERT {\n" +
-        "?id <http://factory/updatedOn> \"2021-10-01T07:55:38.238Z\"^^xsd:dateTime .\n" +
-        "?split spif:split (\"blaaa/blaa\" \"/\")\n" +
-        "} WHERE {\n" +
-        "?id rdf:type <http://factory/Factory> .\n" +
-        "?worker <http://factory/worksIn> ?id .\n" +
-        "?worker <http://factory/hasSalary> ?oldSalary .\n" +
-        "FILTER regex(STR(?id), \"fac\", \"i\")\n" +
-        "?split spif:split (\"blaaa/blaa\" \"/\")\n" +
-        "bind(now() as ?now)\n" +
-        "}";
-    const DEFAULT_QUERY = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-        "PREFIX ex: <http://example.com#>\n" +
-        "DELETE {\n" +
-        "  ?subject ex:myPredicate ?oldValue .\n" +
-        "} INSERT {\n" +
-        "  ?subject ex:myPredicate ?newValue .\n" +
-        "} WHERE {\n" +
-        "  ?id rdf:type ex:MyType .\n" +
-        "  ?subject ex:isRelatedTo ?id .\n" +
-        "}\n";
-
-    before(() => {
-        repositoryId = 'sparql-templates-repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-    });
 
     beforeEach(() => {
-        cy.visit('/sparql-templates', {
-            onBeforeLoad: (win) => {
-                win.localStorage.setItem('ls.repository-id', repositoryId);
-            }
-        });
-        cy.window()
-            .then(() => getTemplatesTable().scrollIntoView().should('be.visible'));
+        repositoryId = 'sparql-templates-repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.presetRepository(repositoryId);
+        SparqlTemplatesSteps.visit();
     });
 
-    after(() => {
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Initial state', () => {
-        cy.url().should('include', '/sparql-templates');
-        //Verify templates table is empty
-        getTemplatesTable().should('be.visible')
-            .and('contain','No templates are defined');
-        //Verify create template button is visible
-        getCreateSparqlTemplateButton().should('be.visible');
+    it('should not create a SPARQL template if cancel button is clicked', () => {
+        // When I visit 'Sparql templates' view,
+        // and click on create template button.
+        SparqlTemplatesSteps.clickOnCreateSparqlTemplateButton();
+
+        // Then, I expect to be navigated to "Sparql create template" view.
+        SparqlCreateUpdateSteps.verifyUrl();
+
+        // When I click on button cancel.
+        SparqlCreateUpdateSteps.clickOnCancelButton();
+
+        // Then, I expect to be navigated to "Sparql templates" view,
+        SparqlTemplatesSteps.verifyUrl();
+        // and expect that no query has been created.
+        SparqlTemplatesSteps.getSparqlTemplates().should('have.length', 0);
+        SparqlTemplatesSteps.getNoTemplateDefinedElement().should('contain.text', 'No templates are defined');
     });
 
-    it('Should create/edit/delete a SPARQL template', () => {
-        //Click create template button
-        getCreateSparqlTemplateButton().click();
-        cy.waitUntilQueryIsVisible();
-        //Test Template IRI field validation
-        getSaveButton().click();
-        //Verify error toast
-        getToastError()
-            .should('be.visible')
-            .and('contain','SPARQL template IRI is required');
-        //Type a valid Template IRI value in the filed
-        getTemplateNameField().type(TEMPLATE_NAME);
-        //Verify default query
-        verifyQueryAreaEquals(DEFAULT_QUERY);
-        //Paste new template query and verify content
-        cy.pasteQuery(SPARQL_TEMPLATE);
-        verifyQueryAreaEquals(SPARQL_TEMPLATE);
-        getSaveButton()
-            .scrollIntoView()
-            .click()
-            .then(() => {
-                cy.waitUntil(() =>
-                    cy.get('.edit-query-btn')
-                        .then(editBtn => editBtn));
-            });
-        //Verify new template is stored in the templates table
-        getTemplatesTable().should('be.visible')
-            .and('contain',TEMPLATE_NAME);
-        //Edit template
-        getEditTemplateButton(TEMPLATE_NAME);
-        cy.waitUntilQueryIsVisible();
-        verifyQueryAreaEquals(SPARQL_TEMPLATE);
-        //Cancel as no changes have been made
-        getCancelButton().click();
-        //Delete template and verify templates table is empty
-        getDeleteTemplateButton(TEMPLATE_NAME);
-        getConfirmDeleteTemplateButton().click();
-        cy.url().should('include', '/sparql-templates');
-        getTemplatesTable().should('be.visible')
-            .and('contain','No templates are defined');
+    it('should create a query and delete it', () => {
+        // When I visit 'Sparql templates' view,
+        // and click on create template button.
+        SparqlTemplatesSteps.clickOnCreateSparqlTemplateButton();
+
+        // Then, I expect to be navigated to "Sparql create template" view.
+        SparqlCreateUpdateSteps.verifyUrl();
+
+        const templateId = `http://test-${Date.now()}`;
+        // When I fill template id,
+        SparqlCreateUpdateSteps.typeTemplateId(templateId);
+
+        // and click on save button.
+        SparqlCreateUpdateSteps.clickOnSaveButton();
+
+        // Then, I expect to be navigated to "Sparql templates" view,
+        SparqlTemplatesSteps.verifyUrl();
+        // and expect a query has been created.
+        SparqlTemplatesSteps.getSparqlTemplates().should('have.length', 1);
+        SparqlTemplatesSteps.getNoTemplateDefinedElement().should('not.exist');
+        SparqlTemplatesSteps.getSparqlTemplate(templateId).should('exist');
+
+        // When I try to delete the query.
+        SparqlTemplatesSteps.deleteTemplate(templateId);
+
+        // Then I expect to see Warning dialog,
+        ModalDialogSteps.getDialogHeader().contains('Warning');
+        ModalDialogSteps.getDialogBody().contains(`Are you sure you want to delete the SPARQL template '${templateId}'?`);
+
+        // When click on close button
+        ModalDialogSteps.clickOnCloseButton();
+
+        //Then I expect query to be not deleted.
+        SparqlTemplatesSteps.getSparqlTemplate(templateId).should('exist');
+
+        // When confirm dialog is open,
+        SparqlTemplatesSteps.deleteTemplate(templateId);
+        // and click on cancel button.
+        ModalDialogSteps.clickOnCancelButton();
+
+        //Then I expect query to be not deleted.
+        SparqlTemplatesSteps.getSparqlTemplate(templateId).should('exist');
+
+        // When confirm dialog is open,
+        SparqlTemplatesSteps.deleteTemplate(templateId);
+        // and click on confirm button.
+        ModalDialogSteps.clickOnConfirmButton();
+
+        // Then, I expect to be navigated to "Sparql templates" view,
+        SparqlTemplatesSteps.verifyUrl();
+        // and expect that no query has been created.
+        SparqlTemplatesSteps.getSparqlTemplates().should('have.length', 0);
+        SparqlTemplatesSteps.getNoTemplateDefinedElement().should('contain.text', 'No templates are defined');
+
+        ToasterSteps.verifyTitle('Deleted successfully SPARQL template');
+        ToasterSteps.verifySuccess(templateId);
     });
-
-    function getTemplatesTable() {
-        return cy.get('.sparql-templates-list');
-    }
-
-    function getCreateSparqlTemplateButton() {
-        return cy.get('.clearfix .create-sql-table-configuration');
-    }
-
-    function getTemplateNameField() {
-        return cy.get('.sparql-template-name');
-    }
-
-    function verifyQueryAreaEquals(query) {
-        // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-        getQueryArea().should(codeMirrorEl => {
-            const cm = codeMirrorEl[0].CodeMirror;
-            expect(cm.getValue().trim()).to.equal(query.trim());
-        });
-    }
-
-    function getQueryArea() {
-        return cy.get('#queryEditor .CodeMirror');
-    }
-
-    function getSaveButton() {
-        return cy.get('.save-query-btn');
-    }
-
-    function getCancelButton() {
-        return cy.get('.cancel-query-btn');
-    }
-
-    function getToastError() {
-        return cy.get('#toast-container');
-    }
-
-    function getEditTemplateButton(templateName) {
-        return cy.get('#configurations-table tr')
-            .contains(templateName)
-            .parent()
-            .parent()
-            .within(() => {
-            cy.get('.icon-edit').click();
-        })
-    }
-
-    function getDeleteTemplateButton(templateName) {
-        return cy.get('#configurations-table tr')
-            .contains(templateName)
-            .parent()
-            .parent()
-            .within(() => {
-                cy.get('.icon-trash').click();
-            })
-    }
-
-    function getConfirmDeleteTemplateButton() {
-        return cy.get('.confirm-btn');
-    }
 });
