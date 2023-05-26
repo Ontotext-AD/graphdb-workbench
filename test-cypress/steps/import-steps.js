@@ -9,6 +9,10 @@ class ImportSteps {
         ImportSteps.visitImport('user', repository);
     }
 
+    static verifyUserImportUrl() {
+        cy.url().should('include', '/import#user');
+    }
+
     static visitServerImport(repository) {
         ImportSteps.visitImport('server', repository);
     }
