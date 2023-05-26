@@ -97,10 +97,38 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
         return this.allTranslations;
     }
 
+    const getDisableYasqeActionButtonsConfiguration = () => {
+        return [
+            {
+                name: 'createSavedQuery',
+                visible: false
+            }, {
+                name: 'showSavedQueries',
+                visible: false
+            }, {
+                name: 'shareQuery',
+                visible: false
+            }, {
+                name: 'includeInferredStatements',
+                visible: false
+            }
+        ];
+    };
+
+    const autocompleteLocalNames = (term, canceler) => {
+        return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
+            .then(function (results) {
+                canceler = null;
+                return results.data;
+            });
+    };
+
     return {
         onQueryAborted,
         getRepositoryStatementsCount,
         exploreVisualGraphYasrToolbarElementBuilder,
         getTranslations,
+        getDisableYasqeActionButtonsConfiguration,
+        autocompleteLocalNames
     };
 }
