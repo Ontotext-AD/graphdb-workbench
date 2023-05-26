@@ -4,21 +4,23 @@ import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
+import 'services/event-emitter-service';
 
 const modules = [
     'ngCookies',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.locations.service',
     'graphdb.framework.rest.license.service',
-    'toastr'
+    'toastr',
+    'graphdb.framework.utils.event-emitter-service'
 ];
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
@@ -327,23 +329,28 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.setRepository = function (repo) {
-            if (repo) {
-                LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
-                LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
-            } else {
-                LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
-            }
-            this.setRepositoryHeaders(repo);
-            $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
+            const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
+            eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
+                if (!eventData.cancel) {
+                    if (repo) {
+                        LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
+                        LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
+                    } else {
+                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
+                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                    }
+                    this.setRepositoryHeaders(repo);
+                    $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
-            // if the current repo is unreadable by the currently logged in user (or free access user)
-            // we unset the repository
-            if (repo && !$jwtAuth.canReadRepo(repo)) {
-                this.setRepository('');
-            }
-            // reset denied permissions (different repo, different rights)
-            $rootScope.deniedPermissions = {};
+                    // if the current repo is unreadable by the currently logged in user (or free access user)
+                    // we unset the repository
+                    if (repo && !$jwtAuth.canReadRepo(repo)) {
+                        this.setRepository('');
+                    }
+                    // reset denied permissions (different repo, different rights)
+                    $rootScope.deniedPermissions = {};
+                }
+            });
         };
 
         this.getDefaultRepository = function () {
