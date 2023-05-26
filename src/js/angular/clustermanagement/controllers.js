@@ -29,8 +29,7 @@ export const NodeState = {
     NO_CONNECTION: 'NO_CONNECTION',
     READ_ONLY: 'READ_ONLY',
     RESTRICTED: 'RESTRICTED',
-    NO_CLUSTER: 'NO_CLUSTER',
-    DELETED: 'Cluster was deleted on this node.'
+    NO_CLUSTER: 'NO_CLUSTER'
 };
 export const LinkState = {
     IN_SYNC: 'IN_SYNC',
@@ -56,6 +55,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.childContext = {};
 
     $scope.shouldShowClusterSettingsPanel = false;
+    const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
     $scope.onopen = $scope.onclose = () => angular.noop();
 
     $scope.toggleSidePanel = () => {
@@ -226,7 +226,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(forceDelete)
                 .then((response) => {
-                    const allNodesDeleted = Object.values(response.data).every((nodeState) => nodeState === NodeState.DELETED);
+                    const allNodesDeleted = Object.values(response.data).every((resultMsg) => resultMsg === DELETED_ON_NODE_MESSAGE);
                     if (allNodesDeleted) {
                         const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
                         toastr.success(successMessage);
