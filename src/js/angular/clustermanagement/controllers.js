@@ -235,7 +235,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                             'cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
                         const failedNodesList = Object.keys(response.data)
                             .reduce((message, key) => message += `<div>${key} - ${response.data[key]}</div>`, '');
-                        toastr.success(failedNodesList, successMessage, {allowHtml: true});
+                        toastr.warning(failedNodesList, successMessage, {allowHtml: true});
                     }
                     $scope.getClusterConfiguration();
                 })
