@@ -3,13 +3,21 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
+import 'services/ontotext-yasgui-web-component.service.js';
+import 'angular/utils/repositories-utils.service.js';
 import {decodeHTML} from "../../../app";
+import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-template/sparql-template-info";
+import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
+import 'services/event-emitter-service';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
-    'toastr'
+    'toastr',
+    'graphdb.framework.ontotext-yasgui-web-component',
+    'graphdb.framework.repositories',
+    'graphdb.framework.utils.event-emitter-service'
 ];
 
 angular.module('graphdb.framework.sparql-template.controllers', modules, [
@@ -26,15 +34,15 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
 
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
-    }
+    };
 
     $scope.getSparqlTemplates = function () {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos doesn't support update operations.
         if ($licenseService.isLicenseValid() &&
             $repositories.getActiveRepository()
-                && !$repositories.isActiveRepoOntopType()
-                    && !$repositories.isActiveRepoFedXType()) {
+            && !$repositories.isActiveRepoOntopType()
+            && !$repositories.isActiveRepoFedXType()) {
             SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository()).success(function (data) {
                 $scope.sparqlTemplateIds = data;
             }).error(function (data) {
@@ -70,325 +78,482 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     };
 }
 
-SparqlTemplateCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'SparqlTemplatesRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'UriUtils', 'ModalService', '$translate'];
+SparqlTemplateCreateCtrl.$inject = [
+    '$scope',
+    '$rootScope',
+    '$location',
+    'toastr',
+    '$repositories',
+    '$window',
+    '$timeout',
+    '$interval',
+    'SparqlTemplatesRestService',
+    'RDF4JRepositoriesRestService',
+    'SparqlRestService',
+    'UriUtils',
+    'ModalService',
+    '$translate',
+    'OntotextYasguiWebComponentService',
+    'RepositoriesUtilService',
+    '$q',
+    'EventEmitterService',
+    '$languageService'];
 
-function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, SparqlTemplatesRestService, RDF4JRepositoriesRestService, SparqlRestService, UriUtils, ModalService, $translate) {
+function SparqlTemplateCreateCtrl(
+    $scope,
+    $rootScope,
+    $location,
+    toastr,
+    $repositories,
+    $window,
+    $timeout,
+    $interval,
+    SparqlTemplatesRestService,
+    RDF4JRepositoriesRestService,
+    SparqlRestService,
+    UriUtils,
+    ModalService,
+    $translate,
+    ontotextYasguiWebComponentService,
+    repositoriesUtilService,
+    $q,
+    eventEmitterService,
+    $languageService) {
 
-    const hash = $location.hash() || '';
-    $scope.templateID = ($location.search().templateID || '') + (hash ? (`#${hash}`) : '');
-    $scope.title = ($scope.templateID ? $translate.instant('edit') : $translate.instant('common.create.btn')) + ' SPARQL Template';
-    $scope.getNamespaces = getNamespaces;
-    $scope.setLoader = setLoader;
-    $scope.addKnownPrefixes = addKnownPrefixes;
-    $scope.noPadding = {paddingRight: 0, paddingLeft: 0};
-    $scope.currentTabConfig = {};
-    // This property is obligatory in order to show YASQUE and YASR properly
-    $scope.orientationViewMode = true;
-    $scope.currentQuery = {};
-    let templateExist = false;
+    $scope.initialQuery = DEFAULT_SPARQL_QUERY;
+    $scope.sparqlTemplateInfo = new SparqlTemplateInfo($scope.initialQuery);
+    $scope.title = '';
+    $scope.saveOrUpdateExecuted = false;
+    $scope.isDirty = false;
+    $scope.language = $languageService.getLanguage();
+    $scope.canEditActiveRepo = false;
 
 
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function (newValue, oldValue) {
-        if (newValue !== oldValue) {
-            $location.path('/sparql-templates');
+    // =========================
+    // Public functions
+    // =========================
+    $scope.saveTemplate = function () {
+        $scope.saveOrUpdateExecuted = true;
+
+        if (!isQueryDirty()) {
+            goToSparqlTemplatesView();
         }
-    });
 
-    let timer = null;
-    $scope.goBack = function () {
-        timer = $timeout(function () {
-            $window.history.back();
-        }, 1000);
+        const saveOrUpdate = $scope.sparqlTemplateInfo.isNewTemplate ? save : update;
+
+        validateTemplateId($scope.sparqlTemplateInfo)
+            .then(getQuery)
+            .then(validateQuery)
+            .then(validateQueryMode)
+            .then(saveOrUpdate)
+            .then(goBack)
+            .catch((error) => {
+                if (!(error instanceof SparqlTemplateError)) {
+                    console.log(error);
+                }
+            });
     };
 
-    const locationChangeListener = $scope.$on('$locationChangeStart', function (event) {
-        confirmExit(event);
-    });
+    $scope.isTemplateIdValid = (templateID) => {
+        return UriUtils.isValidIri(templateID);
+    };
 
-    window.addEventListener('beforeunload', showBeforeunloadMessage);
+    $scope.markDirty = () => {
+        $scope.isDirty = true;
+    };
 
-    function showBeforeunloadMessage(event) {
-        if (!$scope.currentQuery.isPristine) {
-            event.returnValue = true;
-        }
-    }
+    $scope.markPristine = () => {
+        $scope.isDirty = false;
+    };
 
-    function confirmExit(event) {
-        if (!$scope.currentQuery.isPristine) {
-            if (!confirm($translate.instant('jdbc.warning.unsaved.changes'))) {
-                event.preventDefault();
-            } else {
-                window.removeEventListener('beforeunload', showBeforeunloadMessage);
-                locationChangeListener();
-                $timeout.cancel(timer);
+    // =========================
+    // Private functions
+    // =========================
+    const init = (prefixes, initialQuery = DEFAULT_SPARQL_QUERY) => {
+        $scope.sparqlTemplateInfo.query = initialQuery;
+        $scope.sparqlTemplateInfo.templateID = extractTemplateIdFromUri();
+        $scope.sparqlTemplateInfo.isNewTemplate = !$scope.sparqlTemplateInfo.templateID;
+        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+        updateTitle();
+        $scope.config = {
+            showEditorTabs: false,
+            showToolbar: false,
+            showResultTabs: false,
+            yasqeActionButtons: ontotextYasguiWebComponentService.getDisableYasqeActionButtonsConfiguration(),
+            showQueryButton: false,
+            initialQuery: $scope.sparqlTemplateInfo.query,
+            componentId: 'sparql-template',
+            prefixes: prefixes,
+            maxPersistentResponseSize: 0,
+            readonly: $scope.canEditActiveRepo ? false : 'nocursor',
+            yasqeAutocomplete: {
+                LocalNamesAutocompleter: (term) => {
+                    const canceler = $q.defer();
+                    return ontotextYasguiWebComponentService.autocompleteLocalNames(term, canceler);
+                }
             }
-        }
-    }
-
-    $scope.$on('$destroy', function (event) {
-        window.removeEventListener('beforeunload', showBeforeunloadMessage);
-        locationChangeListener();
-        $timeout.cancel(timer);
-    });
-
-    const defaultTabConfig = {
-        templateID: '',
-        query: 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
-            'PREFIX ex: <http://example.com#>\n' +
-            'DELETE {\n' +
-            '  ?subject ex:myPredicate ?oldValue .\n' +
-            '} INSERT {\n' +
-            '  ?subject ex:myPredicate ?newValue .\n' +
-            '} WHERE {\n' +
-            '  ?id rdf:type ex:MyType .\n' +
-            '  ?subject ex:isRelatedTo ?id .\n' +
-            '}\n',
-        inference: true,
-        sameAs: true,
-        isNewTemplate: true,
-        isPristine: true
+        };
+        addDirtyCheckHandlers();
     };
 
-    $scope.saveTab = function () {
-        // Should have this empty function in this view
+    /**
+     * Saves the SPARQL template described in <code>templateInfo</code>.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const save = (templateInfo) => {
+        return checkIfTemplateExists(templateInfo)
+            .then(confirmSaveAction)
+            .then(saveNewTemplate);
     };
 
-    // Called when user clicks on a sample query
-    $scope.setQuery = function (query) {
-        // Hack for YASQE bug
-        window.editor.setValue(query ? query : ' ');
+    /**
+     * Checks if template with <code>templateInfo.templateID</code> exist.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const checkIfTemplateExists = (templateInfo) => {
+        return SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository())
+            .then(function (response) {
+                templateInfo.templateExist = response.data.find((templateId) => templateId === $scope.sparqlTemplateInfo.templateID);
+                return templateInfo;
+            }).catch(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
+                throw new SparqlTemplateError();
+            });
     };
 
-    if ($scope.templateID) {
-        getSparqlTemplate($scope.templateID);
-    } else {
-        setQueryFromTabConfig();
-    }
+    /**
+     * Checks if yasque query is changed.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const validateQuery = (templateInfo) => {
+        return getOntotextYasgui().isQueryValid()
+            .then((valid) => {
+                templateInfo.isValidQuery = valid;
+                if (!templateInfo.isValidQuery) {
+                    throw new SparqlTemplateError();
+                }
+                return templateInfo;
+            });
+    };
 
-    // FIXME: this is copy-pasted in graphs-config.controller.js and query-editor.controller.js. Find a way to avoid duplications
-    function getNamespaces() {
-        // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
-        RDF4JRepositoriesRestService.getRepositoryNamespaces()
-            .success(function (data) {
-                const usedPrefixes = {};
-                data.results.bindings.forEach(function (e) {
-                    usedPrefixes[e.prefix.value] = e.namespace.value;
-                });
-                $scope.namespaces = usedPrefixes;
-            })
-            .error(function (data) {
-                $scope.repositoryError = getError(data);
-            })
-            .finally(function () {
-                // Signals namespaces were fetched => loader will be hidden
-                setLoader(false);
-                loadTab();
+    const isQueryDirty = () => {
+        return $scope.sparqlTemplateInfo.isNewTemplate || $scope.isDirty;
+    };
+
+    /**
+     * Displays a confirmation dialog and asks the user to confirm the save operation.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const confirmSaveAction = (templateInfo) => {
+        return new Promise((resolve, reject) => {
+            if (templateInfo.templateExist) {
+                const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: templateInfo.templateID}));
+                const title = $translate.instant('common.confirm.save');
+                confirm(title, modalMsg, () => resolve(templateInfo), () => reject(new SparqlTemplateError()));
+            } else {
+                resolve(templateInfo);
+            }
+        });
+    };
+
+    /**
+     * Calls save SPARQL template server endpoint.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    function saveNewTemplate(templateInfo) {
+        return SparqlTemplatesRestService.createSparqlTemplate(templateInfo, $repositories.getActiveRepository())
+            .then(function () {
+                templateInfo.isNewTemplate = false;
+                $scope.markPristine();
+                toastr.success(templateInfo.templateID, $translate.instant('save.sparql.template.success.msg'));
+                return templateInfo;
+            }).catch(function (data) {
+                const message = getError(data);
+                toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
+                throw new SparqlTemplateError();
             });
     }
 
-    function setLoader(isRunning, progressMessage, extraMessage) {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        $scope.queryIsRunning = isRunning;
-        if (isRunning) {
-            $scope.queryStartTime = Date.now();
-            $scope.countTimeouted = false;
-            $scope.progressMessage = progressMessage;
-            $scope.extraMessage = extraMessage;
-            yasrInnerContainer.addClass('hide');
-        } else {
-            $scope.progressMessage = '';
-            $scope.extraMessage = '';
-            yasrInnerContainer.removeClass('hide');
-        }
+    /**
+     * Updates the SPARQL template described in <code>templateInfo</code>.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const update = (templateInfo) => {
+        return SparqlTemplatesRestService.updateSparqlTemplate(templateInfo, $repositories.getActiveRepository())
+            .then(function () {
+                templateInfo.isNewTemplate = false;
+                $scope.markPristine();
+                toastr.success($scope.sparqlTemplateInfo.templateID, $translate.instant('update.sparql.template.success.msg'));
+                return templateInfo;
+            }).catch(function (data) {
+                const message = getError(data);
+                toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
+                throw new SparqlTemplateError();
+            });
+    };
 
-        // We might call this from angular or outside angular so take care of applying the scope.
-        if ($scope.$$phase === null) {
-            $scope.$apply();
-        }
-    }
+    /**
+     * Fetches the query from "ontotext-yasgui" and updates the <code>templateInfo</code>.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const getQuery = (templateInfo) => {
+        return getOntotextYasgui().getQuery()
+            .then((query) => {
+                templateInfo.query = query;
+                return templateInfo;
+            });
+    };
 
-    function loadTab() {
-        $scope.tabsData = [$scope.currentQuery];
+    /**
+     * Checks if query mode is valid. The mode have to be "update".
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const validateQueryMode = (templateInfo) => {
+        return getOntotextYasgui().getQueryMode()
+            .then((queryMode) => {
+                templateInfo.isValidQueryMode = 'update' === queryMode;
 
-        const tab = $scope.currentQuery;
+                if (!templateInfo.isValidQueryMode) {
+                    throw new SparqlTemplateError();
+                }
+                return templateInfo;
+            });
+    };
 
-        if (!$scope.currentQuery.query) {
-            // hack for YASQE bug
-            window.editor.setValue(' ');
-        } else {
-            window.editor.setValue($scope.currentQuery.query);
-        }
-
-        $timeout(function () {
-            $scope.currentTabConfig = {};
-            $scope.currentTabConfig.queryType = tab.queryType;
-            $scope.currentTabConfig.resultsCount = tab.resultsCount;
-
-            $scope.currentTabConfig.offset = tab.offset;
-            $scope.currentTabConfig.allResultsCount = tab.allResultsCount;
-            $scope.currentTabConfig.page = tab.page;
-            $scope.currentTabConfig.pageSize = tab.pageSize;
-
-            $scope.currentTabConfig.timeFinished = tab.timeFinished;
-            $scope.currentTabConfig.timeTook = tab.timeTook;
-            $scope.currentTabConfig.sizeDelta = tab.sizeDelta;
-            $scope.$apply();
-        }, 0);
-
-        if (!$scope.canWriteActiveRepo()) {
-            window.editor.options.readOnly = true;
-        }
-    }
-
-    function getSparqlTemplate(templateID) {
-        SparqlTemplatesRestService.getSparqlTemplate(templateID, $repositories.getActiveRepository() ).success(function (templateContent) {
-            defaultTabConfig.query = templateContent;
-            defaultTabConfig.templateID = templateID;
-
-            defaultTabConfig.isNewTemplate = !templateID;
-
-            setQueryFromTabConfig();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('sparql.template.get.template.error', {templateID: $scope.currentQuery.templateID}));
-            $scope.repositoryError = msg;
-        });
-    }
-
-    function setQueryFromTabConfig() {
-        $scope.tabsData = $scope.tabs = [defaultTabConfig];
-        $scope.currentQuery = _.cloneDeep(defaultTabConfig);
-
-        if (window.editor) {
-            $scope.setQuery($scope.currentQuery.query);
-            loadTab();
-        }
-
-        $scope.$watch(function () {
-            return $scope.currentQuery.query;
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                $scope.setDirty();
-            }
-        });
-    }
-
-    $scope.saveTemplate = function () {
-        if (!validateQuery()) {
-            return;
-        }
-
-        if (!$scope.currentQuery.templateID) {
-            toastr.error($translate.instant('sparql.template.iri.constraint'));
-            return;
-        } else {
-            validateTemplateID();
-            if ($scope.isInvalidTemplateId) {
+    /**
+     * Checks if template id is valid.
+     * @param {SparqlTemplateInfo} templateInfo - holds information about template.
+     * @return {Promise<SparqlTemplateInfo>}
+     */
+    const validateTemplateId = (templateInfo) => {
+        return new Promise((resolve, reject) => {
+            if (!templateInfo.templateID) {
+                reject(new SparqlTemplateError());
                 return;
             }
-        }
 
-        if ($scope.currentQuery.isNewTemplate) {
-            checkIfTemplateExists()
-                .then(() => {
-                    if (templateExist) {
-                        const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: $scope.currentQuery.templateID}));
-                        ModalService.openSimpleModal({
-                            title: $translate.instant('common.confirm.save'),
-                            message: modalMsg,
-                            warning: true
-                        }).result
-                            .then(function () {
-                                saveNewTemplate();
-                            });
-                    } else {
-                        saveNewTemplate();
-                    }
-                });
-        } else {
-            if (!$scope.currentQuery.isPristine) {
-                SparqlTemplatesRestService.updateSparqlTemplate($scope.currentQuery, $repositories.getActiveRepository()).success(function () {
-                    $scope.currentQuery.isPristine = true;
-                    $scope.currentQuery.isNewTemplate = false;
-                    toastr.success($scope.currentQuery.templateID, $translate.instant('update.sparql.template.success.msg'));
-                    $scope.goBack();
-                }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('save.sparql.template.failure.msg', {templateID: $scope.currentQuery.templateID}));
-                });
-            } else {
-                // No changes to template query, go back to
-                $scope.goBack();
+            templateInfo.isValidTemplateId = $scope.isTemplateIdValid(templateInfo.templateID);
+
+            if (!templateInfo.isValidTemplateId) {
+                reject(new SparqlTemplateError());
+                return;
             }
-        }
+
+            resolve(templateInfo);
+        });
+    };
+
+    /**
+     * go to previous page.
+     */
+    const goBack = () => {
+        // Added timeout a success message to be shown.
+        setTimeout(function () {
+            goToSparqlTemplatesView();
+        }, 1000);
+
+    };
+
+    const extractTemplateIdFromUri = () => {
+        const hash = $location.hash() || '';
+        return ($location.search().templateID || '') + (hash ? (`#${hash}`) : '');
+    };
+
+    const updateTitle = () => {
+        $scope.title = ($scope.sparqlTemplateInfo.templateID ? $translate.instant('edit') : $translate.instant('common.create.btn')) + ' ' + $translate.instant('view.sparql.template.title');
+    };
+
+    const goToSparqlTemplatesView = () => {
+        $location.url('/sparql-templates');
     };
 
 
-    // Add known prefixes
-    function addKnownPrefixes() {
-        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
-            .success(function (data) {
-                if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
-                    window.editor.setValue(data);
-                }
+    const setLoader = (isRunning, loaderMessage) => {
+        $scope.queryIsRunning = isRunning;
+        $scope.loaderMessage = $scope.queryIsRunning ? loaderMessage : '';
+    };
+
+    const addKnownPrefixes = () => {
+        getOntotextYasgui().getQuery()
+            .then((query) => {
+                return JSON.stringify(query);
             })
-            .error(function (data) {
+            .then(SparqlRestService.addKnownPrefixes)
+            .then((response) => {
+                getOntotextYasgui().setQuery(response.data);
+            })
+            .catch((data) => {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
-                return true;
             });
-    }
-
-    $('textarea').on('paste', function () {
-        $timeout(function () {
-            addKnownPrefixes();
-        }, 0);
-    });
-
-    $scope.setDirty = function () {
-        $scope.currentQuery.isPristine = false;
     };
 
-    function hasValidQuery() {
-        return window.editor && window.editor.getQueryMode() === 'update';
-    }
-
-    function validateQuery() {
-        if (!hasValidQuery()) {
-            toastr.error($translate.instant('sparql.template.query.constraint'), $translate.instant('jdbc.invalid.query'));
-            return false;
+    const getOntotextYasgui = () => {
+        if (!$scope.ontotextYasgui) {
+            $scope.ontotextYasgui = document.querySelector('ontotext-yasgui');
         }
+        return $scope.ontotextYasgui;
+    };
 
-        return true;
-    }
-
-    function validateTemplateID() {
-        $scope.isInvalidTemplateId = !UriUtils.isValidIri($scope.currentQuery.templateID, $scope.currentQuery.templateID.toString());
-    }
-
-    function saveNewTemplate() {
-        SparqlTemplatesRestService.createSparqlTemplate($scope.currentQuery, $repositories.getActiveRepository()).success(function () {
-            $scope.currentQuery.isPristine = true;
-            $scope.currentQuery.isNewTemplate = false;
-            toastr.success($scope.currentQuery.templateID, $translate.instant('save.sparql.template.success.msg'));
-            $scope.goBack();
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('save.sparql.template.failure.msg', {templateID: $scope.currentQuery.templateID}));
+    const confirm = (title, message, onConfirm, onCancel) => {
+        ModalService.openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function () {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
         });
-    }
+    };
 
-    function checkIfTemplateExists() {
-        return SparqlTemplatesRestService
-            .getSparqlTemplates($repositories.getActiveRepository())
-                .success(function (data) {
-                    templateExist = data.find((templateId) => templateId === $scope.currentQuery.templateID);
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
+    // =========================
+    // Subscriptions handlers
+    // =========================
+    const languageChangedHandler = () => {
+        $scope.language = $languageService.getLanguage();
+        updateTitle();
+    };
+
+    const repositoryWillChangedHandler = (eventData) => {
+        return new Promise(function (resolve) {
+
+            if ($scope.sparqlTemplateInfo.isNewTemplate) {
+                resolve(eventData);
+                return;
+            }
+
+            const onConfirm = () => {
+                $scope.isDirty = false;
+                goToSparqlTemplatesView();
+                resolve(eventData);
+            };
+
+            if ($scope.isDirty) {
+                const onCancel = () => {
+                    eventData.cancel = true;
+                    resolve(eventData);
+                };
+                const title = $translate.instant('common.confirm');
+                const message = $translate.instant('jdbc.warning.unsaved.changes');
+                confirm(title, message, onConfirm, onCancel);
+            } else {
+                onConfirm();
+            }
         });
-    }
+    };
+
+    const removeAllListeners = () => {
+        window.removeEventListener('beforeunload', beforeunloadHandler);
+        removeDirtyCheckHandlers();
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    const locationChangedHandler = (event, newPath) => {
+        if ($scope.isDirty) {
+            event.preventDefault();
+            const title = $translate.instant('common.confirm');
+            const message = $translate.instant('jdbc.warning.unsaved.changes');
+            const onConfirm = () => {
+                removeAllListeners();
+                const baseLen = $location.absUrl().length - $location.url().length;
+                const path = newPath.substring(baseLen);
+                $location.path(path);
+            };
+            confirm(title, message, onConfirm);
+        } else {
+            removeAllListeners();
+        }
+    };
+
+    const beforeunloadHandler = (event) => {
+        if ($scope.isDirty) {
+            event.returnValue = true;
+        }
+    };
+
+    const repositoryChangedHandler = () => {
+        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+        loadOntotextYasgui();
+    };
+
+    const addDirtyCheckHandlers = () => {
+        const waitOntotextInitialized = $interval(function () {
+            if (getOntotextYasgui()) {
+                const $ontotext = $('ontotext-yasgui');
+                $ontotext.on('paste.sparqlQuery', '.CodeMirror', function () {
+                    $scope.markDirty();
+                    addKnownPrefixes();
+                    removeDirtyCheckHandlers();
+                });
+                $ontotext.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
+                    $scope.markDirty();
+                    removeDirtyCheckHandlers();
+                });
+                $interval.cancel(waitOntotextInitialized);
+            }
+        });
+    };
+
+    const removeDirtyCheckHandlers = () => {
+        const $ontotext = $('ontotext-yasgui');
+        $ontotext.off('paste.sparqlQuery');
+        $ontotext.off('keyup.sparqlQuery');
+    };
+
+    // =========================
+    // Subscriptions
+    // =========================
+    const subscriptions = [];
+
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
+    subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+    subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push(eventEmitterService.subscribe('repositoryIsSet', repositoryChangedHandler));
+    subscriptions.push($scope.$on('$destroy', removeAllListeners));
+    // Prevent go out of the current page? check
+    window.addEventListener('beforeunload', beforeunloadHandler);
+
+    /**
+     * Starts loading of needed data and process the view.
+     */
+    const loadOntotextYasgui = () => {
+        const loadMessage = `${$translate.instant('common.refreshing.namespaces')}. ${$translate.instant('common.extra.message')}`;
+
+        setLoader(true, loadMessage);
+        $scope.sparqlTemplateInfo.templateID = extractTemplateIdFromUri();
+        if ($scope.sparqlTemplateInfo.templateID) {
+            Promise.all([repositoriesUtilService.getPrefixes(), SparqlTemplatesRestService.getSparqlTemplate($scope.sparqlTemplateInfo.templateID, $repositories.getActiveRepository())])
+                .then(([prefixes, templateContent]) => init(prefixes, templateContent.data))
+                .finally(() => setLoader(false));
+        } else {
+            repositoriesUtilService.getPrefixes()
+                .then((prefixes) => init(prefixes))
+                .finally(() => setLoader(false));
+        }
+    };
+
+    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+    // readOnly configuration may be incorrect.
+    const repoIsInitialized = $scope.$watch(function () {
+        return $scope.getActiveRepositoryObject();
+    }, function (activeRepo) {
+        if (activeRepo) {
+            loadOntotextYasgui();
+            repoIsInitialized();
+        }
+    });
 }
