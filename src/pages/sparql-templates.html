@@ -18,7 +18,7 @@
     <div class="sparql-templates-list card mb-2" ng-if="isLicenseValid() && pluginIsActive && getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
         <div class="card-block" ng-init="getSparqlTemplates();">
             <div class="clearfix">
-                <a ng-href="sparql-template/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
+                <a ng-href="sparql-template/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right create-sparql-template">
                     <span class="icon-plus create-sql-table-configuration"></span> {{'create.new.sparql.template' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"

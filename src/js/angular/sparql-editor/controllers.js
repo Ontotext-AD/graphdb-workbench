@@ -11,6 +11,7 @@ import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import 'angular/rest/connectors.rest.service';
 import 'services/ontotext-yasgui-web-component.service.js';
+import 'angular/utils/repositories-utils.service.js';
 import 'angular/externalsync/controllers';
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../models/ontotext-yasgui/before-update-query-result";
@@ -19,7 +20,8 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
     'graphdb.framework.ontotext-yasgui-web-component',
-    'graphdb.framework.externalsync.controllers'
+    'graphdb.framework.externalsync.controllers',
+    'graphdb.framework.repositories'
 ];
 
 angular
@@ -41,7 +43,8 @@ SparqlEditorCtrl.$inject = [
     'RDF4JRepositoriesRestService',
     'ConnectorsRestService',
     'OntotextYasguiWebComponentService',
-    '$uibModal'];
+    '$uibModal',
+    'RepositoriesUtilService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -57,7 +60,8 @@ function SparqlEditorCtrl($scope,
                           RDF4JRepositoriesRestService,
                           ConnectorsRestService,
                           ontotextYasguiWebComponentService,
-                          $uibModal) {
+                          $uibModal,
+                          repositoriesUtilService) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -99,7 +103,7 @@ function SparqlEditorCtrl($scope,
                 yasqeAutocomplete: {
                     LocalNamesAutocompleter: (term) => {
                         const canceler = $q.defer();
-                        return autocompleteLocalNames(term, canceler);
+                        return ontotextYasguiWebComponentService.autocompleteLocalNames(term, canceler);
                     }
                 },
                 getRepositoryStatementsCount: ontotextYasguiWebComponentService.getRepositoryStatementsCount,
@@ -323,14 +327,6 @@ function SparqlEditorCtrl($scope,
         });
     };
 
-    const autocompleteLocalNames = (term, canceler) => {
-        return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
-            .then(function (results) {
-                canceler = null;
-                return results.data;
-            });
-    };
-
     const updateRequestHeaders = (req, queryMode, queryType, pageSize) => {
         const authToken = $jwtAuth.getAuthToken();
         if (authToken) {
@@ -436,14 +432,6 @@ function SparqlEditorCtrl($scope,
         });
     };
 
-    const setPrefixes = (namespacesResponse) => {
-        const usedPrefixes = {};
-        namespacesResponse.data.results.bindings.forEach(function (e) {
-            usedPrefixes[e.prefix.value] = e.namespace.value;
-        });
-        $scope.prefixes = usedPrefixes;
-    };
-
     const setInferAndSameAs = (principal) => {
         $scope.inferUserSetting = principal.appSettings.DEFAULT_INFERENCE;
         $scope.sameAsUserSetting = principal.appSettings.DEFAULT_SAMEAS;
@@ -451,10 +439,10 @@ function SparqlEditorCtrl($scope,
 
     // Initialization and bootstrap
     function init() {
-        Promise.all([$jwtAuth.getPrincipal(), RDF4JRepositoriesRestService.getRepositoryNamespaces()])
-            .then(([principal, namespacesResponse]) => {
+        Promise.all([$jwtAuth.getPrincipal(), repositoriesUtilService.getPrefixes()])
+            .then(([principal, usedPrefixes]) => {
                 setInferAndSameAs(principal);
-                setPrefixes(namespacesResponse);
+                $scope.prefixes = usedPrefixes;
             })
             .finally(() => {
                 $scope.updateConfig();
