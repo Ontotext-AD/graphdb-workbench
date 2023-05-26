@@ -103,7 +103,7 @@
             "loader_message": "Deleting cluster",
             "notifications": {
                 "success_delete": "Cluster deleted successfully",
-                "success_delete_partial": "Not all nodes are deleted",
+                "success_delete_partial": "Not all nodes were deleted",
                 "fail_delete": "Can not delete cluster"
             }
         },

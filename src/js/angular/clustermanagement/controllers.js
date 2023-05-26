@@ -30,7 +30,7 @@ export const NodeState = {
     READ_ONLY: 'READ_ONLY',
     RESTRICTED: 'RESTRICTED',
     NO_CLUSTER: 'NO_CLUSTER',
-    DELETED: 'DELETED'
+    DELETED: 'Cluster was deleted on this node.'
 };
 export const LinkState = {
     IN_SYNC: 'IN_SYNC',
