@@ -44,7 +44,9 @@ const parseMemberParamIfNeeded = function (param) {
 };
 
 const convertAdditionalPropertiesParamIfNeeded = function (params) {
-    if (params.additionalProperties && params.additionalProperties.value) {
+    const values = params && params.additionalProperties && params.additionalProperties.value;
+
+    if (values && values instanceof Object) {
         const values = params.additionalProperties.value;
         const valuesAsStrings = Object.keys(values).map((key) => `${key}=${values[key]}`);
         params.additionalProperties.value = valuesAsStrings.join('\n');
