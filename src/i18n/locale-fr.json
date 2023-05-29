@@ -103,7 +103,7 @@
             "loader_message": "Suppression d'un cluster",
             "notifications": {
                 "success_delete": "Cluster supprimé avec succès",
-                "success_delete_partial": "Tous les nœuds ne sont pas supprimés",
+                "success_delete_partial": "Tous les nœuds n'ont pas été supprimés",
                 "fail_delete": "Impossible de supprimer le cluster"
             }
         },
