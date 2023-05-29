@@ -66,7 +66,7 @@ describe('Repositories', () => {
     }
 
     it('create repository page should list available repository types options', () => {
-        let expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
+        const expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
         createRepository();
         cy.url().should('include', '/repository/create');
 
@@ -241,7 +241,7 @@ describe('Repositories', () => {
 
         // Wait for redirection to previous '/repository'
         cy.waitUntil(() =>
-                cy.url().then(url => url === (Cypress.config('baseUrl') + '/repository')));
+                cy.url().then((url) => url === (Cypress.config('baseUrl') + '/repository')));
 
         // Connect to the first repo via the connection icon
         // Note: Not using within() because the whole row will be re-rendered & detached
@@ -465,7 +465,7 @@ describe('Repositories', () => {
                     additionalProperties: {
                         "label": "Additional Ontop/JDBC properties",
                         "name": "additionalProperties",
-                        "value": ""
+                        "value": "prop1=value1\nprop2=value2"
                     }
                 }
             };
@@ -477,6 +477,12 @@ describe('Repositories', () => {
             });
 
             cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
+
+            editRepository(virtualRepoName);
+
+            // Additional Ontop Properties field should be visible and populated correctly
+            getAdditionalPropertiesTextArea().should('be.visible');
+            getAdditionalPropertiesTextArea().should('have.value', 'prop2=value2\nprop1=value1');
 
             //Check workbench restricted sections when connected to an Ontop repository
             selectRepoFromDropdown(virtualRepoName);
@@ -694,8 +700,8 @@ describe('Repositories', () => {
             getRepositoryFromList(repositoryId)
                 .should('be.visible')
                 .find('.repository-status .text-secondary')
-                .then($el => $el)
-                .then($el => $el && $el.text() === status));
+                .then(($el) => $el)
+                .then(($el) => $el && $el.text() === status));
     }
 
     function getRepositoriesList() {
@@ -793,6 +799,10 @@ describe('Repositories', () => {
 
     function getRepositoryRulesetMenu() {
         return getRepositoryCreateForm().find('#ruleset');
+    }
+
+    function getAdditionalPropertiesTextArea() {
+        return getRepositoryCreateForm().find('#additionalProperties');
     }
 
     function getRepositoryDisableSameAsCheckbox() {
@@ -905,7 +915,7 @@ describe('Repositories', () => {
         return cy.get('#ontop-content');
     }
 
-    function getDatabaseDriver(){
+    function getDatabaseDriver() {
         return cy.get('#driverType');
     }
 
@@ -953,13 +963,13 @@ describe('Repositories', () => {
         compareDriverDownloadUrl(downloadLink);
     }
 
-    function compareDriverDownloadUrl(expectedUrl){
+    function compareDriverDownloadUrl(expectedUrl) {
         cy.get('.uri')
             .should('be.visible')
             .and('have.attr', 'href', expectedUrl);
     }
 
-    function getSHACLRepositoryCheckbox(){
+    function getSHACLRepositoryCheckbox() {
         return cy.get('#isShacl');
     }
 });
