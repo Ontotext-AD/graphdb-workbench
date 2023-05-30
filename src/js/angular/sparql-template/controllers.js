@@ -221,7 +221,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
-                return Promise.reject(new SparqlTemplateError());
+                return Promise.reject(new SparqlTemplateError('Failed to retrieve sparql templates.'));
             });
     };
 
@@ -235,7 +235,7 @@ function SparqlTemplateCreateCtrl(
             .then((valid) => {
                 templateInfo.isValidQuery = valid;
                 if (!templateInfo.isValidQuery) {
-                    return Promise.reject(new SparqlTemplateError());
+                    return Promise.reject(new SparqlTemplateError('Invalid query.'));
                 }
                 return templateInfo;
             });
@@ -255,7 +255,7 @@ function SparqlTemplateCreateCtrl(
             if (templateInfo.templateExist) {
                 const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: templateInfo.templateID}));
                 const title = $translate.instant('common.confirm.save');
-                openConfirmDialog(title, modalMsg, () => resolve(templateInfo), () => reject(new SparqlTemplateError()));
+                openConfirmDialog(title, modalMsg, () => resolve(templateInfo), () => reject(new SparqlTemplateError('Save not confirmed.')));
             } else {
                 resolve(templateInfo);
             }
@@ -277,7 +277,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const message = getError(data);
                 toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
-                return Promise.reject(new SparqlTemplateError());
+                return Promise.reject(new SparqlTemplateError(`Failed to save the new template: ${templateInfo.templateID}`));
             });
     }
 
@@ -296,7 +296,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const message = getError(data);
                 toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
-                return Promise.reject(new SparqlTemplateError());
+                return Promise.reject(new SparqlTemplateError(`Failed to update the template: ${templateInfo.templateID}`));
             });
     };
 
@@ -324,7 +324,7 @@ function SparqlTemplateCreateCtrl(
                 templateInfo.isValidQueryMode = 'update' === queryMode;
 
                 if (!templateInfo.isValidQueryMode) {
-                    return Promise.reject(new SparqlTemplateError());
+                    return Promise.reject(new SparqlTemplateError('Query mode is not valid.'));
                 }
                 return templateInfo;
             });
@@ -338,14 +338,14 @@ function SparqlTemplateCreateCtrl(
     const validateTemplateId = (templateInfo) => {
         return new Promise((resolve, reject) => {
             if (!templateInfo.templateID) {
-                reject(new SparqlTemplateError());
+                reject(new SparqlTemplateError('A required template identifier is missing.'));
                 return;
             }
 
             templateInfo.isValidTemplateId = $scope.isTemplateIdValid(templateInfo.templateID);
 
             if (!templateInfo.isValidTemplateId) {
-                reject(new SparqlTemplateError());
+                reject(new SparqlTemplateError('Template identifier is not valid.'));
                 return;
             }
 
