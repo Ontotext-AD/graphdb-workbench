@@ -9,6 +9,7 @@ import {decodeHTML} from "../../../app";
 import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-template/sparql-template-info";
 import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
 import 'services/event-emitter-service';
+import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
 
 const modules = [
     'ui.bootstrap',
@@ -185,7 +186,7 @@ function SparqlTemplateCreateCtrl(
             componentId: 'sparql-template',
             prefixes: prefixes,
             maxPersistentResponseSize: 0,
-            readonly: $scope.canEditActiveRepo ? false : 'nocursor',
+            readOnly: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
             yasqeAutocomplete: {
                 LocalNamesAutocompleter: (term) => {
                     const canceler = $q.defer();
@@ -220,7 +221,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
-                throw new SparqlTemplateError();
+                return Promise.reject(new SparqlTemplateError());
             });
     };
 
@@ -234,7 +235,7 @@ function SparqlTemplateCreateCtrl(
             .then((valid) => {
                 templateInfo.isValidQuery = valid;
                 if (!templateInfo.isValidQuery) {
-                    throw new SparqlTemplateError();
+                    return Promise.reject(new SparqlTemplateError());
                 }
                 return templateInfo;
             });
@@ -254,7 +255,7 @@ function SparqlTemplateCreateCtrl(
             if (templateInfo.templateExist) {
                 const modalMsg = decodeHTML($translate.instant('sparql.template.existing.template.error', {templateID: templateInfo.templateID}));
                 const title = $translate.instant('common.confirm.save');
-                confirm(title, modalMsg, () => resolve(templateInfo), () => reject(new SparqlTemplateError()));
+                openConfirmDialog(title, modalMsg, () => resolve(templateInfo), () => reject(new SparqlTemplateError()));
             } else {
                 resolve(templateInfo);
             }
@@ -276,7 +277,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const message = getError(data);
                 toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
-                throw new SparqlTemplateError();
+                return Promise.reject(new SparqlTemplateError());
             });
     }
 
@@ -295,7 +296,7 @@ function SparqlTemplateCreateCtrl(
             }).catch(function (data) {
                 const message = getError(data);
                 toastr.error(message, $translate.instant('save.sparql.template.failure.msg', {templateID: templateInfo.templateID}));
-                throw new SparqlTemplateError();
+                return Promise.reject(new SparqlTemplateError());
             });
     };
 
@@ -323,7 +324,7 @@ function SparqlTemplateCreateCtrl(
                 templateInfo.isValidQueryMode = 'update' === queryMode;
 
                 if (!templateInfo.isValidQueryMode) {
-                    throw new SparqlTemplateError();
+                    return Promise.reject(new SparqlTemplateError());
                 }
                 return templateInfo;
             });
@@ -404,7 +405,7 @@ function SparqlTemplateCreateCtrl(
         return $scope.ontotextYasgui;
     };
 
-    const confirm = (title, message, onConfirm, onCancel) => {
+    const openConfirmDialog = (title, message, onConfirm, onCancel) => {
         ModalService.openSimpleModal({
             title,
             message,
@@ -449,7 +450,7 @@ function SparqlTemplateCreateCtrl(
                 };
                 const title = $translate.instant('common.confirm');
                 const message = $translate.instant('jdbc.warning.unsaved.changes');
-                confirm(title, message, onConfirm, onCancel);
+                openConfirmDialog(title, message, onConfirm, onCancel);
             } else {
                 onConfirm();
             }
@@ -473,7 +474,7 @@ function SparqlTemplateCreateCtrl(
                 const path = newPath.substring(baseLen);
                 $location.path(path);
             };
-            confirm(title, message, onConfirm);
+            openConfirmDialog(title, message, onConfirm);
         } else {
             removeAllListeners();
         }
