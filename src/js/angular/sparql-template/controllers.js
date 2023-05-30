@@ -186,7 +186,7 @@ function SparqlTemplateCreateCtrl(
             componentId: 'sparql-template',
             prefixes: prefixes,
             maxPersistentResponseSize: 0,
-            readOnly: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
+            yasqeMode: YasqeMode.PROTECTED,
             yasqeAutocomplete: {
                 LocalNamesAutocompleter: (term) => {
                     const canceler = $q.defer();
