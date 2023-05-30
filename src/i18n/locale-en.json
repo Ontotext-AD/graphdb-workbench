@@ -1029,7 +1029,6 @@
     "rdfrank.full.computation": "Requesting rank full computation...",
     "rdfrank.incremental.computation": "Requesting rank incremental computation...",
     "not.valid.iri": "'{{value}}' is not a valid IRI",
-    "iri.required": "'T IRI",
     "fedx.repo.federation.members": "Federation members",
     "fedx.repo.no.members.warning": " No members - add at least one local or remote repository",
     "fedx.repo.local.attached.header": " Local repositories and attached locations ",
