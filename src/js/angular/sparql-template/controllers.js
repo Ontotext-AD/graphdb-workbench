@@ -4,7 +4,6 @@ import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
 import 'services/ontotext-yasgui-web-component.service.js';
-import 'angular/utils/repositories-utils.service.js';
 import {decodeHTML} from "../../../app";
 import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-template/sparql-template-info";
 import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
@@ -17,7 +16,6 @@ const modules = [
     'graphdb.framework.rest.monitoring.service',
     'toastr',
     'graphdb.framework.ontotext-yasgui-web-component',
-    'graphdb.framework.repositories',
     'graphdb.framework.utils.event-emitter-service'
 ];
 
@@ -95,7 +93,6 @@ SparqlTemplateCreateCtrl.$inject = [
     'ModalService',
     '$translate',
     'OntotextYasguiWebComponentService',
-    'RepositoriesUtilService',
     '$q',
     'EventEmitterService',
     '$languageService'];
@@ -116,7 +113,6 @@ function SparqlTemplateCreateCtrl(
     ModalService,
     $translate,
     ontotextYasguiWebComponentService,
-    repositoriesUtilService,
     $q,
     eventEmitterService,
     $languageService) {
@@ -537,11 +533,11 @@ function SparqlTemplateCreateCtrl(
         setLoader(true, loadMessage);
         $scope.sparqlTemplateInfo.templateID = extractTemplateIdFromUri();
         if ($scope.sparqlTemplateInfo.templateID) {
-            Promise.all([repositoriesUtilService.getPrefixes(), SparqlTemplatesRestService.getSparqlTemplate($scope.sparqlTemplateInfo.templateID, $repositories.getActiveRepository())])
+            Promise.all([$repositories.getPrefixes(), SparqlTemplatesRestService.getSparqlTemplate($scope.sparqlTemplateInfo.templateID, $repositories.getActiveRepository())])
                 .then(([prefixes, templateContent]) => init(prefixes, templateContent.data))
                 .finally(() => setLoader(false));
         } else {
-            repositoriesUtilService.getPrefixes()
+            $repositories.getPrefixes()
                 .then((prefixes) => init(prefixes))
                 .finally(() => setLoader(false));
         }
