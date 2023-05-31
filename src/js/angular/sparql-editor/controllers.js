@@ -435,7 +435,7 @@ function SparqlEditorCtrl($scope,
 
     // Initialization and bootstrap
     function init() {
-        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes()])
+        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
             .then(([principal, usedPrefixes]) => {
                 setInferAndSameAs(principal);
                 $scope.prefixes = usedPrefixes;
