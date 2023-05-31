@@ -318,7 +318,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 const doExecute = function () {
                     scope.currentTabConfig.queryType = "UPDATE";
 
-                    RDF4JRepositoriesRestService.getRepositorySize()
+                    RDF4JRepositoriesRestService.getRepositorySize($repositories.getActiveRepository())
                         .success(function (data) {
                             scope.repoSize = parseInt(data);
                             scope.queryStartTime = new Date().getTime();
@@ -702,7 +702,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
                 if (window.editor.getQueryMode() === "update") {
                     updateResultsCallback = function () {
-                        RDF4JRepositoriesRestService.getRepositorySize()
+                        RDF4JRepositoriesRestService.getRepositorySize($repositories.getActiveRepository())
                             .success(function (data) {
                                 let repoSizeDiff;
                                 if (scope.repoSize !== undefined) {

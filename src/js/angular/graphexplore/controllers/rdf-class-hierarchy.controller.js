@@ -60,7 +60,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         if (!$scope.getActiveRepository()) {
             return;
         }
-        return RDF4JRepositoriesRestService.resolveGraphs()
+        return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();

@@ -18,9 +18,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService', 'RDF4JRepositoriesRestService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService, RDF4JRepositoriesRestService) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
@@ -432,6 +432,17 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.getRepositoriesFromLocation = function (locationId) {
             return this.repositories.get(locationId);
+        };
+
+        this.getPrefixes = () => {
+            return RDF4JRepositoriesRestService.getRepositoryNamespaces(this.getActiveRepository())
+                .then((response) => {
+                    const usedPrefixes = {};
+                    response.data.results.bindings.forEach(function (e) {
+                        usedPrefixes[e.prefix.value] = e.namespace.value;
+                    });
+                    return usedPrefixes;
+                });
         };
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
