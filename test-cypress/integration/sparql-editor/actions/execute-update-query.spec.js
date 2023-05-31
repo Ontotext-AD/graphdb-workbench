@@ -30,8 +30,7 @@ describe('Execute of update query', () => {
         }
     }, () => {
         // When I execute insert query which adds 2 results
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
+        YasqeSteps.pasteQuery(
                  'PREFIX : <http://bedrock/> ' +
                          'INSERT DATA { ' +
                             ':fred :hasSpouse :wilma.' +
@@ -51,8 +50,7 @@ describe('Execute of update query', () => {
     }, () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and selected repository has some inserted statements.
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
+        YasqeSteps.pasteQuery(
             'PREFIX : <http://bedrock/> ' +
                     'INSERT DATA { ' +
                          ':fred :hasSpouse :wilma.' +
@@ -63,8 +61,7 @@ describe('Execute of update query', () => {
         TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
 
         // When I execute delete query which removes 2 results
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
+        YasqeSteps.pasteQuery(
             'PREFIX : <http://bedrock/> ' +
                     'DELETE DATA { ' +
                          ':fred :hasSpouse :wilma.' +
