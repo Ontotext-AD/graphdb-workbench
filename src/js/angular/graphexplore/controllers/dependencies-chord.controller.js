@@ -60,7 +60,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs()
+        RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
