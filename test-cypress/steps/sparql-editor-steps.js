@@ -1,3 +1,5 @@
+import {YasqeSteps} from "./yasgui/yasqe-steps";
+
 export class SparqlEditorSteps {
     static visitSparqlEditorPage() {
         cy.visit('/sparql-editor');
@@ -7,5 +9,6 @@ export class SparqlEditorSteps {
         // If time of clicking such element is when second call to the component is done then exception that element is detached will be thrown.
         // We will wait a little , to give a chance page is loaded correctly before test start.
         cy.wait(1000);
+        YasqeSteps.waitUntilQueryIsVisible();
     }
 }
