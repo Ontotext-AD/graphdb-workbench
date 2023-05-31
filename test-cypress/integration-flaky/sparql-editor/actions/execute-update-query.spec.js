@@ -36,4 +36,35 @@ describe('Execute of update query', () => {
         // Then I expect result message info to informs me that statements did not change.
         TablePluginSteps.getQueryResultInfo().contains('The number of statements did not change.');
     });
+
+    it('should display result message info which describes that two statements are removed', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
+        // When I visit a page with "ontotext-yasgui-web-component" in it,
+        // and selected repository has some inserted statements.
+        YasqeSteps.pasteQuery(
+            'PREFIX : <http://bedrock/> ' +
+            'INSERT DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+        // Wait statements to be inserted.
+        TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
+
+        // When I execute delete query which removes 2 results
+        YasqeSteps.pasteQuery(
+            'PREFIX : <http://bedrock/> ' +
+            'DELETE DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+
+        // Then I expect result message info to informs me that 2 statements have been added.
+        TablePluginSteps.getQueryResultInfo().contains('Removed 2 statements.');
+    });
 });
