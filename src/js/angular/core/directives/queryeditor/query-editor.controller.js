@@ -368,7 +368,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $uibModal, Mod
         setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         $scope.namespacesLoading = true;
 
-        RDF4JRepositoriesRestService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {

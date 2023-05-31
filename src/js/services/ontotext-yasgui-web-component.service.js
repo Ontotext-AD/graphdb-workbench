@@ -25,7 +25,7 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
     const getRepositoryStatementsCount = () => {
         // A promise is returned because the $http of  angularjs use HttpPromise and its behavior is different than we expect.
         // Here is an article that describes the problems AngularJS HttpPromise methods break promise chain {@link https://medium.com/@ExplosionPills/angularjs-httppromise-methods-break-promise-chain-950c85fa1fe7}
-        return RDF4JRepositoriesRestService.getRepositorySize()
+        return RDF4JRepositoriesRestService.getRepositorySize($repositories.getActiveRepository())
             .then((response) => Promise.resolve(parseInt(response.data)))
             .catch(function (data) {
                 const params = {
