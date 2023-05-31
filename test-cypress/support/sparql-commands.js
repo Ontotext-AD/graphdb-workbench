@@ -49,7 +49,7 @@ function getQueryArea() {
 }
 
 function getQueryTextArea() {
-    return getQueryArea().find('textarea').scrollIntoView().should('be.visible');
+    return getQueryArea().find('textarea');
 }
 
 function waitUntilQueryIsVisible() {
