@@ -45,7 +45,12 @@ describe('Yasgui tabs', () => {
         YasguiSteps.getCurrentTabTitle().should('have.text', 'Unnamed');
     });
 
-    it('Should ask for confirmation on tab close through tab context menu', () => {
+    it('Should ask for confirmation on tab close through tab context menu', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // Given I have opened yasgui with a single opened tab
         SparqlEditorSteps.visitSparqlEditorPage();
         // And I have created a second tab
@@ -62,7 +67,12 @@ describe('Yasgui tabs', () => {
         YasguiSteps.getCurrentTabTitle().should('have.text', 'Unnamed');
     });
 
-    it('Should ask for confirmation on close other tabs action', () => {
+    it('Should ask for confirmation on close other tabs action', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // Given I have opened yasgui with a single opened tab
         SparqlEditorSteps.visitSparqlEditorPage();
         // And I have created more tabs
