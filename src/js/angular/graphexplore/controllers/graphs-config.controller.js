@@ -546,7 +546,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
-        RDF4JRepositoriesRestService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {

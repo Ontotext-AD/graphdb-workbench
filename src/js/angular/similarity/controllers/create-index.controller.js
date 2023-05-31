@@ -8,9 +8,9 @@ angular
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$uibModal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$uibModal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$repositories'];
 
-function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
+function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate, $repositories) {
 
     const indexType = $location.search().type;
     if (indexType === undefined || indexType.startsWith('text')) {
@@ -568,7 +568,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     function getNamespaces() {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
-        RDF4JRepositoriesRestService.getRepositoryNamespaces()
+        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const usedPrefixes = {};
                 data.results.bindings.forEach(function (e) {

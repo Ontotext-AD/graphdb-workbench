@@ -2,7 +2,7 @@ angular
     .module('graphdb.framework.rest.rdf4j.repositories.service', [])
     .factory('RDF4JRepositoriesRestService', RDF4JRepositoriesRestService);
 
-RDF4JRepositoriesRestService.$inject = ['$http', '$repositories', '$translate'];
+RDF4JRepositoriesRestService.$inject = ['$http', '$translate'];
 
 const ACTIVATE_PLUGIN_QUERY = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#startplugin> \'{{pluginName}}\' .}';
 const CHECK_PLUGIN_ACTIVE_QUERY = 'select ?o where {\n' +
@@ -12,7 +12,7 @@ const CHECK_PLUGIN_ACTIVE_QUERY = 'select ?o where {\n' +
 
 const REPOSITORIES_ENDPOINT = 'repositories';
 
-function RDF4JRepositoriesRestService($http, $repositories, $translate) {
+function RDF4JRepositoriesRestService($http, $translate) {
     return {
         getNamespaces,
         getRepositoryNamespaces,
@@ -31,8 +31,8 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces`);
     }
 
-    function getRepositoryNamespaces() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/namespaces`);
+    function getRepositoryNamespaces(repositoryId) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces`);
     }
 
     function updateNamespacePrefix(repositoryId, namespace, prefix) {
@@ -59,20 +59,20 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
         });
     }
 
-    function activatePlugin(pluginName) {
+    function activatePlugin(pluginName, repositoryId) {
         return $http({
             method: 'POST',
-            url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/statements`,
+            url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
             params: {
                 update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName)
             }
         });
     }
 
-    function checkPluginIsActive(pluginName) {
+    function checkPluginIsActive(pluginName, repositoryId) {
         return $http({
             method: 'GET',
-            url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}`,
+            url: `${REPOSITORIES_ENDPOINT}/${repositoryId}`,
             params: {
                 query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
             },
@@ -82,8 +82,8 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
         });
     }
 
-    function getRepositorySize() {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/size`);
+    function getRepositorySize(repostoryId) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repostoryId}/size`);
     }
 
     function getGraphs(repositoryId) {
@@ -91,11 +91,10 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
     }
 
 
-    function resolveGraphs() {
-        const activeRepository = $repositories.getActiveRepository();
+    function resolveGraphs(repositoryId) {
         let graphsInRepo = [];
-        if (activeRepository) {
-            return getGraphs(activeRepository).success(function (graphs) {
+        if (repositoryId) {
+            return getGraphs(repositoryId).success(function (graphs) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
