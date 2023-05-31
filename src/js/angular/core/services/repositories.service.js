@@ -434,8 +434,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return this.repositories.get(locationId);
         };
 
-        this.getPrefixes = () => {
-            return RDF4JRepositoriesRestService.getRepositoryNamespaces(this.getActiveRepository())
+        this.getPrefixes = (repositoryId) => {
+            return RDF4JRepositoriesRestService.getRepositoryNamespaces(repositoryId)
                 .then((response) => {
                     const usedPrefixes = {};
                     response.data.results.bindings.forEach(function (e) {
