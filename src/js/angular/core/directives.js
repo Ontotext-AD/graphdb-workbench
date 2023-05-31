@@ -811,7 +811,7 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                 $repositories.isActiveRepoFedXType()) {
                 return;
             }
-            return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
+            return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName, $repositories.getActiveRepository())
                 .then(function ({data}) {
                     $scope.pluginIsActive = data.indexOf('true') > 0;
                     $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
@@ -829,7 +829,7 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                 warning: true
             }).result
                 .then(function () {
-                    RDF4JRepositoriesRestService.activatePlugin($scope.pluginName)
+                    RDF4JRepositoriesRestService.activatePlugin($scope.pluginName, $repositories.getActiveRepository())
                         .then(function () {
                             $scope.pluginIsActive = true;
                             $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
