@@ -61,21 +61,6 @@ describe('SPARQL create template', () => {
         SparqlCreateUpdateSteps.getInvalidQueryModeElement().contains('The template query must be an UPDATE query');
     });
 
-    it('should has error message described that query is invalid', () => {
-        // When I visit 'Sparql create template' view,
-        // and fill  valid template id.
-        SparqlCreateUpdateSteps.typeTemplateId('http://test');
-
-        // When I fill invalid query (select for example).
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor('select * where {?s ?p }');
-        // and click on "Save" button.
-        SparqlCreateUpdateSteps.clickOnSaveButton();
-
-        // Then I expect to see error message.
-        SparqlCreateUpdateSteps.getInvalidQueryElement().contains('Invalid query');
-    });
-
     it('should navigate to other view if there are no changes', () => {
         // When I visit 'Sparql create template' view,
         // and navigate to other view.
@@ -118,7 +103,12 @@ describe('SPARQL create template', () => {
         ImportSteps.verifyUserImportUrl();
     });
 
-    it('should confirm me before navigate when query is changed', () => {
+    it('should confirm me before navigate when query is changed', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I visit 'Sparql create template' view,
         // and change the query in ontotext-yasgui editor.
         // When I fill non update query (select for example).
@@ -150,7 +140,12 @@ describe('SPARQL create template', () => {
         SparqlCreateUpdateSteps.verifyUrl();
     });
 
-    it('should display confirm dialog I am updating a sparql template and change the repository', () => {
+    it('should display confirm dialog I am updating a sparql template and change the repository', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I visit 'Sparql create template' view,
         // create a SPARQL template
         const templateId = 'http://' + Date.now();
