@@ -24,8 +24,7 @@ describe('Execute of update query', () => {
 
     it('should display properly result message info when no one statement is added.', () => {
         // When I execute insert query which don't change repository statements
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
+        YasqeSteps.pasteQuery(
                  'PREFIX : <http://bedrock/> ' +
                          'INSERT { ' +
                                   ':fred :hasSpouse :wilma. ' +
