@@ -26,8 +26,7 @@ describe('Abort query', () => {
     it('should abort query when click on "Abort query" button.', () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and execute a query that takes a long time.
-        YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(
+        YasqeSteps.pasteQuery(
             'select (count(*) as ?count) where {?s ?p ?o. ?s1 ?p1 ?o1. ?s2 ?p2 ?o2. ?s3 ?p3 ?o3.}');
         YasqeSteps.executeQueryWithoutWaiteResult();
 

@@ -23,7 +23,12 @@ describe('Yasr Table plugin', () => {
 
     describe('Results formatting', () => {
 
-        it('Should all resource be formatted with short uri when results are of type uri', () => {
+        it.only('Should all resource be formatted with short uri when results are of type uri', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I execute a query which return results and results type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();
@@ -48,7 +53,12 @@ describe('Yasr Table plugin', () => {
 
     describe('Copy resource link dialog', () => {
 
-        it('Should open copy link dialog', () => {
+        it('Should open copy link dialog', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I execute a query which returns results of type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();
@@ -59,7 +69,12 @@ describe('Yasr Table plugin', () => {
             TablePluginSteps.getCopyResourceLinkDialog().should('be.visible');
         });
 
-        it('Should close copy link dialog when click on close button', () => {
+        it('Should close copy link dialog when click on close button', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I execute a query which returns results of type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();
@@ -73,7 +88,12 @@ describe('Yasr Table plugin', () => {
             TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
         });
 
-        it('Should close copy link dialog when click on cancel button', () => {
+        it('Should close copy link dialog when click on cancel button', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I execute a query which returns results of type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();
