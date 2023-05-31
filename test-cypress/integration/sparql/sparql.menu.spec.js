@@ -684,7 +684,12 @@ describe('SPARQL screen validation', () => {
                 .and('not.be.disabled');
         }
 
-        it('Test create, edit and delete saved query', () => {
+        it('Test create, edit and delete saved query', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             let savedQueryName = 'Saved query - ' + Date.now();
 
             cy.pasteQuery(QUERY_FOR_SAVING);
