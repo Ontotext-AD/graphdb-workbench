@@ -11,7 +11,6 @@ import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import 'angular/rest/connectors.rest.service';
 import 'services/ontotext-yasgui-web-component.service.js';
-import 'angular/utils/repositories-utils.service.js';
 import 'angular/externalsync/controllers';
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../models/ontotext-yasgui/before-update-query-result";
@@ -43,8 +42,7 @@ SparqlEditorCtrl.$inject = [
     'RDF4JRepositoriesRestService',
     'ConnectorsRestService',
     'OntotextYasguiWebComponentService',
-    '$uibModal',
-    'RepositoriesUtilService'];
+    '$uibModal'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -60,8 +58,7 @@ function SparqlEditorCtrl($scope,
                           RDF4JRepositoriesRestService,
                           ConnectorsRestService,
                           ontotextYasguiWebComponentService,
-                          $uibModal,
-                          repositoriesUtilService) {
+                          $uibModal) {
     const ontoElement = document.querySelector('ontotext-yasgui');
     const headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -439,7 +436,7 @@ function SparqlEditorCtrl($scope,
 
     // Initialization and bootstrap
     function init() {
-        Promise.all([$jwtAuth.getPrincipal(), repositoriesUtilService.getPrefixes()])
+        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes()])
             .then(([principal, usedPrefixes]) => {
                 setInferAndSameAs(principal);
                 $scope.prefixes = usedPrefixes;

@@ -18,9 +18,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'EventEmitterService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'EventEmitterService', 'RDF4JRepositoriesRestService',
     function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, eventEmitterService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, eventEmitterService, RDF4JRepositoriesRestService) {
         this.repositoryStorageName = 'com.ontotext.graphdb.repository';
         this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
 
@@ -435,6 +435,17 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.getRepositoriesFromLocation = function (locationId) {
             return this.repositories.get(locationId);
+        };
+
+        this.getPrefixes = () => {
+            return RDF4JRepositoriesRestService.getRepositoryNamespaces(this.getActiveRepository())
+                .then((response) => {
+                    const usedPrefixes = {};
+                    response.data.results.bindings.forEach(function (e) {
+                        usedPrefixes[e.prefix.value] = e.namespace.value;
+                    });
+                    return usedPrefixes;
+                });
         };
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
