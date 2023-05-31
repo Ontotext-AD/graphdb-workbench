@@ -19,8 +19,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
     'graphdb.framework.ontotext-yasgui-web-component',
-    'graphdb.framework.externalsync.controllers',
-    'graphdb.framework.repositories'
+    'graphdb.framework.externalsync.controllers'
 ];
 
 angular
