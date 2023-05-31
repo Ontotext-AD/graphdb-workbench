@@ -532,12 +532,13 @@ function SparqlTemplateCreateCtrl(
 
         setLoader(true, loadMessage);
         $scope.sparqlTemplateInfo.templateID = extractTemplateIdFromUri();
+        const activeRepository = $repositories.getActiveRepository();
         if ($scope.sparqlTemplateInfo.templateID) {
-            Promise.all([$repositories.getPrefixes(), SparqlTemplatesRestService.getSparqlTemplate($scope.sparqlTemplateInfo.templateID, $repositories.getActiveRepository())])
+            Promise.all([$repositories.getPrefixes(activeRepository), SparqlTemplatesRestService.getSparqlTemplate($scope.sparqlTemplateInfo.templateID, activeRepository)])
                 .then(([prefixes, templateContent]) => init(prefixes, templateContent.data))
                 .finally(() => setLoader(false));
         } else {
-            $repositories.getPrefixes()
+            $repositories.getPrefixes(activeRepository)
                 .then((prefixes) => init(prefixes))
                 .finally(() => setLoader(false));
         }
