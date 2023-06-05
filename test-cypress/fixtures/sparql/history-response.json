@@ -1,0 +1,522 @@
+{
+    "head": {
+        "vars": [
+            "log",
+            "time",
+            "g",
+            "s",
+            "p",
+            "o",
+            "i"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:24:16.352+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "o": {
+                    "type": "literal",
+                    "value": "James Tiberius Kirk"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "false"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:24:02.366+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "o": {
+                    "type": "literal",
+                    "value": "James T. Kirk"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "false"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:24:02.366+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "o": {
+                    "type": "literal",
+                    "value": "James Tiberius Kirk"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Human"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:Mammal"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Commander"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:StarfleetOfficer"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Captain"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subClassOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:StarfleetOfficer"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:Human"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:Mammal"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:dateOfBirth"
+                },
+                "o": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#date",
+                    "type": "literal",
+                    "value": "2233-03-22"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "o": {
+                    "type": "literal",
+                    "value": "James T. Kirk"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:Kirk"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "urn:rank"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:Commander"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:dateOfBirth"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:dateOfBirth"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subPropertyOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:dateOfBirth"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subPropertyOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:name"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:rank"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            },
+            {
+                "log": {
+                    "type": "bnode",
+                    "value": "83222b124ff949648bd78ee778d22f601149"
+                },
+                "time": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "type": "literal",
+                    "value": "2023-05-17T12:23:47.811+03:00"
+                },
+                "g": {
+                    "type": "uri",
+                    "value": "http://www.ontotext.com/implicit"
+                },
+                "s": {
+                    "type": "uri",
+                    "value": "urn:rank"
+                },
+                "p": {
+                    "type": "uri",
+                    "value": "http://www.w3.org/2000/01/rdf-schema#subPropertyOf"
+                },
+                "o": {
+                    "type": "uri",
+                    "value": "urn:rank"
+                },
+                "i": {
+                    "datatype": "http://www.w3.org/2001/XMLSchema#boolean",
+                    "type": "literal",
+                    "value": "true"
+                }
+            }
+        ]
+    }
+}

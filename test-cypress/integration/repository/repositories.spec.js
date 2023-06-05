@@ -66,7 +66,7 @@ describe('Repositories', () => {
     }
 
     it('create repository page should list available repository types options', () => {
-        let expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
+        const expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
         createRepository();
         cy.url().should('include', '/repository/create');
 
@@ -241,7 +241,7 @@ describe('Repositories', () => {
 
         // Wait for redirection to previous '/repository'
         cy.waitUntil(() =>
-                cy.url().then(url => url === (Cypress.config('baseUrl') + '/repository')));
+                cy.url().then((url) => url === (Cypress.config('baseUrl') + '/repository')));
 
         // Connect to the first repo via the connection icon
         // Note: Not using within() because the whole row will be re-rendered & detached
@@ -377,10 +377,12 @@ describe('Repositories', () => {
         getOntologyFileField().should('be.visible');
         getPropertiesFileField().should('be.visible');
         getConstraintFileField().should('be.visible');
+        getLensesFileField().should('be.visible');
         getOBDAUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getOntologyUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getPropertiesUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
         getConstraintUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
+        getLensesUploadButton().scrollIntoView().should('be.visible').and('not.be.disabled');
     });
 
     //Create Ontop repository and test ontop functionality
@@ -435,6 +437,11 @@ describe('Repositories', () => {
                         name: 'constraintFile',
                         value: ''
                     },
+                    lensesFile: {
+                        label: 'Lenses file',
+                        name: 'lensesFile',
+                        value: ''
+                    },
                     id: {
                         label: 'Repository ID',
                         name: 'id',
@@ -458,7 +465,7 @@ describe('Repositories', () => {
                     additionalProperties: {
                         "label": "Additional Ontop/JDBC properties",
                         "name": "additionalProperties",
-                        "value": ""
+                        "value": "prop1=value1\nprop2=value2"
                     }
                 }
             };
@@ -470,6 +477,12 @@ describe('Repositories', () => {
             });
 
             cy.reload(); //refresh page as the virtual repo is not visible in the UI when created with the request
+
+            editRepository(virtualRepoName);
+
+            // Additional Ontop Properties field should be visible and populated correctly
+            getAdditionalPropertiesTextArea().should('be.visible');
+            getAdditionalPropertiesTextArea().should('have.value', 'prop2=value2\nprop1=value1');
 
             //Check workbench restricted sections when connected to an Ontop repository
             selectRepoFromDropdown(virtualRepoName);
@@ -525,97 +538,49 @@ describe('Repositories', () => {
         testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
         testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
         testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
         testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
 
         //Select MySQL driver type and verify elements and download url (if available)
-        selectDatabaseDriver('MySQL');
-        getDatabaseDriver().should('contain', 'MySQL');
-
-        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
-        testOntopConfigurationElementsVisibility('Port', '#port');
-        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
-        testOntopConfigurationElementsVisibility('Username*', '#userName');
-        testOntopConfigurationElementsVisibility('Password', '#password');
-        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
-        testOntopConfigurationElementsVisibility('URL', '#url');
-        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
-        //verify driver download url
-        compareDriverDownloadUrl('https://dev.mysql.com/downloads/connector/j/');
+        testOntopDriverConfigurations('MySQL', 'Hostname*', 'Database name*',
+            'https://www.google.com/search?q=mysql+jdbc+download');
 
         //Select postgreSQL driver type and verify elements and download url (if available)
-        selectDatabaseDriver('PostgreSQL');
-        getDatabaseDriver().should('contain', 'PostgreSQL');
-
-        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
-        testOntopConfigurationElementsVisibility('Port', '#port');
-        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
-        testOntopConfigurationElementsVisibility('Username*', '#userName');
-        testOntopConfigurationElementsVisibility('Password', '#password');
-        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
-        testOntopConfigurationElementsVisibility('URL', '#url');
-        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
-        //verify driver download url
-        compareDriverDownloadUrl('https://jdbc.postgresql.org/download');
+        testOntopDriverConfigurations('PostgreSQL', 'Hostname*', 'Database name*',
+            'https://www.google.com/search?q=postgresql+jdbc+download');
 
         //Select Oracle driver type and verify elements and download url (if available)
-        selectDatabaseDriver('Oracle');
-        getDatabaseDriver().should('contain', 'Oracle');
-
-        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
-        testOntopConfigurationElementsVisibility('Port', '#port');
-        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
-        testOntopConfigurationElementsVisibility('Username*', '#userName');
-        testOntopConfigurationElementsVisibility('Password', '#password');
-        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
-        testOntopConfigurationElementsVisibility('URL', '#url');
-        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
-        //verify driver download url
-        compareDriverDownloadUrl('https://www.cdata.com/drivers/oracledb/jdbc/');
+        testOntopDriverConfigurations('Oracle', 'Hostname*', 'Database name*',
+            'https://www.google.com/search?q=oracle+jdbc+download');
 
         //Select MS SQL Server driver type and verify elements and download url (if available)
-        selectDatabaseDriver('MS SQL Server');
-        getDatabaseDriver().should('contain', 'MS SQL Server');
-
-        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
-        testOntopConfigurationElementsVisibility('Port', '#port');
-        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
-        testOntopConfigurationElementsVisibility('Username*', '#userName');
-        testOntopConfigurationElementsVisibility('Password', '#password');
-        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
-        testOntopConfigurationElementsVisibility('URL', '#url');
-        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
-        //verify driver download url
-        compareDriverDownloadUrl('https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server');
+        testOntopDriverConfigurations('MS SQL Server', 'Hostname*', 'Database name*',
+            'https://www.google.com/search?q=mssql+jdbc+download');
 
         //Select DB2 driver type and verify elements and download url (if available)
-        selectDatabaseDriver('DB2');
-        getDatabaseDriver().should('contain', 'DB2');
+        testOntopDriverConfigurations('DB2', 'Hostname*', 'Database name*',
+            'https://www.google.com/search?q=db2+jdbc+download');
 
-        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
-        testOntopConfigurationElementsVisibility('Port', '#port');
-        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
-        testOntopConfigurationElementsVisibility('Username*', '#userName');
-        testOntopConfigurationElementsVisibility('Password', '#password');
-        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
-        testOntopConfigurationElementsVisibility('URL', '#url');
-        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
-        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
-        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
-        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
-        //verify driver download url
-        compareDriverDownloadUrl('https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads');
+        //Select Dremio driver type and verify elements and download url (if available)
+        testOntopDriverConfigurations('Dremio', 'Hostname*', 'Schema*',
+            'https://www.google.com/search?q=dremio+jdbc+download');
+
+        //Verify that the default settings work correctly
+        verifyDefaultConfigSettings('MySQL');
+
+        //Select Databricks driver type and verify elements and download url (if available)
+        testOntopDriverConfigurations('Databricks', 'Hostname*', 'HttpPath*',
+            'https://www.google.com/search?q=databricks+jdbc+download');
+
+        //Verify that the default settings work correctly
+        verifyDefaultConfigSettings('MySQL');
+
+        //Select Snowflake driver type and verify elements and download url (if available)
+        testOntopDriverConfigurations('Snowflake', 'Account identifier*', 'Warehouse',
+            'https://www.google.com/search?q=snowflake+jdbc+download');
+
+        //Verify that the default settings work correctly
+        verifyDefaultConfigSettings('MySQL');
     });
 
     it('should restart an existing repository', () => {
@@ -735,8 +700,8 @@ describe('Repositories', () => {
             getRepositoryFromList(repositoryId)
                 .should('be.visible')
                 .find('.repository-status .text-secondary')
-                .then($el => $el)
-                .then($el => $el && $el.text() === status));
+                .then(($el) => $el)
+                .then(($el) => $el && $el.text() === status));
     }
 
     function getRepositoriesList() {
@@ -836,6 +801,10 @@ describe('Repositories', () => {
         return getRepositoryCreateForm().find('#ruleset');
     }
 
+    function getAdditionalPropertiesTextArea() {
+        return getRepositoryCreateForm().find('#additionalProperties');
+    }
+
     function getRepositoryDisableSameAsCheckbox() {
         return getRepositoryCreateForm().find('#disableSameAs');
     }
@@ -911,6 +880,10 @@ describe('Repositories', () => {
         return cy.get('div').contains("Constraint file");
     }
 
+    function getLensesFileField() {
+        return cy.get('div').contains("Lenses file");
+    }
+
     function getOBDAUploadButton() {
         return cy.get('span[for="obdaFile"]').contains("Upload file...");
     }
@@ -927,6 +900,10 @@ describe('Repositories', () => {
         return cy.get('span[for="constraintFile"]').contains("Upload file...");
     }
 
+    function getLensesUploadButton() {
+        return cy.get('span[for="lensesFile"]').contains("Upload file...");
+    }
+
     function getOntopFunctionalityDisabledMessage() {
         return cy.get('.repository-errors div.alert')
             .should('be.visible')
@@ -938,7 +915,7 @@ describe('Repositories', () => {
         return cy.get('#ontop-content');
     }
 
-    function getDatabaseDriver(){
+    function getDatabaseDriver() {
         return cy.get('#driverType');
     }
 
@@ -958,13 +935,41 @@ describe('Repositories', () => {
             });
     }
 
-    function compareDriverDownloadUrl(expectedUrl){
+    function verifyDefaultConfigSettings(driver) {
+        selectDatabaseDriver(driver);
+        getDatabaseDriver().should('contain', driver);
+
+        testOntopConfigurationElementsVisibility('Hostname*', '#hostName');
+        testOntopConfigurationElementsVisibility('Database name*', '#databaseName');
+    }
+
+    function testOntopDriverConfigurations(driver, hostName, databaseName, downloadLink) {
+        selectDatabaseDriver(driver);
+        getDatabaseDriver().should('contain', driver);
+
+        testOntopConfigurationElementsVisibility(hostName, '#hostName');
+        testOntopConfigurationElementsVisibility('Port', '#port');
+        testOntopConfigurationElementsVisibility(databaseName, '#databaseName');
+        testOntopConfigurationElementsVisibility('Username*', '#userName');
+        testOntopConfigurationElementsVisibility('Password', '#password');
+        testOntopConfigurationElementsVisibility('Driver class', '#driverClass');
+        testOntopConfigurationElementsVisibility('URL', '#url');
+        testOntopConfigurationElementsVisibility('Additional Ontop/JDBC properties', '#additionalProperties');
+        testOntopConfigurationElementsVisibility('OBDA or R2RML file*', '#obdaFile');
+        testOntopConfigurationElementsVisibility('Constraint file', '#constraintFile');
+        testOntopConfigurationElementsVisibility('Lenses file', '#lensesFile');
+        testOntopConfigurationElementsVisibility('Ontology file', '#owlFile');
+        //verify driver download url
+        compareDriverDownloadUrl(downloadLink);
+    }
+
+    function compareDriverDownloadUrl(expectedUrl) {
         cy.get('.uri')
             .should('be.visible')
             .and('have.attr', 'href', expectedUrl);
     }
 
-    function getSHACLRepositoryCheckbox(){
+    function getSHACLRepositoryCheckbox() {
         return cy.get('#isShacl');
     }
 });

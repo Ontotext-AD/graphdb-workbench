@@ -103,7 +103,7 @@
             "loader_message": "Deleting cluster",
             "notifications": {
                 "success_delete": "Cluster deleted successfully",
-                "success_delete_partial": "Not all nodes are deleted",
+                "success_delete_partial": "Not all nodes were deleted",
                 "fail_delete": "Can not delete cluster"
             }
         },
@@ -1049,6 +1049,7 @@
     "repoTooltips.ontop.obdaFile": "Describes the mapping from SQL to RDF in either the OBDA or the R2RML format.",
     "repoTooltips.ontop.owlFile": "Specifies relations between the classes and properties in the cosntructed RDF graph. It can be in any supported RDF format.",
     "repoTooltips.ontop.constraintFile": "Specifies override of SQL primary and foreign keys.",
+    "repoTooltips.ontop.lensesFile": "Specifies aditional contstraints attached to relation.",
     "repoTooltips.ontop.dbMetadataFile": "Specifies metadata for the SQL database.",
     "repoTooltips.ontop.testConn": "Attempts to establish a connection to the SQL database to test if the supplied configuration is correct.",
     "repoTooltips.fedx.repositoryNotExistWarning": "The repository member has been removed from the local repositories",

@@ -39,7 +39,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         $scope.supportedDriversData = [];
         $scope.ontopRepoFileLabels =
             {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file',
-                constraintFile: 'constraint file', dbMetadataFile: 'DB metadata file'};
+                constraintFile: 'constraint file', lensesFile: 'lenses file', dbMetadataFile: 'DB metadata file'};
         $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
         $scope.ontopRepoFiles.forEach(function(key) {
             if ($scope.repositoryInfo.params[key]) {
@@ -75,10 +75,29 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         $scope.selectDriverByType = function (driverType) {
+            $scope.constructCustomFiledForDriver(driverType);
+
             $scope.copyDriverProperties($scope.supportedDriversData
                 .find((driver) => driver.driverType === driverType));
             // Call concatURL with proper labelName to apply changes to url field
             $scope.concatURL('hostName', $scope);
+        };
+
+        $scope.constructCustomFiledForDriver = function (driver) {
+            $scope.supportedDriverLabels.databaseName = 'Database name';
+            $scope.supportedDriverLabels.hostName = 'Hostname';
+            switch (driver) {
+                case 'snowflake':
+                    $scope.supportedDriverLabels.hostName = 'Account identifier';
+                    $scope.supportedDriverLabels.databaseName = 'Warehouse';
+                    break;
+                case 'databricks':
+                    $scope.supportedDriverLabels.databaseName = 'HttpPath';
+                    break;
+                case 'dremio':
+                    $scope.supportedDriverLabels.databaseName = 'Schema';
+                    break;
+            }
         };
 
         $scope.copyDriverProperties = function (driver) {
@@ -93,7 +112,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
 
         $scope.isReadOnly = function (labelName) {
             return labelName === 'driverClass' || labelName === 'url';
-        }
+        };
 
         $scope.editFile = function(file) {
             const modalInstance = $uibModal.open({
