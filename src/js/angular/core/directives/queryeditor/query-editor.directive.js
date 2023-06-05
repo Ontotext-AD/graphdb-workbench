@@ -847,22 +847,13 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                         warning: true
                     }).result
                         .then(function () {
-                            autoExecuteQuery(true);
-                        }, function () {
-                            autoExecuteQuery(false);
+                            scope.runQuery(false);
                         });
                 } else {
                     scope.runQuery(false);
                 }
             }
         }
-
-        const autoExecuteQuery = (execute) => {
-            $location.search('execute', null);
-            if (execute) {
-                scope.runQuery(false);
-            }
-        };
 
         function loadQueryIntoExistingOrNewTab(query, infer, sameAs) {
             const tabId = scope.getExistingTabId(query);
@@ -875,6 +866,9 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     scope.currentQuery.sameAs = toBoolean(sameAs);
                 }
                 autoexecuteQueryIfRequested();
+                $location.search({});
+                // Replace current URL without adding a new history entry
+                $location.replace();
                 onHandler();
             });
 
