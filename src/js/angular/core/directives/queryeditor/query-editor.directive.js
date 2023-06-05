@@ -90,7 +90,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             scope.runQuery(false, 'explain');
         }
 
-        function explainAlternativeQueryAction() {
+        function explainChatGPTQueryAction() {
             scope.runQuery(false, 'gpt');
         }
 
@@ -135,8 +135,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     "Cmd-Enter": runQueryAction,
                     "Shift-Ctrl-Enter": explainQueryAction,
                     "Shift-Cmd-Enter": explainQueryAction,
-                    "Ctrl-Alt-Enter": explainAlternativeQueryAction,
-                    "Cmd-Alt-Enter": explainAlternativeQueryAction,
+                    "Ctrl-Alt-Enter": explainChatGPTQueryAction,
+                    "Cmd-Alt-Enter": explainChatGPTQueryAction,
                     "Ctrl-Alt-T": scope.addNewTab,
                     "Cmd-Alt-T": scope.addNewTab,
                     "Ctrl-S": saveQueryAction,
