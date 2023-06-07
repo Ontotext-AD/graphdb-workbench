@@ -1,4 +1,9 @@
 import {getFileName} from "./controllers";
+import {OntopFileType} from "../../../models/ontop/ontop-file-type";
+import {OntopConnectionInformation} from "../../../models/ontop/ontop-connection-information";
+import {OntopFileInfo} from "../../../models/ontop/ontop-file-info";
+import {OntopRepositoryError} from "../../../models/ontop/ontop-repository-error";
+import {OntopDriverData} from "../../../models/ontop/ontop-driver-data";
 
 // A link to Ontop's website with all Ontop configuration keys
 const ONTOP_PROPERTIES_LINK = 'https://ontop-vkg.org/guide/advanced/configuration.html';
@@ -19,318 +24,456 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
     };
 
     function linkFunc($scope) {
-        $scope.ontopProperiesLink = ONTOP_PROPERTIES_LINK;
-        $scope.selectedDriver = {
-            driverType: "generic",
-            driverName: "Generic JDBC Driver",
-            jdbc: {
-                hostName: "",
-                port: "",
-                databaseName: "",
-                userName: "",
-                password: "",
-                driverClass: "",
-                url: ""
-            },
-            urlTemplate: "",
-            downloadDriverUrl: ""
-        };
-        $scope.ontopRepoFileNames = {};
-        $scope.supportedDriversData = [];
-        $scope.ontopRepoFileLabels =
-            {propertiesFile: 'JDBC properties', obdaFile: 'OBDA or R2RML', owlFile: 'ontology file',
-                constraintFile: 'constraint file', lensesFile: 'lenses file', dbMetadataFile: 'DB metadata file'};
-        $scope.ontopRepoFiles = Object.keys($scope.ontopRepoFileLabels);
-        $scope.ontopRepoFiles.forEach(function(key) {
-            if ($scope.repositoryInfo.params[key]) {
-                $scope.ontopRepoFileNames[key] = getFileName($scope.repositoryInfo.params[key].value);
-            }
-        });
-        $scope.supportedDriverLabels = {hostName: 'Hostname', port: "Port", databaseName: 'Database name',
-                                        userName: 'Username', password: 'Password', driverClass: 'Driver class', url: 'URL'};
-        $scope.propertiesFileParams = Object.keys($scope.supportedDriverLabels);
-        $scope.classAvailable = false;
+        const HOME_KEY = 36;
+        const END_KEY = 35;
+        const LEFT_ARROW = 37;
+        const RIGHT_ARROW = 39;
+        const BACKSPACE = 8;
+        const KEY_C = 67;
+        const KEY_A = 65;
         $scope.genericDriverType = 'generic';
-        $scope.propertiesFile = 'propertiesFile';
+        $scope.defaultUrlTemplate = 'jdbc:database://localhost:port/database_name';
+        $scope.ontopProperiesLink = ONTOP_PROPERTIES_LINK;
+        $scope.ontopFileType = OntopFileType;
 
-        const REQUIRED_ONTOP_REPO_PARAMS = [$scope.propertiesFile, 'obdaFile'];
-        const REQUIRED_PROPERTIES_FIELD_PARAMS = ['hostName', 'databaseName', 'userName'];
+        /**
+         * Holds reference to selected driver.
+         *
+         * @type {OntopDriverData}
+         */
+        $scope.selectedDriver = new OntopDriverData();
 
-        function getSupportedDriversData() {
-            return RepositoriesRestService.getSupportedDriversData($scope.repositoryInfo)
-                .success(function (response) {
-                    $scope.supportedDriversData = response;
-                }).error(function (response) {
-                    showErrorMsg($translate.instant('common.error'), response);
-                });
-        }
-
-        $scope.loadDriverByClass = function (driverClass) {
-            const foundDriver = $scope.supportedDriversData
-                .find((driver) => driver.driverClass === driverClass);
-            if (foundDriver) {
-                $scope.copyDriverProperties(foundDriver);
+        /**
+         * Holds all supported jdbc drivers.
+         * @type {OntopDriverData[]}
+         */
+        $scope.supportedDriversData = [];
+        $scope.userUrlextraInput = '';
+        $scope.formData = {
+            connectionInformation: new OntopConnectionInformation(),
+            settings: {
+                additionalProperties: '',
+                /**
+                 * Holds information about repository files.
+                 */
+                ontopFiles: []
             }
-            return foundDriver;
         };
 
-        $scope.selectDriverByType = function (driverType) {
-            $scope.constructCustomFiledForDriver(driverType);
+        // =========================
+        // Public functions
+        // =========================
 
-            $scope.copyDriverProperties($scope.supportedDriversData
-                .find((driver) => driver.driverType === driverType));
-            // Call concatURL with proper labelName to apply changes to url field
-            $scope.concatURL('hostName', $scope);
+        /**
+         * Changes selected driver and updates url field.
+         * @param {string} driverType - the type of driver.
+         */
+        $scope.selectDriver = (driverType) => {
+            $scope.selectedDriver = $scope.supportedDriversData.find((driver) => driver.driverType === driverType);
+            if ($scope.formData.connectionInformation.driverClass !== $scope.selectedDriver.driverClass) {
+                $scope.formData.connectionInformation.url = '';
+            }
+            $scope.formData.connectionInformation.driverClass = $scope.selectedDriver.driverClass;
+            $scope.updateUrl();
         };
 
-        $scope.constructCustomFiledForDriver = function (driver) {
-            $scope.supportedDriverLabels.databaseName = 'Database name';
-            $scope.supportedDriverLabels.hostName = 'Hostname';
-            switch (driver) {
+        /**
+         * Finds ontop file depends on file type <code>ontopFileType</code>
+         * @param {OntopFileType} ontopFileType - the type of searched ontop file.
+         * @return {OntopFileInfo} found ontop file.
+         */
+        $scope.getOntopFileInfo = (ontopFileType) => {
+            return $scope.formData.settings.ontopFiles.find((ontopFileInfo) => ontopFileType === ontopFileInfo.type);
+        };
+
+        $scope.getHostNameLabel = () => {
+            const hostNameLabel = 'snowflake' === $scope.selectedDriver.driverType ? 'ontop.repo.database.snowflake.host_name' : 'ontop.repo.database.host_name';
+            return $translate.instant(hostNameLabel) + '*';
+        };
+
+        $scope.getDatabaseNameLabel = () => {
+            let dataBaseNameLabelKey = '';
+            switch ($scope.selectedDriver.driverType) {
                 case 'snowflake':
-                    $scope.supportedDriverLabels.hostName = 'Account identifier';
-                    $scope.supportedDriverLabels.databaseName = 'Warehouse';
+                    dataBaseNameLabelKey = 'ontop.repo.database.warehouse.database_name';
                     break;
                 case 'databricks':
-                    $scope.supportedDriverLabels.databaseName = 'HttpPath';
+                    dataBaseNameLabelKey = 'ontop.repo.database.http_path.database_name';
                     break;
                 case 'dremio':
-                    $scope.supportedDriverLabels.databaseName = 'Schema';
+                    dataBaseNameLabelKey = 'ontop.repo.database.schema.database_name';
                     break;
+                default:
+                    dataBaseNameLabelKey = 'ontop.repo.database.database_name';
             }
+            return $translate.instant(dataBaseNameLabelKey);
         };
 
-        $scope.copyDriverProperties = function (driver) {
-            $scope.selectedDriver.driverType = driver.driverType;
-            $scope.selectedDriver.jdbc.driverClass = driver.driverClass;
-            $scope.selectedDriver.jdbc.url = driver.urlTemplate;
-            $scope.selectedDriver.urlTemplate = driver.urlTemplate;
-            $scope.selectedDriver.downloadDriverUrl = driver.downloadDriverUrl;
-            $scope.selectedDriver.portRequired = driver.portRequired;
-            $scope.classAvailable = driver.classAvailable;
+        /**
+         * Updates value of <code>$scope.formData.connectionInformation.url</code> depends on other connection information: Host name, Port...
+         */
+        $scope.updateUrl = () => {
+            const templateUrl = calculateTemplateUrl() || '';
+            $scope.formData.connectionInformation.url = templateUrl + $scope.formData.connectionInformation.urlUserInput;
         };
 
-        $scope.isReadOnly = function (labelName) {
-            return labelName === 'driverClass' || labelName === 'url';
+        /**
+         * Checks if test connection can be executed.
+         * @return {boolean} true if all needed data is filled by the user.
+         */
+        $scope.isTestConnectionDisabled = () => {
+            const connectionInformation = $scope.formData.connectionInformation;
+            const selectedDriver = $scope.selectedDriver;
+            if (!connectionInformation.driverClass || !connectionInformation.url || selectedDriver.portRequired && !connectionInformation.port) {
+                return true;
+            }
+            return selectedDriver.driverType !== $scope.genericDriverType && (!connectionInformation.hostName || !connectionInformation.databaseName);
         };
 
-        $scope.editFile = function(file) {
+        /**
+         * Performs a test connection.
+         */
+        $scope.testConnection = () => {
+            validateHostName()
+                .then(validatePort)
+                .then(validateDatabaseName)
+                .then(validateDriverClass)
+                .then(validateUrl)
+                .then(updatePropertiesFile)
+                .then(() => RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo))
+                .then(() => toastr.success($translate.instant('ontop.repo.successful.connection.msg')))
+                .catch((error) => {
+                    if (error instanceof OntopRepositoryError) {
+                        toastr.error(error.message);
+                    } else {
+                        showErrorMsg($translate.instant('ontop.repo.failed.to.connect'), error);
+                    }
+                });
+        };
+
+        /**
+         * Updates the file with type <code>ontopFileType</code>.
+         *
+         * @param {OntopFileInfo} ontopFileInfo
+         */
+        $scope.editFile = (ontopFileInfo) => {
             const modalInstance = $uibModal.open({
                 templateUrl: 'js/angular/templates/modal/editRepoFile.html',
                 controller: 'EditRepositoryFileCtrl',
                 resolve: {
-                    file: function () {
-                        return $scope.repositoryInfo.params[file] ? $scope.repositoryInfo.params[file].value : '';
+                    file: () => {
+                        const ontopFile = $scope.repositoryInfo.params[ontopFileInfo.type];
+                        return ontopFile ? ontopFile.value : '';
                     }
                 }
             });
 
-            modalInstance.result.then(function (data) {
+            modalInstance.result.then((data) => {
                 // send data to backend
-                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, $scope.repositoryInfo.location).success(function(result) {
-                    $scope.ontopRepoFileNames[file] = getFileName(result.fileLocation);
-                    $scope.repositoryInfo.params[file].value = result.fileLocation;
-                }).error(function (error) {
+                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, $scope.repositoryInfo.location)
+                    .success((result) => {
+                        ontopFileInfo.fileName = getFileName(result.fileLocation);
+                        $scope.repositoryInfo.params[ontopFileInfo.type].value = result.fileLocation;
+                    }).error((error) => {
                     showErrorMsg($translate.instant('common.error'), error);
-                })
+                });
             });
-        }
+        };
 
-        $scope.uploadOntopRepoFile = function(files, param) {
+        $scope.uploadOntopFile = (files, ontopFileInfo) => {
             if (files && files.length) {
-                $scope.uploadFile = files[0];
-                $scope.uploadFileLoader = true;
-                Upload.upload({
+                const uploadFile = files[0];
+                ontopFileInfo.loading = true;
+                const uploadData = {
                     url: 'rest/repositories/file/upload',
-                    data: {file: $scope.uploadFile, location: $scope.repositoryInfo.location}
-                })
-                    .success(function (data) {
+                    data: {file: uploadFile, location: $scope.repositoryInfo.location}
+                };
+                Upload.upload(uploadData)
+                    .success((data) => {
                         if (!data.success) {
                             toastr.error(data.errorMessage);
                         } else {
-                            $scope.ontopRepoFileNames[param] = $scope.uploadFile.name;
-                            $scope.repositoryInfo.params[param].value = data.fileLocation;
+                            ontopFileInfo.fileName = uploadFile.name;
+                            $scope.repositoryInfo.params[ontopFileInfo.type].value = data.fileLocation;
                         }
-                        $scope.uploadFileLoader = false;
-                    }).error(function (data) {
-                    showErrorMsg($translate.instant('common.error'), data);
-                    $scope.uploadFile = '';
-                    $scope.uploadFileLoader = false;
-                });
+                    })
+                    .error((data) => {
+                        showErrorMsg($translate.instant('common.error'), data);
+                        $scope.uploadFile = '';
+                    })
+                    .finally(() => {
+                        ontopFileInfo.loading = false;
+                    });
             }
-        }
+        };
 
-        $scope.concatURL = function(labelName) {
-            if (labelName === 'hostName' || labelName === 'port' || labelName === 'databaseName') {
-                let result = $scope.selectedDriver.urlTemplate;
-                if ($scope.selectedDriver.jdbc.hostName) {
-                    if ($scope.selectedDriver.jdbc.port) {
-                        result = result.replace('{hostport}',
-                            `${$scope.selectedDriver.jdbc.hostName}:${$scope.selectedDriver.jdbc.port}`);
+        $scope.updateOntopRepo = () => {
+            const createOrUpdate = $scope.editRepoPage ? $scope.editRepository : $scope.createRepo;
+            validateRepositoryId()
+                .then(validateHostName)
+                .then(validatePort)
+                .then(validateDatabaseName)
+                .then(validateDriverClass)
+                .then(validateUrl)
+                .then(validateOntopFiles)
+                .then(updatePropertiesFile)
+                .then(createOrUpdate)
+                .catch((error) => {
+                    if (error instanceof OntopRepositoryError) {
+                        toastr.error(error.message);
                     } else {
-                        result = result.replace('{hostport}', $scope.selectedDriver.jdbc.hostName);
+                        console.log(error);
                     }
-                }
-
-                if ($scope.selectedDriver.jdbc.databaseName) {
-                    result = result.replace('{database}', $scope.selectedDriver.jdbc.databaseName);
-                }
-
-                $scope.selectedDriver.jdbc.url = result;
-            }
-        }
-
-        $scope.getInputType = function (labelName) {
-            switch (labelName) {
-                case 'password':
-                    return 'password';
-                case 'port':
-                    return 'number';
-                default:
-                    return 'text';
-            }
-        }
-
-        $scope.checkForRequiredOntopFiles = function () {
-            // Should guarantee that code will be executed in sequential manner,
-            // because properties file is not created yet
-            return updateProperties()
-                .then(function () {
-                    const missingRequired = REQUIRED_ONTOP_REPO_PARAMS.filter(function (requiredFile) {
-                        return !$scope.repositoryInfo.params[requiredFile].value;
-                    });
-                    if (missingRequired.length > 0) {
-                        toastr.error($translate.instant('ontop.repo.missing.required.file.error'));
-                        return Promise.reject($translate.instant('ontop.repo.missing.required.file.error'));
-                    }
-                    return Promise.resolve();
                 });
-        }
-
-        function loadPropertiesFile() {
-            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.repositoryInfo.location)
-                .success(function (driverData) {
-                    const driver = $scope.loadDriverByClass(driverData.driverClass);
-                    // If driver class is not found means that the selected driver is a GENERIC ONE
-                    if (driver) {
-                        $scope.selectedDriver.jdbc.hostName = driverData.hostName;
-                        $scope.selectedDriver.jdbc.port = parseInt(driverData.port);
-                        $scope.selectedDriver.jdbc.databaseName = driverData.databaseName;
-                        $scope.selectedDriver.jdbc.userName = driverData.userName;
-                        $scope.selectedDriver.jdbc.password = driverData.password;
-                        $scope.selectedDriver.jdbc.url = driverData.url;
-                    }
-                }).error(function (data) {
-                showErrorMsg($translate.instant('common.error'), data);
-                $scope.uploadFileLoader = false;
-            });
-        }
-
-        $scope.validateOntopPropertiesConnection = function () {
-            updateProperties()
-                .then(function () {
-                    RepositoriesRestService.validateOntopPropertiesConnection($scope.repositoryInfo)
-                        .success(function () {
-                            toastr.success($translate.instant('ontop.repo.successful.connection.msg'));
-                        }).error(function (data) {
-                        showErrorMsg($translate.instant('ontop.repo.failed.to.connect'), data);
-                    });
-                });
-        }
-
-        $scope.isOntopRepoFileUploaded = function() {
-            return $scope.repositoryInfo.params.propertiesFile &&
-                $scope.repositoryInfo.params.propertiesFile.value.length > 0
         };
 
-        function missingRequiredField() {
-            const missing = REQUIRED_PROPERTIES_FIELD_PARAMS
-                .filter(function (requiredField) {
-                    return !$scope.selectedDriver.jdbc[requiredField]
-                });
-            if (missing.length > 0) {
-                toastr.error($translate.instant('missing.required.field.error'));
-                return true;
-            }
-            return false;
-        }
-
-        function updateProperties() {
-            if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
-                if (missingRequiredField()) {
-                    return Promise.reject($translate.instant('missing.required.field.error'));
-                }
-                return updatePropertiesFile();
-            }
-            return Promise.resolve();
-        }
-
-        function updatePropertiesFile() {
-            $scope.uploadFileLoader = true;
-            return RepositoriesRestService
-                .updatePropertiesFile($scope.repositoryInfo.params[$scope.propertiesFile].value, $scope.selectedDriver.jdbc, $scope.repositoryInfo.location)
-                .success(function (data) {
-                    $scope.ontopRepoFileNames[$scope.propertiesFile] = getFileName(data.fileLocation);
-                    $scope.repositoryInfo.params[$scope.propertiesFile].value = data.fileLocation;
-                    $scope.uploadFileLoader = false;
-                }).error(function (data) {
-                    showErrorMsg($translate.instant('common.error'), data);
-                    $scope.uploadFileLoader = false;
-                });
-        }
-
-        $scope.isRequiredOntopRepoFile = function(file) {
-            return REQUIRED_ONTOP_REPO_PARAMS.indexOf(file) > -1;
-        };
-
-        $scope.isRequiredField = function (field) {
-            return REQUIRED_PROPERTIES_FIELD_PARAMS.indexOf(field) > -1
-                || field === 'port' && $scope.selectedDriver.portRequired;
-        };
-
-        $scope.getFieldTooltip = function (field) {
-            if (field === 'port' && $scope.selectedDriver.portRequired) {
-                field = 'portIfRequired';
-            }
-            return $translate.instant('repoTooltips.ontop.' + field);
-        };
-
-        $scope.editOntopRepo = function () {
-            $scope.checkForRequiredOntopFiles()
-                .then(function () {
-                    $scope.editRepository();
-                }).catch(function (err) {
-                // The catch block is empty, because error is handled in promise
-            });
-        }
-
-        $scope.createOntopRepo = function () {
-            if (!$scope.repositoryInfo.id) {
-                toastr.error($translate.instant('empty.repoid.warning'));
+        /**
+         * Some databases expect additional properties than hostname, port, database name in order to establish the connection.
+         * So url is not readonly and user can modify it. Every driver instead generic one has template tha can't be changed by the user, it
+         * is filled automatically when user writes hostname, port, and database name.
+         *
+         * This function prevent modification of driver template.
+         *
+         * @param event - event fired by key down.
+         */
+        $scope.onKeyDownInUrlInput = (event) => {
+            const keyCode = event.keyCode;
+            // We don't prevent event if user clicked on left, right arrow, home or end key,
+            // the client can move cursor without matter where the cursor is.
+            if (keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW || keyCode === HOME_KEY || keyCode === END_KEY) {
                 return;
             }
 
-            $scope.checkForRequiredOntopFiles()
-                .then(function () {
-                    $scope.createRepo();
-                }).catch(function (err) {
-                // The catch block is empty, because error is handled in promise
+            const templateUrl = calculateTemplateUrl();
+            // If templateUrl is empty this means that chosen driver is generic or user is not filled hostname, port, or database name.
+            // So user can type any characters into url input.
+            if (!templateUrl) {
+                return;
+            }
+
+            // Allows user to select all and copy the url value regardless that cursor position is in url template area.
+            // event.metaKey -> Mac support
+            const ctrlDown = event.ctrlKey || event.metaKey;
+            if (ctrlDown && KEY_A === keyCode || ctrlDown && KEY_C === keyCode) {
+                return;
+            }
+
+            const cursorPosition = event.target.selectionStart;
+
+            if (keyCode === BACKSPACE && cursorPosition - 1 < templateUrl.length) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            if (cursorPosition < templateUrl.length) {
+                // If templateUrl is not empty and cursor is in the middle of it, we will prevent the event and not allow to modify the url.
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            // If templateUrl is not empty and cursor is after it, the user can write any character into the url input.
+        };
+
+        $scope.onKeyUpInUrlInput = () => {
+            extractExtraUrl();
+        };
+
+        // =========================
+        // Private functions
+        // =========================
+
+        /**
+         * Extracts manual user input from url input element.
+         */
+        const extractExtraUrl = () => {
+            const templateUrl = calculateTemplateUrl();
+            if (templateUrl) {
+                if ($scope.formData.connectionInformation.url.startsWith(templateUrl)) {
+                    // If templateUrl is not empty and url input value starts with the templateUrl, the text entered by user is part after the templateUrl.
+                    $scope.formData.connectionInformation.urlUserInput = $scope.formData.connectionInformation.url.substring(templateUrl.length);
+                } else {
+                    // If templateUrl is not empty and url input value don't start with the templateUrl, all url is entered by the user.
+                    $scope.formData.connectionInformation.urlUserInput = $scope.formData.connectionInformation.url;
+                }
+            } else {
+                // If templateUrl is empty this means that chosen driver is generic or user is not filled hostname, port, or database name.
+                // So all characters in url input are entered by user.
+                $scope.formData.connectionInformation.urlUserInput = $scope.formData.connectionInformation.url;
+            }
+        };
+
+        const calculateTemplateUrl = () => {
+            let url = $scope.selectedDriver.urlTemplate;
+            const connectionInformation = $scope.formData.connectionInformation;
+            if (connectionInformation.hostName) {
+                if (connectionInformation.port) {
+                    url = url.replace('{hostport}', `${connectionInformation.hostName}:${connectionInformation.port}`);
+                } else {
+                    url = url.replace('{hostport}', `${connectionInformation.hostName}`);
+                }
+            }
+            if (connectionInformation.databaseName) {
+                url = url.replace('{database}', connectionInformation.databaseName);
+            }
+            return url;
+        };
+
+        const loadSupportedDriversData = () => {
+            return RepositoriesRestService.getSupportedDriversData($scope.repositoryInfo)
+                .success((response) => {
+                    $scope.supportedDriversData = response;
+                }).error((response) => {
+                    showErrorMsg($translate.instant('common.error'), response);
+                });
+        };
+
+        const setLoading = (loading) => {
+            $scope.formData.settings.ontopFiles.forEach((ontopFile) => {
+                ontopFile.loading = loading;
             });
         };
 
-        $scope.goBackToPrevious = function () {
-            $scope.goBackToPreviousLocation();
-        }
+        const loadPropertiesFile = () => {
+            setLoading(true);
+            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params.propertiesFile.value, $scope.repositoryInfo.location, $scope.selectedDriver.driverType)
+                .success((driverData) => {
+                    let driver = $scope.supportedDriversData.find((driver) => driver.driverClass === driverData.driverClass);
+                    if (!driver) {
+                        driver = $scope.supportedDriversData.find((driver) => $scope.genericDriverType === driver.driverType);
+                    }
+                    $scope.selectDriver(driver.driverType);
+                    $scope.formData.connectionInformation.driverType = driver.driverType;
+                    $scope.formData.connectionInformation.databaseName = driverData.databaseName;
+                    $scope.formData.connectionInformation.driverClass = driverData.driverClass;
+                    $scope.formData.connectionInformation.hostName = driverData.hostName;
+                    $scope.formData.connectionInformation.password = driverData.password;
+                    $scope.formData.connectionInformation.port = driverData.port ? parseInt(driverData.port, 10) : undefined;
+                    $scope.formData.connectionInformation.username = driverData.userName;
+                    $scope.formData.connectionInformation.url = driverData.url;
+                    $scope.formData.settings.additionalProperties = driverData.additionalProperties;
 
-        function showErrorMsg (title, data) {
+                    extractExtraUrl();
+                    $scope.updateUrl();
+
+                    Object.values(OntopFileType)
+                        .forEach((ontopFileType) => {
+                            const ontopFileInfo = $scope.repositoryInfo.params[ontopFileType];
+                            const ontopFile = $scope.getOntopFileInfo(ontopFileType);
+                            if (ontopFileInfo) {
+                                ontopFile.fileName = getFileName(ontopFileInfo.value);
+                            }
+                        });
+                })
+                .error((data) => {
+                    showErrorMsg($translate.instant('common.error'), data);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        };
+
+        const updatePropertiesFile = () => {
+            setLoading(true);
+            const connectionInformation = $scope.formData.connectionInformation;
+
+            const jdbc = {
+                hostName: connectionInformation.hostName,
+                port: connectionInformation.port,
+                databaseName: connectionInformation.databaseName,
+                userName: connectionInformation.username,
+                password: connectionInformation.password,
+                driverClass: connectionInformation.driverClass,
+                url: connectionInformation.url,
+                additionalProperties: $scope.formData.settings.additionalProperties
+            };
+
+            return RepositoriesRestService
+                .updatePropertiesFile($scope.repositoryInfo.params.propertiesFile.value, jdbc, $scope.repositoryInfo.location, $scope.selectedDriver.driverType)
+                .success((data) => {
+                    $scope.repositoryInfo.params.propertiesFile.value = data.fileLocation;
+                }).error((data) => {
+                    showErrorMsg($translate.instant('common.error'), data);
+                })
+                .finally(() => setLoading(false));
+        };
+
+        const showErrorMsg = (title, data) => {
             const msg = getError(data);
             toastr.error(msg, title);
-        }
+        };
 
-        getSupportedDriversData()
-            .then(function () {
+        const validateHostName = () => {
+            if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
+                if (!$scope.formData.connectionInformation.hostName) {
+                    return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.host_name')})));
+                }
+            }
+            return Promise.resolve();
+        };
+
+        const validateDatabaseName = () => {
+            if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
+                if (!$scope.formData.connectionInformation.databaseName) {
+                    return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.database_name')})));
+                }
+            }
+            return Promise.resolve();
+        };
+
+        const validateDriverClass = () => {
+            if (!$scope.formData.connectionInformation.driverClass) {
+                return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.driver_class')})));
+            }
+            return Promise.resolve();
+        };
+
+        const validateUrl = () => {
+            if (!$scope.formData.connectionInformation.url) {
+                return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.url')})));
+            }
+            return Promise.resolve();
+        };
+
+        const validateRepositoryId = () => {
+            if (!$scope.repositoryInfo.id) {
+                return Promise.reject(new OntopRepositoryError($translate.instant('empty.repoid.warning')));
+            }
+            return Promise.resolve();
+        };
+
+        const validateOntopFiles = () => {
+            if (!$scope.getOntopFileInfo(OntopFileType.OBDA).fileName) {
+                return Promise.reject(new OntopRepositoryError($translate.instant('ontop.repo.missing.required.file', {fileName: $scope.repositoryInfo.params[OntopFileType.OBDA].label})));
+            }
+            return Promise.resolve();
+        };
+
+        const validatePort = () => {
+            if ($scope.selectedDriver.portRequired && !$scope.formData.connectionInformation.port) {
+                return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.port')})));
+            }
+            return Promise.resolve();
+        };
+
+        // =========================
+        // Initialize component data
+        // =========================
+
+        Object.values(OntopFileType)
+            .forEach((ontopFileType) => {
+                const ontopFileInfo = new OntopFileInfo(ontopFileType);
+                $scope.formData.settings.ontopFiles.push(ontopFileInfo);
+            });
+
+        $scope.getOntopFileInfo(OntopFileType.OBDA).required = true;
+
+
+        loadSupportedDriversData()
+            .then(() => {
                 if ($scope.editRepoPage) {
                     loadPropertiesFile();
+                } else {
+                    $scope.selectDriver($scope.genericDriverType);
                 }
             });
     }
