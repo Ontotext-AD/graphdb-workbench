@@ -43,16 +43,6 @@ const parseMemberParamIfNeeded = function (param) {
     }
 };
 
-const convertAdditionalPropertiesParamIfNeeded = function (params) {
-    const values = params && params.additionalProperties && params.additionalProperties.value;
-
-    if (values && values instanceof Object) {
-        const values = params.additionalProperties.value;
-        const valuesAsStrings = Object.keys(values).map((key) => `${key}=${values[key]}`);
-        params.additionalProperties.value = valuesAsStrings.join('\n');
-    }
-};
-
 const getShaclOptionsClass = function () {
     const optionsModule = document.getElementById('shaclOptions');
 
@@ -584,7 +574,6 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
             $scope.repositoryInfo.type = data.type;
             parseNumberParamsIfNeeded($scope.repositoryInfo.params);
             parseMemberParamIfNeeded($scope.repositoryInfo.params);
-            convertAdditionalPropertiesParamIfNeeded($scope.repositoryInfo.params);
             $scope.loader = false;
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
@@ -820,7 +809,6 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
                     $scope.repositoryInfo = data;
                     $scope.setRepositoryType(data.type);
                     parseNumberParamsIfNeeded($scope.repositoryInfo.params);
-                    convertAdditionalPropertiesParamIfNeeded($scope.repositoryInfo.params);
                     $scope.repositoryInfo.saveId = $scope.saveRepoId;
                     $scope.loader = false;
                 })

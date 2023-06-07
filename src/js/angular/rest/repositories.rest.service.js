@@ -120,22 +120,24 @@ function RepositoriesRestService($http) {
         });
     }
 
-    function updatePropertiesFile(fileLocation, content, location) {
+    function updatePropertiesFile(fileLocation, content, location, driverType) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`,
             JSON.stringify(content),
             {
                 params: {
-                    fileLocation: fileLocation,
-                    location: location
+                    fileLocation,
+                    location,
+                    driverType
                 }
             });
     }
 
-    function loadPropertiesFile(file, location) {
+    function loadPropertiesFile(fileLocation, location, driverType) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/jdbc-properties`, {
             params: {
-                fileLocation: file,
-                location: location
+                fileLocation,
+                location,
+                driverType
             }
         });
     }

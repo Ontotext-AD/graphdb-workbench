@@ -1,50 +1,144 @@
 <div id="ontop-content" class="pt-1">
-    <h4>{{'ontop.repo.configuration' | translate}}</h4>
+
+    <!-- Connection information -->
+    <h4>{{'ontop.repo.connection.information' | translate}}</h4>
+
+    <!-- select driver type -->
     <div class="form-group row indented-div">
         <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'ontop.repo.database.driver' | translate}}</label>
         <div class="col-xs-8 col-md-5 col-lg-4" gdb-tooltip="{{'repoTooltips.ontop.driverType' | translate}}">
-            <select class="form-control" id="driverType" ng-model="selectedDriver.driverType"
-                    ng-change="selectDriverByType(selectedDriver.driverType)"
+            <select class="form-control" id="driverType" ng-model="formData.connectionInformation.driverType"
+                    ng-change="selectDriver(formData.connectionInformation.driverType)"
                     ng-options="driver.driverType as driver.driverName for driver in supportedDriversData">
             </select>
         </div>
-        <div class="form-group col-xs-4 col-md-2 wrapper-div"
-             ng-if="selectedDriver.driverType === genericDriverType"
-             gdb-tooltip="{{'repoTooltips.ontop.testConn' | translate}}">
-            <button id="testConnection" ng-click="validateOntopPropertiesConnection()"
-                    ng-disabled="!isOntopRepoFileUploaded() && !editRepoPage"
-                    type="submit"
-                    class="btn btn-primary">{{'ontop.repo.test.connection' | translate}}
-            </button>
+    </div>
+
+    <!-- Host Name -->
+    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== genericDriverType">
+        <label for="hostName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{getHostNameLabel()}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.hostName' | translate}}">
+            <input id="hostName" class="form-control"
+                   type="text" min="1" max="65535"
+                   ng-required="true"
+                   placeholder="{{'ontop.repo.database.host_name.placeholder' | translate}}"
+                   ng-model="formData.connectionInformation.hostName"
+                   ng-change="updateUrl()">
         </div>
     </div>
-    <div ng-repeat="labelName in propertiesFileParams" class="form-group row indented-div"
-         ng-if="selectedDriver.driverType !== genericDriverType">
-        <label for="{{labelName}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
-            {{supportedDriverLabels[labelName] + (isRequiredField(labelName) ? '*' : '')}}</label>
-        <div ng-class="{'col-xs-8 col-md-5 col-lg-4': labelName === 'url', 'col-xs-12 col-md-5 col-lg-4': labelName !== 'url'}"
-             gdb-tooltip="{{getFieldTooltip(labelName)}}">
-            <input id="{{labelName}}" class="form-control" ng-readonly="isReadOnly(labelName)"
-                   type="{{getInputType(labelName)}}" min="1" max="65535"
-                   ng-required="isRequiredField(labelName)"
-                   placeholder="{{isRequiredField(labelName) ? 'required.field' : '' | translate}}"
-                   ng-model="selectedDriver.jdbc[labelName]" ng-change="concatURL(labelName)">
+
+    <!-- Port -->
+    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== genericDriverType">
+        <label for="port" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{'ontop.repo.database.port' | translate}} {{selectedDriver.portRequired ? '*' : ''}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.port' | translate}}">
+            <input id="port" class="form-control"
+                   type="number" min="1" max="65535"
+                   ng-required="selectedDriver.portRequired"
+                   name="port"
+                   placeholder="{{'ontop.repo.database.port.placeholder' | translate}}"
+                   ng-model="formData.connectionInformation.port"
+                   ng-change="updateUrl()">
         </div>
-        <div class="col-xs-12 col-md-4" ng-if="labelName === 'driverClass'">
-            <em class="icon-warning icon-2x"
-                ng-if="!classAvailable"
-                gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
-                tooltip-placement="top"></em>
-            <a class="uri" ng-if="selectedDriver.downloadDriverUrl && !classAvailable"
-               href="{{selectedDriver.downloadDriverUrl}}"
-               style="text-decoration: underline;">
-                {{'ontop.repo.download.jdbc.driver' | translate}}
-            </a>
+    </div>
+
+    <!-- Data Base Name -->
+    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== genericDriverType">
+        <label for="databaseName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{getDatabaseNameLabel()}} *</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.databaseName' | translate}}">
+            <input id="databaseName" class="form-control"
+                   type="text" min="1" max="65535"
+                   ng-required="true"
+                   placeholder="{{'ontop.repo.database.database_name.placeholder' | translate}}"
+                   ng-model="formData.connectionInformation.databaseName"
+                   ng-change="updateUrl()">
         </div>
-        <div class="col-xs-4 col-md-2" ng-if="labelName === 'url'">
+    </div>
+
+    <!-- Username -->
+    <div class="form-group row indented-div">
+        <label for="username" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{'ontop.repo.database.username' | translate}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.userName' | translate}}">
+            <input id="username" class="form-control"
+                   type="text" min="1" max="65535"
+                   placeholder="{{'ontop.repo.database.username.placeholder' | translate}}"
+                   ng-model="formData.connectionInformation.username">
+        </div>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group row indented-div">
+        <label for="password" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{'ontop.repo.database.password' | translate}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.password' | translate}}">
+            <input id="password" class="form-control"
+                   autocomplete="new-password"
+                   type="password" min="1" max="65535"
+                   placeholder="{{'ontop.repo.database.password.placeholder' | translate}}"
+                   ng-model="formData.connectionInformation.password">
+        </div>
+    </div>
+
+    <!-- Driver class -->
+    <div class="form-group row indented-div">
+        <label for="driverClass" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{('ontop.repo.database.driver_class' | translate) + ' *'}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.driverClass' | translate}}">
+            <input id="driverClass" class="form-control"
+                   type="text" min="1" max="65535"
+                   ng-required="true"
+                   placeholder="{{'ontop.repo.database.driver_class.placeholder' | translate}}"
+                   ng-readonly="selectedDriver.driverType !== genericDriverType"
+                   ng-model="formData.connectionInformation.driverClass">
+        </div>
+        <div class="col-xs-12 col-md-4" ng-if="!selectedDriver.classAvailable">
+            <div ng-if="selectedDriver.driverType !== genericDriverType">
+                <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
+                    tooltip-placement="top"></em>
+                <a class="uri" ng-if="selectedDriver.downloadDriverUrl"
+                   href="{{selectedDriver.downloadDriverUrl}}"
+                   style="text-decoration: underline;">
+                    {{'ontop.repo.download.jdbc.driver' | translate}}
+                </a>
+            </div>
+
+            <div ng-if="selectedDriver.driverType === genericDriverType && !formData.connectionInformation.driverClass">
+                <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
+                    tooltip-placement="top"></em>
+                <span>{{'ontop.repo.missing.jdbc.driver' | translate}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JDBC URL -->
+    <div class="form-group row indented-div">
+        <label for="url" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{('ontop.repo.database.url' | translate) + ' *'}}</label>
+        <div class="col-xs-12 col-md-5 col-lg-4"
+             gdb-tooltip="{{'repoTooltips.ontop.url' | translate}}">
+            <input id="url" class="form-control"
+                   type="text" min="1" max="65535"
+                   ng-required="true"
+                   placeholder="{{selectedDriver.driverType === genericDriverType ? defaultUrlTemplate : selectedDriver.urlTemplate}}"
+                   ng-model="formData.connectionInformation.url"
+                   ng-keydown="onKeyDownInUrlInput($event)"
+                   ng-keyup="onKeyUpInUrlInput()">
+        </div>
+
+        <div class="col-xs-4 col-md-2">
             <div class="wrapper-div" gdb-tooltip="{{'repoTooltips.ontop.testConn' | translate}}">
-                <button id="testConnection1" ng-click="validateOntopPropertiesConnection()"
-                        ng-disabled="!selectedDriver.jdbc.hostName || !selectedDriver.jdbc.userName || !selectedDriver.jdbc.databaseName || isRequiredField('port') && !selectedDriver.jdbc.port"
+                <button id="testConnection"
+                        ng-click="testConnection()"
+                        ng-disabled="isTestConnectionDisabled()"
                         type="submit"
                         class="btn btn-primary">{{'ontop.repo.test.connection' | translate}}
                 </button>
@@ -52,15 +146,20 @@
         </div>
     </div>
 
+    <!-- Ontop settings -->
+    <h4>{{'ontop.repo.settings' | translate}}</h4>
+
+    <!-- Additional properties -->
     <div class="form-group row indented-div">
         <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{'ontop.repo.properties.label' | translate}}
         </label>
         <div class="col-xs-8 col-md-5 col-lg-4">
             <div class="mb-1" gdb-tooltip="{{'ontop.repo.properties.tooltip' | translate}}">
+                <!-- todo move to form params -->
                 <textarea class="form-control" rows="3" maxlength="1000"
                           id="additionalProperties"
-                          ng-model="repositoryInfo.params.additionalProperties.value"
+                          ng-model="formData.settings.additionalProperties"
                           placeholder="{{'ontop.repo.properties.placeholder' | translate}}">
                 </textarea>
             </div>
@@ -74,31 +173,38 @@
         </div>
     </div>
 
-    <div ng-repeat="file in ontopRepoFiles" class="form-group row indented-div"
-         ng-if="selectedDriver.driverType === genericDriverType || propertiesFile !== file">
-        <label for="{{file}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
-            {{repositoryInfo.params[file].label + (isRequiredOntopRepoFile(file) ? '*' : '')}}</label>
-        <div class="col-xs-8 col-md-5 col-lg-4" gdb-tooltip="{{'repoTooltips.ontop.' + file | translate}}">
-            <a class="btn btn-link ot-edit-input" ng-if="ontopRepoFileNames[file]" ng-click="editFile(file)"
+    <!-- ontop files -->
+    <div ng-repeat="ontopFileInfo in formData.settings.ontopFiles" class="form-group row indented-div">
+        <label ng-attr-for="{{ontopFileInfo.type}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+            {{repositoryInfo.params[ontopFileInfo.type].label}} {{ontopFileInfo.required ? ' *' : ''}}
+        </label>
+
+        <div class="col-xs-8 col-md-5 col-lg-4" gdb-tooltip="{{'repoTooltips.ontop.' + ontopFileInfo.type | translate}}">
+            <a ng-if="!!ontopFileInfo.fileName"
+               class="btn btn-link ot-edit-input"
+               ng-click="editFile(ontopFileInfo)"
                gdb-tooltip="{{'edit.file.content' | translate}}"
                tooltip-placement="right">
                 <span class="icon-edit"></span>
             </a>
-            <input class="form-control" id="{{file}}" ng-readonly="true"
-                   placeholder="{{isRequiredOntopRepoFile(file) ? 'required.field' : '' | translate}}"
-                   ng-model="ontopRepoFileNames[file]">
+            <input class="form-control" ng-attr-id="{{ontopFileInfo.type}}" ng-readonly="true"
+                   placeholder="{{ontopFileInfo.required ? ('required.field' | translate) : ''}}"
+                   ng-model="ontopFileInfo.fileName">
         </div>
+
         <div class="col-xs-4 col-md-2">
             <div class="btn btn-outline-primary btn-sm">
-                <div ngf-select ngf-change="uploadOntopRepoFile($files, file)" ngf-multiple="false "
+                <div ngf-select ngf-change="uploadOntopFile($files, ontopFileInfo)" ngf-multiple="false "
                      class="selectFiles pointer clearfix">
-                    <em ng-hide="uploadFileLoader" class="fa fa-upload fa-2x"></em>&nbsp;
-                    <div ng-show="uploadFileLoader" onto-loader size="24" class="spinner-container ot-loader"></div>
-                    <span for="{{file}}" class="pageInfo" style="vertical-align: super; color: #8a8a8a;">{{'upload.file' | translate}}</span>
+                    <em ng-hide="ontopFileInfo.loading" class="fa fa-upload fa-2x"></em>&nbsp;
+                    <div ng-show="ontopFileInfo.loading" onto-loader size="24" class="spinner-container ot-loader"></div>
+                    <span ng-attr-for="{{ontopFileInfo.type}}" class="pageInfo"
+                          style="vertical-align: super; color: #8a8a8a;">{{'upload.file' | translate}}</span>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="pt-1"></div>
     <div class="form-group row" ng-if="editRepoPage">
         <div class="checkbox col-xs-12">
@@ -112,11 +218,15 @@
             </label>
         </div>
     </div>
-    <div class="form-group row pb-3">
-        <div class="col-xs-12">
-            <button id="addSaveOntopRepository" ng-click="createOntopRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary">{{'common.create.btn' | translate}}</button>
-            <button id="addEditOntopRepository" ng-click="editOntopRepo()" ng-if="editRepoPage" type="submit" class="btn btn-primary">{{'common.save.btn' | translate}}</button>
-            <a ng-click="goBackToPrevious()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
+    <div class="form-group row col-xs-12 pb-3">
+        <div class="pull-right">
+            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
+            <button id="addSaveOntopRepository" ng-click="updateOntopRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary">
+                {{'common.create.btn' | translate}}
+            </button>
+            <button id="addEditOntopRepository" ng-click="updateOntopRepo()" ng-if="editRepoPage" type="submit" class="btn btn-primary">
+                {{'common.save.btn' | translate}}
+            </button>
         </div>
     </div>
 </div>
