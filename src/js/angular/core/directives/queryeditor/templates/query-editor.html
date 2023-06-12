@@ -121,7 +121,8 @@
                 </div>
                 <div id="runButton" ng-hide="norun">
                     <button id="wb-sparql-runQuery" class="btn btn-primary" ng-disabled="queryIsRunning"
-                            ng-click="runQuery(false, $event.shiftKey)" guide-selector="runSparqlQuery">
+                            ng-click="runQuery(false, $event.shiftKey ? 'explain' : ($event.altKey ? 'gpt' : ''))"
+                            guide-selector="runSparqlQuery">
                         {{runButtonName | translate}}
                     </button>
                 </div>
