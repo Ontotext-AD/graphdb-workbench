@@ -727,10 +727,11 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
     $scope.autofocusId = 'autofocus';
 }
 
-EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate'];
+EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate', 'dialogTitle'];
 
-function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate) {
+function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate, dialogTitle) {
 
+    $scope.dialogTitle = dialogTitle ? dialogTitle : $translate.instant('update.file.content.header');
     if (file) {
         RepositoriesRestService.getRepositoryFileContent(file).success(function (data) {
             $scope.fileContent = data;
