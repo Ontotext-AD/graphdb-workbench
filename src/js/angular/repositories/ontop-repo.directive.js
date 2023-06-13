@@ -158,7 +158,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         $scope.editFile = (ontopFileInfo) => {
 
             let fileName = $scope.repositoryInfo.params[ontopFileInfo.type].label;
-            if (fileName.indexOf(' file')) {
+            if (fileName.indexOf(' file') === fileName.length - 5) {
                 // Removes the 'file' word from file label if existed, to not duplicate "file" word with label 'update.file.edit.content.header'.
                 fileName = fileName.substring(0, fileName.length - 5);
             }
