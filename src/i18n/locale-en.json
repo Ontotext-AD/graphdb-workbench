@@ -1278,7 +1278,7 @@
     "signature.auth.info": "Signature authentication uses the token secret, which must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
     "signature.auth.info.last": " in the documentation.",
     "update.file.content.header": "Update file contents",
-    "update.file.edit.content.header": "Edit {{fileName}} file contents",
+    "update.file.edit.content.header": "Edit \"{{fileName}}\" contents",
     "update.file.content.placeholder": "# Update ontop repository file content",
     "update.file.content.tooltip": "Update the contents of the file.",
     "upload.repo.config.header": "Upload Repository Configuration",
