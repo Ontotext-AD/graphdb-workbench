@@ -156,7 +156,6 @@
         </label>
         <div class="col-xs-8 col-md-5 col-lg-4">
             <div class="mb-1" gdb-tooltip="{{'ontop.repo.properties.tooltip' | translate}}">
-                <!-- todo move to form params -->
                 <textarea class="form-control" rows="3" maxlength="1000"
                           id="additionalProperties"
                           ng-model="formData.settings.additionalProperties"
@@ -175,7 +174,7 @@
 
     <!-- ontop files -->
     <div ng-repeat="ontopFileInfo in formData.settings.ontopFiles" class="form-group row indented-div">
-        <label ng-attr-for="{{ontopFileInfo.type}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="{{ontopFileInfo.type}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{repositoryInfo.params[ontopFileInfo.type].label}} {{ontopFileInfo.required ? ' *' : ''}}
         </label>
 
@@ -187,7 +186,7 @@
                tooltip-placement="right">
                 <span class="icon-edit"></span>
             </a>
-            <input class="form-control" ng-attr-id="{{ontopFileInfo.type}}" ng-readonly="true"
+            <input class="form-control" id="{{ontopFileInfo.type}}" ng-readonly="true"
                    placeholder="{{ontopFileInfo.required ? ('required.field' | translate) : ''}}"
                    ng-model="ontopFileInfo.fileName">
         </div>
@@ -198,7 +197,7 @@
                      class="selectFiles pointer clearfix">
                     <em ng-hide="ontopFileInfo.loading" class="fa fa-upload fa-2x"></em>&nbsp;
                     <div ng-show="ontopFileInfo.loading" onto-loader size="24" class="spinner-container ot-loader"></div>
-                    <span ng-attr-for="{{ontopFileInfo.type}}" class="pageInfo"
+                    <span for="{{ontopFileInfo.type}}" class="pageInfo"
                           style="vertical-align: super; color: #8a8a8a;">{{'upload.file' | translate}}</span>
                 </div>
             </div>
