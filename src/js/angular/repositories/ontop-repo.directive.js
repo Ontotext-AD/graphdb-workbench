@@ -156,13 +156,24 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
          * @param {OntopFileInfo} ontopFileInfo
          */
         $scope.editFile = (ontopFileInfo) => {
+
+            let fileName = $scope.repositoryInfo.params[ontopFileInfo.type].label;
+            if (fileName.indexOf(' file')) {
+                // Removes the 'file' word from file label if existed, to not duplicate "file" word with label 'update.file.edit.content.header'.
+                fileName = fileName.substring(0, fileName.length - 5);
+            }
+            const title = $translate.instant('update.file.edit.content.header', {fileName});
             const modalInstance = $uibModal.open({
                 templateUrl: 'js/angular/templates/modal/editRepoFile.html',
                 controller: 'EditRepositoryFileCtrl',
+                windowClass: 'update-ontop-repo-dialog',
                 resolve: {
                     file: () => {
                         const ontopFile = $scope.repositoryInfo.params[ontopFileInfo.type];
                         return ontopFile ? ontopFile.value : '';
+                    },
+                    dialogTitle: () => {
+                        return title;
                     }
                 }
             });

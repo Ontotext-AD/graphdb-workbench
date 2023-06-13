@@ -379,3 +379,25 @@
         width: fit-content;
     }
 }
+
+@media only screen and (min-width:962px) {
+    .update-ontop-repo-dialog .modal-dialog {
+        min-width: 900px;
+    }
+
+    .update-ontop-repo-dialog .modal-dialog .modal-content {
+        height: 800px;
+    }
+
+    .update-ontop-repo-dialog .modal-dialog .modal-content .form-group, .update-ontop-repo-dialog .modal-dialog .modal-content #wb-repository-file-textarea  {
+        height: 100%;
+    }
+
+    .update-ontop-repo-dialog .modal-dialog .modal-content .modal-body {
+        overflow: hidden;
+    }
+}
+
+.update-ontop-repo-dialog .modal-dialog .modal-content .modal-body {
+    font-family: var(--mono-font);
+}
