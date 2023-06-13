@@ -1267,7 +1267,7 @@
     "signature.auth.info": "L'authentification par signature utilise le secret du jeton, qui doit être le même sur les deux instances de GraphDB. Pour plus d'informations sur la configuration du secret du jeton, veuillez vous référer à ",
     "signature.auth.info.last": "dans la documentation.",
     "update.file.content.header": "Mise à jour du contenu du fichier",
-    "update.file.edit.content.header": "Modifier le contenu du fichier {{fileName}}",
+    "update.file.edit.content.header": "Modifier le contenu du \"{{fileName}}\"",
     "update.file.content.placeholder": "# Mise à jour du contenu du fichier du dépôt ontop.",
     "update.file.content.tooltip": "Mettre à jour le contenu du fichier.",
     "upload.repo.config.header": "Mettre à jour le contenu du fichier.",
