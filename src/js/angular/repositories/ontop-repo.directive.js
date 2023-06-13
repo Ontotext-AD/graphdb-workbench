@@ -48,7 +48,6 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
          * @type {OntopDriverData[]}
          */
         $scope.supportedDriversData = [];
-        $scope.userUrlextraInput = '';
         $scope.formData = {
             connectionInformation: new OntopConnectionInformation(),
             settings: {
