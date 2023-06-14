@@ -69,8 +69,11 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
          */
         $scope.selectDriver = (driverType) => {
             $scope.selectedDriver = $scope.supportedDriversData.find((driver) => driver.driverType === driverType);
-            if ($scope.formData.connectionInformation.driverClass !== $scope.selectedDriver.driverClass) {
-                $scope.formData.connectionInformation.url = '';
+            if ($scope.editRepoPage && $scope.currentOntopRepoInfo && $scope.currentOntopRepoInfo.connectionInformation.driverType === driverType) {
+                $scope.formData = angular.copy($scope.currentOntopRepoInfo);
+            } else {
+                clearFormData();
+                $scope.formData.connectionInformation.driverType = $scope.selectedDriver.driverType;
             }
             $scope.formData.connectionInformation.driverClass = $scope.selectedDriver.driverClass;
             $scope.updateUrl();
@@ -369,6 +372,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                                 ontopFile.fileName = getFileName(ontopFileInfo.value);
                             }
                         });
+                    $scope.currentOntopRepoInfo = angular.copy($scope.formData);
                 })
                 .error((data) => {
                     showErrorMsg($translate.instant('common.error'), data);
@@ -461,19 +465,27 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             return Promise.resolve();
         };
 
+        const clearFormData = () => {
+            $scope.formData = {
+                connectionInformation: new OntopConnectionInformation(),
+                settings: {
+                    additionalProperties: '',
+                    ontopFiles: []
+                }
+            };
+
+            Object.values(OntopFileType)
+                .forEach((ontopFileType) => {
+                    const ontopFileInfo = new OntopFileInfo(ontopFileType);
+                    $scope.formData.settings.ontopFiles.push(ontopFileInfo);
+                });
+
+            $scope.getOntopFileInfo(OntopFileType.OBDA).required = true;
+        };
+
         // =========================
         // Initialize component data
         // =========================
-
-        Object.values(OntopFileType)
-            .forEach((ontopFileType) => {
-                const ontopFileInfo = new OntopFileInfo(ontopFileType);
-                $scope.formData.settings.ontopFiles.push(ontopFileInfo);
-            });
-
-        $scope.getOntopFileInfo(OntopFileType.OBDA).required = true;
-
-
         loadSupportedDriversData()
             .then(() => {
                 if ($scope.editRepoPage) {
