@@ -89,7 +89,7 @@ describe('Ontop repositories', () => {
         OntopRepositorySteps.getHostNameInput().type(hostName);
 
         // Then I expect url to be filed with the host name.
-        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:mysql://localhost/{database}url:to://database');
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:mysql://localhost/{database}');
 
         // When I click on create repository button.
         OntopRepositorySteps.clickOnCreateRepositoryButton();
@@ -99,6 +99,17 @@ describe('Ontop repositories', () => {
 
         // When I change the database driver for which the port field is required,
         OntopRepositorySteps.selectOracleDatabase();
+
+        // Then I expect host name to be cleared,
+        // and if click on create repository button.
+        OntopRepositorySteps.clickOnCreateRepositoryButton();
+
+        // Then I expect to see error message that describes host name field is empty.
+        ToasterSteps.verifyError('Missing required field \'Host name\'');
+
+        // When I fill host name,
+        OntopRepositorySteps.getHostNameInput().type(hostName);
+
         // and click on create repository button.
         OntopRepositorySteps.clickOnCreateRepositoryButton();
 
@@ -109,7 +120,7 @@ describe('Ontop repositories', () => {
         OntopRepositorySteps.getPortInput().type(5423);
 
         // Then I expect url to be filed with the host name and port.
-        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:{database}url:to://database');
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:{database}');
 
         // When I click on create repository button.
         OntopRepositorySteps.clickOnCreateRepositoryButton();
@@ -121,7 +132,7 @@ describe('Ontop repositories', () => {
         OntopRepositorySteps.getDatabaseNameInput().type('database-name');
 
         // Then I expect url to be filed with the host name and port,
-        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:database-nameurl:to://database');
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:database-name');
         // and test connection button to be enabled.
         OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
     });
