@@ -37,7 +37,6 @@
 		<div class="alert alert-info no-icon mt-1">
 			<p>{{'security.using.external.auth.db' | translate}} {{getAuthImplementation()}}.</p>
 			<p>{{'security.user.settings.modification' | translate}}</p>
-			<p>{{'security.user.settings.user_role' | translate}}</p>
 		</div>
 	</div>
 
@@ -45,8 +44,8 @@
 		<thead>
 			<tr>
 				<th id="usernameColumn">{{'security.table.username' | translate}}</th>
-				<th ng-if="!hasExternalAuth()" id="roleColumn">{{'security.table.role' | translate}}</th>
-				<th ng-if="!hasExternalAuth()" id="repoRightsColumn">{{'security.repo.rights' | translate}}</th>
+				<th id="roleColumn">{{'security.table.role' | translate}}</th>
+				<th id="repoRightsColumn">{{'security.repo.rights' | translate}}</th>
 				<th id="creationDateColumn">{{'security.table.date.created' | translate}}</th>
 				<th id="actionsColumn">{{'security.table.actions' | translate}}</th>
 			</tr>
@@ -54,8 +53,8 @@
 		<tbody>
 			<tr ng-repeat="user in users | orderBy: 'username'">
 				<td class="username"><span>{{user.username}}</span></td>
-				<td ng-if="!hasExternalAuth()" class="user-type">{{user.userTypeDescription}}</td>
-				<td ng-if="!hasExternalAuth()" class="repository-rights">
+				<td class="user-type">{{user.userTypeDescription}}</td>
+				<td class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
 						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.read.access' : 'security.no.read.access' | translate}}"></em>
 						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.write.access' : 'security.no.write.access' | translate}}"></em>
