@@ -347,19 +347,25 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params.propertiesFile.value, $scope.repositoryInfo.location, $scope.selectedDriver.driverType)
                 .success((driverData) => {
                     let driver = $scope.supportedDriversData.find((driver) => driver.driverClass === driverData.driverClass);
-                    if (!driver) {
+                    // If driver not found this means that driver is generic.
+                    // If the driver is found, but the data returned by the server does not contain a hostname,
+                    // it means that the driver class (which we support) is filled in as the driver class of a generic type.
+                    if (!driver || !driverData.hostName) {
                         driver = $scope.supportedDriversData.find((driver) => $scope.genericDriverType === driver.driverType);
                     }
                     $scope.selectDriver(driver.driverType);
                     $scope.formData.connectionInformation.driverType = driver.driverType;
-                    $scope.formData.connectionInformation.databaseName = driverData.databaseName;
                     $scope.formData.connectionInformation.driverClass = driverData.driverClass;
-                    $scope.formData.connectionInformation.hostName = driverData.hostName;
                     $scope.formData.connectionInformation.password = driverData.password;
-                    $scope.formData.connectionInformation.port = driverData.port ? parseInt(driverData.port, 10) : undefined;
                     $scope.formData.connectionInformation.username = driverData.userName;
                     $scope.formData.connectionInformation.url = driverData.url;
                     $scope.formData.settings.additionalProperties = driverData.additionalProperties;
+
+                    if ($scope.genericDriverType !== driver.driverType) {
+                        $scope.formData.connectionInformation.hostName = driverData.hostName;
+                        $scope.formData.connectionInformation.databaseName = driverData.databaseName;
+                        $scope.formData.connectionInformation.port = driverData.port ? parseInt(driverData.port, 10) : undefined;
+                    }
 
                     extractExtraUrl();
                     $scope.updateUrl();
