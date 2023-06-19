@@ -1,3 +1,4 @@
+import 'angular/utils/file-types';
 import 'angular/rest/connectors.rest.service';
 import 'angular/utils/local-storage-adapter';
 import 'angular/externalsync/controllers';
@@ -5,19 +6,25 @@ import YASQE from 'lib/yasqe.bundled';
 import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../../app";
 import {YasrUtils} from "../../../utils/yasr-utils";
+import {saveAs} from 'lib/FileSaver-patch';
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
         'ngCookies',
         'graphdb.framework.externalsync.controllers',
         'graphdb.framework.rest.connectors.service',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.workbench.utils.filetypes'
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$languageService', 'GuidesService'];
+queryEditorDirective.$inject = ['$timeout', '$location', '$q', '$http', 'toastr', '$repositories', 'SparqlRestService', 'ModalService',
+    '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate',
+    '$languageService', 'GuidesService', 'FileTypes'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $uibModal, $jwtAuth, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
+function queryEditorDirective($timeout, $location, $q, $http, toastr, $repositories, SparqlRestService, ModalService, $uibModal, $jwtAuth,
+    RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService,
+    FileTypes) {
 
     let callbackOnChange;
 
@@ -51,6 +58,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         scope.norun = attrs.hasOwnProperty('norun');
 
         scope.enableColumnResizingOnWindowWidth = attrs.hasOwnProperty('enableColumnResizingOnWindowWidth');
+
+        scope.exportFormats = FileTypes;
 
 
         // Name of the Run button in the editor
@@ -309,7 +318,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             return originalExecuteQuery(cm, {});
                         })
                         .error(function (data) {
-                            toastr.warning($translate.instant('query.editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
+                            toastr.warning($translate.instant('query.editor.repo.size.error',
+                                {repo: $repositories.getActiveRepository(), error: getError(data)}));
                             scope.queryStartTime = new Date().getTime();
                             return originalExecuteQuery(cm, {});
                         });
@@ -323,7 +333,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                             scope.currentTabConfig.timeFinished = Date.now();
                             scope.currentTabConfig.timeTook = (scope.currentTabConfig.timeFinished - scope.queryStartTime) / 1000;
 
-                            const customErrorText = $translate.instant('query.editor.inactive.plugin.warning.msg', {connectorName: res.data.connectorName, pluginName: res.data.pluginName});
+                            const customErrorText = $translate.instant('query.editor.inactive.plugin.warning.msg',
+                                {connectorName: res.data.connectorName, pluginName: res.data.pluginName});
                             const customError = createCustomError(-1, customErrorText, customErrorText);
 
                             yasr.results = {
@@ -360,7 +371,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                     indexedEntities: 0,
                                     entitiesPerSecond: 0
                                 },
-                                actionName: repair ? $translate.instant('externalsync.repairing') : $translate.instant('externalsync.creating'),
+                                actionName: repair ? $translate.instant('externalsync.repairing') : $translate.instant(
+                                    'externalsync.creating'),
                                 eta: "-",
                                 inline: false,
                                 iri: res.data.iri,
@@ -442,7 +454,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         YASQE.getAjaxConfig = function (yasqe, callbackOrConfig) {
             const config = originalGetAjaxConfig(yasqe, callbackOrConfig);
 
-            let auth = $jwtAuth.getAuthToken();
+            const auth = $jwtAuth.getAuthToken();
             if (auth) {
                 _.extend(config.headers, {
                     'Authorization': auth
@@ -509,23 +521,23 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             const executedQueryTabIdx = findTabIndexByID(scope.executedQueryTab.id);
             const executedQueryTab = scope.tabs[executedQueryTabIdx];
             const queryResultState = {
-                    queryType: scope.currentTabConfig.queryType,
-                    yasrData: dataOrJqXhr,
-                    textStatus: textStatus,
-                    jqXhrOrErrorString: jqXhrOrErrorString,
-                    page: scope.currentTabConfig.page,
-                    pageSize: scope.currentTabConfig.pageSize,
-                    allResultsCount: scope.currentTabConfig.allResultsCount,
-                    allResultsCountExact: scope.currentTabConfig.allResultsCountExact,
-                    resultsCount: scope.currentTabConfig.resultsCount,
-                    offset: scope.currentTabConfig.offset,
-                    timeTook: scope.currentTabConfig.timeTook,
-                    timeFinished: scope.currentTabConfig.timeFinished,
-                    sizeDelta: scope.currentTabConfig.sizeDelta,
-                    customUpdateMessage: scope.currentTabConfig.customUpdateMessage,
-                    errorMessage: scope.currentTabConfig.errorMessage,
-                    warningMessage: scope.currentTabConfig.warningMessage
-                };
+                queryType: scope.currentTabConfig.queryType,
+                yasrData: dataOrJqXhr,
+                textStatus: textStatus,
+                jqXhrOrErrorString: jqXhrOrErrorString,
+                page: scope.currentTabConfig.page,
+                pageSize: scope.currentTabConfig.pageSize,
+                allResultsCount: scope.currentTabConfig.allResultsCount,
+                allResultsCountExact: scope.currentTabConfig.allResultsCountExact,
+                resultsCount: scope.currentTabConfig.resultsCount,
+                offset: scope.currentTabConfig.offset,
+                timeTook: scope.currentTabConfig.timeTook,
+                timeFinished: scope.currentTabConfig.timeFinished,
+                sizeDelta: scope.currentTabConfig.sizeDelta,
+                customUpdateMessage: scope.currentTabConfig.customUpdateMessage,
+                errorMessage: scope.currentTabConfig.errorMessage,
+                warningMessage: scope.currentTabConfig.warningMessage
+            };
 
             // Save the output type only if it isn't an update or an ask query.
             // This way we preserve the existing output type when we execute an update and then
@@ -574,21 +586,66 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
             yasr.getQueryResultsAsFormat = function (downloadFormat) {
-                // Simple cross-browser download with a form
-                const $wbDownload = $('#wb-download');
-                $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
-                $('#wb-download-query').val(scope.currentQuery.query);
-                if (window.editor.getValue() !== scope.currentQuery.query) {
+                const exportFormatWithErrorHandling = scope.exportFormats.filter((format) => format.name.includes('JSON'));
+                const apiUrl = 'repositories/' + $repositories.getActiveRepository();
+                const query = scope.currentQuery.query;
+                const infer = scope.currentQuery.inference;
+                const sameAs = scope.currentQuery.sameAs;
+                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                const accept = downloadFormat;
+
+                const fetchWithErrorHandling = exportFormatWithErrorHandling.some((format) => format.type === downloadFormat);
+                if (window.editor.getValue() !== query) {
                     toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
-                $('#wb-download-infer').val(scope.currentQuery.inference);
-                $('#wb-download-sameAs').val(scope.currentQuery.sameAs);
-                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
-                if (auth) {
-                    $('#wb-auth-token').val(auth);
+                if (fetchWithErrorHandling) {
+                    // JSON and JSON-LD have to be fetched in memory before sending, so error handling must be introduced
+                    $http.get(apiUrl, {
+                        headers: {
+                            accept
+                        },
+                        params: {
+                            query,
+                            infer,
+                            sameAs,
+                            auth,
+                            accept
+                        },
+                        responseType: "blob"
+                    }).then(function (res) {
+                        const data = res.data;
+                        const headersGetter = res.headers;
+                        const headers = headersGetter();
+                        const disposition = headers['content-disposition'];
+                        let filename = 'query-result.txt';
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            const matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                            }
+                        }
+                        saveAs(data, filename);
+                    }).catch(function (res) {
+                        // data is received as blob
+                        res.data.text()
+                            .then((message) => {
+                                toastr.error(message, $translate.instant('common.error'));
+                            });
+                    });
+                } else {
+                    // Simple cross-browser download with a form
+                    const $wbDownload = $('#wb-download');
+                    $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
+                    $('#wb-download-query').val(query);
+                    $('#wb-download-infer').val(infer);
+                    $('#wb-download-sameAs').val(sameAs);
+                    if (auth) {
+                        $('#wb-auth-token').val(auth);
+                    }
+                    $('#wb-download-accept').val(downloadFormat);
+                    $wbDownload.trigger('submit');
                 }
-                $('#wb-download-accept').val(downloadFormat);
-                $wbDownload.submit();
             };
             window.editor.options.sparql.handlers.complete = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
                 function setNewTabStateForThis() {
@@ -633,7 +690,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
                     scope.currentTabConfig.queryType = 'ERROR';
 
-                    const customError = createCustomError(-1, $translate.instant('aborted.request.msg'), $translate.instant('aborted.request.no.results.msg'));
+                    const customError = createCustomError(-1, $translate.instant('aborted.request.msg'),
+                        $translate.instant('aborted.request.no.results.msg'));
 
                     yasr.results = {
                         getException: function () {
@@ -663,10 +721,11 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                 scope.currentTabConfig.sizeDelta = repoSizeDiff;
                                 setNewTabStateForThis();
                             }).error(function (data) {
-                                toastr.warning($translate.instant('query.editor.repo.size.error', {repo: $repositories.getActiveRepository(), error: getError(data)}));
-                                scope.currentTabConfig.sizeDelta = undefined;
-                                setNewTabStateForThis();
-                            });
+                            toastr.warning($translate.instant('query.editor.repo.size.error',
+                                {repo: $repositories.getActiveRepository(), error: getError(data)}));
+                            scope.currentTabConfig.sizeDelta = undefined;
+                            setNewTabStateForThis();
+                        });
                     };
                 } else {
                     if (dataOrJqXhr.status === 200) {
@@ -698,7 +757,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                     // The number will increase when we go to the next page eventually reaching the exact count.
                                     // A count query may also provide the exact count asynchronously.
                                     scope.currentTabConfig.allResultsCount = Math.max(scope.currentTabConfig.allResultsCount,
-                                        scope.currentTabConfig.pageSize * (scope.currentTabConfig.page - 1) + scope.currentTabConfig.resultsCount);
+                                        scope.currentTabConfig.pageSize * (scope.currentTabConfig.page - 1)
+                                        + scope.currentTabConfig.resultsCount);
 
                                     // We know we reached the end and the count is exact now.
                                     if (scope.currentTabConfig.resultsCount <= scope.currentTabConfig.pageSize) {
@@ -758,7 +818,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
             scope.yasr = yasr;
 
-            scope.setYasrResponse = function(dataOrJqXhr, textStatus, jqXhrOrErrorString) {
+            scope.setYasrResponse = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
                 // If YASR doesn't see a "response" property it will parse the textual JSON in "responseText".
                 // This is both slow and interferes with the +1 result per page policy when we truncate responseJSON.
                 if (dataOrJqXhr.responseJSON) {
@@ -809,7 +869,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             var vars = yasr.results.getVariables();
             var singleBinding = bindings[0];
             var planVar = vars[0];
-            if (vars.length === 1 && bindings.length === 1 && planVar === "plan" && singleBinding[planVar].value.includes("# NOTE: Optimization groups")) {
+            if (vars.length === 1 && bindings.length === 1 && planVar === "plan" && singleBinding[planVar].value.includes(
+                "# NOTE: Optimization groups")) {
                 var queryResultElement = document.getElementsByClassName('nonUri')[0];
                 queryResultElement.classList.add("cm-s-default");
                 queryResultElement.setAttribute("id", "highlighted_output");
@@ -896,7 +957,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     loadQueryIntoExistingOrNewTab(data, infer, sameAs);
                 })
                 .error(function (data) {
-                    toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {savedQueryName: savedQueryName, error: getError(data)}));
+                    toastr.error($translate.instant('query.editor.missing.saved.query.data.error',
+                        {savedQueryName: savedQueryName, error: getError(data)}));
                 });
         }
 
