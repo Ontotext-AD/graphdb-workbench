@@ -1,4 +1,3 @@
-import 'angular/utils/file-types';
 import 'angular/rest/connectors.rest.service';
 import 'angular/utils/local-storage-adapter';
 import 'angular/externalsync/controllers';
@@ -13,18 +12,18 @@ angular
         'ngCookies',
         'graphdb.framework.externalsync.controllers',
         'graphdb.framework.rest.connectors.service',
-        'graphdb.framework.utils.localstorageadapter',
-        'graphdb.workbench.utils.filetypes'
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', '$q', '$http', 'toastr', '$repositories', 'SparqlRestService', 'ModalService',
+queryEditorDirective.$inject = ['$timeout', '$location', '$q', '$http', 'RepositoriesRestService', 'toastr', '$repositories',
+    'SparqlRestService', 'ModalService',
     '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate',
-    '$languageService', 'GuidesService', 'FileTypes'];
+    '$languageService', 'GuidesService'];
 
-function queryEditorDirective($timeout, $location, $q, $http, toastr, $repositories, SparqlRestService, ModalService, $uibModal, $jwtAuth,
-    RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService,
-    FileTypes) {
+function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestService, toastr, $repositories, SparqlRestService,
+    ModalService, $uibModal, $jwtAuth,
+    RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
 
     let callbackOnChange;
 
@@ -58,8 +57,6 @@ function queryEditorDirective($timeout, $location, $q, $http, toastr, $repositor
         scope.norun = attrs.hasOwnProperty('norun');
 
         scope.enableColumnResizingOnWindowWidth = attrs.hasOwnProperty('enableColumnResizingOnWindowWidth');
-
-        scope.exportFormats = FileTypes;
 
 
         // Name of the Run button in the editor
@@ -586,47 +583,28 @@ function queryEditorDirective($timeout, $location, $q, $http, toastr, $repositor
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
             yasr.getQueryResultsAsFormat = function (downloadFormat) {
-                const exportFormatWithErrorHandling = scope.exportFormats.filter((format) => format.name.includes('JSON'));
+                // JSON and JSON-LD have to be fetched in memory before sending, so error handling must be introduced
+                // Valid for construct queries only
+                const exportTypesToFetchWithErrorHandling = ['application/rdf+json', 'application/ld+json'];
+                const isConstructQuery = window.editor.getQueryType() === 'CONSTRUCT';
                 const apiUrl = 'repositories/' + $repositories.getActiveRepository();
-                const query = scope.currentQuery.query;
-                const infer = scope.currentQuery.inference;
-                const sameAs = scope.currentQuery.sameAs;
-                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                const queryParams = {
+                    query: window.editor.getValue(),
+                    infer: scope.currentQuery.inference,
+                    sameAs: scope.currentQuery.sameAs,
+                    auth: localStorage.getItem('com.ontotext.graphdb.auth')
+                };
                 const accept = downloadFormat;
 
-                const fetchWithErrorHandling = exportFormatWithErrorHandling.some((format) => format.type === downloadFormat);
-                if (window.editor.getValue() !== query) {
+                const fetchWithErrorHandling = exportTypesToFetchWithErrorHandling.includes(downloadFormat);
+                if (window.editor.getValue() !== queryParams.query) {
                     toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
-                if (fetchWithErrorHandling) {
-                    // JSON and JSON-LD have to be fetched in memory before sending, so error handling must be introduced
-                    $http.get(apiUrl, {
-                        headers: {
-                            accept
-                        },
-                        params: {
-                            query,
-                            infer,
-                            sameAs,
-                            auth,
-                            accept
-                        },
-                        responseType: "blob"
-                    }).then(function (res) {
-                        const data = res.data;
-                        const headersGetter = res.headers;
-                        const headers = headersGetter();
-                        const disposition = headers['content-disposition'];
-                        let filename = 'query-result.txt';
-                        if (disposition && disposition.indexOf('attachment') !== -1) {
-                            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                            const matches = filenameRegex.exec(disposition);
-                            if (matches != null && matches[1]) {
-                                filename = matches[1].replace(/['"]/g, '');
-                            }
-                        }
-                        saveAs(data, filename);
-                    }).catch(function (res) {
+                if (isConstructQuery && fetchWithErrorHandling) {
+                    RepositoriesRestService.downloadResultsAsFile(apiUrl, queryParams, accept)
+                        .then(function (data, filename) {
+                            saveAs(data, filename);
+                        }).catch(function (res) {
                         // data is received as blob
                         res.data.text()
                             .then((message) => {
@@ -637,11 +615,11 @@ function queryEditorDirective($timeout, $location, $q, $http, toastr, $repositor
                     // Simple cross-browser download with a form
                     const $wbDownload = $('#wb-download');
                     $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
-                    $('#wb-download-query').val(query);
-                    $('#wb-download-infer').val(infer);
-                    $('#wb-download-sameAs').val(sameAs);
-                    if (auth) {
-                        $('#wb-auth-token').val(auth);
+                    $('#wb-download-query').val(queryParams.query);
+                    $('#wb-download-infer').val(queryParams.infer);
+                    $('#wb-download-sameAs').val(queryParams.sameAs);
+                    if (queryParams.auth) {
+                        $('#wb-auth-token').val(queryParams.auth);
                     }
                     $('#wb-download-accept').val(downloadFormat);
                     $wbDownload.trigger('submit');
