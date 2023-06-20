@@ -602,7 +602,7 @@ function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestSe
                 }
                 if (isConstructQuery && fetchWithErrorHandling) {
                     RepositoriesRestService.downloadResultsAsFile(apiUrl, queryParams, accept)
-                        .then(function (data, filename) {
+                        .then(function ({data, filename}) {
                             saveAs(data, filename);
                         }).catch(function (res) {
                         // data is received as blob
