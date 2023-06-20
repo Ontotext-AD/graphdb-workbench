@@ -23,7 +23,7 @@
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
     "dependencies": {
-        "cypress": "^12.5.1",
+        "cypress": "^12.11.0",
         "cypress-failed-log": "^2.5.1",
         "cypress-localstorage-commands": "^1.4.4",
         "cypress-terminal-report": "^4.0.1",
