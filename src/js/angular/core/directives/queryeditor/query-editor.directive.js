@@ -589,7 +589,7 @@ function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestSe
                 const isConstructQuery = window.editor.getQueryType() === 'CONSTRUCT';
                 const apiUrl = 'repositories/' + $repositories.getActiveRepository();
                 const queryParams = {
-                    query: window.editor.getValue(),
+                    query: scope.currentQuery.query,
                     infer: scope.currentQuery.inference,
                     sameAs: scope.currentQuery.sameAs,
                     auth: localStorage.getItem('com.ontotext.graphdb.auth')
