@@ -4,6 +4,7 @@ import {OntopConnectionInformation} from "../../../models/ontop/ontop-connection
 import {OntopFileInfo} from "../../../models/ontop/ontop-file-info";
 import {OntopRepositoryError} from "../../../models/ontop/ontop-repository-error";
 import {OntopDriverData} from "../../../models/ontop/ontop-driver-data";
+import {JdbcDriverType} from "../../../models/ontop/jdbc-driver-type";
 
 // A link to Ontop's website with all Ontop configuration keys
 const ONTOP_PROPERTIES_LINK = 'https://ontop-vkg.org/guide/advanced/configuration.html';
@@ -31,7 +32,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         const BACKSPACE = 8;
         const KEY_C = 67;
         const KEY_A = 65;
-        $scope.genericDriverType = 'generic';
+        $scope.jdbDriverType = JdbcDriverType;
         $scope.defaultUrlTemplate = 'jdbc:database://localhost:port/database_name';
         $scope.ontopProperiesLink = ONTOP_PROPERTIES_LINK;
         $scope.ontopFileType = OntopFileType;
@@ -89,20 +90,20 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         $scope.getHostNameLabel = () => {
-            const hostNameLabel = 'snowflake' === $scope.selectedDriver.driverType ? 'ontop.repo.database.snowflake.host_name' : 'ontop.repo.database.host_name';
+            const hostNameLabel = JdbcDriverType.SNOWFLAKE === $scope.selectedDriver.driverType ? 'ontop.repo.database.snowflake.host_name' : 'ontop.repo.database.host_name';
             return $translate.instant(hostNameLabel) + '*';
         };
 
         $scope.getDatabaseNameLabel = () => {
             let dataBaseNameLabelKey = '';
             switch ($scope.selectedDriver.driverType) {
-                case 'snowflake':
+                case JdbcDriverType.SNOWFLAKE:
                     dataBaseNameLabelKey = 'ontop.repo.database.warehouse.database_name';
                     break;
-                case 'databricks':
+                case JdbcDriverType.DATABRICKS:
                     dataBaseNameLabelKey = 'ontop.repo.database.http_path.database_name';
                     break;
-                case 'dremio':
+                case JdbcDriverType.DREMIO:
                     dataBaseNameLabelKey = 'ontop.repo.database.schema.database_name';
                     break;
                 default:
@@ -129,7 +130,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             if (!connectionInformation.driverClass || !connectionInformation.url || selectedDriver.portRequired && !connectionInformation.port) {
                 return true;
             }
-            return selectedDriver.driverType !== $scope.genericDriverType && (!connectionInformation.hostName || !connectionInformation.databaseName);
+            return selectedDriver.driverType !== JdbcDriverType.GENERIC && (!connectionInformation.hostName || !connectionInformation.databaseName);
         };
 
         /**
@@ -312,6 +313,31 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         const calculateTemplateUrl = () => {
+            if ($scope.selectedDriver.driverType === JdbcDriverType.SNOWFLAKE) {
+                return calculateSnowflakeTemplateUrl();
+            }
+           return calculateDefaultTemplateUrl();
+        };
+
+        const calculateSnowflakeTemplateUrl = () => {
+            let url = $scope.selectedDriver.urlTemplate;
+            const connectionInformation = $scope.formData.connectionInformation;
+
+            if (connectionInformation.hostName) {
+                url = url.replace('{identifier}', connectionInformation.hostName);
+            }
+
+            if (connectionInformation.port) {
+                url = url.replace('.snowflakecomputing.com/?', `.snowflakecomputing.com:${connectionInformation.port}/?`);
+            }
+
+            if (connectionInformation.databaseName) {
+                url = url.replace('{database}', connectionInformation.databaseName);
+            }
+            return url;
+        };
+
+        const calculateDefaultTemplateUrl = () => {
             let url = $scope.selectedDriver.urlTemplate;
             const connectionInformation = $scope.formData.connectionInformation;
             if (connectionInformation.hostName) {
@@ -325,7 +351,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 url = url.replace('{database}', connectionInformation.databaseName);
             }
             return url;
-        };
+        }
 
         const loadSupportedDriversData = () => {
             return RepositoriesRestService.getSupportedDriversData($scope.repositoryInfo)
@@ -351,7 +377,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     // If the driver is found, but the data returned by the server does not contain a hostname,
                     // it means that the driver class (which we support) is filled in as the driver class of a generic type.
                     if (!driver || !driverData.hostName) {
-                        driver = $scope.supportedDriversData.find((driver) => $scope.genericDriverType === driver.driverType);
+                        driver = $scope.supportedDriversData.find((driver) => JdbcDriverType.GENERIC === driver.driverType);
                     }
                     $scope.selectDriver(driver.driverType);
                     $scope.formData.connectionInformation.driverType = driver.driverType;
@@ -361,7 +387,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     $scope.formData.connectionInformation.url = driverData.url;
                     $scope.formData.settings.additionalProperties = driverData.additionalProperties;
 
-                    if ($scope.genericDriverType !== driver.driverType) {
+                    if (JdbcDriverType.GENERIC !== driver.driverType) {
                         $scope.formData.connectionInformation.hostName = driverData.hostName;
                         $scope.formData.connectionInformation.databaseName = driverData.databaseName;
                         $scope.formData.connectionInformation.port = driverData.port ? parseInt(driverData.port, 10) : undefined;
@@ -419,7 +445,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         const validateHostName = () => {
-            if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
+            if ($scope.selectedDriver.driverType !== JdbcDriverType.GENERIC) {
                 if (!$scope.formData.connectionInformation.hostName) {
                     return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.host_name')})));
                 }
@@ -428,7 +454,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         };
 
         const validateDatabaseName = () => {
-            if ($scope.selectedDriver.driverType !== $scope.genericDriverType) {
+            if ($scope.selectedDriver.driverType !== JdbcDriverType.GENERIC) {
                 if (!$scope.formData.connectionInformation.databaseName) {
                     return Promise.reject(new OntopRepositoryError($translate.instant('missing.required.field', {fieldName: $translate.instant('ontop.repo.database.database_name')})));
                 }
@@ -497,7 +523,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 if ($scope.editRepoPage) {
                     loadPropertiesFile();
                 } else {
-                    $scope.selectDriver($scope.genericDriverType);
+                    $scope.selectDriver(JdbcDriverType.GENERIC);
                 }
             });
     }
