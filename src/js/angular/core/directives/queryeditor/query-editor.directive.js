@@ -587,7 +587,6 @@ function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestSe
                 // Valid for construct queries only
                 const exportTypesToFetchWithErrorHandling = ['application/rdf+json', 'application/ld+json'];
                 const isConstructQuery = window.editor.getQueryType() === 'CONSTRUCT';
-                const apiUrl = 'repositories/' + $repositories.getActiveRepository();
                 const queryParams = {
                     query: scope.currentQuery.query,
                     infer: scope.currentQuery.inference,
@@ -601,7 +600,7 @@ function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestSe
                     toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
                 if (isConstructQuery && fetchWithErrorHandling) {
-                    RepositoriesRestService.downloadResultsAsFile(apiUrl, queryParams, accept)
+                    RepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept)
                         .then(function ({data, filename}) {
                             saveAs(data, filename);
                         }).catch(function (res) {

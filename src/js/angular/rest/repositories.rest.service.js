@@ -143,8 +143,8 @@ function RepositoriesRestService($http) {
         });
     }
 
-    function downloadResultsAsFile(apiUrl, queryParams, acceptHeader) {
-        return $http.get(apiUrl, {
+    function downloadResultsAsFile(repositoryId, queryParams, acceptHeader) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, {
             headers: {
                 accept: acceptHeader
             },
