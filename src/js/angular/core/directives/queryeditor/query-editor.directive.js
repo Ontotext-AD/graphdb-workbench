@@ -16,12 +16,12 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', '$q', '$http', 'RepositoriesRestService', 'toastr', '$repositories',
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories',
     'SparqlRestService', 'ModalService',
     '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate',
     '$languageService', 'GuidesService'];
 
-function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestService, toastr, $repositories, SparqlRestService,
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService,
     ModalService, $uibModal, $jwtAuth,
     RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
 
@@ -600,7 +600,7 @@ function queryEditorDirective($timeout, $location, $q, $http, RepositoriesRestSe
                     toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
                 if (isConstructQuery && fetchWithErrorHandling) {
-                    RepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept)
+                    RDF4JRepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept)
                         .then(function ({data, filename}) {
                             saveAs(data, filename);
                         }).catch(function (res) {
