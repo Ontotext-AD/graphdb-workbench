@@ -136,4 +136,22 @@ describe('Ontop repositories', () => {
         // and test connection button to be enabled.
         OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
     });
+
+    it('should populate url when Snowflake driver is selected', () => {
+        // When I open create ontop repository page,
+        OntopRepositorySteps.visitCreate();
+        // and chose the Snowflake driver
+        OntopRepositorySteps.selectSnowflakeDatabase();
+        const hostName = 'someHostName';
+        const port = 1234;
+        const databaseName = 'test_database';
+        // When I enter all needed data to calculate the value of url.
+        OntopRepositorySteps.getHostNameInput().type(hostName);
+        OntopRepositorySteps.getPortInput().type(port);
+        OntopRepositorySteps.getDatabaseNameInput().type(databaseName);
+
+        // Then I expect url to be calculated properly
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:snowflake://someHostName.snowflakecomputing.com:1234/?warehouse=test_database');
+
+    });
 });
