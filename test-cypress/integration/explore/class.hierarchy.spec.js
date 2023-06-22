@@ -262,6 +262,8 @@ describe('Class hierarchy screen validation', () => {
     }
 
     function verifyCounterValue(classCount) {
+        cy.waitUntil(() => getCurrentSliderValue().then(value => !Number.isNaN(value)));
+
         getCurrentSliderValue()
             .then((currentValue) => {
                 expect(currentValue).to.equal(classCount);
