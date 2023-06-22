@@ -1,7 +1,7 @@
 import ClassViewsSteps from "../../steps/class-views-steps";
 
-const INITIAL_CLASS_COUNT = 50;
-const CLASS_COUNT_OF_NEWS_GRAPH = 35;
+const INITIAL_CLASS_COUNT = '50';
+const CLASS_COUNT_OF_NEWS_GRAPH = '35';
 const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
@@ -264,7 +264,7 @@ describe('Class hierarchy screen validation', () => {
     function verifyCounterValue(classCount) {
         getCurrentSliderValue()
             .then((currentValue) => {
-                expect(currentValue === classCount);
+                expect(currentValue).to.equal(classCount);
             });
     }
 });
