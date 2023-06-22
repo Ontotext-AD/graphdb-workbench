@@ -219,7 +219,24 @@
                     <h6>{{'common.error' | translate}}<span ng-show="yasr.results.getException().status > 0"> {{yasr.results.getException().status}}: {{yasr.results.getException().statusText}}</span></h6>
                 </div>
 
-                <div class="plaintext">{{yasr.results.getException().responseText}}</div>
+                <div ng-if="!fullErrorMessage && sparqlQueryErrorInfo && sparqlQueryErrorInfo.shortenErrorMessage">
+                    <div class="show-full-message">
+                        <a href="#" ng-click="showFullErrorMessage(true)">
+                            <span class="show-full-message-btn">{{'query.editor.error.show.full.message' | translate}}</span>
+                        </a>
+                    </div>
+                    <div class="plaintext"> {{sparqlQueryErrorInfo.shortenErrorMessage}}</div>
+                </div>
+
+                <div ng-if="fullErrorMessage || sparqlQueryErrorInfo && !sparqlQueryErrorInfo.shortenErrorMessage">
+                    <div class="show-less-message">
+                        <a href="#" ng-click="showFullErrorMessage(false)" ng-if=" sparqlQueryErrorInfo && sparqlQueryErrorInfo.shortenErrorMessage">
+                            <span class="show-less-message-btn">{{'query.editor.error.show.less.message' | translate}}</span>
+                        </a>
+                    </div>
+                    <div class="plaintext">{{sparqlQueryErrorInfo.responseText}}</div>
+                </div>
+
             </div>
             <div class='yasr_results' ng-show="currentTabConfig.queryType && currentTabConfig.queryType != 'UPDATE' && currentTabConfig.queryType != 'ERROR' && !queryIsRunning" guide-selector="yasrResults"></div>
         </div>

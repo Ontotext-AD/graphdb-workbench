@@ -37,6 +37,10 @@ class SparqlSteps {
         this.getLoader().should('not.exist');
     }
 
+    static visit() {
+        cy.visit('/sparql');
+    }
+
     static visitSparql(resetLocalStorage, repositoryId) {
         cy.visit('/sparql', {
             onBeforeLoad: (win) => {
@@ -171,6 +175,10 @@ class SparqlSteps {
         return cy.get('#yasr-inner .yasr_results');
     }
 
+    static getResultInfo() {
+        return cy.get('.results-info');
+    }
+
     static getTableResultRows() {
         return SparqlSteps.getResultsWrapper().find('.resultsTable tbody tr');
     }
@@ -193,6 +201,22 @@ class SparqlSteps {
 
     static getResultNoUriCell(rowIndex, columnIndex) {
         return SparqlSteps.getResultCell(rowIndex, columnIndex).find('.nonUri');
+    }
+
+    static getShowFullExceptionMessage() {
+        return cy.get('.show-full-message-btn');
+    }
+
+    static clickOnShowFullExceptionMessage() {
+        SparqlSteps.getShowFullExceptionMessage().click();
+    }
+
+    static getShowLessExceptionMessage() {
+        return cy.get('.show-less-message-btn');
+    }
+
+    static clickOnShowLessExceptionMessage() {
+        SparqlSteps.getShowLessExceptionMessage().click();
     }
 }
 

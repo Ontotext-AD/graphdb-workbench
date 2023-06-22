@@ -6,6 +6,7 @@ import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../../app";
 import {YasrUtils} from "../../../utils/yasr-utils";
 import {saveAs} from 'lib/FileSaver-patch';
+import {SparqlQueryErrorInfo} from "../../../../../models/sparql/sparql-query-error-info";
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [
@@ -66,6 +67,13 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         }
         // Doesn't execute the count query
         scope.nocount = attrs.nocount === "true";
+
+        scope.sparqlQueryErrorInfo = undefined;
+        scope.fullErrorMessage = false;
+
+        scope.showFullErrorMessage = function (fullErrorMessage) {
+            scope.fullErrorMessage = fullErrorMessage;
+        };
 
         // Custom callback to call when the content changes (fired within timeout of 200)
         if (attrs.callbackOnChange) {
@@ -804,6 +812,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                 }
                 window.yasr.plugins.table.options.highlightLiteralCellResult = highlightExplainPlan;
                 yasr.setResponse(dataOrJqXhr, textStatus, jqXhrOrErrorString);
+                updateErrorInfo();
             };
 
             // Track changes in the output type (tab in yasr) so that we can save this together with
@@ -836,6 +845,15 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         }
 
         initYasr();
+
+        const updateErrorInfo = () => {
+            const exception = yasr.results.getException();
+            if (exception) {
+                scope.sparqlQueryErrorInfo = new SparqlQueryErrorInfo(exception.status, exception.statusText, exception.responseText);
+            } else {
+                scope.sparqlQueryErrorInfo = undefined;
+            }
+        };
 
         function changePagination() {
             scope.runQuery(true, scope.explainRequested);
