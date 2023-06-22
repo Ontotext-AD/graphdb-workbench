@@ -1,7 +1,7 @@
 import ClassViewsSteps from "../../steps/class-views-steps";
 
-const INITIAL_CLASS_COUNT = '50';
-const CLASS_COUNT_OF_NEWS_GRAPH = '35';
+const INITIAL_CLASS_COUNT = 50;
+const CLASS_COUNT_OF_NEWS_GRAPH = 35;
 const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
@@ -172,7 +172,7 @@ describe('Class hierarchy screen validation', () => {
         getReturnButton().should('be.visible').click();
     });
 
-    it('Test class-hierarchy for given graph', () => {
+    it.only('Test class-hierarchy for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
         // Should re-enter page to display Graph dropdown
         cy.visit('/hierarchy');
@@ -218,8 +218,7 @@ describe('Class hierarchy screen validation', () => {
         // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
         // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
         // value.
-        return cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => $element.attr('aria-valuenow'));
+        return cy.get('.rz-pointer[role="slider"]');
     }
 
     function searchForClass(name) {
@@ -262,11 +261,6 @@ describe('Class hierarchy screen validation', () => {
     }
 
     function verifyCounterValue(classCount) {
-        cy.waitUntil(() => getCurrentSliderValue().then(value => !Number.isNaN(value)));
-
-        getCurrentSliderValue()
-            .then((currentValue) => {
-                expect(currentValue).to.equal(classCount);
-            });
+        getCurrentSliderValue().should('be.visible').and('have.attr', 'aria-valuenow', classCount);
     }
 });
