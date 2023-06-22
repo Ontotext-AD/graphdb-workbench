@@ -16,10 +16,7 @@ const del = require('del');
 module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
-    on('task', {
-        failed: require('cypress-failed-log/src/failed')()
-    });
-
+    require('cypress-failed-log/on')(on);
     require('cypress-terminal-report/src/installLogsPrinter')(on, {
         logToFilesOnAfterRun: true,
         printLogsToConsole: 'onFail',

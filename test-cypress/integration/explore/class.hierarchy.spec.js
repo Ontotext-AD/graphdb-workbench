@@ -172,7 +172,7 @@ describe('Class hierarchy screen validation', () => {
         getReturnButton().should('be.visible').click();
     });
 
-    it.skip('Test class-hierarchy for given graph', () => {
+    it('Test class-hierarchy for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
         // Should re-enter page to display Graph dropdown
         cy.visit('/hierarchy');
