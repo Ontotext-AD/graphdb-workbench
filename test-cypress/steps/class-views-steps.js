@@ -2,21 +2,9 @@
  * Reusable functions for interacting with graph dropdown on Class hierarchy and relationships pages.
  */
 
-const GRAPH_FILE = 'graphdb-news-dataset.zip';
-const ALL_GRAPHS = 'All graphs';
-const NEWS_GRAPH = 'http://example.org/news';
-
-Object.defineProperty(global, 'GRAPH_FILE', {
-    get: () => {return GRAPH_FILE;}
-});
-
-Object.defineProperty(global, 'ALL_GRAPHS', {
-    get: () => {return ALL_GRAPHS;}
-});
-
-Object.defineProperty(global, 'NEWS_GRAPH', {
-    get: () => {return NEWS_GRAPH;}
-});
+export const GRAPH_FILE = 'graphdb-news-dataset.zip';
+export const ALL_GRAPHS = 'All graphs';
+export const NEWS_GRAPH = 'http://example.org/news';
 
 class ClassViewsSteps {
 
