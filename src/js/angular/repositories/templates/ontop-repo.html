@@ -15,7 +15,7 @@
     </div>
 
     <!-- Host Name -->
-    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== jdbDriverType.GENERIC">
+    <div class="form-group row indented-div" ng-if="!isGenericDriver">
         <label for="hostName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{getHostNameLabel()}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Port -->
-    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== jdbDriverType.GENERIC">
+    <div class="form-group row indented-div" ng-if="!isGenericDriver">
         <label for="port" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{'ontop.repo.database.port' | translate}} {{selectedDriver.portRequired ? '*' : ''}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
@@ -46,7 +46,7 @@
     </div>
 
     <!-- Data Base Name -->
-    <div class="form-group row indented-div" ng-if="selectedDriver.driverType !== jdbDriverType.GENERIC">
+    <div class="form-group row indented-div" ng-if="!isGenericDriver">
         <label for="databaseName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
             {{getDatabaseNameLabel()}} *</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
@@ -97,11 +97,11 @@
                    type="text" min="1" max="65535"
                    ng-required="true"
                    placeholder="{{'ontop.repo.database.driver_class.placeholder' | translate}}"
-                   ng-readonly="selectedDriver.driverType !== jdbDriverType.GENERIC"
+                   ng-readonly="!isGenericDriver"
                    ng-model="formData.connectionInformation.driverClass">
         </div>
         <div class="col-xs-12 col-md-4" ng-if="!selectedDriver.classAvailable">
-            <div ng-if="selectedDriver.driverType !== jdbDriverType.GENERIC">
+            <div ng-if="!isGenericDriver">
                 <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
                     tooltip-placement="top"></em>
                 <a class="uri" ng-if="selectedDriver.downloadDriverUrl"
@@ -111,7 +111,7 @@
                 </a>
             </div>
 
-            <div ng-if="selectedDriver.driverType === jdbDriverType.GENERIC && !formData.connectionInformation.driverClass">
+            <div ng-if="isGenericDriver && !formData.connectionInformation.driverClass">
                 <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
                     tooltip-placement="top"></em>
                 <span>{{'ontop.repo.missing.jdbc.driver' | translate}}</span>
@@ -128,7 +128,7 @@
             <input id="url" class="form-control"
                    type="text" min="1" max="65535"
                    ng-required="true"
-                   placeholder="{{selectedDriver.driverType === jdbDriverType.GENERIC ? defaultUrlTemplate : selectedDriver.urlTemplate}}"
+                   placeholder="{{isGenericDriver ? defaultUrlTemplate : selectedDriver.urlTemplate}}"
                    ng-model="formData.connectionInformation.url"
                    ng-keydown="onKeyDownInUrlInput($event)"
                    ng-keyup="onKeyUpInUrlInput()">
