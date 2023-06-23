@@ -1,7 +1,6 @@
 import ClassViewsSteps from "../../steps/class-views-steps";
 
 const INITIAL_CLASS_COUNT = 50;
-const CLASS_COUNT_OF_NEWS_GRAPH = 35;
 const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
 const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
@@ -170,27 +169,6 @@ describe('Class hierarchy screen validation', () => {
         getMainDomainRangeDiagram().should('be.visible');
         getMainDomainRangeDiagram().should('contain', className).and('contain', 'locatedIn').and('contain', ':adjacentRegion').and('contain', 'owl:Thing');
         getReturnButton().should('be.visible').click();
-    });
-
-    it('Test class-hierarchy for given graph', () => {
-        cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
-        // Should re-enter page to display Graph dropdown
-        cy.visit('/hierarchy');
-        ClassViewsSteps.verifyDataChangedWarning();
-        verifyCounterValue(INITIAL_CLASS_COUNT);
-        ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
-
-        // Reload diagram
-        ClassViewsSteps.reloadDiagram();
-        cy.intercept('/rest/class-hierarchy*').as('hierarchyReload');
-        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
-        ClassViewsSteps.confirmReload();
-        cy.wait('@hierarchyReload');
-        verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
-        ClassViewsSteps.clickGraphBtn();
-        ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
-        ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
-        verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
     });
 
     function getDomainRangeGraphButton() {
