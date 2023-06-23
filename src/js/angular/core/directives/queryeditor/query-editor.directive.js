@@ -70,6 +70,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
         scope.sparqlQueryErrorInfo = undefined;
         scope.fullErrorMessage = false;
+        scope.queryEditorIsReady = false;
 
         scope.showFullErrorMessage = function (fullErrorMessage) {
             scope.fullErrorMessage = fullErrorMessage;
@@ -85,6 +86,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
 
         $timeout(function () {
             drawQueryEditor(scope);
+            scope.queryEditorIsReady = true;
         }, 150);
     }
 
@@ -194,7 +196,6 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             scope.currentQuery.query = window.editor.getValue();
             scope.currentQuery.queryType = window.editor.getQueryType();
         });
-
 
         function selectTab(id) {
             $timeout(function () {

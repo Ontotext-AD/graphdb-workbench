@@ -4,7 +4,7 @@ const LONG_ERROR_MESSAGE = "Lorem ipsum dolor sit amet, consectetur adipisicing 
 const MAX_VISIBLE_ERROR_CHARACTERS = 160;
 const SHORTEN_PART_OFF_ERROR_MESSAGE = LONG_ERROR_MESSAGE.substring(0, MAX_VISIBLE_ERROR_CHARACTERS);
 const SHORT_ERROR_MESSAGE = LONG_ERROR_MESSAGE.substring(0, MAX_VISIBLE_ERROR_CHARACTERS - 1);
-describe.skip('Error handling', () => {
+describe('Error handling', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -19,7 +19,7 @@ describe.skip('Error handling', () => {
     });
 
     it('should show all error message if message length is short', () => {
-        stubErrorResponse(400, SHORT_ERROR_MESSAGE);
+        stubErrorResponse(repositoryId, 400, SHORT_ERROR_MESSAGE);
         // When I open sparql editor page
         // Then I should see no query has been executed
         SparqlSteps.getNoQueryRunInfo().should('be.visible');
@@ -36,7 +36,7 @@ describe.skip('Error handling', () => {
     });
 
     it('should show shorten error message if message length is long', () => {
-        stubErrorResponse(400, LONG_ERROR_MESSAGE);
+        stubErrorResponse(repositoryId, 400, LONG_ERROR_MESSAGE);
         // When I open sparql editor page
         // Then I should see no query has been executed
         SparqlSteps.getNoQueryRunInfo().should('be.visible');
@@ -71,10 +71,10 @@ describe.skip('Error handling', () => {
         SparqlSteps.getShowLessExceptionMessage().should('not.exist');
     });
 
-    const stubErrorResponse = (statusCode, errorMessage) => {
-        cy.intercept('POST', '/repositories/' + repositoryId, {
+    const stubErrorResponse = (repositoryId, statusCode, errorMessage) => {
+        cy.intercept('POST', `/repositories/${repositoryId}`, {
             statusCode,
             body: errorMessage
-        }).as('queryResultStub');
+        }).as('queryErrorResultStub');
     };
 });

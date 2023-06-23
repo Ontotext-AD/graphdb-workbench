@@ -14,7 +14,6 @@ function replaceVersion(content) {
 }
 
 module.exports = {
-    devtool: 'source-map',
     entry: {
         vendor: './src/vendor.js',
         main: './src/main.js',
@@ -111,16 +110,12 @@ module.exports = {
                 transform: replaceVersion
             },
             {
-                from: 'src/guides',
-                to: 'guides'
-            },
-            {
                 from: 'src/i18n',
                 to: 'i18n'
             },
             {
                 from: 'src/js/angular/repositories/templates',
-                to: 'js/angular/repositories/templates',
+                to: 'js/angular/repositories/templates'
             },
             {
                 from: 'src/js/angular/autocomplete/templates',

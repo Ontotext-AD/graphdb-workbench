@@ -9,6 +9,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
     mode: 'production',
+    devtool: '(none)',
+    performance: {
+        maxEntrypointSize: 990000,
+        maxAssetSize: 990000,
+        assetFilter: function(assetFilename) {
+            return !assetFilename.endsWith('swagger-ui.js');
+        }
+    },
     output: {
         filename: '[name].[contentHash].bundle.js',
         chunkFilename: '[name].[contentHash].bundle.js',
