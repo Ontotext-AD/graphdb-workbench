@@ -70,7 +70,7 @@
                 <textarea ng-model="query" id="query" rows="16" cols="100" guide-selector="inputQuery"></textarea>
 
                 <div id="yasqe_buttons_mocked" style="display: none"></div>
-                <div id="yasqe_buttons" ng-hide="notoolbar">
+                <div id="yasqe_buttons" ng-hide="notoolbar" ng-if="queryEditorIsReady">
                     <div id="buttons">
                         <button class="btn btn-link" id="wb-sparql-saveQuery"
                                 ng-show="!notoolbarSaved && isUser()"
@@ -121,6 +121,7 @@
                 </div>
                 <div id="runButton" ng-hide="norun">
                     <button id="wb-sparql-runQuery" class="btn btn-primary" ng-disabled="queryIsRunning"
+                            ng-if="queryEditorIsReady"
                             ng-click="runQuery(false, $event.shiftKey ? 'explain' : ($event.altKey ? 'gpt' : ''))"
                             guide-selector="runSparqlQuery">
                         {{runButtonName | translate}}

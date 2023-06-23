@@ -11,6 +11,7 @@ const portThere = 7200;
 
 module.exports = merge(commonConfig, {
     mode: 'development',
+    devtool: 'source-map',
     output: {
         filename: '[name].bundle.js',
         chunkFilename: '[name].bundle.js',
