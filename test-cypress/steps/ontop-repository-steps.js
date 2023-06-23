@@ -67,6 +67,10 @@ export class OntopRepositorySteps {
         OntopRepositorySteps.selectDatabaseDriver('MySQL');
     }
 
+    static selectSnowflakeDatabase() {
+        OntopRepositorySteps.selectDatabaseDriver('Snowflake');
+    }
+
     static selectOracleDatabase() {
         OntopRepositorySteps.selectDatabaseDriver('Oracle');
     }

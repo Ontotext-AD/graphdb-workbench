@@ -1,4 +1,4 @@
-import ClassViewsSteps from "../../steps/class-views-steps";
+import ClassViewsSteps, {ALL_GRAPHS, GRAPH_FILE, NEWS_GRAPH} from "../../steps/class-views-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 

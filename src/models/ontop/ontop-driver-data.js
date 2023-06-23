@@ -1,3 +1,5 @@
+import {JdbcDriverType} from "./jdbc-driver-type";
+
 export class OntopDriverData {
     constructor() {
         this.classAvailable = false;
@@ -7,5 +9,13 @@ export class OntopDriverData {
         this.driverType = '';
         this.portRequired = false;
         this.urlTemplate = '';
+    }
+
+    static isGenericDriver(type) {
+        return type === JdbcDriverType.GENERIC;
+    }
+
+    static isSnowflakeDriver(type) {
+        return type === JdbcDriverType.SNOWFLAKE;
     }
 }
