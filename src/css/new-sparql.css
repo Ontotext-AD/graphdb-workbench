@@ -165,12 +165,14 @@ a[aria-expanded = true].query-has-error span {
     right: 0;
 }
 
-.show-less-message-btn, .show-full-message-btn {
+.show-less-message-link, .show-full-message-link {
     color: var(--onto-blue);
     font-weight: 400;
+    display: block;
+    text-align: right;
 }
 
-.show-full-message-btn::after, .show-less-message-btn::after {
+.show-full-message-link::after, .show-less-message-link::after {
     color: var(--onto-blue);
     font-family: 'icomoon', sans-serif !important;
     content: "\e921";
@@ -186,11 +188,6 @@ a[aria-expanded = true].query-has-error span {
     transition: all 0.2s ease-in;
 }
 
-.show-full-message-btn::after {
+.show-full-message-link::after {
     transform: rotate(180deg);
-}
-
-.show-full-message, .show-less-message {
-    display: flex;
-    justify-content: flex-end;
 }

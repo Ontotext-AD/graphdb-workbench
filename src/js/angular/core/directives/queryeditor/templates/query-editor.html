@@ -220,20 +220,16 @@
                 </div>
 
                 <div ng-if="!fullErrorMessage && sparqlQueryErrorInfo && sparqlQueryErrorInfo.shortenErrorMessage">
-                    <div class="show-full-message">
-                        <a href="#" ng-click="showFullErrorMessage(true)">
-                            <span class="show-full-message-btn">{{'query.editor.error.show.full.message' | translate}}</span>
-                        </a>
-                    </div>
+                    <a href="#" class="show-full-message-link" ng-click="showFullErrorMessage(true)">
+                        {{'query.editor.error.show.full.message' | translate}}
+                    </a>
                     <div class="plaintext"> {{sparqlQueryErrorInfo.shortenErrorMessage}}</div>
                 </div>
 
                 <div ng-if="fullErrorMessage || sparqlQueryErrorInfo && !sparqlQueryErrorInfo.shortenErrorMessage">
-                    <div class="show-less-message">
-                        <a href="#" ng-click="showFullErrorMessage(false)" ng-if=" sparqlQueryErrorInfo && sparqlQueryErrorInfo.shortenErrorMessage">
-                            <span class="show-less-message-btn">{{'query.editor.error.show.less.message' | translate}}</span>
-                        </a>
-                    </div>
+                    <a href="#" class="show-less-message-link" ng-click="showFullErrorMessage(false)" ng-if=" sparqlQueryErrorInfo && sparqlQueryErrorInfo.shortenErrorMessage">
+                        {{'query.editor.error.show.less.message' | translate}}
+                    </a>
                     <div class="plaintext">{{sparqlQueryErrorInfo.responseText}}</div>
                 </div>
 

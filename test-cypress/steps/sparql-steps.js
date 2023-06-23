@@ -204,7 +204,7 @@ class SparqlSteps {
     }
 
     static getShowFullExceptionMessage() {
-        return cy.get('.show-full-message-btn');
+        return cy.get('.show-full-message-link');
     }
 
     static clickOnShowFullExceptionMessage() {
@@ -212,7 +212,7 @@ class SparqlSteps {
     }
 
     static getShowLessExceptionMessage() {
-        return cy.get('.show-less-message-btn');
+        return cy.get('.show-less-message-link');
     }
 
     static clickOnShowLessExceptionMessage() {
