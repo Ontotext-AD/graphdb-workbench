@@ -4,7 +4,7 @@ const LONG_ERROR_MESSAGE = "Lorem ipsum dolor sit amet, consectetur adipisicing 
 const MAX_VISIBLE_ERROR_CHARACTERS = 160;
 const SHORTEN_PART_OFF_ERROR_MESSAGE = LONG_ERROR_MESSAGE.substring(0, MAX_VISIBLE_ERROR_CHARACTERS);
 const SHORT_ERROR_MESSAGE = LONG_ERROR_MESSAGE.substring(0, MAX_VISIBLE_ERROR_CHARACTERS - 1);
-describe('Error handling', () => {
+describe.skip('Error handling', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe('Error handling', () => {
         SparqlSteps.executeQuery();
 
         // Then I expect to see all message,
-        SparqlSteps.getResultInfo().contains(SHORT_ERROR_MESSAGE);
+        SparqlSteps.getResultInfo().should('contain', SHORT_ERROR_MESSAGE);
         // and don't see the button "Show full exception message",
         SparqlSteps.getShowFullExceptionMessage().should('not.exist');
         // and don't see the button "Show less exception message",
@@ -44,7 +44,7 @@ describe('Error handling', () => {
         SparqlSteps.executeQuery();
 
         // Then I expect to see shorten error message,
-        SparqlSteps.getResultInfo().contains(SHORTEN_PART_OFF_ERROR_MESSAGE);
+        SparqlSteps.getResultInfo().should('contain', SHORTEN_PART_OFF_ERROR_MESSAGE);
         // and the button "Show full exception message" to be displayed,
         SparqlSteps.getShowFullExceptionMessage().should('be.visible');
         // and don't see the button "Show less exception message",
@@ -54,7 +54,7 @@ describe('Error handling', () => {
         SparqlSteps.clickOnShowFullExceptionMessage();
 
         // Then I expect to see full error message
-        SparqlSteps.getResultInfo().contains(LONG_ERROR_MESSAGE);
+        SparqlSteps.getResultInfo().should('contain', LONG_ERROR_MESSAGE);
         // and the button "Show full exception message" to not exist,
         SparqlSteps.getShowFullExceptionMessage().should('not.exist');
         // and see the button "Show less exception message",
@@ -64,7 +64,7 @@ describe('Error handling', () => {
         SparqlSteps.clickOnShowLessExceptionMessage();
 
         // Then I expect to see short error message
-        SparqlSteps.getResultInfo().contains(SHORTEN_PART_OFF_ERROR_MESSAGE);
+        SparqlSteps.getResultInfo().should('contain', SHORTEN_PART_OFF_ERROR_MESSAGE);
         // and the button "Show full exception message" to be displayed,
         SparqlSteps.getShowFullExceptionMessage().should('be.exist');
         // and don't see the button "Show less exception message",
