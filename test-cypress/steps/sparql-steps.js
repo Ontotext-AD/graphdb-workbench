@@ -73,6 +73,10 @@ class SparqlSteps {
         return cy.get('#wb-sparql-runQuery');
     }
 
+    static getNoQueryRunInfo() {
+        return cy.get('#yasr-inner .no-query-run');
+    }
+
     static getQueryArea() {
         return cy.get('#queryEditor .CodeMirror');
     }
@@ -80,7 +84,7 @@ class SparqlSteps {
     static waitUntilQueryIsVisible() {
         return cy.waitUntil(() =>
             this.getQueryArea()
-                .then(codeMirrorEl =>
+                .then((codeMirrorEl) =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 

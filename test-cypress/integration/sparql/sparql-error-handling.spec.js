@@ -20,8 +20,10 @@ describe('Error handling', () => {
 
     it('should show all error message if message length is short', () => {
         stubErrorResponse(400, SHORT_ERROR_MESSAGE);
-        // When I open sparql editor page,
-        // and execute a query
+        // When I open sparql editor page
+        // Then I should see no query has been executed
+        SparqlSteps.getNoQueryRunInfo().should('be.visible');
+        // When I execute a query
         SparqlSteps.executeQuery();
 
         // Then I expect to see all message,
@@ -35,8 +37,10 @@ describe('Error handling', () => {
 
     it('should show shorten error message if message length is long', () => {
         stubErrorResponse(400, LONG_ERROR_MESSAGE);
-        // When I open sparql editor page,
-        // and execute a query
+        // When I open sparql editor page
+        // Then I should see no query has been executed
+        SparqlSteps.getNoQueryRunInfo().should('be.visible');
+        // When I execute a query
         SparqlSteps.executeQuery();
 
         // Then I expect to see shorten error message,
@@ -68,9 +72,9 @@ describe('Error handling', () => {
     });
 
     const stubErrorResponse = (statusCode, errorMessage) => {
-        cy.intercept('/repositories/' + repositoryId, {
+        cy.intercept('POST', '/repositories/' + repositoryId, {
             statusCode,
             body: errorMessage
-        });
+        }).as('queryResultStub');
     };
 });
