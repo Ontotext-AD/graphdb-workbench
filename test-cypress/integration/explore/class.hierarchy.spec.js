@@ -182,10 +182,10 @@ describe('Class hierarchy screen validation', () => {
 
         // Reload diagram
         ClassViewsSteps.reloadDiagram();
-
+        cy.intercept('/rest/class-hierarchy*').as('hierarchyReload');
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
-        cy.visit('/hierarchy#1');
+        cy.wait('@hierarchyReload');
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
         ClassViewsSteps.clickGraphBtn();
         ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
