@@ -487,10 +487,10 @@ function ChooseRepositoryCtrl($scope, $location) {
     };
 }
 
-AddRepositoryCtrl.$inject = ['$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', '$routeParams',
+AddRepositoryCtrl.$inject = ['$rootScope', '$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', '$routeParams',
     'RepositoriesRestService', '$translate'];
 
-function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService, $translate) {
+function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService, $translate) {
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.params = $routeParams;
@@ -725,6 +725,13 @@ function AddRepositoryCtrl($scope, toastr, $repositories, $location, $timeout, U
 
     // Request auto-focus of the ID input when creating a repo (but not when editing)
     $scope.autofocusId = 'autofocus';
+
+    const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
+        setPageTitle($scope.repositoryType);
+    });
+    $scope.$on('$destroy', () => {
+        languageChangedSubscription();
+    });
 }
 
 EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate', 'dialogTitle'];
@@ -753,10 +760,10 @@ function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestServi
     };
 }
 
-EditRepositoryCtrl.$inject = ['$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService',
+EditRepositoryCtrl.$inject = ['$rootScope', '$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService',
     '$translate'];
 
-function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate) {
+function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate) {
 
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
@@ -925,4 +932,11 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
     $scope.getShaclOptionsClass = function () {
         return getShaclOptionsClass();
     };
+
+    const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
+        $scope.pageTitle = $translate.instant('view.edit.repo.title', {repositoryId: $scope.params.repositoryId});
+    });
+    $scope.$on('$destroy', () => {
+        languageChangedSubscription();
+    });
 }
