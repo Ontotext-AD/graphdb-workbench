@@ -4,6 +4,6 @@ COPY . /workbench/tests-cypress/
 
 WORKDIR /workbench/tests-cypress/
 
-RUN npm install && npm install --save-dev cypress
+RUN npm ci
 
 CMD ["npm", "test"]

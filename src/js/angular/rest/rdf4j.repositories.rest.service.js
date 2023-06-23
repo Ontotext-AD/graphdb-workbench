@@ -23,7 +23,8 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
         checkPluginIsActive,
         getRepositorySize,
         getGraphs,
-        resolveGraphs
+        resolveGraphs,
+        downloadResultsAsFile
     };
 
     function getNamespaces(repositoryId) {
@@ -114,5 +115,29 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
             });
         }
         return graphsInRepo;
+    }
+
+    function downloadResultsAsFile(repositoryId, queryParams, acceptHeader) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}`, {
+            headers: {
+                accept: acceptHeader
+            },
+            params: queryParams,
+            responseType: "blob"
+        }).then(function (res) {
+            const data = res.data;
+            const headersGetter = res.headers;
+            const headers = headersGetter();
+            const disposition = headers['content-disposition'];
+            let filename = 'query-result.txt';
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            return {data, filename};
+        });
     }
 }

@@ -182,10 +182,10 @@ describe('Class hierarchy screen validation', () => {
 
         // Reload diagram
         ClassViewsSteps.reloadDiagram();
-
+        cy.intercept('/rest/class-hierarchy*').as('hierarchyReload');
         ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
         ClassViewsSteps.confirmReload();
-        cy.visit('/hierarchy#1');
+        cy.wait('@hierarchyReload');
         verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
         ClassViewsSteps.clickGraphBtn();
         ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
@@ -218,8 +218,7 @@ describe('Class hierarchy screen validation', () => {
         // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
         // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
         // value.
-        return cy.get('.rz-pointer[role="slider"]')
-            .then(($element) => $element.attr('aria-valuenow'));
+        return cy.get('.rz-pointer[role="slider"]');
     }
 
     function searchForClass(name) {
@@ -262,9 +261,6 @@ describe('Class hierarchy screen validation', () => {
     }
 
     function verifyCounterValue(classCount) {
-        getCurrentSliderValue()
-            .then((currentValue) => {
-                expect(currentValue === classCount);
-            });
+        getCurrentSliderValue().should('be.visible').and('have.attr', 'aria-valuenow', classCount);
     }
 });

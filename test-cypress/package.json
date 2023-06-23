@@ -24,9 +24,9 @@
     },
     "dependencies": {
         "cypress": "^12.5.1",
-        "cypress-failed-log": "^2.5.1",
+        "cypress-failed-log": "^2.10.0",
         "cypress-localstorage-commands": "^1.4.4",
-        "cypress-terminal-report": "^4.0.1",
+        "cypress-terminal-report": "^5.2.0",
         "cypress-wait-until": "^1.7.1"
     },
     "bin": {
