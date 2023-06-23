@@ -37,6 +37,10 @@ class SparqlSteps {
         this.getLoader().should('not.exist');
     }
 
+    static visit() {
+        cy.visit('/sparql');
+    }
+
     static visitSparql(resetLocalStorage, repositoryId) {
         cy.visit('/sparql', {
             onBeforeLoad: (win) => {
@@ -69,6 +73,10 @@ class SparqlSteps {
         return cy.get('#wb-sparql-runQuery');
     }
 
+    static getNoQueryRunInfo() {
+        return cy.get('#yasr-inner .no-query-run');
+    }
+
     static getQueryArea() {
         return cy.get('#queryEditor .CodeMirror');
     }
@@ -76,7 +84,7 @@ class SparqlSteps {
     static waitUntilQueryIsVisible() {
         return cy.waitUntil(() =>
             this.getQueryArea()
-                .then(codeMirrorEl =>
+                .then((codeMirrorEl) =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
     }
 
@@ -171,6 +179,10 @@ class SparqlSteps {
         return cy.get('#yasr-inner .yasr_results');
     }
 
+    static getResultInfo() {
+        return cy.get('.results-info');
+    }
+
     static getTableResultRows() {
         return SparqlSteps.getResultsWrapper().find('.resultsTable tbody tr');
     }
@@ -193,6 +205,22 @@ class SparqlSteps {
 
     static getResultNoUriCell(rowIndex, columnIndex) {
         return SparqlSteps.getResultCell(rowIndex, columnIndex).find('.nonUri');
+    }
+
+    static getShowFullExceptionMessage() {
+        return cy.get('.show-full-message-link');
+    }
+
+    static clickOnShowFullExceptionMessage() {
+        SparqlSteps.getShowFullExceptionMessage().click();
+    }
+
+    static getShowLessExceptionMessage() {
+        return cy.get('.show-less-message-link');
+    }
+
+    static clickOnShowLessExceptionMessage() {
+        SparqlSteps.getShowLessExceptionMessage().click();
     }
 }
 

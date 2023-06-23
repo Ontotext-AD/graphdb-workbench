@@ -79,7 +79,7 @@ describe('SPARQL screen validation', () => {
             verifyQueryAreaEquals(DEFAULT_QUERY);
 
             // No queries should have been run for this tab
-            getNoQueryRun().should('be.visible');
+            SparqlSteps.getNoQueryRunInfo().should('be.visible');
 
             SparqlSteps.executeQuery();
 
@@ -491,7 +491,7 @@ describe('SPARQL screen validation', () => {
             verifyQueryAreaContains(DEFAULT_QUERY);
 
             // No queries for new tab
-            getNoQueryRun().should('be.visible');
+            SparqlSteps.getNoQueryRunInfo().should('be.visible');
         });
 
         it('Test rename a tab', () => {
@@ -1066,10 +1066,6 @@ describe('SPARQL screen validation', () => {
             const cm = codeMirrorEl[0].CodeMirror;
             expect(cm.getValue().trim()).to.equal(query.trim());
         });
-    }
-
-    function getNoQueryRun() {
-        return cy.get('#yasr-inner .no-query-run');
     }
 
     function goToPage(page) {

@@ -165,3 +165,29 @@ a[aria-expanded = true].query-has-error span {
     right: 0;
 }
 
+.show-less-message-link, .show-full-message-link {
+    color: var(--onto-blue);
+    font-weight: 400;
+    display: block;
+    text-align: right;
+}
+
+.show-full-message-link::after, .show-less-message-link::after {
+    color: var(--onto-blue);
+    font-family: 'icomoon', sans-serif !important;
+    content: "\e921";
+    display: inline-block;
+    width: auto;
+    height: auto;
+    border: none;
+    margin-left: 0;
+    font-size: 1.2em;
+    -moz-transition: all 0.2s ease-in; /* FF4+ */
+    -o-transition: all 0.2s ease-in; /* Opera 10.5+ */
+    -webkit-transition: all 0.2s ease-in; /* Saf3.2+, Chrome */
+    transition: all 0.2s ease-in;
+}
+
+.show-full-message-link::after {
+    transform: rotate(180deg);
+}
