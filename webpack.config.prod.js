@@ -9,7 +9,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
     mode: 'production',
-    devtool: '(none)',
     performance: {
         maxEntrypointSize: 990000,
         maxAssetSize: 990000,
