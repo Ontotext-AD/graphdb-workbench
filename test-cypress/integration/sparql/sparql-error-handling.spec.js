@@ -1,4 +1,5 @@
 import SparqlSteps from "../../steps/sparql-steps";
+import {QueryStubs} from "../../stubs/query-stubs";
 
 const LONG_ERROR_MESSAGE = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 const MAX_VISIBLE_ERROR_CHARACTERS = 160;
@@ -19,7 +20,7 @@ describe('Error handling', () => {
     });
 
     it('should show all error message if message length is short', () => {
-        stubErrorResponse(repositoryId, 400, SHORT_ERROR_MESSAGE);
+        QueryStubs.stubQueryErrorResponse(repositoryId, 400, SHORT_ERROR_MESSAGE);
         // When I open sparql editor page
         // Then I should see no query has been executed
         SparqlSteps.getNoQueryRunInfo().should('be.visible');
@@ -36,7 +37,7 @@ describe('Error handling', () => {
     });
 
     it('should show shorten error message if message length is long', () => {
-        stubErrorResponse(repositoryId, 400, LONG_ERROR_MESSAGE);
+        QueryStubs.stubQueryErrorResponse(repositoryId, 400, LONG_ERROR_MESSAGE);
         // When I open sparql editor page
         // Then I should see no query has been executed
         SparqlSteps.getNoQueryRunInfo().should('be.visible');
@@ -70,11 +71,4 @@ describe('Error handling', () => {
         // and don't see the button "Show less exception message",
         SparqlSteps.getShowLessExceptionMessage().should('not.exist');
     });
-
-    const stubErrorResponse = (repositoryId, statusCode, errorMessage) => {
-        cy.intercept('POST', `/repositories/${repositoryId}`, {
-            statusCode,
-            body: errorMessage
-        }).as('queryErrorResultStub');
-    };
 });
