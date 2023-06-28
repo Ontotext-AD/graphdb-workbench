@@ -141,9 +141,9 @@ describe('Main menu tests', function () {
                         externalRedirect: 'https://graphdb.ontotext.com/documentation/'
                     },
                     {
-                        name: 'Developer Hub',
+                        name: 'Tutorials',
                         visible: false,
-                        externalRedirect: '/devhub/'
+                        externalRedirect: '/tutorials.html'
                     },
                     {
                         name: 'Support',

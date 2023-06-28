@@ -61,13 +61,13 @@ PluginRegistry.add('main.menu', {
             },
             guideSelector: 'sub-menu-documentation'
         }, {
-            label: 'Developer Hub',
-            labelKey: 'menu.developer.hub.label',
+            label: 'Tutorials',
+            labelKey: 'menu.tutorials.label',
             order: 3,
             parent: 'Help',
             icon: 'icon-external',
             hrefFun: function (productInfo) {
-                return DOCUMENTATION_URL + productInfo.productShortVersion + '/devhub/';
+                return DOCUMENTATION_URL + productInfo.productShortVersion + '/tutorials.html';
             },
             guideSelector: 'sub-menu-developer-hub'
         }, {
