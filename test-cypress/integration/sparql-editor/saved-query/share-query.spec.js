@@ -35,7 +35,7 @@ describe('Share saved queries', () => {
         // Then I expect that share query dialog will be opened
         ShareSavedQueryDialog.getDialog().should('be.visible');
         ShareSavedQueryDialog.getShareLink().then((shareLink) => {
-            expect(shareLink).to.have.string(`/sparql-editor?savedQueryName=${encodeURIComponent(savedQueryName)}`);
+            expect(shareLink).to.have.string(`/sparql?savedQueryName=${encodeURIComponent(savedQueryName)}`);
         });
         // When I click copy button
         ShareSavedQueryDialog.copyLink();
