@@ -11,4 +11,8 @@ export class MainMenuSteps {
     static clickOnMenu(menuName) {
         MainMenuSteps.getMenuButton(menuName).click();
     }
+
+    static clickOnMenuImport() {
+        MainMenuSteps.clickOnMenu('Import');
+    }
 }

@@ -1,19 +1,9 @@
+import {JdbcSteps} from "../../steps/setup/jdbc-steps";
+import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
-const JDBC_CONFIG_NAME = 'jdbc_config';
-const QUERY = "PREFIX ex:<http://example.com/#>\n" +
-    "PREFIX base:<http://example/base/>\n" +
-    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
-    "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-    "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
-    "\n" +
-    "select ?id ?sentiment_score ?fraud_score ?customer_loyalty where { \n" +
-    "\t?id rdf:type ex:Customer;\n" +
-    "    \tex:sentiment ?sentiment_score;\n" +
-    "      \tex:fraudScore ?fraud_score;\n" +
-    "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
-    "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
-    "    # !filter\n" +
-    "}  ";
 const EDIT_QUERY = "PREFIX ex:<http://example.com/#>\n" +
     "PREFIX base:<http://example/base/>\n" +
     "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
@@ -37,170 +27,102 @@ describe('JDBC configuration', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        cy.visit('/jdbc');
-        cy.window();
+        JdbcSteps.visit();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Configuration table preview', () => {
-        // SQL configuration table should be visible
-        getConfigurationList().should('be.visible');
-    });
+it('Should not create a new JDBC configuration click on cancel button', () => {
+        // When I am on JDBC configurations page and click on create a new table configuration button.
+        JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
-    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
-        getCreateNewJDBCConfigurationButon().click();
-        cy.pasteQuery(QUERY);
-        getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
+        // Then I expect to  be redirected to create JDBC configuration page.
+    JdbcCreateSteps.verifyUrl();
 
-        // switch to SQL columns config tab
-        getColumnTypesTab().click();
-        // verify columns length and content
-        getSQLTableRows().should('have.length', 4);
-        getSQLTableConfig()
-            .should('be.visible')
-            .and('contain', 'sentiment_score');
+        // When I fill correct data,
+    JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.openColumnTypesTab();
 
-        getSaveButton().click();
-        // verify config is created
-        getConfigurationList().should('contain', JDBC_CONFIG_NAME);
-        getEditButton().click();
-        // used to verify that the input field is active
-        typeQuery("{downarrow}");
+        // And click on cancel button.
+    JdbcCreateSteps.clickOnCancel();
 
-        getPreviewButton().click();
-        getLoader().should('not.exist');
+        // Then, I expect to be asked to confirm the cancellation.
+    // When I confirm
+    ModalDialogSteps.clickOnConfirmButton();
 
-        // verify results content
-        getPreviewTable()
-            .should('be.visible')
-            .and('contain', 'SENTIMENT_SCORE')
-            .and('contain', 'CUSTOMER_LOYALTY')
-            .and('contain', 'ID')
-            .and('contain', 'FRAUD_SCORE');
-
-        // clear current query and paste the edited one, to test the suggest functionality
-        clearQuery();
-        cy.pasteQuery(EDIT_QUERY);
-        getColumnTypesTab().click();
-        // click suggest button to update the changes from the second query
-        getSuggestButton().click();
-        getConfirmSuggestButton().click();
-        // verify columns length and content
-        getSQLTableRows().should('have.length', 3);
-        getSQLTableConfig()
-            .should('be.visible')
-            .and('not.contain', 'sentiment_score');
-        getSaveButton().click();
-
-        getEditButton().click();
-        // Verify that changes have been applied upon saving
-        // used to verify that the input field is active
-        typeQuery("{downarrow}");
-        getPreviewButton().click();
-        getLoader().should('not.exist');
-
-        // verify results content
-        getPreviewTable()
-            .should('be.visible')
-            .and('contain', 'ID')
-            .and('contain', 'FRAUD_SCORE')
-            .and('contain', 'CUSTOMER_LOYALTY');
-
-        getCancelButton().click();
-        // Delete jdbc configuration
-        cy.get('.jdbc-list-configurations').should('be.visible');
-        getDeleteButton().click();
-        getConfirmDialogButton().click();
-        getConfigurationList().should('contain', 'No tables are defined');
-    });
+        // Then I expect to be redirected to Jdbc configurations page,
+    JdbcSteps.verifyUrl();
+        // and the configuration to not be created.
+    JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
 });
 
-function getCreateNewJDBCConfigurationButon() {
-    return cy.get('.create-sql-table-configuration');
-}
+it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+        // When I am on JDBC configurations page and click on create a new table configuration button.
+        JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
-function getJDBCConfigNameField() {
-    return cy.get('.sql-table-name');
-}
+        // Then I expect to  be redirected to create JDBC configuration page.
+    JdbcCreateSteps.verifyUrl();
 
-function getQueryArea() {
-    return cy.get('.CodeMirror');
-}
+        // When I fill correct data,
+    JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.openColumnTypesTab();
 
-function getQueryTextArea() {
-    return getQueryArea().find('textarea');
-}
+        // And click on save button.
+    JdbcCreateSteps.clickOnSave();
 
-function typeQuery(query) {
-    // getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-    getQueryTextArea().type(query, {force: true});
-    cy.waitUntilQueryIsVisible();
-}
+        // Then I expect to be redirected to Jdbc configurations page,
+    JdbcSteps.verifyUrl();
+        // and the configuration not be created.
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
-function clearQuery() {
-    // Using force because the textarea is not visible
-    getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-}
+        // When I click on edit button,
+        JdbcSteps.clickOnEditButton();
+    // change the query,
+        YasqeSteps.pasteQuery(EDIT_QUERY);
+        // and click on save button.
+        JdbcCreateSteps.clickOnSave();
 
-function getColumnTypesTab() {
-    return cy.get('.nav-tabs').contains("Column types");
-}
+        // Then I expect to be redirected to JDBC configurations page.
+        JdbcSteps.verifyUrl();
 
-function getDataQueryTab() {
-    return cy.get('.nav-tabs').contains("Data query");
-}
+        // When I click on delete button.
+    JdbcSteps.clickOnDeleteButton();
 
-function getSaveButton() {
-    return cy.get('.save-query-btn');
-}
+        // Then I expect to be asked to confirm the deletion,
+    // and click on close dialog button.
+        ModalDialogSteps.clickOnCloseButton();
 
-function getDeleteButton() {
-    return cy.get('.icon-trash');
-}
+        // Then I expect configuration to not be deleted.
+    JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
-function getCancelButton() {
-    return cy.get('.cancel-query-btn');
-}
+        // When I click on delete button.
+    JdbcSteps.clickOnDeleteButton();
 
-function getConfirmDialogButton() {
-    return cy.get('.btn-primary');
-}
+        // Then I expect to be asked to confirm the deletion,
+        // and click on cancel dialog button.
+        ModalDialogSteps.clickOnCancelButton();
 
-function getConfigurationList() {
-    return cy.get('.jdbc-list-configurations');
-}
+        // Then I expect configuration to not be deleted.
+    JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
-function getEditButton() {
-    return cy.get('.icon-edit');
-}
+        // When I click on delete button.
+    JdbcSteps.clickOnDeleteButton();
 
-function getSQLTableRows() {
-    return cy.get('div.form-group.row.pt-1.ng-scope');
-}
+        // Then I expect to be asked to confirm the deletion,
+        // and click on cancel dialog button.
+        ModalDialogSteps.clickOnCancelButton();
 
-function getPreviewButton() {
-    return cy.get('.preview-btn');
-}
+        // When I click on delete button.
+        JdbcSteps.clickOnDeleteButton();
 
-function getSuggestButton() {
-    return cy.get('.sql-table-config .preview-btn');
-}
+        // Then I expect to be asked to confirm the deletion,
+        // and when click on confirm dialog button.
+        ModalDialogSteps.clickOnConfirmButton();
 
-function getConfirmSuggestButton() {
-    return cy.get('.confirm-btn');
-}
+        // Then I expect the configuration to be deleted.
+        JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
+    });
 
-function getLoader() {
-    return cy.get('.ot-loader-new-content');
-}
-
-function getPreviewTable() {
-    return cy.get('.resultsTable');
-}
-
-function getSQLTableConfig() {
-    return cy.get('.sql-table-config');
-}
+});

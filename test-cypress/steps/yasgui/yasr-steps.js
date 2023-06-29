@@ -15,6 +15,10 @@ export class YasrSteps {
         return YasrSteps.getResultHeader().get('.errorHeader');
     }
 
+    static getErrorBody() {
+        return YasrSteps.getResultHeader().get('.error-response-plugin-body');
+    }
+
     static getResults() {
         return cy.get('.yasr_results tbody').find('tr');
     }
@@ -27,8 +31,12 @@ export class YasrSteps {
         return this.getResults().eq(rowNumber);
     }
 
+    static getResultRowCells(rowNumber) {
+        return YasrSteps.getResultRow(rowNumber).find('td');
+    }
+
     static getResultCell(rowNumber, cellNumber) {
-        return this.getResultRow(rowNumber).find('td').eq(cellNumber);
+        return YasrSteps.getResultRowCells(rowNumber).eq(cellNumber);
     }
 
     static getResultLink(rowNumber, cellNumber) {

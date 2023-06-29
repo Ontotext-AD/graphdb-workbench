@@ -37,7 +37,7 @@
         "del": "^6.1.1",
         "minimist": "^1.2.5",
         "mocha-junit-reporter": "^2.2.0",
-        "cypress-real-events": "^1.7.6"
+        "cypress-real-events": "^1.8.1"
     },
     "resolutions": {
         "minimist": "^1.2.5"

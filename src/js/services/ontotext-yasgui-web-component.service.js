@@ -6,9 +6,25 @@ angular
     .module('graphdb.framework.ontotext-yasgui-web-component', modules)
     .factory('OntotextYasguiWebComponentService', OntotextYasguiWebComponentService);
 
-OntotextYasguiWebComponentService.$inject = ['MonitoringRestService', 'RDF4JRepositoriesRestService', '$repositories', 'toastr', '$translate', '$location'];
+OntotextYasguiWebComponentService.$inject = [
+    'MonitoringRestService',
+    'RDF4JRepositoriesRestService',
+    '$repositories',
+    'toastr',
+    '$translate',
+    '$location',
+    'AutocompleteRestService',
+    'SparqlRestService'];
 
-function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositoriesRestService, $repositories, toastr, $translate, $location) {
+function OntotextYasguiWebComponentService(
+    MonitoringRestService,
+    RDF4JRepositoriesRestService,
+    $repositories,
+    toastr,
+    $translate,
+    $location,
+    AutocompleteRestService,
+    SparqlRestService) {
 
     const supportedLanguages = ['en', 'fr'];
     let allTranslations;
@@ -123,12 +139,28 @@ function OntotextYasguiWebComponentService(MonitoringRestService, RDF4JRepositor
             });
     };
 
+    const addKnownPrefixes = (ontotextYasgui) => {
+        ontotextYasgui.getQuery()
+            .then((query) => {
+                return JSON.stringify(query);
+            })
+            .then(SparqlRestService.addKnownPrefixes)
+            .then((response) => {
+                ontotextYasgui.setQuery(response.data);
+            })
+            .catch((data) => {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
+            });
+    };
+
     return {
         onQueryAborted,
         getRepositoryStatementsCount,
         exploreVisualGraphYasrToolbarElementBuilder,
         getTranslations,
         getDisableYasqeActionButtonsConfiguration,
-        autocompleteLocalNames
+        autocompleteLocalNames,
+        addKnownPrefixes
     };
 }
