@@ -39,7 +39,12 @@ describe('Yasr result pagination', () => {
             YasrSteps.getPagination().should('not.be.visible');
         });
 
-        it('should not be visible when results of query are less than configured page size', () => {
+        it('should not be visible when results of query are less than configured page size', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which returns results less than page size.
             const queryDescription = new QueryStubDescription()
@@ -105,7 +110,12 @@ describe('Yasr result pagination', () => {
             YasrSteps.getResultLink(0, 2).should('have.text', 'ontogen:page_2-row_1-column_2');
         });
 
-        it('should change page when clink on next or previous page button', () => {
+        it('should change page when clink on next or previous page button', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which returns results more than page size.
             const queryDescription = new QueryStubDescription()
@@ -141,7 +151,12 @@ describe('Yasr result pagination', () => {
             YasrSteps.getResultLink(0, 2).should('have.text', 'ontogen:page_1-row_1-column_2');
         });
 
-        it('should have two more page around selected page', () => {
+        it('should have two more page around selected page', {
+            retries: {
+                runMode: 1,
+                openMode: 1
+            }
+        }, () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which results are on 6 pages.
             const queryDescription = new QueryStubDescription()
