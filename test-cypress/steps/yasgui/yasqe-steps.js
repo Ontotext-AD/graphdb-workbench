@@ -49,7 +49,8 @@ export class YasqeSteps {
     }
 
     static writeInEditor(text, parseSpecialCharSequences = false) {
-        this.getEditor().find('textarea').type(text, {force: true, parseSpecialCharSequences});
+        YasqeSteps.getEditor().find('textarea').type(text, {force: true, parseSpecialCharSequences});
+        YasqeSteps.waitUntilQueryIsVisible();
     }
 
     static pasteQuery(query) {
@@ -65,6 +66,12 @@ export class YasqeSteps {
             this.getEditor().find('.CodeMirror')
                 .then((codeMirrorEl) =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
+    }
+
+    static getQuery() {
+        return this.getCodeMirror().then((cm) => {
+            return cm.getValue();
+        });
     }
 
     static getControlBar() {
