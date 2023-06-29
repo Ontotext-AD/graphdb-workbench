@@ -1,3 +1,6 @@
+import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+
 describe('My Settings', () => {
 
     let repositoryId;
@@ -109,44 +112,17 @@ describe('My Settings', () => {
             .then(() => {
                 verifyUserSettingsUpdated();
                 //Go to SPARQL editor and verify changes are persisted for the admin user
-                cy.visit('/sparql');
-                cy.window();
-                cy.url().should('contain', `${Cypress.config('baseUrl')}/sparql`);
-
-                waitUntilYASQUEBtnsAreVisible();
+                SparqlEditorSteps.visitSparqlEditorPage();
 
                 //verify disabled default inference, sameAs and total results count
-                cy.get('#inference')
-                    .should('be.visible')
-                    .find('.icon-2-5x.icon-inferred-off')
-                    .should('be.visible');
-
-                cy.get('#sameAs')
-                    .should('be.visible')
-                    .find('.icon-2-5x.icon-sameas-off')
-                    .should('be.visible');
+                YasqeSteps.getIncludeInferredStatementsButton().should('have.class', 'icon-inferred-off');
+                YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-off');
 
                 //clear default query and paste a new one that will generate more than 1000 results
-                cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+                YasqeSteps.clearEditor();
+                YasqeSteps.pasteQuery(testResultCountQuery);
 
-                cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .invoke('val', testResultCountQuery).trigger('change', {force: true})
-                cy.waitUntilQueryIsVisible();
-                cy.verifyQueryAreaContains(testResultCountQuery);
-
-                cy.get('#wb-sparql-runQuery')
-                    .should('be.visible')
-                    .and('not.be.disabled').click()
-                    .then(() => {
-                        // Retry until success message is shown
-                        cy.waitUntil(() =>
-                            cy.get('#yasr-inner')
-                                .should('be.visible')
-                                .find('.results-info .text-xs-right')
-                                .find('.results-description')
-                                .then(result => result && result.text().indexOf('Showing results from 1 to 1,000 of at least 1,001') > -1));
-                    });
+                YasqeSteps.executeQuery();
 
                 //return to My Settings to revert the changes
                 visitSettingsView();
@@ -267,14 +243,6 @@ describe('My Settings', () => {
 
     function getSaveButton() {
         return cy.get('#wb-user-submit').scrollIntoView().should('be.visible');
-    }
-
-    function waitUntilYASQUEBtnsAreVisible() {
-        cy.waitUntil(() =>
-            cy.get('#queryEditor #yasqe_buttons')
-                .find('#buttons')
-                .then(buttons =>
-                    buttons && buttons.length > 0));
     }
 
     function verifyUserSettingsUpdated() {
