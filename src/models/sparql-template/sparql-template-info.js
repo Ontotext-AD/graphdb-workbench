@@ -13,8 +13,8 @@ export const DEFAULT_SPARQL_QUERY = 'PREFIX rdf: <http://www.w3.org/1999/02/22-r
  * Hold information about a SPARQL template.
  */
 export class SparqlTemplateInfo {
-    constructor(query, isNewTemplate = true, templateID = undefined) {
-        this.query = query || DEFAULT_SPARQL_QUERY;
+    constructor(query = DEFAULT_SPARQL_QUERY, isNewTemplate = true, templateID = undefined) {
+        this.query = query;
         this.templateID = templateID;
         this.isNewTemplate = isNewTemplate;
         this.templateExist = false;

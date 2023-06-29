@@ -1,3 +1,7 @@
+import {MainMenuSteps} from "./main-menu-steps";
+import {JdbcCreateSteps} from "./setup/jdbc-create-steps";
+import ImportSteps from "./import-steps";
+
 export class ModalDialogSteps {
     static getDialog() {
         return cy.get('.modal-dialog');

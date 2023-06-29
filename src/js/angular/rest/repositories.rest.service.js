@@ -85,7 +85,7 @@ function RepositoriesRestService($http) {
     }
 
     function getPrefix(repositoryId, params) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/prefix`, null, {params});
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/prefix`, null, { params })
     }
 
     function getCluster() {

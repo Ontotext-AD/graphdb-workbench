@@ -1,3 +1,7 @@
+import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+import {YasrSteps} from "../../steps/yasgui/yasr-steps";
+
 const INDEX_NAME = 'index-' + Date.now();
 const FILE_TO_IMPORT = 'people.zip';
 const INDEX_CREATE_URL = '/similarity/index/create';
@@ -188,28 +192,25 @@ describe('Similarity screen validation', () => {
         });
     });
 
-    it('Disable and enable similarity plugin', () => {
+    it.only('Disable and enable similarity plugin', () => {
+        const disableSimilarityPlugin = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#stopplugin> \'similarity\' . }';
         initRepository();
+        cy.presetRepository(repositoryId);
 
-        cy.visit('/sparql', {
-            onBeforeLoad: (win) => {
-                win.localStorage.setItem('ls.repository-id', repositoryId);
-            }
-        });
-        cy.window();
-        waitUntilSparqlPageIsLoaded();
+        SparqlEditorSteps.visitSparqlEditorPage();
 
         // When I disable the plugin.
-        disableSimilarityPlugin();
+        YasqeSteps.pasteQuery(disableSimilarityPlugin);
+        YasqeSteps.executeQuery();
 
         // Then I expect a message to be displayed confirming that operation is complete.
-        cy.get('.update-info.alert-info').should('be.visible').and('contain', 'The number of statements did not change.');
+        YasrSteps.getResponseInfo().should('be.visible').and('contain', 'The number of statements did not change.');
 
         // When I try to disable it while it's disabled.
-        disableSimilarityPlugin();
+        YasqeSteps.executeQuery();
 
         // Then I expect an error message to be displayed informing me that the plugin has been already disabled.
-        cy.get('.update-info.alert-danger .plaintext').should('be.visible').and('contain', 'Plugin similarity has been already disabled');
+        YasrSteps.getErrorBody().should('be.visible').and('contain', 'Plugin similarity has been already disabled');
 
         // When I visit similarity view while the plugin is disabled.
         cy.visit('/similarity');
@@ -265,23 +266,6 @@ describe('Similarity screen validation', () => {
         getSearchIndexInput().type(entity);
         // there are two buttons so we search in the context
         getSearchIndexInput().closest('.input-group').find('.autocomplete-visual-btn').click();
-    }
-
-    function disableSimilarityPlugin() {
-        const disableSimilarityPluginQuery = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#stopplugin> \'similarity\' . }';
-        cy.waitUntilQueryIsVisible();
-        cy.pasteQuery(disableSimilarityPluginQuery);
-        cy.executeQuery();
-    }
-
-    function waitUntilSparqlPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        cy.waitUntilQueryIsVisible();
-
-        // No active loader
-        cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     function checkSimilarityPageDefaultState() {

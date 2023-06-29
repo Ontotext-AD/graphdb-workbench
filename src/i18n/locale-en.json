@@ -610,6 +610,7 @@
     "view.jdbc.helpInfo": "The JDBC configuration view allows you to configure, store, update, preview, and delete virtual SQL tables. These tables can then be used with the Avatica JDBC driver. Each virtual SQL table is based on a SPARQL SELECT query and requires additional metadata for the definition of the SQL columns.",
     "view.jdbc.create.title": "SQL table configuration",
     "view.jdbc.create.helpInfo": "The SQL table configuration view is used to define a virtual SQL table. Each table must have a name, a SPARQL SELECT query, and a set of SQL column definitions.",
+    "view.jdbc.create.get_suggestion_sql_type": "Get suggestion...",
     "jdbc.column.names.constraint": "Column names must be placed in array.",
     "view.namespaces.helpInfo": "The Namespaces view provides an overview of all namespaces defined in a GraphDB repository. Namespaces are essentially shorthand notations for IRIs. Here you can add, remove and modify them.",
     "view.query.and.update.monitoring.title": "Query and Update monitoring",
@@ -1009,7 +1010,7 @@
     "jdbc.not.delete.sql.msg": "Could not delete SQL table",
     "jdbc.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "jdbc.not.get.sql.msg2": "Could not get SQL table configuration",
-    "jdbc.required.configuration.name": "SQL configuration name is required",
+    "jdbc.required.configuration.name": "SQL table name is required",
     "jdbc.saved.configuration": "SQL table configuration saved",
     "jdbc.not.saved.configuration": "Could not save SQL table configuration",
     "jdbc.configuration.updated": "SQL table configuration updated",
@@ -1941,6 +1942,5 @@
     "global.operations_statuses.OUT_OF_SYNC.title": "Out of sync",
     "global.operations_statuses.UNAVAILABLE_NODES.title": "Unavailable nodes",
     "view.sparql-editor.title": "Ontotext Yasgui SPARQL Query & Update",
-    "view.sparql-editor.helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
-    "menu.sparql-editor.label": "Ontotext Yasgui SPARQL"
+    "view.sparql-editor.helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor."
 }

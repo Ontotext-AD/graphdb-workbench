@@ -14,10 +14,10 @@ export const buildQueryModel = (query, queryName, owner, isPublic) => {
  */
 export const savedQueriesResponseMapper = (response) => {
     if (response && response.data) {
-        return response.data.map((savedQuery) => (
-                buildQueryModel(savedQuery.body, savedQuery.name, savedQuery.owner, savedQuery.shared)
-            )
-        );
+        if (response.data.map) {
+            return response.data.map((savedQuery) => buildQueryModel(savedQuery.body, savedQuery.name, savedQuery.owner, savedQuery.shared));
+        }
+        return [buildQueryModel(response.data.body, response.data.name, response.data.owner, response.data.shared)]
     }
     return [];
 };
