@@ -1,19 +1,9 @@
+import {JdbcSteps} from "../../steps/setup/jdbc-steps";
+import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
-const JDBC_CONFIG_NAME = 'jdbc_config';
-const QUERY = "PREFIX ex:<http://example.com/#>\n" +
-    "PREFIX base:<http://example/base/>\n" +
-    "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
-    "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-    "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n" +
-    "\n" +
-    "select ?id ?sentiment_score ?fraud_score ?customer_loyalty where { \n" +
-    "\t?id rdf:type ex:Customer;\n" +
-    "    \tex:sentiment ?sentiment_score;\n" +
-    "      \tex:fraudScore ?fraud_score;\n" +
-    "       \tex:customerLoyalty ?customer_loyalty_id.\n" +
-    "    ?customer_loyalty_id rdfs:label ?customer_loyalty.\n" +
-    "    # !filter\n" +
-    "}  ";
 const EDIT_QUERY = "PREFIX ex:<http://example.com/#>\n" +
     "PREFIX base:<http://example/base/>\n" +
     "PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
@@ -33,177 +23,106 @@ describe('JDBC configuration', () => {
     let repositoryId;
 
     beforeEach(() => {
-        initRepositoryAndVisitJdbcView();
+        repositoryId = 'jdbc-repo-' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.presetRepository(repositoryId);
+        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        JdbcSteps.visit();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Configuration table preview', () => {
-        //cy.visit('/jdbc');
-        // SQL configuration table should be visible
-        getConfigurationList().should('be.visible');
+    it('Should not create a new JDBC configuration click on cancel button', () => {
+        // When I am on JDBC configurations page and click on create a new table configuration button.
+        JdbcSteps.clickOnCreateJdbcConfigurationButton();
+
+        // Then I expect to  be redirected to create JDBC configuration page.
+        JdbcCreateSteps.verifyUrl();
+
+        // When I fill correct data,
+        JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.openColumnTypesTab();
+
+        // And click on cancel button.
+        JdbcCreateSteps.clickOnCancel();
+
+        // Then, I expect to be asked to confirm the cancellation.
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
+
+        // Then I expect to be redirected to Jdbc configurations page,
+        JdbcSteps.verifyUrl();
+        // and the configuration to not be created.
+        JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
     });
 
-    //TODO Fix falling test
-    it.skip('Should create a new JDBC configuration, edit, preview, then delete', () => {
-        getCreateNewJDBCConfigurationButon().click();
-        cy.pasteQuery(QUERY);
-        getJDBCConfigNameField().type(JDBC_CONFIG_NAME);
-        getColumnTypesTab().click(); //switch to SQL columns config tab
+    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+        // When I am on JDBC configurations page and click on create a new table configuration button.
+        JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
-        //verify columns length and content
-        getSQLTableRows().should('have.length', 4);
-        getSQLTableConfig()
-            .should('be.visible')
-            .and('contain', 'sentiment_score');
+        // Then I expect to  be redirected to create JDBC configuration page.
+        JdbcCreateSteps.verifyUrl();
 
-        getSaveButton().click();
-        getConfigurationList().should('contain', JDBC_CONFIG_NAME); //verify config is created
-        getEditButton().click();
+        // When I fill correct data,
+        JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.openColumnTypesTab();
 
-        typeQuery("{downarrow}"); //used to verify that the input field is active
-        getPreviewButton().click({force:true}); //click preview button
-        getLoader().should('not.exist');
+        // And click on save button.
+        JdbcCreateSteps.clickOnSave();
 
-        //verify results content
-        getPreviewTable()
-            .should('be.visible')
-            .and('contain', 'SENTIMENT_SCORE')
-            .and('contain', 'CUSTOMER_LOYALTY')
-            .and('contain', 'ID')
-            .and('contain', 'FRAUD_SCORE');
+        // Then I expect to be redirected to Jdbc configurations page,
+        JdbcSteps.verifyUrl();
+        // and the configuration not be created.
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
-        //clear current query and paste the edited one, to test the suggest functionality
-        clearQuery();
-        cy.pasteQuery(EDIT_QUERY);
-        getColumnTypesTab().click();
-        getSuggestButton().click({force:true}); //click suggest button to update the changes from the second query
-        getConfirmSuggestButton().click();
+        // When I click on edit button,
+        JdbcSteps.clickOnEditButton();
+        // change the query,
+        YasqeSteps.pasteQuery(EDIT_QUERY);
+        // and click on save button.
+        JdbcCreateSteps.clickOnSave();
 
-        //verify columns length and content
-        getSQLTableRows().should('have.length', 3);
-        getSQLTableConfig()
-            .should('be.visible')
-            .and('not.contain', 'sentiment_score');
-        getSaveButton().click();
-        getEditButton().click();
+        // Then I expect to be redirected to JDBC configurations page.
+        JdbcSteps.verifyUrl();
 
-        //Verify that changes have been applied upon saving
-        typeQuery("{downarrow}"); //used to verify that the input field is active
-        getPreviewButton().click({force:true}); //click preview button
-        getLoader().should('not.exist');
+        // When I click on delete button.
+        JdbcSteps.clickOnDeleteButton();
 
-        //verify results content
-        getPreviewTable()
-            .should('be.visible')
-            .and('not.contain', 'SENTIMENT_SCORE')
-            .and('contain', 'CUSTOMER_LOYALTY')
-            .and('contain', 'ID')
-            .and('contain', 'FRAUD_SCORE');
-        getCancelButton().click();
+        // Then I expect to be asked to confirm the deletion,
+        // and click on close dialog button.
+        ModalDialogSteps.clickOnCloseButton();
 
-        //Delete jdbc configuration
-        cy.get('.jdbc-list-configurations').should('be.visible');
-        getDeleteButton().click();
-        getConfirmDialogButton().click();
-        getConfigurationList().should('contain', 'No Indexes');
+        // Then I expect configuration to not be deleted.
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
+
+        // When I click on delete button.
+        JdbcSteps.clickOnDeleteButton();
+
+        // Then I expect to be asked to confirm the deletion,
+        // and click on cancel dialog button.
+        ModalDialogSteps.clickOnCancelButton();
+
+        // Then I expect configuration to not be deleted.
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
+
+        // When I click on delete button.
+        JdbcSteps.clickOnDeleteButton();
+
+        // Then I expect to be asked to confirm the deletion,
+        // and click on cancel dialog button.
+        ModalDialogSteps.clickOnCancelButton();
+
+        // When I click on delete button.
+        JdbcSteps.clickOnDeleteButton();
+
+        // Then I expect to be asked to confirm the deletion,
+        // and when click on confirm dialog button.
+        ModalDialogSteps.clickOnConfirmButton();
+
+        // Then I expect the configuration to be deleted.
+        JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
     });
 
-    function initRepositoryAndVisitJdbcView() {
-        repositoryId = 'jdbc-repo-' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
-        cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        cy.visit('/jdbc');
-        cy.window();
-    }
-
-    function getCreateNewJDBCConfigurationButon() {
-        return cy.get('.create-sql-table-configuration');
-    }
-
-    function getJDBCConfigNameField() {
-        return cy.get('.sql-table-name');
-    }
-
-    function getQueryArea() {
-        return cy.get('.CodeMirror');
-    }
-
-    function getQueryTextArea() {
-        return getQueryArea().find('textarea');
-    }
-
-    function typeQuery(query) {
-        // getQueryTextArea().invoke('val', query).trigger('change', {force: true});
-        getQueryTextArea().type(query, {force: true});
-        cy.waitUntilQueryIsVisible();
-    }
-
-    function clearQuery() {
-        // Using force because the textarea is not visible
-        getQueryTextArea().type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
-    }
-
-    function getColumnTypesTab() {
-        return cy.get('.nav-tabs').contains("Column types");
-    }
-
-    function getDataQueryTab() {
-        return cy.get('.nav-tabs').contains("Data query");
-    }
-
-    function getSaveButton() {
-        return cy.get('.save-query-btn');
-    }
-
-    function getDeleteButton() {
-        return cy.get('.icon-trash');
-    }
-
-    function getCancelButton() {
-        return cy.get('.cancel-query-btn');
-    }
-
-    function getConfirmDialogButton() {
-        return cy.get('.btn-primary');
-    }
-
-    function getConfigurationList() {
-        return cy.get('.jdbc-list-configurations');
-    }
-
-    function getEditButton() {
-        return cy.get('.icon-edit');
-    }
-
-    function getSQLTableRows() {
-        return cy.get('div.form-group.row.pt-1.ng-scope');
-    }
-
-    function getPreviewButton() {
-        return cy.get('.preview-btn');
-    }
-
-    function getSuggestButton(){
-        return cy.get('.sql-table-config .preview-btn');
-    }
-
-    function getConfirmSuggestButton() {
-        return cy.get('.confirm-btn');
-    }
-
-    function getLoader() {
-        return cy.get('.ot-loader-new-content');
-    }
-
-    function getPreviewTable() {
-        return cy.get('.resultsTable');
-    }
-
-    function getSQLTableConfig() {
-        return cy.get('.sql-table-config');
-    }
 });

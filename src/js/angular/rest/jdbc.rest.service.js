@@ -88,7 +88,7 @@ function JdbcRestService($http, $translate) {
             params: {
                 limit
             }
-        })
+        });
     }
 
     function getNewSqlTablePreview(sqlView, limit) {
@@ -103,6 +103,6 @@ function JdbcRestService($http, $translate) {
                 limit
             },
             headers: {Accept: 'application/sparql-results+json'}
-        })
+        });
     }
 }

@@ -32,7 +32,7 @@ describe('Share query', () => {
         ShareSavedQueryDialog.getDialog().should('be.visible');
         ShareSavedQueryDialog.getDialogTitle().should('contain', 'Copy URL to clipboard');
         ShareSavedQueryDialog.getShareLink().then((shareLink) => {
-            expect(shareLink).to.have.string(`/sparql-editor?name=Unnamed&query=select%20*%20where%20%7B%20%20%0A%20%3Fs%20%3Fp%20%3Fo%20.%20%0A%20%7D%20limit%20100&infer=true&sameAs=true`);
+            expect(shareLink).to.have.string(`/sparql?name=Unnamed&query=select%20*%20where%20%7B%20%20%0A%20%3Fs%20%3Fp%20%3Fo%20.%20%0A%20%7D%20limit%20100&infer=true&sameAs=true`);
         });
         // When I cancel operation
         ShareSavedQueryDialog.closeDialog();
