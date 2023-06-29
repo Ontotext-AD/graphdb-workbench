@@ -9,6 +9,7 @@ import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-t
 import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
 import 'services/event-emitter-service';
 import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
+import {RenderingMode} from "../../../models/ontotext-yasgui/rendering-mode";
 
 const modules = [
     'ui.bootstrap',
@@ -88,7 +89,6 @@ SparqlTemplateCreateCtrl.$inject = [
     '$interval',
     'SparqlTemplatesRestService',
     'RDF4JRepositoriesRestService',
-    'SparqlRestService',
     'UriUtils',
     'ModalService',
     '$translate',
@@ -108,7 +108,6 @@ function SparqlTemplateCreateCtrl(
     $interval,
     SparqlTemplatesRestService,
     RDF4JRepositoriesRestService,
-    SparqlRestService,
     UriUtils,
     ModalService,
     $translate,
@@ -181,6 +180,7 @@ function SparqlTemplateCreateCtrl(
             initialQuery: $scope.sparqlTemplateInfo.query,
             componentId: 'sparql-template',
             prefixes: prefixes,
+            render: RenderingMode.YASQE,
             maxPersistentResponseSize: 0,
             yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED,
             yasqeAutocomplete: {
@@ -379,21 +379,6 @@ function SparqlTemplateCreateCtrl(
         $scope.loaderMessage = $scope.queryIsRunning ? loaderMessage : '';
     };
 
-    const addKnownPrefixes = () => {
-        getOntotextYasgui().getQuery()
-            .then((query) => {
-                return JSON.stringify(query);
-            })
-            .then(SparqlRestService.addKnownPrefixes)
-            .then((response) => {
-                getOntotextYasgui().setQuery(response.data);
-            })
-            .catch((data) => {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
-            });
-    };
-
     const getOntotextYasgui = () => {
         if (!$scope.ontotextYasgui) {
             $scope.ontotextYasgui = document.querySelector('ontotext-yasgui');
@@ -489,16 +474,15 @@ function SparqlTemplateCreateCtrl(
 
     const addDirtyCheckHandlers = () => {
         const waitOntotextInitialized = $interval(function () {
-            if (getOntotextYasgui()) {
+            const ontotextYasgui = getOntotextYasgui();
+            if (ontotextYasgui) {
                 const $ontotext = $('ontotext-yasgui');
                 $ontotext.on('paste.sparqlQuery', '.CodeMirror', function () {
                     $scope.markDirty();
-                    addKnownPrefixes();
-                    removeDirtyCheckHandlers();
+                    ontotextYasguiWebComponentService.addKnownPrefixes(ontotextYasgui);
                 });
                 $ontotext.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
                     $scope.markDirty();
-                    removeDirtyCheckHandlers();
                 });
                 $interval.cancel(waitOntotextInitialized);
             }

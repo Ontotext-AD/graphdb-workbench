@@ -1,14 +1,6 @@
-<link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
-
-<link href="css/lib/yasqe.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-
-<link href="css/new-sparql.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-
-<link href="css/graphs-config.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-
 <link href="css/jdbc.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="container-fluid fit-content-on-mobile">
+<div class="container-fluid fit-content-on-mobile" ng-if="!isLoading">
     <h1>
         {{title}}
         <span class="btn btn-link"
@@ -25,31 +17,74 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="card mb-2 sql-table-config">
+    <div class="card jdbc-configuration">
         <div class="card-block pt-1">
             <p class="lead">{{'table.name' | translate}}</p>
-            <div class="table-group table-group-lg">
-                <input required class="form-control sql-table-name" type="text" placeholder="{{'table.name.placeholder.required' | translate}}"
-                       ng-model="currentQuery.name" ng-disabled="!currentQuery.isNewConfiguration" >
+            <div class="container-fluid">
+                <input required
+                       class="form-control jdbc-configuration-name"
+                       type="text"
+                       placeholder="{{'table.name.placeholder.required' | translate}}"
+                       ng-model="jdbcConfigurationInfo.jdbcConfigurationName"
+                       ng-change="setDirty()"
+                       ng-disabled="!jdbcConfigurationInfo.isNewJdbcConfiguration">
+
+                <div ng-if="saveOrUpdateExecuted">
+                    <div ng-if="!jdbcConfigurationInfo.jdbcConfigurationName"
+                         class="idError alert alert-danger jdbc-configuration-name-required"
+                         translate="jdbc.required.configuration.name">
+                    </div>
             </div>
 
             <ul class="nav nav-tabs pt-1">
-                <li class="nav-item">
-                    <a ng-class="page === 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link" href>
+                    <li class="nav-item" ng-class="{ 'active': activeTab === 1 }">
+                        <a class="nav-link" href="#" ng-click="setActiveTab(1)">
                         {{'data.query.label' | translate}}
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a ng-class="page === 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link" href>
+                    <li class="nav-item" ng-class="{ 'active': activeTab === 2 }">
+                        <a class="nav-link" href="#" ng-click="setActiveTab(2)">
                         {{'jdbc.column.types' | translate}}
                     </a>
                 </li>
             </ul>
 
-            <div ng-show="page === 2 && !currentQuery.columns.length" class="mt-2">
+                <div>
+                    <!-- First tab -->
+                    <div class="tab-pane" ng-show="activeTab === 1">
+                        <ontotext-yasgui
+                            class="pt-1"
+                            ng-custom-element
+                            ngce-prop-config="config"
+                            ngce-prop-language="language"
+                            ngce-on-output="output($event)">
+                        </ontotext-yasgui>
+                        <div ng-if="!jdbcConfigurationInfo.isValidQuery"
+                             class="idError alert alert-danger invalid-query"
+                             translate="jdbc.invalid.query">
+                        </div>
+                        <div ng-if="!jdbcConfigurationInfo.isValidQueryType"
+                             class="idError alert alert-danger invalid-query-mode"
+                             translate="jdbc.warning.invalid.query">
+                        </div>
+                        <div onto-loader-new
+                             ng-if="isQueryRunning"
+                             size="75"
+                             message="queryRunningMessage"
+                             timeout="[1]">
+                        </div>
+                    </div>
+
+                    <!-- Second tab -->
+                    <div class="tab-pane" ng-show="activeTab === 2">
+                        <div ng-if="jdbcConfigurationInfo.hasUndefinedColumns"
+                             class="idError alert alert-danger"
+                             translate="jdbc.warning.all.column.msg">
+                        </div>
+                        <div ng-show="!jdbcConfigurationInfo.columns.length" class="mt-2">
                 {{'jdbc.no.columns.defined.warning' | translate}}
             </div>
-            <div ng-show="page === 2 && currentQuery.columns.length">
+                        <div ng-show="activeTab === 2 && jdbcConfigurationInfo.columns.length">
                 <div class="form-group row pt-1">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label"><strong>{{'jdbc.column.name' | translate}}</strong></label>
                     <div class="col-xs-2 col-sm-2 col-md-2">
@@ -68,7 +103,7 @@
                         <label class="col-form-label"><strong>{{'literal.type.language.tag.label' | translate}}</strong></label>
                     </div>
                 </div>
-                <div  ng-repeat="column in currentQuery.columns track by $index" class="form-group row pt-1">
+                            <div ng-repeat="column in jdbcConfigurationInfo.columns track by $index" class="form-group row pt-1 column-suggestion-row">
                     <label class="col-xs-2 col-sm-2 col-md-2 col-form-label">
                         <span gdb-tooltip="{{'jdbc.column.names.hint' | translate}}"
                               tooltip-placement="top">
@@ -81,33 +116,39 @@
                                 class="form-control" id="sql-type" ng-model="column.column_type"
                                 ng-options="type as getTypeLabel(type) for type in sqlTypes track by type"
                                 ng-change="selectColumnType(column.column_name, '{{column.column_type}}')"
-                                ng-disabled="!canWriteActiveRepo()"></select>
+                                            ng-disabled="!canWriteActiveRepo">
+                                    </select>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasPrecision(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithPrecision(currentQuery.columns)">
                         <input gdb-tooltip="{{'jdbc.sql.type.precision.hint' | translate}}"
                                tooltip-placement="top"
-                               class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"  ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                                           class="form-control" type="text" name="title" id="precision" ng-model="column.sql_type_precision"
+                                           ng-change="setDirty()" ng-disabled="!canWriteActiveRepo">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1" ng-class="!hasScale(column.column_type) ? 'hidden' : ''"  ng-if="containsColumnsWithScale(currentQuery.columns)">
                         <input gdb-tooltip="{{'jdbc.sql.type.scale.hint' | translate}}"
                                tooltip-placement="top"
-                               class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                                           class="form-control" type="text" name="title" id="scale" ng-model="column.sql_type_scale"
+                                           ng-change="setDirty()" ng-disabled="!canWriteActiveRepo">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <div class="form-control b-0">
                             <input gdb-tooltip="{{'jdbc.not.null.check.hint' | translate}}"
                                    tooltip-placement="top"
-                                   type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                                               type="checkbox" id="nullable" ng-model="column.nullable" ng-change="setDirty()"
+                                               ng-disabled="!canWriteActiveRepo">
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4" ng-class="isLiteral(column.column_type) ? '' : 'hidden'"  ng-if="!containsNonLiteralColumnsOnly(currentQuery.columns)">
                         <input gdb-tooltip="{{'jdbc.literal.creation.and.filtering.hint' | translate}}"
                                tooltip-placement="top"
-                               class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type" ng-change="setDirty()" ng-disabled="!canWriteActiveRepo()">
+                                           class="form-control" type="text" name="title" id="sparqlType" ng-model="column.sparql_type"
+                                           ng-change="setDirty()" ng-disabled="!canWriteActiveRepo">
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1">
                         <button type="button" ng-click="deleteColumn(column.column_name, $index)"
-                                class="btn btn-link delete-column-btn" gdb-tooltip="{{'jdbc.delete.column' | translate}}" ng-if="canWriteActiveRepo()"><span
+                                            class="btn btn-link delete-column-btn" gdb-tooltip="{{'jdbc.delete.column' | translate}}"
+                                            ng-if="canWriteActiveRepo"><span
                             class="icon-trash"></span>
                         </button>
                     </div>
@@ -116,54 +157,50 @@
 
             <div class="clearfix">
                 <div class="pull-right">
-                    <button ng-if="page === 2 && canWriteActiveRepo()" class="btn btn-lg preview-btn" ng-click="getColumnsSuggestions()"
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pull-right pt-1">
+                        <button ng-if="2 === activeTab && canWriteActiveRepo" class="btn btn-lg suggest-btn"
+                                ng-click="getColumnsSuggestions()"
                             uib-popover="{{'jdbc.column.suggestions' | translate}}"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         {{'common.suggest' | translate}}
                     </button>
+
+                        <button class="btn btn-lg preview-btn" ng-click="getPreview()"
+                                uib-popover="{{'jdbc.preview.configuration' | translate}}"
+                                popover-placement="top"
+                                popover-trigger="mouseenter">
+                            {{'common.preview' | translate}}
+                        </button>
                 </div>
             </div>
-
-            <div class="container-fluid">
-                <br/>
-                <query-editor nostorage notabs notoolbar-saved notoolbar-copy nostatus nocount norun
-                              notoolbar-inference
-                              notoolbar-same-as callback-on-change="updateDirty" enable-column-resizing-on-window-width>
-                </query-editor>
             </div>
         </div>
     </div>
-    <div class="pull-left">
-        <button class="btn btn-lg preview-btn" ng-click="getPreview()"
-                uib-popover="{{'jdbc.preview.configuration' | translate}}"
-                popover-placement="top"
-                popover-trigger="mouseenter">
-            {{'common.preview' | translate}}
+
+    <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-button"
+       uib-popover="{{'jdbc.cancel.configuration' | translate}}"
+       popover-placement="top"
+       popover-trigger="mouseenter">
+        {{ (canWriteActiveRepo ? 'common.cancel.btn' : common.close) | translate}}
+    </a>
+    <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveJdbcConfiguration()"
+            uib-popover="{{'jdbc.save.configuration' | translate}}"
+            popover-placement="top"
+            popover-trigger="mouseenter"
+            ng-if="canWriteActiveRepo()">
+        {{'common.save.btn' | translate}}
         </button>
     </div>
-    <div class="pull-right">
-        <a ng-href="jdbc" class="btn btn-lg btn-secondary"
-           uib-popover="{{'jdbc.cancel.configuration' | translate}}"
-           popover-placement="top"
-           popover-trigger="mouseenter"
-           ng-if="!canWriteActiveRepo()">
-            {{'common.close' | translate}}
-        </a>
-        <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-query-btn"
-           uib-popover="{{'jdbc.cancel.configuration' | translate}}"
-           popover-placement="top"
-           popover-trigger="mouseenter"
-           ng-if="canWriteActiveRepo()">
-            {{'common.cancel.btn' | translate}}
-        </a>
-        <button class="btn btn-lg btn-primary save-query-btn" ng-click="save()"
-                uib-popover="{{'jdbc.save.configuration' | translate}}"
-                popover-placement="top"
-                popover-trigger="mouseenter"
-                ng-if="canWriteActiveRepo()">
-            {{'common.save.btn' | translate}}
-        </button>
-    </div>
-    <br/><br/><br/>
+
+<div onto-loader-new
+     ng-if="isLoading"
+     size="75"
+     message="loaderMessage"
+     timeout="[1]">
 </div>
