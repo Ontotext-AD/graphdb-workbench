@@ -22,6 +22,25 @@ describe('Execute of update query', () => {
         cy.deleteRepository(repositoryId);
     });
 
+    it('should display properly result message info when insert 2 statements', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
+        // When I execute insert query which adds 2 results
+        YasqeSteps.pasteQuery(
+            'PREFIX : <http://bedrock/> ' +
+            'INSERT DATA { ' +
+            ':fred :hasSpouse :wilma.' +
+            ':fred :hasChild :pebbles.' +
+            '}');
+        YasqeSteps.executeQuery();
+
+        // Then I expect result message info to informs me that 2 statements have been added.
+        TablePluginSteps.getQueryResultInfo().contains('Added 2 statements.');
+    });
+
     it('should display properly result message info when no one statement is added.', () => {
         // When I execute insert query which don't change repository statements
         YasqeSteps.pasteQuery(

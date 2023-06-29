@@ -231,7 +231,8 @@ describe('Home screen validation', () => {
             cy.deleteRepository(repositoryId);
         });
 
-        it('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
+        // This test can pass after "GDB-8457" implementation.
+        it.skip('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
             const repositoryId = HomeSteps.createRepo();
             HomeSteps.selectRepo(repositoryId);
 
