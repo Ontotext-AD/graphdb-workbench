@@ -2,6 +2,9 @@ export class SparqlCreateUpdateSteps {
     static visit(templateId) {
         cy.visit(`/sparql-template/create${templateId ? '?templateID=' + templateId : ''}`);
         cy.get('.ontotext-yasgui').should('be.visible');
+        // When page is loaded the component is initializes twice, because of angular. The problem will be fixed
+        // when all yasgui logic is extracted into a directive.
+        cy.wait(1000);
     }
 
     static verifyUrl() {

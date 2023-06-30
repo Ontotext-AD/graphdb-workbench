@@ -14,10 +14,12 @@ export const buildQueryModel = (query, queryName, owner, isPublic) => {
  */
 export const savedQueriesResponseMapper = (response) => {
     if (response && response.data) {
+        // The response.data is a map when is returned from yasgui saved query functionality.
         if (response.data.map) {
             return response.data.map((savedQuery) => buildQueryModel(savedQuery.body, savedQuery.name, savedQuery.owner, savedQuery.shared));
         }
-        return [buildQueryModel(response.data.body, response.data.name, response.data.owner, response.data.shared)]
+        // The response.data is object with a saved query info, when a saved query is executed from welcome page.
+        return [buildQueryModel(response.data.body, response.data.name, response.data.owner, response.data.shared)];
     }
     return [];
 };

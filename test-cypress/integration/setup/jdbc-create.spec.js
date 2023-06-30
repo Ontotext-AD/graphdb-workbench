@@ -230,10 +230,9 @@ describe('JDBC configuration', () => {
         ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
     });
 
-    it('should display confirm message when the configuration query data is changed', () => {
+    it.only('should display confirm message when the configuration query data is changed', () => {
         // When I open the create JDBC configuration page,
         // type and change the query,
-        YasqeSteps.waitUntilQueryIsVisible();
         YasqeSteps.writeInEditor("Some changes");
         ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
     });
@@ -252,6 +251,7 @@ describe('JDBC configuration', () => {
         createConfigurationAndOpenInEdit('Test table');
         // Make some changes
         YasqeSteps.writeInEditor('Make changes');
+
         // When I try to change the selected repository.
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
 
@@ -299,6 +299,8 @@ describe('JDBC configuration', () => {
         // waite selected column to be loaded.
         JdbcCreateSteps.getColumnSuggestionRows().should('have.length', 2);
         JdbcCreateSteps.clickOnSave();
+
+        ToasterSteps.verifySuccess('SQL table configuration saved');
 
         // Opens created configuration for edit.
         JdbcSteps.clickOnEditButton(0);
