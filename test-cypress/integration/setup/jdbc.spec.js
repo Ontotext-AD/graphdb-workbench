@@ -67,7 +67,9 @@ describe('JDBC configuration', () => {
 
         // When I fill correct data,
         JdbcCreateSteps.typeTableName('JdbcTest');
+        // and columns are selected.
         JdbcCreateSteps.openColumnTypesTab();
+        JdbcCreateSteps.getColumnSuggestionRows().should('have.length', 2);
 
         // And click on save button.
         JdbcCreateSteps.clickOnSave();
