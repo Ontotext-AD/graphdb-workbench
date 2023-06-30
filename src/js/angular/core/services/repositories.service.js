@@ -4,7 +4,7 @@ import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
-import 'services/event-emitter-service';
+import 'angular/core/services/event-emitter-service';
 
 const modules = [
     'ngCookies',
