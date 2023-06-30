@@ -3,7 +3,7 @@ import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
 import 'services/ontotext-yasgui-web-component.service.js';
-import 'services/event-emitter-service';
+import 'angular/core/services/event-emitter-service';
 import {JdbcConfigurationInfo} from "../../../models/jdbc/jdbc-configuration-info";
 import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
 import {JdbcConfigurationError} from "../../../models/jdbc/jdbc-configuration-error";
@@ -33,8 +33,8 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
         // Ontop and FedX repos don't support JDBC.
         if ($repositories.getActiveRepository()
-                && !$repositories.isActiveRepoOntopType()
-                    && !$repositories.isActiveRepoFedXType()) {
+            && !$repositories.isActiveRepoOntopType()
+            && !$repositories.isActiveRepoFedXType()) {
             JdbcRestService.getJdbcConfigurations().success(function (data) {
                 $scope.jdbcConfigurations = data;
             }).error(function (data) {
@@ -61,7 +61,7 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
             .then(function () {
                 JdbcRestService.deleteJdbcConfiguration(name).success(function () {
                     $scope.getSqlConfigurations();
-                }).error(function(e) {
+                }).error(function (e) {
                     toastr.error(getError(e), $translate.instant('jdbc.not.delete.sql.msg'));
                 });
             });
@@ -146,7 +146,7 @@ function JdbcCreateCtrl(
             .catch((error) => {
                 if (!(error instanceof JdbcConfigurationError)) {
                     const msg = getError(error);
-                toastr.error(msg, $translate.instant('jdbc.not.saved.configuration'));
+                    toastr.error(msg, $translate.instant('jdbc.not.saved.configuration'));
                 }
             });
     };
@@ -180,11 +180,11 @@ function JdbcCreateCtrl(
             .catch((error) => {
                 if (!(error instanceof JdbcConfigurationError)) {
                     toastr.error(getError(error, 0, 100), $translate.instant('jdbc.not.show.preview'));
-        } else {
+                } else {
                     if (error.jdbcConfigurationInfo && (error.jdbcConfigurationInfo.isColumnsEmpty || error.jdbcConfigurationInfo.hasUndefinedColumns)) {
                         getSuggestions();
                         $scope.activeTab = 2;
-        }
+                    }
                 }
             })
             .finally(() => {
@@ -238,12 +238,12 @@ function JdbcCreateCtrl(
     };
 
     $scope.deleteColumn = function (columnName, index) {
-            ModalService.openSimpleModal({
-                title: $translate.instant('common.warning'),
+        ModalService.openSimpleModal({
+            title: $translate.instant('common.warning'),
             message: $translate.instant('jdbc.warning.delete.column.msg', {columnName: columnName}),
-                warning: true
-            }).result
-                .then(function () {
+            warning: true
+        }).result
+            .then(function () {
                 $scope.jdbcConfigurationInfo.columns.splice(index, 1);
                 $scope.setDirty();
             });
@@ -251,14 +251,14 @@ function JdbcCreateCtrl(
 
     $scope.getColumnsSuggestions = () => {
         if ($scope.jdbcConfigurationInfo.columns && $scope.jdbcConfigurationInfo.columns.length > 0) {
-        ModalService.openSimpleModal({
-            title: $translate.instant('common.warning'),
+            ModalService.openSimpleModal({
+                title: $translate.instant('common.warning'),
                 message: $translate.instant('jdbc.warning.column.type.msg'),
-            warning: true
-        }).result
-            .then(function () {
+                warning: true
+            }).result
+                .then(function () {
                     getSuggestions();
-            });
+                });
         } else {
             getSuggestions();
         }
@@ -282,7 +282,7 @@ function JdbcCreateCtrl(
 
     $scope.containsNonLiteralColumnsOnly = (columns) => {
         return columns && columns.every((el) => !$scope.isLiteral(el.column_type));
-            };
+    };
 
     // =========================
     // Private functions
@@ -291,16 +291,16 @@ function JdbcCreateCtrl(
     const setLoader = (isLoading, loaderMessage) => {
         $scope.isLoading = isLoading;
         $scope.loaderMessage = $scope.isLoading ? loaderMessage : '';
-            };
+    };
     const getSqlTablePreview = (jdbcConfigurationInfo) => {
         if ($scope.canWriteActiveRepo) {
-                const sqlView = JSON.stringify({
+            const sqlView = JSON.stringify({
                 name: $scope.jdbcConfigurationInfo.jdbcConfigurationName,
                 query: $scope.jdbcConfigurationInfo.query,
                 columns: $scope.jdbcConfigurationInfo.columns || []
-                });
+            });
             return Promise.all([JdbcRestService.getNewSqlTablePreview(sqlView), Promise.resolve(jdbcConfigurationInfo)]);
-            } else {
+        } else {
             return Promise.all([JdbcRestService.getExistingSqlTablePreview($scope.jdbcConfigurationInfo.jdbcConfigurationName), Promise.resolve(jdbcConfigurationInfo)]);
         }
     };
@@ -384,7 +384,7 @@ function JdbcCreateCtrl(
                 LocalNamesAutocompleter: (term) => {
                     const canceler = $q.defer();
                     return OntotextYasguiWebComponentService.autocompleteLocalNames(term, canceler);
-    }
+                }
             }
         };
     };
@@ -520,7 +520,7 @@ function JdbcCreateCtrl(
             $('.yasr_results').addClass('hidden');
         } else {
             $('.yasr_results').removeClass('hidden');
-    }
+        }
     };
 
     /**
@@ -596,7 +596,7 @@ function JdbcCreateCtrl(
                 const title = $translate.instant('common.confirm');
                 const message = $translate.instant('jdbc.warning.unsaved.changes');
                 openConfirmDialog(title, message, onConfirm, onCancel);
-        } else {
+            } else {
                 onConfirm();
             }
         });
@@ -621,13 +621,13 @@ function JdbcCreateCtrl(
             openConfirmDialog(title, message, onConfirm);
         } else {
             removeAllListeners();
-    }
+        }
     };
 
     const beforeunloadHandler = (event) => {
         if ($scope.isDirty) {
             event.returnValue = true;
-    }
+        }
     };
 
     const removeAllListeners = () => {
@@ -649,7 +649,7 @@ function JdbcCreateCtrl(
                     $scope.setDirty();
                 });
                 $interval.cancel(waitOntotextInitialized);
-        }
+            }
         });
     };
 
@@ -681,6 +681,6 @@ function JdbcCreateCtrl(
         if (activeRepo) {
             loadOntotextYasgui();
             repoIsInitialized();
-    }
+        }
     });
 }
