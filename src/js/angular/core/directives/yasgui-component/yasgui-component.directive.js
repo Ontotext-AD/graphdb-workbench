@@ -1,0 +1,624 @@
+import 'angular/core/services/translation.service';
+import {QueryType} from "../../../../../models/ontotext-yasgui/query-type";
+import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../../../models/ontotext-yasgui/before-update-query-result";
+import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
+import {isFunction, merge} from "lodash";
+import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
+import {EventDataType} from "../../../../../models/ontotext-yasgui/event-data-type";
+import {QueryMode} from "../../../../../models/ontotext-yasgui/query-mode";
+import {YasrPluginName} from "../../../../../models/ontotext-yasgui/yasr-plugin-name";
+import {isEqual} from "lodash/lang";
+
+const modules = ['graphdb.framework.core.services.translation-service'];
+angular
+    .module('graphdb.framework.core.directives.yasgui-component', modules)
+    .directive('yasguiComponent', yasguiComponentDirective);
+
+yasguiComponentDirective.$inject = [
+    '$q',
+    '$repositories',
+    '$translate',
+    '$location',
+    '$uibModal',
+    '$languageService',
+    '$jwtAuth',
+    'toastr',
+    'TranslationService',
+    'AutocompleteRestService',
+    'RDF4JRepositoriesRestService',
+    'MonitoringRestService',
+    'ConnectorsRestService',
+    'SparqlRestService',
+    'ShareQueryLinkService'
+];
+
+function yasguiComponentDirective(
+    $q,
+    $repositories,
+    $translate,
+    $location,
+    $uibModal,
+    $languageService,
+    $jwtAuth,
+    toastr,
+    TranslationService,
+    AutocompleteRestService,
+    RDF4JRepositoriesRestService,
+    MonitoringRestService,
+    ConnectorsRestService,
+    SparqlRestService,
+    ShareQueryLinkService
+) {
+
+    const HEADERS = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/sparql-results+json',
+        'X-GraphDB-Local-Consistency': 'updating'
+    };
+
+    const DEFAULT_CONFIG = {
+        showEditorTabs: true,
+        showToolbar: true,
+        componentId: 'yasgui-component',
+        headers: () => {
+            return HEADERS;
+        },
+        pageSize: 1000,
+        maxPersistentResponseSize: 500000,
+        showResultTabs: true
+    };
+
+    return {
+        restrict: 'AE',
+        templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
+        scope: {
+            yasguiConfig: '=',
+            afterInit: '&'
+        },
+        link: ($scope, element, attrs) => {
+            $scope.language = $languageService.getLanguage();
+            const tabIdToConnectorProgressModalMapping = new Map();
+            const downloadAsPluginNameToEventHandler = new Map();
+            const outputHandlers = new Map();
+
+            // =========================
+            // Public function
+            // =========================
+
+            $scope.getOntotextYasguiElement = () => {
+                return document.querySelector('ontotext-yasgui');
+            };
+
+            // =========================
+            // Event handlers
+            // =========================
+
+            /**
+             * Handles the createSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+             * be created.
+             * @param {object} event The event payload containing the query data from which a saved query object should be
+             * created.
+             */
+            $scope.createSavedQuery = (event) => {
+                const payload = queryPayloadFromEvent(event);
+                SparqlRestService.addNewSavedQuery(payload)
+                    .then(() => queryCreatedHandler(payload))
+                    .catch(querySaveErrorHandler);
+            };
+
+            /**
+             * Handles the updateSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+             * be updated.
+             * @param {object} event The event payload containing the saved query data which should be updated.
+             */
+            $scope.updateSavedQuery = (event) => {
+                const payload = queryPayloadFromEvent(event);
+                SparqlRestService.editSavedQuery(payload)
+                    .then(() => queryUpdatedHandler(payload))
+                    .catch(querySaveErrorHandler);
+            };
+
+            /**
+             * Handles the deleteSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+             * be deleted.
+             * @param {object} event The event payload containing the saved query data which should be deleted.
+             */
+            $scope.deleteSavedQuery = (event) => {
+                const payload = queryPayloadFromEvent(event);
+                SparqlRestService.deleteSavedQuery(payload.name)
+                    .then(() => {
+                        toastr.success($translate.instant('query.editor.delete.saved.query.success.msg', {savedQueryName: payload.name}));
+                    }).catch((err) => {
+                    const msg = getError(err);
+                    toastr.error(msg, $translate.instant('query.editor.delete.saved.query.error'));
+                });
+            };
+
+            /**
+             * Handles the shareSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+             * be shared and is expected the share link to be created.
+             * @param {object} event The event payload containing the saved query data from which the share link to be created.
+             */
+            $scope.shareSavedQuery = (event) => {
+                const payload = queryPayloadFromEvent(event);
+                $scope.savedQueryConfig = {
+                    shareQueryLink: ShareQueryLinkService.createShareSavedQueryLink(payload.name, payload.owner)
+                };
+            };
+
+            /**
+             * Handles the shareQuery event emitted by the ontotext-yasgui. The event is fired when a query should be shared and
+             * is expected the share link to be created.
+             * @param {object} event The event payload containing the query data from which the share link to be created.
+             */
+            $scope.shareQuery = (event) => {
+                const payload = queryPayloadFromEvent(event);
+                $scope.savedQueryConfig = {
+                    shareQueryLink: ShareQueryLinkService.createShareQueryLink(payload)
+                };
+            };
+
+            /**
+             * Handles the queryShareLinkCopied event emitted by the ontotext-yasgui. The event is fired when a query share link
+             * is copied by the user.
+             */
+            $scope.queryShareLinkCopied = () => {
+                toastr.success($translate.instant('modal.ctr.copy.url.success'));
+            };
+
+            /**
+             * The event is fired when saved queries should be loaded in order to be displayed to the user.
+             */
+            $scope.loadSavedQueries = () => {
+                SparqlRestService.getSavedQueries()
+                    .then((res) => {
+                        const savedQueries = savedQueriesResponseMapper(res);
+                        $scope.savedQueryConfig = {
+                            savedQueries: savedQueries
+                        };
+                    }).catch((err) => {
+                    const msg = getError(err);
+                    toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
+                });
+            };
+
+            /**
+             * Handles the ontotext-yasgui component output events.
+             *
+             * @param {EventData}$event - the event fired from ontotext-yasgui component
+             */
+            $scope.output = ($event) => {
+                const yasguiOutputModel = toYasguiOutputModel($event);
+                if (outputHandlers.has(yasguiOutputModel.TYPE)) {
+                    outputHandlers.get(yasguiOutputModel.TYPE)(yasguiOutputModel);
+                }
+            };
+
+            // ================================
+            // =     Setup output handlers    =
+            // ================================
+
+            /**
+             * Handles the "query" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+             * request and the request object can be altered here, and it will be sent with these changes.
+             * @param {QueryRequestEvent} queryRequest - the event payload containing the query and the request object.
+             */
+            const queryHandler = (queryRequest) => {
+                updateRequestHeaders(queryRequest.request, queryRequest.queryMode, queryRequest.queryType, queryRequest.pageSize);
+                changeEndpointByQueryType(queryRequest.queryMode, queryRequest.request);
+                const pageNumber = queryRequest.getPageNumber();
+                const pageSize = queryRequest.getPageSize();
+                if (pageSize && pageNumber) {
+                    queryRequest.setOffset((pageNumber - 1) * (pageSize - 1));
+                    queryRequest.setLimit(pageSize);
+                }
+                queryRequest.setPageNumber(undefined);
+                queryRequest.setPageSize(undefined);
+            };
+            outputHandlers.set(EventDataType.QUERY, queryHandler);
+
+            /**
+             * Handles the "queryExecuted" event emitted by ontotext-yasgui. The event is fired immediately after the request is executed, whether it succeeds or fails.
+             * @param {QueryExecutedEvent} queryExecutedRequest - the event payload.
+             */
+            const queryExecutedHandler = (queryExecutedRequest) => {
+                const connectorProgressModal = tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
+                if (connectorProgressModal) {
+                    connectorProgressModal.dismiss();
+                    tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
+                }
+            };
+            outputHandlers.set(EventDataType.QUERY_EXECUTED, queryExecutedHandler);
+
+            /**
+             * Handles the "countQuery" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+             * count query request and the request object can be altered here, and it will be sent with these changes.
+             * @param {CountQueryRequestEvent} countQueryRequest - the event payload containing the query and the request object.
+             */
+            const countQueryRequestHandler = (countQueryRequest) => {
+                updateRequestHeaders(countQueryRequest.request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
+                changeEndpointByQueryType(countQueryRequest.queryMode, countQueryRequest.request);
+                countQueryRequest.setPageSize(undefined);
+                countQueryRequest.setPageNumber(undefined);
+                countQueryRequest.setCount(1);
+            };
+            outputHandlers.set(EventDataType.COUNT_QUERY, countQueryRequestHandler);
+
+            /**
+             * Handles the "countQueryResponse" event emitted by the ontotext-yasgui. The event is fired immediately after receiving the
+             * count query response and the response have to be parsed if needed. As result of response parsing the body of the response have to
+             * contain "totalElements".
+             * @param {CountQueryResponseEvent} countQueryResponseEvent - the event payload containing the response of count query.
+             */
+            const countQueryResponseHandler = (countQueryResponseEvent) => {
+                countQueryResponseEvent.setTotalElements(extractTotalElements(countQueryResponseEvent));
+            };
+            outputHandlers.set(EventDataType.COUNT_QUERY_RESPONSE, countQueryResponseHandler);
+
+            /**
+             * Handles {@link EventDataType.DOWNLOAD_AS} event emitted by "ontotext-yasgui-web-component".
+             *
+             * @param {DownloadAsEvent}downloadAsEvent
+             */
+            const downloadAsHandler = (downloadAsEvent) => {
+                const handler = downloadAsPluginNameToEventHandler.get(downloadAsEvent.pluginName);
+                if (handler) {
+                    handler(downloadAsEvent);
+                }
+            };
+            outputHandlers.set(EventDataType.DOWNLOAD_AS, downloadAsHandler);
+
+            /**
+             * Handles {@link EventDataType.NOTIFICATION_MESSAGE} event emitted by "ontotext-yasgui-web-component".
+             * The event is fired when a message have to be shown to the user.
+             *
+             * @param {NotificationMessageEvent} notificationMessageEvent - the "ontotext-yasgui-web-component" event.
+             */
+            const notificationMessageHandler = (notificationMessageEvent) => {
+                const notifyFunction = toastr[notificationMessageEvent.messageType];
+                if (isFunction(notifyFunction)) {
+                    notifyFunction(notificationMessageEvent.message);
+                }
+            };
+            outputHandlers.set(EventDataType.NOTIFICATION_MESSAGE, notificationMessageHandler);
+
+            // ================================
+            // =   Setup download handlers    =
+            // ================================
+            const downloadCurrentResults = (downloadAsEvent) => {
+                if ("application/sparql-results+json" === downloadAsEvent.contentType) {
+                    $scope.getOntotextYasguiElement().getEmbeddedResultAsJson()
+                        .then((response) => {
+                            const content = JSON.stringify(response, null, '\t');
+                            downloadAsFile(`${getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType, content);
+                        });
+                } else if ("text/csv" === downloadAsEvent.contentType) {
+                    $scope.getOntotextYasguiElement().getEmbeddedResultAsCSV()
+                        .then((response) => {
+                            downloadAsFile(`${getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response);
+                        });
+                }
+            };
+            downloadAsPluginNameToEventHandler.set('extended_response', downloadCurrentResults);
+
+            const downloadThroughServer = (downloadAsEvent) => {
+                const query = downloadAsEvent.query;
+                const infer = downloadAsEvent.infer;
+                const sameAs = downloadAsEvent.sameAs;
+                const accept = downloadAsEvent.contentType;
+                const authToken = $jwtAuth.getAuthToken() || '';
+
+                // TODO change it
+                // Simple cross-browser download with a form
+                const $wbDownload = $('#wb-download');
+                $wbDownload.attr('action', $scope.ontotextYasguiConfig.endpoint);
+                $('#wb-download-query').val(query);
+                $('#wb-download-infer').val(infer);
+                $('#wb-download-sameAs').val(sameAs);
+                $('#wb-auth-token').val(authToken);
+                $('#wb-download-accept').val(accept);
+                $wbDownload.submit();
+            };
+            downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
+
+            // =========================
+            // Subscriptions
+            // =========================
+            const subscriptions = [];
+
+            subscriptions.push(
+                $scope.$watch('yasguiConfig', function (newVal, oldValue) {
+                    if (newVal && !isEqual(newVal, oldValue)) {
+                        const config = {
+                            isVirtualRepository: $repositories.isActiveRepoOntopType(),
+                            yasqeAutocomplete: {
+                                LocalNamesAutocompleter: (term) => {
+                                    const canceler = $q.defer();
+                                    return autocompleteLocalNames(term, canceler);
+                                }
+                            },
+                            i18n: TranslationService.getTranslations(),
+                            getRepositoryStatementsCount: getRepositoryStatementsCount,
+                            onQueryAborted: onQueryAborted,
+                            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
+                            beforeUpdateQuery: getBeforeUpdateQueryHandler()
+                        };
+                        angular.extend(config, $scope.config || DEFAULT_CONFIG, $scope.yasguiConfig);
+                        $scope.ontotextYasguiConfig = config;
+
+                        if (angular.isFunction($scope.afterInit)) {
+                            $scope.afterInit();
+                        }
+                    }
+                }));
+
+            subscriptions.push(
+                $scope.$on('language-changed', function (event, args) {
+                    $scope.language = args.locale;
+                }));
+
+            // Deregister the watcher when the scope/directive is destroyed
+            $scope.$on('$destroy', function () {
+                subscriptions.forEach((subscription) => subscription());
+            });
+
+            // =========================
+            // Private function
+            // =========================
+
+            const getFileTimePrefix = () => {
+                const now = new Date();
+                return `${now.toLocaleDateString($scope.language)}_${now.toLocaleTimeString($scope.language)}`;
+            };
+
+            const extractTotalElements = (countResponse) => {
+                if (countResponse.isResponseNumber()) {
+                    return countResponse.getResponseBody();
+                }
+
+                if (countResponse.isResponseArray()) {
+                    const body = countResponse.getResponseBody();
+                    if (body['http://www.ontotext.com/']) {
+                        return body['http://www.ontotext.com/']['http://www.ontotext.com/'][0].value;
+                    }
+                }
+
+                if (countResponse.hasBindingResponse()) {
+                    const body = countResponse.getResponseBody();
+                    if (body) {
+                        const result = body.results.bindings[0];
+                        const vars = body.head.vars;
+                        const bindingVar = Object.keys(result).find(function (b) {
+                            return vars.indexOf(b) > -1 && !isNaN(result[b].value);
+                        });
+                        if (bindingVar.length > 0) {
+                            return result[bindingVar].value;
+                        }
+                    }
+                }
+            };
+
+            const changeEndpointByQueryType = (queryMode, request) => {
+                // if query mode is 'query' -> '/repositories/repo-name'
+                // if query mode is 'update' -> '/repositories/repo-name/statements'
+                if (queryMode === QueryMode.UPDATE) {
+                    request.url = getMutationEndpoint();
+                } else if (queryMode === QueryMode.QUERY) {
+                    request.url = $scope.ontotextYasguiConfig.endpoint;
+                }
+            };
+
+            const getMutationEndpoint = () => {
+                return `/repositories/${$repositories.getActiveRepository()}/statements`;
+            };
+
+            const updateRequestHeaders = (req, queryMode, queryType, pageSize) => {
+                const authToken = $jwtAuth.getAuthToken();
+                if (authToken) {
+                    req.header['Authorization'] = authToken;
+                }
+                req.header['X-GraphDB-Catch'] = `${pageSize}; throw`;
+                // Generates a new tracking alias for queries based on time
+                $scope.currentTrackAlias = `query-editor-${performance.now()}-${Date.now()}`;
+                req.header['X-GraphDB-Track-Alias'] = $scope.currentTrackAlias;
+                req.header['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
+                req.header['X-Requested-With'] = 'XMLHttpRequest';
+
+                if (QueryMode.UPDATE === queryMode) {
+                    req.header['Accept'] = 'text/plain,/;q=0.9';
+                } else if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                    req.header['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8';
+                } else {
+                    req.header['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
+                }
+            };
+
+            const querySaveErrorHandler = (err) => {
+                const msg = getError(err);
+                const errorMessage = $translate.instant('query.editor.create.saved.query.error');
+                toastr.error(msg, errorMessage);
+                $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
+                    saveSuccess: false,
+                    errorMessage: [errorMessage]
+                });
+            };
+
+            const queryUpdatedHandler = (payload) => {
+                return querySavedHandler($translate.instant('query.editor.edit.saved.query.success.msg', {name: payload.name}));
+            };
+
+            const queryCreatedHandler = (payload) => {
+                return querySavedHandler($translate.instant('query.editor.save.saved.query.success.msg', {name: payload.name}));
+            };
+
+            const querySavedHandler = (successMessage) => {
+                toastr.success(successMessage);
+                $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
+                    saveSuccess: true
+                });
+            };
+
+            const autocompleteLocalNames = (term, canceler) => {
+                return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
+                    .then(function (results) {
+                        canceler = null;
+                        return results.data;
+                    });
+            };
+
+            const getRepositoryStatementsCount = () => {
+                // A promise is returned because the $http of  angularjs use HttpPromise and its behavior is different than we expect.
+                // Here is an article that describes the problems AngularJS HttpPromise methods break promise chain {@link https://medium.com/@ExplosionPills/angularjs-httppromise-methods-break-promise-chain-950c85fa1fe7}
+                return RDF4JRepositoriesRestService.getRepositorySize($repositories.getActiveRepository())
+                    .then((response) => parseInt(response.data))
+                    .catch(function (data) {
+                        const params = {
+                            repo: $repositories.getActiveRepository(),
+                            error: getError(data)
+                        };
+                        toastr.warning($translate.instant('query.editor.repo.size.error', params));
+                    });
+            };
+
+            const onQueryAborted = (req) => {
+                if (req) {
+                    const repository = req.url.substring(req.url.lastIndexOf('/') + 1);
+                    const currentTrackAlias = req.header['X-GraphDB-Track-Alias'];
+                    return MonitoringRestService.deleteQuery(currentTrackAlias, repository);
+                }
+            };
+
+            const createParameter = (key, value) => {
+                return {key, value};
+            };
+
+            const getCommandParameters = (response) => {
+                return [createParameter('name', response.data.name)];
+            };
+
+            const toNoCommandResponse = () => {
+                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS);
+            };
+
+            const toHasNotSupport = (response) => {
+                const parameters = [
+                    createParameter('connectorName', response.data.connectorName),
+                    createParameter('pluginName', response.data.pluginName)
+                ];
+                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters);
+            };
+
+            const createConnectorProgressDialog = (actionName, iri, connectorName) => {
+                const progressScope = $scope.$new(true);
+                progressScope.beingBuiltConnector = {
+                    percentDone: 0,
+                    status: {
+                        processedEntities: 0,
+                        estimatedEntities: 0,
+                        indexedEntities: 0,
+                        entitiesPerSecond: 0
+                    },
+                    actionName,
+                    eta: "-",
+                    inline: false,
+                    iri,
+                    name: connectorName,
+                    doneCallback: function () {
+                        connectorProgressModal.dismiss('cancel');
+                    }
+                };
+                progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
+
+                const connectorProgressModal = $uibModal.open({
+                    templateUrl: 'pages/connectorProgress.html',
+                    controller: 'CreateProgressCtrl',
+                    size: 'lg',
+                    backdrop: 'static',
+                    scope: progressScope
+                });
+                return connectorProgressModal;
+            };
+
+            const toCreateCommandResponse = (response, tabId) => {
+                const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), response.data.iri, response.data.name);
+                tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'created.connector', getCommandParameters(response));
+            };
+
+            const toRepairCommandResponse = (response, tabId) => {
+                const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
+                tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'query.editor.repaired.connector', getCommandParameters(response));
+            };
+
+            const toDropCommandResponse = (response) => {
+                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', getCommandParameters(response));
+            };
+
+            const getBeforeUpdateQueryHandler = () => (query, tabId) => {
+                return new Promise(function (resolve) {
+                    ConnectorsRestService.checkConnector(query)
+                        .then((response) => {
+                            if (!response.data.command) {
+                                resolve(toNoCommandResponse());
+                                return;
+                            }
+                            if (!response.data.hasSupport) {
+                                resolve(toHasNotSupport(response));
+                                return;
+                            }
+                            switch (response.data.command) {
+                                case 'create':
+                                    resolve(toCreateCommandResponse(response, tabId));
+                                    break;
+                                case 'repair':
+                                    resolve(toRepairCommandResponse(response, tabId));
+                                    break;
+                                case 'drop':
+                                    resolve(toDropCommandResponse(response));
+                                    break;
+                            }
+                        }).catch(() => {
+                        // for some reason we couldn't check if this is a connector update, so just execute it
+                        resolve();
+                    });
+                });
+            };
+
+            const exploreVisualGraphYasrToolbarElementBuilder = {
+                createElement: (yasr) => {
+                    const buttonName = document.createElement('span');
+                    buttonName.classList.add("explore-visual-graph-button-name");
+                    const exploreVisualButtonWrapperElement = document.createElement('div');
+                    exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
+                    exploreVisualButtonWrapperElement.classList.add("icon-data");
+                    exploreVisualButtonWrapperElement.onclick = function () {
+                        const paramsToParse = {
+                            query: yasr.yasqe.getValue(),
+                            sameAs: yasr.yasqe.getSameAs(),
+                            inference: yasr.yasqe.getInfer()
+                        };
+                        $location.path('graphs-visualizations').search(paramsToParse);
+                    };
+                    exploreVisualButtonWrapperElement.appendChild(buttonName);
+                    return exploreVisualButtonWrapperElement;
+                },
+                updateElement: (element, yasr) => {
+                    element.classList.add('hidden');
+                    if (!yasr.hasResults()) {
+                        return;
+                    }
+                    const queryType = yasr.yasqe.getQueryType();
+
+                    if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                        element.classList.remove('hidden');
+                    }
+                    element.querySelector('.explore-visual-graph-button-name').innerText = $translate.instant("query.editor.visual.btn");
+                },
+                getOrder: () => {
+                    return 2;
+                }
+            };
+        }
+    };
+}
