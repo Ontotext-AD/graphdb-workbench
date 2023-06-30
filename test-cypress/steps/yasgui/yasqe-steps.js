@@ -48,17 +48,26 @@ export class YasqeSteps {
         });
     }
 
+    /**
+     * Adds <code>text</code> to the end of current query.
+     * @param {string} text - text to be added.
+     */
     static writeInEditor(text, parseSpecialCharSequences = false) {
         YasqeSteps.getEditor().find('textarea').type(text, {force: true, parseSpecialCharSequences});
-        YasqeSteps.waitUntilQueryIsVisible();
+        YasqeSteps.verifyQueryContains(text);
     }
 
+    /**
+     * Paste query in Yasqe editor.
+     * This method is faster than {@link YasqeSteps.writeInEditor}, but the editor stay pristine, if you want editor to be touched use {@link YasqeSteps.writeInEditor}.
+     * @param {string} query - the new value of Yasqe.
+     */
     static pasteQuery(query) {
         this.clearEditor();
         this.getCodeMirror().then((cm) => {
             cm.getDoc().setValue(query);
         });
-        this.waitUntilQueryIsVisible();
+        YasqeSteps.verifyQueryTyped(query);
     }
 
     static waitUntilQueryIsVisible() {
@@ -66,6 +75,20 @@ export class YasqeSteps {
             this.getEditor().find('.CodeMirror')
                 .then((codeMirrorEl) =>
                     codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().length > 0));
+    }
+
+    static verifyQueryTyped(query) {
+        return cy.waitUntil(() =>
+            this.getEditor().find('.CodeMirror')
+                .then((codeMirrorEl) => {
+                    return codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().indexOf(query) !== -1;
+                }));
+    }
+
+    static verifyQueryContains(queryPart) {
+        this.getCodeMirror().then((cm) => {
+            expect(cm.getValue()).contain(queryPart);
+        });
     }
 
     static getQuery() {
