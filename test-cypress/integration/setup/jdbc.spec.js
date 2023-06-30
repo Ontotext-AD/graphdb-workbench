@@ -34,52 +34,54 @@ describe('JDBC configuration', () => {
         cy.deleteRepository(repositoryId);
     });
 
-it('Should not create a new JDBC configuration click on cancel button', () => {
+    it('Should not create a new JDBC configuration click on cancel button', () => {
         // When I am on JDBC configurations page and click on create a new table configuration button.
         JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
         // Then I expect to  be redirected to create JDBC configuration page.
-    JdbcCreateSteps.verifyUrl();
+        JdbcCreateSteps.verifyUrl();
 
         // When I fill correct data,
-    JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.typeTableName('JdbcTest');
         JdbcCreateSteps.openColumnTypesTab();
 
         // And click on cancel button.
-    JdbcCreateSteps.clickOnCancel();
+        JdbcCreateSteps.clickOnCancel();
 
         // Then, I expect to be asked to confirm the cancellation.
-    // When I confirm
-    ModalDialogSteps.clickOnConfirmButton();
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
 
         // Then I expect to be redirected to Jdbc configurations page,
-    JdbcSteps.verifyUrl();
+        JdbcSteps.verifyUrl();
         // and the configuration to not be created.
-    JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
-});
+        JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
+    });
 
-it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
         // When I am on JDBC configurations page and click on create a new table configuration button.
         JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
         // Then I expect to  be redirected to create JDBC configuration page.
-    JdbcCreateSteps.verifyUrl();
+        JdbcCreateSteps.verifyUrl();
 
         // When I fill correct data,
-    JdbcCreateSteps.typeTableName('JdbcTest');
+        JdbcCreateSteps.typeTableName('JdbcTest');
+        // and columns are selected.
         JdbcCreateSteps.openColumnTypesTab();
+        JdbcCreateSteps.getColumnSuggestionRows().should('have.length', 2);
 
         // And click on save button.
-    JdbcCreateSteps.clickOnSave();
+        JdbcCreateSteps.clickOnSave();
 
         // Then I expect to be redirected to Jdbc configurations page,
-    JdbcSteps.verifyUrl();
+        JdbcSteps.verifyUrl();
         // and the configuration not be created.
         JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
         // When I click on edit button,
         JdbcSteps.clickOnEditButton();
-    // change the query,
+        // change the query,
         YasqeSteps.pasteQuery(EDIT_QUERY);
         // and click on save button.
         JdbcCreateSteps.clickOnSave();
@@ -88,27 +90,27 @@ it('Should create a new JDBC configuration, edit, preview, then delete', () => {
         JdbcSteps.verifyUrl();
 
         // When I click on delete button.
-    JdbcSteps.clickOnDeleteButton();
+        JdbcSteps.clickOnDeleteButton();
 
         // Then I expect to be asked to confirm the deletion,
-    // and click on close dialog button.
+        // and click on close dialog button.
         ModalDialogSteps.clickOnCloseButton();
 
         // Then I expect configuration to not be deleted.
-    JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
         // When I click on delete button.
-    JdbcSteps.clickOnDeleteButton();
+        JdbcSteps.clickOnDeleteButton();
 
         // Then I expect to be asked to confirm the deletion,
         // and click on cancel dialog button.
         ModalDialogSteps.clickOnCancelButton();
 
         // Then I expect configuration to not be deleted.
-    JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
+        JdbcSteps.getJDBCConfigurationResults().should('have.length', 1);
 
         // When I click on delete button.
-    JdbcSteps.clickOnDeleteButton();
+        JdbcSteps.clickOnDeleteButton();
 
         // Then I expect to be asked to confirm the deletion,
         // and click on cancel dialog button.
