@@ -341,7 +341,6 @@ function yasguiComponentDirective(
                             i18n: TranslationService.getTranslations(),
                             getRepositoryStatementsCount: getRepositoryStatementsCount,
                             onQueryAborted: onQueryAborted,
-                            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
                             beforeUpdateQuery: getBeforeUpdateQueryHandler()
                         };
                         angular.extend(config, $scope.config || DEFAULT_CONFIG, $scope.yasguiConfig);
@@ -582,41 +581,6 @@ function yasguiComponentDirective(
                         // to not stop the execution of query.
                         console.log('Checking connector error: ', error);
                     });
-            };
-
-            const exploreVisualGraphYasrToolbarElementBuilder = {
-                createElement: (yasr) => {
-                    const buttonName = document.createElement('span');
-                    buttonName.classList.add("explore-visual-graph-button-name");
-                    const exploreVisualButtonWrapperElement = document.createElement('div');
-                    exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
-                    exploreVisualButtonWrapperElement.classList.add("icon-data");
-                    exploreVisualButtonWrapperElement.onclick = function () {
-                        const paramsToParse = {
-                            query: yasr.yasqe.getValue(),
-                            sameAs: yasr.yasqe.getSameAs(),
-                            inference: yasr.yasqe.getInfer()
-                        };
-                        $location.path('graphs-visualizations').search(paramsToParse);
-                    };
-                    exploreVisualButtonWrapperElement.appendChild(buttonName);
-                    return exploreVisualButtonWrapperElement;
-                },
-                updateElement: (element, yasr) => {
-                    element.classList.add('hidden');
-                    if (!yasr.hasResults()) {
-                        return;
-                    }
-                    const queryType = yasr.yasqe.getQueryType();
-
-                    if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
-                        element.classList.remove('hidden');
-                    }
-                    element.querySelector('.explore-visual-graph-button-name').innerText = $translate.instant("query.editor.visual.btn");
-                },
-                getOrder: () => {
-                    return 2;
-                }
             };
         }
     };
