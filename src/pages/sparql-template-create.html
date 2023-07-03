@@ -40,13 +40,9 @@
                          translate="sparql.template.iri.constraint">
                     </div>
                 </div>
-                <ontotext-yasgui
-                    class="pt-1"
-                    ng-custom-element
-                    ngce-prop-config="config"
-                    ngce-prop-language="language"
-                    ngce-on-output="output($event)">
-                </ontotext-yasgui>
+
+                <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig" query-changed="markDirty()"></yasgui-component>
+
                 <div ng-if="!sparqlTemplateInfo.isValidQuery"
                      class="idError alert alert-danger  invalid-query"
                      translate="sparql.template.query.invalid">
