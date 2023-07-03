@@ -10,6 +10,10 @@ import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-t
 import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
 import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../../models/ontotext-yasgui/rendering-mode";
+import {
+    DISABLE_YASQE_BUTTONS_CONFIGURATION,
+    YasguiComponentDirectiveUtil
+} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'ui.bootstrap',
@@ -171,26 +175,20 @@ function SparqlTemplateCreateCtrl(
         $scope.sparqlTemplateInfo.isNewTemplate = !$scope.sparqlTemplateInfo.templateID;
         $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
         updateTitle();
-        $scope.config = {
+        $scope.yasguiConfig = {
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
-            yasqeActionButtons: ontotextYasguiWebComponentService.getDisableYasqeActionButtonsConfiguration(),
+            showYasqeActionButtons: false,
+            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
             showQueryButton: false,
             initialQuery: $scope.sparqlTemplateInfo.query,
             componentId: 'sparql-template',
             prefixes: prefixes,
             render: RenderingMode.YASQE,
             maxPersistentResponseSize: 0,
-            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED,
-            yasqeAutocomplete: {
-                LocalNamesAutocompleter: (term) => {
-                    const canceler = $q.defer();
-                    return ontotextYasguiWebComponentService.autocompleteLocalNames(term, canceler);
-                }
-            }
+            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED
         };
-        addDirtyCheckHandlers();
     };
 
     /**
@@ -380,10 +378,7 @@ function SparqlTemplateCreateCtrl(
     };
 
     const getOntotextYasgui = () => {
-        if (!$scope.ontotextYasgui) {
-            $scope.ontotextYasgui = document.querySelector('ontotext-yasgui');
-        }
-        return $scope.ontotextYasgui;
+        return YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor');
     };
 
     const openConfirmDialog = (title, message, onConfirm, onCancel) => {
@@ -440,7 +435,6 @@ function SparqlTemplateCreateCtrl(
 
     const removeAllListeners = () => {
         window.removeEventListener('beforeunload', beforeunloadHandler);
-        removeDirtyCheckHandlers();
         subscriptions.forEach((subscription) => subscription());
     };
 
@@ -470,29 +464,6 @@ function SparqlTemplateCreateCtrl(
     const repositoryChangedHandler = () => {
         $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
         loadOntotextYasgui();
-    };
-
-    const addDirtyCheckHandlers = () => {
-        const waitOntotextInitialized = $interval(function () {
-            const ontotextYasgui = getOntotextYasgui();
-            if (ontotextYasgui) {
-                const $ontotext = $('ontotext-yasgui');
-                $ontotext.on('paste.sparqlQuery', '.CodeMirror', function () {
-                    $scope.markDirty();
-                    ontotextYasguiWebComponentService.addKnownPrefixes(ontotextYasgui);
-                });
-                $ontotext.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
-                    $scope.markDirty();
-                });
-                $interval.cancel(waitOntotextInitialized);
-            }
-        });
-    };
-
-    const removeDirtyCheckHandlers = () => {
-        const $ontotext = $('ontotext-yasgui');
-        $ontotext.off('paste.sparqlQuery');
-        $ontotext.off('keyup.sparqlQuery');
     };
 
     // =========================
