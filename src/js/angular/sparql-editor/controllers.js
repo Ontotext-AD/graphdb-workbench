@@ -27,8 +27,7 @@ SparqlEditorCtrl.$inject = [
     '$repositories',
     'toastr',
     '$translate',
-    'SparqlRestService',
-    'ShareQueryLinkService'];
+    'SparqlRestService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -37,8 +36,7 @@ function SparqlEditorCtrl($scope,
                           $repositories,
                           toastr,
                           $translate,
-                          SparqlRestService,
-                          ShareQueryLinkService) {
+                          SparqlRestService) {
     this.repository = '';
 
     $scope.yasguiConfig = undefined;
