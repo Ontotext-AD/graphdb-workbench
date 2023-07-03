@@ -69,7 +69,7 @@ function yasguiComponentDirective(
     };
 
     return {
-        restrict: 'AE',
+        restrict: 'E',
         templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
         scope: {
             yasguiConfig: '=',
