@@ -8,6 +8,7 @@ import 'angular/core/directives/queryeditor/sparql-tab.directive';
 import 'angular/core/directives/queryeditor/query-editor.controller';
 import 'angular/core/directives/queryeditor/query-editor.directive';
 import 'angular/utils/uri-utils';
+import 'angular/core/directives/yasgui-component/yasgui-component.directive';
 
 const modules = [
     'toastr',
@@ -19,7 +20,8 @@ const modules = [
     'graphdb.framework.core.directives.queryeditor.controllers',
     'graphdb.framework.core.directives.queryeditor.sparqltab',
     'graphdb.framework.core.directives.queryeditor.queryeditor',
-    'graphdb.framework.utils.uriutils'
+    'graphdb.framework.utils.uriutils',
+    'graphdb.framework.core.directives.yasgui-component'
 ];
 
 angular.module('graphdb.framework.sparql-template', modules);
