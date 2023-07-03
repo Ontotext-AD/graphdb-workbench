@@ -8,6 +8,7 @@ import {EventDataType} from "../../../../../models/ontotext-yasgui/event-data-ty
 import {QueryMode} from "../../../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
+import {ConnectorCommand} from "../../../../../models/connectors/connector-command";
 
 const modules = ['graphdb.framework.core.services.translation-service'];
 angular
@@ -556,33 +557,31 @@ function yasguiComponentDirective(
             };
 
             const getBeforeUpdateQueryHandler = () => (query, tabId) => {
-                return new Promise(function (resolve) {
-                    ConnectorsRestService.checkConnector(query)
-                        .then((response) => {
-                            if (!response.data.command) {
-                                resolve(toNoCommandResponse());
-                                return;
-                            }
-                            if (!response.data.hasSupport) {
-                                resolve(toHasNotSupport(response));
-                                return;
-                            }
-                            switch (response.data.command) {
-                                case 'create':
-                                    resolve(toCreateCommandResponse(response, tabId));
-                                    break;
-                                case 'repair':
-                                    resolve(toRepairCommandResponse(response, tabId));
-                                    break;
-                                case 'drop':
-                                    resolve(toDropCommandResponse(response));
-                                    break;
-                            }
-                        }).catch(() => {
-                        // for some reason we couldn't check if this is a connector update, so just execute it
-                        resolve();
+                return ConnectorsRestService.checkConnector(query)
+                    .then((response) => {
+                        if (!response.data.command) {
+                            return toNoCommandResponse();
+                        }
+                        if (!response.data.hasSupport) {
+                            return toHasNotSupport(response);
+                        }
+
+                        if (ConnectorCommand.CREATE === response.data.command) {
+                            return toCreateCommandResponse(response, tabId);
+                        }
+
+                        if (ConnectorCommand.REPAIR === response.data.command) {
+                            return toRepairCommandResponse(response, tabId);
+                        }
+
+                        if (ConnectorCommand.DROP === response.data.command) {
+                            return toDropCommandResponse(response);
+                        }
+                    }).catch((error) => {
+                        // For some reason we couldn't check if this is a connector update, so just catch the exception,
+                        // to not stop the execution of query.
+                        console.log('Checking connector error: ', error);
                     });
-                });
             };
 
             const exploreVisualGraphYasrToolbarElementBuilder = {
