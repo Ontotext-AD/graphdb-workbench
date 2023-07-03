@@ -1,4 +1,5 @@
 import 'angular/core/services/translation.service';
+import 'angular/sparql-editor/share-query-link.service';
 import {QueryType} from "../../../../../models/ontotext-yasgui/query-type";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../../../models/ontotext-yasgui/before-update-query-result";
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
@@ -10,7 +11,9 @@ import {YasrPluginName} from "../../../../../models/ontotext-yasgui/yasr-plugin-
 import {isEqual} from "lodash/lang";
 import {ConnectorCommand} from "../../../../../models/connectors/connector-command";
 
-const modules = ['graphdb.framework.core.services.translation-service'];
+const modules = [
+    'graphdb.framework.core.services.translation-service',
+    'graphdb.framework.sparql-editor.share-query.service'];
 angular
     .module('graphdb.framework.core.directives.yasgui-component', modules)
     .directive('yasguiComponent', yasguiComponentDirective);
@@ -23,6 +26,7 @@ yasguiComponentDirective.$inject = [
     '$uibModal',
     '$languageService',
     '$jwtAuth',
+    '$interval',
     'toastr',
     'TranslationService',
     'AutocompleteRestService',
@@ -41,6 +45,7 @@ function yasguiComponentDirective(
     $uibModal,
     $languageService,
     $jwtAuth,
+    $interval,
     toastr,
     TranslationService,
     AutocompleteRestService,
@@ -74,9 +79,11 @@ function yasguiComponentDirective(
         templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
         scope: {
             yasguiConfig: '=',
-            afterInit: '&'
+            afterInit: '&',
+            queryChanged: '&'
         },
         link: ($scope, element, attrs) => {
+            $scope.classToApply = attrs.class || '';
             $scope.language = $languageService.getLanguage();
             const tabIdToConnectorProgressModalMapping = new Map();
             const downloadAsPluginNameToEventHandler = new Map();
@@ -86,8 +93,12 @@ function yasguiComponentDirective(
             // Public function
             // =========================
 
+            $scope.getOntotextYasguiElements = () => {
+                return element.find('ontotext-yasgui');
+            };
+
             $scope.getOntotextYasguiElement = () => {
-                return document.querySelector('ontotext-yasgui');
+                return $scope.getOntotextYasguiElements()[0];
             };
 
             // =========================
@@ -329,7 +340,7 @@ function yasguiComponentDirective(
 
             subscriptions.push(
                 $scope.$watch('yasguiConfig', function (newVal, oldValue) {
-                    if (newVal && !isEqual(newVal, oldValue)) {
+                    if (!$scope.ontotextYasguiConfig && newVal || newVal && !isEqual(newVal, oldValue)) {
                         const config = {
                             isVirtualRepository: $repositories.isActiveRepoOntopType(),
                             yasqeAutocomplete: {
@@ -343,24 +354,63 @@ function yasguiComponentDirective(
                             onQueryAborted: onQueryAborted,
                             beforeUpdateQuery: getBeforeUpdateQueryHandler()
                         };
-                        angular.extend(config, $scope.config || DEFAULT_CONFIG, $scope.yasguiConfig);
+
+                        angular.extend(config, DEFAULT_CONFIG, $scope.yasguiConfig);
+
                         $scope.ontotextYasguiConfig = config;
 
                         if (angular.isFunction($scope.afterInit)) {
                             $scope.afterInit();
                         }
+
+                        addDirtyCheckHandlers();
                     }
                 }));
+
+            const addDirtyCheckHandlers = () => {
+                const waitOntotextInitialized = $interval(function () {
+                    const ontotextYasguiElements = $scope.getOntotextYasguiElements();
+                    if (ontotextYasguiElements) {
+                        ontotextYasguiElements.on('paste.sparqlQuery', '.CodeMirror', function () {
+                            const ontotextYasguiElement = $scope.getOntotextYasguiElement();
+                            ontotextYasguiElement.getQuery()
+                                .then((query) => {
+                                    return JSON.stringify(query);
+                                })
+                                .then(SparqlRestService.addKnownPrefixes)
+                                .then((response) => {
+                                    ontotextYasguiElement.setQuery(response.data)
+                                        .then(() => {
+                                            $scope.queryChanged();
+                                        });
+                                })
+                                .catch((data) => {
+                                    const msg = getError(data);
+                                    toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
+                                });
+                        });
+                        ontotextYasguiElements.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
+                            $scope.queryChanged();
+                        });
+                        $interval.cancel(waitOntotextInitialized);
+                    }
+                });
+            };
 
             subscriptions.push(
                 $scope.$on('language-changed', function (event, args) {
                     $scope.language = args.locale;
                 }));
 
-            // Deregister the watcher when the scope/directive is destroyed
-            $scope.$on('$destroy', function () {
+            const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
-            });
+                const ontotextYasguiElements = $scope.getOntotextYasguiElements();
+                ontotextYasguiElements.off('paste.sparqlQuery');
+                ontotextYasguiElements.off('keyup.sparqlQuery');
+            };
+
+            // Deregister the watcher when the scope/directive is destroyed
+            $scope.$on('$destroy', removeAllSubscribers);
 
             // =========================
             // Private function
