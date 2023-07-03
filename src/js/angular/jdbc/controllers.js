@@ -9,6 +9,7 @@ import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
 import {JdbcConfigurationError} from "../../../models/jdbc/jdbc-configuration-error";
 import {RenderingMode} from "../../../models/ontotext-yasgui/rendering-mode";
 import {toJDBCColumns, updateColumn} from "../../../models/jdbc/jdbc-column";
+import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'ui.bootstrap',
@@ -324,7 +325,6 @@ function JdbcCreateCtrl(
         $scope.prefixes = prefixes;
         updateYasguiConfiguration();
         updateSqlTypes();
-        addDirtyCheckHandlers();
     };
 
     const createConfiguration = (jdbcConfigurationInfo) => {
@@ -361,8 +361,8 @@ function JdbcCreateCtrl(
 
     const updateYasguiConfiguration = (additionalConfiguration = {}) => {
         const config = {};
-        angular.extend(config, $scope.config || getDefaultYasguiConfiguration(), additionalConfiguration);
-        $scope.config = config;
+        angular.extend(config, $scope.yasguiConfig || getDefaultYasguiConfiguration(), additionalConfiguration);
+        $scope.yasguiConfig = config;
     };
 
     const getDefaultYasguiConfiguration = () => {
@@ -370,7 +370,6 @@ function JdbcCreateCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
-            yasqeActionButtons: OntotextYasguiWebComponentService.getDisableYasqeActionButtonsConfiguration(),
             showQueryButton: false,
             initialQuery: $scope.jdbcConfigurationInfo.query,
             componentId: 'jdbc-component',
@@ -379,13 +378,7 @@ function JdbcCreateCtrl(
             render: RenderingMode.YASQE,
             getCellContent: getCellContent,
             sparqlResponse: $scope.emptySparqlResponse,
-            yasqeMode: $scope.canWriteActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
-            yasqeAutocomplete: {
-                LocalNamesAutocompleter: (term) => {
-                    const canceler = $q.defer();
-                    return OntotextYasguiWebComponentService.autocompleteLocalNames(term, canceler);
-                }
-            }
+            yasqeMode: $scope.canWriteActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
         };
     };
 
@@ -474,7 +467,7 @@ function JdbcCreateCtrl(
     };
 
     const getOntotextYasgui = () => {
-        return document.querySelector('ontotext-yasgui');
+        return YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor');
     };
 
     const updateJdbcConfigurationQuery = (jdbcConfigurationInfo) => {
@@ -632,31 +625,7 @@ function JdbcCreateCtrl(
 
     const removeAllListeners = () => {
         window.removeEventListener('beforeunload', beforeunloadHandler);
-        removeDirtyCheckHandlers();
         subscriptions.forEach((subscription) => subscription());
-    };
-
-    const addDirtyCheckHandlers = () => {
-        const waitOntotextInitialized = $interval(function () {
-            const ontotextYasgui = getOntotextYasgui();
-            if (ontotextYasgui) {
-                const $ontotext = $('ontotext-yasgui');
-                $ontotext.on('paste.sparqlQuery', '.CodeMirror', function () {
-                    $scope.setDirty();
-                    OntotextYasguiWebComponentService.addKnownPrefixes(ontotextYasgui);
-                });
-                $ontotext.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
-                    $scope.setDirty();
-                });
-                $interval.cancel(waitOntotextInitialized);
-            }
-        });
-    };
-
-    const removeDirtyCheckHandlers = () => {
-        const $ontotext = $('ontotext-yasgui');
-        $ontotext.off('paste.sparqlQuery');
-        $ontotext.off('keyup.sparqlQuery');
     };
 
     // =========================

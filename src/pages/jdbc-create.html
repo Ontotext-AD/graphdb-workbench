@@ -52,13 +52,9 @@
                 <div>
                     <!-- First tab -->
                     <div class="tab-pane" ng-show="activeTab === 1">
-                        <ontotext-yasgui
-                            class="pt-1"
-                            ng-custom-element
-                            ngce-prop-config="config"
-                            ngce-prop-language="language"
-                            ngce-on-output="output($event)">
-                        </ontotext-yasgui>
+
+                        <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig" query-changed="setDirty()"></yasgui-component>
+
                         <div ng-if="!jdbcConfigurationInfo.isValidQuery"
                              class="idError alert alert-danger invalid-query"
                              translate="jdbc.invalid.query">
