@@ -230,7 +230,7 @@ describe('JDBC configuration', () => {
         ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
     });
 
-    it.only('should display confirm message when the configuration query data is changed', () => {
+    it('should display confirm message when the configuration query data is changed', () => {
         // When I open the create JDBC configuration page,
         // type and change the query,
         YasqeSteps.writeInEditor("Some changes");
