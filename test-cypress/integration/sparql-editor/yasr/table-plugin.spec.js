@@ -23,7 +23,7 @@ describe('Yasr Table plugin', () => {
 
     describe('Results formatting', () => {
 
-        it.only('Should all resource be formatted with short uri when results are of type uri', {
+        it('Should all resource be formatted with short uri when results are of type uri', {
             retries: {
                 runMode: 1,
                 openMode: 0
