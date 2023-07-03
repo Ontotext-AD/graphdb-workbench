@@ -6,6 +6,7 @@ import 'angular/rest/connectors.rest.service';
 import 'services/ontotext-yasgui-web-component.service.js';
 import 'angular/externalsync/controllers';
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 
 const modules = [
     'ui.bootstrap',
@@ -55,7 +56,8 @@ function SparqlEditorCtrl($scope,
             componentId: 'graphdb-workbench-sparql-editor',
             prefixes: $scope.prefixes,
             infer: $scope.inferUserSetting,
-            sameAs: $scope.sameAsUserSetting
+            sameAs: $scope.sameAsUserSetting,
+            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder]
         };
     };
 
@@ -111,6 +113,41 @@ function SparqlEditorCtrl($scope,
     const setInferAndSameAs = (principal) => {
         $scope.inferUserSetting = principal.appSettings.DEFAULT_INFERENCE;
         $scope.sameAsUserSetting = principal.appSettings.DEFAULT_SAMEAS;
+    };
+
+    const exploreVisualGraphYasrToolbarElementBuilder = {
+        createElement: (yasr) => {
+            const buttonName = document.createElement('span');
+            buttonName.classList.add("explore-visual-graph-button-name");
+            const exploreVisualButtonWrapperElement = document.createElement('div');
+            exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
+            exploreVisualButtonWrapperElement.classList.add("icon-data");
+            exploreVisualButtonWrapperElement.onclick = function () {
+                const paramsToParse = {
+                    query: yasr.yasqe.getValue(),
+                    sameAs: yasr.yasqe.getSameAs(),
+                    inference: yasr.yasqe.getInfer()
+                };
+                $location.path('graphs-visualizations').search(paramsToParse);
+            };
+            exploreVisualButtonWrapperElement.appendChild(buttonName);
+            return exploreVisualButtonWrapperElement;
+        },
+        updateElement: (element, yasr) => {
+            element.classList.add('hidden');
+            if (!yasr.hasResults()) {
+                return;
+            }
+            const queryType = yasr.yasqe.getQueryType();
+
+            if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                element.classList.remove('hidden');
+            }
+            element.querySelector('.explore-visual-graph-button-name').innerText = $translate.instant("query.editor.visual.btn");
+        },
+        getOrder: () => {
+            return 2;
+        }
     };
 
     // Initialization and bootstrap
