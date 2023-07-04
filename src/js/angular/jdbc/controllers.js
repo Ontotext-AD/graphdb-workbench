@@ -2,7 +2,6 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
-import 'services/ontotext-yasgui-web-component.service.js';
 import 'angular/core/services/event-emitter-service';
 import {JdbcConfigurationInfo} from "../../../models/jdbc/jdbc-configuration-info";
 import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
@@ -16,7 +15,6 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr',
-    'graphdb.framework.ontotext-yasgui-web-component',
     'graphdb.framework.utils.event-emitter-service'
 ];
 
@@ -84,7 +82,6 @@ JdbcCreateCtrl.$inject = [
     'SparqlRestService',
     'ModalService',
     '$translate',
-    'OntotextYasguiWebComponentService',
     '$languageService',
     'EventEmitterService'];
 
@@ -103,7 +100,6 @@ function JdbcCreateCtrl(
     SparqlRestService,
     ModalService,
     $translate,
-    OntotextYasguiWebComponentService,
     $languageService,
     EventEmitterService) {
 
