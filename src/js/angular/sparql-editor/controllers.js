@@ -5,10 +5,10 @@ import {RouteConstants} from "../utils/route-constants";
 import 'angular/rest/connectors.rest.service';
 import 'angular/externalsync/controllers';
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {QueryType} from "../../../models/ontotext-yasgui/query-type";
-import {ConnectorCommand} from "../../../models/connectors/connector-command";
-import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../models/ontotext-yasgui/before-update-query-result";
-import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
+import {QueryType} from "../models/ontotext-yasgui/query-type";
+import {ConnectorCommand} from "../models/connectors/connector-command";
+import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/ontotext-yasgui/before-update-query-result";
+import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 
 const modules = [
     'ui.bootstrap',
