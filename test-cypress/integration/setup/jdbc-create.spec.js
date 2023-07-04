@@ -22,21 +22,17 @@ const DEFAULT_QUERY = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
 describe('JDBC configuration', () => {
 
     let repositoryId;
-    let secondRepositoryId;
 
     beforeEach(() => {
         repositoryId = 'jdbc-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        secondRepositoryId = 'jdbc-repo-second-repo' + Date.now();
-        cy.createRepository({id: secondRepositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         JdbcCreateSteps.visit();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
-        cy.deleteRepository(secondRepositoryId);
     });
 
     it('should not allow preview if query is invalid or column are not selected', () => {
@@ -247,6 +243,9 @@ describe('JDBC configuration', () => {
     });
 
     it('should display confirm message when try to change the repository', () => {
+        const secondRepositoryId = 'jdbc-repo-second-repo' + Date.now();
+        cy.createRepository({id: secondRepositoryId});
+
         // When I open a configuration for edit,
         createConfigurationAndOpenInEdit('Test table');
         // Make some changes
@@ -287,6 +286,8 @@ describe('JDBC configuration', () => {
 
         // Then I expect to stay on same page
         JdbcSteps.verifyUrl();
+
+        cy.deleteRepository(secondRepositoryId);
     });
 
     function createConfigurationAndOpenInEdit(tableName) {
