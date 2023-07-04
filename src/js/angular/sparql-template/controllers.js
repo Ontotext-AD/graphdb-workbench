@@ -5,10 +5,10 @@ import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/event-emitter-service';
 import {decodeHTML} from "../../../app";
-import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-template/sparql-template-info";
-import {SparqlTemplateError} from "../../../models/sparql-template/sparql-template-error";
-import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
-import {RenderingMode} from "../../../models/ontotext-yasgui/rendering-mode";
+import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../models/sparql-template/sparql-template-info";
+import {SparqlTemplateError} from "../models/sparql-template/sparql-template-error";
+import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
+import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION,
     YasguiComponentDirectiveUtil
