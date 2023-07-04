@@ -1,13 +1,13 @@
 import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
-import {QueryType} from "../../../../../models/ontotext-yasgui/query-type";
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
-import {EventDataType} from "../../../../../models/ontotext-yasgui/event-data-type";
-import {QueryMode} from "../../../../../models/ontotext-yasgui/query-mode";
-import {YasrPluginName} from "../../../../../models/ontotext-yasgui/yasr-plugin-name";
+import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
+import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
+import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
+import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
