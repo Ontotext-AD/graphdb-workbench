@@ -1,7 +1,6 @@
 import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
 import {QueryType} from "../../../../../models/ontotext-yasgui/query-type";
-import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../../../models/ontotext-yasgui/before-update-query-result";
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
@@ -9,7 +8,6 @@ import {EventDataType} from "../../../../../models/ontotext-yasgui/event-data-ty
 import {QueryMode} from "../../../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
-import {ConnectorCommand} from "../../../../../models/connectors/connector-command";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -23,7 +21,6 @@ yasguiComponentDirective.$inject = [
     '$repositories',
     '$translate',
     '$location',
-    '$uibModal',
     '$languageService',
     '$jwtAuth',
     '$interval',
@@ -32,7 +29,6 @@ yasguiComponentDirective.$inject = [
     'AutocompleteRestService',
     'RDF4JRepositoriesRestService',
     'MonitoringRestService',
-    'ConnectorsRestService',
     'SparqlRestService',
     'ShareQueryLinkService'
 ];
@@ -42,7 +38,6 @@ function yasguiComponentDirective(
     $repositories,
     $translate,
     $location,
-    $uibModal,
     $languageService,
     $jwtAuth,
     $interval,
@@ -51,7 +46,6 @@ function yasguiComponentDirective(
     AutocompleteRestService,
     RDF4JRepositoriesRestService,
     MonitoringRestService,
-    ConnectorsRestService,
     SparqlRestService,
     ShareQueryLinkService
 ) {
@@ -85,7 +79,6 @@ function yasguiComponentDirective(
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
             $scope.language = $languageService.getLanguage();
-            const tabIdToConnectorProgressModalMapping = new Map();
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = new Map();
 
@@ -230,19 +223,6 @@ function yasguiComponentDirective(
             outputHandlers.set(EventDataType.QUERY, queryHandler);
 
             /**
-             * Handles the "queryExecuted" event emitted by ontotext-yasgui. The event is fired immediately after the request is executed, whether it succeeds or fails.
-             * @param {QueryExecutedEvent} queryExecutedRequest - the event payload.
-             */
-            const queryExecutedHandler = (queryExecutedRequest) => {
-                const connectorProgressModal = tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
-                if (connectorProgressModal) {
-                    connectorProgressModal.dismiss();
-                    tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
-                }
-            };
-            outputHandlers.set(EventDataType.QUERY_EXECUTED, queryExecutedHandler);
-
-            /**
              * Handles the "countQuery" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
              * count query request and the request object can be altered here, and it will be sent with these changes.
              * @param {CountQueryRequestEvent} countQueryRequest - the event payload containing the query and the request object.
@@ -350,8 +330,7 @@ function yasguiComponentDirective(
                         },
                         i18n: TranslationService.getTranslations(),
                         getRepositoryStatementsCount: getRepositoryStatementsCount,
-                        onQueryAborted: onQueryAborted,
-                        beforeUpdateQuery: getBeforeUpdateQueryHandler()
+                        onQueryAborted: onQueryAborted
                     };
 
                     angular.extend(config, DEFAULT_CONFIG, $scope.yasguiConfig);
@@ -531,101 +510,6 @@ function yasguiComponentDirective(
                     const currentTrackAlias = req.header['X-GraphDB-Track-Alias'];
                     return MonitoringRestService.deleteQuery(currentTrackAlias, repository);
                 }
-            };
-
-            const createParameter = (key, value) => {
-                return {key, value};
-            };
-
-            const getCommandParameters = (response) => {
-                return [createParameter('name', response.data.name)];
-            };
-
-            const toNoCommandResponse = () => {
-                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS);
-            };
-
-            const toHasNotSupport = (response) => {
-                const parameters = [
-                    createParameter('connectorName', response.data.connectorName),
-                    createParameter('pluginName', response.data.pluginName)
-                ];
-                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters);
-            };
-
-            const createConnectorProgressDialog = (actionName, iri, connectorName) => {
-                const progressScope = $scope.$new(true);
-                progressScope.beingBuiltConnector = {
-                    percentDone: 0,
-                    status: {
-                        processedEntities: 0,
-                        estimatedEntities: 0,
-                        indexedEntities: 0,
-                        entitiesPerSecond: 0
-                    },
-                    actionName,
-                    eta: "-",
-                    inline: false,
-                    iri,
-                    name: connectorName,
-                    doneCallback: function () {
-                        connectorProgressModal.dismiss('cancel');
-                    }
-                };
-                progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
-
-                const connectorProgressModal = $uibModal.open({
-                    templateUrl: 'pages/connectorProgress.html',
-                    controller: 'CreateProgressCtrl',
-                    size: 'lg',
-                    backdrop: 'static',
-                    scope: progressScope
-                });
-                return connectorProgressModal;
-            };
-
-            const toCreateCommandResponse = (response, tabId) => {
-                const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), response.data.iri, response.data.name);
-                tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
-                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'created.connector', getCommandParameters(response));
-            };
-
-            const toRepairCommandResponse = (response, tabId) => {
-                const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
-                tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
-                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'query.editor.repaired.connector', getCommandParameters(response));
-            };
-
-            const toDropCommandResponse = (response) => {
-                return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', getCommandParameters(response));
-            };
-
-            const getBeforeUpdateQueryHandler = () => (query, tabId) => {
-                return ConnectorsRestService.checkConnector(query)
-                    .then((response) => {
-                        if (!response.data.command) {
-                            return toNoCommandResponse();
-                        }
-                        if (!response.data.hasSupport) {
-                            return toHasNotSupport(response);
-                        }
-
-                        if (ConnectorCommand.CREATE === response.data.command) {
-                            return toCreateCommandResponse(response, tabId);
-                        }
-
-                        if (ConnectorCommand.REPAIR === response.data.command) {
-                            return toRepairCommandResponse(response, tabId);
-                        }
-
-                        if (ConnectorCommand.DROP === response.data.command) {
-                            return toDropCommandResponse(response);
-                        }
-                    }).catch((error) => {
-                        // For some reason we couldn't check if this is a connector update, so just catch the exception,
-                        // to not stop the execution of query.
-                        console.log('Checking connector error: ', error);
-                    });
             };
         }
     };
