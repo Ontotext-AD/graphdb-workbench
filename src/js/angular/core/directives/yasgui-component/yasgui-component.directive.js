@@ -338,60 +338,55 @@ function yasguiComponentDirective(
             // =========================
             const subscriptions = [];
 
-            subscriptions.push(
-                $scope.$watch('yasguiConfig', function (newVal, oldValue) {
-                    if (!$scope.ontotextYasguiConfig && newVal || newVal && !isEqual(newVal, oldValue)) {
-                        const config = {
-                            isVirtualRepository: $repositories.isActiveRepoOntopType(),
-                            yasqeAutocomplete: {
-                                LocalNamesAutocompleter: (term) => {
-                                    const canceler = $q.defer();
-                                    return autocompleteLocalNames(term, canceler);
-                                }
-                            },
-                            i18n: TranslationService.getTranslations(),
-                            getRepositoryStatementsCount: getRepositoryStatementsCount,
-                            onQueryAborted: onQueryAborted,
-                            beforeUpdateQuery: getBeforeUpdateQueryHandler()
-                        };
+            const init = (newVal, oldValue) => {
+                if (!$scope.ontotextYasguiConfig && newVal || newVal && !isEqual(newVal, oldValue)) {
+                    const config = {
+                        isVirtualRepository: $repositories.isActiveRepoOntopType(),
+                        yasqeAutocomplete: {
+                            LocalNamesAutocompleter: (term) => {
+                                const canceler = $q.defer();
+                                return autocompleteLocalNames(term, canceler);
+                            }
+                        },
+                        i18n: TranslationService.getTranslations(),
+                        getRepositoryStatementsCount: getRepositoryStatementsCount,
+                        onQueryAborted: onQueryAborted,
+                        beforeUpdateQuery: getBeforeUpdateQueryHandler()
+                    };
 
-                        angular.extend(config, DEFAULT_CONFIG, $scope.yasguiConfig);
+                    angular.extend(config, DEFAULT_CONFIG, $scope.yasguiConfig);
 
-                        $scope.ontotextYasguiConfig = config;
+                    $scope.ontotextYasguiConfig = config;
 
-                        if (angular.isFunction($scope.afterInit)) {
-                            $scope.afterInit();
-                        }
-
-                        addDirtyCheckHandlers();
+                    if (angular.isFunction($scope.afterInit)) {
+                        $scope.afterInit();
                     }
-                }));
+
+                    addDirtyCheckHandlers();
+                }
+            };
+
+            subscriptions.push($scope.$watch('yasguiConfig', init));
+
+            const codeMirrorPasteHandler = () => {
+                const ontotextYasguiElement = $scope.getOntotextYasguiElement();
+                ontotextYasguiElement.getQuery()
+                    .then((query) => JSON.stringify(query))
+                    .then(SparqlRestService.addKnownPrefixes)
+                    .then((response) => ontotextYasguiElement.setQuery(response.data))
+                    .then(() => $scope.queryChanged())
+                    .catch((data) => {
+                        const msg = getError(data);
+                        toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
+                    });
+            };
 
             const addDirtyCheckHandlers = () => {
                 const waitOntotextInitialized = $interval(function () {
                     const ontotextYasguiElements = $scope.getOntotextYasguiElements();
                     if (ontotextYasguiElements) {
-                        ontotextYasguiElements.on('paste.sparqlQuery', '.CodeMirror', function () {
-                            const ontotextYasguiElement = $scope.getOntotextYasguiElement();
-                            ontotextYasguiElement.getQuery()
-                                .then((query) => {
-                                    return JSON.stringify(query);
-                                })
-                                .then(SparqlRestService.addKnownPrefixes)
-                                .then((response) => {
-                                    ontotextYasguiElement.setQuery(response.data)
-                                        .then(() => {
-                                            $scope.queryChanged();
-                                        });
-                                })
-                                .catch((data) => {
-                                    const msg = getError(data);
-                                    toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
-                                });
-                        });
-                        ontotextYasguiElements.on('keyup.sparqlQuery', '.CodeMirror textarea', function () {
-                            $scope.queryChanged();
-                        });
+                        ontotextYasguiElements.on('paste.sparqlQuery', '.CodeMirror', codeMirrorPasteHandler);
+                        ontotextYasguiElements.on('keyup.sparqlQuery', '.CodeMirror textarea', $scope.queryChanged);
                         $interval.cancel(waitOntotextInitialized);
                     }
                 });
