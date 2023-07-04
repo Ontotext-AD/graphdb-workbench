@@ -1,11 +1,11 @@
-import {EventData} from "../../../models/ontotext-yasgui/event-data";
-import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
-import {QueryRequestEvent} from "../../../models/ontotext-yasgui/query-request-event";
-import {CountQueryResponseEvent} from "../../../models/ontotext-yasgui/count-query-response-event";
-import {CountQueryRequestEvent} from "../../../models/ontotext-yasgui/count-query-request-event";
-import {DownloadAsEvent} from "../../../models/ontotext-yasgui/download-as-event";
-import {NotificationMessageEvent} from "../../../models/ontotext-yasgui/notification-message-event";
-import {QueryExecutedEvent} from "../../../models/ontotext-yasgui/query-executed-event";
+import {EventData} from "../models/ontotext-yasgui/event-data";
+import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
+import {QueryRequestEvent} from "../models/ontotext-yasgui/query-request-event";
+import {CountQueryResponseEvent} from "../models/ontotext-yasgui/count-query-response-event";
+import {CountQueryRequestEvent} from "../models/ontotext-yasgui/count-query-request-event";
+import {DownloadAsEvent} from "../models/ontotext-yasgui/download-as-event";
+import {NotificationMessageEvent} from "../models/ontotext-yasgui/notification-message-event";
+import {QueryExecutedEvent} from "../models/ontotext-yasgui/query-executed-event";
 
 export const toEventData = ($event) => {
     return new EventData($event.detail.TYPE, $event.detail.payload);
