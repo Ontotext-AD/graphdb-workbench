@@ -1,10 +1,10 @@
 import {getFileName} from "./controllers";
-import {OntopFileType} from "../../../models/ontop/ontop-file-type";
-import {OntopConnectionInformation} from "../../../models/ontop/ontop-connection-information";
-import {OntopFileInfo} from "../../../models/ontop/ontop-file-info";
-import {OntopRepositoryError} from "../../../models/ontop/ontop-repository-error";
-import {OntopDriverData} from "../../../models/ontop/ontop-driver-data";
-import {JdbcDriverType} from "../../../models/ontop/jdbc-driver-type";
+import {OntopFileType} from "../models/ontop/ontop-file-type";
+import {OntopConnectionInformation} from "../models/ontop/ontop-connection-information";
+import {OntopFileInfo} from "../models/ontop/ontop-file-info";
+import {OntopRepositoryError} from "../models/ontop/ontop-repository-error";
+import {OntopDriverData} from "../models/ontop/ontop-driver-data";
+import {JdbcDriverType} from "../models/ontop/jdbc-driver-type";
 
 // A link to Ontop's website with all Ontop configuration keys
 const ONTOP_PROPERTIES_LINK = 'https://ontop-vkg.org/guide/advanced/configuration.html';

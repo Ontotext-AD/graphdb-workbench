@@ -6,7 +6,7 @@ import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../../app";
 import {YasrUtils} from "../../../utils/yasr-utils";
 import {saveAs} from 'lib/FileSaver-patch';
-import {SparqlQueryErrorInfo} from "../../../../../models/sparql/sparql-query-error-info";
+import {SparqlQueryErrorInfo} from "../../../models/sparql/sparql-query-error-info";
 
 angular
     .module('graphdb.framework.core.directives.queryeditor.queryeditor', [

@@ -3,11 +3,11 @@ import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
 import 'angular/core/services/event-emitter-service';
-import {JdbcConfigurationInfo} from "../../../models/jdbc/jdbc-configuration-info";
-import {YasqeMode} from "../../../models/ontotext-yasgui/yasqe-mode";
-import {JdbcConfigurationError} from "../../../models/jdbc/jdbc-configuration-error";
-import {RenderingMode} from "../../../models/ontotext-yasgui/rendering-mode";
-import {toJDBCColumns, updateColumn} from "../../../models/jdbc/jdbc-column";
+import {JdbcConfigurationInfo} from "../models/jdbc/jdbc-configuration-info";
+import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
+import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
+import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
+import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
