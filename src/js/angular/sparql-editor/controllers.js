@@ -3,15 +3,16 @@ import {
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
 import 'angular/rest/connectors.rest.service';
-import 'services/ontotext-yasgui-web-component.service.js';
 import 'angular/externalsync/controllers';
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
+import {ConnectorCommand} from "../../../models/connectors/connector-command";
+import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../../../models/ontotext-yasgui/before-update-query-result";
+import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
-    'graphdb.framework.ontotext-yasgui-web-component',
     'graphdb.framework.externalsync.controllers'
 ];
 
@@ -25,18 +26,22 @@ SparqlEditorCtrl.$inject = [
     '$location',
     '$jwtAuth',
     '$repositories',
+    '$uibModal',
     'toastr',
     '$translate',
-    'SparqlRestService'];
+    'SparqlRestService',
+    'ConnectorsRestService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
                           $location,
                           $jwtAuth,
                           $repositories,
+                          $uibModal,
                           toastr,
                           $translate,
-                          SparqlRestService) {
+                          SparqlRestService,
+                          ConnectorsRestService) {
     this.repository = '';
 
     $scope.yasguiConfig = undefined;
@@ -44,6 +49,8 @@ function SparqlEditorCtrl($scope,
     $scope.prefixes = {};
     $scope.inferUserSetting = true;
     $scope.sameAsUserSetting = true;
+
+    const tabIdToConnectorProgressModalMapping = new Map();
 
     // =========================
     // Public functions
@@ -55,7 +62,9 @@ function SparqlEditorCtrl($scope,
             prefixes: $scope.prefixes,
             infer: $scope.inferUserSetting,
             sameAs: $scope.sameAsUserSetting,
-            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder]
+            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
+            beforeUpdateQuery: getBeforeUpdateQueryHandler(),
+            outputHandlers: new Map([[EventDataType.QUERY_EXECUTED, queryExecutedHandler]])
         };
     };
 
@@ -67,6 +76,21 @@ function SparqlEditorCtrl($scope,
         } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
             initTabFromSharedQuery(queryParams);
+        }
+    };
+
+    // ================================
+    // =     Setup output handlers
+    // ================================
+    /**
+     * Handles the "queryExecuted" event emitted by ontotext-yasgui. The event is fired immediately after the request is executed, whether it succeeds or fails.
+     * @param {QueryExecutedEvent} queryExecutedRequest - the event payload.
+     */
+    const queryExecutedHandler = (queryExecutedRequest) => {
+        const connectorProgressModal = tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
+        if (connectorProgressModal) {
+            connectorProgressModal.dismiss();
+            tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
         }
     };
 
@@ -146,6 +170,101 @@ function SparqlEditorCtrl($scope,
         getOrder: () => {
             return 2;
         }
+    };
+
+    const createParameter = (key, value) => {
+        return {key, value};
+    };
+
+    const getCommandParameters = (response) => {
+        return [createParameter('name', response.data.name)];
+    };
+
+    const toNoCommandResponse = () => {
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS);
+    };
+
+    const toHasNotSupport = (response) => {
+        const parameters = [
+            createParameter('connectorName', response.data.connectorName),
+            createParameter('pluginName', response.data.pluginName)
+        ];
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters);
+    };
+
+    const createConnectorProgressDialog = (actionName, iri, connectorName) => {
+        const progressScope = $scope.$new(true);
+        progressScope.beingBuiltConnector = {
+            percentDone: 0,
+            status: {
+                processedEntities: 0,
+                estimatedEntities: 0,
+                indexedEntities: 0,
+                entitiesPerSecond: 0
+            },
+            actionName,
+            eta: "-",
+            inline: false,
+            iri,
+            name: connectorName,
+            doneCallback: function () {
+                connectorProgressModal.dismiss('cancel');
+            }
+        };
+        progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
+
+        const connectorProgressModal = $uibModal.open({
+            templateUrl: 'pages/connectorProgress.html',
+            controller: 'CreateProgressCtrl',
+            size: 'lg',
+            backdrop: 'static',
+            scope: progressScope
+        });
+        return connectorProgressModal;
+    };
+
+    const toCreateCommandResponse = (response, tabId) => {
+        const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), response.data.iri, response.data.name);
+        tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'created.connector', getCommandParameters(response));
+    };
+
+    const toRepairCommandResponse = (response, tabId) => {
+        const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
+        tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'query.editor.repaired.connector', getCommandParameters(response));
+    };
+
+    const toDropCommandResponse = (response) => {
+        return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.SUCCESS, 'externalsync.delete.success.msg', getCommandParameters(response));
+    };
+
+    const getBeforeUpdateQueryHandler = () => (query, tabId) => {
+        return ConnectorsRestService.checkConnector(query)
+            .then((response) => {
+                if (!response.data.command) {
+                    return toNoCommandResponse();
+                }
+                if (!response.data.hasSupport) {
+                    return toHasNotSupport(response);
+                }
+
+                if (ConnectorCommand.CREATE === response.data.command) {
+                    return toCreateCommandResponse(response, tabId);
+                }
+
+                if (ConnectorCommand.REPAIR === response.data.command) {
+                    return toRepairCommandResponse(response, tabId);
+                }
+
+                if (ConnectorCommand.DROP === response.data.command) {
+                    return toDropCommandResponse(response);
+                }
+            }).catch((error) => {
+                // For some reason we couldn't check if this is a connector update, so just catch the exception,
+                // to not stop the execution of query.
+                console.log('Checking connector error: ', error);
+            });
     };
 
     // Initialization and bootstrap

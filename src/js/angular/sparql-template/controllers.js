@@ -3,7 +3,6 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
-import 'services/ontotext-yasgui-web-component.service.js';
 import 'angular/core/services/event-emitter-service';
 import {decodeHTML} from "../../../app";
 import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../../../models/sparql-template/sparql-template-info";
@@ -20,7 +19,6 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr',
-    'graphdb.framework.ontotext-yasgui-web-component',
     'graphdb.framework.utils.event-emitter-service'
 ];
 
@@ -96,7 +94,6 @@ SparqlTemplateCreateCtrl.$inject = [
     'UriUtils',
     'ModalService',
     '$translate',
-    'OntotextYasguiWebComponentService',
     '$q',
     'EventEmitterService',
     '$languageService'];
@@ -115,7 +112,6 @@ function SparqlTemplateCreateCtrl(
     UriUtils,
     ModalService,
     $translate,
-    ontotextYasguiWebComponentService,
     $q,
     eventEmitterService,
     $languageService) {
