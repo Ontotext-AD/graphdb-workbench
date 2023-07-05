@@ -24,6 +24,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.resultType = 'termResult';
     $scope.info = productInfo;
     $scope.isGraphDBRepository = undefined;
+    $scope.canEditRepo = $scope.canWriteActiveRepo();
 
     let yasr;
 
@@ -32,7 +33,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     // =========================
     // get similarity indexes
     $scope.getSimilarityIndexes = function () {
-        if (shouldSkipCall() || !$scope.pluginIsActive) {
+        if (!$scope.isGraphDBRepository || !$scope.pluginIsActive) {
             return;
         }
         SimilarityRestService.getIndexes()
@@ -81,10 +82,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         if (index.type === 'text' || index.type === 'predication') {
             $('#indexes-table').collapse('hide');
         }
-    };
-
-    $scope.getActiveRepository = () => {
-        return $repositories.getActiveRepository();
     };
 
     $scope.performSearch = function (index, uri, searchType, resultType, parameters) {
@@ -268,6 +265,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     const init = () => {
         const activeRepository = $scope.getActiveRepository();
         if ($scope.activeRepository !== activeRepository) {
+            $scope.canEditRepo = $scope.canWriteActiveRepo();
             $scope.activeRepository = activeRepository;
             $scope.isGraphDBRepository = checkIsGraphDBRepository();
             if ($scope.isGraphDBRepository) {
@@ -318,13 +316,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
         return '<' + iri + '>';
     };
-
-    // Don't call functions if one of the following conditions are met
-    function shouldSkipCall() {
-        return !$scope.getActiveRepository() ||
-            $scope.isActiveRepoFedXType() ||
-            $scope.isActiveRepoOntopType();
-    }
 
     const checkAutocompleteStatus = () => {
         if ($licenseService.isLicenseValid()) {
