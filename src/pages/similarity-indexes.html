@@ -106,25 +106,15 @@
 					<div class="btn-group">
 						<div class="dropdown">
 						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						    <span ng-if="searchType == 'searchTerm'">{{'term' | translate}}</span>
-						    <span ng-if="searchType == 'searchDocumentID'">{{'document' | translate}}</span>
+						    <span ng-if="similaritySearchType.SEARCH_TERM === searchType">{{'term' | translate}}</span>
+						    <span ng-if="similaritySearchType.SEARCH_DOCUMENT === searchType">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="searchType = 'searchTerm'">{{'term' | translate}}</a>
-						    <a class="dropdown-item" ng-click="searchType = 'searchDocumentID'">{{'document' | translate}}</a>
+						    <a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_TERM">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_DOCUMENT">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
-
-					<!-- <label class="mr-1">
-						<input type="radio" ng-model="searchType" value="searchTerm">
-						Term
-					</label>
-
-					<label class="mr-1">
-						<input type="radio" ng-model="searchType" value="searchDocumentID">
-						Document
-					</label> -->
 
 				</div>
 				<div class="d-inline-block">
@@ -158,30 +148,21 @@
 				<div class="btn-group">
 					<div class="dropdown">
 						<button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span ng-if="searchType == 'searchEntity'">{{'similar.subject.label' | translate}}</span>
-							<span ng-if="searchType == 'searchEntityPredicate'">{{'object.label' | translate}}</span>
-							<span ng-if="searchType == 'searchAnalogical'">{{'analogical.label' | translate}}</span>
+							<span ng-if="similaritySearchType.SEARCH_ENTITY === searchType">{{'similar.subject.label' | translate}}</span>
+							<span ng-if="similaritySearchType.SEARCH_ENTITY_PREDICATE === searchType">{{'object.label' | translate}}</span>
+							<span ng-if="similaritySearchType.SEARCH_ANALOGICAL === searchType">{{'analogical.label' | translate}}</span>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" ng-click="searchType = 'searchEntity'">{{'similar.subject.label' | translate}}</a>
-							<a class="dropdown-item" ng-click="searchType = 'searchEntityPredicate'">{{'object.label' | translate}}</a>
-							<a class="dropdown-item" ng-click="searchType = 'searchAnalogical'">{{'analogical.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ENTITY">{{'similar.subject.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ENTITY_PREDICATE">{{'object.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ANALOGICAL">{{'analogical.label' | translate}}</a>
 						</div>
 					</div>
 				</div>
-				<!-- <label class="mr-1">
-					<input type="radio" ng-model="searchType" value="searchEntity">
-					IRI
-				</label>
-				<label class="mr-1">
-					<input type="radio" ng-model="searchType" value="searchEntityPredicate">
-					IRI + predicate
-				</label> -->
-
 			</div>
 
 			<search-resource-input
-					ng-show="searchType != 'searchEntityPredicate' && searchType != 'searchAnalogical'"
+					ng-show="searchType != 'searchEntityPredicate' && similaritySearchType.SEARCH_ANALOGICAL !== searchType"
 					namespacespromise="getNamespacesPromise"
 					autocompletepromisestatus="getAutocompletePromise"
 					placeholder="{{'search.rdf.resources.for.rdf.entity.placeholder' | translate}}"
@@ -193,7 +174,7 @@
 					empty="empty">
 			</search-resource-input>
 
-			<div class="row" ng-show="searchType == 'searchEntityPredicate'">
+			<div class="row" ng-show="similaritySearchType.SEARCH_ENTITY_PREDICATE === searchType">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -224,7 +205,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="searchType == 'searchAnalogical'">
+			<div class="row" ng-show="similaritySearchType.SEARCH_ANALOGICAL === searchType">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -254,7 +235,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="searchType == 'searchAnalogical'">
+			<div class="row" ng-show="similaritySearchType.SEARCH_ANALOGICAL === searchType">
 				<div class="col-md-12 mt-2">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
