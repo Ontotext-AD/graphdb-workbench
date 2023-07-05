@@ -17,49 +17,18 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.pluginName = 'similarity';
     $scope.pluginIsActive = true;
 
-    $scope.setPluginIsActive = function (isPluginActive) {
-        $scope.pluginIsActive = isPluginActive;
-    };
+    $scope.loading = false;
 
-    const literalForQuery = function (literal) {
-        return '"' + literal + '"';
-    };
-
-    // TODO: Fix cases when this function is called with undefined
-    const iriForQuery = function (iri) {
-        // Do not put brackets on nested triples
-        if (iri === undefined || iri.startsWith("<<") && iri.endsWith(">>")) {
-            return iri;
-        }
-        return '<' + iri + '>';
-    };
-
+    $scope.selected = undefined;
+    $scope.searchType = 'searchTerm';
+    $scope.resultType = 'termResult';
     $scope.info = productInfo;
 
-    $scope.getActiveRepository = function () {
-        return $repositories.getActiveRepository();
-    };
+    let yasr;
 
-    // Don't call functions if one of the following conditions are met
-    function shouldSkipCall() {
-        return !$scope.getActiveRepository() ||
-                    $scope.isActiveRepoFedXType() ||
-                         $scope.isActiveRepoOntopType();
-    }
-
-    if (!shouldSkipCall()) {
-        SimilarityRestService.getSearchQueries().success(function (data) {
-            $scope.searchQueries = data;
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
-        });
-    }
-
-    $scope.encodeURIComponent = function (param) {
-        return encodeURIComponent(param);
-    };
-
+    // =========================
+    // Public functions
+    // =========================
     // get similarity indexes
     $scope.getSimilarityIndexes = function () {
         if (shouldSkipCall() || !$scope.pluginIsActive) {
@@ -94,58 +63,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     }
 
-    let yasr;
-
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        // Don't try to get namespaces for ontop or fedx repository
-        if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
-                    checkAutocompleteStatus();
-                    $scope.usedPrefixes = {};
-                    data.results.bindings.forEach(function (e) {
-                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
-                    });
-                    $scope.$on('$destroy', function () {
-                        if (yasr) {
-                            yasr.destroy();
-                        }
-                    });
-                    yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                        //this way, the URLs in the results are prettified using the defined prefixes
-                        getUsedPrefixes: $scope.usedPrefixes,
-                        persistency: false,
-                        hideHeader: true,
-                        pluginsOptions: YasrUtils.getYasrConfiguration()
-                    });
-                }).error(function (data) {
-                    toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));
-                });
-        }
-    });
-
-    function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
-    }
-
-    $scope.$on('autocompleteStatus', function() {
-        checkAutocompleteStatus();
-    });
-
-    $scope.loading = false;
-
-    $scope.selected = undefined;
-    $scope.searchType = 'searchTerm';
-    $scope.resultType = 'termResult';
-
-    $scope.$watch('searchType', function () {
-        $scope.empty = true;
-    });
-
     $scope.goToSimilarityIndex = function (index) {
         if (!('BUILT' === index.status || 'OUTDATED' === index.status || 'REBUILDING' === index.status)) {
             return;
@@ -165,19 +82,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     };
 
-    const toggleOntoLoader = function (showLoader) {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        const resultsLoader = angular.element(document.getElementById('results-loader'));
-        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
-        if (showLoader) {
-            $scope.loading = true;
-            yasrInnerContainer.addClass('opacity-hide');
-            resultsLoader.removeClass('opacity-hide');
-        } else {
-            $scope.loading = false;
-            yasrInnerContainer.removeClass('opacity-hide');
-            resultsLoader.addClass('opacity-hide');
-        }
+    $scope.getActiveRepository = () => {
+        return $repositories.getActiveRepository();
     };
 
     $scope.performSearch = function (index, uri, searchType, resultType, parameters) {
@@ -280,7 +186,6 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         });
     };
 
-
     $scope.deleteIndex = function (index) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
@@ -340,6 +245,14 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
+    $scope.setPluginIsActive = function (isPluginActive) {
+        $scope.pluginIsActive = isPluginActive;
+    };
+
+    $scope.encodeURIComponent = function (param) {
+        return encodeURIComponent(param);
+    };
+
     $scope.copyToClipboardResult = function (uri) {
         ModalService.openCopyToClipboardModal(uri);
     };
@@ -347,4 +260,102 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.trimIRI = function (iri) {
         return _.trim(iri, "<>");
     };
+
+    // =========================
+    // Private functions
+    // =========================
+    const literalForQuery = (literal) => {
+        return '"' + literal + '"';
+    };
+
+    // TODO: Fix cases when this function is called with undefined
+    const iriForQuery = (iri) => {
+        // Do not put brackets on nested triples
+        if (iri === undefined || iri.startsWith("<<") && iri.endsWith(">>")) {
+            return iri;
+        }
+        return '<' + iri + '>';
+    };
+
+    // Don't call functions if one of the following conditions are met
+    function shouldSkipCall() {
+        return !$scope.getActiveRepository() ||
+            $scope.isActiveRepoFedXType() ||
+            $scope.isActiveRepoOntopType();
+    }
+
+    const checkAutocompleteStatus = () => {
+        if ($licenseService.isLicenseValid()) {
+            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+        }
+    };
+
+    const toggleOntoLoader = (showLoader) => {
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
+        const resultsLoader = angular.element(document.getElementById('results-loader'));
+        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
+        if (showLoader) {
+            $scope.loading = true;
+            yasrInnerContainer.addClass('opacity-hide');
+            resultsLoader.removeClass('opacity-hide');
+        } else {
+            $scope.loading = false;
+            yasrInnerContainer.removeClass('opacity-hide');
+            resultsLoader.addClass('opacity-hide');
+        }
+    };
+
+    // =========================
+    // Event handlers
+    // =========================
+    $scope.$watch(function () {
+        return $repositories.getActiveRepository();
+    }, function () {
+        // Don't try to get namespaces for ontop or fedx repository
+        if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
+            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                .success(function (data) {
+                    checkAutocompleteStatus();
+                    $scope.usedPrefixes = {};
+                    data.results.bindings.forEach(function (e) {
+                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                    });
+                    $scope.$on('$destroy', function () {
+                        if (yasr) {
+                            yasr.destroy();
+                        }
+                    });
+                    yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                        //this way, the URLs in the results are prettified using the defined prefixes
+                        getUsedPrefixes: $scope.usedPrefixes,
+                        persistency: false,
+                        hideHeader: true,
+                        pluginsOptions: YasrUtils.getYasrConfiguration()
+                    });
+                }).error(function (data) {
+                    toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));
+                });
+        }
+    });
+
+    $scope.$on('autocompleteStatus', function () {
+        checkAutocompleteStatus();
+    });
+
+    $scope.$watch('searchType', function () {
+        $scope.empty = true;
+    });
+
+    // =========================
+    // After component init
+    // =========================
+
+    if (!shouldSkipCall()) {
+        SimilarityRestService.getSearchQueries().success(function (data) {
+            $scope.searchQueries = data;
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
+        });
+    }
 }
