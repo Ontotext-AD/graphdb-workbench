@@ -23,6 +23,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.searchType = 'searchTerm';
     $scope.resultType = 'termResult';
     $scope.info = productInfo;
+    $scope.isGraphDBRepository = undefined;
 
     let yasr;
 
@@ -264,6 +265,47 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     // =========================
     // Private functions
     // =========================
+    const init = () => {
+        const activeRepository = $scope.getActiveRepository();
+        if ($scope.activeRepository !== activeRepository) {
+            $scope.activeRepository = activeRepository;
+            $scope.isGraphDBRepository = checkIsGraphDBRepository();
+            if ($scope.isGraphDBRepository) {
+                loadSearchQueries();
+                initYasr();
+            }
+        }
+    };
+
+    const loadSearchQueries = () => {
+        SimilarityRestService.getSearchQueries().success(function (data) {
+            $scope.searchQueries = data;
+        }).error(function (data) {
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
+        });
+    };
+
+    const createYasr = (usedPrefixes) => {
+        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+            //this way, the URLs in the results are prettified using the defined prefixes
+            getUsedPrefixes: $scope.usedPrefixes,
+            persistency: false,
+            hideHeader: true,
+            pluginsOptions: YasrUtils.getYasrConfiguration()
+        });
+    };
+
+    const initYasr = () => {
+        $repositories.getPrefixes($repositories.getActiveRepository())
+            .then((usedPrefixes) => {
+                checkAutocompleteStatus();
+                createYasr(usedPrefixes);
+            }).catch((error) => {
+            toastr.error(getError(error), $translate.instant('get.namespaces.error.msg'));
+        });
+    };
+
     const literalForQuery = (literal) => {
         return '"' + literal + '"';
     };
@@ -305,57 +347,46 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     };
 
+    const checkIsGraphDBRepository = () => {
+        return $scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType();
+    };
+
     // =========================
     // Event handlers
     // =========================
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        // Don't try to get namespaces for ontop or fedx repository
-        if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
-                    checkAutocompleteStatus();
-                    $scope.usedPrefixes = {};
-                    data.results.bindings.forEach(function (e) {
-                        $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
-                    });
-                    $scope.$on('$destroy', function () {
-                        if (yasr) {
-                            yasr.destroy();
-                        }
-                    });
-                    yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                        //this way, the URLs in the results are prettified using the defined prefixes
-                        getUsedPrefixes: $scope.usedPrefixes,
-                        persistency: false,
-                        hideHeader: true,
-                        pluginsOptions: YasrUtils.getYasrConfiguration()
-                    });
-                }).error(function (data) {
-                    toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));
-                });
+    const subscriptions = [];
+    /**
+     * When the repository gets changed through the UI, we need to update the yasgui configuration so that new queries
+     * to be issued against the new repository.
+     */
+    subscriptions.push($scope.$on('repositoryIsSet', init));
+
+    // Deregister the watcher when the scope/directive is destroyed
+    $scope.$on('$destroy', function () {
+        removeAllListeners();
+        if (yasr) {
+            yasr.destroy();
         }
     });
 
-    $scope.$on('autocompleteStatus', function () {
-        checkAutocompleteStatus();
-    });
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
 
-    $scope.$watch('searchType', function () {
+    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+
+    subscriptions.push($scope.$watch('searchType', function () {
         $scope.empty = true;
+    }));
+
+    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+    // readOnly configuration may be incorrect.
+    const repoIsInitialized = $scope.$watch(function () {
+        return $scope.getActiveRepositoryObject();
+    }, function (activeRepo) {
+        if (activeRepo) {
+            init();
+            repoIsInitialized();
+        }
     });
-
-    // =========================
-    // After component init
-    // =========================
-
-    if (!shouldSkipCall()) {
-        SimilarityRestService.getSearchQueries().success(function (data) {
-            $scope.searchQueries = data;
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
-        });
-    }
 }
