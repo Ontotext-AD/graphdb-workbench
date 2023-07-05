@@ -46,9 +46,9 @@
                             <a class="lead index-name" ng-href="{{(similarityIndexStatus.BUILT === index.status || similarityIndexStatus.REBUILDING === index.status || similarityIndexStatus.OUTDATED === index.status) ? '#' : ''}}" ng-click="goToSimilarityIndex(index)">{{index.name}}</a>
 						</td>
 						<td>
-							<span class="tag tag-default" ng-show="index.type == 'text'" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="index.type == 'predication'" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="index.type == 'textLiteral'" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="similarityIndexType.TEXT === index.type" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="similarityIndexType.PREDICATION === index.type" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-show="similarityIndexType.TEXT_LITERAL === index.type" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
 						</td>
 
 						<td class="text-xs-right">
@@ -61,26 +61,26 @@
       				        </span>
 
 							<span class="btn btn-link view-sparql-query-btn" ng-click="viewCreateQuery(index)"
-                                  ng-if="index.selectQuery && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')"
+                                  ng-if="index.selectQuery && (similarityIndexType.TEXT === index.type || similarityIndexType.PREDICATION === index.type || similarityIndexType.TEXT_LITERAL === index.type)"
                                   gdb-tooltip="{{'view.sparql.query.title' | translate}}">
 									<em class="icon-sparql"></em>
 							</span>
                             <span class="actions-bar hovered-item">
 								<a class="btn btn-link edit-query-btn"
                                    ng-if="canEditRepo && similarityIndexStatus.BUILDING !== index.status && similarityIndexStatus.REBUILDING !== index.status && similarityIndexStatus.CREATING !== index.status" href="similarity/index/create?selectQuery={{encodeURIComponent(index.selectQuery)}}&options={{index.options}}&editSearchQuery&name={{index.name}}&infer={{index.infer}}&sameAs={{index.sameAs}}&stopList={{index.stopList}}&type={{index.type}}&analyzer={{index.analyzer}}&searchQuery={{index.searchQuery ? encodeURIComponent(index.searchQuery) : ''}}&analogicalQuery={{index.analogicalQuery ? encodeURIComponent(index.analogicalQuery) : ''}}"
-                                        gdb-tooltip="{{index.type == 'predication' ? 'edit.search.analogical.query.title'
+                                        gdb-tooltip="{{similarityIndexType.PREDICATION === index.type ? 'edit.search.analogical.query.title'
 																			   : 'edit.search.query.title' | translate}}">
 									<em class="icon-edit"></em>
 								</a>
 							</span>
 
-							<a class="btn btn-link clone-index-btn" ng-if="index.selectQuery && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')"
+							<a class="btn btn-link clone-index-btn" ng-if="index.selectQuery && (similarityIndexType.TEXT === index.type || similarityIndexType.PREDICATION === index.type || similarityIndexType.TEXT_LITERAL === index.type)"
                                href="similarity/index/create?selectQuery={{encodeURIComponent(index.selectQuery)}}&options={{index.options}}&name={{index.name}}&infer={{index.infer}}&sameAs={{index.sameAs}}&stopList={{index.stopList}}&type={{index.type}}&analyzer={{index.analyzer}}&searchQuery={{index.searchQuery ? encodeURIComponent(index.searchQuery) : ''}}&analogicalQuery={{index.analogicalQuery ? encodeURIComponent(index.analogicalQuery) : ''}}"
 							   gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
 									<em class="icon-copy"></em>
 							</a>
 
-							<button type="button" ng-if="canEditRepo && similarityIndexStatus.BUILDING !== index.status && similarityIndexStatus.REBUILDING !== index.status && similarityIndexStatus.CREATING !== index.status && (index.type == 'text' || index.type == 'predication' || index.type == 'textLiteral')" ng-disabled="!index.selectQuery"
+							<button type="button" ng-if="canEditRepo && similarityIndexStatus.BUILDING !== index.status && similarityIndexStatus.REBUILDING !== index.status && similarityIndexStatus.CREATING !== index.status && (similarityIndexType.TEXT === index.type || similarityIndexType.PREDICATION === index.type || similarityIndexType.TEXT_LITERAL === index.type)" ng-disabled="!index.selectQuery"
 									ng-click="rebuildIndex(index)" class="btn btn-link reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
 									class="icon-reload similarity-index-icon-reload"></span></button>
 							<button type="button" ng-if="canEditRepo && similarityIndexStatus.BUILDING !== index.status && similarityIndexStatus.REBUILDING !== index.status && similarityIndexStatus.CREATING !== index.status" ng-click="deleteIndex(index)"
@@ -96,11 +96,11 @@
 		</div>
 	</div>
 
-	<div class="card mb-2 index-search-panel" ng-hide="selected === undefined || selected.type == 'textLiteral'">
+	<div class="card mb-2 index-search-panel" ng-hide="selected === undefined || similarityIndexType.TEXT_LITERAL === selected.type">
 		<div class="card-block">
 			<h3 class="selected-index">{{'search.in.index' | translate}} <strong>{{selected.name}}</strong></h3>
 
-			<div ng-show="selected.type == 'text'">
+			<div ng-show="similarityIndexType.TEXT === selected.type">
 				<div class="d-inline-block">
 					<strong>{{'similarity.search.type' | translate}} </strong>
 					<div class="btn-group">
@@ -134,7 +134,7 @@
 				</div>
 			</div>
 
-			<div ng-show="selected.type == 'predication'">
+			<div ng-show="similarityIndexType.PREDICATION === selected.type">
 				<strong>{{'similarity.search.type' | translate}} </strong>
 
 				<div class="btn-group">
@@ -243,17 +243,17 @@
 				</div>
 			</div>
 
-			<button ng-show="selected.type == 'text'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-show="similarityIndexType.TEXT === selected.type" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
-			<button ng-show="selected.type == 'predication'" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-show="similarityIndexType.PREDICATION === selected.type" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
-			<div id="search-type" class="mt-1 collapse" ng-show="selected.type == 'text'">
+			<div id="search-type" class="mt-1 collapse" ng-show="similarityIndexType.TEXT === selected.type">
 				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>
 				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim ({{'optional.label' | translate}})" ng-model="searchParameters" >
 				<div class="small text-muted" style="margin-top: 0.5rem">{{'see.the.full' | translate}} <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/semantic-similarity-searches.html#search-parameters">{{'supported.parameters.list' | translate}}</a></div>
 			</div>
 
-			<div id="search-type-predication" class="mt-1 collapse" ng-show="selected.type == 'predication'">
+			<div id="search-type-predication" class="mt-1 collapse" ng-show="similarityIndexType.PREDICATION === selected.type">
 				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>
 				<input class="form-control" type="text" placeholder="-numsearchresults 20 -searchtype minsim ({{'optional.label' | translate}})" ng-model="searchParameters" >
 				<div class="small text-muted" style="margin-top: 0.5rem">{{'see.the.full' | translate}} <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/semantic-similarity-searches.html#search-parameters">{{'supported.parameters.list' | translate}}</a></div>
