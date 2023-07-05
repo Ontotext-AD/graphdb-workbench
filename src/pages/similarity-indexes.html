@@ -20,13 +20,13 @@
     <inactive-plugin-directive
         plugin-name="{{pluginName}}"
         human-readable-plugin-name="Similarity Plugin"
-        load-saved="pullList()"
+        load-saved="updateSimilarityIndexes()"
         set-plugin-active="setPluginIsActive(isPluginActive)"
         ng-if="isLicenseValid()">
     </inactive-plugin-directive>
 
 	<div class="card mb-2 existing-indexes" ng-if="isLicenseValid() && isGraphDBRepository && pluginIsActive">
-		<div class="card-block" ng-init="getSimilarityIndexes();">
+		<div class="card-block">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right">
 					<span class="icon-plus create-similarity-index"></span> {{'view.create.similarity.index.title' | translate}}
