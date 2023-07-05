@@ -25,14 +25,15 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.info = productInfo;
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
+    $scope.loadSimilarityIndexesTimer = undefined;
 
     let yasr;
 
     // =========================
     // Public functions
     // =========================
-    // get similarity indexes
-    $scope.getSimilarityIndexes = function () {
+    // loads similarity indexes
+    $scope.loadSimilarityIndexes = function () {
         if (!$scope.isGraphDBRepository || !$scope.pluginIsActive) {
             return;
         }
@@ -46,24 +47,17 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
-    $scope.pullList = function () {
-        $scope.getSimilarityIndexes();
-        const timer = $interval(function () {
-            $scope.$broadcast('checkIsActive');
-            if ($('#indexes-table').attr('aria-expanded') !== 'false') {
-                $scope.getSimilarityIndexes();
-            }
-        }, 5000);
-        $scope.$on('$destroy', function () {
-            $interval.cancel(timer);
-        });
-    };
-
-    if ($scope.getActiveRepository()) {
-        if ($licenseService.isLicenseValid()) {
-            $scope.pullList();
+    $scope.updateSimilarityIndexes = function () {
+        $scope.loadSimilarityIndexes();
+        if (!$scope.loadSimilarityIndexesTimer) {
+            $scope.loadSimilarityIndexesTimer = $interval(function () {
+                $scope.$broadcast('checkIsActive');
+                if ($('#indexes-table').attr('aria-expanded') !== 'false') {
+                    $scope.loadSimilarityIndexes();
+                }
+            }, 5000);
         }
-    }
+    };
 
     $scope.goToSimilarityIndex = function (index) {
         if (!('BUILT' === index.status || 'OUTDATED' === index.status || 'REBUILDING' === index.status)) {
@@ -193,7 +187,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             .then(function () {
                 SimilarityRestService.deleteIndex(index)
                     .then(function () {
-                        $scope.getSimilarityIndexes();
+                        $scope.loadSimilarityIndexes();
                     }, function (err) {
                         toastr.error(getError(err));
                     });
@@ -264,7 +258,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     // =========================
     const init = () => {
         const activeRepository = $scope.getActiveRepository();
-        if ($scope.activeRepository !== activeRepository) {
+        if (activeRepository && $scope.activeRepository !== activeRepository) {
+            if ($licenseService.isLicenseValid()) {
+                $scope.updateSimilarityIndexes();
+            }
             $scope.canEditRepo = $scope.canWriteActiveRepo();
             $scope.activeRepository = activeRepository;
             $scope.isGraphDBRepository = checkIsGraphDBRepository();
@@ -355,8 +352,13 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     // Deregister the watcher when the scope/directive is destroyed
     $scope.$on('$destroy', function () {
         removeAllListeners();
+
         if (yasr) {
             yasr.destroy();
+        }
+
+        if ($scope.loadSimilarityIndexesTimer) {
+            $interval.cancel($scope.loadSimilarityIndexesTimer);
         }
     });
 
