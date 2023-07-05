@@ -2,6 +2,7 @@ import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../app";
 import {YasrUtils} from "../../utils/yasr-utils";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
+import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -23,7 +24,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.selected = undefined;
     $scope.similaritySearchType = SimilaritySearchType;
     $scope.searchType = SimilaritySearchType.SEARCH_TERM;
-    $scope.resultType = 'termResult';
+    $scope.similarityResultType = SimilarityResultType;
+    $scope.resultType = SimilarityResultType.TERM_RESULT;
     $scope.info = productInfo;
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
@@ -115,7 +117,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             $index: iriForQuery(PREFIX_INSTANCE + index),
             $query: termOrSubject,
             $searchType: iriForQuery(($scope.selected.type === 'text' ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
-            $resultType: iriForQuery($scope.selected.type === 'text' ? PREFIX + resultType : PREFIX_PREDICATION + 'entityResult'),
+            $resultType: iriForQuery($scope.selected.type === 'text' ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
             $parameters: literalForQuery(parameters)
         };
 
