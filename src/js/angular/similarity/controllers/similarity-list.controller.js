@@ -1,6 +1,7 @@
 import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../app";
 import {YasrUtils} from "../../utils/yasr-utils";
+import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -20,7 +21,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.loading = false;
 
     $scope.selected = undefined;
-    $scope.searchType = 'searchTerm';
+    $scope.similaritySearchType = SimilaritySearchType;
+    $scope.searchType = SimilaritySearchType.SEARCH_TERM;
     $scope.resultType = 'termResult';
     $scope.info = productInfo;
     $scope.isGraphDBRepository = undefined;
@@ -69,9 +71,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             $scope.selected = index;
         }
         if (index.type === 'text') {
-            $scope.searchType = 'searchTerm';
+            $scope.searchType = SimilaritySearchType.SEARCH_TERM;
         } else if (index.type === 'predication') {
-            $scope.searchType = 'searchEntity';
+            $scope.searchType = SimilaritySearchType.SEARCH_ENTITY;
         }
         if (index.type === 'text' || index.type === 'predication') {
             $('#indexes-table').collapse('hide');
@@ -88,12 +90,12 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         $scope.lastSearch = {};
         $scope.lastSearch.type = searchType;
 
-        if (searchType === 'searchEntityPredicate') {
+        if (searchType === SimilaritySearchType.SEARCH_ENTITY_PREDICATE) {
             termOrSubject = $scope.psiSubject;
             $scope.lastSearch.predicate = uri;
         }
 
-        if (searchType === 'searchTerm') {
+        if (searchType === SimilaritySearchType.SEARCH_TERM) {
             termOrSubject = literalForQuery(termOrSubject);
         } else {
             termOrSubject = iriForQuery(termOrSubject);
@@ -103,7 +105,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
         const headers = {Accept: 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8'};
         let sparqlQuery;
-        if (searchType === 'searchAnalogical') {
+        if (searchType === SimilaritySearchType.SEARCH_ANALOGICAL) {
             sparqlQuery = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
             sparqlQuery = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
@@ -112,16 +114,16 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             query: sparqlQuery,
             $index: iriForQuery(PREFIX_INSTANCE + index),
             $query: termOrSubject,
-            $searchType: iriForQuery(($scope.selected.type === 'text' ? PREFIX : PREFIX_PREDICATION) + (searchType === 'searchEntityPredicate' ? 'searchEntity' : searchType)),
+            $searchType: iriForQuery(($scope.selected.type === 'text' ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
             $resultType: iriForQuery($scope.selected.type === 'text' ? PREFIX + resultType : PREFIX_PREDICATION + 'entityResult'),
             $parameters: literalForQuery(parameters)
         };
 
-        if (searchType === 'searchEntityPredicate') {
+        if (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType) {
             sendData.$psiPredicate = $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE);
         }
 
-        if (searchType === 'searchAnalogical') {
+        if (SimilaritySearchType.SEARCH_ANALOGICAL === searchType) {
             $scope.searchSubject = uri;
             sendData.$givenSubject = iriForQuery($scope.analogicalSubject);
             sendData.$givenObject = iriForQuery($scope.analogicalObject);
