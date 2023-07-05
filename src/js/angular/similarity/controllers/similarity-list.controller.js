@@ -3,6 +3,7 @@ import {decodeHTML} from "../../../../app";
 import {YasrUtils} from "../../utils/yasr-utils";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
+import {SimilarityIndexStatus} from "../../models/similarity/similarity-index-status";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -22,10 +23,15 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.loading = false;
 
     $scope.selected = undefined;
+
+    $scope.similarityIndexStatus = SimilarityIndexStatus;
+
     $scope.similaritySearchType = SimilaritySearchType;
     $scope.searchType = SimilaritySearchType.SEARCH_TERM;
+
     $scope.similarityResultType = SimilarityResultType;
     $scope.resultType = SimilarityResultType.TERM_RESULT;
+
     $scope.info = productInfo;
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
@@ -64,7 +70,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     };
 
     $scope.goToSimilarityIndex = (index) => {
-        if (!('BUILT' === index.status || 'OUTDATED' === index.status || 'REBUILDING' === index.status)) {
+        if (!(SimilarityIndexStatus.BUILT === index.status || SimilarityIndexStatus.OUTDATED === index.status || SimilarityIndexStatus.REBUILDING === index.status)) {
             return;
         }
         $scope.empty = true;
@@ -232,7 +238,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             warning: true
         }).result
             .then(function () {
-                index.status = 'REBUILDING';
+                index.status = SimilarityIndexStatus.REBUILDING;
                 SimilarityRestService.rebuildIndex(index)
                     .then(function (res) {
                     }, function (err) {
