@@ -37,7 +37,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     // Public functions
     // =========================
     // loads similarity indexes
-    $scope.loadSimilarityIndexes = function () {
+    $scope.loadSimilarityIndexes = () => {
         if (!$scope.isGraphDBRepository || !$scope.pluginIsActive) {
             return;
         }
@@ -51,7 +51,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
-    $scope.updateSimilarityIndexes = function () {
+    $scope.updateSimilarityIndexes = () => {
         $scope.loadSimilarityIndexes();
         if (!$scope.loadSimilarityIndexesTimer) {
             $scope.loadSimilarityIndexesTimer = $interval(function () {
@@ -63,7 +63,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     };
 
-    $scope.goToSimilarityIndex = function (index) {
+    $scope.goToSimilarityIndex = (index) => {
         if (!('BUILT' === index.status || 'OUTDATED' === index.status || 'REBUILDING' === index.status)) {
             return;
         }
@@ -82,7 +82,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     };
 
-    $scope.performSearch = function (index, uri, searchType, resultType, parameters) {
+    $scope.performSearch = (index, uri, searchType, resultType, parameters) => {
 
         toggleOntoLoader(true);
 
@@ -146,7 +146,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         });
     };
 
-    $scope.viewSearchQuery = function () {
+    $scope.viewSearchQuery = () => {
         let queryTemplate;
         if ($scope.lastSearch.type === 'searchAnalogical') {
             queryTemplate = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
@@ -182,7 +182,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         });
     };
 
-    $scope.deleteIndex = function (index) {
+    $scope.deleteIndex = (index) => {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
             message: $translate.instant('similarity.delete.index.warning', {name: index.name}),
@@ -198,7 +198,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
-    $scope.viewCreateQuery = function (index) {
+    $scope.viewCreateQuery = (index) => {
         SimilarityRestService.getQuery({
             indexName: index.name,
             indexOptions: index.options,
@@ -221,7 +221,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         });
     };
 
-    $scope.rebuildIndex = function (index) {
+    $scope.rebuildIndex = (index) => {
         // Migration
         if (!index.searchQuery) {
             index.searchQuery = index.type ? $scope.searchQueries[index.type] : $scope.searchQueries.text;
@@ -241,19 +241,19 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
-    $scope.setPluginIsActive = function (isPluginActive) {
+    $scope.setPluginIsActive = (isPluginActive) => {
         $scope.pluginIsActive = isPluginActive;
     };
 
-    $scope.encodeURIComponent = function (param) {
+    $scope.encodeURIComponent = (param) => {
         return encodeURIComponent(param);
     };
 
-    $scope.copyToClipboardResult = function (uri) {
+    $scope.copyToClipboardResult = (uri) => {
         ModalService.openCopyToClipboardModal(uri);
     };
 
-    $scope.trimIRI = function (iri) {
+    $scope.trimIRI = (iri) => {
         return _.trim(iri, "<>");
     };
 
@@ -353,8 +353,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
      */
     subscriptions.push($scope.$on('repositoryIsSet', init));
 
-    // Deregister the watcher when the scope/directive is destroyed
-    $scope.$on('$destroy', function () {
+    const destroyHandler = () => {
         removeAllListeners();
 
         if (yasr) {
@@ -364,7 +363,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         if ($scope.loadSimilarityIndexesTimer) {
             $interval.cancel($scope.loadSimilarityIndexesTimer);
         }
-    });
+    };
+
+    // Deregister the watcher when the scope/directive is destroyed
+    $scope.$on('$destroy', destroyHandler);
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
@@ -372,18 +374,20 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
 
-    subscriptions.push($scope.$watch('searchType', function () {
+    const setEmptyHandler = () => {
         $scope.empty = true;
-    }));
+    };
 
-    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
-    // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch(function () {
-        return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
+    subscriptions.push($scope.$watch('searchType', setEmptyHandler));
+
+    const getActiveRepositoryObjectHandler = (activeRepo) => {
         if (activeRepo) {
             init();
             repoIsInitialized();
         }
-    });
+    };
+
+    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+    // readOnly configuration may be incorrect.
+    const repoIsInitialized = $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler);
 }
