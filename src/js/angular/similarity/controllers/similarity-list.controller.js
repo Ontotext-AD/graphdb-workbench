@@ -75,7 +75,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     };
 
     $scope.goToSimilarityIndex = (similarityIndex) => {
-        if (!(SimilarityIndexStatus.BUILT === similarityIndex.status || SimilarityIndexStatus.OUTDATED === similarityIndex.status || SimilarityIndexStatus.REBUILDING === similarityIndex.status)) {
+        if (!similarityIndex.isBuiltStatus() && !similarityIndex.isOutdatedStatus() && !similarityIndex.isRebuildingStatus()) {
             return;
         }
         $scope.empty = true;
