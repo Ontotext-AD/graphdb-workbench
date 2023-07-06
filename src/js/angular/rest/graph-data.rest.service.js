@@ -6,8 +6,8 @@ GraphDataRestService.$inject = ['$http'];
 
 const CLASS_HIERARCHY_ENDPOINT = 'rest/class-hierarchy';
 const DOMAIN_RANGE_ENDPOINT = 'rest/domain-range';
-const DEPENDENCIES_ENDPOINT = 'rest/dependencies/';
-const EXPORE_GRAPH_ENDPOINT = 'rest/explore-graph/';
+const DEPENDENCIES_ENDPOINT = 'rest/dependencies';
+const EXPORE_GRAPH_ENDPOINT = 'rest/explore-graph';
 
 function GraphDataRestService($http) {
     return {
@@ -30,6 +30,9 @@ function GraphDataRestService($http) {
         // instances graph
         getInstanceNode,
         getInstanceNodeLinks,
+        getProperties,
+
+        updateGraph,
 
         // common
         getRdfsLabelAndComment
@@ -78,7 +81,7 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsData(selectedClasses, direction, graphURI) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}matrix`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/matrix`, {
             params: {
                 'mode': direction,
                 'classes': _.map(selectedClasses, function (c) {
@@ -90,7 +93,7 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsClasses(direction, graphURI) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}classes`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/classes`, {
             params: {
                 'mode': direction,
                 'graphURI': graphURI
@@ -99,7 +102,7 @@ function GraphDataRestService($http) {
     }
 
     function getRelationshipsStatus(graphURI) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}status`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/status`, {
             params: {
                 graphURI: graphURI
             }
@@ -107,7 +110,7 @@ function GraphDataRestService($http) {
     }
 
     function calculateRelationships(graphURI) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}update`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/update`, {
             params: {
                 graphURI: graphURI
             }
@@ -115,29 +118,40 @@ function GraphDataRestService($http) {
     }
 
     function getPredicates(sourceClass, destinationClass, graphURI) {
-        return $http.get(`${DEPENDENCIES_ENDPOINT}predicates`, {
+        return $http.get(`${DEPENDENCIES_ENDPOINT}/predicates`, {
             params: {
                 'from': sourceClass,
                 'to': destinationClass,
                 'mode': 'all',
-                graphURI: graphURI
+                'graphURI': graphURI
             }
         });
     }
 
-    function getInstanceNode(iri) {
-        return $http.get(`${EXPORE_GRAPH_ENDPOINT}node`, {
-            params: {
-                iri
-            }
+    function getInstanceNode(params) {
+        return $http.get(`${EXPORE_GRAPH_ENDPOINT}/node`, {
+            params: params
         });
     }
 
-    function getInstanceNodeLinks(iri) {
-        return $http.get(`${EXPORE_GRAPH_ENDPOINT}links`, {
-            params: {
-                iri
-            }
+    function getInstanceNodeLinks(params) {
+        return $http.get(`${EXPORE_GRAPH_ENDPOINT}/links`, {
+            params: params
+        });
+    }
+
+    function getProperties(params) {
+        return $http.get(`${EXPORE_GRAPH_ENDPOINT}/properties`, {
+            params: params
+        });
+    }
+
+    function updateGraph(payload) {
+        return $http.post(`${EXPORE_GRAPH_ENDPOINT}/graph`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: payload
         });
     }
 
