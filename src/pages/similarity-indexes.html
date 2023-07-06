@@ -269,13 +269,13 @@
 					<a ng-show="lastSearch.type == 'searchDocumentID' || lastSearch.type == 'searchEntity' || lastSearch.type == 'searchEntityPredicate'"
 					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" rel="noopener" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
 
-					<span ng-show="lastSearch.type == 'searchEntityPredicate'"> + <a title="{{lastSearch.predicate}}" target="_blank"
+					<span ng-show="similaritySearchType.SEARCH_ENTITY_PREDICATE === lastSearch.type"> + <a title="{{lastSearch.predicate}}" target="_blank"
 					   class="uri" href="resource?uri={{lastSearch.predicate}}">{{lastSearch.predicate}}</a> -></span>
 
 					<span ng-show="lastSearch.type == 'searchTerm'">"{{lastSearch.termOrSubject}}"</span>
 				</em>
 
-				<em ng-show="lastSearch.type == 'searchAnalogical'">
+				<em ng-show="similaritySearchType.SEARCH_ANALOGICAL === lastSearch.type">
 					If <a title="{{analogicalSubject}}" class="uri" href="resource?uri={{analogicalSubject}}" rel="noopener" target="_blank">{{analogicalSubject}}</a>
 
 					-> <a title="{{analogicalObject}}" rel="noopener" target="_blank" class="uri" href="resource?uri={{analogicalObject}}">{{analogicalObject}}</a>
