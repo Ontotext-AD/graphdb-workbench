@@ -569,7 +569,7 @@ function GraphsVisualizationsCtrl(
             url: 'rest/explore-graph/graph',
             method: 'POST',
             headers: {
-                'Content-Type' : 'application/json'
+                'Content-Type': 'application/json'
             },
             data: {
                 query: queryString,
@@ -742,9 +742,9 @@ function GraphsVisualizationsCtrl(
 
     // embedded and other params when the controller is initialized
     if ($scope.embedded && ($location.search().query ||
-            $location.search().uri ||
-            $location.search().config ||
-            $location.search().saved)) {
+        $location.search().uri ||
+        $location.search().config ||
+        $location.search().saved)) {
 
         $scope.noGoHome = true;
     }
@@ -861,7 +861,7 @@ function GraphsVisualizationsCtrl(
         function linksTypes(d, links) {
             const linksForNode = findLinksForNode(d, links);
             const types = _.map(linksForNode, function (l) {
-                return (l.source.iri === d.iri ) ? l.target.types : l.source.types;
+                return (l.source.iri === d.iri) ? l.target.types : l.source.types;
             });
             return _.uniq(_.flatten(types));
         }
@@ -952,7 +952,7 @@ function GraphsVisualizationsCtrl(
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
                 let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
-                                   (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
+                    (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
                 if (!isRejected) {
                     let targetLinks;
                     if (l.source.iri === d.iri && countLinks(l.target, links) === 2 && !l.target.isTriple) {
@@ -1175,7 +1175,7 @@ function GraphsVisualizationsCtrl(
         return $repositories.getActiveRepository();
     };
 
-    $scope.isLicenseValid = function() {
+    $scope.isLicenseValid = function () {
         return $licenseService.isLicenseValid();
     };
 
@@ -1220,7 +1220,7 @@ function GraphsVisualizationsCtrl(
         }
     }
 
-    $scope.$on('autocompleteStatus', function() {
+    $scope.$on('autocompleteStatus', function () {
         checkAutocompleteStatus();
     });
 
@@ -2885,7 +2885,12 @@ function GraphsVisualizationsCtrl(
 
     $scope.saveOrUpdateGraph = function () {
         const data = JSON.stringify(graph.copyState());
-        const graphToSave = {id: $scope.lastSavedGraphId, name: $scope.lastSavedGraphName, data: data, shared: $scope.shared};
+        const graphToSave = {
+            id: $scope.lastSavedGraphId,
+            name: $scope.lastSavedGraphName,
+            data: data,
+            shared: $scope.shared
+        };
 
         if (graphToSave.id) {
             $scope.saveGraphModal('update', graphToSave);
@@ -2896,7 +2901,12 @@ function GraphsVisualizationsCtrl(
 
     $scope.renameSavedGraph = function (graphToRename) {
         // By not sending the 'data' part of a graph we only change the name
-        $scope.saveGraphModal('rename', {id: graphToRename.id, name: graphToRename.name, config: graphToRename.config, shared: graphToRename.shared});
+        $scope.saveGraphModal('rename', {
+            id: graphToRename.id,
+            name: graphToRename.name,
+            config: graphToRename.config,
+            shared: graphToRename.shared
+        });
     };
 
     const editSavedGraphHttp = function (savedGraph) {
@@ -3052,7 +3062,7 @@ function GraphsVisualizationsCtrl(
             return;
         }
 
-       if (event.keyCode === 37) {
+        if (event.keyCode === 37) {
             // left arrow rotates left
             $scope.rotate(true);
         } else if (event.keyCode === 39) {
