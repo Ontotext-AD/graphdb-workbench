@@ -1,3 +1,5 @@
+import {SimilarityIndexType} from "./similarity-index-type";
+
 export class SimilarityIndex {
     constructor() {
         this.analyzer = '';
@@ -24,6 +26,17 @@ export class SimilarityIndex {
         this.status = undefined;
 
         this.analogicalQuery = undefined;
+    }
 
+    isTextType() {
+        return SimilarityIndexType.isTextType(this.type);
+    }
+
+    isTextLiteralType() {
+        return SimilarityIndexType.isTextLiteralType(this.type);
+    }
+
+    isPredicationType() {
+        return SimilarityIndexType.isPredicationType(this.type);
     }
 }
