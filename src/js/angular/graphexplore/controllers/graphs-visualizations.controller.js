@@ -3,6 +3,7 @@ import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
+import {removeSpecialChars} from "../../utils/string-utils";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -21,25 +22,297 @@ angular
         $uibTooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "$licenseService", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$uibModal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService", "$translate", "GuidesService"];
+GraphsVisualizationsCtrl.$inject = [
+    "$scope",
+    "$rootScope",
+    "$repositories",
+    "$licenseService",
+    "toastr",
+    "$timeout",
+    "$http",
+    "ClassInstanceDetailsService",
+    "AutocompleteRestService",
+    "$q",
+    "$location",
+    "$jwtAuth",
+    "UiScrollService",
+    "ModalService",
+    "$uibModal",
+    "$window",
+    "LocalStorageAdapter",
+    "LSKeys",
+    "SavedGraphsRestService",
+    "GraphConfigRestService",
+    "RDF4JRepositoriesRestService",
+    "$translate",
+    "GuidesService"
+];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseService, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $uibModal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService, $translate, GuidesService) {
+function GraphsVisualizationsCtrl(
+    $scope,
+    $rootScope,
+    $repositories,
+    $licenseService,
+    toastr,
+    $timeout,
+    $http,
+    ClassInstanceDetailsService,
+    AutocompleteRestService,
+    $q,
+    $location,
+    $jwtAuth,
+    UiScrollService,
+    ModalService,
+    $uibModal,
+    $window,
+    LocalStorageAdapter,
+    LSKeys,
+    SavedGraphsRestService,
+    GraphConfigRestService,
+    RDF4JRepositoriesRestService,
+    $translate,
+    GuidesService
+) {
+    // =========================
+    // Public fields
+    // =========================
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
-    $scope.propertiesQueryObj = {};
-
     $scope.propertiesObj.items = [];
+    $scope.propertiesQueryObj = {};
+    $scope.propertiesQueryObj.query = '';
+    $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     $scope.propertiesNotFiltered = [];
     $scope.searchVisible = false;
     $scope.nodeSelected = false;
     $scope.queryResultsMode = false;
     $scope.embedded = $location.search().embedded;
     $scope.openedNodeInfoPanel = undefined;
-
     $scope.invalidLimit = false;
     $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
     $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+    $scope.datasource = undefined;
+    // adapter implementation for ui-scroll directive
+    $scope.adapterContainer = {adapter: {remain: true}};
+
+    $scope.defaultSettings = {
+        linksLimit: 20,
+        includeInferred: true,
+        sameAsState: true,
+        languages: ['en'],
+        showLinksText: true,
+        preferredTypes: [],
+        rejectedTypes: [],
+        preferredPredicates: [],
+        rejectedPredicates: ["http://dbpedia.org/property/logo",
+            "http://dbpedia.org/property/hasPhotoCollection",
+            "http://dbpedia.org/property/website",
+            "http://dbpedia.org/property/homepage",
+            "http://dbpedia.org/ontology/thumbnail",
+            "http://xmlns.com/foaf/0.1/depiction",
+            "http://xmlns.com/foaf/0.1/homepage",
+            "http://xmlns.com/foaf/0.1/mbox",
+            "http://dbpedia.org/ontology/wikiPage*",
+            "http://dbpedia.org/property/wikiPage*",
+            "http://factforge.net/*"],
+        preferredTypesOnly: false,
+        preferredPredicatesOnly: false,
+        includeSchema: true
+    };
+    // Static defaults before we do the actual dynamic default settings in initSettings
+    $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
+    $scope.defaultGraphConfig = {
+        id: 'default',
+        name: 'Easy graph',
+        startMode: 'search'
+    };
+
+    // TODO: check if this can be moved in the local scope and not in  the global one
+    $rootScope.key = "";
+
+
+    // =========================
+    // Public functions
+    // =========================
+
+    // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
+    // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
+    $scope.onopen = $scope.onclose = () => angular.noop();
+
+    $scope.goToHome = () => {
+        resetState();
+        $location.url("graphs-visualizations");
+    };
+
+    $scope.shouldShowSettings = () => {
+        return $scope.configLoaded && $scope.configLoaded.id === $scope.defaultGraphConfig.id;
+    };
+
+    $scope.shouldDisableSameAs = () => {
+        const sameAsCheckbox = $('#sameAsCheck');
+        if ($scope.settings && !$scope.settings['includeInferred'] && sameAsCheckbox.prop('checked')) {
+            sameAsCheckbox.prop("checked", false);
+            $scope.settings['sameAsState'] = false;
+        }
+
+        return $scope.settings && !$scope.settings['includeInferred'];
+    };
+
+    $scope.propertiesFilterFunc = (item) => {
+        return item.key.toLowerCase().indexOf($scope.propertiesQueryObj.query.toLowerCase()) >= 0;
+    };
+
+    $scope.toggleMoreInfo = (ev) => {
+        angular.element(ev.currentTarget).parent().next().toggle(200);
+        angular.element(ev.currentTarget).children('span').toggleClass("icon-caret-down").toggleClass("icon-caret-up");
+    };
+
+    $scope.copyToClipboard = (uri) => {
+        ModalService.openCopyToClipboardModal(uri);
+    };
+
+    $scope.resetSettings = () => {
+        $scope.settings = _.cloneDeep($scope.defaultSettings);
+        $scope.validateLinksLimit();
+        renderSettings();
+    };
+
+    $scope.changeLimit = (delta) => {
+        let linksLimit = $scope.settings.linksLimit + delta;
+        if (linksLimit < 1) {
+            linksLimit = 1;
+        }
+        if (linksLimit > 1000) {
+            linksLimit = 1000;
+        }
+        $scope.settings.linksLimit = linksLimit;
+    };
+
+    $scope.validateLinksLimit = () => {
+        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.settings.linksLimit);
+    };
+
+    $scope.showSettings = () => {
+        $scope.showInfoPanel = true;
+        $scope.showFilter = true;
+        $scope.showNodeInfo = false;
+        $scope.showPredicates = false;
+        if (!$scope.saveSettings) {
+            $scope.settings = _.cloneDeep($scope.defaultSettings);
+        } else {
+            $scope.settings = _.cloneDeep($scope.saveSettings);
+        }
+        renderSettings();
+    };
+
+    $scope.updateSettings = () => {
+        if ($scope.invalidLimit) {
+            toastr.error($scope.INVALID_LINKS_TOOLTIP, $scope.INVALID_LINKS_MSG);
+            return;
+        }
+        $scope.saveSettings = $scope.settings;
+        $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
+            return s['text'];
+        });
+
+        $scope.saveSettings.preferredTypes = _.map($scope.saveSettings['preferredTypesMap'], function (t) {
+            return t['text'];
+        });
+        $scope.saveSettings.rejectedTypes = _.map($scope.saveSettings['rejectedTypesMap'], function (t) {
+            return t['text'];
+        });
+
+        $scope.saveSettings.preferredPredicates = _.map($scope.saveSettings['preferredPredicatesMap'], function (t) {
+            return t['text'];
+        });
+        $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function (t) {
+            return t['text'];
+        });
+
+        // TODO
+        // reexpand root node
+        if ($scope.rootNodeIri) {
+            reExpandNode($scope.rootNodeIri);
+        } else if ($scope.queryResultsMode && $location.search().query) {
+            loadGraphForQuery($location.search().query,
+                $location.search().sameAs,
+                $location.search().inference);
+        } else if ($scope.configLoaded.startMode === 'query') {
+            loadGraphConfig($scope.configLoaded);
+        }
+
+        updatePredicateLabels();
+
+        $scope.showInfoPanel = false;
+        $scope.showFilter = false;
+
+        LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
+    };
+
+    // Graph Config
+    $scope.getGraphConfigs = (graphCallback) => {
+        GraphConfigRestService.getGraphConfigs()
+            .success(function (data) {
+                $scope.graphConfigs = data;
+                if (graphCallback) {
+                    graphCallback();
+                }
+            }).error(function (data) {
+            toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs.short.msg'));
+        });
+    };
+
+    $scope.findConfigById = function (configId) {
+        if (configId === $scope.defaultGraphConfig.id) {
+            return $scope.defaultGraphConfig;
+        }
+        return $.grep($scope.graphConfigs, function (e) {
+            return e.id === configId;
+        })[0];
+    };
+
+    $scope.easyGraphSearch = (iri) => {
+        $scope.configLoaded = $scope.defaultGraphConfig;
+        $scope.openUri(iri);
+    };
+
+    $scope.deleteConfig = (config) => {
+        ModalService.openSimpleModal({
+            title: $translate.instant('common.confirm'),
+            message: $translate.instant('graphexplore.delete.graph', {configName: config.name}),
+            warning: true
+        }).result
+            .then(function () {
+                GraphConfigRestService.deleteGraphConfig(config)
+                    .success(function () {
+                        $scope.getGraphConfigs();
+                        $scope.refreshSavedGraphs();
+                    }).error(function (data) {
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.cannot.delete.config'));
+                });
+            });
+    };
+
+    $scope.goToGraphConfig = (config) => {
+        pushHistory({config: config.id}, {config: config});
+        resetState();
+        loadGraphConfig(config);
+    };
+
+    $scope.replaceIRIWithPrefix = (iri) => {
+        const namespaces = $scope.namespaces;
+        const namespacePrefix = _.findLast(namespaces, function (o) {
+            return iri.indexOf(o.uri) === 0;
+        });
+        return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
+    };
+
+    // =========================
+    // Event handlers
+    // =========================
+
+    const subscriptions = [];
 
     $rootScope.$on('$translateChangeSuccess', function () {
         $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
@@ -47,58 +320,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     });
 
-    // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
-    // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
-    $scope.onopen = $scope.onclose = () => angular.noop();
-
-    // embedded and other params when the controller is initialized
-    if ($scope.embedded && ($location.search().query ||
-            $location.search().uri ||
-            $location.search().config ||
-            $location.search().saved)) {
-
-        $scope.noGoHome = true;
-    }
-
-    // creating datasource for class properties data
-    const datasource = {};
-    let position = 0;
-    let current = 0;
-    let type2color = {};
-    let colorIndex = 0;
-    const nodeLabelMinFontSize = 16; // pixels
-    // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
-    var zoomLayout = d3.zoom().scaleExtent([0.5, 10]);
-    var container;
-    var INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
-
-    function zoomed(event) {
-        if (GuidesService.isActive()) {
-            // disable zooming if a guide is active.
-            return;
-        }
-        transformValues = event.transform;
-        container.attr("transform", transformValues);
-    }
-
-    zoomLayout.on("zoom", zoomed);
-
-    let transformValues = INITIAL_CONTAINER_TRANSFORM;
-    // build svg element
-    const width = 1000;
-    const height = 1000;
-    let tipElement;
-    let openedLink;
-
-    $rootScope.key = "";
-
-    datasource.get = function (index, count, success) {
-        return UiScrollService.initLazyList(index, count, success, position, $scope.propertiesObj.items);
-    };
-
-    $rootScope.$watch(function () {
-        return $rootScope.key;
-    }, function () {
+    const rootScopeGenericWatcher = () => $rootScope.key;
+    const rootScopeGenericChangeHandler = () => {
         position = 0;
         _.each($scope.propertiesObj.items, function (item) {
             if ($rootScope.key > item) {
@@ -106,22 +329,46 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }
         });
         current++;
-    });
+    };
+    subscriptions.push($rootScope.$watch(rootScopeGenericWatcher, rootScopeGenericChangeHandler));
 
-    datasource.revision = function () {
-        return current;
+    const propertiesItemsChangeHandler = () => {
+        if (angular.isDefined($scope.propertiesObj.items) && $scope.propertiesObj.items.length > 0) {
+            $timeout(function () {
+                $scope.adapterContainer.adapter.reload();
+            }, 500);
+        }
+    };
+    subscriptions.push($scope.$watch('propertiesObj.items', propertiesItemsChangeHandler));
+
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
     };
 
-    $scope.datasource = datasource;
+    const destroyHandler = () => {
+        removeAllListeners();
+    };
 
-    // adapter implementation for ui-scroll directive
-    $scope.adapterContainer = {adapter: {remain: true}};
+    // Deregister the watcher when the scope/directive is destroyed
+    $scope.$on('$destroy', destroyHandler);
 
-    $scope.propertiesQueryObj.query = '';
-    $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
-    $scope.propertiesFilterFunc = propertiesFilterFunc;
+    // =========================
+    // Private functions
+    // =========================
 
-    $scope.resetState = function () {
+    const init = () => {
+        // TODO: move all initialization logic here
+    };
+
+    const pushHistory = (searchParams, state) => {
+        if ($scope.embedded) {
+            searchParams.embedded = true;
+        }
+        $location.search(searchParams);
+        $location.state(state);
+    };
+
+    const resetState = () => {
         $scope.searchVisible = false;
         $scope.nodeSelected = false;
         $scope.configLoaded = null;
@@ -136,59 +383,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         colorIndex = 0;
     };
 
-    $scope.pushHistory = function (searchParams, state) {
-        if ($scope.embedded) {
-            searchParams.embedded = true;
-        }
-        $location.search(searchParams);
-        $location.state(state);
-    };
-
-    $scope.goToHome = function () {
-        $scope.resetState();
-        $location.url("graphs-visualizations");
-    };
-
-    $scope.shouldShowSettings = function () {
-        return $scope.configLoaded && $scope.configLoaded.id === $scope.defaultGraphConfig.id;
-    };
-
-    $scope.shouldDisableSameAs = function () {
-        const sameAsCheckbox = $('#sameAsCheck');
-        if ($scope.settings && !$scope.settings['includeInferred'] && sameAsCheckbox.prop('checked')) {
-            sameAsCheckbox.prop("checked", false);
-            $scope.settings['sameAsState'] = false;
-        }
-
-        return $scope.settings && !$scope.settings['includeInferred'];
-    };
-
-    function propertiesFilterFunc(item) {
-        return item.key
-            .toLowerCase()
-            .indexOf($scope.propertiesQueryObj.query.toLowerCase()) >= 0;
-    }
-
-    $scope.$watch('propertiesObj.items', function () {
-        if (angular.isDefined($scope.propertiesObj.items) && $scope.propertiesObj.items.length > 0) {
-            $timeout(function () {
-                $scope.adapterContainer.adapter.reload();
-            }, 500);
-        }
-    });
-
-    $scope.toggleMoreInfo = function (ev) {
-        angular.element(ev.currentTarget).parent().next().toggle(200);
-        angular.element(ev.currentTarget).children('span').toggleClass("icon-caret-down").toggleClass("icon-caret-up");
-    };
-
-    function getSettings() {
+    const getSettings = () => {
         // When a guide is active we really want the default settings to make sure the user gets
         // the same as the author of the guide intended
         return GuidesService.isActive() ? $scope.defaultSettings : $scope.saveSettings;
-    }
+    };
 
-    function updatePredicateLabels() {
+    const updatePredicateLabels = () => {
         if (!getSettings()['showLinksText']) {
             d3.selectAll("svg .link-wrapper text")
                 .style("display", "none");
@@ -196,9 +397,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             d3.selectAll("svg .link-wrapper text")
                 .style("display", "block");
         }
-    }
+    };
 
-    function updateNodeLabels(nodeLabels) {
+    const updateNodeLabels = (nodeLabels) => {
         nodeLabels.each(function (d) {
             d.fontSize = D3.Text.calcFontSizeRaw(d.labels[0].label, d.size, nodeLabelMinFontSize, true);
             // TODO: get language and set it on the label html tag
@@ -241,42 +442,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 }
             });
         }, 50);
-    }
-
-    $scope.copyToClipboard = copyToClipboard;
-
-    function copyToClipboard(uri) {
-        ModalService.openCopyToClipboardModal(uri);
-    }
-
-    $scope.defaultSettings = {
-        linksLimit: 20,
-        includeInferred: true,
-        sameAsState: true,
-        languages: ['en'],
-        showLinksText: true,
-        preferredTypes: [],
-        rejectedTypes: [],
-        preferredPredicates: [],
-        rejectedPredicates: ["http://dbpedia.org/property/logo",
-                             "http://dbpedia.org/property/hasPhotoCollection",
-                             "http://dbpedia.org/property/website",
-                             "http://dbpedia.org/property/homepage",
-                             "http://dbpedia.org/ontology/thumbnail",
-                             "http://xmlns.com/foaf/0.1/depiction",
-                             "http://xmlns.com/foaf/0.1/homepage",
-                             "http://xmlns.com/foaf/0.1/mbox",
-                             "http://dbpedia.org/ontology/wikiPage*",
-                             "http://dbpedia.org/property/wikiPage*",
-                             "http://factforge.net/*"],
-        preferredTypesOnly: false,
-        preferredPredicatesOnly: false,
-        includeSchema: true
     };
-    // Static defaults before we do the actual dynamic default settings in initSettings
-    $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
 
-    function initSettings(principal) {
+    const initSettings = (principal) => {
         const settingsFromPrincipal = principal.appSettings;
 
         // New style settings from principal
@@ -301,13 +469,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         } else {
             $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
         }
-    }
+    };
 
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal())
-        .then((principal) => initSettings(principal));
-
-    function renderSettings() {
+    const renderSettings = () => {
         $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
             return {'text': v};
         });
@@ -327,49 +491,76 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
             return {'text': v};
         });
-    }
-
-    $scope.resetSettings = function () {
-        $scope.settings = _.cloneDeep($scope.defaultSettings);
-        $scope.validateLinksLimit();
-        renderSettings();
     };
 
-    $scope.changeLimit = function (delta) {
-        let linksLimit = $scope.settings.linksLimit + delta;
-        if (linksLimit < 1) {
-            linksLimit = 1;
-        }
-        if (linksLimit > 1000) {
-            linksLimit = 1000;
-        }
-        $scope.settings.linksLimit = linksLimit;
-    };
-
-    $scope.validateLinksLimit = function () {
-        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.settings.linksLimit);
-    }
-
-    $scope.showSettings = function () {
-        $scope.showInfoPanel = true;
-        $scope.showFilter = true;
-        $scope.showNodeInfo = false;
-        $scope.showPredicates = false;
-        if (!$scope.saveSettings) {
-            $scope.settings = _.cloneDeep($scope.defaultSettings);
-        } else {
-            $scope.settings = _.cloneDeep($scope.saveSettings);
-        }
-        renderSettings();
-    };
-
-    $scope.reExpandNode = function () {
+    const reExpandNode = () => {
         if ($scope.rootNodeIri) {
             $scope.$broadcast("onRootNodeChange", $scope.rootNodeIri);
         }
     };
 
-    const loadGraphForQuery = function (queryString, sameAsParam, inferredParam) {
+    const initGraphFromQueryParam = () => {
+        // view sparql
+        if ($location.search().query) {
+            $scope.searchVisible = false;
+            $scope.queryResultsMode = true;
+            loadGraphForQuery($location.search().query,
+                $location.search().sameAs,
+                $location.search().inference);
+        } else {
+            // broadcasted event from view resource directive to take input value
+            $scope.$on('onRootNodeChange', function (e, inputValue) {
+                $scope.loading = true;
+                const settings = getSettings();
+                if (angular.isDefined(inputValue)) {
+                    $scope.rootNodeIri = inputValue;
+                    $http({
+                        url: 'rest/explore-graph/node',
+                        method: 'GET',
+                        params: {
+                            iri: inputValue,
+                            config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
+                            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                            includeInferred: settings['includeInferred'],
+                            sameAsState: settings['sameAsState']
+                        }
+                    }).then(function (response) {
+                        $scope.nodeSelected = true;
+                        $scope.searchVisible = false;
+                        if (response.data.types === null) {
+                            response.data.types = "greyColor";
+                        }
+                        graph = new Graph();
+                        const rootNode = graph.addNode(response.data, width / 2, height / 2);
+
+                        transformValues = INITIAL_CONTAINER_TRANSFORM;
+
+                        expandNode(rootNode, true);
+                    }).catch(function (err) {
+                        $scope.loading = false;
+                        toastr.error(getError(err), $translate.instant('graphexplore.error.could.not.load.graph'));
+                    });
+                }
+            });
+        }
+
+        if ($location.search().uri) {
+            $scope.openUri($location.search().uri, true);
+        }
+
+        if ($location.search().saved) {
+            SavedGraphsRestService.getSavedGraph($location.search().saved)
+                .success(function (data) {
+                    $scope.loadSavedGraph(data);
+                })
+                .error(function (data) {
+                    const msg = getError(data);
+                    toastr.error(msg, $translate.instant('graphexplore.error.could.not.open'));
+                });
+        }
+    };
+
+    const loadGraphForQuery = (queryString, sameAsParam, inferredParam) => {
         const settings = getSettings();
         const sendSameAs = (sameAsParam === undefined) ? (settings['sameAsState']) : sameAsParam === true;
         const sendInferred = (inferredParam === undefined) ? (settings['includeInferred']) : inferredParam === true;
@@ -396,145 +587,210 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         });
     };
 
-    $scope.updateSettings = function () {
-        if ($scope.invalidLimit) {
-            toastr.error($scope.INVALID_LINKS_TOOLTIP, $scope.INVALID_LINKS_MSG);
-            return;
-        }
-        $scope.saveSettings = $scope.settings;
-        $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
-            return s['text'];
-        });
-
-        $scope.saveSettings.preferredTypes = _.map($scope.saveSettings['preferredTypesMap'], function (t) {
-            return t['text'];
-        });
-        $scope.saveSettings.rejectedTypes = _.map($scope.saveSettings['rejectedTypesMap'], function (t) {
-            return t['text'];
-        });
-
-        $scope.saveSettings.preferredPredicates = _.map($scope.saveSettings['preferredPredicatesMap'], function (t) {
-            return t['text'];
-        });
-        $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function (t) {
-            return t['text'];
-        });
-
-        // TODO
-        // reexpand root node
-        if ($scope.rootNodeIri) {
-            $scope.reExpandNode($scope.rootNodeIri);
-        } else if ($scope.queryResultsMode && $location.search().query) {
-            loadGraphForQuery($location.search().query,
-                $location.search().sameAs,
-                $location.search().inference);
-        } else if ($scope.configLoaded.startMode === 'query') {
-            $scope.loadGraphConfig($scope.configLoaded);
-        }
-
-        updatePredicateLabels();
-
-        $scope.showInfoPanel = false;
-        $scope.showFilter = false;
-
-        LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
-    };
-
-    $scope.showInfoPanel = false;
-
     /**
-     *  Removes brackets and serial commas from IRIs
-     *  when used to create ids for links and markers,
-     *  because elements with ids that contain such
-     *  are not valid XHTML and cause a host problems
-     *  when trying to style individual elements
-     * @param string
-     * @returns {*}
+     * Converts triple to link id or generates unique id (needed for arrows)
+     * @param {string} triple
+     * @param {boolean} tripleLike
+     * @return {string}
      */
-    function removeSpecialChars(string) {
-        return string.replace(/[()']/g, "");
-    }
-
-    /**
-     *  Converts triple to link id or generates unique id (needed for arrows)
-     * @param triple
-     * @param tripleLike
-     * @returns {string}
-     */
-    function convertTripleToLinkId(triple, tripleLike) {
-        let tripleParts = triple.split(' ');
+    const convertTripleToLinkId = (triple, tripleLike) => {
+        const tripleParts = triple.split(' ');
         if (tripleLike) {
             return [tripleParts[0], tripleParts[1], tripleParts[2]].join('>');
         }
         return [tripleParts[0], tripleParts[2]].join('>');
-    }
+    };
 
-    function convertLinkDataToLinkId(link) {
+    const convertLinkDataToLinkId = (link) => {
         return [link.source.iri, link.target.iri].join('>');
-    }
+    };
 
     /**
      *  If source or target of a link is a triple returns a x
      *  for the link, otherwise returns this of the node.
      *  Because tick is called before links are created we return node's x,
      *  which afterwards will be overridden
-     * @param node
-     * @returns {number|number|*}
+     * @param {object} node
+     * @return {number|number|*}
      */
-    function getNodeX(node) {
+    const getNodeX = (node) => {
         if (node.isTriple) {
-            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
+            const el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
             if (el && typeof el.__data__.x !== "undefined") {
                 return el.__data__.x;
             }
         }
         return node.x;
-    }
+    };
 
     /**
      *  If source or target of a link is a triple returns a y
      *  for the link, otherwise returns this of the node.
      *  Because tick is called before links are created we return node's y,
      *  which afterwards will be overridden
-     * @param node
-     * @returns {number|number|*}
+     * @param {object} node
+     * @return {number|number|*}
      */
-    function getNodeY(node) {
+    const getNodeY = (node) => {
         if (node.isTriple) {
-            let el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
+            const el = document.getElementById(removeSpecialChars(convertTripleToLinkId(node.iri)));
             if (el && typeof el.__data__.y !== "undefined") {
                 return el.__data__.y;
             }
         }
         return node.y;
-    }
+    };
 
-    function createTriple(value) {
-        let tripleParts = value.trim().split(' ');
+    const createTriple = (value) => {
+        const tripleParts = value.trim().split(' ');
         return `<<<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>>>`;
-    }
+    };
 
     /**
-     *  Creates unique arrow-marker id will allow change color and refX for particular one
-     * @param d
-     * @returns {string}
+     * Creates unique arrow-marker id will allow change color and refX for particular one
+     * @param {object} d
+     * @return {string}
      */
-    function createArrowMarkerUniqueID(d) {
-        let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
-        let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+    const createArrowMarkerUniqueID = (d) => {
+        const source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
+        const target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
         return removeSpecialChars(`${source}>${target}>marker`);
-    }
+    };
 
     /**
-     *  Filters nodes array on a given field
-     * @param iri
-     * @param array
-     * @returns {*}
+     * Filters nodes array on a given field
+     * @param {string} iri
+     * @param {Array} array
+     * @return {*}
      */
-    function distinctBy(iri, array) {
-        let keys = array.map(function (value) { return value[iri]; });
-        return array.filter(function (value, index) { return keys.indexOf(value[iri]) === index; });
+    const distinctBy = (iri, array) => {
+        const keys = array.map((value) => value[iri]);
+        return array.filter((value, index) => keys.indexOf(value[iri]) === index);
+    };
+
+    const loadConfigForId = (configId, successCallback) => {
+        if (configId === $scope.defaultGraphConfig.id) {
+            loadGraphConfig($scope.defaultGraphConfig);
+        } else {
+            GraphConfigRestService.getConfig(configId)
+                .success(function (data) {
+                    loadGraphConfig(data);
+                    successCallback();
+                })
+                .error(function (data) {
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.load.config', {configId: configId}));
+                });
+        }
+    };
+
+    const loadGraphConfig = (config) => {
+        $scope.configLoaded = config;
+        if (config.startMode === 'search') {
+            $scope.searchVisible = true;
+        } else if (config.startMode === 'node' && config.startIRI) {
+            $timeout(function () {
+                $scope.openUri(config.startIRI, true);
+            }, 0);
+        } else if (config.startMode === 'query' && config.startGraphQuery) {
+            $scope.loading = true;
+            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, getSettings()['linksLimit'], config.startQuerySameAs)
+                .then(function (response) {
+                    // Node drawing will turn off loader
+                    initGraphFromResponse(response);
+                }, function (data) {
+                    $scope.loading = false;
+                    toastr.error(getError(data), $translate.instant('graphexplore.error.graph.load'));
+                });
+        }
+    };
+
+    const loadGraphFromQueryParam = function () {
+        // view graph config
+        if ($location.search().config) {
+            loadConfigForId($location.search().config, initGraphFromQueryParam);
+        } else if ($location.search().query || $location.search().uri) {
+            loadGraphConfig($scope.defaultGraphConfig);
+            initGraphFromQueryParam();
+        } else {
+            initGraphFromQueryParam();
+        }
+    };
+
+    //////////////////////////
+    //////////////////////////
+    //////////////////////////
+    // TODO:
+    //////////////////////////
+    //////////////////////////
+    //////////////////////////
+
+    // Global
+    $window.onpopstate = function (event) {
+        resetState();
+
+        if (event.state) {
+            if (event.state.config) {
+                loadGraphConfig(event.state.config);
+                if (event.state.uri) {
+                    $scope.openUri(event.state.uri, true);
+                }
+            } else if (event.state.savedGraph) {
+                $scope.loadSavedGraph(event.state.savedGraph, true);
+            }
+        }
+    };
+
+    // embedded and other params when the controller is initialized
+    if ($scope.embedded && ($location.search().query ||
+            $location.search().uri ||
+            $location.search().config ||
+            $location.search().saved)) {
+
+        $scope.noGoHome = true;
     }
+
+    let position = 0;
+    let current = 0;
+    let type2color = {};
+    let colorIndex = 0;
+    const nodeLabelMinFontSize = 16; // in pixels
+    // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
+    const zoomLayout = d3.zoom().scaleExtent([0.5, 10]);
+    let container;
+    const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
+
+    function zoomed(event) {
+        if (GuidesService.isActive()) {
+            // disable zooming if a guide is active.
+            return;
+        }
+        transformValues = event.transform;
+        container.attr("transform", transformValues);
+    }
+
+    zoomLayout.on("zoom", zoomed);
+
+    let transformValues = INITIAL_CONTAINER_TRANSFORM;
+    // build svg element
+    const width = 1000;
+    const height = 1000;
+    let tipElement;
+    let openedLink;
+
+    // creating datasource for class properties data
+    $scope.datasource = {
+        get: function (index, count, success) {
+            return UiScrollService.initLazyList(index, count, success, position, $scope.propertiesObj.items);
+        },
+        revision: function () {
+            return current;
+        }
+    };
+
+    // Using $q.when to proper set values in view
+    $q.when($jwtAuth.getPrincipal()).then((principal) => initSettings(principal));
+
+    $scope.showInfoPanel = false;
 
     function Graph() {
         this.nodes = [];
@@ -860,194 +1116,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     let graph = new Graph();
 
-    $scope.defaultGraphConfig = {
-        id: 'default',
-        name: 'Easy graph',
-        startMode: 'search'
-    };
-
-    // Graph Config
-    $scope.getGraphConfigs = function (graphCallback) {
-        GraphConfigRestService.getGraphConfigs()
-            .success(function (data) {
-                $scope.graphConfigs = data;
-                if (graphCallback) {
-                    graphCallback();
-                }
-            }).error(function (data) {
-            toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs.short.msg'));
-        });
-    };
-
-    $scope.loadConfigForId = function (configId, successCallback) {
-        if (configId === $scope.defaultGraphConfig.id) {
-            $scope.loadGraphConfig($scope.defaultGraphConfig);
-        } else {
-            GraphConfigRestService.getConfig(configId)
-                .success(function (data) {
-                    $scope.loadGraphConfig(data);
-                    successCallback();
-                })
-                .error(function (data) {
-                    toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.load.config', {configId: configId}));
-                });
-        }
-    };
-
-    $scope.findConfigById = function (configId) {
-        if (configId === $scope.defaultGraphConfig.id) {
-            return $scope.defaultGraphConfig;
-        }
-        return $.grep($scope.graphConfigs, function (e) {
-            return e.id === configId;
-        })[0];
-    };
-
-    $scope.easyGraphSearch = function (iri) {
-        $scope.configLoaded = $scope.defaultGraphConfig;
-        $scope.openUri(iri);
-    };
-
-    $scope.loadGraphConfig = function (config) {
-        $scope.configLoaded = config;
-        if (config.startMode === 'search') {
-            $scope.searchVisible = true;
-        } else if (config.startMode === 'node' && config.startIRI) {
-            $timeout(function () {
-                $scope.openUri(config.startIRI, true);
-            }, 0);
-        } else if (config.startMode === 'query' && config.startGraphQuery) {
-            $scope.loading = true;
-            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, getSettings()['linksLimit'], config.startQuerySameAs)
-                .then(function (response) {
-                    // Node drawing will turn off loader
-                    initGraphFromResponse(response);
-                }, function (data) {
-                    $scope.loading = false;
-                    toastr.error(getError(data), $translate.instant('graphexplore.error.graph.load'));
-                });
-        }
-    };
-
-    $scope.deleteConfig = function (config) {
-        ModalService.openSimpleModal({
-            title: $translate.instant('common.confirm'),
-            message: $translate.instant('graphexplore.delete.graph', {configName: config.name}),
-            warning: true
-        }).result
-            .then(function () {
-                GraphConfigRestService.deleteGraphConfig(config)
-                    .success(function () {
-                        $scope.getGraphConfigs();
-                        $scope.refreshSavedGraphs();
-                    }).error(function (data) {
-                    toastr.error(getError(data), $translate.instant('graphexplore.error.cannot.delete.config'));
-                });
-            });
-    };
-
-    $scope.goToGraphConfig = function (config) {
-        $scope.pushHistory({config: config.id}, {config: config});
-        $scope.resetState();
-        $scope.loadGraphConfig(config);
-    };
-
-    $window.onpopstate = function (event) {
-        $scope.resetState();
-
-        if (event.state) {
-            if (event.state.config) {
-                $scope.loadGraphConfig(event.state.config);
-                if (event.state.uri) {
-                    $scope.openUri(event.state.uri, true);
-                }
-            } else if (event.state.savedGraph) {
-                $scope.loadSavedGraph(event.state.savedGraph, true);
-            }
-        }
-    };
-
-    const initGraphFromQueryParam = function () {
-        // view sparql
-        if ($location.search().query) {
-            $scope.searchVisible = false;
-            $scope.queryResultsMode = true;
-            loadGraphForQuery($location.search().query,
-                $location.search().sameAs,
-                $location.search().inference);
-        } else {
-            // broadcasted event from view resource directive to take input value
-            $scope.$on('onRootNodeChange', function (e, inputValue) {
-                $scope.loading = true;
-                const settings = getSettings();
-                if (angular.isDefined(inputValue)) {
-                    $scope.rootNodeIri = inputValue;
-                    $http({
-                        url: 'rest/explore-graph/node',
-                        method: 'GET',
-                        params: {
-                            iri: inputValue,
-                            config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
-                            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                            includeInferred: settings['includeInferred'],
-                            sameAsState: settings['sameAsState']
-                        }
-                    }).then(function (response) {
-                        $scope.nodeSelected = true;
-                        $scope.searchVisible = false;
-                        if (response.data.types === null) {
-                            response.data.types = "greyColor";
-                        }
-                        graph = new Graph();
-                        const rootNode = graph.addNode(response.data, width / 2, height / 2);
-
-                        transformValues = INITIAL_CONTAINER_TRANSFORM;
-
-                        expandNode(rootNode, true);
-                    }).catch(function (err) {
-                        $scope.loading = false;
-                        toastr.error(getError(err), $translate.instant('graphexplore.error.could.not.load.graph'));
-                    });
-                }
-            });
-        }
-
-        if ($location.search().uri) {
-            $scope.openUri($location.search().uri, true);
-        }
-
-        if ($location.search().saved) {
-            SavedGraphsRestService.getSavedGraph($location.search().saved)
-                .success(function (data) {
-                    $scope.loadSavedGraph(data);
-                })
-                .error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('graphexplore.error.could.not.open'));
-                });
-        }
-    };
-
-    const loadGraphFromQueryParam = function () {
-        // view graph config
-        if ($location.search().config) {
-            $scope.loadConfigForId($location.search().config, initGraphFromQueryParam);
-        } else if ($location.search().query || $location.search().uri) {
-            $scope.loadGraphConfig($scope.defaultGraphConfig);
-            initGraphFromQueryParam();
-        } else {
-            initGraphFromQueryParam();
-        }
-    };
-
-    $scope.replaceIRIWithPrefix = function (iri) {
-        const namespaces = $scope.namespaces;
-        const namespacePrefix = _.findLast(namespaces, function (o) {
-            return iri.indexOf(o.uri) === 0;
-        });
-        return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
-    };
-
     function expandPrefix(str, namespaces) {
         const ABS_URI_REGEX = /^<?(http|urn).*>?/;
         if (!ABS_URI_REGEX.test(str)) {
@@ -1109,7 +1177,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.isLicenseValid = function() {
         return $licenseService.isLicenseValid();
-    }
+    };
 
     // Flag to avoid calling repo init logic twice
     $scope.hasInitedRepository = false;
@@ -1166,7 +1234,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         // New repo set from dropdown, clear state and go to home page
         if (args.newRepo) {
-            $scope.resetState();
+            resetState();
             // Quick-n-dirty way to get rid of the existing vis
             $('.graph-visualization svg').empty();
 
@@ -1450,7 +1518,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .style("stroke-width", 1)
             .style("fill", "transparent")
             .style("marker-end", function (d) {
-                let targetArrowId = createArrowMarkerUniqueID(d);
+                const targetArrowId = createArrowMarkerUniqueID(d);
                 return `url(#${targetArrowId})`;
             });
 
@@ -1836,8 +1904,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             const source = $(this).attr("id").split(">")[0];
             const target = $(this).attr("id").split(">")[1];
             d3.selectAll('.link').each(function (link) {
-                let sourceId = removeSpecialChars(link.source.iri);
-                let targetId = removeSpecialChars(link.target.iri);
+                const sourceId = removeSpecialChars(link.source.iri);
+                const targetId = removeSpecialChars(link.target.iri);
                 if (sourceId === target && targetId === source) {
                     let twoWayLinkID = sourceId;
                     twoWayLinkID += ">";
@@ -1972,11 +2040,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
-        let linksCopy = [];
+        const linksCopy = [];
         const tripleLinksIt = graph.tripleLinksCopy.values();
         for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
-            let linkCopy = tripleLinksIt.next().value;
-            linkCopy.forEach(link => {
+            const linkCopy = tripleLinksIt.next().value;
+            linkCopy.forEach((link) => {
                 linksCopy.push(link);
             });
         }
@@ -1991,13 +2059,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         linksFound = _.filter(linksFound, function (newLink) {
             return newLink.source !== newLink.target;
         });
-        const nodesFromLinks = distinctBy('iri',_.union(_.flatten(_.map(response.data, function (link) {
+        const nodesFromLinks = distinctBy('iri', _.union(_.flatten(_.map(response.data, function (link) {
             return [
-                { iri: link.source,
-                  isTriple: link.isTripleSource },
-                {
-                  iri: link.target,
-                  isTriple: link.isTripleTarget }];
+                {iri: link.source, isTriple: link.isTripleSource},
+                {iri: link.target, isTriple: link.isTripleTarget}
+            ];
         }))));
         const existingNodes = _.map(graph.nodes, function (n) {
             return {
@@ -2007,8 +2073,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         });
         const tripleNodesIt = graph.tripleNodes.values();
         for (let i = 0; i < graph.tripleNodes.size; i++) {
-            let nodes = tripleNodesIt.next().value;
-            nodes.forEach(node => {
+            const nodes = tripleNodesIt.next().value;
+            nodes.forEach((node) => {
                 existingNodes.push({
                     iri: node.iri,
                     isTriple: node.isTriple
@@ -2274,7 +2340,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 .style("fill", "var(--primary-color)");
 
             this.copyURIIcon.on("click", function () {
-                copyToClipboard(node.iri);
+                $scope.copyToClipboard(node.iri);
                 removeMenuIfVisible();
                 actionsTip.hide();
             }).on('mouseover', function (event) {
@@ -2510,21 +2576,21 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         updatePredicatesColor('predicate', 'var(--primary-color-dark)', tripleNode);
         updatePredicatesColor('predicates', 'var(--primary-color-dark)', tripleNode);
 
-        let links = document.getElementsByClassName('link');
+        const links = document.getElementsByClassName('link');
         if (links) {
             _.each(links, function (link) {
-                let linkLink = link.__data__;
+                const linkLink = link.__data__;
                 if (linkLink.source.iri.indexOf(tripleNode.iri) >= 0 || linkLink.target.iri.indexOf(tripleNode.iri) >= 0) {
                     link.style.stroke = 'var(--primary-color-dark)';
                     link.style.strokeWidth = 4;
                 }
-            })
+            });
         }
 
-        let markers = document.getElementsByClassName('arrow-marker');
+        const markers = document.getElementsByClassName('arrow-marker');
         if (markers) {
             _.each(markers, function (marker) {
-                let markerLink = marker.__data__;
+                const markerLink = marker.__data__;
                 if (markerLink.source.iri.indexOf(tripleNode.iri) >= 0 || markerLink.target.iri.indexOf(tripleNode.iri) >= 0) {
                     marker.style.stroke = 'var(--primary-color-dark)';
                     if (!marker.__data__.target.isTriple) {
@@ -2538,22 +2604,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.clickLink = function (predData) {
         if (graph.tripleNodes.has(predData.linkId)) {
             revertElementsStyleToDefault();
-            let tripleNode = graph.tripleNodes.get(predData.linkId)[predData.nodeIndex];
+            const tripleNode = graph.tripleNodes.get(predData.linkId)[predData.nodeIndex];
             // Shows selected triple and its properties
             showNodeInfo(tripleNode);
             $scope.showPredicates = true;
 
-            let clickedEl = document.getElementById(predData.linkId + predData.nodeIndex);
+            const clickedEl = document.getElementById(predData.linkId + predData.nodeIndex);
             if (clickedEl) {
                 clickedEl.style.fontWeight = "bold";
             }
 
-            let nodeCopy = {};
+            const nodeCopy = {};
             const tripleLinksIt = graph.tripleLinksCopy.values();
             for (let i = 0; i < graph.tripleLinksCopy.size; i++) {
-                let links = tripleLinksIt.next().value;
+                const links = tripleLinksIt.next().value;
                 if (links.length > 1) {
-                    links.every(link => {
+                    links.every((link) => {
                         if (link.source.iri === tripleNode.iri) {
                             nodeCopy.iri = links[0].source.iri;
                             if (link.target.isTriple) {
@@ -2590,14 +2656,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             applyElementsStyleChanges(nodeCopy);
         }
-    }
+    };
 
     function updatePredicatesColor(className, color, tripleNode) {
-        let preds = document.getElementsByClassName(className);
+        const preds = document.getElementsByClassName(className);
 
         if (preds) {
             _.each(preds, function (pred) {
-                let predLink = pred.__data__;
+                const predLink = pred.__data__;
                 if (tripleNode) {
                     if (predLink.source.iri.indexOf(tripleNode.iri) >= 0 || predLink.target.iri.indexOf(tripleNode.iri) >= 0) {
                         pred.style.fill = color;
@@ -2614,28 +2680,28 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     pred.style.fill = color;
                     pred.textContent = getPredicate(predLink);
                 }
-            })
+            });
         }
     }
 
     function revertElementsStyleToDefault() {
         _.each($scope.predicates, function (pred) {
-            let currEl = document.getElementById(pred.linkId + pred.nodeIndex);
+            const currEl = document.getElementById(pred.linkId + pred.nodeIndex);
             if (currEl) {
                 currEl.style.fontWeight = "normal";
             }
         });
-        let links = document.getElementsByClassName('link');
+        const links = document.getElementsByClassName('link');
         if (links) {
             _.each(links, function (link) {
                 link.style.stroke = '#999';
                 link.style.strokeWidth = 1;
-            })
+            });
         }
         updatePredicatesColor('predicate', '');
         updatePredicatesColor('predicates', '');
 
-        let markers = document.getElementsByClassName('arrow-marker');
+        const markers = document.getElementsByClassName('arrow-marker');
 
         if (markers) {
             _.each(markers, function (marker) {
@@ -2650,13 +2716,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     function linkActions(event, d) {
         revertElementsStyleToDefault();
-        let linkId = convertLinkDataToLinkId(d);
+        const linkId = convertLinkDataToLinkId(d);
         if (d.predicates.length === 1 && graph.tripleNodes.has(linkId)) {
             openedLink = null;
-            let tripleNode = graph.tripleNodes.get(linkId)[0];
+            const tripleNode = graph.tripleNodes.get(linkId)[0];
             // If there is a triple in this link, show its properties
             if (clickedNode(tripleNode, this, event.button)) {
-                let nodeCopy = {};
+                const nodeCopy = {};
                 nodeCopy.iri = tripleNode.iri;
                 nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
                 applyElementsStyleChanges(nodeCopy);
@@ -2684,8 +2750,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         if ($scope.showPredicates) {
             $scope.predicates = _.map(d.predicates, function (p) {
-                let foundNodeIndex = getTripleNodeIndex(p, d);
-                let isPartOfTriple = foundNodeIndex > -1;
+                const foundNodeIndex = getTripleNodeIndex(p, d);
+                const isPartOfTriple = foundNodeIndex > -1;
                 return {
                     value: getShortPredicate(p),
                     partOfTriple: isPartOfTriple,
@@ -2698,16 +2764,16 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 
     function getTripleNode(triple) {
-        let linkId = convertTripleToLinkId(triple);
+        const linkId = convertTripleToLinkId(triple);
         if (graph.tripleNodes.has(linkId)) {
-            return graph.tripleNodes.get(linkId).find(el => el.iri === triple);
+            return graph.tripleNodes.get(linkId).find((el) => el.iri === triple);
         }
     }
 
     function getTripleNodeIndex(pred, d) {
-        let linkId = convertLinkDataToLinkId(d);
+        const linkId = convertLinkDataToLinkId(d);
         if (graph.tripleNodes.has(linkId)) {
-            return graph.tripleNodes.get(linkId).findIndex(el => el.iri.indexOf(pred) >= 0);
+            return graph.tripleNodes.get(linkId).findIndex((el) => el.iri.indexOf(pred) >= 0);
         } else {
             return -1;
         }
@@ -2790,7 +2856,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 searchParams.config = $scope.configLoaded.id;
             }
             searchParams.uri = uri;
-            $scope.pushHistory(searchParams, {uri: uri, config: $scope.configLoaded});
+            pushHistory(searchParams, {uri: uri, config: $scope.configLoaded});
         }
         $scope.$broadcast("onRootNodeChange", uri);
     };
@@ -2916,13 +2982,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $location.url("?saved=" + graphToLoad.id);
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
-            $scope.pushHistory({saved: graphToLoad.id}, {savedGraph: graphToLoad});
+            pushHistory({saved: graphToLoad.id}, {savedGraph: graphToLoad});
         }
     };
 
     $scope.copyToClipboardSavedGraph = function (savedGraph) {
         const url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
-        copyToClipboard(url);
+        $scope.copyToClipboard(url);
     };
 
     function deleteSavedGraphHttp(savedGraph) {
@@ -2997,7 +3063,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     $scope.getLiteralFromPropValue = function (value) {
         return value.substring(value.indexOf(':') + 1);
-    }
+    };
 }
 
 SaveGraphModalCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$translate'];
