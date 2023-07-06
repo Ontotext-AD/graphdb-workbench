@@ -6,6 +6,7 @@ import {SimilarityResultType} from "../../models/similarity/similarity-result-ty
 import {SimilarityIndexStatus} from "../../models/similarity/similarity-index-status";
 import {SimilarityIndexType} from "../../models/similarity/similarity-index-type";
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
+import {SimilaritySearch} from "../../models/similarity/similarity-search";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -99,7 +100,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         // this is either the search term or the iri for the subject
         let termOrSubject = uri;
 
-        $scope.lastSearch = {};
+        $scope.lastSearch = new SimilaritySearch();
         $scope.lastSearch.type = searchType;
 
         if (searchType === SimilaritySearchType.SEARCH_ENTITY_PREDICATE) {
@@ -158,7 +159,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     $scope.viewSearchQuery = () => {
         let queryTemplate;
-        if ($scope.lastSearch.type === 'searchAnalogical') {
+        if (SimilaritySearchType.SEARCH_ANALOGICAL === $scope.lastSearch.type) {
             queryTemplate = ($scope.selectedSimilarityIndex.analogicalQuery) ? $scope.selectedSimilarityIndex.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
             queryTemplate = ($scope.selectedSimilarityIndex.searchQuery) ? $scope.selectedSimilarityIndex.searchQuery : $scope.searchQueries[$scope.selectedSimilarityIndex.type];
