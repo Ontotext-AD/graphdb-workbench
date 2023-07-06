@@ -109,8 +109,8 @@
 						    <span ng-if="similaritySearchType.isSearchDocumentType(searchType)">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_TERM">{{'term' | translate}}</a>
-						    <a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_DOCUMENT">{{'document' | translate}}</a>
+						    <a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_TERM)">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_DOCUMENT)">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
@@ -125,8 +125,8 @@
 								<span ng-if="similarityResultType.DOCUMENT_RESULT === resultType">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="resultType = similarityResultType.TERM_RESULT">{{'term' | translate}}</a>
-						    <a class="dropdown-item" ng-click="resultType = similarityResultType.DOCUMENT_RESULT">{{'document' | translate}}</a>
+						    <a class="dropdown-item" ng-click="updateSearchType(similarityResultType.TERM_RESULT)">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="updateSearchType(similarityResultType.DOCUMENT_RESULT)">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
@@ -144,9 +144,9 @@
 							<span ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">{{'analogical.label' | translate}}</span>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ENTITY">{{'similar.subject.label' | translate}}</a>
-							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ENTITY_PREDICATE">{{'object.label' | translate}}</a>
-							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ANALOGICAL">{{'analogical.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_ENTITY)">{{'similar.subject.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_ENTITY_PREDICATE)">{{'object.label' | translate}}</a>
+							<a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_ANALOGICAL)">{{'analogical.label' | translate}}</a>
 						</div>
 					</div>
 				</div>
