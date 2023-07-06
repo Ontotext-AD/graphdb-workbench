@@ -268,6 +268,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         return _.trim(iri, "<>");
     };
 
+    $scope.updateSearchType = (searchType) => {
+        $scope.searchType = searchType;
+    };
+
     // =========================
     // Private functions
     // =========================
