@@ -83,12 +83,12 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             $scope.lastSearch = undefined;
             $scope.selectedSimilarityIndex = similarityIndex;
         }
-        if (SimilarityIndexType.TEXT === similarityIndex.type) {
+        if (similarityIndex.isTextType()) {
             $scope.searchType = SimilaritySearchType.SEARCH_TERM;
-        } else if (SimilarityIndexType.PREDICATION === similarityIndex.type) {
+        } else if (similarityIndex.isPredicationType()) {
             $scope.searchType = SimilaritySearchType.SEARCH_ENTITY;
         }
-        if (SimilarityIndexType.TEXT === similarityIndex.type || SimilarityIndexType.PREDICATION === similarityIndex.type) {
+        if (similarityIndex.isTextType() || similarityIndex.isPredicationType()) {
             $('#indexes-table').collapse('hide');
         }
     };
@@ -127,8 +127,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             query: sparqlQuery,
             $index: iriForQuery(PREFIX_INSTANCE + similarityIndex.name),
             $query: termOrSubject,
-            $searchType: iriForQuery((SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
-            $resultType: iriForQuery(SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
+            $searchType: iriForQuery(($scope.selectedSimilarityIndex.isTextType() ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
+            $resultType: iriForQuery($scope.selectedSimilarityIndex.isTextType() ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
             $parameters: literalForQuery(parameters)
         };
 
@@ -174,8 +174,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         const replacedQuery = queryTemplate
             .replace('?index', prefix + ':' + $scope.selectedSimilarityIndex.name)
             .replace('?query', $scope.lastSearch.termOrSubject)
-            .replace('?searchType', (SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? ':' : 'psi:') + ($scope.lastSearch.type === 'searchEntityPredicate' ? 'searchEntity' : $scope.lastSearch.type))
-            .replace('?resultType', SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? ':' + $scope.resultType : 'psi:entityResult')
+            .replace('?searchType', ($scope.selectedSimilarityIndex.isTextType() ? ':' : 'psi:') + ($scope.lastSearch.isSearchEntityPredicateType() ? SimilaritySearchType.SEARCH_ENTITY : $scope.lastSearch.type))
+            .replace('?resultType', $scope.selectedSimilarityIndex.isTextType() ? ':' + $scope.resultType : 'psi:entityResult')
             .replace('?parameters', literalForQuery((!$scope.searchParameters) ? '' : $scope.searchParameters))
             .replace('?psiPredicate', $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE))
             .replace('?givenSubject', iriForQuery($scope.analogicalSubject))
