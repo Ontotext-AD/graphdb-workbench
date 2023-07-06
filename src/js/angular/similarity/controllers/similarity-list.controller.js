@@ -5,6 +5,7 @@ import {SimilaritySearchType} from "../../models/similarity/similarity-search-ty
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
 import {SimilarityIndexStatus} from "../../models/similarity/similarity-index-status";
 import {SimilarityIndexType} from "../../models/similarity/similarity-index-type";
+import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -23,7 +24,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     $scope.loading = false;
 
-    $scope.selected = undefined;
+    $scope.selectedSimilarityIndex = undefined;
 
     $scope.similarityIndexStatus = SimilarityIndexStatus;
 
@@ -52,7 +53,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
         SimilarityRestService.getIndexes()
             .success(function (data) {
-                $scope.similarityIndexes = data;
+                $scope.similarityIndexes = mapIndexesResponseToSimilarityIndex(data);
             })
             .error(function (data) {
                 const msg = getError(data);
@@ -60,7 +61,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             });
     };
 
-    $scope.updateSimilarityIndexes = () => {
+    $scope.reloadSimilarityIndexes = () => {
         $scope.loadSimilarityIndexes();
         if (!$scope.loadSimilarityIndexesTimer) {
             $scope.loadSimilarityIndexesTimer = $interval(function () {
@@ -72,26 +73,26 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         }
     };
 
-    $scope.goToSimilarityIndex = (index) => {
-        if (!(SimilarityIndexStatus.BUILT === index.status || SimilarityIndexStatus.OUTDATED === index.status || SimilarityIndexStatus.REBUILDING === index.status)) {
+    $scope.goToSimilarityIndex = (similarityIndex) => {
+        if (!(SimilarityIndexStatus.BUILT === similarityIndex.status || SimilarityIndexStatus.OUTDATED === similarityIndex.status || SimilarityIndexStatus.REBUILDING === similarityIndex.status)) {
             return;
         }
         $scope.empty = true;
-        if ($scope.selected !== index) {
+        if ($scope.selectedSimilarityIndex !== similarityIndex) {
             $scope.lastSearch = undefined;
-            $scope.selected = index;
+            $scope.selectedSimilarityIndex = similarityIndex;
         }
-        if (SimilarityIndexType.TEXT === index.type) {
+        if (SimilarityIndexType.TEXT === similarityIndex.type) {
             $scope.searchType = SimilaritySearchType.SEARCH_TERM;
-        } else if (SimilarityIndexType.PREDICATION === index.type) {
+        } else if (SimilarityIndexType.PREDICATION === similarityIndex.type) {
             $scope.searchType = SimilaritySearchType.SEARCH_ENTITY;
         }
-        if (SimilarityIndexType.TEXT === index.type || SimilarityIndexType.PREDICATION === index.type) {
+        if (SimilarityIndexType.TEXT === similarityIndex.type || SimilarityIndexType.PREDICATION === similarityIndex.type) {
             $('#indexes-table').collapse('hide');
         }
     };
 
-    $scope.performSearch = (index, uri, searchType, resultType, parameters) => {
+    $scope.performSearch = (similarityIndex, uri, searchType, resultType, parameters) => {
 
         toggleOntoLoader(true);
 
@@ -117,16 +118,16 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         const headers = {Accept: 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8'};
         let sparqlQuery;
         if (searchType === SimilaritySearchType.SEARCH_ANALOGICAL) {
-            sparqlQuery = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
+            sparqlQuery = ($scope.selectedSimilarityIndex.analogicalQuery) ? $scope.selectedSimilarityIndex.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
-            sparqlQuery = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
+            sparqlQuery = ($scope.selectedSimilarityIndex.searchQuery) ? $scope.selectedSimilarityIndex.searchQuery : $scope.searchQueries[$scope.selectedSimilarityIndex.type];
         }
         const sendData = {
             query: sparqlQuery,
-            $index: iriForQuery(PREFIX_INSTANCE + index),
+            $index: iriForQuery(PREFIX_INSTANCE + similarityIndex.name),
             $query: termOrSubject,
-            $searchType: iriForQuery((SimilarityIndexType.TEXT === $scope.selected.type ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
-            $resultType: iriForQuery(SimilarityIndexType.TEXT === $scope.selected.type ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
+            $searchType: iriForQuery((SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.SEARCH_ENTITY_PREDICATE === searchType ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
+            $resultType: iriForQuery(SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
             $parameters: literalForQuery(parameters)
         };
 
@@ -158,9 +159,9 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     $scope.viewSearchQuery = () => {
         let queryTemplate;
         if ($scope.lastSearch.type === 'searchAnalogical') {
-            queryTemplate = ($scope.selected.analogicalQuery) ? $scope.selected.analogicalQuery : $scope.searchQueries['analogical'];
+            queryTemplate = ($scope.selectedSimilarityIndex.analogicalQuery) ? $scope.selectedSimilarityIndex.analogicalQuery : $scope.searchQueries['analogical'];
         } else {
-            queryTemplate = ($scope.selected.searchQuery) ? $scope.selected.searchQuery : $scope.searchQueries[$scope.selected.type];
+            queryTemplate = ($scope.selectedSimilarityIndex.searchQuery) ? $scope.selectedSimilarityIndex.searchQuery : $scope.searchQueries[$scope.selectedSimilarityIndex.type];
         }
 
         //replace template prefix for PREFIX_INSTANCE in the view mode with actual prefix from the query
@@ -170,10 +171,10 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         prefix = tokens == null ? "similarity-index" : tokens[0].substring(0, tokens[0].indexOf(':'));
 
         const replacedQuery = queryTemplate
-            .replace('?index', prefix + ':' + $scope.selected.name)
+            .replace('?index', prefix + ':' + $scope.selectedSimilarityIndex.name)
             .replace('?query', $scope.lastSearch.termOrSubject)
-            .replace('?searchType', (SimilarityIndexType.TEXT === $scope.selected.type ? ':' : 'psi:') + ($scope.lastSearch.type === 'searchEntityPredicate' ? 'searchEntity' : $scope.lastSearch.type))
-            .replace('?resultType', SimilarityIndexType.TEXT === $scope.selected.type ? ':' + $scope.resultType : 'psi:entityResult')
+            .replace('?searchType', (SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? ':' : 'psi:') + ($scope.lastSearch.type === 'searchEntityPredicate' ? 'searchEntity' : $scope.lastSearch.type))
+            .replace('?resultType', SimilarityIndexType.TEXT === $scope.selectedSimilarityIndex.type ? ':' + $scope.resultType : 'psi:entityResult')
             .replace('?parameters', literalForQuery((!$scope.searchParameters) ? '' : $scope.searchParameters))
             .replace('?psiPredicate', $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE))
             .replace('?givenSubject', iriForQuery($scope.analogicalSubject))
@@ -191,14 +192,14 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         });
     };
 
-    $scope.deleteIndex = (index) => {
+    $scope.deleteSimilarityIndex = (similarityIndex) => {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
-            message: $translate.instant('similarity.delete.index.warning', {name: index.name}),
+            message: $translate.instant('similarity.delete.index.warning', {name: similarityIndex.name}),
             warning: true
         }).result
             .then(function () {
-                SimilarityRestService.deleteIndex(index)
+                SimilarityRestService.deleteIndex(similarityIndex)
                     .then(function () {
                         $scope.loadSimilarityIndexes();
                     }, function (err) {
@@ -272,13 +273,13 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
     const init = () => {
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
-            if ($licenseService.isLicenseValid()) {
-                $scope.updateSimilarityIndexes();
-            }
             $scope.canEditRepo = $scope.canWriteActiveRepo();
             $scope.activeRepository = activeRepository;
             $scope.isGraphDBRepository = checkIsGraphDBRepository();
             if ($scope.isGraphDBRepository) {
+                if ($licenseService.isLicenseValid()) {
+                    $scope.reloadSimilarityIndexes();
+                }
                 loadSearchQueries();
                 initYasr();
             }
