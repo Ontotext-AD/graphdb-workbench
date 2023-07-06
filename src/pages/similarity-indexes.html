@@ -106,8 +106,8 @@
 					<div class="btn-group">
 						<div class="dropdown">
 						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						    <span ng-if="similaritySearchType.SEARCH_TERM === searchType">{{'term' | translate}}</span>
-						    <span ng-if="similaritySearchType.SEARCH_DOCUMENT === searchType">{{'document' | translate}}</span>
+						    <span ng-if="similaritySearchType.isSearchTermType(searchType)">{{'term' | translate}}</span>
+						    <span ng-if="similaritySearchType.isSearchDocumentType(searchType)">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						    <a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_TERM">{{'term' | translate}}</a>
@@ -140,9 +140,9 @@
 				<div class="btn-group">
 					<div class="dropdown">
 						<button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span ng-if="similaritySearchType.SEARCH_ENTITY === searchType">{{'similar.subject.label' | translate}}</span>
-							<span ng-if="similaritySearchType.SEARCH_ENTITY_PREDICATE === searchType">{{'object.label' | translate}}</span>
-							<span ng-if="similaritySearchType.SEARCH_ANALOGICAL === searchType">{{'analogical.label' | translate}}</span>
+							<span ng-if="similaritySearchType.isSearchEntityType(searchType)">{{'similar.subject.label' | translate}}</span>
+							<span ng-if="similaritySearchType.isSearchEntityPredicateType(searchType)">{{'object.label' | translate}}</span>
+							<span ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">{{'analogical.label' | translate}}</span>
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<a class="dropdown-item" ng-click="searchType = similaritySearchType.SEARCH_ENTITY">{{'similar.subject.label' | translate}}</a>
@@ -154,7 +154,7 @@
 			</div>
 
 			<search-resource-input
-					ng-show="searchType != 'searchEntityPredicate' && similaritySearchType.SEARCH_ANALOGICAL !== searchType"
+					ng-show="!similaritySearchType.isSearchEntityPredicateType() && !similaritySearchType.isSearchAnalogicalType(searchType)"
 					namespacespromise="getNamespacesPromise"
 					autocompletepromisestatus="getAutocompletePromise"
 					placeholder="{{'search.rdf.resources.for.rdf.entity.placeholder' | translate}}"
@@ -166,7 +166,7 @@
 					empty="empty">
 			</search-resource-input>
 
-			<div class="row" ng-show="similaritySearchType.SEARCH_ENTITY_PREDICATE === searchType">
+			<div class="row" ng-show="similaritySearchType.isSearchEntityPredicateType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -197,7 +197,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="similaritySearchType.SEARCH_ANALOGICAL === searchType">
+			<div class="row" ng-show="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -227,7 +227,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="similaritySearchType.SEARCH_ANALOGICAL === searchType">
+			<div class="row" ng-show="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-12 mt-2">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -265,17 +265,17 @@
 
 	<div class="card search-results" ng-show="lastSearch">
 		<div class="card-block">
-				<em ng-show="lastSearch.type != 'searchAnalogical'">{{'results.for.label' | translate}}
-					<a ng-show="lastSearch.type == 'searchDocumentID' || lastSearch.type == 'searchEntity' || lastSearch.type == 'searchEntityPredicate'"
+				<em ng-show="!lastSearch.isSearchAnalogicalType()">{{'results.for.label' | translate}}
+					<a ng-show="lastSearch.isSearchDocumentType() || lastSearch.isSearchEntityType() || lastSearch.isSearchEntityPredicateType()'"
 					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" rel="noopener" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
 
-					<span ng-show="similaritySearchType.SEARCH_ENTITY_PREDICATE === lastSearch.type"> + <a title="{{lastSearch.predicate}}" target="_blank"
+					<span ng-show="lastSearch.isSearchEntityPredicateType()"> + <a title="{{lastSearch.predicate}}" target="_blank"
 					   class="uri" href="resource?uri={{lastSearch.predicate}}">{{lastSearch.predicate}}</a> -></span>
 
-					<span ng-show="lastSearch.type == 'searchTerm'">"{{lastSearch.termOrSubject}}"</span>
+					<span ng-show="lastSearch.isSearchTermType()">"{{lastSearch.termOrSubject}}"</span>
 				</em>
 
-				<em ng-show="similaritySearchType.SEARCH_ANALOGICAL === lastSearch.type">
+				<em ng-show="lastSearch.isSearchAnalogicalType()">
 					If <a title="{{analogicalSubject}}" class="uri" href="resource?uri={{analogicalSubject}}" rel="noopener" target="_blank">{{analogicalSubject}}</a>
 
 					-> <a title="{{analogicalObject}}" rel="noopener" target="_blank" class="uri" href="resource?uri={{analogicalObject}}">{{analogicalObject}}</a>
