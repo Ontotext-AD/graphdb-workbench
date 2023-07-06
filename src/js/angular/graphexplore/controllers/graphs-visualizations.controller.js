@@ -29,7 +29,6 @@ GraphsVisualizationsCtrl.$inject = [
     "$licenseService",
     "toastr",
     "$timeout",
-    "$http",
     "ClassInstanceDetailsService",
     "AutocompleteRestService",
     "$q",
@@ -43,6 +42,7 @@ GraphsVisualizationsCtrl.$inject = [
     "LSKeys",
     "SavedGraphsRestService",
     "GraphConfigRestService",
+    "GraphDataRestService",
     "RDF4JRepositoriesRestService",
     "$translate",
     "GuidesService"
@@ -55,7 +55,6 @@ function GraphsVisualizationsCtrl(
     $licenseService,
     toastr,
     $timeout,
-    $http,
     ClassInstanceDetailsService,
     AutocompleteRestService,
     $q,
@@ -69,6 +68,7 @@ function GraphsVisualizationsCtrl(
     LSKeys,
     SavedGraphsRestService,
     GraphConfigRestService,
+    GraphDataRestService,
     RDF4JRepositoriesRestService,
     $translate,
     GuidesService
@@ -95,7 +95,8 @@ function GraphsVisualizationsCtrl(
     $scope.datasource = undefined;
     // adapter implementation for ui-scroll directive
     $scope.adapterContainer = {adapter: {remain: true}};
-
+    // Flag to avoid calling repo init logic twice
+    $scope.hasInitedRepository = false;
     $scope.defaultSettings = {
         linksLimit: 20,
         includeInferred: true,
@@ -320,6 +321,34 @@ function GraphsVisualizationsCtrl(
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     });
 
+    $scope.$on('autocompleteStatus', function () {
+        checkAutocompleteStatus();
+    });
+
+    $scope.$on('repositoryIsSet', function (event, args) {
+        // New repo set from dropdown, clear init state
+        if (args.newRepo) {
+            $scope.hasInitedRepository = false;
+        }
+
+        initForRepository(args.newRepo);
+
+        // New repo set from dropdown, clear state and go to home page
+        if (args.newRepo) {
+            resetState();
+            // Quick-n-dirty way to get rid of the existing vis
+            $('.graph-visualization svg').empty();
+
+            // When we come from the sparql view and then change the repo though the dropdown,
+            // should goToHome and reinit the view, for the search to view on the home page
+            if ($location.search().query) {
+                $scope.goToHome();
+                initGraphFromQueryParam();
+            }
+
+        }
+    });
+
     const rootScopeGenericWatcher = () => $rootScope.key;
     const rootScopeGenericChangeHandler = () => {
         position = 0;
@@ -514,16 +543,12 @@ function GraphsVisualizationsCtrl(
                 const settings = getSettings();
                 if (angular.isDefined(inputValue)) {
                     $scope.rootNodeIri = inputValue;
-                    $http({
-                        url: 'rest/explore-graph/node',
-                        method: 'GET',
-                        params: {
-                            iri: inputValue,
-                            config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
-                            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                            includeInferred: settings['includeInferred'],
-                            sameAsState: settings['sameAsState']
-                        }
+                    GraphDataRestService.getInstanceNode({
+                        iri: inputValue,
+                        config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
+                        languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                        includeInferred: settings['includeInferred'],
+                        sameAsState: settings['sameAsState']
                     }).then(function (response) {
                         $scope.nodeSelected = true;
                         $scope.searchVisible = false;
@@ -567,19 +592,12 @@ function GraphsVisualizationsCtrl(
         const sendSameAs = (sameAsParam === undefined) ? (settings['sameAsState']) : sameAsParam === true;
         const sendInferred = (inferredParam === undefined) ? (settings['includeInferred']) : inferredParam === true;
         $scope.loading = true;
-        $http({
-            url: 'rest/explore-graph/graph',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                query: queryString,
-                linksLimit: settings['linksLimit'],
-                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                includeInferred: sendInferred,
-                sameAsState: sendSameAs
-            }
+        GraphDataRestService.updateGraph({
+            query: queryString,
+            linksLimit: settings['linksLimit'],
+            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+            includeInferred: sendInferred,
+            sameAsState: sendSameAs
         }).then(function (response) {
             // Node draw will turn off loader
             initGraphFromResponse(response);
@@ -717,14 +735,6 @@ function GraphsVisualizationsCtrl(
             initGraphFromQueryParam();
         }
     };
-
-    //////////////////////////
-    //////////////////////////
-    //////////////////////////
-    // TODO:
-    //////////////////////////
-    //////////////////////////
-    //////////////////////////
 
     // Global
     $window.onpopstate = function (event) {
@@ -1170,9 +1180,6 @@ function GraphsVisualizationsCtrl(
         return $licenseService.isLicenseValid();
     };
 
-    // Flag to avoid calling repo init logic twice
-    $scope.hasInitedRepository = false;
-
     // This method may be called twice - once by us explicitly and once by the repositoryInit event.
     // In some race conditions getActiveRepository() will be already set when we enter it the first
     // time but then we'll be called again by the event, so we need the above flag to avoid double
@@ -1210,34 +1217,6 @@ function GraphsVisualizationsCtrl(
             $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
     }
-
-    $scope.$on('autocompleteStatus', function () {
-        checkAutocompleteStatus();
-    });
-
-    $scope.$on('repositoryIsSet', function (event, args) {
-        // New repo set from dropdown, clear init state
-        if (args.newRepo) {
-            $scope.hasInitedRepository = false;
-        }
-
-        initForRepository(args.newRepo);
-
-        // New repo set from dropdown, clear state and go to home page
-        if (args.newRepo) {
-            resetState();
-            // Quick-n-dirty way to get rid of the existing vis
-            $('.graph-visualization svg').empty();
-
-            // When we come from the sparql view and then change the repo though the dropdown,
-            // should goToHome and reinit the view, for the search to view on the home page
-            if ($location.search().query) {
-                $scope.goToHome();
-                initGraphFromQueryParam();
-            }
-
-        }
-    });
 
     initForRepository();
 
@@ -1934,7 +1913,6 @@ function GraphsVisualizationsCtrl(
         force.start();
     }
 
-
     function updateAlphaInScope() {
         // other code can use the value of d3alpha to determine when the force layout has settled
         $rootScope.d3alpha = force.alpha();
@@ -2139,16 +2117,12 @@ function GraphsVisualizationsCtrl(
             const settings = getSettings();
 
             _.forEach(newNodes, function (newNode, index) {
-                promises.push($http({
-                    url: 'rest/explore-graph/node',
-                    method: 'GET',
-                    params: {
-                        iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
-                        config: $scope.configLoaded.id,
-                        languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                        includeInferred: settings['includeInferred'],
-                        sameAsState: settings['sameAsState']
-                    }
+                promises.push(GraphDataRestService.getInstanceNode({
+                    iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
+                    config: $scope.configLoaded.id,
+                    languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+                    includeInferred: settings['includeInferred'],
+                    sameAsState: settings['sameAsState']
                 }).then(function (res) {
                     // Save the data for later
                     newNodesData[index] = res.data;
@@ -2189,23 +2163,19 @@ function GraphsVisualizationsCtrl(
 
         const settings = getSettings();
         const expandIri = d.iri;
-        $http({
-            url: 'rest/explore-graph/links',
-            method: 'GET',
-            params: {
-                iri: expandIri, linksLimit: settings['linksLimit'],
-                includeInferred: settings['includeInferred'],
-                config: $scope.configLoaded.id,
-                preferredTypes: !$scope.shouldShowSettings() ? [] : settings['preferredTypes'],
-                rejectedTypes: !$scope.shouldShowSettings() ? [] : settings['rejectedTypes'],
-                preferredPredicates: !$scope.shouldShowSettings() ? [] : settings['preferredPredicates'],
-                rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates'],
-                preferredTypesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredTypesOnly'],
-                preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredPredicatesOnly'],
-                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                sameAsState: settings['sameAsState'],
-                includeSchema: settings['includeSchema']
-            }
+        GraphDataRestService.getInstanceNodeLinks({
+            iri: expandIri, linksLimit: settings['linksLimit'],
+            includeInferred: settings['includeInferred'],
+            config: $scope.configLoaded.id,
+            preferredTypes: !$scope.shouldShowSettings() ? [] : settings['preferredTypes'],
+            rejectedTypes: !$scope.shouldShowSettings() ? [] : settings['rejectedTypes'],
+            preferredPredicates: !$scope.shouldShowSettings() ? [] : settings['preferredPredicates'],
+            rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates'],
+            preferredTypesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredTypesOnly'],
+            preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredPredicatesOnly'],
+            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+            sameAsState: settings['sameAsState'],
+            includeSchema: settings['includeSchema']
         }).then(function (response) {
             renderGraphFromResponse(response, d, isStartNode);
         }, function (response) {
@@ -2332,7 +2302,6 @@ function GraphsVisualizationsCtrl(
                     }, 500);
                 });
             }
-
 
             this.focusIcon = d3.select('.menu-events').append("g")
                 .attr("class", "focus-icon")
@@ -2559,15 +2528,13 @@ function GraphsVisualizationsCtrl(
         $scope.propertiesQueryObj.query = '';
         $scope.dataNodeKeysQuery = '';
         const settings = getSettings();
-        $http.get('rest/explore-graph/properties', {
-            params: {
-                iri: d.isTriple ? createTriple(d.iri) : d.iri,
-                config: $scope.configLoaded.id,
-                languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
-                includeInferred: settings['includeInferred'],
-                sameAsState: settings['sameAsState'],
-                rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates']
-            }
+        GraphDataRestService.getProperties({
+            iri: d.isTriple ? createTriple(d.iri) : d.iri,
+            config: $scope.configLoaded.id,
+            languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
+            includeInferred: settings['includeInferred'],
+            sameAsState: settings['sameAsState'],
+            rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates']
         }).then(function (response) {
             $scope.data = _.mapKeys(response.data, function (value, key) {
                 return $scope.replaceIRIWithPrefix(key);
