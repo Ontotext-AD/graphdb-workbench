@@ -383,20 +383,20 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
 
     subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
 
-    const setEmptyHandler = () => {
+    const searchTypeChangeHandler = () => {
         $scope.empty = true;
     };
 
-    subscriptions.push($scope.$watch('searchType', setEmptyHandler));
+    subscriptions.push($scope.$watch('searchType', searchTypeChangeHandler));
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
         if (activeRepo) {
             init();
-            repoIsInitialized();
+            activeRepositoryChangeHandler();
         }
     };
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler);
+    const activeRepositoryChangeHandler = $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler);
 }
