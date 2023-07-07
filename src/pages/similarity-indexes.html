@@ -288,13 +288,8 @@
 			<button type="button" class="btn btn-link" ng-click="viewSearchQuery()">{{'view.sparql.query.title' | translate}}</button>
 
 
-			<div class="yasr-container" ng-show="lastSearch">
-				<div id="yasr">
-					<div class="yasr" id="yasr-inner">
-						<div class='yasr_results'></div>
-					</div>
-				</div>
-
+			<div class="yasr-container pt-1" ng-if="lastSearch">
+                <yasgui-component ng-if="!loading" id="query-editor" yasgui-config="yasguiConfig""></yasgui-component>
 				<div id="results-loader" class="ot-loader opacity-hide" onto-loader size="100"></div>
 			</div>
 		</div>
