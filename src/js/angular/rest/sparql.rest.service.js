@@ -14,7 +14,8 @@ function SparqlRestService($http) {
         addKnownPrefixes,
         editSavedQuery,
         deleteSavedQuery,
-        addNewSavedQuery
+        addNewSavedQuery,
+        getQueryResult
     };
 
     /**
@@ -113,5 +114,14 @@ function SparqlRestService($http) {
 
     function addKnownPrefixes(prefixes) {
         return $http.post(`${SPARQL_ENDPOINT}/add-known-prefixes`, prefixes);
+    }
+
+    function getQueryResult(repositoryId, sendData, accept) {
+        return $http.get(`repositories/${repositoryId}`, {
+            params: sendData,
+            headers: {
+                Accept: accept
+            }
+        });
     }
 }
