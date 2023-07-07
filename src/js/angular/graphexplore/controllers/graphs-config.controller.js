@@ -8,14 +8,57 @@ angular
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
-GraphConfigCtrl.$inject = ['$scope', '$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', '$filter', 'GraphConfigRestService', 'AutocompleteRestService', '$routeParams', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+GraphConfigCtrl.$inject = [
+    '$scope',
+    '$timeout',
+    '$location',
+    'toastr',
+    '$repositories',
+    'SparqlRestService',
+    '$filter',
+    'GraphConfigRestService',
+    'AutocompleteRestService',
+    '$routeParams',
+    'Notifications',
+    'RDF4JRepositoriesRestService',
+    'LocalStorageAdapter',
+    'LSKeys',
+    '$translate'
+];
 
-function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, SparqlRestService, $filter, GraphConfigRestService, AutocompleteRestService, $routeParams, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate) {
+function GraphConfigCtrl(
+    $scope,
+    $timeout,
+    $location,
+    toastr,
+    $repositories,
+    SparqlRestService,
+    $filter,
+    GraphConfigRestService,
+    AutocompleteRestService,
+    $routeParams,
+    Notifications,
+    RDF4JRepositoriesRestService,
+    LocalStorageAdapter,
+    LSKeys,
+    $translate
+) {
+
+    // =========================
+    // Public fields
+    // =========================
 
     $scope.page = 1;
     $scope.totalPages = 5;
-
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP) === 1;
+    $scope.newConfig = {startQueryIncludeInferred: true, startQuerySameAs: true};
+    $scope.newConfig.startMode = 'search';
+    $scope.isUpdate = false;
+    $scope.shared = false;
+
+    // =========================
+    // Public functions
+    // =========================
 
     $scope.toggleHelp = function (value) {
         if (value === undefined) {
@@ -30,7 +73,6 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         }
     };
 
-    var selectedFixedNodeChanged;
     $scope.fixedVisualCallback = function (uri, label) {
         $scope.newConfig.startIRI = uri;
         $scope.newConfig.startIRILabel = label;
@@ -56,7 +98,22 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         }
     };
 
-    const getGraphConfigSamples = function () {
+    $scope.encodeQuery = function (query) {
+        return encodeURIComponent(query);
+    };
+
+    // =========================
+    // Event handlers
+    // =========================
+
+    // =========================
+    // Private functions
+    // =========================
+
+    let selectedFixedNodeChanged;
+    const configName = $routeParams.configName;
+
+    const getGraphConfigSamples = () => {
         GraphConfigRestService.getGraphConfigSamples()
             .success(function (data) {
                 $scope.samples = _.filter(data, function (s) {
@@ -73,36 +130,11 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
             });
     };
 
-    const configName = $routeParams.configName;
-    $scope.newConfig = {startQueryIncludeInferred: true, startQuerySameAs: true};
-    $scope.newConfig.startMode = 'search';
-    $scope.isUpdate = false;
-    $scope.shared = false;
-
-    $scope.encodeQuery = function (query) {
-        return encodeURIComponent(query);
+    const showInvalidMsg = (message) => {
+        toastr.warning(message);
     };
 
-    function showInvalidMsg(message) {
-        toastr.warning(message);
-    }
-
-    if (configName) {
-        $scope.isUpdate = true;
-        GraphConfigRestService.getConfig(configName)
-            .success(function (data) {
-                $scope.newConfig = data;
-                initForConfig();
-            })
-            .error(function (data) {
-                toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
-            });
-    } else {
-        $scope.isUpdate = false;
-        initForConfig();
-    }
-
-    function getQueryForCurrentPage(config) {
+    const getQueryForCurrentPage = (config) => {
         let query;
 
         if (config.startMode === 'query' && $scope.page === 1) {
@@ -118,9 +150,9 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         }
 
         return angular.isDefined(query) ? query : '';
-    }
+    };
 
-    function initForConfig() {
+    const initForConfig = () => {
         getGraphConfigSamples();
         $scope.createGraphConfig = function () {
             GraphConfigRestService.createGraphConfig($scope.newConfig)
@@ -231,7 +263,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         }
 
         $scope.saveGraphConfig = function () {
-           broadcastAddStartFixedNodeEvent();
+            broadcastAddStartFixedNodeEvent();
 
             if (checkPageAndMode() && !selectedFixedNodeChanged) {
                 return;
@@ -333,6 +365,25 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         });
     }
 
+    // =========================
+    // Initialization
+    // =========================
+
+    if (configName) {
+        $scope.isUpdate = true;
+        GraphConfigRestService.getConfig(configName)
+            .success(function (data) {
+                $scope.newConfig = data;
+                initForConfig();
+            })
+            .error(function (data) {
+                toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
+            });
+    } else {
+        $scope.isUpdate = false;
+        initForConfig();
+    }
+
     // DOWN HERE WE KEEP EVERYTHING PURELY QUERY EDITOR (MOSTLY BORROWED FROM query-editor.controller.js)
     // But Why? Can't we reuse it instead of borrow?
 
@@ -346,7 +397,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
         sameAs: $scope.newConfig.startQuerySameAs
     };
 
-    $scope.resetCurrentTabConfig = function () {
+    $scope.resetCurrentTabConfig = () => {
         $scope.currentTabConfig = {
             pageSize: 100, // page limit 100 as this is only used for preview
             page: 1,
@@ -427,7 +478,6 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
 
         return message;
     }
-
 
     // start of query editor results orientation operations
     function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
