@@ -186,9 +186,8 @@ describe('Similarity screen validation', () => {
             searchIndex('Neal');
 
             // Then I expect search results to be displayed
-            cy.get('.search-results').should('be.visible');
             // And showing 20 results
-            cy.get('.resultsTable tbody tr').should('have.length', 20);
+            YasrSteps.getResults().should('have.length', 20);
         });
     });
 
