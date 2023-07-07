@@ -12,9 +12,37 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$uibModal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate', '$http'];
+SimilarityCtrl.$inject = [
+    '$scope',
+    '$interval',
+    'toastr',
+    '$repositories',
+    '$licenseService',
+    '$location',
+    'ModalService',
+    '$uibModal',
+    'SimilarityRestService',
+    'AutocompleteRestService',
+    'productInfo',
+    'RDF4JRepositoriesRestService',
+    '$translate',
+    '$http'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $uibModal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate, $http) {
+function SimilarityCtrl(
+    $scope,
+    $interval,
+    toastr,
+    $repositories,
+    $licenseService,
+    $location,
+    ModalService,
+    $uibModal,
+    SimilarityRestService,
+    AutocompleteRestService,
+    productInfo,
+    RDF4JRepositoriesRestService,
+    $translate,
+    $http) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -272,9 +300,47 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         $scope.searchType = searchType;
     };
 
+    $scope.editSimilarityIndex = (similarityIndex) => {
+        navigateToEditPage(similarityIndex);
+    };
+
+    $scope.cloneSimilataryIndex = (similarityIndex) => {
+       navigateToEditPage(similarityIndex, true);
+    };
+
+    $scope.setPsiSubject = (psiSubject) => {
+        $scope.psiSubject = psiSubject;
+    };
+
+    $scope.setAnalogicalSubject = (analogicalSubject) => {
+        $scope.analogicalSubject = analogicalSubject;
+    };
+
+    $scope.setAnalogicalObject = (analogicalObject) => {
+        $scope.analogicalObject = analogicalObject;
+    };
+
     // =========================
     // Private functions
     // =========================
+
+    const navigateToEditPage = (similarityIndex, isClone = false) => {
+        const params = {
+            selectQuery: similarityIndex.selectQuery,
+            options: similarityIndex.options,
+            name: similarityIndex.name,
+            editSearchQuery: !isClone,
+            infer: similarityIndex.infer,
+            sameAs: similarityIndex.sameAs,
+            stopList: similarityIndex.stopList,
+            type: similarityIndex.type,
+            analyzer: similarityIndex.analyzer,
+            searchQuery: similarityIndex.searchQuery ? similarityIndex.searchQuery : '',
+            analogicalQuery: similarityIndex.analogicalQuery ? similarityIndex.analogicalQuery : ''
+        };
+        $location.path('similarity/index/create').search(params);
+    };
+
     const init = () => {
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
