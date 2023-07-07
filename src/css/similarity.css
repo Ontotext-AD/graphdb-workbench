@@ -7,11 +7,3 @@
     display: block;
     margin: 0 auto;
 }
-
-.yasr .dataTables_filter {
-    display: none;
-}
-
-.yasr-container {
-    margin-top: 10px;
-}
