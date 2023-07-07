@@ -835,12 +835,12 @@ function GraphsVisualizationsCtrl(
         this.addAndMatchLinks = function (newLinks) {
             const nodes = this.nodes;
             Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
-            for (let key of graph.tripleLinksCopy.keys()) {
+            for (const key of graph.tripleLinksCopy.keys()) {
                 if (graph.tripleLinksCopy.get(key).length === 1) {
                     graph.tripleLinksCopy.delete(key);
                 }
             }
-            this.links = this.links.filter(link => link !== null);
+            this.links = this.links.filter((link) => link !== null);
             this.computeConnectedness();
         };
 
@@ -877,28 +877,28 @@ function GraphsVisualizationsCtrl(
         this.linksPredicates = linksPredicates;
 
         /**
-         *  Removes generated triple links and related nodes
-         * @param triplesToRemove
+         * Removes generated triple links and related nodes
+         * @param {Array} triplesToRemove
          */
         this.removeTriples = function (triplesToRemove) {
-            let targetTriples = [];
+            const targetTriples = [];
             if (this.tripleNodes.size > 0) {
                 triplesToRemove.forEach((source) => {
                     if (this.tripleNodes.has(source)) {
                         this.tripleNodes.delete(source);
                         this.links = _.reject(this.links, function (l) {
-                            let sourceSplit = source.split('>');
-                            let lSource = convertTripleToLinkId(l.source.iri);
-                            let lTarget = convertTripleToLinkId(l.target.iri);
+                            const sourceSplit = source.split('>');
+                            const lSource = convertTripleToLinkId(l.source.iri);
+                            const lTarget = convertTripleToLinkId(l.target.iri);
                             // Handle triple targets
                             if (lSource === source && graph.tripleNodes.delete(lTarget)) {
-                                let targetSplit = lTarget.split('>');
+                                const targetSplit = lTarget.split('>');
                                 targetTriples.push({
                                     source: targetSplit[0],
                                     target: targetSplit[1]
                                 });
                             }
-                            let isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
+                            const isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
                             if (isRejected) {
                                 graph.tripleLinksCopy.delete(`${lSource}>${lTarget}`);
                                 graph.tripleLinksCopy.delete(`${lTarget}>${lSource}`);
@@ -915,18 +915,18 @@ function GraphsVisualizationsCtrl(
                     return l.source.iri === target.source && l.target.iri === target.target;
                 });
             });
-        }
+        };
 
         this.removeNode = function (d) {
-            let triplesToRemove = [];
+            const triplesToRemove = [];
             this.links = _.reject(this.links, function (l) {
-                let isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
+                const isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
                 if (isRejected) {
                     if (l.target.isTriple) {
                         triplesToRemove.push(convertTripleToLinkId(l.target.iri));
                     }
                     if (!l.source.isTriple && !l.target.isTriple) {
-                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'));
                     }
                 }
                 return isRejected;
@@ -946,7 +946,7 @@ function GraphsVisualizationsCtrl(
         };
 
         this.removeNodeLeafLinks = function (d) {
-            let triplesToRemove = [];
+            const triplesToRemove = [];
             let links = this.links;
             this.links = _.reject(this.links, function (l) {
                 let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
@@ -970,7 +970,7 @@ function GraphsVisualizationsCtrl(
                         triplesToRemove.push(convertTripleToLinkId(l.target.iri));
                     }
                     if (!l.source.isTriple && !l.target.isTriple) {
-                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'));
                     }
                 }
                 return isRejected;
@@ -990,16 +990,16 @@ function GraphsVisualizationsCtrl(
             triple.x = x;
             triple.y = y;
             triple.weight = 0;
-            let key = convertTripleToLinkId(triple.iri);
+            const key = convertTripleToLinkId(triple.iri);
             if (!this.tripleNodes.has(key)) {
                 triple.weight = 10;
                 this.tripleNodes.set(key, [triple]);
             } else {
-                let value = this.tripleNodes.get(key);
+                const value = this.tripleNodes.get(key);
                 value.push(triple);
                 this.tripleNodes.set(key, value);
             }
-        }
+        };
 
         function matchLinksToNodes(newLinks, nodes) {
             return _.map(newLinks, function (link) {
@@ -1010,27 +1010,27 @@ function GraphsVisualizationsCtrl(
                 } else {
                     source = _.find(nodes, function (o) {
                         return o.iri === link.source;
-                    })
+                    });
                 }
                 if (link.isTripleTarget) {
                     target = getTripleNode(link.target);
                 } else {
                     target = _.find(nodes, function (o) {
                         return o.iri === link.target;
-                    })
+                    });
                 }
-                let matchedLink = {
+                const matchedLink = {
                     "source": source,
                     "target": target,
                     "predicates": link.predicates
                 };
                 // make copy of links with triples in them
                 if (link.isTripleSource || link.isTripleTarget) {
-                    let sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
-                    let targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
-                    let linkId = `${sourceId}>${targetId}`;
+                    const sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
+                    const targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
+                    const linkId = `${sourceId}>${targetId}`;
                     if (graph.tripleLinksCopy.has(linkId)) {
-                        let value = graph.tripleLinksCopy.get(linkId);
+                        const value = graph.tripleLinksCopy.get(linkId);
                         value[0].predicates.push(...matchedLink.predicates);
                         value.push(matchedLink);
                         graph.tripleLinksCopy.set(linkId, value);
@@ -1824,12 +1824,12 @@ function GraphsVisualizationsCtrl(
 
             // recalculate predicates attributes
             predicate.attr("x", function (d) {
-                let sourceX = getNodeX(d.source);
-                let targetX = getNodeX(d.target);
+                const sourceX = getNodeX(d.source);
+                const targetX = getNodeX(d.target);
                 return d.x = (sourceX + targetX) * 0.5;
             }).attr("y", function (d) {
-                let sourceY = getNodeY(d.source);
-                let targetY = getNodeY(d.target);
+                const sourceY = getNodeY(d.source);
+                const targetY = getNodeY(d.target);
                 return d.y = (sourceY + targetY) * 0.5;
             }).attr("transform", function (d) {
                 const angle = findAngleBetweenNodes(d, d.direction);
