@@ -7,6 +7,7 @@ import 'angular/similarity/controllers/create-index.controller';
 import 'angular/core/directives/queryeditor/sparql-tab.directive';
 import 'angular/core/directives/queryeditor/query-editor.controller';
 import 'angular/core/directives/queryeditor/query-editor.directive';
+import 'angular/core/directives/yasgui-component/yasgui-component.directive';
 
 angular.module('graphdb.framework.similarity', [
     'graphdb.framework.core.controllers',
@@ -16,5 +17,6 @@ angular.module('graphdb.framework.similarity', [
     'graphdb.framework.similarity.controllers.list',
     'graphdb.framework.core.directives.queryeditor.controllers',
     'graphdb.framework.core.directives.queryeditor.sparqltab',
-    'graphdb.framework.core.directives.queryeditor.queryeditor'
+    'graphdb.framework.core.directives.queryeditor.queryeditor',
+    'graphdb.framework.core.directives.yasgui-component'
 ]);

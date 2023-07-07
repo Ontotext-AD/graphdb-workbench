@@ -1,12 +1,11 @@
-import YASR from 'lib/yasr.bundled';
 import {decodeHTML} from "../../../../app";
-import {YasrUtils} from "../../utils/yasr-utils";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
 import {SimilarityIndexStatus} from "../../models/similarity/similarity-index-status";
 import {SimilarityIndexType} from "../../models/similarity/similarity-index-type";
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
+import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])
@@ -71,8 +70,6 @@ function SimilarityCtrl(
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
     $scope.loadSimilarityIndexesTimer = undefined;
-
-    let yasr;
 
     // =========================
     // Public functions
@@ -283,7 +280,6 @@ function SimilarityCtrl(
                     $scope.reloadSimilarityIndexes();
                 }
                 loadSearchQueries();
-                initYasr();
             }
         }
     };
@@ -292,26 +288,6 @@ function SimilarityCtrl(
         SimilarityRestService.getSearchQueries()
             .success((data) => $scope.searchQueries = data)
             .error((data) => toastr.error(getError(data), $translate.instant('similarity.could.not.get.search.queries.error')));
-    };
-
-    const createYasr = (usedPrefixes) => {
-        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-            //this way, the URLs in the results are prettified using the defined prefixes
-            getUsedPrefixes: $scope.usedPrefixes,
-            persistency: false,
-            hideHeader: true,
-            pluginsOptions: YasrUtils.getYasrConfiguration()
-        });
-    };
-
-    const initYasr = () => {
-        $repositories.getPrefixes($repositories.getActiveRepository())
-            .then((usedPrefixes) => {
-                checkAutocompleteStatus();
-                createYasr(usedPrefixes);
-            }).catch((error) => {
-            toastr.error(getError(error), $translate.instant('get.namespaces.error.msg'));
-        });
     };
 
     const literalForQuery = (literal) => {
@@ -364,11 +340,6 @@ function SimilarityCtrl(
 
     const destroyHandler = () => {
         removeAllListeners();
-
-        if (yasr) {
-            yasr.destroy();
-        }
-
         if ($scope.loadSimilarityIndexesTimer) {
             $interval.cancel($scope.loadSimilarityIndexesTimer);
         }
@@ -459,7 +430,16 @@ function SimilarityCtrl(
     };
 
     const setSimilarityResponse = (response) => {
-        // TODO change old YASR with new one.
-        yasr.setResponse(response.data, response.status, response.statusText);
+        $scope.yasguiConfig = {
+            showEditorTabs: false,
+            showToolbar: false,
+            showResultTabs: false,
+            showQueryButton: false,
+            componentId: 'similarity-list-component',
+            maxPersistentResponseSize: 0,
+            render: RenderingMode.YASR,
+            sparqlResponse: response.data
+        };
     };
+
 }
