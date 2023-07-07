@@ -67,14 +67,16 @@
 							</span>
                             <span class="actions-bar hovered-item">
 								<a class="btn btn-link edit-query-btn"
-                                   ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()" href="similarity/index/create?selectQuery={{encodeURIComponent(similarityIndex.selectQuery)}}&options={{similarityIndex.options}}&editSearchQuery&name={{similarityIndex.name}}&infer={{similarityIndex.infer}}&sameAs={{similarityIndex.sameAs}}&stopList={{similarityIndex.stopList}}&type={{similarityIndex.type}}&analyzer={{similarityIndex.analyzer}}&searchQuery={{similarityIndex.searchQuery ? encodeURIComponent(similarityIndex.searchQuery) : ''}}&analogicalQuery={{similarityIndex.analogicalQuery ? encodeURIComponent(similarityIndex.analogicalQuery) : ''}}"
+                                   ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()"
+                                   ng-click="editSimilarityIndex(similarityIndex)"
                                         gdb-tooltip="{{similarityIndex.isPredicationType() ? 'edit.search.analogical.query.title' : 'edit.search.query.title' | translate}}">
 									<em class="icon-edit"></em>
 								</a>
 							</span>
 
-							<a class="btn btn-link clone-index-btn" ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
-                               href="similarity/index/create?selectQuery={{encodeURIComponent(similarityIndex.selectQuery)}}&options={{similarityIndex.options}}&name={{similarityIndex.name}}&infer={{similarityIndex.infer}}&sameAs={{similarityIndex.sameAs}}&stopList={{similarityIndex.stopList}}&type={{similarityIndex.type}}&analyzer={{similarityIndex.analyzer}}&searchQuery={{similarityIndex.searchQuery ? encodeURIComponent(similarityIndex.searchQuery) : ''}}&analogicalQuery={{similarityIndex.analogicalQuery ? encodeURIComponent(similarityIndex.analogicalQuery) : ''}}"
+							<a class="btn btn-link clone-index-btn"
+                               ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
+                               ng-click="cloneSimilataryIndex(similarityIndex)"
 							   gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
 									<em class="icon-copy"></em>
 							</a>
@@ -173,7 +175,7 @@
 							placeholder="{{'search.rdf.for.subject.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
-							visual-callback="psiSubject = uri"
+							visual-callback="setPsiSubject(uri)"
 							uri-validation="true"
 							preserve-input="true"
 							empty="empty">
@@ -204,7 +206,7 @@
 							placeholder="{{'search.rdf.for.given.subject.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
-							visual-callback="analogicalSubject = uri"
+							visual-callback="setAnalogicalSubject(uri)"
 							uri-validation="true"
 							preserve-input="true"
 							empty="empty">
@@ -218,7 +220,7 @@
 							placeholder="{{'search.rdf.for.given.object.placeholder' | translate}}"
 							text-button=""
 							visual-button=""
-							visual-callback="analogicalObject = uri"
+							visual-callback="setAnalogicalObject(uri)"
 							uri-validation="true"
 							preserve-input="true"
 							empty="empty">
@@ -265,7 +267,7 @@
 	<div class="card search-results" ng-show="lastSearch">
 		<div class="card-block">
 				<em ng-show="!lastSearch.isSearchAnalogicalType()">{{'results.for.label' | translate}}
-					<a ng-show="lastSearch.isSearchDocumentType() || lastSearch.isSearchEntityType() || lastSearch.isSearchEntityPredicateType()'"
+					<a ng-show="lastSearch.isSearchDocumentType() || lastSearch.isSearchEntityType() || lastSearch.isSearchEntityPredicateType()"
 					   title="{{trimIRI(lastSearch.termOrSubject)}}" class="uri" href="resource?uri={{trimIRI(lastSearch.termOrSubject)}}" rel="noopener" target="_blank">{{trimIRI(lastSearch.termOrSubject)}}</a>
 
 					<span ng-show="lastSearch.isSearchEntityPredicateType()"> + <a title="{{lastSearch.predicate}}" target="_blank"
@@ -288,7 +290,6 @@
 
 			<div class="yasr-container" ng-show="lastSearch">
 				<div id="yasr">
-					<!--<uib-pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
 					<div class="yasr" id="yasr-inner">
 						<div class='yasr_results'></div>
 					</div>
