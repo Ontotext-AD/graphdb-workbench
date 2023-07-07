@@ -460,7 +460,7 @@ describe('Similarity screen validation', () => {
     }
 
     function waitForIndexBuildingIndicatorToHide() {
-        cy.get('.similarity-index-building-loader').should('not.be.visible');
+        cy.get('.similarity-index-building-loader').should('not.exist');
     }
 
     function verifyQueryIsChanged() {
