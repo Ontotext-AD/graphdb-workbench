@@ -26,7 +26,8 @@ SimilarityCtrl.$inject = [
     'productInfo',
     'RDF4JRepositoriesRestService',
     '$translate',
-    '$http'];
+    'SparqlRestService'
+];
 
 function SimilarityCtrl(
     $scope,
@@ -42,10 +43,11 @@ function SimilarityCtrl(
     productInfo,
     RDF4JRepositoriesRestService,
     $translate,
-    $http) {
+    SparqlRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
+    const acceptContent = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
     const PREFIX_INSTANCE = PREFIX + 'instance/';
     const ANY_PREDICATE = PREFIX_PREDICATION + 'any';
     $scope.pluginName = 'similarity';
@@ -75,19 +77,13 @@ function SimilarityCtrl(
     // =========================
     // Public functions
     // =========================
-    // loads similarity indexes
     $scope.loadSimilarityIndexes = () => {
         if (!$scope.isGraphDBRepository || !$scope.pluginIsActive) {
             return;
         }
         SimilarityRestService.getIndexes()
-            .success(function (data) {
-                $scope.similarityIndexes = mapIndexesResponseToSimilarityIndex(data);
-            })
-            .error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('similarity.could.not.get.indexes.error'));
-            });
+            .success((data) => $scope.similarityIndexes = mapIndexesResponseToSimilarityIndex(data))
+            .error((error) => toastr.error(getError(error), $translate.instant('similarity.could.not.get.indexes.error')));
     };
 
     $scope.reloadSimilarityIndexes = () => {
@@ -122,67 +118,13 @@ function SimilarityCtrl(
     };
 
     $scope.performSearch = (similarityIndex, uri, searchType, resultType, parameters) => {
-
         toggleOntoLoader(true);
-
-        // this is either the search term or the iri for the subject
-        let termOrSubject = uri;
-
-        $scope.lastSearch = new SimilaritySearch();
-        $scope.lastSearch.type = searchType;
-
-        if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
-            termOrSubject = $scope.psiSubject;
-            $scope.lastSearch.predicate = uri;
-        }
-
-        if (SimilaritySearchType.isSearchTermType(searchType)) {
-            termOrSubject = literalForQuery(termOrSubject);
-        } else {
-            termOrSubject = iriForQuery(termOrSubject);
-        }
-
-        $scope.lastSearch.termOrSubject = termOrSubject;
-
-        const headers = {Accept: 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8'};
-        let sparqlQuery;
-        if (SimilaritySearchType.isSearchAnalogicalType(searchType)) {
-            sparqlQuery = ($scope.selectedSimilarityIndex.analogicalQuery) ? $scope.selectedSimilarityIndex.analogicalQuery : $scope.searchQueries['analogical'];
-        } else {
-            sparqlQuery = ($scope.selectedSimilarityIndex.searchQuery) ? $scope.selectedSimilarityIndex.searchQuery : $scope.searchQueries[$scope.selectedSimilarityIndex.type];
-        }
-        const sendData = {
-            query: sparqlQuery,
-            $index: iriForQuery(PREFIX_INSTANCE + similarityIndex.name),
-            $query: termOrSubject,
-            $searchType: iriForQuery(($scope.selectedSimilarityIndex.isTextType() ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.isSearchEntityPredicateType(searchType) ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
-            $resultType: iriForQuery($scope.selectedSimilarityIndex.isTextType() ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
-            $parameters: literalForQuery(parameters)
-        };
-
-        if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
-            sendData.$psiPredicate = $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE);
-        }
-
-        if (SimilaritySearchType.isSearchAnalogicalType(searchType)) {
-            $scope.searchSubject = uri;
-            sendData.$givenSubject = iriForQuery($scope.analogicalSubject);
-            sendData.$givenObject = iriForQuery($scope.analogicalObject);
-            sendData.$searchSubject = iriForQuery(uri);
-        }
-
-        $http({
-            method: 'GET',
-            url: 'repositories/' + $repositories.getActiveRepository(),
-            params: sendData,
-            headers: headers
-        }).then(function ({data, textStatus, jqXhrOrErrorString}) {
-            toggleOntoLoader(false);
-            yasr.setResponse(data, textStatus, jqXhrOrErrorString);
-        }).catch(function (data) {
-            toastr.error(getError(data), $translate.instant('similarity.get.resource.error'));
-            toggleOntoLoader(false);
-        });
+        updateLastSearch(searchType, uri);
+        const sendData = buildSendData(similarityIndex, uri, searchType, resultType, parameters);
+        SparqlRestService.getQueryResult($repositories.getActiveRepository(), sendData, acceptContent)
+            .then((response) => setSimilarityResponse(response))
+            .catch((error) => toastr.error(getError(error.data), $translate.instant('similarity.get.resource.error')))
+            .finally(() => toggleOntoLoader(false));
     };
 
     $scope.viewSearchQuery = () => {
@@ -214,9 +156,7 @@ function SimilarityCtrl(
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
-                query: function () {
-                    return replacedQuery;
-                }
+                query: () => replacedQuery
             }
         });
     };
@@ -229,11 +169,8 @@ function SimilarityCtrl(
         }).result
             .then(function () {
                 SimilarityRestService.deleteIndex(similarityIndex)
-                    .then(function () {
-                        $scope.loadSimilarityIndexes();
-                    }, function (err) {
-                        toastr.error(getError(err));
-                    });
+                    .then(() => $scope.loadSimilarityIndexes())
+                    .catch((err) => toastr.error(getError(err)));
             });
     };
 
@@ -247,14 +184,12 @@ function SimilarityCtrl(
             querySameAs: index.sameAs,
             viewType: index.type,
             indexAnalyzer: index.analyzer
-        }).success(function (query) {
+        }).success((query) => {
             $uibModal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {
-                    query: function () {
-                        return query;
-                    }
+                    query: () => query
                 }
             });
         });
@@ -270,13 +205,10 @@ function SimilarityCtrl(
             message: decodeHTML($translate.instant('similarity.rebuild.index.warning', {name: index.name})),
             warning: true
         }).result
-            .then(function () {
+            .then(() => {
                 index.status = SimilarityIndexStatus.REBUILDING;
                 SimilarityRestService.rebuildIndex(index)
-                    .then(function (res) {
-                    }, function (err) {
-                        toastr.error(getError(err));
-                    });
+                    .catch((error) => toastr.error(getError(error)));
             });
     };
 
@@ -305,7 +237,7 @@ function SimilarityCtrl(
     };
 
     $scope.cloneSimilataryIndex = (similarityIndex) => {
-       navigateToEditPage(similarityIndex, true);
+        navigateToEditPage(similarityIndex, true);
     };
 
     $scope.setPsiSubject = (psiSubject) => {
@@ -323,7 +255,6 @@ function SimilarityCtrl(
     // =========================
     // Private functions
     // =========================
-
     const navigateToEditPage = (similarityIndex, isClone = false) => {
         const params = {
             selectQuery: similarityIndex.selectQuery,
@@ -358,12 +289,9 @@ function SimilarityCtrl(
     };
 
     const loadSearchQueries = () => {
-        SimilarityRestService.getSearchQueries().success(function (data) {
-            $scope.searchQueries = data;
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('similarity.could.not.get.search.queries.error'));
-        });
+        SimilarityRestService.getSearchQueries()
+            .success((data) => $scope.searchQueries = data)
+            .error((data) => toastr.error(getError(data), $translate.instant('similarity.could.not.get.search.queries.error')));
     };
 
     const createYasr = (usedPrefixes) => {
@@ -471,4 +399,67 @@ function SimilarityCtrl(
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
     const activeRepositoryChangeHandler = $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler);
+
+    const buildSendData = (similarityIndex, uri, searchType, resultType, parameters) => {
+        const sendData = {
+            query: buildSparqlQuery($scope.lastSearch.type),
+            $index: iriForQuery(PREFIX_INSTANCE + similarityIndex.name),
+            $query: $scope.lastSearch.termOrSubject,
+            $searchType: iriForQuery(($scope.selectedSimilarityIndex.isTextType() ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.isSearchEntityPredicateType(searchType) ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
+            $resultType: iriForQuery($scope.selectedSimilarityIndex.isTextType() ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
+            $parameters: literalForQuery(parameters)
+        };
+
+        if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
+            sendData.$psiPredicate = $scope.lastSearch.predicate ? iriForQuery($scope.lastSearch.predicate) : iriForQuery(ANY_PREDICATE);
+        }
+
+        if (SimilaritySearchType.isSearchAnalogicalType(searchType)) {
+            $scope.searchSubject = uri;
+            sendData.$givenSubject = iriForQuery($scope.analogicalSubject);
+            sendData.$givenObject = iriForQuery($scope.analogicalObject);
+            sendData.$searchSubject = iriForQuery(uri);
+        }
+        return sendData;
+    };
+
+    const updateLastSearch = (searchType, uri) => {
+        $scope.lastSearch = new SimilaritySearch();
+        $scope.lastSearch.type = searchType;
+
+        if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
+            $scope.lastSearch.predicate = uri;
+        }
+
+        $scope.lastSearch.termOrSubject = buildTermOrSubject($scope.lastSearch.type, uri, $scope.psiSubject);
+    };
+
+    const buildSparqlQuery = (searchType) => {
+        let sparqlQuery;
+        if (SimilaritySearchType.isSearchAnalogicalType(searchType)) {
+            sparqlQuery = ($scope.selectedSimilarityIndex.analogicalQuery) ? $scope.selectedSimilarityIndex.analogicalQuery : $scope.searchQueries['analogical'];
+        } else {
+            sparqlQuery = ($scope.selectedSimilarityIndex.searchQuery) ? $scope.selectedSimilarityIndex.searchQuery : $scope.searchQueries[$scope.selectedSimilarityIndex.type];
+        }
+        return sparqlQuery;
+    };
+
+    const buildTermOrSubject = (searchType, uri, psiSubject) => {
+        // this is either the search term or the iri for the subject
+        let termOrSubject = uri;
+
+        if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
+            termOrSubject = psiSubject;
+        } else if (SimilaritySearchType.isSearchTermType(searchType)) {
+            termOrSubject = literalForQuery(termOrSubject);
+        } else {
+            termOrSubject = iriForQuery(termOrSubject);
+        }
+        return termOrSubject;
+    };
+
+    const setSimilarityResponse = (response) => {
+        // TODO change old YASR with new one.
+        yasr.setResponse(response.data, response.status, response.statusText);
+    };
 }
