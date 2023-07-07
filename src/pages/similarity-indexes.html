@@ -12,7 +12,7 @@
 	</h1>
 	<div core-errors ontop fedx license></div>
 	<div system-repo-warning></div>
-	<div class="alert alert-danger" ng-show="repositoryError">
+	<div class="alert alert-danger" ng-if="repositoryError">
 		<p>{{'not.usable.active.repo.error' | translate}}</p>
 		<p>{{repositoryError}}</p>
 	</div>
@@ -46,17 +46,17 @@
                             <a class="lead index-name" ng-href="{{(similarityIndex.isBuiltStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isOutdatedStatus()) ? '#' : ''}}" ng-click="goToSimilarityIndex(similarityIndex)">{{similarityIndex.name}}</a>
 						</td>
 						<td>
-							<span class="tag tag-default" ng-show="similarityIndex.isTextType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="similarityIndex.isPredicationType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
-							<span class="tag tag-default" ng-show="similarityIndex.isTextLiteralType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-if="similarityIndex.isTextType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'text.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-if="similarityIndex.isPredicationType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'predication.type.index' | translate}}</span>
+							<span class="tag tag-default" ng-if="similarityIndex.isTextLiteralType()" gdb-tooltip="{{'index.type.tooltip' | translate}}">{{'literal.type.index' | translate}}</span>
 						</td>
 
 						<td class="text-xs-right">
-							<span class="text-muted mr-2" ng-show="similarityIndex.isOutdatedStatus()" gdb-tooltip="{{'data.changed.tooltip' | translate}}">{{'outdated.status' | translate}}</span>
-							<span class="text-muted mr-2" ng-show="similarityIndex.isFailedStatus()" gdb-tooltip="{{'index.building.failed.tooltip' | translate}}">{{'failed.status' | translate}}</span>
-							<span class="text-muted mr-2" ng-show="similarityIndex.isInterruptedStatus()" gdb-tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
-							<span class="text-muted mr-2" ng-show="similarityIndex.isObsoleteStatus()" gdb-tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
-							<span class="btn btn-link similarity-index-building-loader" ng-show="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
+							<span class="text-muted mr-2" ng-if="similarityIndex.isOutdatedStatus()" gdb-tooltip="{{'data.changed.tooltip' | translate}}">{{'outdated.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-if="similarityIndex.isFailedStatus()" gdb-tooltip="{{'index.building.failed.tooltip' | translate}}">{{'failed.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-if="similarityIndex.isInterruptedStatus()" gdb-tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
+							<span class="text-muted mr-2" ng-if="similarityIndex.isObsoleteStatus()" gdb-tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
+							<span class="btn btn-link similarity-index-building-loader" ng-if="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
           				        <em class="icon-reload loader"></em>
       				        </span>
 
@@ -101,7 +101,7 @@
 		<div class="card-block">
 			<h3 class="selected-index">{{'search.in.index' | translate}} <strong>{{selectedSimilarityIndex.name}}</strong></h3>
 
-			<div ng-show="selectedSimilarityIndex.isTextType()">
+			<div ng-if="selectedSimilarityIndex.isTextType()">
 				<div class="d-inline-block">
 					<strong>{{'similarity.search.type' | translate}} </strong>
 					<div class="btn-group">
@@ -135,7 +135,7 @@
 				</div>
 			</div>
 
-			<div ng-show="selectedSimilarityIndex.isPredicationType()">
+			<div ng-if="selectedSimilarityIndex.isPredicationType()">
 				<strong>{{'similarity.search.type' | translate}} </strong>
 
 				<div class="btn-group">
@@ -155,7 +155,7 @@
 			</div>
 
 			<search-resource-input
-					ng-show="!similaritySearchType.isSearchEntityPredicateType() && !similaritySearchType.isSearchAnalogicalType(searchType)"
+					ng-if="!similaritySearchType.isSearchEntityPredicateType() && !similaritySearchType.isSearchAnalogicalType(searchType)"
 					namespacespromise="getNamespacesPromise"
 					autocompletepromisestatus="getAutocompletePromise"
 					placeholder="{{'search.rdf.resources.for.rdf.entity.placeholder' | translate}}"
@@ -167,7 +167,7 @@
 					empty="empty">
 			</search-resource-input>
 
-			<div class="row" ng-show="similaritySearchType.isSearchEntityPredicateType(searchType)">
+			<div class="row" ng-if="similaritySearchType.isSearchEntityPredicateType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -198,7 +198,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="similaritySearchType.isSearchAnalogicalType(searchType)">
+			<div class="row" ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -228,7 +228,7 @@
 				</div>
 			</div>
 
-			<div class="row" ng-show="similaritySearchType.isSearchAnalogicalType(searchType)">
+			<div class="row" ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-12 mt-2">
 					<search-resource-input
 							namespacespromise="getNamespacesPromise"
@@ -244,9 +244,9 @@
 				</div>
 			</div>
 
-			<button ng-show="selectedSimilarityIndex.isTextType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-if="selectedSimilarityIndex.isTextType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
-			<button ng-show="selectedSimilarityIndex.isPredicationType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-if="selectedSimilarityIndex.isPredicationType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
 
 			<div id="search-type" class="mt-1 collapse" ng-show="selectedSimilarityIndex.isTextType()">
 				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>
