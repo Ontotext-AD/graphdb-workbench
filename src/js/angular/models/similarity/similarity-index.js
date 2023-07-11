@@ -15,9 +15,9 @@ export class SimilarityIndex {
         /**
          * The similarity index type.
          *
-         * @type {SimilarityIndexType}
+         * @type {string}
          */
-        this.type = undefined;
+        this.type = SimilarityIndexType.TEXT;
 
         /**
          * The similarity index type.
@@ -27,6 +27,8 @@ export class SimilarityIndex {
         this.status = undefined;
 
         this.analogicalQuery = undefined;
+        this.inputIndex = undefined;
+        this.isLiteralIndex = '';
     }
 
     isTextType() {
