@@ -31,6 +31,10 @@ const MODIFIED_ANALOGICAL_QUERY = 'PREFIX :<http://www.ontotext.com/graphdb/simi
     '    ?result :value ?resultValue;\n' +
     '            :score ?score .\n' +
     'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate . }}';
+const MODIFIED_DATA_QUERY = 'SELECT ?documentID ?documentText { \n' +
+    '?documentID <http://dbpedia.org/ontology/birthDate> ?documentText . \n' +
+    'filter(isLiteral(?documentText)) \n' +
+    '}order by asc(str(?documentID))';
 
 describe('Similarity screen validation', () => {
 
@@ -281,7 +285,7 @@ describe('Similarity screen validation', () => {
         cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`);
         // Wait for query editor to become ready because consecutive command for index creation might
         // fail because the query may not be submitted with the request.
-        cy.waitUntilQueryIsVisible();
+        YasqeSteps.waitUntilQueryIsVisible();
     }
 
     function setIndexName() {
@@ -342,7 +346,7 @@ describe('Similarity screen validation', () => {
         cy.get('#create-predication-index').click();
         // Wait for query editor to become ready because consecutive command for index creation might
         // fail because the query may not be submitted with the request.
-        cy.waitUntilQueryIsVisible();
+        YasqeSteps.waitUntilQueryIsVisible();
     }
 
     function cloneExistingIndex() {
@@ -395,29 +399,24 @@ describe('Similarity screen validation', () => {
         // Verify that 'similarity-index-name' input field is disabled
         getSimilarity().should('be.disabled');
         getSearchQueryTab().should('be.visible');
-        let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
+        const shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'exist';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
         if (isPredication) {
-            cy.verifyQueryAreaContains('SELECT ?entity ?score {');
+            YasqeSteps.verifyQueryContains('SELECT ?entity ?score {');
         }
     }
 
     function changeDataQuery() {
-        const MODIFIED_DATA_QUERY = 'SELECT ?documentID ?documentText { \n' +
-            '?documentID <http://dbpedia.org/ontology/birthDate> ?documentText . \n' +
-            'filter(isLiteral(?documentText)) \n' +
-            '}order by asc(str(?documentID))';
-
-        cy.pasteQuery(MODIFIED_DATA_QUERY);
-        cy.get('.test-query-btn').click();
+        YasqeSteps.pasteQuery(MODIFIED_DATA_QUERY);
+        cy.get('.test-query-btn', {force: true}).click();
         cy.get('.sparql-loader').should('not.exist');
-        cy.get('.resultsTable').should('be.visible').find('tbody tr').its('length').should('be.gt', 1);
-        cy.get('.uri-cell').eq(0).should('contain', 'http://dbpedia.org/resource/Aaron_Jay_Kernis');
+        YasrSteps.getResults().its('length').should('be.gt', 1);
+        YasrSteps.getResults().contains('http://dbpedia.org/resource/Aaron_Jay_Kernis');
     }
 
     function changeSearchQuery() {
         getSearchQueryTab().scrollIntoView().should('be.visible').click();
-        cy.pasteQuery(MODIFIED_SEARCH_QUERY);
+        YasqeSteps.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
     function changeAnalogicalQuery() {
@@ -425,7 +424,7 @@ describe('Similarity screen validation', () => {
             .scrollIntoView()
             .should('be.visible').click()
             .then(() => {
-                cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
+                YasqeSteps.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
             });
     }
 
@@ -463,6 +462,6 @@ describe('Similarity screen validation', () => {
 
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
-        cy.verifyQueryAreaContains(query);
+        YasqeSteps.verifyQueryContains(query);
     }
 });
