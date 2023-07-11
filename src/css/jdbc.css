@@ -1,8 +1,0 @@
-.hidden {
-    visibility: hidden;
-}
-
-.yasr_results {
-    max-height: 345px;
-    overflow-y: auto;
-}
