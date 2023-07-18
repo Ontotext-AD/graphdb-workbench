@@ -2,7 +2,7 @@ import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {
-    DISABLE_YASQE_BUTTONS_CONFIGURATION, INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil,
+    DISABLE_YASQE_BUTTONS_CONFIGURATION, INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil, YasqeButtonName,
 } from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
@@ -92,8 +92,14 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
                 }
             })
             .finally(() => {
-                // TODO if selected tab is "search query" or "Analogical query" the sameAs and infer buttons must not be visible.
-                getOntotextYasgui().setQuery($scope.similarityIndexInfo.getQuery());
+                const ontotextYasgui = getOntotextYasgui();
+                if ($scope.similarityIndexInfo.isDataQueryTypeSelected()) {
+                    ontotextYasgui.showYasqeActionButton([YasqeButtonName.INFER_STATEMENTS, YasqeButtonName.EXPANDS_RESULTS]);
+                    ontotextYasgui.changeRenderMode(RenderingMode.YASQE);
+                } else {
+                    ontotextYasgui.hideYasqeActionButton([YasqeButtonName.INFER_STATEMENTS, YasqeButtonName.EXPANDS_RESULTS]);
+                }
+                ontotextYasgui.setQuery($scope.similarityIndexInfo.getQuery());
             });
     }
 
@@ -130,11 +136,13 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     $scope.preview = () => {
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateQueryType)
-            .then(validateQuery);
-
-        getOntotextYasgui().query();
-        // TODO render can be through method instead change all configuration
-        $scope.yasguiConfig = {...$scope.yasguiConfig, render: RenderingMode.YASR};
+            .then(validateQuery)
+            .then(() => {
+                const ontotextYasgui = getOntotextYasgui();
+                $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASR);
+                ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
+                ontotextYasgui.query();
+            });
     }
 
     $scope.saveSearchQuery = function () {
@@ -186,21 +194,19 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     };
 
     $scope.isYasqeShown = () => {
-        return $scope.yasguiConfig && RenderingMode.YASQE === $scope.yasguiConfig.render;
+        return $scope.similarityIndexInfo && $scope.similarityIndexInfo.isYasqeRenderMode();
     }
 
     $scope.isYasrShown = () => {
-        return $scope.yasguiConfig && RenderingMode.YASR === $scope.yasguiConfig.render;
+        return $scope.similarityIndexInfo && $scope.similarityIndexInfo.isYasrRenderMode();
     }
 
     $scope.showEditor = () => {
-        $scope.yasguiConfig = {...$scope.yasguiConfig, render: RenderingMode.YASQE, initialQuery: $scope.similarityIndexInfo.getQuery()}
-        // TODO set focus on editor because I don't know why query is not visible
-        // $scope.focusQueryEditor = () => {
-        //     if (!angular.element(document).find('.editable-input').is(':focus')) {
-        //         angular.element(document).find('.CodeMirror textarea:first-child').focus();
-        //     }
-        // };
+        const ontotextYasgui = getOntotextYasgui();
+        ontotextYasgui.abortQuery();
+        ontotextYasgui.setQuery($scope.similarityIndexInfo.getQuery());
+        $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASQE);
+        ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
     };
 
     $scope.toggleHelp = (value) => {
@@ -395,12 +401,14 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             showResultTabs: false,
             showYasqeActionButtons: false,
             showQueryButton: false,
+            pageSize: 100,
             prefixes: $scope.usedPrefixes,
-            render: RenderingMode.YASQE,
+            render: $scope.similarityIndexInfo.getSelectedYasguiRenderMode(),
             yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataQueryTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
             maxPersistentResponseSize: 0,
             yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
         }
+
         const yasguiConfig = {}
         angular.extend(yasguiConfig, defaultConfig, config);
         $scope.yasguiConfig = yasguiConfig;
