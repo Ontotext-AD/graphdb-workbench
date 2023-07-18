@@ -241,9 +241,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 })
                 .catch((error) => {
                     const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
-                    const failedNodesList = error.status === 403 ? getError(error.data, error.status) : Object.keys(error.data)
-                        .reduce((message, key) => message += `<div>${key} - ${error.data[key]}</div>`, '');
-                    toastr.error(failedNodesList, failMessage, {allowHtml: true});
+                    handleAddRemoveErrors(error.data, error.status, failMessage);
                 })
                 .finally(() => {
                     $scope.setLoader(false);
