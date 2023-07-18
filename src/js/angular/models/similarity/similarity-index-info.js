@@ -1,5 +1,6 @@
 import {SimilarityIndex} from "./similarity-index";
 import {SimilarityQueryType} from "./similarity-query-type";
+import {RenderingMode} from "../../ontotext-yasgui/rendering-mode";
 
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 
@@ -19,6 +20,7 @@ export class SimilarityIndexInfo {
          * @type {string} - any of {@SimilarityQueryType} values.
          */
         this.selectedQueryType = SimilarityQueryType.DATA;
+        this.selectedYasguiRenderMode = RenderingMode.YASQE;
     }
 
     /**
@@ -118,6 +120,14 @@ export class SimilarityIndexInfo {
         return this.selectedQueryType;
     }
 
+    setSelectedYasguiRenderMode(renderMode) {
+        this.selectedYasguiRenderMode = renderMode;
+    }
+
+    getSelectedYasguiRenderMode() {
+        return this.selectedYasguiRenderMode;
+    }
+
     isDataQueryTypeSelected() {
         return SimilarityQueryType.DATA === this.selectedQueryType;
     }
@@ -160,6 +170,14 @@ export class SimilarityIndexInfo {
 
     hasAnalogicalQuery() {
         return !!this.similarityIndex.analogicalQuery;
+    }
+
+    isYasqeRenderMode() {
+        return RenderingMode.YASQE === this.getSelectedYasguiRenderMode();
+    }
+
+    isYasrRenderMode() {
+        return RenderingMode.YASR === this.getSelectedYasguiRenderMode();
     }
 
     ////////////////////////////
