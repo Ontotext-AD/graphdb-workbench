@@ -12,7 +12,7 @@ export const YasguiComponentDirectiveUtil = (function () {
 
     return {
         getOntotextYasguiElementController,
-        getOntotextYasguiElement
+        getOntotextYasguiElement,
     };
 })();
 
@@ -48,21 +48,30 @@ export class YasqeButtonsBuilder {
     build() {
         return [
             {
-                name: 'createSavedQuery',
+                name: YasqeButtonName.CREATE_SAVED_QUERY,
                 visible: this.createSavedQueryVisibility
             }, {
-                name: 'showSavedQueries',
+                name: YasqeButtonName.SHOW_SAVED_QUERIES,
                 visible: this.showSavedQueriesVisibility
             }, {
-                name: 'shareQuery',
+                name: YasqeButtonName.SHARE_QUERY,
                 visible: this.shareQueryVisibility
             }, {
-                name: 'includeInferredStatements',
+                name: YasqeButtonName.INCLUDE_INFERRED_STATEMENTS,
                 visible: this.includeInferredStatementsVisibility
             }
         ];
     }
 }
+
+export const YasqeButtonName = {
+    CREATE_SAVED_QUERY: 'createSavedQuery',
+    SHOW_SAVED_QUERIES: 'showSavedQueries',
+    SHARE_QUERY: 'shareQuery',
+    EXPANDS_RESULTS: 'expandResults',
+    INFER_STATEMENTS: 'inferStatements',
+    INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements'
+};
 
 export const DISABLE_YASQE_BUTTONS_CONFIGURATION = new YasqeButtonsBuilder().build();
 export const INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION = new YasqeButtonsBuilder().addIncludeInferredStatements().build();
