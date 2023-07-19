@@ -241,9 +241,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 })
                 .catch((error) => {
                     const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
-                    const failedNodesList = Object.keys(error.data)
-                        .reduce((message, key) => message += `<div>${key} - ${error.data[key]}</div>`, '');
-                    toastr.error(failedNodesList, failMessage, {allowHtml: true});
+                    handleErrors(error.data, error.status, failMessage);
                 })
                 .finally(() => {
                     $scope.setLoader(false);
@@ -325,7 +323,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 })
                 .catch((error) => {
                     const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.add_nodes_fail');
-                    handleAddRemoveErrors(error.data, error.status, failMessageTitle);
+                    handleErrors(error.data, error.status, failMessageTitle);
                 })
                 .finally(() => {
                     $scope.setLoader(false);
@@ -361,7 +359,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 })
                 .catch((error) => {
                     const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.remove_nodes_fail');
-                    handleAddRemoveErrors(error.data, error.status, failMessageTitle);
+                    handleErrors(error.data, error.status, failMessageTitle);
                 })
                 .finally(() => {
                     $scope.setLoader(false);
@@ -375,7 +373,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $scope.getClusterConfiguration();
     }
 
-    function handleAddRemoveErrors(data, status, title) {
+    function handleErrors(data, status, title) {
         let failMessage = data.message || data;
 
         if (status === 400 && Array.isArray(data)) {
