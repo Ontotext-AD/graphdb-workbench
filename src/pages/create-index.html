@@ -43,13 +43,13 @@
             </div>
 
             <div ng-if="saveOrUpdateExecuted">
-                <div style="margin-top: 5px" ng-if="!similarityIndexInfo.hasName()" class="idError alert alert-danger">
+                <div ng-if="!similarityIndexInfo.hasName()" class="idError alert alert-danger mt-1">
                     {{'similarity.empty.index.name.error' | translate}}
                 </div>
-                <div style="margin-top: 5px" ng-if="similarityIndexInfo.hasName() && !similarityIndexInfo.isNameValid()" class="idError alert alert-danger">
+                <div ng-if="similarityIndexInfo.hasName() && !similarityIndexInfo.isNameValid()" class="idError alert alert-danger mt-1">
                     {{'similarity.index.name.constraint' | translate}}
                 </div>
-                <div style="margin-top: 5px" ng-if="similarityIndexInfo.isNameExist" class="idError alert alert-danger">
+                <div ng-if="similarityIndexInfo.isNameExist" class="idError alert alert-danger mt-1">
                     {{'similarity.existing.index.name.error' | translate}}
                 </div>
             </div>
@@ -70,8 +70,7 @@
                                ng-model="similarityIndexInfo.similarityIndex.options"
                                id="indexParameters"
                                placeholder="-vectortype binary">
-                        <div class="small text-muted"
-                             style="margin-top: 0.5rem">
+                        <div class="small text-muted mt-1">
                             {{'see.full.label' | translate}}
                             <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/semantic-similarity-searches.html#create-index-parameters"
                                rel="noopener" target="_blank">
@@ -187,49 +186,49 @@
 
                         <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
 
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidSelectQuery"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidSelectQuery"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.query.invalid' | translate}}
                             </div>
 
-                            <div style="margin-top: 5px" ng-if="!similarityIndexInfo.hasSelectQuery()"
-                                 class="idError alert alert-danger">
+                            <div ng-if="!similarityIndexInfo.hasSelectQuery()"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.empty.select.query.error' | translate}}
                             </div>
 
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidSelectQueryType"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidSelectQueryType"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.invalid.select.query' | translate}}
                             </div>
                         </div>
 
                         <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidSearchQuery"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidSearchQuery"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.query.invalid' | translate}}
                             </div>
 
-                            <div style="margin-top: 5px" ng-if="!similarityIndexInfo.hasSearchQuery()"
-                                 class="idError alert alert-danger">
+                            <div ng-if="!similarityIndexInfo.hasSearchQuery()"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.empty.search.query.error' | translate}}
                             </div>
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidSearchQueryType"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidSearchQueryType"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.invalid.search.query' | translate}}
                             </div>
                         </div>
 
                         <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidAnalogicalQuery"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidAnalogicalQuery"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.query.invalid' | translate}}
                             </div>
-                            <div style="margin-top: 5px" ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
-                                 class="idError alert alert-danger">
+                            <div ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.empty.analogical.query.error' | translate}}
                             </div>
-                            <div style="margin-top: 5px" ng-if="similarityIndexInfo.invalidAnalogicalQueryType"
-                                 class="idError alert alert-danger">
+                            <div ng-if="similarityIndexInfo.invalidAnalogicalQueryType"
+                                 class="idError alert alert-danger mt-1">
                                 {{'similarity.error.invalid.analogical.query' | translate}}
                             </div>
                         </div>
