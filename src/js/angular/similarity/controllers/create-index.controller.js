@@ -140,19 +140,8 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     $scope.saveSearchQuery = function () {
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateSimilarityIndexName)
-            .then((similarityIndexInfo) => {
-                const isSearchQuery = similarityIndexInfo.isSearchQueryTypeSelected();
-                let data = {
-                    name: similarityIndexInfo.getSimilarityIndex().name,
-                    changedQuery: similarityIndexInfo.getQuery(),
-                    isSearchQuery
-                };
-                return SimilarityRestService.saveSearchQuery(JSON.stringify(data)).then(() => isSearchQuery)
-            })
-            .then(async function (isSearchQuery) {
-                await Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
-                $location.url('similarity');
-            })
+            .then(saveQuery)
+            .then(notifySaveSuccess)
             .catch((error) => toastr.error(getError(error), $translate.instant('similarity.change.query.error')));
     };
 
@@ -463,6 +452,21 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
                 console.log(errorMessage);
                 return Promise.reject(new SimilarityIndexError('Could not create index.'));
             });
+    }
+
+    const notifySaveSuccess = async (isSearchQuery) => {
+        await Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
+        $location.url('similarity');
+    }
+    const saveQuery = (similarityIndexInfo) => {
+        const isSearchQuery = similarityIndexInfo.isSearchQueryTypeSelected();
+        let data = {
+            name: similarityIndexInfo.getSimilarityIndex().name,
+            changedQuery: similarityIndexInfo.getQuery(),
+            isSearchQuery
+        };
+        return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
+            .then(() => isSearchQuery)
     }
 
     const goToSimilarityIndexesView = () => {
