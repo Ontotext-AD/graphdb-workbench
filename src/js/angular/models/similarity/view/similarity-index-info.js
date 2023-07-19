@@ -18,18 +18,18 @@ export class SimilarityIndexInfo {
          *
          * @type {string} - any of {@SimilarityQueryType} values.
          */
-        this.selctedQueryType = SimilarityQueryType.DATA;
+        this.selectedQueryType = SimilarityQueryType.DATA;
     }
 
     /**
      * Sets the <code>query</code> as query of type <code>similarityQueryType</code>. If <code>similarityQueryType</code> not passed then the
-     * currently selected type will be used. {@see SimilarityIndexInfo#selctedQueryType}.
+     * currently selected type will be used. {@see SimilarityIndexInfo#selectedQueryType}.
      *
      * @param {string} query - the query to be set.
      * @param {string | undefined} similarityQueryType - the new value of similarity index type. The value have to be one of {@link SimilarityQueryType}.
      */
     setQuery(query, similarityQueryType = undefined) {
-        const queryType = similarityQueryType || this.selctedQueryType;
+        const queryType = similarityQueryType || this.selectedQueryType;
         if (SimilarityQueryType.DATA === queryType) {
             this.similarityIndex.selectQuery = query;
             return;
@@ -47,13 +47,13 @@ export class SimilarityIndexInfo {
 
     /**
      * Fetches the query depends on <code>similarityQueryType</code>. If <code>similarityQueryType</code> not passed then the
-     * currently selected type will be used. {@see SimilarityIndexInfo#selctedQueryType}.
+     * currently selected type will be used. {@see SimilarityIndexInfo#selectedQueryType}.
      *
      * @param {string | undefined} similarityQueryType - the type of query that have to be returned. The value have to be one of {@link SimilarityQueryType}.
      * @return {string} the requested query.
      */
     getQuery(similarityQueryType = undefined) {
-        const queryType = similarityQueryType || this.selctedQueryType;
+        const queryType = similarityQueryType || this.selectedQueryType;
         switch (queryType) {
             case SimilarityQueryType.DATA:
                 return this.similarityIndex.selectQuery;
@@ -72,7 +72,7 @@ export class SimilarityIndexInfo {
      * @param {boolean} isInvalid - if true the SPARQL query of type <code>similarityQueryType</code> will be marked as invalid, If false will be marked as valid.
      */
     markInvalidQuery(similarityQueryType = undefined, isInvalid = true) {
-        const queryType = similarityQueryType || this.selctedQueryType;
+        const queryType = similarityQueryType || this.selectedQueryType;
         if (SimilarityQueryType.DATA === queryType) {
             this.invalidSelectQuery = isInvalid;
             return;
@@ -95,7 +95,7 @@ export class SimilarityIndexInfo {
      * @param {boolean} isInvalid - if true the SPARQL query of type <code>similarityQueryType</code> will be marked as invalid SPARQL query type, If false will be marked as valid.
      */
     markInvalidQueryType(similarityQueryType = undefined, isInvalid = true) {
-        const queryType = similarityQueryType || this.selctedQueryType;
+        const queryType = similarityQueryType || this.selectedQueryType;
         if (SimilarityQueryType.DATA === queryType) {
             this.invalidSelectQueryType = isInvalid;
             return;
@@ -111,15 +111,15 @@ export class SimilarityIndexInfo {
     }
 
     isDataTypeSelected() {
-        return SimilarityQueryType.DATA === this.selctedQueryType;
+        return SimilarityQueryType.DATA === this.selectedQueryType;
     }
 
     isSearchTypeSelected() {
-        return SimilarityQueryType.SEARCH === this.selctedQueryType;
+        return SimilarityQueryType.SEARCH === this.selectedQueryType;
     }
 
     isAnalogicalTypeSelected() {
-        return SimilarityQueryType.ANALOGICAL === this.selctedQueryType;
+        return SimilarityQueryType.ANALOGICAL === this.selectedQueryType;
     }
 
     isTextType() {
