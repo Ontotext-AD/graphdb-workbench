@@ -103,7 +103,7 @@
             "create_btn": "Create",
             "save_btn": "Save",
             "notifications": {
-                "create_success": "Cluster ",
+                "create_success": "Cluster created successfully",
                 "create_failed": "Cluster creation failed",
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
