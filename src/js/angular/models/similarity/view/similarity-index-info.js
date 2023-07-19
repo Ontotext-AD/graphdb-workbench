@@ -110,15 +110,15 @@ export class SimilarityIndexInfo {
         }
     }
 
-    isDataTypeSelected() {
+    isDataQueryTypeSelected() {
         return SimilarityQueryType.DATA === this.selectedQueryType;
     }
 
-    isSearchTypeSelected() {
+    isSearchQueryTypeSelected() {
         return SimilarityQueryType.SEARCH === this.selectedQueryType;
     }
 
-    isAnalogicalTypeSelected() {
+    isAnalogicalQueryTypeSelected() {
         return SimilarityQueryType.ANALOGICAL === this.selectedQueryType;
     }
 
