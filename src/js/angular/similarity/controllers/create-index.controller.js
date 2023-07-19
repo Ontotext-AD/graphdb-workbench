@@ -78,11 +78,11 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
      * @param {string} similarityQueryType - the type of query that have to be shown. The value have to be one of {@link SimilarityQueryType}.
      */
     $scope.changeQueryTab = (similarityQueryType) => {
-        if ($scope.similarityIndexInfo.selctedQueryType === similarityQueryType) {
+        if ($scope.similarityIndexInfo.selectedQueryType === similarityQueryType) {
             return;
         }
-        const oldSimilarityQueryType = $scope.similarityIndexInfo.selctedQueryType;
-        $scope.similarityIndexInfo.selctedQueryType = similarityQueryType;
+        const oldSimilarityQueryType = $scope.similarityIndexInfo.selectedQueryType;
+        $scope.similarityIndexInfo.selectedQueryType = similarityQueryType;
         updateQueryFromEditor($scope.similarityIndexInfo, oldSimilarityQueryType)
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
@@ -274,7 +274,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             indexStopList: similarityIndexInfo.getStopList(),
             queryInference: similarityIndexInfo.getInference(),
             querySameAs: similarityIndexInfo.getSameAs(),
-            viewType: similarityIndexInfo.selctedQueryType,
+            viewType: similarityIndexInfo.selectedQueryType,
             indexAnalyzer: similarityIndexInfo.getAnalyzer()
         }).then((response) => response.data);
     }
@@ -326,7 +326,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
         const similarityIndexInfo = new SimilarityIndexInfo();
         similarityIndexInfo.setName(getSimilarityIndexName());
         similarityIndexInfo.setType(getSimilarityType());
-        similarityIndexInfo.selctedQueryType = $scope.isEditViewMode() ? SimilarityQueryType.SEARCH : SimilarityQueryType.DATA;
+        similarityIndexInfo.selectedQueryType = $scope.isEditViewMode() ? SimilarityQueryType.SEARCH : SimilarityQueryType.DATA;
         const options = $location.search().options;
         if (options) {
             similarityIndexInfo.options = options;
