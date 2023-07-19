@@ -6,12 +6,12 @@ import {
 } from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
-import {SimilarityViewMode} from "../../models/similarity/view/similarity-view-mode";
-import {SimilarityQueryType} from "../../models/similarity/view/similarity-query-type";
+import {SimilarityViewMode} from "../../models/similarity/similarity-view-mode";
+import {SimilarityQueryType} from "../../models/similarity/similarity-query-type";
 import {SimilarityIndexType} from "../../models/similarity/similarity-index-type";
-import {SimilarityIndexError} from "../../models/similarity/view/similarity-index-error";
+import {SimilarityIndexError} from "../../models/similarity/similarity-index-error";
 import {QueryType} from "../../models/ontotext-yasgui/query-type";
-import {SimilarityIndexInfo} from "../../models/similarity/view/similarity-index-info";
+import {SimilarityIndexInfo} from "../../models/similarity/similarity-index-info";
 
 angular
     .module('graphdb.framework.similarity.controllers.create', [
