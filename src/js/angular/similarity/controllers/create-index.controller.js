@@ -58,7 +58,9 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     /**
      * Changes the similarity index type. ("Create text similarity index" or "Create predication index").
      *
-     * @param {string} similarityIndexType - the new value of similarity index type. The value have to be one of {@link SimilarityIndexType}/
+     * @param {string} similarityIndexType - the new value of similarity index type. The value have to be one of {@link SimilarityIndexType}.
+     * @param {string} similarityQueryType - the type of similarity query that have to be shown. Default value is data query.
+     * The value have to be one of {@link SimilarityQueryType}.
      */
     $scope.changeSimilarityIndexType = (similarityIndexType, similarityQueryType = SimilarityQueryType.DATA) => {
         $scope.similarityIndexInfo.setType(similarityIndexType);
@@ -252,6 +254,8 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
      * Validates the editor query and updates error statuses of <code>SimilarityIndexInfo</code>. Updates <code>SimilarityIndexInfo</code> query with editor one.
      *
      * @param {SimilarityIndexInfo} similarityIndexInfo - holds similarity index data (queries, sameAs, infer ...) and information about errors if any.
+     * @param {string} similarityQueryType - the type of similarity query that have to be shown. If parameter is undefined then currently selected query type will be used.
+     * The value have to be one of {@link SimilarityQueryType}.
      * @return {Promise<SimilarityIndexInfo>}
      */
     const updateQueryFromEditor = (similarityIndexInfo, similarityQueryType = undefined) => {
