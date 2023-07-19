@@ -24,7 +24,7 @@ export class SimilaritySearch {
         return SimilaritySearchType.isSearchEntityPredicateType(this.type);
     }
 
-    isSearchDocumentType(type) {
+    isSearchDocumentType() {
         return SimilaritySearchType.isSearchDocumentType(this.type);
     }
 }
