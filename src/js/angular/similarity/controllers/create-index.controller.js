@@ -139,7 +139,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateSimilarityIndexName)
             .then((similarityIndexInfo) => {
-                const isSearchQuery = similarityIndexInfo.isSearchTypeSelected();
+                const isSearchQuery = similarityIndexInfo.isSearchQueryTypeSelected();
                 let data = {
                     name: similarityIndexInfo.getSimilarityIndex().name,
                     changedQuery: similarityIndexInfo.getQuery(),
@@ -404,7 +404,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             showQueryButton: false,
             prefixes: $scope.usedPrefixes,
             render: RenderingMode.YASQE,
-            yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
+            yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataQueryTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
             maxPersistentResponseSize: 0,
             yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
         }
