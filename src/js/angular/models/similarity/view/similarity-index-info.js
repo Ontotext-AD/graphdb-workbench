@@ -110,6 +110,14 @@ export class SimilarityIndexInfo {
         }
     }
 
+    setSelectedQueryType(queryType) {
+        this.selectedQueryType = queryType;
+    }
+
+    getSelectedQueryType() {
+        return this.selectedQueryType;
+    }
+
     isDataQueryTypeSelected() {
         return SimilarityQueryType.DATA === this.selectedQueryType;
     }
