@@ -39,10 +39,10 @@ export const LinkState = {
     NO_CONNECTION: 'NO_CONNECTION'
 };
 
-ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce',
+ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce', '$jwtAuth',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope'];
 
-function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce,
+function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
     $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope) {
     $scope.loader = true;
     $scope.isLeader = false;
@@ -51,6 +51,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.NodeState = NodeState;
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
+
+    $scope.isAdmin = function () {
+        return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+    };
 
     // Holds child context
     $scope.childContext = {};
@@ -471,8 +475,8 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
     };
 
     function handleErrors(data, status) {
+        let failMessage;
         delete $scope.preconditionErrors;
-        toastr.error($translate.instant('cluster_management.cluster_page.notifications.create_failed'));
         $scope.errors.splice(0);
         if (status === 412) {
             $scope.preconditionErrors = Object.keys(data).map((key) => `${key} - ${data[key]}`);
@@ -480,7 +484,11 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
             $scope.errors.push(...data);
         } else if (status === 409) {
             $scope.errors.push(data);
+        } else if (data.message || typeof data === 'string'){
+            failMessage = data.message || data;
         }
+        toastr.error(failMessage, $translate.instant('cluster_management.cluster_page.notifications.create_failed'));
+
     }
 
     $scope.isClusterConfigurationValid = () => {
