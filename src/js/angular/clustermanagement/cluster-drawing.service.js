@@ -37,7 +37,7 @@ export function setCreateClusterZone(hasCluster, clusterZone, translationsMap, h
         textGroup
             .append('text')
             .attr('id', 'no-cluster-label')
-            .text(translationsMap.no_cluster_configured || 'No cluster group configured')
+            .text(translationsMap.no_cluster_configured)
             .attr('y', -50)
             .classed('h2', true)
             .style('text-anchor', "middle");
@@ -45,7 +45,7 @@ export function setCreateClusterZone(hasCluster, clusterZone, translationsMap, h
             textGroup.append('text')
                 .attr('id', 'create-cluster-label')
                 .classed('h3', true)
-                .text(translationsMap.create_cluster_btn || 'Click here to create a cluster')
+                .text(translationsMap.create_cluster_btn)
                 .style('text-anchor', "middle");
         }
         textGroup.append('text')
