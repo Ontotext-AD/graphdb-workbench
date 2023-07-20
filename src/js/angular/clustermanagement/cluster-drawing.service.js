@@ -22,10 +22,11 @@ export function createClusterZone(parent) {
     return clusterZone;
 }
 
-export function setCreateClusterZone(hasCluster, clusterZone, translationsMap) {
+export function setCreateClusterZone(hasCluster, clusterZone, translationsMap, hasAccess = false) {
     clusterZone
         .select('.cluster-zone')
-        .classed('no-cluster', !hasCluster);
+        .classed('no-cluster', !hasCluster)
+        .classed('has-access', hasAccess);
 
     if (hasCluster) {
         clusterZone.selectAll('#no-cluster-zone').remove();
@@ -36,15 +37,17 @@ export function setCreateClusterZone(hasCluster, clusterZone, translationsMap) {
         textGroup
             .append('text')
             .attr('id', 'no-cluster-label')
-            .text(translationsMap.no_cluster_configured || 'No cluster group configured')
+            .text(translationsMap.no_cluster_configured)
             .attr('y', -50)
             .classed('h2', true)
             .style('text-anchor', "middle");
-        textGroup.append('text')
-            .attr('id', 'create-cluster-label')
-            .classed('h3', true)
-            .text(translationsMap.create_cluster_btn || 'Click here to create a cluster')
-            .style('text-anchor', "middle");
+        if (hasAccess ){
+            textGroup.append('text')
+                .attr('id', 'create-cluster-label')
+                .classed('h3', true)
+                .text(translationsMap.create_cluster_btn)
+                .style('text-anchor', "middle");
+        }
         textGroup.append('text')
             .attr('y', 130)
             .attr('class', 'icon-any repo')

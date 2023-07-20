@@ -17,7 +17,7 @@ PluginRegistry.add('main.menu', {
         labelKey: 'menu.cluster.label',
         href: 'cluster',
         order: 20,
-        role: 'ROLE_ADMIN',
+        role: 'ROLE_USER',
         parent: 'Setup',
         guideSelector: 'sub-menu-cluster'
     }]
