@@ -43,6 +43,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
         return {
             restrict: 'A',
             link: function (scope, element) {
+                const hasAccess = scope.isAdmin();
+
                 scope.showLegend = false;
                 $rootScope.$on('$translateChangeSuccess', function () {
                     updateTranslations();
@@ -374,9 +376,9 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function setClusterZoneType(hasCluster) {
-                    CDS.setCreateClusterZone(hasCluster, clusterZone, translationsMap);
+                    CDS.setCreateClusterZone(hasCluster, clusterZone, translationsMap, hasAccess);
                     let mouseupCallback;
-                    if (!hasCluster) {
+                    if (!hasCluster && hasAccess) {
                         mouseupCallback = () => {
                             scope.$apply(function () {
                                 scope.showCreateClusterDialog();
