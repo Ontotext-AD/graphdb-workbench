@@ -199,6 +199,9 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         }
         // Remember the role in the URL so the URL is stable and leads back to the same view
         $location.search('role', $scope.role);
+        // Changing the URL parameters adds a history entry in the browser history, and this causes incorrect behavior of the browser's back button functionality.
+        // To resolve this issue, we replace the current URL without adding a new history entry.
+        $location.replace();
         // wait for principal request if it has not finished and then fetch graph
         Promise.resolve(principalRequestPromise)
             .then(() => getGraph());
