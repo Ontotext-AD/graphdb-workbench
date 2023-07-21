@@ -1340,6 +1340,7 @@
     "similarity.get.resource.error": "Could not get resource!",
     "similarity.delete.index.warning": "Are you sure you want to delete the index '{{name}}'?",
     "similarity.rebuild.index.warning": "Are you sure you want to rebuild the whole index '{{name}}'?<br>You will still be able to use the latest successful build!",
+    "similarity.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "sparql.template.get.templates.error": "Could not get SPARQL templates",
     "sparql.template.delete.template.warning": "Are you sure you want to delete the SPARQL template '{{templateID}}'?",
     "sparql.template.delete.template.success": "Deleted successfully SPARQL template",

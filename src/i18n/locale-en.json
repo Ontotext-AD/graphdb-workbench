@@ -1348,6 +1348,7 @@
     "similarity.error.invalid.search.query": "The search query must be a SELECT query",
     "similarity.error.invalid.analogical.query": "The analogical query must be a SELECT query",
     "similarity.error.query.invalid": "Invalid query",
+    "similarity.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "sparql.template.get.templates.error": "Could not get SPARQL templates",
     "sparql.template.delete.template.warning": "Are you sure you want to delete the SPARQL template '{{templateID}}'?",
     "sparql.template.delete.template.success": "Deleted successfully SPARQL template",

@@ -1,6 +1,10 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
+import {SimilarityIndexCreateSteps} from "../../steps/explore/similarity-index-create-steps";
+import {SimilarityIndexesSteps} from "../../steps/explore/similarity-indexes-steps";
+import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
+import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 
 const INDEX_NAME = 'index-' + Date.now();
 const FILE_TO_IMPORT = 'people.zip';
@@ -39,9 +43,13 @@ const MODIFIED_DATA_QUERY = 'SELECT ?documentID ?documentText { \n' +
 describe('Similarity screen validation', () => {
 
     let repositoryId;
+    let secondRepositoryId;
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
+        if (secondRepositoryId) {
+            cy.deleteRepository(secondRepositoryId);
+        }
     });
 
     it('Test similarity page default state', () => {
@@ -238,6 +246,177 @@ describe('Similarity screen validation', () => {
         });
     });
 
+    context('Confirmations when try to change repository', () => {
+        beforeEach(() => {
+            secondRepositoryId = 'create-similarity-index-second-repo' + Date.now();
+            cy.createRepository({id: secondRepositoryId});
+            initRepositoryAndVisitSimilarityView();
+            openCreateNewIndexForm();
+        });
+
+        it('should not display confirm message if create similarity form is dirty and try to change repository', () => {
+            // Given I opened the create similarity view,
+            // and create similarity form is dirty.
+            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('index name');
+
+            // When I change the  repository.
+            RepositorySelectorSteps.selectRepository(secondRepositoryId);
+            // Then I expect to not be redirected to similarity indexes view.
+            SimilarityIndexCreateSteps.verifyUrl();
+        });
+
+        it('should display confirm message if edit similarity create form is dirty (Search query changed) and try to change repository', () => {
+            setIndexName();
+            createSimilarityIndex();
+            openEditQueryView();
+            // Given I opened the edit similarity view,
+            // During the initialization query is changed and this broke the test.
+            // Most the time the broken flow is:
+            // 1.   cypress start to type 's';
+            // 2.   query is changed
+            // 3.   cypress continuous to type 'ome changes'.
+            // as result query is 'ome changes<data query>. YasqeSteps.writeInEditor function has check if parameter is filled, in our case 'some changes',
+            // and this broke the test. Add a little wait time to give chance yasqe query to be filled.
+            cy.wait(1000);
+            // and change "Search query".
+            YasqeSteps.writeInEditor('some changes');
+
+            // When I try to change repository.
+            // Then I expect to be asked for confirmation to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => RepositorySelectorSteps.selectRepository(secondRepositoryId)));
+        });
+
+        it('should display confirm message if edit similarity create form is dirty (Analogical query changed) and try to change repository', () => {
+            switchToPredicationIndex();
+            setIndexName();
+            clickMoreOptionsMenu();
+            addBuildParam();
+            clickMoreOptionsMenu();
+            createSimilarityIndex();
+            openEditQueryView(true);
+            // and change "Analogical query".
+            SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
+            YasqeSteps.writeInEditor('some changes');
+
+            // When I try to change repository.
+            // Then I expect to be asked for confirmation to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => RepositorySelectorSteps.selectRepository(secondRepositoryId)));
+        });
+    });
+
+    context('Confirmations when try to change location', () => {
+
+        beforeEach(() => {
+            initRepositoryAndVisitSimilarityView();
+            openCreateNewIndexForm();
+        });
+
+        it('should not display confirm message when there are not changes', () => {
+            // Given I opened the create similarity view.
+            // When I click on cancel button.
+            SimilarityIndexCreateSteps.cancel();
+
+            // Then I expect to be redirected to similarity indexes view.
+            SimilarityIndexesSteps.verifyUrl();
+
+        });
+
+        it('should display confirm message if index name is filled', () => {
+            // Given I opened the create similarity view,
+            // and similarity index name is filled.
+            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('index');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if data query is changed', () => {
+            // Given I opened the create similarity view,
+            // and data query is changed.
+            // During the initialization query is changed and this broke the test.
+            // Most the time the broken flow is:
+            // 1.   cypress start to type 's';
+            // 2.   query is changed
+            // 3.   cypress continuous to type 'ome changes'.
+            // as result query is 'ome changes<data query>. YasqeSteps.writeInEditor function has check if parameter is filled, in our case 'some changes',
+            // and this broke the test. Add a little wait time to give chance yasqe query to be filled.
+            cy.wait(1000);
+            YasqeSteps.writeInEditor('some changes');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Semantic Vectors create index parameters" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Semantic Vectors create index parameters" is changed.
+            SimilarityIndexCreateSteps.showMoreOptions();
+            SimilarityIndexCreateSteps.getSemanticVectorsInput().type('semantic vector');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Stop words" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Stop words" is changed.
+            SimilarityIndexCreateSteps.showMoreOptions();
+            SimilarityIndexCreateSteps.getStopWordsInput().type('stop words');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Analyzer Class" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Analyzer Class" is changed.
+            SimilarityIndexCreateSteps.showMoreOptions();
+            SimilarityIndexCreateSteps.getAnalyzerClassInput().type('BulgarianAnalyzer');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Literal index" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Literal index" is changed.
+            SimilarityIndexCreateSteps.showMoreOptions();
+            SimilarityIndexCreateSteps.checkLiteralIndex();
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Search query" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Search query" is changed.
+            SimilarityIndexCreateSteps.switchToSearchQueryTab();
+            YasqeSteps.writeInEditor('some changes');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+
+        it('should display confirm message if "Analogical query" is changed', () => {
+            // Given I opened the create similarity view,
+            // and "Analogical query" is changed.
+            SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
+            SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
+            YasqeSteps.writeInEditor('some changes');
+
+            // When click on cancel button.
+            // Then I expect to be redirected to similarity indexes view.
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+        });
+    });
+
     function initRepository() {
         repositoryId = 'similarity-repo-' + Date.now();
         cy.createRepository({id: repositoryId});
@@ -396,6 +575,7 @@ describe('Similarity screen validation', () => {
         // Verify that 'similarity-index-name' input field is disabled
         getSimilarity().should('be.disabled');
         getSearchQueryTab().should('be.visible');
+        YasqeSteps.waitUntilQueryIsVisible();
         const shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'exist';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
         if (isPredication) {
@@ -412,7 +592,7 @@ describe('Similarity screen validation', () => {
     }
 
     function changeSearchQuery() {
-        getSearchQueryTab().scrollIntoView().should('be.visible').click();
+        SimilarityIndexCreateSteps.switchToSearchQueryTab();
         YasqeSteps.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
@@ -460,5 +640,13 @@ describe('Similarity screen validation', () => {
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
         YasqeSteps.verifyQueryContains(query);
+    }
+
+    function createVerifyConfirmationDialogOptions(changePageFunction) {
+        return new VerifyConfirmationDialogOptions()
+            .setChangePageFunction(() => changePageFunction())
+            .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
+            .setVerifyCurrentUrl(() => cy.url().should('include', `${Cypress.config('baseUrl')}/similarity/index/create`))
+            .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`));
     }
 });
