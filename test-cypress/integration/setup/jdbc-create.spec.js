@@ -3,7 +3,7 @@ import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {LoaderSteps} from "../../steps/loader-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import ImportSteps from "../../steps/import-steps";
@@ -223,14 +223,14 @@ describe('JDBC configuration', () => {
         // type configuration name,
         JdbcCreateSteps.typeTableName('Configuration name');
         JdbcCreateSteps.getJDBCConfigNameField().should('have.value', 'Configuration name');
-        ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
+        ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
     });
 
     it('should display confirm message when the configuration query data is changed', () => {
         // When I open the create JDBC configuration page,
         // type and change the query,
         YasqeSteps.writeInEditor("Some changes");
-        ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
+        ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
     });
 
     it('should display confirm message when the selected columns are changed', () => {
@@ -239,7 +239,7 @@ describe('JDBC configuration', () => {
         JdbcCreateSteps.openColumnTypesTab();
         JdbcCreateSteps.clickOnDeleteColumnButton(0);
         ModalDialogSteps.clickOnConfirmButton();
-        ModalDialogSteps.verifyUrlChangedConfirmation('You have unsaved changes. Are you sure that you want to exit?');
+        ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
     });
 
     it('should display confirm message when try to change the repository', () => {
@@ -305,5 +305,13 @@ describe('JDBC configuration', () => {
 
         // Opens created configuration for edit.
         JdbcSteps.clickOnEditButton(0);
+    }
+
+    function createVerifyConfirmationDialogOptions() {
+        return new VerifyConfirmationDialogOptions()
+            .setChangePageFunction(() => MainMenuSteps.clickOnMenuImport())
+            .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
+            .setVerifyCurrentUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/jdbc/configuration/create`))
+            .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/import#user`));
     }
 });
