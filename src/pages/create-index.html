@@ -71,10 +71,11 @@
                                type="text"
                                ng-model="similarityIndexInfo.similarityIndex.options"
                                id="indexParameters"
+                               ng-change="setDirty()"
                                placeholder="-vectortype binary">
                         <div class="small text-muted mt-1">
                             {{'see.full.label' | translate}}
-                            <a href="http://graphdb.ontotext.com/documentation/{{info.productShortVersion}}/semantic-similarity-searches.html#create-index-parameters"
+                            <a href="http://graphdb.ontotext.com/documentation/{{productInfo.productShortVersion}}/semantic-similarity-searches.html#create-index-parameters"
                                rel="noopener" target="_blank">
                                 {{'list.of.supported.params' | translate}}
                             </a>
@@ -88,26 +89,37 @@
                         <input class="form-control stop-words"
                                type="text"
                                placeholder="{{'default.lucene.stop.list' | translate}}"
-                               ng-model="similarityIndexInfo.similarityIndex.stopList">
+                               ng-model="similarityIndexInfo.similarityIndex.stopList"
+                               ng-change="setDirty()">
                     </div>
                 </div>
                 <div class="form-group row" ng-if="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
                     <label class="col-md-4 col-form-label">{{'analyzer.class' | translate}}</label>
                     <div class="col-md-8">
-                        <input class="form-control analyzer-class" type="text" ng-model="similarityIndexInfo.similarityIndex.analyzer">
+                        <input class="form-control analyzer-class"
+                               type="text"
+                               ng-model="similarityIndexInfo.similarityIndex.analyzer"
+                               ng-change="setDirty()">
                     </div>
                 </div>
                 <div class="checkbox offset-xs-3 offset-md-4" ng-show="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
                     <label class="col-xs-6 col-md-6" gdb-tooltip="{{'literal.index.input' | translate}}" tooltip-placement="bottom">
-                        <input type="checkbox" class="literal-index" ng-true-value="'true'" ng-false-value="'false'"
-                               ng-model="similarityIndexInfo.similarityIndex.isLiteralIndex"/>
+                        <input type="checkbox"
+                               class="literal-index"
+                               ng-true-value="'true'"
+                               ng-false-value="'false'"
+                               ng-model="similarityIndexInfo.similarityIndex.isLiteralIndex"
+                               ng-change="setDirty()"/>
                         {{'literal.index.label' | translate}}
                     </label>
                 </div>
                 <div class="form-group row" ng-show="similarityIndexInfo.isPredicationType()">
                     <label class="col-md-4 col-form-label">{{'input.literal.index.label' | translate}}</label>
                     <div class="col-md-8">
-                        <select class="form-control" ng-options="idx for idx in literalIndexes" ng-model="similarityIndexInfo.similarityIndex.inputIndex"></select>
+                        <select class="form-control"
+                                ng-options="idx for idx in literalIndexes"
+                                ng-model="similarityIndexInfo.similarityIndex.inputIndex"
+                                ng-change="setDirty()"></select>
                     </div>
                 </div>
             </div>
@@ -184,7 +196,7 @@
 
                 <div class="row">
                     <div class="col-md-9">
-                        <yasgui-component id="query-editor" yasgui-config="yasguiConfig""></yasgui-component>
+                        <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="setDirty()"></yasgui-component>
 
                         <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
 
@@ -253,7 +265,7 @@
 
             <div class="clearfix">
                 <div class="pull-right">
-                    <a ng-href="similarity" class="btn btn-lg btn-secondary"
+                    <a ng-href="similarity" class="btn btn-lg btn-secondary cancel-similarity-index-btn"
                        uib-popover="{{getCloseBtnMsg()}}"
                        popover-placement="top"
                        popover-trigger="mouseenter">
