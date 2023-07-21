@@ -1,6 +1,8 @@
 import {MainMenuSteps} from "./main-menu-steps";
 import {JdbcCreateSteps} from "./setup/jdbc-create-steps";
 import ImportSteps from "./import-steps";
+import {SimilarityIndexCreateSteps} from "./explore/similarity-index-create-steps";
+import {SimilarityIndexesSteps} from "./explore/similarity-indexes-steps";
 
 export class ModalDialogSteps {
     static getDialog() {
