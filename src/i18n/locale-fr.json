@@ -1354,6 +1354,7 @@
     "similarity.error.invalid.search.query": "La requête de recherche doit être une requête SELECT",
     "similarity.error.invalid.analogical.query": "La requête analogique doit être une requête SELECT",
     "similarity.error.query.invalid": "Requete invalide",
+    "similarity.warning.unsaved.changes": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?",
     "sparql.template.get.templates.error": "Impossible de récupérer des modèles SPARQL",
     "sparql.template.delete.template.warning": "Êtes-vous sûr de vouloir supprimer le modèle SPARQL '{{templateID}}'?",
     "sparql.template.delete.template.success": "Suppression réussie du modèle SPARQL",

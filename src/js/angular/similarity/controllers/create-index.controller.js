@@ -1,5 +1,6 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/event-emitter-service';
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION, INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil, YasqeButtonName,
@@ -20,16 +21,49 @@ angular
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
-CreateSimilarityIdxCtrl.$inject = ['$scope', 'toastr', '$uibModal', '$timeout', 'SimilarityRestService', 'SparqlRestService', '$location', 'productInfo', 'Notifications', 'RDF4JRepositoriesRestService', 'LocalStorageAdapter', 'LSKeys', '$translate', '$repositories'];
+CreateSimilarityIdxCtrl.$inject = [
+    '$scope',
+    'toastr',
+    '$uibModal',
+    '$timeout',
+    'SimilarityRestService',
+    'SparqlRestService',
+    '$location',
+    'productInfo',
+    'Notifications',
+    'RDF4JRepositoriesRestService',
+    'LocalStorageAdapter',
+    'LSKeys',
+    '$translate',
+    '$repositories',
+    'EventEmitterService',
+    'ModalService'
+];
 
-function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, SimilarityRestService, SparqlRestService, $location, productInfo, Notifications, RDF4JRepositoriesRestService, LocalStorageAdapter, LSKeys, $translate, $repositories) {
+function CreateSimilarityIdxCtrl(
+    $scope,
+    toastr,
+    $uibModal,
+    $timeout,
+    SimilarityRestService,
+    SparqlRestService,
+    $location,
+    productInfo,
+    Notifications,
+    RDF4JRepositoriesRestService,
+    LocalStorageAdapter,
+    LSKeys,
+    $translate,
+    $repositories,
+    EventEmitterService,
+    ModalService
+) {
 
     /**
      * @type {ProductInfo}
      */
-    $scope.info = productInfo;
+    $scope.productInfo = productInfo;
 
-    $scope.SimilarityViewMode = SimilarityViewMode;
     $scope.SimilarityQueryType = SimilarityQueryType;
     $scope.SimilarityIndexType = SimilarityIndexType;
 
@@ -37,18 +71,16 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
      * @type {SimilarityIndexInfo}
      */
     $scope.similarityIndexInfo = undefined;
-    $scope.searchQueries = undefined;
-    $scope.allSamples = undefined;
     $scope.samples = undefined;
-    $scope.usedPrefixes = undefined;
-    $scope.viewMode = SimilarityViewMode.CREATE;
     $scope.yasguiConfig = undefined;
-    $scope.isDirty = false;
     $scope.saveOrUpdateExecuted = false;
-    // TODO update on repo change
-    $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP) === 1;
 
+    let isDirty = false;
+    let searchQueries = undefined;
+    let allSamples = undefined;
+    let usedPrefixes = undefined;
+    let viewMode = SimilarityViewMode.CREATE;
     const textDefaultOptions = '-termweight idf';
     const predDefaultOptions = '';
 
@@ -65,9 +97,9 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     $scope.changeSimilarityIndexType = (similarityIndexType, similarityQueryType = SimilarityQueryType.DATA) => {
         $scope.similarityIndexInfo.setType(similarityIndexType);
         if ($scope.similarityIndexInfo.isPredicationType()) {
-            $scope.samples = $scope.allSamples[SimilarityIndexType.PREDICATION];
+            $scope.samples = allSamples[SimilarityIndexType.PREDICATION];
         } else {
-            $scope.samples = $scope.allSamples[SimilarityIndexType.TEXT];
+            $scope.samples = allSamples[SimilarityIndexType.TEXT];
         }
         $scope.changeQueryTab(similarityQueryType);
         setDefaultQueries($scope.similarityIndexInfo);
@@ -146,6 +178,10 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     }
 
     $scope.saveSearchQuery = function () {
+        if (!isDirty) {
+            goToSimilarityIndexesView();
+        }
+        $scope.saveOrUpdateExecuted = true;
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateSimilarityIndexName)
             .then(saveQuery)
@@ -178,19 +214,19 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     }
 
     $scope.isCloneViewMode = () => {
-        return SimilarityViewMode.CLONE === $scope.viewMode;
+        return SimilarityViewMode.CLONE === viewMode;
     }
 
     $scope.isEditViewMode = () => {
-        return SimilarityViewMode.EDIT === $scope.viewMode;
+        return SimilarityViewMode.EDIT === viewMode;
     }
 
     $scope.isCreateViewMode = () => {
-        return SimilarityViewMode.CREATE === $scope.viewMode;
+        return SimilarityViewMode.CREATE === viewMode;
     }
 
     $scope.setDirty = () => {
-        $scope.isDirty = true;
+        isDirty = true;
     };
 
     $scope.isYasqeShown = () => {
@@ -299,17 +335,17 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
 
     const setDefaultQueries = (similarityIndexInfo) => {
         const similarityIndexType = similarityIndexInfo.getType();
-        if (!$scope.isEditViewMode() && $scope.searchQueries) {
-            similarityIndexInfo.setQuery($scope.searchQueries[similarityIndexType], SimilarityQueryType.SEARCH);
-            similarityIndexInfo.setQuery($scope.searchQueries['analogical'], SimilarityQueryType.ANALOGICAL);
+        if (!$scope.isEditViewMode() && searchQueries) {
+            similarityIndexInfo.setQuery(searchQueries[similarityIndexType], SimilarityQueryType.SEARCH);
+            similarityIndexInfo.setQuery(searchQueries['analogical'], SimilarityQueryType.ANALOGICAL);
         }
 
-        if ($scope.allSamples) {
+        if (allSamples) {
             if (SimilarityIndexType.PREDICATION === similarityIndexType) {
-                const allSampleElement = $scope.allSamples[SimilarityIndexType.PREDICATION]['predication'];
+                const allSampleElement = allSamples[SimilarityIndexType.PREDICATION]['predication'];
                 similarityIndexInfo.setQuery(allSampleElement, SimilarityQueryType.DATA);
             } else {
-                const allSampleElement1 = $scope.allSamples[SimilarityIndexType.TEXT]['literals'];
+                const allSampleElement1 = allSamples[SimilarityIndexType.TEXT]['literals'];
                 similarityIndexInfo.setQuery(allSampleElement1, SimilarityQueryType.DATA);
             }
         }
@@ -404,11 +440,11 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             downloadAsOn: false,
             showResultInfo: false,
             pageSize: 100,
-            prefixes: $scope.usedPrefixes,
+            prefixes: usedPrefixes,
             render: $scope.similarityIndexInfo.getSelectedYasguiRenderMode(),
             yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataQueryTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
             maxPersistentResponseSize: 0,
-            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED,
+            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED,
         }
 
         const yasguiConfig = {}
@@ -441,6 +477,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
         // ask the team if this have to be like old implementation or we can show a dialog that describes that creation of query is slow
         // and can take a time. We can ask tha user to stay on page or live it
         goToSimilarityIndexesView();
+        isDirty = false;
         return SimilarityRestService.createIndex('POST',
             similarityIndex.name,
             similarityIndex.options,
@@ -476,7 +513,10 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             isSearchQuery
         };
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
-            .then(() => isSearchQuery)
+            .then(() => {
+                isDirty = false;
+                return isSearchQuery
+            })
     }
 
     const goToSimilarityIndexesView = () => {
@@ -694,7 +734,100 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             });
     };
 
-    $scope.viewMode = getViewMode();
+    const openConfirmDialog = (title, message, onConfirm, onCancel) => {
+        ModalService.openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function () {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
+        });
+    };
+
+    // =========================
+    // Subscriptions handlers
+    // =========================
+    const repositoryWillChangedHandler = (eventData) => {
+        return new Promise(function (resolve) {
+
+            if ($scope.isCreateViewMode() || $scope.isCloneViewMode()) {
+                resolve(eventData);
+                return;
+            }
+
+            const onConfirm = () => {
+                isDirty = false;
+                goToSimilarityIndexesView();
+                resolve(eventData);
+            };
+
+            if (isDirty) {
+                const onCancel = () => {
+                    eventData.cancel = true;
+                    resolve(eventData);
+                };
+                const title = $translate.instant('common.confirm');
+                const message = $translate.instant('similarity.warning.unsaved.changes');
+                openConfirmDialog(title, message, onConfirm, onCancel);
+            } else {
+                onConfirm();
+            }
+        });
+    };
+
+    const repositoryChangedHandler = () => {
+        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+        const config = {...$scope.yasguiConfig, yasqeMode: $scope.canWriteActiveRepo()};
+        updateYasguiComponent(config);
+    };
+
+    const locationChangedHandler = (event, newPath) => {
+        if (isDirty) {
+            event.preventDefault();
+            const title = $translate.instant('common.confirm');
+            const message = $translate.instant('similarity.warning.unsaved.changes');
+            const onConfirm = () => {
+                removeAllListeners();
+                const baseLen = $location.absUrl().length - $location.url().length;
+                const path = newPath.substring(baseLen);
+                $location.path(path);
+            };
+            openConfirmDialog(title, message, onConfirm);
+        } else {
+            removeAllListeners();
+        }
+    };
+
+    const beforeunloadHandler = (event) => {
+        if (isDirty) {
+            event.returnValue = true;
+        }
+    };
+
+    const removeAllListeners = () => {
+        window.removeEventListener('beforeunload', beforeunloadHandler);
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    // =========================
+    // Subscriptions
+    // =========================
+    const subscriptions = [];
+
+    subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+    subscriptions.push(EventEmitterService.subscribe('repositoryIsSet', repositoryChangedHandler));
+    subscriptions.push($scope.$on('$destroy', removeAllListeners));
+    // Prevent go out of the current page? check
+    window.addEventListener('beforeunload', beforeunloadHandler);
+
+    viewMode = getViewMode();
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
@@ -703,11 +836,11 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     }, function (activeRepo) {
         if (activeRepo) {
             Promise.all([SimilarityRestService.getSearchQueries(), SimilarityRestService.getSamples(), $repositories.getPrefixes(activeRepo.id)])
-                .then(([searchQueries, samples, usedPrefixes]) => {
+                .then(([searchQueriesResponses, samples, usedPrefixes]) => {
                     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-                    $scope.searchQueries = searchQueries ? searchQueries.data : [];
-                    $scope.allSamples = samples ? samples.data : [];
-                    $scope.usedPrefixes = usedPrefixes;
+                    searchQueries = searchQueriesResponses ? searchQueriesResponses.data : [];
+                    allSamples = samples ? samples.data : [];
+                    usedPrefixes = usedPrefixes;
                     init();
                 }).catch((error) => {
                 console.log(error)
