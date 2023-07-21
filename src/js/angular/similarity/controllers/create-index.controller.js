@@ -401,6 +401,8 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             showResultTabs: false,
             showYasqeActionButtons: false,
             showQueryButton: false,
+            downloadAsOn: false,
+            showResultInfo: false,
             pageSize: 100,
             prefixes: $scope.usedPrefixes,
             render: $scope.similarityIndexInfo.getSelectedYasguiRenderMode(),
