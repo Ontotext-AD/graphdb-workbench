@@ -1,6 +1,6 @@
 import {SimilarityIndex} from "./similarity-index";
 import {SimilarityQueryType} from "./similarity-query-type";
-import {RenderingMode} from "../../ontotext-yasgui/rendering-mode";
+import {RenderingMode} from "../ontotext-yasgui/rendering-mode";
 
 const filenamePattern = new RegExp('^[a-zA-Z0-9-_]+$');
 
