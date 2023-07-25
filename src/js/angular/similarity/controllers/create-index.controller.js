@@ -101,9 +101,11 @@ function CreateSimilarityIdxCtrl(
         } else {
             $scope.samples = allSamples[SimilarityIndexType.TEXT];
         }
-        $scope.changeQueryTab(similarityQueryType);
-        setDefaultQueries($scope.similarityIndexInfo);
-        $scope.setEditorQuery($scope.similarityIndexInfo.getQuery());
+        $scope.changeQueryTab(similarityQueryType)
+            .then((similarityIndexInfo) => {
+                setDefaultQueries($scope.similarityIndexInfo);
+                $scope.setEditorQuery($scope.similarityIndexInfo.getQuery());
+            });
     }
 
     /**
@@ -112,12 +114,14 @@ function CreateSimilarityIdxCtrl(
      * @param {string} similarityQueryType - the type of query that have to be shown. The value have to be one of {@link SimilarityQueryType}.
      */
     $scope.changeQueryTab = (similarityQueryType) => {
-        const oldSimilarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType;
+        const oldSimilarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType();
         if (oldSimilarityQueryType === similarityQueryType) {
-            return;
+            return Promise.resolve();
         }
         $scope.similarityIndexInfo.setSelectedQueryType(similarityQueryType);
-        updateQueryFromEditor($scope.similarityIndexInfo, oldSimilarityQueryType)
+        return updateQueryFromEditor($scope.similarityIndexInfo, oldSimilarityQueryType)
+            .then((similarityIndexInfo) => validateQuery(similarityIndexInfo, oldSimilarityQueryType))
+            .then((similarityIndexInfo) => validateQueryType(similarityIndexInfo, oldSimilarityQueryType))
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
                     console.log(error);
@@ -141,6 +145,8 @@ function CreateSimilarityIdxCtrl(
     $scope.createSimilarityIndex = () => {
         $scope.saveOrUpdateExecuted = true;
         updateQueryFromEditor($scope.similarityIndexInfo)
+            .then(validateQuery)
+            .then(validateQueryType)
             .then(validateSimilarityIndex)
             .then(validateSimilarityIndexNameExistence)
             .then((similarityIndexInfo) => createIndex(similarityIndexInfo.getSimilarityIndex()))
@@ -184,9 +190,15 @@ function CreateSimilarityIdxCtrl(
         $scope.saveOrUpdateExecuted = true;
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateSimilarityIndexName)
+            .then(validateQuery)
+            .then(validateQueryType)
             .then(saveQuery)
             .then(notifySaveSuccess)
-            .catch((error) => toastr.error(getError(error), $translate.instant('similarity.change.query.error')));
+            .catch((error) => {
+                if (!(error instanceof SimilarityIndexError)) {
+                    toastr.error(getError(error), $translate.instant('similarity.change.query.error'));
+                }
+            });
     };
 
     /**
@@ -195,10 +207,12 @@ function CreateSimilarityIdxCtrl(
      * @param {string} query - a sparql query.
      */
     $scope.setEditorQuery = (query) => {
+        $scope.similarityIndexInfo.markInvalidQuery(undefined, false);
+        $scope.similarityIndexInfo.markInvalidQueryType(undefined, false);
         if ($scope.yasguiConfig) {
             getOntotextYasgui().setQuery(query);
         } else {
-            updateYasguiComponent({initialQuery: query});
+            updateYasguiComponent({initialQuery: query || ' '});
         }
     }
 
@@ -658,8 +672,11 @@ function CreateSimilarityIdxCtrl(
      */
     const validateSelectQuery = (similarityIndexInfo) => {
         if (!similarityIndexInfo.hasSelectQuery()) {
-            similarityIndexInfo.markInvalidQuery(SimilarityQueryType.DATA);
             return Promise.reject(new SimilarityIndexError('Missing select query.'));
+        } else if (similarityIndexInfo.invalidSelectQuery) {
+            return Promise.reject(new SimilarityIndexError('Invalid select query'));
+        } else if (similarityIndexInfo.invalidSelectQueryType) {
+            return Promise.reject(new SimilarityIndexError('Invalid select query type'));
         }
         return Promise.resolve(similarityIndexInfo);
     }
@@ -673,8 +690,11 @@ function CreateSimilarityIdxCtrl(
      */
     const validateSearchQuery = (similarityIndexInfo) => {
         if (!similarityIndexInfo.hasSearchQuery()) {
-            similarityIndexInfo.markInvalidQuery(SimilarityQueryType.SEARCH);
             return Promise.reject(new SimilarityIndexError('Missing search query.'));
+        } else if (similarityIndexInfo.invalidSearchQuery) {
+            return Promise.reject(new SimilarityIndexError('Invalid search query'));
+        } else if (similarityIndexInfo.invalidSearchQueryType) {
+            return Promise.reject(new SimilarityIndexError('Invalid search query type'));
         }
         return Promise.resolve(similarityIndexInfo);
     }
@@ -688,8 +708,11 @@ function CreateSimilarityIdxCtrl(
      */
     const validateAnalogicalQuery = (similarityIndexInfo) => {
         if (similarityIndexInfo.isPredicationType() && !similarityIndexInfo.hasAnalogicalQuery()) {
-            similarityIndexInfo.markInvalidQuery(SimilarityQueryType.ANALOGICAL);
             return Promise.reject(new SimilarityIndexError('Missing analogical query.'));
+        } else if (similarityIndexInfo.invalidAnalogicalQuery) {
+            return Promise.reject(new SimilarityIndexError('Invalid analogical query'));
+        } else if (similarityIndexInfo.invalidAnalogicalQueryType) {
+            return Promise.reject(new SimilarityIndexError('Invalid analogical query type'));
         }
         return Promise.resolve(similarityIndexInfo);
     }
@@ -701,14 +724,14 @@ function CreateSimilarityIdxCtrl(
      * @return {Promise<SimilarityIndexInfo>}
      * @throws {SimilarityIndexError} if query type is not ot type "SELECT".
      */
-    const validateQueryType = (similarityIndexInfo) => {
+    const validateQueryType = (similarityIndexInfo, similarityQueryType = undefined) => {
         return getOntotextYasgui().getQueryType()
             .then((queryType) => {
                 if (QueryType.SELECT !== queryType) {
-                    similarityIndexInfo.markInvalidQueryType();
+                    similarityIndexInfo.markInvalidQueryType(similarityQueryType);
                     return Promise.reject(new SimilarityIndexError('Query type is not valid.'));
                 } else {
-                    similarityIndexInfo.markInvalidQueryType(undefined, false);
+                    similarityIndexInfo.markInvalidQueryType(similarityQueryType, false);
                 }
                 return similarityIndexInfo;
             });
@@ -721,14 +744,14 @@ function CreateSimilarityIdxCtrl(
      * @return {Promise<SimilarityIndexInfo>}
      * @throws {SimilarityIndexError} if query is not valid.
      */
-    const validateQuery = (similarityIndexInfo) => {
+    const validateQuery = (similarityIndexInfo, similarityQueryType = undefined) => {
         return getOntotextYasgui().isQueryValid()
             .then((valid) => {
                 if (!valid) {
-                    similarityIndexInfo.markInvalidQuery();
+                    similarityIndexInfo.markInvalidQuery(similarityQueryType);
                     return Promise.reject(new SimilarityIndexError('Query is not valid.'));
                 } else {
-                    similarityIndexInfo.markInvalidQuery(undefined, false);
+                    similarityIndexInfo.markInvalidQuery(similarityQueryType, false);
                 }
                 return similarityIndexInfo;
             });
