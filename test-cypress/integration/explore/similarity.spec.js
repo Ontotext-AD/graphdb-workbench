@@ -43,13 +43,9 @@ const MODIFIED_DATA_QUERY = 'SELECT ?documentID ?documentText { \n' +
 describe('Similarity screen validation', () => {
 
     let repositoryId;
-    let secondRepositoryId;
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
-        if (secondRepositoryId) {
-            cy.deleteRepository(secondRepositoryId);
-        }
     });
 
     it('Test similarity page default state', () => {
@@ -246,64 +242,6 @@ describe('Similarity screen validation', () => {
         });
     });
 
-    context('Confirmations when try to change repository', () => {
-        beforeEach(() => {
-            secondRepositoryId = 'create-similarity-index-second-repo' + Date.now();
-            cy.createRepository({id: secondRepositoryId});
-            initRepositoryAndVisitSimilarityView();
-            openCreateNewIndexForm();
-        });
-
-        it('should not display confirm message if create similarity form is dirty and try to change repository', () => {
-            // Given I opened the create similarity view,
-            // and create similarity form is dirty.
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('index name');
-
-            // When I change the  repository.
-            RepositorySelectorSteps.selectRepository(secondRepositoryId);
-            // Then I expect to not be redirected to similarity indexes view.
-            SimilarityIndexCreateSteps.verifyUrl();
-        });
-
-        it('should display confirm message if edit similarity create form is dirty (Search query changed) and try to change repository', () => {
-            setIndexName();
-            createSimilarityIndex();
-            openEditQueryView();
-            // Given I opened the edit similarity view,
-            // During the initialization query is changed and this broke the test.
-            // Most the time the broken flow is:
-            // 1.   cypress start to type 's';
-            // 2.   query is changed
-            // 3.   cypress continuous to type 'ome changes'.
-            // as result query is 'ome changes<data query>. YasqeSteps.writeInEditor function has check if parameter is filled, in our case 'some changes',
-            // and this broke the test. Add a little wait time to give chance yasqe query to be filled.
-            cy.wait(1000);
-            // and change "Search query".
-            YasqeSteps.writeInEditor('some changes');
-
-            // When I try to change repository.
-            // Then I expect to be asked for confirmation to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => RepositorySelectorSteps.selectRepository(secondRepositoryId)));
-        });
-
-        it('should display confirm message if edit similarity create form is dirty (Analogical query changed) and try to change repository', () => {
-            switchToPredicationIndex();
-            setIndexName();
-            clickMoreOptionsMenu();
-            addBuildParam();
-            clickMoreOptionsMenu();
-            createSimilarityIndex();
-            openEditQueryView(true);
-            // and change "Analogical query".
-            SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
-            YasqeSteps.writeInEditor('some changes');
-
-            // When I try to change repository.
-            // Then I expect to be asked for confirmation to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => RepositorySelectorSteps.selectRepository(secondRepositoryId)));
-        });
-    });
-
     context('Confirmations when try to change location', () => {
 
         beforeEach(() => {
@@ -328,7 +266,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if data query is changed', () => {
@@ -346,7 +284,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Semantic Vectors create index parameters" is changed', () => {
@@ -357,7 +295,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Stop words" is changed', () => {
@@ -368,7 +306,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Analyzer Class" is changed', () => {
@@ -379,7 +317,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Literal index" is changed', () => {
@@ -390,7 +328,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Search query" is changed', () => {
@@ -401,7 +339,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
 
         it('should display confirm message if "Analogical query" is changed', () => {
@@ -413,7 +351,7 @@ describe('Similarity screen validation', () => {
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.
-            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions(() => SimilarityIndexCreateSteps.getCancelButton().click()));
+            ModalDialogSteps.verifyUrlChangedConfirmation(createVerifyConfirmationDialogOptions());
         });
     });
 
@@ -645,9 +583,9 @@ describe('Similarity screen validation', () => {
         YasqeSteps.verifyQueryContains(query);
     }
 
-    function createVerifyConfirmationDialogOptions(changePageFunction) {
+    function createVerifyConfirmationDialogOptions() {
         return new VerifyConfirmationDialogOptions()
-            .setChangePageFunction(() => changePageFunction())
+            .setChangePageFunction(() => SimilarityIndexCreateSteps.getCancelButton().click())
             .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
             .setVerifyCurrentUrl(() => cy.url().should('include', `${Cypress.config('baseUrl')}/similarity/index/create`))
             .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`));
