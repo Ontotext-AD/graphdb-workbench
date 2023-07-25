@@ -196,54 +196,56 @@
 
                 <div class="row">
                     <div class="col-md-9">
-                        <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="setDirty()"></yasgui-component>
+                        <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="queryChanged()"></yasgui-component>
 
-                        <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
+                        <div ng-if="saveOrUpdateExecuted">
+                            <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
 
-                            <div ng-if="similarityIndexInfo.invalidSelectQuery"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.query.invalid' | translate}}
-                            </div>
+                                <div ng-if="similarityIndexInfo.invalidSelectQuery"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.query.invalid' | translate}}
+                                </div>
 
-                            <div ng-if="!similarityIndexInfo.hasSelectQuery()"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.empty.select.query.error' | translate}}
-                            </div>
+                                <div ng-if="!similarityIndexInfo.hasSelectQuery()"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.empty.select.query.error' | translate}}
+                                </div>
 
-                            <div ng-if="similarityIndexInfo.invalidSelectQueryType"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.invalid.select.query' | translate}}
-                            </div>
-                        </div>
-
-                        <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
-                            <div ng-if="similarityIndexInfo.invalidSearchQuery"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.query.invalid' | translate}}
+                                <div ng-if="similarityIndexInfo.invalidSelectQueryType"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.invalid.select.query' | translate}}
+                                </div>
                             </div>
 
-                            <div ng-if="!similarityIndexInfo.hasSearchQuery()"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.empty.search.query.error' | translate}}
-                            </div>
-                            <div ng-if="similarityIndexInfo.invalidSearchQueryType"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.invalid.search.query' | translate}}
-                            </div>
-                        </div>
+                            <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
+                                <div ng-if="similarityIndexInfo.invalidSearchQuery"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.query.invalid' | translate}}
+                                </div>
 
-                        <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
-                            <div ng-if="similarityIndexInfo.invalidAnalogicalQuery"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.query.invalid' | translate}}
+                                <div ng-if="!similarityIndexInfo.hasSearchQuery()"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.empty.search.query.error' | translate}}
+                                </div>
+                                <div ng-if="similarityIndexInfo.invalidSearchQueryType"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.invalid.search.query' | translate}}
+                                </div>
                             </div>
-                            <div ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.empty.analogical.query.error' | translate}}
-                            </div>
-                            <div ng-if="similarityIndexInfo.invalidAnalogicalQueryType"
-                                 class="idError alert alert-danger mt-1">
-                                {{'similarity.error.invalid.analogical.query' | translate}}
+
+                            <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
+                                <div ng-if="similarityIndexInfo.invalidAnalogicalQuery"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.query.invalid' | translate}}
+                                </div>
+                                <div ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.empty.analogical.query.error' | translate}}
+                                </div>
+                                <div ng-if="similarityIndexInfo.invalidAnalogicalQueryType"
+                                     class="idError alert alert-danger mt-1">
+                                    {{'similarity.error.invalid.analogical.query' | translate}}
+                                </div>
                             </div>
                         </div>
 
