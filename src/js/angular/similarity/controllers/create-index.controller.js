@@ -836,11 +836,11 @@ function CreateSimilarityIdxCtrl(
     }, function (activeRepo) {
         if (activeRepo) {
             Promise.all([SimilarityRestService.getSearchQueries(), SimilarityRestService.getSamples(), $repositories.getPrefixes(activeRepo.id)])
-                .then(([searchQueriesResponses, samples, usedPrefixes]) => {
+                .then(([searchQueriesResponses, samplesResponse, usedPrefixesResponse]) => {
                     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
                     searchQueries = searchQueriesResponses ? searchQueriesResponses.data : [];
-                    allSamples = samples ? samples.data : [];
-                    usedPrefixes = usedPrefixes;
+                    allSamples = samplesResponse ? samplesResponse.data : [];
+                    usedPrefixes = usedPrefixesResponse;
                     init();
                 }).catch((error) => {
                 console.log(error)
