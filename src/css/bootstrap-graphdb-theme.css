@@ -1357,6 +1357,17 @@ footer.footer .container-fluid.main-container p {
     content: "\e920";
 }
 
+.tab-error:after {
+    font-family: 'icomoon', sans-serif !important;
+    font-size: 1em;
+    vertical-align: middle;
+    line-height: 1;
+    position: absolute;
+    left: 0.1em;
+    content: "\e920";
+    color: var(--onto-orange);
+}
+
 .alert-success:before {
     content: "\e914";
 }
