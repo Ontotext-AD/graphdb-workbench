@@ -137,17 +137,36 @@
             <ul class="nav nav-tabs">
                 <li ng-if="!isEditViewMode()" class="nav-item">
                     <a ng-class="similarityIndexInfo.isDataQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.DATA)" class="nav-link" href>
-                        {{'data.query.label' | translate}}
+                        <div>{{'data.query.label' | translate}}
+                            <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSelectQuery() || similarityIndexInfo.invalidSelectQuery || similarityIndexInfo.invalidSelectQueryType)"
+                                 class="tab-error"
+                                 uib-popover="{{getTabErrorMessage(SimilarityQueryType.DATA)}}"
+                                 popover-placement="top"
+                                 popover-trigger="mouseenter">
+                            </sup>
+                        </div>
                     </a>
                 </li>
                 <li class="nav-item search-query-tab">
                     <a ng-class="similarityIndexInfo.isSearchQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.SEARCH)" class="nav-link" href>
                         {{'search.query.label' | translate}}
+                        <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSearchQuery() || similarityIndexInfo.invalidSearchQuery || similarityIndexInfo.invalidSearchQueryType)"
+                             class="tab-error"
+                             uib-popover="{{getTabErrorMessage(SimilarityQueryType.SEARCH)}}"
+                             popover-placement="top"
+                             popover-trigger="mouseenter">
+                        </sup>
                     </a>
                 </li>
                 <li class="nav-item analogical-query-tab" ng-if="similarityIndexInfo.isPredicationType()">
                     <a ng-class="similarityIndexInfo.isAnalogicalQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.ANALOGICAL)" class="nav-link" href>
                         {{'analogical.query.label' | translate}}
+                        <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasAnalogicalQuery() || similarityIndexInfo.invalidAnalogicalQuery || similarityIndexInfo.invalidAnalogicalQueryType)"
+                             class="tab-error"
+                             uib-popover="{{getTabErrorMessage(SimilarityQueryType.ANALOGICAL)}}"
+                             popover-placement="top"
+                             popover-trigger="mouseenter">
+                        </sup>
                     </a>
                 </li>
             </ul>
