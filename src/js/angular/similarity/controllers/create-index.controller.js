@@ -184,6 +184,7 @@ function CreateSimilarityIdxCtrl(
     }
 
     $scope.saveSearchQuery = function () {
+        $scope.saveOrUpdateExecuted = true;
         if (!isDirty) {
             goToSimilarityIndexesView();
         }
@@ -192,6 +193,8 @@ function CreateSimilarityIdxCtrl(
             .then(validateSimilarityIndexName)
             .then(validateQuery)
             .then(validateQueryType)
+            .then(validateSearchQuery)
+            .then(validateAnalogicalQuery)
             .then(saveQuery)
             .then(notifySaveSuccess)
             .catch((error) => {
@@ -275,6 +278,69 @@ function CreateSimilarityIdxCtrl(
     $scope.getCloseBtnMsg = function () {
         let operationType = $scope.editSearchQuery ? $translate.instant('similarity.query.edition.msg') : $translate.instant('similarity.index.creation.msg');
         return $translate.instant('similarity.close.btn.msg', {operation: operationType});
+    }
+
+    $scope.getTabErrorMessage = (similarityQueryTab) => {
+
+        if (!$scope.similarityIndexInfo) {
+            return;
+        }
+
+        if (SimilarityQueryType.DATA === similarityQueryTab) {
+           return getSelectQueryErrorMessage();
+        }
+
+        if (SimilarityQueryType.SEARCH === similarityQueryTab) {
+            return getSearchQueryErrorMessage();
+        }
+
+        if (SimilarityQueryType.ANALOGICAL === similarityQueryTab) {
+            return getAnalogicalQueryErrorMessage();
+        }
+
+        return $translate.instant('similarity.empty.select.query.error');
+    }
+
+    const getSelectQueryErrorMessage = () => {
+        if (!$scope.similarityIndexInfo.hasSelectQuery()) {
+            return $translate.instant('similarity.empty.select.query.error');
+        }
+
+        if ($scope.similarityIndexInfo.invalidSelectQueryType) {
+            return $translate.instant('similarity.error.invalid.select.query');
+        }
+
+        if ($scope.similarityIndexInfo.invalidSelectQuery) {
+            return $translate.instant('similarity.error.query.invalid');
+        }
+    }
+
+    const getSearchQueryErrorMessage = () => {
+        if (!$scope.similarityIndexInfo.hasSearchQuery()) {
+            return $translate.instant('similarity.empty.search.query.error');
+        }
+
+        if ($scope.similarityIndexInfo.invalidSelectQueryType) {
+            return $translate.instant('similarity.error.invalid.search.query');
+        }
+
+        if ($scope.similarityIndexInfo.invalidSelectQuery) {
+            return $translate.instant('similarity.error.query.invalid');
+        }
+    }
+
+    const getAnalogicalQueryErrorMessage = () => {
+        if (!$scope.similarityIndexInfo.hasAnalogicalQuery()) {
+            return $translate.instant('similarity.empty.select.query.error');
+        }
+
+        if ($scope.similarityIndexInfo.invalidAnalogicalQueryType) {
+            return $translate.instant('similarity.error.invalid.analogical.query');
+        }
+
+        if ($scope.similarityIndexInfo.invalidAnalogicalQuery) {
+            return $translate.instant('similarity.error.query.invalid');
+        }
     }
 
     // =========================
