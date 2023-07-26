@@ -262,7 +262,7 @@ describe('Similarity screen validation', () => {
         it('should display confirm message if index name is filled', () => {
             // Given I opened the create similarity view,
             // and similarity index name is filled.
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('index');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('index');
 
             // When click on cancel button.
             // Then I expect to be redirected to similarity indexes view.

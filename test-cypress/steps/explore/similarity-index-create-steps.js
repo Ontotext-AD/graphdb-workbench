@@ -36,6 +36,12 @@ export class SimilarityIndexCreateSteps {
         return cy.get('.similarity-index-name');
     }
 
+    static typeSimilarityIndexName(similarityIndexName) {
+        // Forced because yasqe gets focus when it is initialized and can break typing of name.
+        // For example, if we type a long name, the first half will be typed in the input field and the second half into yasqe.
+        SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type(similarityIndexName, {force: true});
+    }
+
     static getSemanticVectorsInput() {
         return cy.get('#indexParameters');
     }
@@ -81,6 +87,7 @@ export class SimilarityIndexCreateSteps {
 
     static switchToSearchQueryTab() {
         SimilarityIndexCreateSteps.getSearchQueryTab().click();
+        SimilarityIndexCreateSteps.checkSearchQueryTabActive();
     }
 
     static getAnalogicalQueryTab() {
@@ -93,6 +100,7 @@ export class SimilarityIndexCreateSteps {
 
     static switchToAnalogicalQueryTab() {
         SimilarityIndexCreateSteps.getAnalogicalQueryTab().click();
+        SimilarityIndexCreateSteps.checkAnalogicalQueryTabActive();
     }
 
     static getCreatePredictionIndexTab() {
