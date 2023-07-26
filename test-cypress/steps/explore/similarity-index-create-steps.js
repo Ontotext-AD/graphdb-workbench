@@ -64,8 +64,19 @@ export class SimilarityIndexCreateSteps {
         SimilarityIndexCreateSteps.getMoreOptions().click();
     }
 
+    static getSelectQueryTab() {
+        return cy.get('.select-query-tab');
+    }
+
+    static checkSelectQueryTabActive() {
+        SimilarityIndexCreateSteps.getSelectQueryTab().find('a.active');
+    }
+
     static getSearchQueryTab() {
         return cy.get('.search-query-tab');
+    }
+    static checkSearchQueryTabActive() {
+        SimilarityIndexCreateSteps.getSearchQueryTab().find('a.active');
     }
 
     static switchToSearchQueryTab() {
@@ -74,6 +85,10 @@ export class SimilarityIndexCreateSteps {
 
     static getAnalogicalQueryTab() {
         return cy.get('.analogical-query-tab');
+    }
+
+    static checkAnalogicalQueryTabActive() {
+        SimilarityIndexCreateSteps.getAnalogicalQueryTab().find('a.active');
     }
 
     static switchToAnalogicalQueryTab() {

@@ -320,11 +320,11 @@ function CreateSimilarityIdxCtrl(
             return $translate.instant('similarity.empty.search.query.error');
         }
 
-        if ($scope.similarityIndexInfo.invalidSelectQueryType) {
+        if ($scope.similarityIndexInfo.invalidSearchQueryType) {
             return $translate.instant('similarity.error.invalid.search.query');
         }
 
-        if ($scope.similarityIndexInfo.invalidSelectQuery) {
+        if ($scope.similarityIndexInfo.invalidSearchQuery) {
             return $translate.instant('similarity.error.query.invalid');
         }
     }
