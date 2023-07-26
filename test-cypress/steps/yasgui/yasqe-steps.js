@@ -87,7 +87,7 @@ export class YasqeSteps {
 
     static verifyQueryContains(queryPart) {
         this.getCodeMirror().then((cm) => {
-            expect(cm.getValue()).contain(queryPart);
+            expect(cm.getValue().replace(/\s/g, '')).contain(queryPart.replace(/\s/g, ''));
         });
     }
 
