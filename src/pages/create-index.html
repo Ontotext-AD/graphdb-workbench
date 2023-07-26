@@ -18,309 +18,311 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <ul ng-if="!isEditViewMode()" class="nav nav-tabs mb-2">
-        <li class="nav-item" id="create-text-index">
-            <a class="nav-link" ng-class="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType() ? 'active' : ''" href ng-click="changeSimilarityIndexType(SimilarityIndexType.TEXT)" data-toggle="tab">
-                {{'text.similarity.index' | translate}}
-            </a>
-        </li>
-        <li class="nav-item" id="create-predication-index">
-            <a class="nav-link" ng-class="similarityIndexInfo.isPredicationType() ? 'active' : ''" href ng-click="changeSimilarityIndexType(SimilarityIndexType.PREDICATION)"
-               data-toggle="tab">
-                {{'predication.index' | translate}}
-            </a>
-        </li>
-    </ul>
-    <div class="card mb-2">
-        <div class="card-block pt-1">
-            <p class="lead">{{'index.name' | translate}}</p>
-            <div class="input-group input-group-lg">
-                <input required
-                       class="form-control similarity-index-name"
-                       type="text"
-                       placeholder="{{'my.index.name.required' | translate}}"
-                       ng-model="similarityIndexInfo.similarityIndex.name"
-                       ng-disabled="isEditViewMode()"
-                       ng-change="similarityIndexNameChanged()">
-            </div>
-
-            <div ng-if="saveOrUpdateExecuted">
-                <div ng-if="!similarityIndexInfo.hasName()" class="idError alert alert-danger mt-1">
-                    {{'similarity.empty.index.name.error' | translate}}
+    <div ng-if="similarityIndexInfo">
+        <ul ng-if="!isEditViewMode()" class="nav nav-tabs mb-2">
+            <li class="nav-item" id="create-text-index">
+                <a class="nav-link" ng-class="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType() ? 'active' : ''" href ng-click="changeSimilarityIndexType(SimilarityIndexType.TEXT)" data-toggle="tab">
+                    {{'text.similarity.index' | translate}}
+                </a>
+            </li>
+            <li class="nav-item" id="create-predication-index">
+                <a class="nav-link" ng-class="similarityIndexInfo.isPredicationType() ? 'active' : ''" href ng-click="changeSimilarityIndexType(SimilarityIndexType.PREDICATION)"
+                   data-toggle="tab">
+                    {{'predication.index' | translate}}
+                </a>
+            </li>
+        </ul>
+        <div class="card mb-2">
+            <div class="card-block pt-1">
+                <p class="lead">{{'index.name' | translate}}</p>
+                <div class="input-group input-group-lg">
+                    <input required
+                           class="form-control similarity-index-name"
+                           type="text"
+                           placeholder="{{'my.index.name.required' | translate}}"
+                           ng-model="similarityIndexInfo.similarityIndex.name"
+                           ng-disabled="isEditViewMode()"
+                           ng-change="similarityIndexNameChanged()">
                 </div>
-                <div ng-if="similarityIndexInfo.hasName() && !similarityIndexInfo.isNameValid()" class="idError alert alert-danger mt-1">
-                    {{'similarity.index.name.constraint' | translate}}
-                </div>
-                <div ng-if="similarityIndexInfo.isNameExist" class="idError alert alert-danger mt-1">
-                    {{'similarity.existing.index.name.error' | translate}}
-                </div>
-            </div>
 
-            <button ng-if="!isEditViewMode()"
-                    class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn"
-                    data-toggle="collapse"
-                    data-target="#more-options">
-                {{'more.options.label' | translate}} <span class="icon-caret-up"></span>
-            </button>
-
-            <div id="more-options" class="collapse mt-1">
-                <div class="form-group row">
-                    <label for="indexParameters" class="col-md-4 col-form-label">{{'semantic.vectors.index.params' | translate}}</label>
-                    <div class="col-md-8">
-                        <input class="form-control"
-                               type="text"
-                               ng-model="similarityIndexInfo.similarityIndex.options"
-                               id="indexParameters"
-                               ng-change="setDirty()"
-                               placeholder="-vectortype binary">
-                        <div class="small text-muted mt-1">
-                            {{'see.full.label' | translate}}
-                            <a href="http://graphdb.ontotext.com/documentation/{{productInfo.productShortVersion}}/semantic-similarity-searches.html#create-index-parameters"
-                               rel="noopener" target="_blank">
-                                {{'list.of.supported.params' | translate}}
-                            </a>
-                        </div>
+                <div ng-if="saveOrUpdateExecuted">
+                    <div ng-if="!similarityIndexInfo.hasName()" class="idError alert alert-danger mt-1">
+                        {{'similarity.empty.index.name.error' | translate}}
+                    </div>
+                    <div ng-if="similarityIndexInfo.hasName() && !similarityIndexInfo.isNameValid()" class="idError alert alert-danger mt-1">
+                        {{'similarity.index.name.constraint' | translate}}
+                    </div>
+                    <div ng-if="similarityIndexInfo.isNameExist" class="idError alert alert-danger mt-1">
+                        {{'similarity.existing.index.name.error' | translate}}
                     </div>
                 </div>
 
-                <div class="form-group row" ng-if="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
-                    <label class="col-md-4 col-form-label">{{'stop.words' | translate}}</label>
-                    <div class="col-md-8">
-                        <input class="form-control stop-words"
-                               type="text"
-                               placeholder="{{'default.lucene.stop.list' | translate}}"
-                               ng-model="similarityIndexInfo.similarityIndex.stopList"
-                               ng-change="setDirty()">
-                    </div>
-                </div>
-                <div class="form-group row" ng-if="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
-                    <label class="col-md-4 col-form-label">{{'analyzer.class' | translate}}</label>
-                    <div class="col-md-8">
-                        <input class="form-control analyzer-class"
-                               type="text"
-                               ng-model="similarityIndexInfo.similarityIndex.analyzer"
-                               ng-change="setDirty()">
-                    </div>
-                </div>
-                <div class="checkbox offset-xs-3 offset-md-4" ng-show="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
-                    <label class="col-xs-6 col-md-6" gdb-tooltip="{{'literal.index.input' | translate}}" tooltip-placement="bottom">
-                        <input type="checkbox"
-                               class="literal-index"
-                               ng-true-value="'true'"
-                               ng-false-value="'false'"
-                               ng-model="similarityIndexInfo.similarityIndex.isLiteralIndex"
-                               ng-change="setDirty()"/>
-                        {{'literal.index.label' | translate}}
-                    </label>
-                </div>
-                <div class="form-group row" ng-show="similarityIndexInfo.isPredicationType()">
-                    <label class="col-md-4 col-form-label">{{'input.literal.index.label' | translate}}</label>
-                    <div class="col-md-8">
-                        <select class="form-control"
-                                ng-options="idx for idx in literalIndexes"
-                                ng-model="similarityIndexInfo.similarityIndex.inputIndex"
-                                ng-change="setDirty()"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <button ng-if="!isEditViewMode()"
+                        class="btn btn-link btn-sm mt-1 px-0 collapsed more-options-btn"
+                        data-toggle="collapse"
+                        data-target="#more-options">
+                    {{'more.options.label' | translate}} <span class="icon-caret-up"></span>
+                </button>
 
-    <div class="card">
-        <div class="card-block">
-            <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-                <span class="icon-help" uib-popover="{{'toggle.help' | translate}}" popover-placement="top"
-                      popover-trigger="mouseenter"></span>
-                <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span>
-            </button>
-
-            <ul class="nav nav-tabs">
-                <li ng-if="!isEditViewMode()" class="nav-item">
-                    <a ng-class="similarityIndexInfo.isDataQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.DATA)" class="nav-link" href>
-                        <div>{{'data.query.label' | translate}}
-                            <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSelectQuery() || similarityIndexInfo.invalidSelectQuery || similarityIndexInfo.invalidSelectQueryType)"
-                                 class="tab-error"
-                                 uib-popover="{{getTabErrorMessage(SimilarityQueryType.DATA)}}"
-                                 popover-placement="top"
-                                 popover-trigger="mouseenter">
-                            </sup>
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item search-query-tab">
-                    <a ng-class="similarityIndexInfo.isSearchQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.SEARCH)" class="nav-link" href>
-                        {{'search.query.label' | translate}}
-                        <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSearchQuery() || similarityIndexInfo.invalidSearchQuery || similarityIndexInfo.invalidSearchQueryType)"
-                             class="tab-error"
-                             uib-popover="{{getTabErrorMessage(SimilarityQueryType.SEARCH)}}"
-                             popover-placement="top"
-                             popover-trigger="mouseenter">
-                        </sup>
-                    </a>
-                </li>
-                <li class="nav-item analogical-query-tab" ng-if="similarityIndexInfo.isPredicationType()">
-                    <a ng-class="similarityIndexInfo.isAnalogicalQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.ANALOGICAL)" class="nav-link" href>
-                        {{'analogical.query.label' | translate}}
-                        <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasAnalogicalQuery() || similarityIndexInfo.invalidAnalogicalQuery || similarityIndexInfo.invalidAnalogicalQueryType)"
-                             class="tab-error"
-                             uib-popover="{{getTabErrorMessage(SimilarityQueryType.ANALOGICAL)}}"
-                             popover-placement="top"
-                             popover-trigger="mouseenter">
-                        </sup>
-                    </a>
-                </li>
-            </ul>
-
-            <div>
-                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden">
-                    <button class="close absolute" ng-click="toggleHelp(0)"></button>
-
-                    <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
-                        <p class="lead">
-                            {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span>
-                            {{'query.determines.data.index' | translate}}
-                        </p>
-
-                        <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'the.following.bindings' | translate}}</p>
-                        <ul ng-show="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
-                            <li><code>?documentID</code> {{'determines.id.indexed.doc' | translate}}</li>
-                            <li><code>?documentText</code> {{'determines.doc.content' | translate}}</li>
-                        </ul>
-                        <ul ng-show="similarityIndexInfo.isPredicationType()">
-                            <li><code>?subject</code></li>
-                            <li><code>?predicate</code></li>
-                            <li><code>?object</code></li>
-                        </ul>
-
-                        {{'query.execution.info' | translate}}
-                    </div>
-
-                    <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
-                        <p class="lead">
-                            {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.on.search' | translate}}
-                        </p>
-
-                        {{'query.execution.on.search' | translate}}
-                    </div>
-
-                    <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
-                        <p class="lead">
-                            {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span>
-                            {{'query.fetch.analogical.search' | translate}}
-                        </p>
-
-                        {{'analogical.search.info' | translate}}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-9">
-                        <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="queryChanged()"></yasgui-component>
-
-                        <div ng-if="saveOrUpdateExecuted">
-                            <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
-
-                                <div ng-if="similarityIndexInfo.invalidSelectQuery"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.query.invalid' | translate}}
-                                </div>
-
-                                <div ng-if="!similarityIndexInfo.hasSelectQuery()"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.empty.select.query.error' | translate}}
-                                </div>
-
-                                <div ng-if="similarityIndexInfo.invalidSelectQueryType"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.invalid.select.query' | translate}}
-                                </div>
-                            </div>
-
-                            <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
-                                <div ng-if="similarityIndexInfo.invalidSearchQuery"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.query.invalid' | translate}}
-                                </div>
-
-                                <div ng-if="!similarityIndexInfo.hasSearchQuery()"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.empty.search.query.error' | translate}}
-                                </div>
-                                <div ng-if="similarityIndexInfo.invalidSearchQueryType"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.invalid.search.query' | translate}}
-                                </div>
-                            </div>
-
-                            <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
-                                <div ng-if="similarityIndexInfo.invalidAnalogicalQuery"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.query.invalid' | translate}}
-                                </div>
-                                <div ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.empty.analogical.query.error' | translate}}
-                                </div>
-                                <div ng-if="similarityIndexInfo.invalidAnalogicalQueryType"
-                                     class="idError alert alert-danger mt-1">
-                                    {{'similarity.error.invalid.analogical.query' | translate}}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-md-3" ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
-                        <p>{{'sample.queries' | translate}} </p>
-
-                        <div class="list-group">
-                            <div ng-repeat="(sampleKey, sampleValue) in samples">
-                                <a href="#" ng-click="setEditorQuery(sampleValue)" class="list-group-item list-group-item-action">
-                                    <strong ng-bind="sampleKey"></strong>
-                                    <samp class="text-muted small">{{sampleValue}}</samp>
+                <div id="more-options" class="collapse mt-1">
+                    <div class="form-group row">
+                        <label for="indexParameters" class="col-md-4 col-form-label">{{'semantic.vectors.index.params' | translate}}</label>
+                        <div class="col-md-8">
+                            <input class="form-control"
+                                   type="text"
+                                   ng-model="similarityIndexInfo.similarityIndex.options"
+                                   id="indexParameters"
+                                   ng-change="setDirty()"
+                                   placeholder="-vectortype binary">
+                            <div class="small text-muted mt-1">
+                                {{'see.full.label' | translate}}
+                                <a href="http://graphdb.ontotext.com/documentation/{{productInfo.productShortVersion}}/semantic-similarity-searches.html#create-index-parameters"
+                                   rel="noopener" target="_blank">
+                                    {{'list.of.supported.params' | translate}}
                                 </a>
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row" ng-if="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
+                        <label class="col-md-4 col-form-label">{{'stop.words' | translate}}</label>
+                        <div class="col-md-8">
+                            <input class="form-control stop-words"
+                                   type="text"
+                                   placeholder="{{'default.lucene.stop.list' | translate}}"
+                                   ng-model="similarityIndexInfo.similarityIndex.stopList"
+                                   ng-change="setDirty()">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
+                        <label class="col-md-4 col-form-label">{{'analyzer.class' | translate}}</label>
+                        <div class="col-md-8">
+                            <input class="form-control analyzer-class"
+                                   type="text"
+                                   ng-model="similarityIndexInfo.similarityIndex.analyzer"
+                                   ng-change="setDirty()">
+                        </div>
+                    </div>
+                    <div class="checkbox offset-xs-3 offset-md-4" ng-show="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
+                        <label class="col-xs-6 col-md-6" gdb-tooltip="{{'literal.index.input' | translate}}" tooltip-placement="bottom">
+                            <input type="checkbox"
+                                   class="literal-index"
+                                   ng-true-value="'true'"
+                                   ng-false-value="'false'"
+                                   ng-model="similarityIndexInfo.similarityIndex.isLiteralIndex"
+                                   ng-change="setDirty()"/>
+                            {{'literal.index.label' | translate}}
+                        </label>
+                    </div>
+                    <div class="form-group row" ng-show="similarityIndexInfo.isPredicationType()">
+                        <label class="col-md-4 col-form-label">{{'input.literal.index.label' | translate}}</label>
+                        <div class="col-md-8">
+                            <select class="form-control"
+                                    ng-options="idx for idx in literalIndexes"
+                                    ng-model="similarityIndexInfo.similarityIndex.inputIndex"
+                                    ng-change="setDirty()"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="clearfix">
-                <div class="pull-right">
-                    <a ng-href="similarity" class="btn btn-lg btn-secondary cancel-similarity-index-btn"
-                       uib-popover="{{getCloseBtnMsg()}}"
-                       popover-placement="top"
-                       popover-trigger="mouseenter">
-                        {{'common.cancel.btn' | translate}}
-                    </a>
-                    <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createSimilarityIndex()"
-                            uib-popover="{{'create.index.label' | translate}}"
-                            popover-placement="top"
-                            popover-trigger="mouseenter">
-                        {{'common.create.btn' | translate}}
-                    </button>
-                    <button ng-if="isEditViewMode()" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
-                            uib-popover="{{'core.edit.query' | translate}}"
-                            popover-placement="top"
-                            popover-trigger="mouseenter">
-                        {{'common.save.btn' | translate}}
-                    </button>
+        <div class="card">
+            <div class="card-block">
+                <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
+                <span class="icon-help" uib-popover="{{'toggle.help' | translate}}" popover-placement="top"
+                      popover-trigger="mouseenter"></span>
+                    <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span>
+                </button>
+
+                <ul class="nav nav-tabs">
+                    <li ng-if="!isEditViewMode()" class="nav-item select-query-tab">
+                        <a ng-class="similarityIndexInfo.isDataQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.DATA)" class="nav-link" href>
+                            <div>{{'data.query.label' | translate}}
+                                <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSelectQuery() || similarityIndexInfo.invalidSelectQuery || similarityIndexInfo.invalidSelectQueryType)"
+                                     class="tab-error"
+                                     uib-popover="{{getTabErrorMessage(SimilarityQueryType.DATA)}}"
+                                     popover-placement="top"
+                                     popover-trigger="mouseenter">
+                                </sup>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item search-query-tab">
+                        <a ng-class="similarityIndexInfo.isSearchQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.SEARCH)" class="nav-link" href>
+                            {{'search.query.label' | translate}}
+                            <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasSearchQuery() || similarityIndexInfo.invalidSearchQuery || similarityIndexInfo.invalidSearchQueryType)"
+                                 class="tab-error"
+                                 uib-popover="{{getTabErrorMessage(SimilarityQueryType.SEARCH)}}"
+                                 popover-placement="top"
+                                 popover-trigger="mouseenter">
+                            </sup>
+                        </a>
+                    </li>
+                    <li class="nav-item analogical-query-tab" ng-if="similarityIndexInfo.isPredicationType()">
+                        <a ng-class="similarityIndexInfo.isAnalogicalQueryTypeSelected() ? 'active' : ''" ng-click="changeQueryTab(SimilarityQueryType.ANALOGICAL)" class="nav-link" href>
+                            {{'analogical.query.label' | translate}}
+                            <sup ng-if="saveOrUpdateExecuted && (!similarityIndexInfo.hasAnalogicalQuery() || similarityIndexInfo.invalidAnalogicalQuery || similarityIndexInfo.invalidAnalogicalQueryType)"
+                                 class="tab-error"
+                                 uib-popover="{{getTabErrorMessage(SimilarityQueryType.ANALOGICAL)}}"
+                                 popover-placement="top"
+                                 popover-trigger="mouseenter">
+                            </sup>
+                        </a>
+                    </li>
+                </ul>
+
+                <div>
+                    <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden">
+                        <button class="close absolute" ng-click="toggleHelp(0)"></button>
+
+                        <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
+                            <p class="lead">
+                                {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span>
+                                {{'query.determines.data.index' | translate}}
+                            </p>
+
+                            <p>{{'query.must' | translate}} <span class="small-caps">SELECT</span> {{'the.following.bindings' | translate}}</p>
+                            <ul ng-show="similarityIndexInfo.isTextType() || similarityIndexInfo.isTextLiteralType()">
+                                <li><code>?documentID</code> {{'determines.id.indexed.doc' | translate}}</li>
+                                <li><code>?documentText</code> {{'determines.doc.content' | translate}}</li>
+                            </ul>
+                            <ul ng-show="similarityIndexInfo.isPredicationType()">
+                                <li><code>?subject</code></li>
+                                <li><code>?predicate</code></li>
+                                <li><code>?object</code></li>
+                            </ul>
+
+                            {{'query.execution.info' | translate}}
+                        </div>
+
+                        <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
+                            <p class="lead">
+                                {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span> {{'query.fetch.on.search' | translate}}
+                            </p>
+
+                            {{'query.execution.on.search' | translate}}
+                        </div>
+
+                        <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
+                            <p class="lead">
+                                {{'this.sentence.start' | translate}} <span class="small-caps">SELECT</span>
+                                {{'query.fetch.analogical.search' | translate}}
+                            </p>
+
+                            {{'analogical.search.info' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-9">
+                            <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="queryChanged()"></yasgui-component>
+
+                            <div ng-if="saveOrUpdateExecuted">
+                                <div ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
+
+                                    <div ng-if="similarityIndexInfo.hasSelectQuery() && similarityIndexInfo.invalidSelectQuery"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.query.invalid' | translate}}
+                                    </div>
+
+                                    <div ng-if="!similarityIndexInfo.hasSelectQuery()"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.empty.select.query.error' | translate}}
+                                    </div>
+
+                                    <div ng-if="similarityIndexInfo.hasSelectQuery() && similarityIndexInfo.invalidSelectQueryType"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.invalid.select.query' | translate}}
+                                    </div>
+                                </div>
+
+                                <div ng-if="similarityIndexInfo.isSearchQueryTypeSelected()">
+                                    <div ng-if="similarityIndexInfo.hasSearchQuery() && similarityIndexInfo.invalidSearchQuery"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.query.invalid' | translate}}
+                                    </div>
+
+                                    <div ng-if="!similarityIndexInfo.hasSearchQuery()"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.empty.search.query.error' | translate}}
+                                    </div>
+                                    <div ng-if="similarityIndexInfo.hasSearchQuery() && similarityIndexInfo.invalidSearchQueryType"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.invalid.search.query' | translate}}
+                                    </div>
+                                </div>
+
+                                <div ng-if="similarityIndexInfo.isAnalogicalQueryTypeSelected()">
+                                    <div ng-if="similarityIndexInfo.hasAnalogicalQuery() && similarityIndexInfo.invalidAnalogicalQuery"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.query.invalid' | translate}}
+                                    </div>
+                                    <div ng-if="!similarityIndexInfo.hasAnalogicalQuery()"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.empty.analogical.query.error' | translate}}
+                                    </div>
+                                    <div ng-if="similarityIndexInfo.hasAnalogicalQuery() && similarityIndexInfo.invalidAnalogicalQueryType"
+                                         class="idError alert alert-danger mt-1">
+                                        {{'similarity.error.invalid.analogical.query' | translate}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-3" ng-if="similarityIndexInfo.isDataQueryTypeSelected()">
+                            <p>{{'sample.queries' | translate}} </p>
+
+                            <div class="list-group">
+                                <div ng-repeat="(sampleKey, sampleValue) in samples">
+                                    <a href="#" ng-click="setEditorQuery(sampleValue)" class="list-group-item list-group-item-action">
+                                        <strong ng-bind="sampleKey"></strong>
+                                        <samp class="text-muted small">{{sampleValue}}</samp>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="pull-left">
-                    <button ng-if="!isEditViewMode()" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">
-                        {{'view.index.query' | translate}}
-                    </button>
-                    <button class="btn btn-link test-query-btn" ng-click="preview()" ng-if="similarityIndexInfo.isDataQueryTypeSelected() && !isEditViewMode() && isYasqeShown()"
-                            uib-popover="{{'preview.results' | translate}}"
-                            popover-placement="top"
-                            popover-trigger="mouseenter">
-                        {{'test.query.btn' | translate}}
-                    </button>
-                    <button class="btn btn-link" ng-click="showEditor()" ng-if="isYasrShown() && similarityIndexInfo.isDataQueryTypeSelected()"
-                            uib-popover="{{'closes.preview' | translate}}"
-                            popover-placement="top"
-                            popover-trigger="mouseenter">
-                        {{'core.edit.query' | translate}}
-                    </button>
+
+                <div class="clearfix">
+                    <div class="pull-right">
+                        <a ng-href="similarity" class="btn btn-lg btn-secondary cancel-similarity-index-btn"
+                           uib-popover="{{getCloseBtnMsg()}}"
+                           popover-placement="top"
+                           popover-trigger="mouseenter">
+                            {{'common.cancel.btn' | translate}}
+                        </a>
+                        <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createSimilarityIndex()"
+                                uib-popover="{{'create.index.label' | translate}}"
+                                popover-placement="top"
+                                popover-trigger="mouseenter">
+                            {{'common.create.btn' | translate}}
+                        </button>
+                        <button ng-if="isEditViewMode()" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
+                                uib-popover="{{'core.edit.query' | translate}}"
+                                popover-placement="top"
+                                popover-trigger="mouseenter">
+                            {{'common.save.btn' | translate}}
+                        </button>
+                    </div>
+                    <div class="pull-left">
+                        <button ng-if="!isEditViewMode()" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">
+                            {{'view.index.query' | translate}}
+                        </button>
+                        <button class="btn btn-link test-query-btn" ng-click="preview()" ng-if="similarityIndexInfo.isDataQueryTypeSelected() && !isEditViewMode() && isYasqeShown()"
+                                uib-popover="{{'preview.results' | translate}}"
+                                popover-placement="top"
+                                popover-trigger="mouseenter">
+                            {{'test.query.btn' | translate}}
+                        </button>
+                        <button class="btn btn-link" ng-click="showEditor()" ng-if="isYasrShown() && similarityIndexInfo.isDataQueryTypeSelected()"
+                                uib-popover="{{'closes.preview' | translate}}"
+                                popover-placement="top"
+                                popover-trigger="mouseenter">
+                            {{'core.edit.query' | translate}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
