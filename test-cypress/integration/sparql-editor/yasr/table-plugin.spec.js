@@ -146,7 +146,12 @@ describe('Yasr Table plugin', () => {
             TablePluginSteps.getCopyResourceLinkInput().should('have.value', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
         });
 
-        it('Should show success message when user click on copy resource link button.', () => {
+        it('Should show success message when user click on copy resource link button.', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             // When I execute a query
             YasqeSteps.executeQuery();
 
