@@ -91,8 +91,15 @@ export class YasqeSteps {
         });
     }
 
-    static getQuery() {
-        return this.getCodeMirror().then((cm) => {
+    /**
+     * In certain scenarios we need to wait a bit before trying to get the query from the editor. For example, when the
+     * query is dynamically switched using the yasgui api, it may take some time before the old query gets replaced or
+     * removed from the editor.
+     * @param {number} delay The time in milliseconds to wait before trying to get the editor and its query.
+     * @return {Cypress.Chainable<unknown>}
+     */
+    static getQuery(delay = 0) {
+        return cy.wait(delay).then(() => this.getCodeMirror()).then((cm) => {
             return cm.getValue();
         });
     }
