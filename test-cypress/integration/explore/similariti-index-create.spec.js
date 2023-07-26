@@ -42,7 +42,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index without select query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index without select query.
             YasqeSteps.clearEditor();
             SimilarityIndexCreateSteps.create();
@@ -54,7 +54,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index with select query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update select query.
             YasqeSteps.pasteQuery(INSERT_QUERY);
 
@@ -67,7 +67,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index with invalid select query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update select query.
             YasqeSteps.pasteQuery(INVALID_QUERY);
 
@@ -80,7 +80,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index without search query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index without search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.clearEditor();
@@ -93,7 +93,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index with search query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INSERT_QUERY);
@@ -107,7 +107,7 @@ describe('Create similarity index', () => {
         it('should not allow to create a similarity index with invalid search query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INVALID_QUERY);
@@ -121,7 +121,7 @@ describe('Create similarity index', () => {
         it('should show error icon on top-right corner of tabs with invalid query', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with invalid select query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INVALID_QUERY);
@@ -129,7 +129,7 @@ describe('Create similarity index', () => {
             SimilarityIndexCreateSteps.create();
 
             // Then I expect to see an icon in the top-right corner of the 'Data query' tab.
-            SimilarityIndexCreateSteps.getSelectQueryTab().find('.tab-error').should('exist');
+            SimilarityIndexCreateSteps.getSearchQueryTab().find('.tab-error').should('exist');
         });
     });
 
@@ -149,7 +149,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index without select query.
             YasqeSteps.clearEditor();
             SimilarityIndexCreateSteps.create();
@@ -162,7 +162,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update select query.
             YasqeSteps.pasteQuery(INSERT_QUERY);
 
@@ -176,7 +176,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update select query.
             YasqeSteps.pasteQuery(INVALID_QUERY);
 
@@ -190,7 +190,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index without search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.clearEditor();
@@ -204,7 +204,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INSERT_QUERY);
@@ -219,7 +219,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update search query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INVALID_QUERY);
@@ -234,7 +234,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index without analogical query.
             SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
             YasqeSteps.clearEditor();
@@ -249,7 +249,7 @@ describe('Create similarity index', () => {
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
             // cy.pause()
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update analogical query.
             SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
             YasqeSteps.pasteQuery(INSERT_QUERY);
@@ -264,7 +264,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with update analogical query.
             SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
             YasqeSteps.pasteQuery(INVALID_QUERY);
@@ -279,7 +279,7 @@ describe('Create similarity index', () => {
             // Given I am on "Create similarity index" page.
             // When I fill similarity index name,
             SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
-            SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('indexName');
+            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
             // and try to create index with invalid analogical query.
             SimilarityIndexCreateSteps.switchToSearchQueryTab();
             YasqeSteps.pasteQuery(INVALID_QUERY);
