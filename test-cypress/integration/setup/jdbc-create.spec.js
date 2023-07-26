@@ -6,7 +6,6 @@ import {LoaderSteps} from "../../steps/loader-steps";
 import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
-import ImportSteps from "../../steps/import-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
