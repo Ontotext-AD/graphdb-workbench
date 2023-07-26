@@ -29,7 +29,7 @@ describe('Confirmations when try to change repository', () => {
     it('should not display confirm message if create similarity form is dirty and try to change repository', () => {
         // Given I opened the create similarity view,
         // and create similarity form is dirty.
-        SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type('index name');
+        SimilarityIndexCreateSteps.typeSimilarityIndexName('index name');
 
         // When I change the  repository.
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
@@ -40,7 +40,7 @@ describe('Confirmations when try to change repository', () => {
     it('should display confirm message if edit similarity create form is dirty (Search query changed) and try to change repository', () => {
         const similarityIndexName = 'SimilarityIndex';
         YasqeSteps.waitUntilQueryIsVisible();
-        SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type(similarityIndexName);
+        SimilarityIndexCreateSteps.typeSimilarityIndexName(similarityIndexName);
         SimilarityIndexCreateSteps.create();
         SimilarityIndexesSteps.getEditButton(similarityIndexName).click();
 
@@ -65,7 +65,7 @@ describe('Confirmations when try to change repository', () => {
         // Given I opened the edit similarity view,
         const similarityIndexName = 'SimilarityIndex';
         YasqeSteps.waitUntilQueryIsVisible();
-        SimilarityIndexCreateSteps.getSimilarityIndexNameInput().type(similarityIndexName);
+        SimilarityIndexCreateSteps.typeSimilarityIndexName(similarityIndexName);
         SimilarityIndexCreateSteps.switchToCreatePredictionIndexTab();
         SimilarityIndexCreateSteps.create();
         SimilarityIndexesSteps.getEditButton(similarityIndexName).click();
