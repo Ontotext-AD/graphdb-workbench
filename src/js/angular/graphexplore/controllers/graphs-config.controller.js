@@ -1,5 +1,9 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
+import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
+import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
+import {YasguiComponentDirectiveUtil} from "../../core/directives/yasgui-component/yasgui-component-directive.util";
+import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
@@ -51,16 +55,46 @@ function GraphConfigCtrl(
     $scope.page = 1;
     $scope.totalPages = 5;
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP) === 1;
-    $scope.newConfig = {startQueryIncludeInferred: true, startQuerySameAs: true};
-    $scope.newConfig.startMode = 'search';
+    $scope.newConfig = new GraphsConfig();
+    $scope.newConfig.startQueryIncludeInferred = true;
+    $scope.newConfig.startQuerySameAs = true;
+    $scope.newConfig.startMode = StartMode.SEARCH;
     $scope.isUpdate = false;
     $scope.shared = false;
+    /**
+     * Flag showing if the user have permission to write in the currently selected repository.
+     * @type {boolean}
+     */
+    $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
 
     // =========================
-    // Public functions
+    // TODO: Private fields
     // =========================
 
-    $scope.toggleHelp = function (value) {
+    let selectedFixedNodeChanged;
+    const configName = $routeParams.configName;
+    const activeRepository = $repositories.getActiveRepository();
+    const DISABLE_YASQE_BUTTONS_CONFIGURATION = [
+        {
+            name: 'createSavedQuery',
+            visible: false
+        }, {
+            name: 'showSavedQueries',
+            visible: false
+        }, {
+            name: 'shareQuery',
+            visible: false
+        }, {
+            name: 'includeInferredStatements',
+            visible: false
+        }
+    ];
+
+    // =========================
+    // TODO: Public functions
+    // =========================
+
+    $scope.toggleHelp = (value) => {
         if (value === undefined) {
             value = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP);
         }
@@ -73,21 +107,25 @@ function GraphConfigCtrl(
         }
     };
 
-    $scope.fixedVisualCallback = function (uri, label) {
+    /**
+     * @param {string} uri
+     * @param {string} label
+     */
+    $scope.fixedVisualCallback = (uri, label) => {
         $scope.newConfig.startIRI = uri;
         $scope.newConfig.startIRILabel = label;
         selectedFixedNodeChanged = true;
     };
 
-    $scope.isDefaultGraph = function (sample) {
+    $scope.isDefaultGraph = (sample) => {
         return (sample.name === 'Minimal' || sample.name === 'Advanced');
     };
 
-    $scope.isUserGraph = function (sample) {
+    $scope.isUserGraph = (sample) => {
         return !$scope.isDefaultGraph(sample);
     };
 
-    $scope.getSampleName = function (sample, property) {
+    $scope.getSampleName = (sample, property) => {
         const extra = sample[property + 'Description'];
         if (extra) {
             // Sample has description, use it
@@ -98,20 +136,210 @@ function GraphConfigCtrl(
         }
     };
 
-    $scope.encodeQuery = function (query) {
-        return encodeURIComponent(query);
+    /**
+     * @param {GraphsConfig} payload
+     */
+    $scope.createGraphConfig = (payload) => {
+        GraphConfigRestService.createGraphConfig(payload)
+            .success(async function () {
+                await Notifications.showToastMessageWithDelay('graphexplore.saved.new.config');
+                $location.url('graphs-visualizations');
+            }).error(function (data) {
+                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.create'));
+            });
+    };
+
+    /**
+     * @param {GraphsConfig} payload
+     */
+    $scope.updateGraphConfig = (payload) => {
+        GraphConfigRestService.updateGraphConfig(payload)
+            .success(async function () {
+                await Notifications.showToastMessageWithDelay('graphexplore.saved.config');
+                $location.url('graphs-visualizations');
+            }).error(function (data) {
+                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.save'));
+            });
+    };
+
+    $scope.goToPage = (nextPage) => {
+        if ($scope.page === nextPage) {
+            // already there
+            return;
+        }
+
+        validateCurrentPage(() => {
+            $scope.showEditor();
+            $scope.page = nextPage;
+            $scope.notoolbar = $scope.page !== 1;
+        });
+    };
+
+    $scope.goToPreviousPage = () => {
+        if ($scope.page > 1) {
+            $scope.goToPage($scope.page - 1);
+        }
+
+        if (isBaseConfig()) {
+            selectedFixedNodeChanged = false;
+        }
+    };
+
+    $scope.goToNextPage = () => {
+        broadcastAddStartFixedNodeEvent();
+        if (!$scope.newConfig.isStartMode(StartMode.NODE) || selectedFixedNodeChanged) {
+            $scope.goToPage($scope.page + 1);
+        }
+    };
+
+    $scope.saveGraphConfig = () => {
+        broadcastAddStartFixedNodeEvent();
+
+        if (isBaseConfig() && !selectedFixedNodeChanged) {
+            return;
+        }
+
+        $scope.newConfig.startQueryIncludeInferred = $scope.currentQuery.inference;
+        $scope.newConfig.startQuerySameAs = $scope.currentQuery.sameAs;
+
+        validateCurrentPage(() => {
+            if (!$scope.newConfig.name) {
+                showInvalidMsg($translate.instant('graphexplore.provide.config.name'));
+                return;
+            }
+            if ($scope.isUpdate) {
+                $scope.updateGraphConfig($scope.newConfig.toSavePayload());
+            } else {
+                $scope.createGraphConfig($scope.newConfig.toSavePayload());
+            }
+        });
+    };
+
+    /**
+     * Sets the query selected by the user through the sample queries list in the graphs config list.
+     * @param {string} query
+     * @return {Promise<void>}
+     */
+    $scope.setQuery = async (query) => {
+        const newQuery = query ? query : ' ';
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.setQuery(newQuery);
+    };
+
+    // TODO: used to be called as a handler from the yasgui component and worked in the old yasgui but not implemented here
+    $scope.markDirty = (evt) => {
+        if ($scope.revertConfig) {
+            const q1 = getQueryForCurrentPage($scope.revertConfig);
+            const q2 = window.editor.getValue().trim();
+            $scope.queryEditorIsDirty = q1 !== q2;
+        }
+    };
+
+    $scope.showEditor = () => {
+        $scope.viewMode = 'yasr';
+        // TODO: abort running query if any
+        switchToYasqe();
+    };
+
+    $scope.showPreview = () => {
+        // For some reason YASR gets confused and sets this to rawResponse
+        // if we execute a CONSTRUCT and then a SELECT. This makes sure it's always table.
+        $scope.viewMode = 'editor';
+        $scope.currentQuery.outputType = 'table';
+        $scope.runQuery();
+    };
+
+    $scope.revertEditor = () => {
+        $scope.setQuery(getQueryForCurrentPage($scope.revertConfig));
     };
 
     // =========================
-    // Event handlers
+    // TODO: Event handlers
     // =========================
 
+    $scope.$on('autocompleteStatus', () => {
+        checkAutocompleteStatus();
+    });
+
+    // Trigger for showing the editor and moving it to the right position
+    $scope.$watch('newConfig.startMode', (value) => {
+        if (value === StartMode.QUERY) {
+            $timeout(() => {
+                console.log('%cwatcher newConfig.startMode', 'background-color:yellow', );
+                updateEditor();
+            }, 0);
+        }
+    });
+
+    // Trigger for showing the editor and moving it to the right position
+    $scope.$watch('page', (value) => {
+        if ($scope.newConfig.isStartMode(StartMode.QUERY) || value > 1) {
+            $timeout(() => {
+                console.log('%cwatcher page', 'background-color:yellow', );
+                $scope.showEditor();
+                updateEditor();
+            }, 0);
+        }
+    });
+
     // =========================
-    // Private functions
+    // TODO: Private functions
     // =========================
 
-    let selectedFixedNodeChanged;
-    const configName = $routeParams.configName;
+    const setEditorValue = (value) => {
+        // window.editor.setValue(value);
+
+    }
+
+    const getYasguiInstance = () => {
+        return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor');
+    }
+
+    const updateModel = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        /** @type string */
+        let query = await yasguiInstance.getQuery();
+        query = query.trim();
+
+        if ($scope.newConfig.isStartMode(StartMode.QUERY) && $scope.page === 1) {
+            $scope.newConfig.startGraphQuery = query;
+        } else if ($scope.page === 2) {
+            $scope.newConfig.expandQuery = query;
+        } else if ($scope.page === 3) {
+            $scope.newConfig.resourceQuery = query;
+        } else if ($scope.page === 4) {
+            $scope.newConfig.predicateLabelQuery = query;
+        } else if ($scope.page === 5) {
+            $scope.newConfig.resourcePropertiesQuery = query;
+        }
+
+        return $scope.newConfig;
+    };
+
+    const validateCurrentPage = async (successCallback) => {
+        /** @type {GraphsConfig} */
+        const newConfig = await updateModel();
+
+        if ($scope.page === 1) {
+            if (newConfig.isStartMode(StartMode.NODE) && !newConfig.startIRI) {
+                showInvalidMsg($translate.instant('graphexplore.select.start.node'));
+            } else if (newConfig.isStartMode(StartMode.QUERY) && !newConfig.startGraphQuery) {
+                showInvalidMsg($translate.instant('graphexplore.provide.query'));
+            } else if (newConfig.isStartMode(StartMode.QUERY)) {
+                validateQueryWithCallback(successCallback, newConfig.startGraphQuery, 'graph')
+            } else {
+                successCallback();
+            }
+        } else if ($scope.page === 2) {
+            validateQueryWithCallback(successCallback, newConfig.expandQuery, 'construct', ['node'])
+        } else if ($scope.page === 3) {
+            validateQueryWithCallback(successCallback, newConfig.resourceQuery, 'tuple', ['node'], [], ['type', 'label', 'comment', 'rank']);
+        } else if ($scope.page === 4) {
+            validateQueryWithCallback(successCallback, newConfig.predicateLabelQuery, 'tuple', ['edge'], ['label']);
+        } else if ($scope.page === 5) {
+            validateQueryWithCallback(successCallback, newConfig.resourcePropertiesQuery, 'tuple', ['node'], ['property', 'value']);
+        }
+    };
 
     const getGraphConfigSamples = () => {
         GraphConfigRestService.getGraphConfigSamples()
@@ -130,14 +358,35 @@ function GraphConfigCtrl(
             });
     };
 
+    /**
+     * Updates the position of the query editor to match the current div placeholder and sets the editor's query to the
+     * relevant query from the model.
+     */
+    const updateEditor = () => {
+        $timeout(() => {
+            $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
+            // Check for ontop repository and override nocount property (it's default value is false)
+            if ($repositories.isActiveRepoOntopType()) {
+                $scope.nocount = true;
+            }
+            $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
+            $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
+            loadTab();
+            selectTab($scope.currentQuery.id);
+        }, 100);
+    };
+
     const showInvalidMsg = (message) => {
         toastr.warning(message);
     };
 
+    /**
+     * @param {GraphsConfig} config
+     */
     const getQueryForCurrentPage = (config) => {
         let query;
 
-        if (config.startMode === 'query' && $scope.page === 1) {
+        if (config.isStartMode(StartMode.QUERY) && $scope.page === 1) {
             query = config.startGraphQuery;
         } else if ($scope.page === 2) {
             query = config.expandQuery;
@@ -148,219 +397,81 @@ function GraphConfigCtrl(
         } else if ($scope.page === 5) {
             query = config.resourcePropertiesQuery;
         }
-
         return angular.isDefined(query) ? query : '';
     };
 
-    const initForConfig = () => {
-        getGraphConfigSamples();
-        $scope.createGraphConfig = function () {
-            GraphConfigRestService.createGraphConfig($scope.newConfig)
-                .success(async function () {
-                    await Notifications.showToastMessageWithDelay('graphexplore.saved.new.config');
-                    $location.url('graphs-visualizations');
-                }).error(function (data) {
-                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.create'));
-            });
-        };
+    const checkAutocompleteStatus = () => {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    }
 
-        $scope.updateGraphConfig = function () {
-            GraphConfigRestService.updateGraphConfig($scope.newConfig)
-                .success(async function () {
-                    await Notifications.showToastMessageWithDelay('graphexplore.saved.config');
-                    $location.url('graphs-visualizations');
-                }).error(function (data) {
-                toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.save'));
-            });
-        };
-
-        function checkAutocompleteStatus() {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
-
-        $scope.$on('autocompleteStatus', function() {
-            checkAutocompleteStatus();
-        });
-
-        checkAutocompleteStatus();
-        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
-
-        const validateQueryWithCallback = function (successCallback, query, queryType, params, all, oneOf) {
-            if (!query) {
-                successCallback();
-            } else {
-                GraphConfigRestService.validateQuery(query, queryType, params, all, oneOf)
-                    .success(function () {
-                        successCallback();
-                    }).error(function (data) {
+    const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
+        if (!query) {
+            successCallback();
+        } else {
+            GraphConfigRestService.validateQuery(query, queryType, params, all, oneOf)
+                .success(() => {
+                    successCallback();
+                }).error((data) => {
                     showInvalidMsg(getError(data));
                 });
-            }
-        };
-
-        $scope.validateCurrentPage = function (successCallback) {
-            $scope.updateModel();
-
-            if ($scope.page === 1) {
-                if ($scope.newConfig.startMode === 'node' && !$scope.newConfig.startIRI) {
-                    showInvalidMsg($translate.instant('graphexplore.select.start.node'));
-                } else if ($scope.newConfig.startMode === 'query' && !$scope.newConfig.startGraphQuery) {
-                    showInvalidMsg($translate.instant('graphexplore.provide.query'));
-                } else if ($scope.newConfig.startMode === 'query') {
-                    validateQueryWithCallback(successCallback, $scope.newConfig.startGraphQuery, 'graph')
-                } else {
-                    successCallback();
-                }
-            } else if ($scope.page === 2) {
-                validateQueryWithCallback(successCallback, $scope.newConfig.expandQuery, 'construct', ['node'])
-            } else if ($scope.page === 3) {
-                validateQueryWithCallback(successCallback, $scope.newConfig.resourceQuery, 'tuple', ['node'], [], ['type', 'label', 'comment', 'rank']);
-            } else if ($scope.page === 4) {
-                validateQueryWithCallback(successCallback, $scope.newConfig.predicateLabelQuery, 'tuple', ['edge'], ['label']);
-            } else if ($scope.page === 5) {
-                validateQueryWithCallback(successCallback, $scope.newConfig.resourcePropertiesQuery, 'tuple', ['node'], ['property', 'value']);
-            }
-        };
-
-        $scope.goToPage = function (nextPage) {
-            if ($scope.page === nextPage) {
-                // already there
-                return;
-            }
-
-            $scope.validateCurrentPage(function () {
-                $scope.showEditor();
-                $scope.page = nextPage;
-                $scope.notoolbar = $scope.page !== 1;
-            });
-        };
-
-        $scope.goToPreviousPage = function () {
-            if ($scope.page > 1) {
-                $scope.goToPage($scope.page - 1);
-            }
-
-            if (checkPageAndMode()) {
-                selectedFixedNodeChanged = false;
-            }
-        };
-
-        $scope.goToNextPage = function () {
-            broadcastAddStartFixedNodeEvent();
-            if ($scope.newConfig.startMode !== 'node' || selectedFixedNodeChanged) {
-                $scope.goToPage($scope.page + 1);
-            }
-        };
-
-        function broadcastAddStartFixedNodeEvent() {
-            if (checkPageAndMode()) {
-                $scope.$broadcast('addStartFixedNodeAutomatically', {startIRI: $scope.newConfig.startIRI});
-            }
         }
+    };
 
-        function checkPageAndMode() {
-            return $scope.page === 1 && $scope.newConfig.startMode === 'node';
+    const broadcastAddStartFixedNodeEvent = () => {
+        if (isBaseConfig()) {
+            $scope.$broadcast('addStartFixedNodeAutomatically', {startIRI: $scope.newConfig.startIRI});
         }
+    }
 
-        $scope.saveGraphConfig = function () {
-            broadcastAddStartFixedNodeEvent();
+    const isBaseConfig = () => {
+        return $scope.page === 1 && $scope.newConfig.isStartMode(StartMode.NODE);
+    }
 
-            if (checkPageAndMode() && !selectedFixedNodeChanged) {
-                return;
-            }
+    const initForConfig = () => {
+        getGraphConfigSamples();
+        checkAutocompleteStatus();
+        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
+    }
 
-            $scope.newConfig.startQueryIncludeInferred = $scope.currentQuery.inference;
-            $scope.newConfig.startQuerySameAs = $scope.currentQuery.sameAs;
+    const query = 'select * where { \n' +
+        '\t?s ?p ?o .\n' +
+        '} limit 100 \n'
 
-            $scope.validateCurrentPage(function () {
-                if (!$scope.newConfig.name) {
-                    showInvalidMsg($translate.instant('graphexplore.provide.config.name'));
-                    return;
-                }
-                $scope.isUpdate ? $scope.updateGraphConfig($scope.newConfig) : $scope.createGraphConfig($scope.newConfig);
-            });
-        };
+    const getQueryEndpoint = () => {
+        return `/repositories/${$repositories.getActiveRepository()}`;
+    };
 
-        $scope.updateModel = function () {
-            const query = window.editor.getValue().trim();
-            if ($scope.newConfig.startMode === 'query' && $scope.page === 1) {
-                $scope.newConfig.startGraphQuery = query;
-            } else if ($scope.page === 2) {
-                $scope.newConfig.expandQuery = query;
-            } else if ($scope.page === 3) {
-                $scope.newConfig.resourceQuery = query;
-            } else if ($scope.page === 4) {
-                $scope.newConfig.predicateLabelQuery = query;
-            } else if ($scope.page === 5) {
-                $scope.newConfig.resourcePropertiesQuery = query;
-            }
-        };
+    const defaultYasguiConfig = {
+        endpoint: getQueryEndpoint(),
+        showEditorTabs: false,
+        showToolbar: false,
+        showResultTabs: false,
+        showYasqeActionButtons: false,
+        yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
+        showQueryButton: false,
+        initialQuery: ' ',
+        componentId: 'graphs-config',
+        render: RenderingMode.YASQE,
+        maxPersistentResponseSize: 0,
+        yasqeMode: YasqeMode.PROTECTED,
+        infer: $scope.newConfig.startQueryIncludeInferred,
+        sameAs: $scope.newConfig.startQuerySameAs
+    };
 
-        // Called when user clicks on a sample query
-        $scope.setQuery = function (query) {
-            // Hack for YASQE bug
-            window.editor.setValue(query ? query : ' ');
-        };
-
-        $scope.updateDirty = function () {
-            if ($scope.revertConfig) {
-                const q1 = getQueryForCurrentPage($scope.revertConfig);
-                const q2 = window.editor.getValue().trim();
-                $scope.queryEditorIsDirty = q1 !== q2;
-            }
-        };
-
-        // Updates the position of the query editor to match the current div placeholder
-        // and sets the editor's query to the relevant query from the model.
-        $scope.updateEditor = function () {
-            $timeout(function () {
-                $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
-                // // Check for ontop repository and override nocount property (it's default value is false)
-                if ($repositories.isActiveRepoOntopType()) {
-                    $scope.nocount = true;
-                }
-                $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
-                $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
-                loadTab();
-                selectTab($scope.currentQuery.id);
-            }, 100);
-
-        };
-
-        $scope.showEditor = function () {
-            if (window.editor && window.editor.xhr) {
-                window.editor.xhr.abort();
-            }
-            $scope.viewMode = 'yasr';
-        };
-
-        $scope.showPreview = function () {
-            // For some reason YASR gets confused and sets this to rawResponse
-            // if we execute a CONSTRUCT and then a SELECT. This makes sure it's always table.
-            $scope.currentQuery.outputType = 'table';
-            $scope.runQuery();
-        };
-
-        $scope.revertEditor = function () {
-            $scope.setQuery(getQueryForCurrentPage($scope.revertConfig));
-        };
-
-        // Trigger for showing the editor and moving it to the right position
-        $scope.$watch('newConfig.startMode', function (value) {
-            if (value === 'query') {
-                $timeout(function () {
-                    $scope.updateEditor();
-                }, 0);
-            }
-        });
-
-        // Trigger for showing the editor and moving it to the right position
-        $scope.$watch('page', function (value) {
-            if ($scope.newConfig.startMode === 'query' || value > 1) {
-                $timeout(function () {
-                    $scope.showEditor();
-                    $scope.updateEditor();
-                }, 0);
+    const initYasgui = (prefixes) => {
+        // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+        // readOnly configuration may be incorrect.
+        const repoIsInitialized = $scope.$watch(function () {
+            return $scope.getActiveRepositoryObject();
+        }, function (activeRepo) {
+            if (activeRepo) {
+                $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+                const config = angular.extend({}, defaultYasguiConfig, {
+                    prefixes: prefixes,
+                    yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED
+                });
+                $scope.yasguiConfig = config;
+                repoIsInitialized();
             }
         });
     }
@@ -369,14 +480,18 @@ function GraphConfigCtrl(
     // Initialization
     // =========================
 
+    $repositories.getPrefixes(activeRepository)
+        .then((prefixes) => initYasgui(prefixes))
+        .finally(() => setLoader(false));
+
     if (configName) {
         $scope.isUpdate = true;
         GraphConfigRestService.getConfig(configName)
-            .success(function (data) {
-                $scope.newConfig = data;
+            .then(function (graphConfigModel) {
+                $scope.newConfig = graphConfigModel;
                 initForConfig();
             })
-            .error(function (data) {
+            .catch((data) => {
                 toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
             });
     } else {
@@ -422,7 +537,6 @@ function GraphConfigCtrl(
     $scope.getNamespaces = getNamespaces;
     $scope.changePagination = changePagination;
     $scope.toggleSampleQueries = toggleSampleQueries;
-    $scope.addKnownPrefixes = addKnownPrefixes;
     $scope.getExistingTabId = getExistingTabId;
     $scope.querySelected = querySelected;
     $scope.saveQueryToLocal = saveQueryToLocal;
@@ -481,51 +595,51 @@ function GraphConfigCtrl(
 
     // start of query editor results orientation operations
     function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
-        function visibleWindowHeight() {
-            return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-        }
-
-        const codemirrorWrapperSelector = '.CodeMirror-wrap';
-        const verticalView = verticalViewParam;
-        if (!$scope.orientationViewMode) {
-            $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
-
-            // window.editor is undefined if no repo is selected
-            if (window.editor && document.querySelector(codemirrorWrapperSelector)) {
-                let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
-                newHeight -= 40;
-                document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
-                document.getElementById('yasr').style.minHeight = newHeight + 'px';
-            } else {
-                let timer;
-                if (verticalView) {
-                    timer = $timeout(function () {
-                        $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
-                    }, 100);
-                } else {
-                    timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
-                }
-
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
-                });
-            }
-        } else {
-            if ($scope.viewMode === 'yasr') {
-                let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
-                newHeight -= 40;
-                document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
-            } else {
-                $scope.noPadding = {};
-                document.querySelector(codemirrorWrapperSelector).style.height = '';
-            }
-            document.getElementById('yasr').style.minHeight = '';
-        }
-        if (window.yasr && window.yasr.container) {
-            $timeout(function () {
-                window.yasr.container.resize();
-            }, 100);
-        }
+        // function visibleWindowHeight() {
+        //     return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
+        // }
+        //
+        // const codemirrorWrapperSelector = '.CodeMirror-wrap';
+        // const verticalView = verticalViewParam;
+        // if (!$scope.orientationViewMode) {
+        //     $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
+        //
+        //     // window.editor is undefined if no repo is selected
+        //     if (window.editor && document.querySelector(codemirrorWrapperSelector)) {
+        //         let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
+        //         newHeight -= 40;
+        //         document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
+        //         document.getElementById('yasr').style.minHeight = newHeight + 'px';
+        //     } else {
+        //         let timer;
+        //         if (verticalView) {
+        //             timer = $timeout(function () {
+        //                 $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
+        //             }, 100);
+        //         } else {
+        //             timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
+        //         }
+        //
+        //         $scope.$on('$destroy', function () {
+        //             $timeout.cancel(timer);
+        //         });
+        //     }
+        // } else {
+        //     if ($scope.viewMode === 'yasr') {
+        //         let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
+        //         newHeight -= 40;
+        //         document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
+        //     } else {
+        //         $scope.noPadding = {};
+        //         document.querySelector(codemirrorWrapperSelector).style.height = '';
+        //     }
+        //     document.getElementById('yasr').style.minHeight = '';
+        // }
+        // if (window.yasr && window.yasr.container) {
+        //     $timeout(function () {
+        //         window.yasr.container.resize();
+        //     }, 100);
+        // }
     }
 
     if (!$scope.orientationViewMode) {
@@ -560,16 +674,24 @@ function GraphConfigCtrl(
         }, 0);
     }
 
+    const updateYasguiConfiguration = (additionalConfiguration = {}) => {
+        const config = {};
+        angular.extend(config, $scope.yasguiConfig || defaultYasguiConfig, additionalConfiguration);
+        $scope.yasguiConfig = config;
+    };
+
     // start of query operations
-    function runQuery(changePage, explain) {
+    async function runQuery(changePage, explain) {
         $scope.executedQueryTab = $scope.currentQuery;
-        if (explain && !(window.editor.getQueryType() === 'SELECT' || window.editor.getQueryType() === 'CONSTRUCT'
-            || window.editor.getQueryType() === 'DESCRIBE')) {
+        const yasguiInstance = await getYasguiInstance()
+        const queryType = await yasguiInstance.getQueryType();
+        if (explain && !(queryType === 'SELECT' || queryType === 'CONSTRUCT' || queryType === 'DESCRIBE')) {
             toastr.warning($translate.instant('query.editor.warning.msg'));
             return;
         }
 
-        if (window.editor.getQueryMode() === 'update') {
+        const queryMode = await yasguiInstance.getQueryMode();
+        if (queryMode === 'update') {
             toastr.warning($translate.instant('cannot.execute.update.error'));
             return;
         }
@@ -588,9 +710,26 @@ function GraphConfigCtrl(
                 $scope.fixSizesOnHorizontalViewModeSwitch()
             }
 
-            setLoader(true, $translate.instant('evaluating.query.msg'));
-            window.editor.query();
+            // setLoader(true, $translate.instant('evaluating.query.msg'));
+
+            executeYasqeQuery();
+            switchToYasr();
         }
+    }
+
+    const executeYasqeQuery = async () => {
+        const yasguiInstance = await getYasguiInstance();
+        yasguiInstance.query();
+    }
+
+    const switchToYasqe = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.changeRenderMode(RenderingMode.YASQE);
+    }
+
+    const switchToYasr = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.changeRenderMode(RenderingMode.YASR);
     }
 
     function getNamespaces() {
@@ -628,27 +767,6 @@ function GraphConfigCtrl(
 
     function toggleSampleQueries() {
     }
-
-    // Add known prefixes
-    function addKnownPrefixes() {
-        SparqlRestService.addKnownPrefixes(JSON.stringify(window.editor.getValue()))
-            .success(function (data) {
-                if (angular.isDefined(window.editor) && angular.isDefined(data) && data !== window.editor.getValue()) {
-                    window.editor.setValue(data);
-                }
-            })
-            .error(function (data) {
-                let msg = getError(data);
-                toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
-                return true;
-            });
-    }
-
-    $('textarea').on('paste', function () {
-        $timeout(function () {
-            addKnownPrefixes();
-        }, 0);
-    });
 
     function querySelected(query) {
         const tabId = getExistingTabId(query);
@@ -707,12 +825,13 @@ function GraphConfigCtrl(
 
         let tab = $scope.currentQuery;
 
-        if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
-            // hack for YASQE bug
-            window.editor.setValue(' ');
-        } else {
-            window.editor.setValue($scope.currentQuery.query);
-        }
+        $scope.setQuery($scope.currentQuery.query)
+        // if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
+        //     // hack for YASQE bug
+        //     setEditorValue(' ');
+        // } else {
+        //     setEditorValue($scope.currentQuery.query);
+        // }
 
         $timeout(function () {
             $scope.currentTabConfig = {};

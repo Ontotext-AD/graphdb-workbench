@@ -13,6 +13,7 @@
     margin-top: 121px;
     margin-bottom: 120px;
 }
+
 #editor-wrapper {
     position: absolute;
     display: inline-block;
@@ -28,23 +29,26 @@
     display: flex;
     align-items: stretch;
 }
+
 .image-label {
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(0, 0, 0, .125);
     padding: 1rem;
     margin: 0 1rem 0 0;
     transition: all 0.2s ease-in;
-    cursor:pointer;
-    max-width: 400px;
+    cursor: pointer;
     position: relative;
 }
+
 .image-label:last-of-type {
     margin-right: 0;
 }
+
 .image-label-image {
     max-width: 140px;
     display: block;
     margin: 0 auto 1rem auto;
 }
+
 .image-label .form-check-input {
     margin: 0;
     top: 0.8rem;
@@ -65,6 +69,7 @@
     .image-label {
         flex-direction: column;
     }
+
     .info-box-img {
         max-width: 200px;
         height: auto;

@@ -10,9 +10,27 @@ export const YasguiComponentDirectiveUtil = (function () {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementController(directiveSelector).getOntotextYasguiElement();
     };
 
+    const getOntotextYasguiElementAsync = (directiveSelector) => {
+        return new Promise((resolve, reject) => {
+            let directive = getOntotextYasguiElementController(directiveSelector);
+            if (directive) {
+                resolve(directive.getOntotextYasguiElement());
+            }
+
+            const interval = setInterval(() => {
+                directive = getOntotextYasguiElementController(directiveSelector);
+                if (directive) {
+                    clearInterval(interval);
+                    resolve(directive.getOntotextYasguiElement());
+                }
+            }, 100);
+        });
+    };
+
     return {
         getOntotextYasguiElementController,
         getOntotextYasguiElement,
+        getOntotextYasguiElementAsync
     };
 })();
 
