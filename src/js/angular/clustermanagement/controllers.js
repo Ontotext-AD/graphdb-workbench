@@ -1,5 +1,6 @@
 import 'angular/core/services';
 import 'angular/rest/cluster.rest.service';
+import {isString} from "lodash";
 
 const modules = [
     'ui.bootstrap',
@@ -378,7 +379,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
         if (status === 400 && Array.isArray(data)) {
             failMessage = data.reduce((acc, error) => acc += `<div>${error}</div>`, '');
-        } else if (status === 412) {
+        } else if (status === 412 && !isString(data)) {
             failMessage = Object.keys(data)
                 .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
         }
