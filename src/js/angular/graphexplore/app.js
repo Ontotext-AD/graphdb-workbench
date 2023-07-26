@@ -32,6 +32,7 @@ import 'angular/graphexplore/directives/list-items-search-filter.directive';
 import 'angular/graphexplore/directives/search-icon-input.directive';
 import 'angular/core/directives/queryeditor/query-editor.controller';
 import 'angular/core/directives/queryeditor/query-editor.directive';
+import 'angular/core/directives/yasgui-component/yasgui-component.directive';
 
 angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.core.controllers',
@@ -54,5 +55,6 @@ angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.graphexplore.directives.dependencies',
     'graphdb.framework.graphexplore.directives.searchcontrols',
     'graphdb.framework.core.directives.queryeditor.controllers',
-    'graphdb.framework.core.directives.queryeditor.queryeditor'
+    'graphdb.framework.core.directives.queryeditor.queryeditor',
+    'graphdb.framework.core.directives.yasgui-component'
 ]);
