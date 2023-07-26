@@ -280,69 +280,61 @@ function CreateSimilarityIdxCtrl(
         return $translate.instant('similarity.close.btn.msg', {operation: operationType});
     }
 
-    $scope.getTabErrorMessage = (similarityQueryTab) => {
-
-        if (!$scope.similarityIndexInfo) {
-            return;
-        }
-
-        if (SimilarityQueryType.DATA === similarityQueryTab) {
-           return getSelectQueryErrorMessage();
-        }
-
-        if (SimilarityQueryType.SEARCH === similarityQueryTab) {
-            return getSearchQueryErrorMessage();
-        }
-
-        if (SimilarityQueryType.ANALOGICAL === similarityQueryTab) {
-            return getAnalogicalQueryErrorMessage();
-        }
-
-        return $translate.instant('similarity.empty.select.query.error');
+    $scope.hasQueryError = () => {
+        return $scope.hasSelectQueryError() ||
+            $scope.hasSearchQueryError() ||
+            $scope.hasAnalogicalQueryError()
     }
 
-    const getSelectQueryErrorMessage = () => {
-        if (!$scope.similarityIndexInfo.hasSelectQuery()) {
-            return $translate.instant('similarity.empty.select.query.error');
-        }
-
-        if ($scope.similarityIndexInfo.invalidSelectQueryType) {
-            return $translate.instant('similarity.error.invalid.select.query');
-        }
-
-        if ($scope.similarityIndexInfo.invalidSelectQuery) {
-            return $translate.instant('similarity.error.query.invalid');
-        }
+    $scope.hasSelectQueryError = () => {
+        return !$scope.similarityIndexInfo.hasSelectQuery() ||
+            $scope.similarityIndexInfo.invalidSelectQuery ||
+            $scope.similarityIndexInfo.invalidSelectQueryType;
     }
 
-    const getSearchQueryErrorMessage = () => {
-        if (!$scope.similarityIndexInfo.hasSearchQuery()) {
-            return $translate.instant('similarity.empty.search.query.error');
-        }
-
-        if ($scope.similarityIndexInfo.invalidSearchQueryType) {
-            return $translate.instant('similarity.error.invalid.search.query');
-        }
-
-        if ($scope.similarityIndexInfo.invalidSearchQuery) {
-            return $translate.instant('similarity.error.query.invalid');
-        }
+    $scope.hasSearchQueryError = () => {
+        return !$scope.similarityIndexInfo.hasSearchQuery() ||
+            $scope.similarityIndexInfo.invalidSearchQuery ||
+            $scope.similarityIndexInfo.invalidSearchQueryType;
     }
 
-    const getAnalogicalQueryErrorMessage = () => {
-        if (!$scope.similarityIndexInfo.hasAnalogicalQuery()) {
-            return $translate.instant('similarity.empty.select.query.error');
-        }
-
-        if ($scope.similarityIndexInfo.invalidAnalogicalQueryType) {
-            return $translate.instant('similarity.error.invalid.analogical.query');
-        }
-
-        if ($scope.similarityIndexInfo.invalidAnalogicalQuery) {
-            return $translate.instant('similarity.error.query.invalid');
-        }
+    $scope.hasAnalogicalQueryError = () => {
+        return !$scope.similarityIndexInfo.hasAnalogicalQuery() ||
+            $scope.similarityIndexInfo.invalidAnalogicalQuery ||
+            $scope.similarityIndexInfo.invalidAnalogicalQueryType;
     }
 
+    $scope.getQueryErrorMessage = () => {
+        const similarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType();
+        let isEmpty = false;
+        let invalidQueryType = false;
+        let invalidQuery = false;
+
+        if (SimilarityQueryType.DATA === similarityQueryType) {
+            isEmpty = !$scope.similarityIndexInfo.hasSelectQuery();
+            invalidQueryType = $scope.similarityIndexInfo.invalidSelectQueryType;
+            invalidQuery = $scope.similarityIndexInfo.invalidSelectQuery;
+        } else if (SimilarityQueryType.SEARCH === similarityQueryType) {
+            isEmpty = !$scope.similarityIndexInfo.hasSearchQuery();
+            invalidQueryType = $scope.similarityIndexInfo.invalidSearchQueryType;
+            invalidQuery = $scope.similarityIndexInfo.invalidSearchQuery;
+        } else if (SimilarityQueryType.ANALOGICAL === similarityQueryType) {
+            isEmpty = !$scope.similarityIndexInfo.hasAnalogicalQuery();
+            invalidQueryType = $scope.similarityIndexInfo.invalidAnalogicalQueryType;
+            invalidQuery = $scope.similarityIndexInfo.invalidAnalogicalQuery;
+        }
+
+        const labelParams = {queryType: $translate.instant(`similarity.query.type.${similarityQueryType}.name`)};
+        if (isEmpty) {
+            return $translate.instant('similarity.error.query.empty', labelParams);
+        } else if (invalidQuery) {
+            return $translate.instant('similarity.error.query.invalid', labelParams);
+        } else if (invalidQueryType) {
+            return $translate.instant('similarity.error.query.invalid_type', labelParams);
+        }
+
+        return '';
+    }
     // =========================
     // Private functions
     // =========================
