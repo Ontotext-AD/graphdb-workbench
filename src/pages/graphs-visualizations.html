@@ -126,7 +126,7 @@
                             <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
                         <div ng-show="graphConfigs.length == 0">{{'visual.no.configs' | translate}}</div>
-                        <table class="table table-hover mb-0" aria-describedby="Graph configurations table">
+                        <table class="table table-hover mb-0 graph-configurations-list" aria-describedby="Graph configurations table">
                             <tbody>
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
@@ -144,7 +144,7 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
                                     <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config"><span class="icon-trash"></span></button>
                                 </td>
                             </tr>
