@@ -278,6 +278,10 @@ function GraphsVisualizationsCtrl(
         $scope.openUri(iri);
     };
 
+    /**
+     * Handles the delete graph config action.
+     * @param {GraphsConfig} config
+     */
     $scope.deleteConfig = (config) => {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
@@ -693,11 +697,11 @@ function GraphsVisualizationsCtrl(
             loadGraphConfig($scope.defaultGraphConfig);
         } else {
             GraphConfigRestService.getConfig(configId)
-                .success(function (data) {
+                .then((data) => {
                     loadGraphConfig(data);
                     successCallback();
                 })
-                .error(function (data) {
+                .catch((data) => {
                     toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.load.config', {configId: configId}));
                 });
         }
