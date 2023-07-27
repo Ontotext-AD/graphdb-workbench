@@ -1,4 +1,5 @@
 import 'angular/utils/file-types';
+import 'angular/rest/explore.rest.service';
 import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
@@ -12,7 +13,8 @@ const modules = [
     'graphdb.framework.core',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.rest.explore.rest.service'
 ];
 
 angular
@@ -22,23 +24,63 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService', '$q'];
+ExploreCtrl.$inject = [
+    '$scope',
+    '$http',
+    '$location',
+    'toastr',
+    '$routeParams',
+    '$repositories',
+    'ClassInstanceDetailsService',
+    'ModalService',
+    'RDF4JRepositoriesRestService',
+    'FileTypes',
+    '$jwtAuth',
+    '$translate',
+    '$languageService',
+    '$q',
+    'ExploreRestService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService, $q) {
+function ExploreCtrl(
+    $scope,
+    $http,
+    $location,
+    toastr,
+    $routeParams,
+    $repositories,
+    ClassInstanceDetailsService,
+    ModalService,
+    RDF4JRepositoriesRestService,
+    FileTypes,
+    $jwtAuth,
+    $translate,
+    $languageService,
+    $q,
+    ExploreRestService) {
+
     // Defaults
     $scope.role = $location.search().role ? $location.search().role : 'subject';
-
-    let principalRequestPromise;
-    // We need to get sameAs and inference for the current user
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal())
-        .then((principal) => {
-            // Get the predefined settings for sameAs and inference per user
-            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
-            $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
-        });
-
     $scope.loading = false;
+    $scope.inferences = [
+        {id: 'all', title: 'explore.explicit.implicit'},
+        {id: 'explicit', title: 'explore.explicit'},
+        {id: 'implicit', title: 'explore.implicit'}
+    ];
+    $scope.context = '';
+    $scope.blanks = true;
+    $scope.formats = FileTypes;
+
+    // TODO remove it
+    let principalRequestPromise;
+    let yasr;
+
+    // =========================
+    // Public functions
+    // =========================
+    window.editor = {};
+    window.editor.getQueryType = function () {
+        return 'RESOURCE';
+    };
 
     $scope.getActiveRepository = function () {
         return $repositories.getActiveRepository();
@@ -56,70 +98,15 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
     $scope.getRdfStarLocalNames = function (triple) {
         let localNames = triple.slice();
         const trimmed = triple.replace(/[<>]+/g, '');
-        trimmed.split(' ').forEach(uri => {
+        trimmed.split(' ').forEach((uri) => {
             localNames = localNames.replace(uri, ClassInstanceDetailsService.getLocalName(uri));
         });
         return localNames;
     };
 
-    $scope.inferences = [
-        {id: 'all', title: 'explore.explicit.implicit'},
-        {id: 'explicit', title: 'explore.explicit'},
-        {id: 'implicit', title: 'explore.implicit'}
-    ];
-    $scope.context = '';
-
     $scope.getLocalName = function (uri) {
         return ClassInstanceDetailsService.getLocalName(uri);
     };
-
-    $scope.blanks = true;
-
-    $scope.formats = FileTypes;
-
-    let yasr;
-
-    window.editor = {};
-    window.editor.getQueryType = function () {
-        return 'RESOURCE';
-    };
-
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        if ($scope.getActiveRepository()) {
-            if ($scope.usedPrefixes) {
-                $scope.loadResource();
-            } else {
-                RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                    .success(function (data) {
-                        $scope.usedPrefixes = {};
-                        data.results.bindings.forEach(function (e) {
-                            $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
-                        });
-                        $scope.$on('$destroy', function () {
-                            if (yasr) {
-                                yasr.destroy();
-                            }
-                        });
-                        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                            //this way, the URLs in the results are prettified using the defined prefixes
-                            getUsedPrefixes: $scope.usedPrefixes,
-                            persistency: false,
-                            hideHeader: true,
-                            locale: $languageService.getLanguage(),
-                            // Additional option for translation.
-                            // For the explore view could be applied
-                            translateHeaders: true,
-                            pluginsOptions: YasrUtils.getYasrConfiguration()
-                        });
-                        $scope.loadResource();
-                    }).error(function (data) {
-                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-                });
-            }
-        }
-    });
 
     $scope.loadResource = function () {
         if ($routeParams.prefix && $routeParams.localName && $scope.usedPrefixes[$routeParams.prefix]) {
@@ -143,26 +130,15 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         $scope.uriParam = $scope.uriParam && $scope.uriParam.replace(/<|>/g, "");
 
         // Get resource details
-        $http({
-            url: 'rest/explore/details',
-            method: 'GET',
-            params: {
-                uri: $scope.uriParam,
-                triple: $scope.tripleParam,
-                context: $scope.context
-            },
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).success(function (data) {
-            $scope.details = data;
-            $scope.context = $scope.details.context;
-            if ($scope.details.uri !== 'object') {
-                $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
-            }
-        }).error(function (data) {
-            toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
-        });
+        ExploreRestService.getResourceDetails($scope.uriParam, $scope.tripleParam, $scope.context)
+            .success((data) => {
+                $scope.details = data;
+                $scope.context = $scope.details.context;
+                if ($scope.details.uri !== 'object') {
+                    $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
+                }
+            })
+            .error((data) => toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)})));
 
         $scope.exploreResource();
     };
@@ -173,22 +149,6 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
     $scope.goToGraphsViz = function () {
         $location.path('graphs-visualizations').search('uri', $scope.uriParam);
-    };
-
-    const toggleOntoLoader = function (showLoader) {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        const resultsLoader = angular.element(document.getElementById('results-loader'));
-        const opacityHideClass = 'opacity-hide';
-        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
-        if (showLoader) {
-            $scope.loading = true;
-            yasrInnerContainer.addClass(opacityHideClass);
-            resultsLoader.removeClass(opacityHideClass);
-        } else {
-            $scope.loading = false;
-            yasrInnerContainer.removeClass(opacityHideClass);
-            resultsLoader.addClass(opacityHideClass);
-        }
     };
 
     // Get resource table
@@ -207,32 +167,7 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
             .then(() => getGraph());
     };
 
-    function getGraph() {
-        const headers = {Accept: 'application/x-graphdb-table-results+json'};
-        $http({
-            method: 'GET',
-            url: 'rest/explore/graph',
-            params: {
-                uri: $scope.uriParam,
-                triple: $scope.tripleParam,
-                inference: $scope.inference,
-                role: $scope.role,
-                bnodes: $scope.blanks,
-                sameAs: $scope.sameAs,
-                context: $scope.context
-            },
-            headers: headers
-        }).then(function({data, status}) {
-            toggleOntoLoader(false);
-            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
-            yasr.setResponse(data, status);
-        }).catch(function(data) {
-            toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
-            toggleOntoLoader(false);
-        });
-    }
-
-  $scope.downloadExport = function(format) {
+    $scope.downloadExport = function (format) {
         let param;
         let encodedURI;
         if ($scope.uriParam) {
@@ -290,12 +225,106 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
         ModalService.openCopyToClipboardModal(uri);
     };
 
+    // =========================
+    // Public functions
+    // =========================
+    const toggleOntoLoader = (showLoader) => {
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
+        const resultsLoader = angular.element(document.getElementById('results-loader'));
+        const opacityHideClass = 'opacity-hide';
+        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
+        if (showLoader) {
+            $scope.loading = true;
+            yasrInnerContainer.addClass(opacityHideClass);
+            resultsLoader.removeClass(opacityHideClass);
+        } else {
+            $scope.loading = false;
+            yasrInnerContainer.removeClass(opacityHideClass);
+            resultsLoader.addClass(opacityHideClass);
+        }
+    };
+
+    const getGraph = () => {
+        const headers = {Accept: 'application/x-graphdb-table-results+json'};
+        $.ajax({
+            method: 'GET',
+            url: 'rest/explore/graph',
+            data: {
+                uri: $scope.uriParam,
+                triple: $scope.tripleParam,
+                inference: $scope.inference,
+                role: $scope.role,
+                bnodes: $scope.blanks,
+                sameAs: $scope.sameAs,
+                context: $scope.context
+            },
+            headers: headers
+        }).done(function (data, textStatus, jqXhr) {
+            toggleOntoLoader(false);
+            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
+            yasr.setResponse(jqXhr, textStatus);
+        }).fail(function (data) {
+            toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
+            toggleOntoLoader(false);
+        });
+    };
+
+    // =========================
+    // Event handler functions
+    // =========================
+
     $scope.$on('language-changed', function (event, args) {
         if (yasr && yasr.options) {
             yasr.options.locale = args.locale;
             yasr.changeLanguage(args.locale);
         }
     });
+
+    $scope.$watch(function () {
+        return $repositories.getActiveRepository();
+    }, function () {
+        if ($scope.getActiveRepository()) {
+            if ($scope.usedPrefixes) {
+                $scope.loadResource();
+            } else {
+                RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                    .success(function (data) {
+                        $scope.usedPrefixes = {};
+                        data.results.bindings.forEach(function (e) {
+                            $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
+                        });
+                        $scope.$on('$destroy', function () {
+                            if (yasr) {
+                                yasr.destroy();
+                            }
+                        });
+                        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                            //this way, the URLs in the results are prettified using the defined prefixes
+                            getUsedPrefixes: $scope.usedPrefixes,
+                            persistency: false,
+                            hideHeader: true,
+                            locale: $languageService.getLanguage(),
+                            // Additional option for translation.
+                            // For the explore view could be applied
+                            translateHeaders: true,
+                            pluginsOptions: YasrUtils.getYasrConfiguration()
+                        });
+                        $scope.loadResource();
+                    }).error(function (data) {
+                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+                });
+            }
+        }
+    });
+
+    // We need to get sameAs and inference for the current user
+    // Using $q.when to proper set values in view
+    $q.when($jwtAuth.getPrincipal())
+        .then((principal) => {
+            // Get the predefined settings for sameAs and inference per user
+            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
+            $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
+        });
 }
 
 FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];
@@ -484,18 +513,18 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
                 });
                 $scope.loader = false;
             }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.error'));
-                $scope.loader = false;
-            });
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('common.error'));
+            $scope.loader = false;
+        });
 
         ClassInstanceDetailsService.getDetails($scope.uriParam)
             .success(function (data) {
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-                toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
-            });
+            toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
+        });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
             .then(function (res) {
