@@ -616,7 +616,11 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                         // data is received as blob
                         res.data.text()
                             .then((message) => {
-                                toastr.error(message, $translate.instant('common.error'));
+                                if (res.status === 431) {
+                                    toastr.error(res.statusText, $translate.instant('common.error'));
+                                } else {
+                                    toastr.error(message, $translate.instant('common.error'));
+                                }
                             });
                     });
                 } else {
