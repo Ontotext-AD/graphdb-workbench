@@ -1,0 +1,5977 @@
+@base <http://example/base/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex: <http://example.com/#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ex:D3R3651 a ex:Customer;
+  foaf:givenname "Alvin";
+  foaf:surname "Hubler";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "alvinbernard45@outlook.com";
+  ex:dateBirth "1981-05-07";
+  ex:houseNumber "18";
+  ex:street ex:Margaretenweg;
+  ex:postCode "58636";
+  ex:city ex:Iserlohn;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Heidelberg;
+  ex:sentiment "0.18257"^^xsd:float;
+  ex:fraudScore "0.03135"^^xsd:float;
+  ex:enrollment "1983-08-27";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:married .
+
+ex:Islam rdfs:label "Islam" .
+
+ex:Customer a ex:Person .
+
+ex:Margaretenweg a ex:Street;
+  rdfs:label "Margaretenweg" .
+
+ex:Iserlohn a ex:City;
+  rdfs:label "Iserlohn" .
+
+ex:AT rdfs:label "AT" .
+
+ex:3 rdfs:label "3"^^xsd:float .
+
+ex:Universität%20Heidelberg rdfs:label "Universität Heidelberg" .
+
+ex:sport rdfs:label "sport" .
+
+ex:married rdfs:label "married" .
+
+ex:P4F3302 a ex:Customer;
+  foaf:givenname "Hasan";
+  foaf:surname "Dobias";
+  foaf:gender "male";
+  ex:dateBirth "1945-12-12";
+  ex:houseNumber "13";
+  ex:street <http://example.com/#Köbisstr.>;
+  ex:postCode "84332";
+  ex:city ex:Hebertsfelden;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:20;
+  ex:university ex:Universität%20Potsdam;
+  ex:sentiment "0.14581"^^xsd:float;
+  ex:fraudScore "0.06585"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2010-10-11";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Köbisstr.> a ex:Street;
+  rdfs:label "Köbisstr." .
+
+ex:Hebertsfelden a ex:City;
+  rdfs:label "Hebertsfelden" .
+
+ex:DE rdfs:label "DE" .
+
+ex:20 rdfs:label "20"^^xsd:float .
+
+ex:Universität%20Potsdam rdfs:label "Universität Potsdam" .
+
+ex:Economics rdfs:label "Economics" .
+
+ex:watching%20movies rdfs:label "watching movies" .
+
+ex:single rdfs:label "single" .
+
+ex:C5T4067 a ex:Customer;
+  foaf:givenname "Amir";
+  foaf:surname "Fröbel";
+  foaf:gender "woman";
+  ex:email "amirnaini@web.de";
+  ex:dateBirth "1938-08-09";
+  ex:houseNumber "54";
+  ex:street <http://example.com/#Ostheimer%20Hauptstr.>;
+  ex:postCode "27308";
+  ex:city ex:Kirchlinteln;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Technische%20Universität%20München;
+  ex:sentiment "0.1838"^^xsd:float;
+  ex:fraudScore "0.00329"^^xsd:float;
+  ex:enrollment "2012-05-07";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Ostheimer%20Hauptstr.> a ex:Street;
+  rdfs:label "Ostheimer Hauptstr." .
+
+ex:Kirchlinteln a ex:City;
+  rdfs:label "Kirchlinteln" .
+
+ex:5 rdfs:label "5"^^xsd:float .
+
+ex:Technische%20Universität%20München rdfs:label "Technische Universität München" .
+
+ex:volleyball rdfs:label "volleyball" .
+
+ex:W6J1827 a ex:Customer;
+  foaf:givenname "Burgunda";
+  foaf:surname "Auris";
+  foaf:gender "woman";
+  ex:religion ex:Hinduism;
+  ex:email "burgunda.auris@gmail.com";
+  ex:dateBirth "1939-09-11";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Weiherstr.>;
+  ex:postCode "63825";
+  ex:city ex:Sommerkahl;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:30;
+  ex:university ex:Fachhochschule%20Karlsruhe;
+  ex:sentiment "0.6513399999999999"^^xsd:float;
+  ex:fraudScore "0.01583"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2015-02-06";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+ex:Hinduism rdfs:label "Hinduism" .
+
+<http://example.com/#Weiherstr.> a ex:Street;
+  rdfs:label "Weiherstr." .
+
+ex:Sommerkahl a ex:City;
+  rdfs:label "Sommerkahl" .
+
+ex:30 rdfs:label "30"^^xsd:float .
+
+ex:Fachhochschule%20Karlsruhe rdfs:label "Fachhochschule Karlsruhe" .
+
+ex:Mathematics rdfs:label "Mathematics" .
+
+ex:football rdfs:label "football" .
+
+ex:%20 rdfs:label " " .
+
+ex:P7P8094 a ex:Customer;
+  foaf:givenname "Phil";
+  foaf:surname "Eichmueller";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1979-05-16";
+  ex:houseNumber "74";
+  ex:street ex:Schöneberger%20Weg;
+  ex:postCode "42489";
+  ex:city ex:Wülfrath;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Martin%20Luther%20Universität%20Halle-Wittenberg;
+  ex:sentiment "0.97951"^^xsd:float;
+  ex:fraudScore "0.00757"^^xsd:float;
+  ex:enrollment "2008-10-03";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:divorced .
+
+ex:Christianity rdfs:label "Christianity" .
+
+ex:Schöneberger%20Weg a ex:Street;
+  rdfs:label "Schöneberger Weg" .
+
+ex:Wülfrath a ex:City;
+  rdfs:label "Wülfrath" .
+
+ex:Martin%20Luther%20Universität%20Halle-Wittenberg rdfs:label "Martin Luther Universität Halle-Wittenberg" .
+
+ex:hiking rdfs:label "hiking" .
+
+ex:divorced rdfs:label "divorced" .
+
+ex:D8N6002 a ex:Customer;
+  foaf:givenname "Harlad";
+  foaf:surname "Pak";
+  foaf:gender "male";
+  ex:email "harlad18@gmx.de";
+  ex:dateBirth "1989-08-07";
+  ex:houseNumber "18";
+  ex:street ex:Lipper%20Weg;
+  ex:postCode "79688";
+  ex:city ex:Hausen%20im%20Wiesental;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Fachhochschule%20Karlsruhe;
+  ex:sentiment "0.50312"^^xsd:float;
+  ex:fraudScore "0.02926"^^xsd:float;
+  ex:enrollment "1986-10-07";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:divorced .
+
+ex:Lipper%20Weg a ex:Street;
+  rdfs:label "Lipper Weg" .
+
+ex:Hausen%20im%20Wiesental a ex:City;
+  rdfs:label "Hausen im Wiesental" .
+
+ex:2 rdfs:label "2"^^xsd:float .
+
+ex:Q9H7838 a ex:Customer;
+  foaf:givenname "Hulusi";
+  foaf:surname "Sobtzick";
+  foaf:gender "woman";
+  ex:email "hulusi.sobtzick345@gmx.de";
+  ex:dateBirth "1940-08-15";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Greflingerstr.>;
+  ex:postCode "97705";
+  ex:city ex:Burkardroth;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Bielefeld;
+  ex:sentiment "0.06167"^^xsd:float;
+  ex:fraudScore "0.14053"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2015-03-02";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Greflingerstr.> a ex:Street;
+  rdfs:label "Greflingerstr." .
+
+ex:Burkardroth a ex:City;
+  rdfs:label "Burkardroth" .
+
+ex:Universität%20Bielefeld rdfs:label "Universität Bielefeld" .
+
+ex:Psychology rdfs:label "Psychology" .
+
+ex:S10A541 a ex:Customer;
+  foaf:givenname "Swetlana";
+  foaf:surname "Nock";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:dateBirth "2002-07-28";
+  ex:houseNumber "11";
+  ex:street ex:Otternplan;
+  ex:postCode "67480";
+  ex:city ex:Edenkoben;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Bayreuth;
+  ex:sentiment "0.62916"^^xsd:float;
+  ex:fraudScore "0.01697"^^xsd:float;
+  ex:enrollment "1987-03-07";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Otternplan a ex:Street;
+  rdfs:label "Otternplan" .
+
+ex:Edenkoben a ex:City;
+  rdfs:label "Edenkoben" .
+
+ex:0 rdfs:label "0"^^xsd:float .
+
+ex:Universität%20Bayreuth rdfs:label "Universität Bayreuth" .
+
+ex:video%20games rdfs:label "video games" .
+
+ex:X11Y144 a ex:Customer;
+  foaf:givenname "Gerdrut";
+  foaf:surname "Kloppenburg";
+  foaf:gender "woman";
+  ex:email "gerdrut.kloppenburg@outlook.com";
+  ex:dateBirth "1955-05-04";
+  ex:houseNumber "3";
+  ex:street <http://example.com/#Mahlastr.>;
+  ex:postCode "75800";
+  ex:city ex:Braunichswalde;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Universität%20Heidelberg;
+  ex:sentiment "0.33346"^^xsd:float;
+  ex:fraudScore "0.04199"^^xsd:float;
+  ex:enrollment "1995-08-01";
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Mahlastr.> a ex:Street;
+  rdfs:label "Mahlastr." .
+
+ex:Braunichswalde a ex:City;
+  rdfs:label "Braunichswalde" .
+
+ex:S12N607 a ex:Customer;
+  foaf:givenname "Inge";
+  foaf:surname "Freeden";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "ingelore.freeden4394@gmail.com";
+  ex:dateBirth "1977-09-19";
+  ex:houseNumber "49";
+  ex:street <http://example.com/#Medinger%20Str.>;
+  ex:postCode "64823";
+  ex:city ex:Groß-Umstadt;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Universität%20Köln;
+  ex:sentiment "0.40631"^^xsd:float;
+  ex:fraudScore "0.02138"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2008-12-27";
+  ex:hobby ex:swimming;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Medinger%20Str.> a ex:Street;
+  rdfs:label "Medinger Str." .
+
+ex:Groß-Umstadt a ex:City;
+  rdfs:label "Groß-Umstadt" .
+
+ex:9 rdfs:label "9"^^xsd:float .
+
+ex:Universität%20Köln rdfs:label "Universität Köln" .
+
+ex:swimming rdfs:label "swimming" .
+
+ex:F13X167 a ex:Customer;
+  foaf:givenname "Henry";
+  foaf:surname "Ohlmeier";
+  foaf:gender "male";
+  ex:email "henryjoachim.ohlmeier9032@web.de";
+  ex:dateBirth "1953-07-02";
+  ex:houseNumber "48";
+  ex:street <http://example.com/#Dürrenebersdorfer%20Str.>;
+  ex:postCode "58239";
+  ex:city ex:Schwerte;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:17;
+  ex:university ex:Hochschule%20Offenburg;
+  ex:sentiment "0.87321"^^xsd:float;
+  ex:fraudScore "0.01206"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "1990-08-01";
+  ex:hobby ex:watching%20movies%20and%20playing%20golf;
+  ex:maritalStatus ex:widow .
+
+<http://example.com/#Dürrenebersdorfer%20Str.> a ex:Street;
+  rdfs:label "Dürrenebersdorfer Str." .
+
+ex:Schwerte a ex:City;
+  rdfs:label "Schwerte" .
+
+ex:17 rdfs:label "17"^^xsd:float .
+
+ex:Hochschule%20Offenburg rdfs:label "Hochschule Offenburg" .
+
+ex:watching%20movies%20and%20playing%20golf rdfs:label "watching movies and playing golf" .
+
+ex:widow rdfs:label "widow" .
+
+ex:G14B348 a ex:Customer;
+  foaf:givenname "Andreas";
+  foaf:surname "Grubert";
+  foaf:gender "male";
+  ex:religion ex:Buddhism;
+  ex:email "andreaskolbe16@outlook.com";
+  ex:dateBirth "1943-04-06";
+  ex:houseNumber "7";
+  ex:street <http://example.com/#Von-Bodelschwingh-Str.>;
+  ex:postCode "53721";
+  ex:city ex:Siegburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.26507"^^xsd:float;
+  ex:fraudScore "0.00392"^^xsd:float;
+  ex:enrollment "1998-09-25";
+  ex:hobby ex:football%20and%20football;
+  ex:maritalStatus ex:divorced .
+
+ex:Buddhism rdfs:label "Buddhism" .
+
+<http://example.com/#Von-Bodelschwingh-Str.> a ex:Street;
+  rdfs:label "Von-Bodelschwingh-Str." .
+
+ex:Siegburg a ex:City;
+  rdfs:label "Siegburg" .
+
+ex:Freie%20Universität%20Berlin rdfs:label "Freie Universität Berlin" .
+
+ex:football%20and%20football rdfs:label "football and football" .
+
+ex:W15E615 a ex:Customer;
+  foaf:givenname "Hildegart";
+  foaf:surname "Chalastras";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:email "hildegart99@yahoo.com";
+  ex:dateBirth "1947-07-03";
+  ex:houseNumber "16";
+  ex:street ex:Fischer-von-Erlach-Str;
+  ex:postCode "40629";
+  ex:city ex:Düsseldorf;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Frankfurt%20University;
+  ex:sentiment "0.72243"^^xsd:float;
+  ex:fraudScore "5e-05"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "1987-08-05";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:married .
+
+ex:Fischer-von-Erlach-Str a ex:Street;
+  rdfs:label "Fischer-von-Erlach-Str" .
+
+ex:Düsseldorf a ex:City;
+  rdfs:label "Düsseldorf" .
+
+ex:8 rdfs:label "8"^^xsd:float .
+
+ex:Frankfurt%20University rdfs:label "Frankfurt University" .
+
+ex:Business%20Administration rdfs:label "Business Administration" .
+
+ex:Q16U198 a ex:Customer;
+  foaf:givenname "Söngül";
+  foaf:surname "Brendes";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "söngül92@gmx.de";
+  ex:dateBirth "1987-07-11";
+  ex:houseNumber "25";
+  ex:street <http://example.com/#Steinacher%20Str.>;
+  ex:postCode "82544";
+  ex:city ex:Egling;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Heidelberg;
+  ex:sentiment "0.65985"^^xsd:float;
+  ex:fraudScore "0.0036"^^xsd:float;
+  ex:enrollment "2013-06-10";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Steinacher%20Str.> a ex:Street;
+  rdfs:label "Steinacher Str." .
+
+ex:Egling a ex:City;
+  rdfs:label "Egling" .
+
+ex:running rdfs:label "running" .
+
+ex:A17O271 a ex:Customer;
+  foaf:givenname "Umahan";
+  foaf:surname "Diene";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "umahan@gmx.de";
+  ex:dateBirth "1937-04-02";
+  ex:houseNumber "61";
+  ex:street <http://example.com/#Bauerbacher%20Str.>;
+  ex:postCode "14450";
+  ex:city ex:Radebeul;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:44;
+  ex:university ex:Dortmund%20University;
+  ex:sentiment "0.54681"^^xsd:float;
+  ex:fraudScore "0.0082"^^xsd:float;
+  ex:enrollment "2000-08-27";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Bauerbacher%20Str.> a ex:Street;
+  rdfs:label "Bauerbacher Str." .
+
+ex:Radebeul a ex:City;
+  rdfs:label "Radebeul" .
+
+ex:44 rdfs:label "44"^^xsd:float .
+
+ex:Dortmund%20University rdfs:label "Dortmund University" .
+
+ex:Y18E246 a ex:Customer;
+  foaf:givenname "Cornelia";
+  foaf:surname "Huschenbeth";
+  foaf:gender "male";
+  ex:religion ex:Shintoism;
+  ex:email "corneliaregina7048@yahoo.com";
+  ex:dateBirth "1965-04-01";
+  ex:houseNumber "82";
+  ex:street <http://example.com/#Goldbergstr.>;
+  ex:postCode "70178";
+  ex:city ex:Stuttgart;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Dresden%20Technical%20University;
+  ex:sentiment "0.46409"^^xsd:float;
+  ex:fraudScore "0.02788"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2015-12-23";
+  ex:hobby ex:riding%20bicycle;
+  ex:maritalStatus ex:single .
+
+ex:Shintoism rdfs:label "Shintoism" .
+
+<http://example.com/#Goldbergstr.> a ex:Street;
+  rdfs:label "Goldbergstr." .
+
+ex:Stuttgart a ex:City;
+  rdfs:label "Stuttgart" .
+
+ex:14 rdfs:label "14"^^xsd:float .
+
+ex:Dresden%20Technical%20University rdfs:label "Dresden Technical University" .
+
+ex:riding%20bicycle rdfs:label "riding bicycle" .
+
+ex:G19Q984 a ex:Customer;
+  foaf:givenname "Ziae";
+  foaf:surname "Oezyavuz";
+  foaf:gender "male";
+  ex:email "ziae13@gmail.com";
+  ex:dateBirth "1959-03-01";
+  ex:houseNumber "94";
+  ex:street <http://example.com/#Bergbahnstr.>;
+  ex:postCode "88214";
+  ex:city ex:Ravensburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:23;
+  ex:university ex:Medical%20University%20of%20Luebeck;
+  ex:sentiment "0.39047"^^xsd:float;
+  ex:fraudScore "0.01568"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "1980-12-07";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Bergbahnstr.> a ex:Street;
+  rdfs:label "Bergbahnstr." .
+
+ex:Ravensburg a ex:City;
+  rdfs:label "Ravensburg" .
+
+ex:23 rdfs:label "23"^^xsd:float .
+
+ex:Medical%20University%20of%20Luebeck rdfs:label "Medical University of Luebeck" .
+
+ex:D20O145 a ex:Customer;
+  foaf:givenname "Aneglika";
+  foaf:surname "Cakir";
+  foaf:gender "male";
+  ex:email "aneglika.cakir@gmx.de";
+  ex:dateBirth "1971-06-18";
+  ex:houseNumber "62";
+  ex:street <http://example.com/#Striesower%20Str.>;
+  ex:postCode "63165";
+  ex:city ex:Mühlheim%20am%20Main;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Universität%20Rostock;
+  ex:sentiment "0.69919"^^xsd:float;
+  ex:fraudScore "0.00225"^^xsd:float;
+  ex:enrollment "1988-10-23";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Striesower%20Str.> a ex:Street;
+  rdfs:label "Striesower Str." .
+
+ex:Mühlheim%20am%20Main a ex:City;
+  rdfs:label "Mühlheim am Main" .
+
+ex:7 rdfs:label "7"^^xsd:float .
+
+ex:Universität%20Rostock rdfs:label "Universität Rostock" .
+
+ex:M21J170 a ex:Customer;
+  foaf:givenname "Fulya";
+  foaf:surname "Kozelka";
+  foaf:gender "male";
+  ex:email "fulya14@outlook.com";
+  ex:dateBirth "1963-04-15";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Lochhauser%20Str.>;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:30;
+  ex:university ex:Universität%20Duisburg;
+  ex:sentiment "0.8621200000000001"^^xsd:float;
+  ex:fraudScore "0.00246"^^xsd:float;
+  ex:enrollment "1997-11-27";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Lochhauser%20Str.> a ex:Street;
+  rdfs:label "Lochhauser Str." .
+
+ex:Berlin a ex:City;
+  rdfs:label "Berlin" .
+
+ex:Universität%20Duisburg rdfs:label "Universität Duisburg" .
+
+ex:collecting%20stamps rdfs:label "collecting stamps" .
+
+ex:W22T676 a ex:Customer;
+  foaf:givenname "Hans";
+  foaf:surname "Sewtz";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "hansgottfried.sewtz@gmx.de";
+  ex:dateBirth "1964-09-05";
+  ex:houseNumber "75";
+  ex:street <http://example.com/#Breddestr.>;
+  ex:postCode "34286";
+  ex:city ex:Spangenberg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Hamburg;
+  ex:sentiment "0.80357"^^xsd:float;
+  ex:fraudScore "0.01384"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "2004-12-17";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Breddestr.> a ex:Street;
+  rdfs:label "Breddestr." .
+
+ex:Spangenberg a ex:City;
+  rdfs:label "Spangenberg" .
+
+ex:Universität%20Hamburg rdfs:label "Universität Hamburg" .
+
+ex:Computer%20Science rdfs:label "Computer Science" .
+
+ex:T23L877 a ex:Customer;
+  foaf:givenname "Hans";
+  foaf:surname "Meier";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:dateBirth "1968-02-03";
+  ex:houseNumber "34";
+  ex:street <http://example.com/#Eugen-Rosner-Str.>;
+  ex:postCode "44575";
+  ex:city ex:Castrop-Rauxel;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Ernst-Moritz-Arndt-University%20Greifswald;
+  ex:sentiment "0.18657"^^xsd:float;
+  ex:fraudScore "0.01909"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "1988-09-13";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Eugen-Rosner-Str.> a ex:Street;
+  rdfs:label "Eugen-Rosner-Str." .
+
+ex:Castrop-Rauxel a ex:City;
+  rdfs:label "Castrop-Rauxel" .
+
+ex:1 rdfs:label "1"^^xsd:float .
+
+ex:Ernst-Moritz-Arndt-University%20Greifswald rdfs:label "Ernst-Moritz-Arndt-University Greifswald" .
+
+ex:F24A487 a ex:Customer;
+  foaf:givenname "Horstdaniel";
+  foaf:surname "Kolbatz";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "horstdaniel.kolbatz@web.de";
+  ex:dateBirth "1954-04-25";
+  ex:houseNumber "59";
+  ex:street ex:An%20der%20Alpheide;
+  ex:postCode "48683";
+  ex:city ex:Ahaus;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:30;
+  ex:university ex:Julius-Maximilians-Universität;
+  ex:sentiment "0.4042"^^xsd:float;
+  ex:fraudScore "0.01253"^^xsd:float;
+  ex:enrollment "2006-02-26";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:An%20der%20Alpheide a ex:Street;
+  rdfs:label "An der Alpheide" .
+
+ex:Ahaus a ex:City;
+  rdfs:label "Ahaus" .
+
+ex:Julius-Maximilians-Universität rdfs:label "Julius-Maximilians-Universität" .
+
+ex:P25L394 a ex:Customer;
+  foaf:givenname "Geza";
+  foaf:surname "Mascher";
+  foaf:gender "woman";
+  ex:religion ex:Hinduism;
+  ex:email "geza@outlook.com";
+  ex:dateBirth "1940-05-11";
+  ex:houseNumber "6";
+  ex:street <http://example.com/#Windhukstr.>;
+  ex:postCode "58507";
+  ex:city ex:Lüdenscheid;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:10;
+  ex:university ex:Russian%20and%20Eurasian%20Security%20Network;
+  ex:sentiment "0.19658"^^xsd:float;
+  ex:fraudScore "0.07842"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2001-07-07";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Windhukstr.> a ex:Street;
+  rdfs:label "Windhukstr." .
+
+ex:Lüdenscheid a ex:City;
+  rdfs:label "Lüdenscheid" .
+
+ex:10 rdfs:label "10"^^xsd:float .
+
+ex:Russian%20and%20Eurasian%20Security%20Network rdfs:label "Russian and Eurasian Security Network" .
+
+ex:E26N876 a ex:Customer;
+  foaf:givenname "Yesim";
+  foaf:surname "Schottenhammer";
+  foaf:gender "male";
+  ex:email "yesim.schottenhammer@web.de";
+  ex:dateBirth "1969-03-13";
+  ex:houseNumber "44";
+  ex:street ex:Pergamentweg;
+  ex:postCode "51429";
+  ex:city ex:Bergisch%20Gladbach;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Dortmund%20University;
+  ex:sentiment "0.75751"^^xsd:float;
+  ex:fraudScore "0.01055"^^xsd:float;
+  ex:enrollment "1981-01-13";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Pergamentweg a ex:Street;
+  rdfs:label "Pergamentweg" .
+
+ex:Bergisch%20Gladbach a ex:City;
+  rdfs:label "Bergisch Gladbach" .
+
+ex:W27T155 a ex:Customer;
+  foaf:givenname "Efthimios";
+  foaf:surname "Corcoran";
+  foaf:gender "male";
+  ex:religion <http://example.com/#Sikhism.>;
+  ex:email "efthimios478325@yahoo.com";
+  ex:dateBirth "1988-04-12";
+  ex:houseNumber "58";
+  ex:street <http://example.com/#Carl-Theodor-Str.>;
+  ex:postCode "89257";
+  ex:city ex:Illertissen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Katholische%20Universität%20Eichstätt;
+  ex:sentiment "0.597"^^xsd:float;
+  ex:fraudScore "0.0016"^^xsd:float;
+  ex:enrollment "2015-03-01";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Sikhism.> rdfs:label "Sikhism." .
+
+<http://example.com/#Carl-Theodor-Str.> a ex:Street;
+  rdfs:label "Carl-Theodor-Str." .
+
+ex:Illertissen a ex:City;
+  rdfs:label "Illertissen" .
+
+ex:Katholische%20Universität%20Eichstätt rdfs:label "Katholische Universität Eichstätt" .
+
+ex:S28W815 a ex:Customer;
+  foaf:givenname "Edeltraud";
+  foaf:surname "Choat";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "edeltraud917348@gmx.de";
+  ex:dateBirth "1960-09-27";
+  ex:houseNumber "85";
+  ex:street ex:Zum%20Planitzwald;
+  ex:postCode "99752";
+  ex:city ex:Wipperdorf;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.49121"^^xsd:float;
+  ex:fraudScore "0.02539"^^xsd:float;
+  ex:enrollment "1987-11-06";
+  ex:hobby ex:swimming;
+  ex:maritalStatus ex:single .
+
+ex:Zum%20Planitzwald a ex:Street;
+  rdfs:label "Zum Planitzwald" .
+
+ex:Wipperdorf a ex:City;
+  rdfs:label "Wipperdorf" .
+
+ex:6 rdfs:label "6"^^xsd:float .
+
+ex:G29M918 a ex:Customer;
+  foaf:givenname "Volkan";
+  foaf:surname "Pinkale";
+  foaf:gender "male";
+  ex:religion ex:Shintoism;
+  ex:email "volkanhaydar36@outlook.com";
+  ex:dateBirth "1973-09-28";
+  ex:houseNumber "34";
+  ex:street ex:Hägerfeld;
+  ex:postCode "22177";
+  ex:city ex:Hamburg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:10;
+  ex:university ex:Technische%20Universität%20Dresden;
+  ex:sentiment "0.75788"^^xsd:float;
+  ex:fraudScore "0.00231"^^xsd:float;
+  ex:enrollment "1999-04-25";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Hägerfeld a ex:Street;
+  rdfs:label "Hägerfeld" .
+
+ex:Hamburg a ex:City;
+  rdfs:label "Hamburg" .
+
+ex:Technische%20Universität%20Dresden rdfs:label "Technische Universität Dresden" .
+
+ex:N30G193 a ex:Customer;
+  foaf:givenname "Antje";
+  foaf:surname "Jasinski";
+  foaf:gender "male";
+  ex:email "antjes.73@outlook.com";
+  ex:dateBirth "1966-05-24";
+  ex:houseNumber "23";
+  ex:street ex:Zur%20Hälde;
+  ex:postCode "44200";
+  ex:city ex:Markranstädt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Hamburg;
+  ex:sentiment "0.46577"^^xsd:float;
+  ex:fraudScore "0.02844"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2012-06-17";
+  ex:maritalStatus ex:single .
+
+ex:Zur%20Hälde a ex:Street;
+  rdfs:label "Zur Hälde" .
+
+ex:Markranstädt a ex:City;
+  rdfs:label "Markranstädt" .
+
+ex:T31Q905 a ex:Customer;
+  foaf:givenname "Zahide";
+  foaf:surname "Haentze";
+  foaf:gender "woman";
+  ex:email "zahide@outlook.com";
+  ex:dateBirth "1944-12-04";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Nadistr.>;
+  ex:postCode "57614";
+  ex:city ex:Steimel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Technische%20Universität%20Dresden;
+  ex:sentiment "0.90975"^^xsd:float;
+  ex:fraudScore "0.00852"^^xsd:float;
+  ex:enrollment "1990-05-05";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Nadistr.> a ex:Street;
+  rdfs:label "Nadistr." .
+
+ex:Steimel a ex:City;
+  rdfs:label "Steimel" .
+
+ex:Q32V243 a ex:Customer;
+  foaf:givenname "Lindita";
+  foaf:surname "Wattrodt";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "lindita.wattrodt@gmx.de";
+  ex:dateBirth "1976-03-13";
+  ex:houseNumber "11";
+  ex:street ex:Am%20Büchert;
+  ex:postCode "54552";
+  ex:city ex:Demerath;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Universität%20Hildesheim;
+  ex:sentiment "0.48468"^^xsd:float;
+  ex:fraudScore "0.02525"^^xsd:float;
+  ex:enrollment "2011-09-09";
+  ex:hobby ex:maraton%20running%20and%20video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Büchert a ex:Street;
+  rdfs:label "Am Büchert" .
+
+ex:Demerath a ex:City;
+  rdfs:label "Demerath" .
+
+ex:Universität%20Hildesheim rdfs:label "Universität Hildesheim" .
+
+ex:maraton%20running%20and%20video%20games rdfs:label "maraton running and video games" .
+
+ex:L33D257 a ex:Customer;
+  foaf:givenname "Tristan";
+  foaf:surname "Driendl";
+  foaf:gender "male";
+  ex:religion ex:Buddhism;
+  ex:email "tristan@gmx.de";
+  ex:dateBirth "1950-08-18";
+  ex:houseNumber "19";
+  ex:street <http://example.com/#Eggenfeldener%20Str.>;
+  ex:postCode "24539";
+  ex:city ex:Neumünster;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:22;
+  ex:university ex:Universität%20Gesamthochschule%20Essen;
+  ex:sentiment "0.21982"^^xsd:float;
+  ex:fraudScore "0.03538"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1990-05-01";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Eggenfeldener%20Str.> a ex:Street;
+  rdfs:label "Eggenfeldener Str." .
+
+ex:Neumünster a ex:City;
+  rdfs:label "Neumünster" .
+
+ex:22 rdfs:label "22"^^xsd:float .
+
+ex:Universität%20Gesamthochschule%20Essen rdfs:label "Universität Gesamthochschule Essen" .
+
+ex:Finance rdfs:label "Finance" .
+
+ex:X34G261 a ex:Customer;
+  foaf:givenname "Gudrun";
+  foaf:surname "Motzkau";
+  foaf:gender "woman";
+  ex:email "gudruna..motzkau@yahoo.com";
+  ex:dateBirth "1981-03-12";
+  ex:houseNumber "19";
+  ex:street ex:Zum%20Oberhof;
+  ex:postCode "39638";
+  ex:city ex:Gardelegen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Medical%20University%20of%20Luebeck;
+  ex:sentiment "0.19658"^^xsd:float;
+  ex:fraudScore "0.00031"^^xsd:float;
+  ex:enrollment "1990-10-16";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:married .
+
+ex:Zum%20Oberhof a ex:Street;
+  rdfs:label "Zum Oberhof" .
+
+ex:Gardelegen a ex:City;
+  rdfs:label "Gardelegen" .
+
+ex:Y35L605 a ex:Customer;
+  foaf:givenname "Siegfried";
+  foaf:surname "Brueninghaus";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1991-07-18";
+  ex:houseNumber "25";
+  ex:street <http://example.com/#Gerhard-Marcks-Str.>;
+  ex:postCode "67227";
+  ex:city ex:Frankenthal%20Pfalz;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.94985"^^xsd:float;
+  ex:fraudScore "0.00213"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2001-08-18";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Gerhard-Marcks-Str.> a ex:Street;
+  rdfs:label "Gerhard-Marcks-Str." .
+
+ex:Frankenthal%20Pfalz a ex:City;
+  rdfs:label "Frankenthal Pfalz" .
+
+ex:Universität%20Konstanz rdfs:label "Universität Konstanz" .
+
+ex:model%20building rdfs:label "model building" .
+
+ex:A36D578 a ex:Customer;
+  foaf:givenname "Marlies";
+  foaf:surname "Gillmeier";
+  foaf:gender "male";
+  ex:email "marlieshelms87@gmail.com";
+  ex:dateBirth "1952-09-23";
+  ex:houseNumber "54";
+  ex:street ex:Telawiallee;
+  ex:postCode "32380";
+  ex:city ex:Finsterwalde;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:22;
+  ex:university ex:Universität%20Köln;
+  ex:sentiment "0.29554"^^xsd:float;
+  ex:fraudScore "0.04972"^^xsd:float;
+  ex:enrollment "1984-01-18";
+  ex:hobby ex:music%20and%20music;
+  ex:maritalStatus ex:single .
+
+ex:Telawiallee a ex:Street;
+  rdfs:label "Telawiallee" .
+
+ex:Finsterwalde a ex:City;
+  rdfs:label "Finsterwalde" .
+
+ex:music%20and%20music rdfs:label "music and music" .
+
+ex:H37P376 a ex:Customer;
+  foaf:givenname "Wörner";
+  foaf:surname "Kleineberg";
+  foaf:gender "male";
+  ex:email "wörner.kleineberg@web.de";
+  ex:dateBirth "1969-07-31";
+  ex:houseNumber "63";
+  ex:street ex:Altenhofer%20Weg;
+  ex:postCode "86179";
+  ex:city ex:Augsburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Universität%20Regensburg;
+  ex:sentiment "0.7652800000000001"^^xsd:float;
+  ex:fraudScore "0.01091"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "2006-08-13";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:%20 .
+
+ex:Altenhofer%20Weg a ex:Street;
+  rdfs:label "Altenhofer Weg" .
+
+ex:Augsburg a ex:City;
+  rdfs:label "Augsburg" .
+
+ex:Universität%20Regensburg rdfs:label "Universität Regensburg" .
+
+ex:U38O303 a ex:Customer;
+  foaf:givenname "Tamas";
+  foaf:surname "Meissner";
+  foaf:gender "woman";
+  ex:email "tamas78@outlook.com";
+  ex:dateBirth "1971-05-26";
+  ex:houseNumber "50";
+  ex:street ex:Sophie-Schoop-Weg;
+  ex:postCode "96272";
+  ex:city ex:Hochstadt%20a.%20Main;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:7;
+  ex:university ex:University%20of%20South%20Wales;
+  ex:sentiment "0.57413"^^xsd:float;
+  ex:fraudScore "0.020030000000000003"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2015-11-13";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:divorced .
+
+ex:Sophie-Schoop-Weg a ex:Street;
+  rdfs:label "Sophie-Schoop-Weg" .
+
+ex:Hochstadt%20a.%20Main a ex:City;
+  rdfs:label "Hochstadt a. Main" .
+
+ex:University%20of%20South%20Wales rdfs:label "University of South Wales" .
+
+ex:P39B197 a ex:Customer;
+  foaf:givenname "Karl";
+  foaf:surname "Kutschmann";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "karl-hermann.kutschmann@outlook.com";
+  ex:dateBirth "1959-01-03";
+  ex:houseNumber "31";
+  ex:street <http://example.com/#Mörlaer%20Str.>;
+  ex:postCode "49324";
+  ex:city ex:Melle;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:20;
+  ex:university ex:Universität%20Gesamthochschule%20Essen;
+  ex:sentiment "0.72007"^^xsd:float;
+  ex:fraudScore "0.01812"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2010-04-03";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Mörlaer%20Str.> a ex:Street;
+  rdfs:label "Mörlaer Str." .
+
+ex:Melle a ex:City;
+  rdfs:label "Melle" .
+
+ex:F40T859 a ex:Customer;
+  foaf:givenname "R.";
+  foaf:surname "Grohnert";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "r.@web.de";
+  ex:dateBirth "1937-08-08";
+  ex:houseNumber "10";
+  ex:street ex:Pätschow;
+  ex:postCode "39326";
+  ex:city ex:Wolmirstedt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Stuttgart;
+  ex:sentiment "0.59668"^^xsd:float;
+  ex:fraudScore "0.0299"^^xsd:float;
+  ex:enrollment "1990-04-16";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:married .
+
+ex:Pätschow a ex:Street;
+  rdfs:label "Pätschow" .
+
+ex:Wolmirstedt a ex:City;
+  rdfs:label "Wolmirstedt" .
+
+ex:Universität%20Stuttgart rdfs:label "Universität Stuttgart" .
+
+ex:B41Z584 a ex:Customer;
+  foaf:givenname "Erben";
+  foaf:surname "Konicanin";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "erbenevalemle47@gmx.de";
+  ex:dateBirth "2001-03-26";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Poppenbütteler%20Str.>;
+  ex:postCode "71111";
+  ex:city ex:Waldenbuch;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Heinrich-Heine-Universität%20Dässeldorf;
+  ex:sentiment "0.59364"^^xsd:float;
+  ex:fraudScore "0.01746"^^xsd:float;
+  ex:enrollment "1981-07-11";
+  ex:hobby ex:horse%20riding;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Poppenbütteler%20Str.> a ex:Street;
+  rdfs:label "Poppenbütteler Str." .
+
+ex:Waldenbuch a ex:City;
+  rdfs:label "Waldenbuch" .
+
+ex:Heinrich-Heine-Universität%20Dässeldorf rdfs:label "Heinrich-Heine-Universität Dässeldorf" .
+
+ex:horse%20riding rdfs:label "horse riding" .
+
+ex:Y42N701 a ex:Customer;
+  foaf:givenname "Hambra";
+  foaf:surname "Feidt";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "hambra@gmail.com";
+  ex:dateBirth "1944-09-03";
+  ex:houseNumber "47";
+  ex:street ex:Scheibenbergweg;
+  ex:postCode "12390";
+  ex:city ex:Dresden;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Technische%20Universität%20Chemnitz-Zwickau;
+  ex:sentiment "0.68926"^^xsd:float;
+  ex:fraudScore "0.01029"^^xsd:float;
+  ex:enrollment "1993-02-11";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:married .
+
+ex:Scheibenbergweg a ex:Street;
+  rdfs:label "Scheibenbergweg" .
+
+ex:Dresden a ex:City;
+  rdfs:label "Dresden" .
+
+ex:Technische%20Universität%20Chemnitz-Zwickau rdfs:label "Technische Universität Chemnitz-Zwickau" .
+
+ex:U43T670 a ex:Customer;
+  foaf:givenname "Alexa";
+  foaf:surname "Krasel";
+  foaf:gender "male";
+  ex:religion ex:Hinduism;
+  ex:dateBirth "1966-02-23";
+  ex:houseNumber "22";
+  ex:street ex:Nutzweg;
+  ex:postCode "60311";
+  ex:city ex:Frankfurt%20am%20Main;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Universität%20Tübingen;
+  ex:sentiment "0.40529"^^xsd:float;
+  ex:fraudScore "0.03701"^^xsd:float;
+  ex:enrollment "1995-11-18";
+  ex:hobby ex:maraton%20running;
+  ex:maritalStatus ex:divorced .
+
+ex:Hinduism rdfs:label "Hinduism" .
+
+ex:Customer a ex:Person .
+
+ex:Nutzweg a ex:Street;
+  rdfs:label "Nutzweg" .
+
+ex:Frankfurt%20am%20Main a ex:City;
+  rdfs:label "Frankfurt am Main" .
+
+ex:AT rdfs:label "AT" .
+
+ex:7 rdfs:label "7"^^xsd:float .
+
+ex:Universität%20Tübingen rdfs:label "Universität Tübingen" .
+
+ex:maraton%20running rdfs:label "maraton running" .
+
+ex:divorced rdfs:label "divorced" .
+
+ex:Y44D586 a ex:Customer;
+  foaf:givenname "Ayhan";
+  foaf:surname "Gerig";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1954-09-08";
+  ex:houseNumber "78";
+  ex:street <http://example.com/#Theobaldstr.>;
+  ex:postCode "64807";
+  ex:city ex:Dieburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:31;
+  ex:university ex:Berlin%20School%20of%20Business%20and%20Innovation;
+  ex:sentiment "0.6501100000000001"^^xsd:float;
+  ex:fraudScore "0.02345"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1995-04-13";
+  ex:hobby ex:video%20games%20and%20collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+ex:Christianity rdfs:label "Christianity" .
+
+<http://example.com/#Theobaldstr.> a ex:Street;
+  rdfs:label "Theobaldstr." .
+
+ex:Dieburg a ex:City;
+  rdfs:label "Dieburg" .
+
+ex:31 rdfs:label "31"^^xsd:float .
+
+ex:Berlin%20School%20of%20Business%20and%20Innovation rdfs:label "Berlin School of Business and Innovation" .
+
+ex:Finance rdfs:label "Finance" .
+
+ex:video%20games%20and%20collecting%20stamps rdfs:label "video games and collecting stamps" .
+
+ex:single rdfs:label "single" .
+
+ex:N45Q549 a ex:Customer;
+  foaf:givenname "Arlette";
+  foaf:surname "Röbe";
+  foaf:gender "male";
+  ex:email "arlette88@gmx.de";
+  ex:dateBirth "2002-04-29";
+  ex:houseNumber "21";
+  ex:street ex:Epfenhauser%20Siedlung;
+  ex:postCode "85748";
+  ex:city ex:Garching%20b.%20München;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Dortmund%20University;
+  ex:sentiment "0.34271"^^xsd:float;
+  ex:fraudScore "0.0075099999999999984"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "1984-06-24";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+ex:Epfenhauser%20Siedlung a ex:Street;
+  rdfs:label "Epfenhauser Siedlung" .
+
+ex:Garching%20b.%20München a ex:City;
+  rdfs:label "Garching b. München" .
+
+ex:DE rdfs:label "DE" .
+
+ex:1 rdfs:label "1"^^xsd:float .
+
+ex:Dortmund%20University rdfs:label "Dortmund University" .
+
+ex:Psychology rdfs:label "Psychology" .
+
+ex:collecting%20stamps rdfs:label "collecting stamps" .
+
+ex:Q46F388 a ex:Customer;
+  foaf:givenname "Januasz";
+  foaf:surname "Reeg";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "januasz91@outlook.com";
+  ex:dateBirth "1994-04-14";
+  ex:houseNumber "22";
+  ex:street ex:Weedegasse;
+  ex:postCode "31226";
+  ex:city ex:Peine;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Karlsruhe;
+  ex:sentiment "0.7056600000000001"^^xsd:float;
+  ex:fraudScore "0.01206"^^xsd:float;
+  ex:enrollment "2018-12-08";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+ex:Islam rdfs:label "Islam" .
+
+ex:Weedegasse a ex:Street;
+  rdfs:label "Weedegasse" .
+
+ex:Peine a ex:City;
+  rdfs:label "Peine" .
+
+ex:3 rdfs:label "3"^^xsd:float .
+
+ex:Universität%20Karlsruhe rdfs:label "Universität Karlsruhe" .
+
+ex:watching%20movies rdfs:label "watching movies" .
+
+ex:X47F996 a ex:Customer;
+  foaf:givenname "Krupa";
+  foaf:surname "Georgradis";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "krupa2@gmail.com";
+  ex:dateBirth "1946-05-26";
+  ex:houseNumber "87";
+  ex:street <http://example.com/#Höhrenbergstr.>;
+  ex:postCode "27478";
+  ex:city ex:Cuxhaven;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.62027"^^xsd:float;
+  ex:fraudScore "0.00319"^^xsd:float;
+  ex:enrollment "2019-05-09";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Höhrenbergstr.> a ex:Street;
+  rdfs:label "Höhrenbergstr." .
+
+ex:Cuxhaven a ex:City;
+  rdfs:label "Cuxhaven" .
+
+ex:9 rdfs:label "9"^^xsd:float .
+
+ex:Universität%20Konstanz rdfs:label "Universität Konstanz" .
+
+ex:playing%20golf rdfs:label "playing golf" .
+
+ex:K48H322 a ex:Customer;
+  foaf:givenname "Nakisa";
+  foaf:surname "Anderlitschek";
+  foaf:gender "male";
+  ex:email "nakisa31@gmx.de";
+  ex:dateBirth "1963-10-03";
+  ex:houseNumber "31";
+  ex:street <http://example.com/#Kohlstattstr.>;
+  ex:postCode "74547";
+  ex:city ex:Untermünkheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:13;
+  ex:university ex:Dortmund%20University;
+  ex:sentiment "0.85924"^^xsd:float;
+  ex:fraudScore "0.01325"^^xsd:float;
+  ex:enrollment "1983-05-30";
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Kohlstattstr.> a ex:Street;
+  rdfs:label "Kohlstattstr." .
+
+ex:Untermünkheim a ex:City;
+  rdfs:label "Untermünkheim" .
+
+ex:13 rdfs:label "13"^^xsd:float .
+
+ex:D49S940 a ex:Customer;
+  foaf:givenname "Kyra";
+  foaf:surname "Hesbacher";
+  foaf:gender "woman";
+  ex:religion ex:Hinduism;
+  ex:email "kyra-annabell@gmail.com";
+  ex:dateBirth "1999-01-30";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Gregorstr.>;
+  ex:postCode "86391";
+  ex:city ex:Stadtbergen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Universität%20Mannheim;
+  ex:sentiment "0.5876"^^xsd:float;
+  ex:fraudScore "0.01933"^^xsd:float;
+  ex:enrollment "2003-07-24";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Gregorstr.> a ex:Street;
+  rdfs:label "Gregorstr." .
+
+ex:Stadtbergen a ex:City;
+  rdfs:label "Stadtbergen" .
+
+ex:2 rdfs:label "2"^^xsd:float .
+
+ex:Universität%20Mannheim rdfs:label "Universität Mannheim" .
+
+ex:football rdfs:label "football" .
+
+ex:R50U820 a ex:Customer;
+  foaf:givenname "Klaus";
+  foaf:surname "Diegmüller";
+  foaf:gender "woman";
+  ex:email "klaus-erwin31@gmail.com";
+  ex:dateBirth "1937-09-15";
+  ex:houseNumber "65";
+  ex:street <http://example.com/#Soltauer%20Str.>;
+  ex:postCode "79100";
+  ex:city ex:Freiburg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:12;
+  ex:university ex:Universität%20Freiburg;
+  ex:sentiment "0.36932"^^xsd:float;
+  ex:fraudScore "0.02126"^^xsd:float;
+  ex:enrollment "1989-04-15";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Soltauer%20Str.> a ex:Street;
+  rdfs:label "Soltauer Str." .
+
+ex:Freiburg a ex:City;
+  rdfs:label "Freiburg" .
+
+ex:12 rdfs:label "12"^^xsd:float .
+
+ex:Universität%20Freiburg rdfs:label "Universität Freiburg" .
+
+ex:H51S721 a ex:Customer;
+  foaf:givenname "Xemi";
+  foaf:surname "Sulzer";
+  foaf:gender "male";
+  ex:religion ex:Judaism;
+  ex:email "xemi@yahoo.com";
+  ex:dateBirth "1971-06-24";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Erhard-Falkner-Str.>;
+  ex:postCode "58135";
+  ex:city ex:Hagen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Universität%20Hildesheim;
+  ex:sentiment "0.58497"^^xsd:float;
+  ex:fraudScore "0.0048"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "1995-01-23";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:single .
+
+ex:Judaism rdfs:label "Judaism" .
+
+<http://example.com/#Erhard-Falkner-Str.> a ex:Street;
+  rdfs:label "Erhard-Falkner-Str." .
+
+ex:Hagen a ex:City;
+  rdfs:label "Hagen" .
+
+ex:14 rdfs:label "14"^^xsd:float .
+
+ex:Universität%20Hildesheim rdfs:label "Universität Hildesheim" .
+
+ex:Banking rdfs:label "Banking" .
+
+ex:biathlon rdfs:label "biathlon" .
+
+ex:S52E957 a ex:Customer;
+  foaf:givenname "Til";
+  foaf:surname "Lückfeldt";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "til.lückfeldt@yahoo.com";
+  ex:dateBirth "1973-05-02";
+  ex:houseNumber "39";
+  ex:street <http://example.com/#Gießener%20Str.>;
+  ex:postCode "88690";
+  ex:city ex:Uhldingen-Mühlhofen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Technische%20Hochschule%20Darmstadt;
+  ex:sentiment "0.6109100000000001"^^xsd:float;
+  ex:fraudScore "0.09066"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2017-03-01";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Gießener%20Str.> a ex:Street;
+  rdfs:label "Gießener Str." .
+
+ex:Uhldingen-Mühlhofen a ex:City;
+  rdfs:label "Uhldingen-Mühlhofen" .
+
+ex:Technische%20Hochschule%20Darmstadt rdfs:label "Technische Hochschule Darmstadt" .
+
+ex:Business%20Administration rdfs:label "Business Administration" .
+
+ex:K53D148 a ex:Customer;
+  foaf:givenname "Sabiene";
+  foaf:surname "Tentscher";
+  foaf:gender "male";
+  ex:email "sabiene69@gmx.de";
+  ex:dateBirth "1967-01-22";
+  ex:houseNumber "22";
+  ex:street <http://example.com/#Kurtrierische%20Str.>;
+  ex:postCode "71254";
+  ex:city ex:Ditzingen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Fachhochschule%20Fulda;
+  ex:sentiment "0.29546"^^xsd:float;
+  ex:fraudScore "0.32852"^^xsd:float;
+  ex:enrollment "2014-04-30";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Kurtrierische%20Str.> a ex:Street;
+  rdfs:label "Kurtrierische Str." .
+
+ex:Ditzingen a ex:City;
+  rdfs:label "Ditzingen" .
+
+ex:Fachhochschule%20Fulda rdfs:label "Fachhochschule Fulda" .
+
+ex:Z54T864 a ex:Customer;
+  foaf:givenname "Perrin";
+  foaf:surname "Mahbouba";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "perrinjames@gmail.com";
+  ex:dateBirth "1949-04-19";
+  ex:houseNumber "81";
+  ex:street ex:Wiehagen;
+  ex:postCode "54413";
+  ex:city ex:Beuren%20%28Hochwald%29;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:ETH%20Zurich%20Faculty%20of%20Architecture;
+  ex:sentiment "0.59851"^^xsd:float;
+  ex:fraudScore "0.01576"^^xsd:float;
+  ex:enrollment "1982-05-01";
+  ex:hobby ex:volleyball%20and%20running;
+  ex:maritalStatus ex:single .
+
+ex:Wiehagen a ex:Street;
+  rdfs:label "Wiehagen" .
+
+ex:Beuren%20%28Hochwald%29 a ex:City;
+  rdfs:label "Beuren (Hochwald)" .
+
+ex:ETH%20Zurich%20Faculty%20of%20Architecture rdfs:label "ETH Zurich Faculty of Architecture" .
+
+ex:volleyball%20and%20running rdfs:label "volleyball and running" .
+
+ex:E55Z657 a ex:Customer;
+  foaf:givenname "Johannes";
+  foaf:surname "Wojahn";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "johanneschristoph50@gmail.com";
+  ex:dateBirth "1968-09-20";
+  ex:houseNumber "31";
+  ex:street ex:Zum%20Flemig;
+  ex:postCode "24148";
+  ex:city ex:Kiel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Technische%20Universität%20Berlin;
+  ex:sentiment "0.68987"^^xsd:float;
+  ex:fraudScore "0.00412"^^xsd:float;
+  ex:enrollment "2018-03-15";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:married .
+
+ex:Zum%20Flemig a ex:Street;
+  rdfs:label "Zum Flemig" .
+
+ex:Kiel a ex:City;
+  rdfs:label "Kiel" .
+
+ex:Technische%20Universität%20Berlin rdfs:label "Technische Universität Berlin" .
+
+ex:married rdfs:label "married" .
+
+ex:T56Z674 a ex:Customer;
+  foaf:givenname "Tuong";
+  foaf:surname "Hözel";
+  foaf:gender "male";
+  ex:email "tuongduc38@web.de";
+  ex:dateBirth "1940-05-26";
+  ex:houseNumber "56";
+  ex:street <http://example.com/#Anderslebener%20Str.>;
+  ex:postCode "73116";
+  ex:city ex:Wäschenbeuren;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Hasselt%20University;
+  ex:sentiment "0.52013"^^xsd:float;
+  ex:fraudScore "0.01086"^^xsd:float;
+  ex:enrollment "1996-03-24";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Anderslebener%20Str.> a ex:Street;
+  rdfs:label "Anderslebener Str." .
+
+ex:Wäschenbeuren a ex:City;
+  rdfs:label "Wäschenbeuren" .
+
+ex:5 rdfs:label "5"^^xsd:float .
+
+ex:Hasselt%20University rdfs:label "Hasselt University" .
+
+ex:A57G562 a ex:Customer;
+  foaf:givenname "Jahan";
+  foaf:surname "Sinowjew";
+  foaf:gender "male";
+  ex:email "jahan.sinowjew@outlook.com";
+  ex:dateBirth "1942-12-25";
+  ex:houseNumber " ";
+  ex:street ex:Heegegraser%20Weg;
+  ex:postCode "81827";
+  ex:city ex:München;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Technische%20Universität%20Ilmenau;
+  ex:sentiment "0.18762"^^xsd:float;
+  ex:fraudScore "0.06312000000000001"^^xsd:float;
+  ex:enrollment "2017-11-29";
+  ex:hobby ex:maraton%20running%20and%20hiking;
+  ex:maritalStatus ex:widow .
+
+ex:Heegegraser%20Weg a ex:Street;
+  rdfs:label "Heegegraser Weg" .
+
+ex:München a ex:City;
+  rdfs:label "München" .
+
+ex:6 rdfs:label "6"^^xsd:float .
+
+ex:Technische%20Universität%20Ilmenau rdfs:label "Technische Universität Ilmenau" .
+
+ex:maraton%20running%20and%20hiking rdfs:label "maraton running and hiking" .
+
+ex:widow rdfs:label "widow" .
+
+ex:N58V389 a ex:Customer;
+  foaf:givenname "Aleksandra";
+  foaf:surname "Kage";
+  foaf:gender "male";
+  ex:email "aleksandra408458@web.de";
+  ex:dateBirth "1988-01-14";
+  ex:houseNumber "84";
+  ex:street <http://example.com/#Klemens-Mölkner-Str.>;
+  ex:postCode "72581";
+  ex:city ex:Dettingen%20an%20der%20Erms;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Regensburg;
+  ex:sentiment "0.32599"^^xsd:float;
+  ex:fraudScore "0.03704"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2009-07-11";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Klemens-Mölkner-Str.> a ex:Street;
+  rdfs:label "Klemens-Mölkner-Str." .
+
+ex:Dettingen%20an%20der%20Erms a ex:City;
+  rdfs:label "Dettingen an der Erms" .
+
+ex:4 rdfs:label "4"^^xsd:float .
+
+ex:Universität%20Regensburg rdfs:label "Universität Regensburg" .
+
+ex:G59I169 a ex:Customer;
+  foaf:givenname "Anelia";
+  foaf:surname "Strätz";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "anelia.strätz7932@web.de";
+  ex:dateBirth "1980-08-01";
+  ex:houseNumber "40";
+  ex:street <http://example.com/#August-Schönhuber%20Str.>;
+  ex:postCode "85764";
+  ex:city ex:Oberschleißheim;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Rudolf%20Steiner%20University%20College;
+  ex:sentiment "0.73048"^^xsd:float;
+  ex:fraudScore "0.0134"^^xsd:float;
+  ex:enrollment "1982-04-02";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#August-Schönhuber%20Str.> a ex:Street;
+  rdfs:label "August-Schönhuber Str." .
+
+ex:Oberschleißheim a ex:City;
+  rdfs:label "Oberschleißheim" .
+
+ex:Rudolf%20Steiner%20University%20College rdfs:label "Rudolf Steiner University College" .
+
+ex:model%20building rdfs:label "model building" .
+
+ex:K60D994 a ex:Customer;
+  foaf:givenname "Hermann";
+  foaf:surname "Schels";
+  foaf:gender "woman";
+  ex:email "hermannfelix70@yahoo.com";
+  ex:dateBirth "1955-11-28";
+  ex:houseNumber " ";
+  ex:street ex:Pfaffenacker;
+  ex:postCode "65835";
+  ex:city ex:Liederbach%20am%20Taunus;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Technische%20Universität%20Clausthal;
+  ex:sentiment "0.68955"^^xsd:float;
+  ex:fraudScore "0.00549"^^xsd:float;
+  ex:enrollment "2010-11-10";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:single .
+
+ex:Pfaffenacker a ex:Street;
+  rdfs:label "Pfaffenacker" .
+
+ex:Liederbach%20am%20Taunus a ex:City;
+  rdfs:label "Liederbach am Taunus" .
+
+ex:8 rdfs:label "8"^^xsd:float .
+
+ex:Technische%20Universität%20Clausthal rdfs:label "Technische Universität Clausthal" .
+
+ex:running rdfs:label "running" .
+
+ex:P61R251 a ex:Customer;
+  foaf:givenname "Zekay";
+  foaf:surname "Schweda";
+  foaf:gender "woman";
+  ex:email "zekay40@web.de";
+  ex:dateBirth "1948-12-09";
+  ex:houseNumber "36";
+  ex:street <http://example.com/#Rudolf-Tarnow-Str.>;
+  ex:postCode "77830";
+  ex:city ex:Bühlertal;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:GISMA%20Business%20School;
+  ex:sentiment "0.22819"^^xsd:float;
+  ex:fraudScore "0.05031"^^xsd:float;
+  ex:enrollment "2012-10-06";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Rudolf-Tarnow-Str.> a ex:Street;
+  rdfs:label "Rudolf-Tarnow-Str." .
+
+ex:Bühlertal a ex:City;
+  rdfs:label "Bühlertal" .
+
+ex:0 rdfs:label "0"^^xsd:float .
+
+ex:GISMA%20Business%20School rdfs:label "GISMA Business School" .
+
+ex:%20 rdfs:label " " .
+
+ex:M62D503 a ex:Customer;
+  foaf:givenname "Helge";
+  foaf:surname "Gallin";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "helge@web.de";
+  ex:dateBirth "1997-02-16";
+  ex:houseNumber "78";
+  ex:street <http://example.com/#Darwinstr.>;
+  ex:postCode "51373";
+  ex:city ex:Leverkusen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Berlin%20School%20of%20Business%20and%20Innovation;
+  ex:sentiment "0.84247"^^xsd:float;
+  ex:fraudScore "0.01979"^^xsd:float;
+  ex:enrollment "1987-06-25";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Darwinstr.> a ex:Street;
+  rdfs:label "Darwinstr." .
+
+ex:Leverkusen a ex:City;
+  rdfs:label "Leverkusen" .
+
+ex:sport rdfs:label "sport" .
+
+ex:G63D480 a ex:Customer;
+  foaf:givenname "Solis";
+  foaf:surname "Sehm";
+  foaf:gender "male";
+  ex:dateBirth "1988-09-13";
+  ex:houseNumber "11";
+  ex:street <http://example.com/#Martin-Fonck-Str.>;
+  ex:postCode "47798";
+  ex:city ex:Krefeld;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:13;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.63483"^^xsd:float;
+  ex:fraudScore "0.01761"^^xsd:float;
+  ex:enrollment "2002-09-14";
+  ex:hobby ex:football%20and%20hiking;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Martin-Fonck-Str.> a ex:Street;
+  rdfs:label "Martin-Fonck-Str." .
+
+ex:Krefeld a ex:City;
+  rdfs:label "Krefeld" .
+
+ex:Freie%20Universität%20Berlin rdfs:label "Freie Universität Berlin" .
+
+ex:football%20and%20hiking rdfs:label "football and hiking" .
+
+ex:D64B310 a ex:Customer;
+  foaf:givenname "Matko";
+  foaf:surname "Bedarev";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:dateBirth "1983-10-07";
+  ex:houseNumber "7";
+  ex:street ex:Dongrathshof;
+  ex:postCode "64385";
+  ex:city ex:Reichelsheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:University%20of%20Oslo;
+  ex:sentiment "0.35272"^^xsd:float;
+  ex:fraudScore "0.006659999999999999"^^xsd:float;
+  ex:enrollment "1982-09-03";
+  ex:hobby ex:horse%20riding;
+  ex:maritalStatus ex:single .
+
+ex:Dongrathshof a ex:Street;
+  rdfs:label "Dongrathshof" .
+
+ex:Reichelsheim a ex:City;
+  rdfs:label "Reichelsheim" .
+
+ex:University%20of%20Oslo rdfs:label "University of Oslo" .
+
+ex:horse%20riding rdfs:label "horse riding" .
+
+ex:T65U512 a ex:Customer;
+  foaf:givenname "Dragoslav";
+  foaf:surname "Volke";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "dragoslav.volke@gmail.com";
+  ex:dateBirth "1945-03-25";
+  ex:houseNumber "5";
+  ex:street ex:Gerhart-Hauptmann-Platz;
+  ex:postCode "64395";
+  ex:city ex:Brensbach;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Augsburg;
+  ex:sentiment "0.5008"^^xsd:float;
+  ex:fraudScore "0.00259"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "1989-06-27";
+  ex:hobby ex:football%20and%20collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+ex:Gerhart-Hauptmann-Platz a ex:Street;
+  rdfs:label "Gerhart-Hauptmann-Platz" .
+
+ex:Brensbach a ex:City;
+  rdfs:label "Brensbach" .
+
+ex:Universität%20Augsburg rdfs:label "Universität Augsburg" .
+
+ex:Economics rdfs:label "Economics" .
+
+ex:football%20and%20collecting%20stamps rdfs:label "football and collecting stamps" .
+
+ex:G66X372 a ex:Customer;
+  foaf:givenname "Annemari";
+  foaf:surname "Bovensiepen";
+  foaf:gender "woman";
+  ex:religion <http://example.com/#Sikhism.>;
+  ex:email "annemari@gmail.com";
+  ex:dateBirth "1979-01-29";
+  ex:houseNumber "61";
+  ex:street <http://example.com/#Delitzscher%20Landstr.>;
+  ex:postCode "81827";
+  ex:city ex:München;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:8;
+  ex:university ex:MF%20Norwegian%20School%20of%20Theology;
+  ex:sentiment "0.43977"^^xsd:float;
+  ex:fraudScore "0.00307"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "1981-06-26";
+  ex:hobby ex:music%20and%20riding%20bicycle;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Sikhism.> rdfs:label "Sikhism." .
+
+<http://example.com/#Delitzscher%20Landstr.> a ex:Street;
+  rdfs:label "Delitzscher Landstr." .
+
+ex:MF%20Norwegian%20School%20of%20Theology rdfs:label "MF Norwegian School of Theology" .
+
+ex:music%20and%20riding%20bicycle rdfs:label "music and riding bicycle" .
+
+ex:X67A204 a ex:Customer;
+  foaf:givenname "Paul";
+  foaf:surname "Abduly";
+  foaf:gender "male";
+  ex:email "paulböhm@gmx.de";
+  ex:dateBirth "1956-04-21";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Mengsstr.>;
+  ex:postCode "96342";
+  ex:city ex:Stockheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Ernst-Moritz-Arndt-University%20Greifswald;
+  ex:sentiment "0.70506"^^xsd:float;
+  ex:fraudScore "4e-05"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "1994-08-03";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Mengsstr.> a ex:Street;
+  rdfs:label "Mengsstr." .
+
+ex:Stockheim a ex:City;
+  rdfs:label "Stockheim" .
+
+ex:Ernst-Moritz-Arndt-University%20Greifswald rdfs:label "Ernst-Moritz-Arndt-University Greifswald" .
+
+ex:Physics rdfs:label "Physics" .
+
+ex:Z68W676 a ex:Customer;
+  foaf:givenname "Luke";
+  foaf:surname "Kollautz";
+  foaf:gender "male";
+  ex:religion <http://example.com/#Sikhism.>;
+  ex:dateBirth "1983-06-04";
+  ex:houseNumber "67";
+  ex:street ex:Alte-Münchner-Straße;
+  ex:postCode "96000";
+  ex:city ex:Oberschöna;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Europa-Universität%20Viadrina%20Frankfurt%20%28Oder%29;
+  ex:sentiment "0.30748000000000003"^^xsd:float;
+  ex:fraudScore "0.00925"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "2016-10-27";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+ex:Alte-Münchner-Straße a ex:Street;
+  rdfs:label "Alte-Münchner-Straße" .
+
+ex:Oberschöna a ex:City;
+  rdfs:label "Oberschöna" .
+
+ex:Europa-Universität%20Viadrina%20Frankfurt%20%28Oder%29 rdfs:label "Europa-Universität Viadrina Frankfurt (Oder)" .
+
+ex:C69T597 a ex:Customer;
+  foaf:givenname "Tone";
+  foaf:surname "Schilz";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:email "tone.schilz578@gmail.com";
+  ex:dateBirth "1979-07-14";
+  ex:houseNumber "90";
+  ex:street <http://example.com/#Neue%20Hanauer%20Str.>;
+  ex:postCode "45520";
+  ex:city ex:Borna;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:11;
+  ex:university ex:University%20of%20Oslo;
+  ex:sentiment "0.40699"^^xsd:float;
+  ex:fraudScore "0.0393"^^xsd:float;
+  ex:enrollment "1980-03-28";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Neue%20Hanauer%20Str.> a ex:Street;
+  rdfs:label "Neue Hanauer Str." .
+
+ex:Borna a ex:City;
+  rdfs:label "Borna" .
+
+ex:11 rdfs:label "11"^^xsd:float .
+
+ex:S70N233 a ex:Customer;
+  foaf:givenname "Katja";
+  foaf:surname "Kind";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "katja58@yahoo.com";
+  ex:dateBirth "1976-11-23";
+  ex:houseNumber "13";
+  ex:street <http://example.com/#Friedrich-Schuck-Str.>;
+  ex:postCode "19306";
+  ex:city ex:Neustadt-Glewe;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:10;
+  ex:university ex:Technische%20Universität%20München;
+  ex:sentiment "0.3865"^^xsd:float;
+  ex:fraudScore "0.03096"^^xsd:float;
+  ex:enrollment "1982-02-11";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Friedrich-Schuck-Str.> a ex:Street;
+  rdfs:label "Friedrich-Schuck-Str." .
+
+ex:Neustadt-Glewe a ex:City;
+  rdfs:label "Neustadt-Glewe" .
+
+ex:10 rdfs:label "10"^^xsd:float .
+
+ex:Technische%20Universität%20München rdfs:label "Technische Universität München" .
+
+ex:U71H196 a ex:Customer;
+  foaf:givenname "Timuan";
+  foaf:surname "Sterk";
+  foaf:gender "woman";
+  ex:email "timuan8778@gmail.com";
+  ex:dateBirth "1991-05-13";
+  ex:houseNumber "87";
+  ex:street <http://example.com/#Lindenbergstr.>;
+  ex:postCode "78224";
+  ex:city ex:Singen%20%28Hohentwiel%29;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Technische%20Universität%20München;
+  ex:sentiment "0.86592"^^xsd:float;
+  ex:fraudScore "0.01101"^^xsd:float;
+  ex:enrollment "2001-10-29";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Lindenbergstr.> a ex:Street;
+  rdfs:label "Lindenbergstr." .
+
+ex:Singen%20%28Hohentwiel%29 a ex:City;
+  rdfs:label "Singen (Hohentwiel)" .
+
+ex:J72M840 a ex:Customer;
+  foaf:givenname "Patrick";
+  foaf:surname "Satzer";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "patrickthomas28240@gmx.de";
+  ex:dateBirth "1991-10-28";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Graf-Recke-Str.>;
+  ex:postCode "37327";
+  ex:city ex:Leinefelde;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Universität%20Leipzig;
+  ex:sentiment "0.15904"^^xsd:float;
+  ex:fraudScore "0.02186"^^xsd:float;
+  ex:enrollment "2000-06-25";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Graf-Recke-Str.> a ex:Street;
+  rdfs:label "Graf-Recke-Str." .
+
+ex:Leinefelde a ex:City;
+  rdfs:label "Leinefelde" .
+
+ex:Universität%20Leipzig rdfs:label "Universität Leipzig" .
+
+ex:S73W633 a ex:Customer;
+  foaf:givenname "Peter";
+  foaf:surname "Blech";
+  foaf:gender "woman";
+  ex:email "peterfritz6@yahoo.com";
+  ex:dateBirth "1990-12-22";
+  ex:houseNumber "19";
+  ex:street ex:Steinrader%20Damm;
+  ex:postCode "41189";
+  ex:city ex:Mönchengladbach;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Benedict%20Schools;
+  ex:sentiment "0.09739"^^xsd:float;
+  ex:fraudScore "0.1659"^^xsd:float;
+  ex:enrollment "2018-01-18";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:married .
+
+ex:Steinrader%20Damm a ex:Street;
+  rdfs:label "Steinrader Damm" .
+
+ex:Mönchengladbach a ex:City;
+  rdfs:label "Mönchengladbach" .
+
+ex:Benedict%20Schools rdfs:label "Benedict Schools" .
+
+ex:W74G962 a ex:Customer;
+  foaf:givenname "Sila";
+  foaf:surname "Ikic";
+  foaf:gender "male";
+  ex:email "sila@web.de";
+  ex:dateBirth "1986-05-10";
+  ex:houseNumber "49";
+  ex:street ex:Stemplingeranger;
+  ex:postCode "86489";
+  ex:city ex:Deisenhausen;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Universität%20Gesamthochschule%20Essen;
+  ex:sentiment "0.25258"^^xsd:float;
+  ex:fraudScore "0.05726000000000001"^^xsd:float;
+  ex:enrollment "2006-05-02";
+  ex:hobby ex:riding%20bicycle;
+  ex:maritalStatus ex:single .
+
+ex:Stemplingeranger a ex:Street;
+  rdfs:label "Stemplingeranger" .
+
+ex:Deisenhausen a ex:City;
+  rdfs:label "Deisenhausen" .
+
+ex:Universität%20Gesamthochschule%20Essen rdfs:label "Universität Gesamthochschule Essen" .
+
+ex:riding%20bicycle rdfs:label "riding bicycle" .
+
+ex:U75V898 a ex:Customer;
+  foaf:givenname "Hamsa";
+  foaf:surname "Werner";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "hamsaleon.werner-schatz@yahoo.com";
+  ex:dateBirth "1944-02-23";
+  ex:houseNumber "78";
+  ex:street <http://example.com/#Ofenerdieker%20Str.>;
+  ex:postCode "14612";
+  ex:city ex:Falkensee;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:36;
+  ex:university ex:Johannes%20Gutenberg%20Universität;
+  ex:sentiment "0.56581"^^xsd:float;
+  ex:fraudScore "0.00413"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "1996-01-26";
+  ex:hobby ex:horse%20riding;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Ofenerdieker%20Str.> a ex:Street;
+  rdfs:label "Ofenerdieker Str." .
+
+ex:Falkensee a ex:City;
+  rdfs:label "Falkensee" .
+
+ex:36 rdfs:label "36"^^xsd:float .
+
+ex:Johannes%20Gutenberg%20Universität rdfs:label "Johannes Gutenberg Universität" .
+
+ex:Mathematics rdfs:label "Mathematics" .
+
+ex:R76T513 a ex:Customer;
+  foaf:givenname "Chrstian";
+  foaf:surname "Hinderer";
+  foaf:gender "male";
+  ex:email "chrstian7072@web.de";
+  ex:dateBirth "1962-11-24";
+  ex:houseNumber "12";
+  ex:street <http://example.com/#Venusberger%20Hauptstr.>;
+  ex:postCode "64405";
+  ex:city ex:Fischbachtal;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:30;
+  ex:university ex:Heinrich-Heine-Universität%20Dässeldorf;
+  ex:sentiment "0.32395"^^xsd:float;
+  ex:fraudScore "0.0075200000000000015"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "1987-06-04";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Venusberger%20Hauptstr.> a ex:Street;
+  rdfs:label "Venusberger Hauptstr." .
+
+ex:Fischbachtal a ex:City;
+  rdfs:label "Fischbachtal" .
+
+ex:30 rdfs:label "30"^^xsd:float .
+
+ex:Heinrich-Heine-Universität%20Dässeldorf rdfs:label "Heinrich-Heine-Universität Dässeldorf" .
+
+ex:E77Q290 a ex:Customer;
+  foaf:givenname "Klaudia";
+  foaf:surname "Demiröz";
+  foaf:gender "male";
+  ex:email "klaudia91@gmx.de";
+  ex:dateBirth "1980-11-21";
+  ex:houseNumber " ";
+  ex:street ex:Oberfeld;
+  ex:postCode "82319";
+  ex:city ex:Starnberg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Universität%20Hannover;
+  ex:sentiment "0.77444"^^xsd:float;
+  ex:fraudScore "0.02162"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "2008-06-15";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Oberfeld a ex:Street;
+  rdfs:label "Oberfeld" .
+
+ex:Starnberg a ex:City;
+  rdfs:label "Starnberg" .
+
+ex:Universität%20Hannover rdfs:label "Universität Hannover" .
+
+ex:Computer%20Science rdfs:label "Computer Science" .
+
+ex:R78M377 a ex:Customer;
+  foaf:givenname "Molita";
+  foaf:surname "Dagdal";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "molita.dagdal@gmx.de";
+  ex:dateBirth "1971-09-08";
+  ex:houseNumber "100";
+  ex:street ex:Am%20Grünen%20Zipfel;
+  ex:postCode "95349";
+  ex:city ex:Thurnau;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:27;
+  ex:university ex:Europa-Universität%20Viadrina%20Frankfurt%20%28Oder%29;
+  ex:sentiment "0.57324"^^xsd:float;
+  ex:fraudScore "0.00551"^^xsd:float;
+  ex:enrollment "1986-03-29";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:divorced .
+
+ex:Am%20Grünen%20Zipfel a ex:Street;
+  rdfs:label "Am Grünen Zipfel" .
+
+ex:Thurnau a ex:City;
+  rdfs:label "Thurnau" .
+
+ex:27 rdfs:label "27"^^xsd:float .
+
+ex:C79V369 a ex:Customer;
+  foaf:givenname "Marius";
+  foaf:surname "Gschwindt";
+  foaf:gender "woman";
+  ex:religion ex:Hinduism;
+  ex:email "marius-dan.gschwindt@web.de";
+  ex:dateBirth "1952-02-19";
+  ex:houseNumber "58";
+  ex:street ex:Ovidweg;
+  ex:postCode "22177";
+  ex:city ex:Hamburg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:13;
+  ex:university ex:Institut%20f.%20Semantische%20Informationsverarbeitung;
+  ex:sentiment "0.48621"^^xsd:float;
+  ex:fraudScore "0.006379999999999999"^^xsd:float;
+  ex:enrollment "1983-11-01";
+  ex:maritalStatus ex:single .
+
+ex:Ovidweg a ex:Street;
+  rdfs:label "Ovidweg" .
+
+ex:Hamburg a ex:City;
+  rdfs:label "Hamburg" .
+
+ex:Institut%20f.%20Semantische%20Informationsverarbeitung rdfs:label "Institut f. Semantische Informationsverarbeitung" .
+
+ex:Z80D544 a ex:Customer;
+  foaf:givenname "Gerrit";
+  foaf:surname "Schwacke";
+  foaf:gender "male";
+  ex:religion ex:Buddhism;
+  ex:email "gerrit.schwacke@outlook.com";
+  ex:dateBirth "1948-03-09";
+  ex:houseNumber "73";
+  ex:street ex:Danziger%20Weg;
+  ex:postCode "74850";
+  ex:city ex:Schefflenz;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Technische%20Universität%20Dresden;
+  ex:sentiment "0.44999"^^xsd:float;
+  ex:fraudScore "0.02978"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2013-10-05";
+  ex:hobby ex:music%20and%20model%20building;
+  ex:maritalStatus ex:single .
+
+ex:Buddhism rdfs:label "Buddhism" .
+
+ex:Danziger%20Weg a ex:Street;
+  rdfs:label "Danziger Weg" .
+
+ex:Schefflenz a ex:City;
+  rdfs:label "Schefflenz" .
+
+ex:Technische%20Universität%20Dresden rdfs:label "Technische Universität Dresden" .
+
+ex:music%20and%20model%20building rdfs:label "music and model building" .
+
+ex:M81C644 a ex:Customer;
+  foaf:givenname "Michelangela";
+  foaf:surname "Trapper";
+  foaf:gender "woman";
+  ex:email "michelangela.trapper2580@gmail.com";
+  ex:dateBirth "1956-12-02";
+  ex:houseNumber "65";
+  ex:street ex:Am%20Kurhaus;
+  ex:postCode "60311";
+  ex:city ex:Frankfurt%20am%20Main;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Karlsruhe;
+  ex:sentiment "0.28826"^^xsd:float;
+  ex:fraudScore "0.03713"^^xsd:float;
+  ex:enrollment "1995-01-12";
+  ex:hobby ex:maraton%20running%20and%20hiking;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Kurhaus a ex:Street;
+  rdfs:label "Am Kurhaus" .
+
+ex:L82N369 a ex:Customer;
+  foaf:givenname "Makbule";
+  foaf:surname "Kopper";
+  foaf:gender "male";
+  ex:email "makbule32@gmail.com";
+  ex:dateBirth "1975-02-01";
+  ex:houseNumber "42";
+  ex:street <http://example.com/#Böhlstr.>;
+  ex:postCode "19055";
+  ex:city ex:Schwerin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:18;
+  ex:university ex:Europa-Universität%20Viadrina%20Frankfurt%20%28Oder%29;
+  ex:sentiment "0.17453"^^xsd:float;
+  ex:fraudScore "0.0389"^^xsd:float;
+  ex:enrollment "1987-08-15";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Böhlstr.> a ex:Street;
+  rdfs:label "Böhlstr." .
+
+ex:Schwerin a ex:City;
+  rdfs:label "Schwerin" .
+
+ex:18 rdfs:label "18"^^xsd:float .
+
+ex:G83B743 a ex:Customer;
+  foaf:givenname "Francis";
+  foaf:surname "Gamenik";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "francisyolanda51@gmx.de";
+  ex:dateBirth "1950-09-28";
+  ex:houseNumber "66";
+  ex:street ex:Siedlerweg;
+  ex:postCode "76571";
+  ex:city ex:Gaggenau;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:7;
+  ex:university ex:GISMA%20Business%20School;
+  ex:sentiment "0.18161"^^xsd:float;
+  ex:fraudScore "0.03047"^^xsd:float;
+  ex:enrollment "2019-05-14";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:married .
+
+ex:Christianity rdfs:label "Christianity" .
+
+ex:Customer a ex:Person .
+
+ex:Siedlerweg a ex:Street;
+  rdfs:label "Siedlerweg" .
+
+ex:Gaggenau a ex:City;
+  rdfs:label "Gaggenau" .
+
+ex:DE rdfs:label "DE" .
+
+ex:7 rdfs:label "7"^^xsd:float .
+
+ex:GISMA%20Business%20School rdfs:label "GISMA Business School" .
+
+ex:playing%20golf rdfs:label "playing golf" .
+
+ex:married rdfs:label "married" .
+
+ex:P84N617 a ex:Customer;
+  foaf:givenname "Martin";
+  foaf:surname "Galipo";
+  foaf:gender "male";
+  ex:email "martinmarkus.galipo@gmail.com";
+  ex:dateBirth "1989-11-06";
+  ex:houseNumber "19";
+  ex:street ex:In%20den%20Padenwiesen;
+  ex:postCode "97980";
+  ex:city ex:Bad%20Mergentheim;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:University%20of%20Oldenburg;
+  ex:sentiment "0.12962"^^xsd:float;
+  ex:fraudScore "0.058579999999999986"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2008-04-19";
+  ex:maritalStatus ex:divorced .
+
+ex:In%20den%20Padenwiesen a ex:Street;
+  rdfs:label "In den Padenwiesen" .
+
+ex:Bad%20Mergentheim a ex:City;
+  rdfs:label "Bad Mergentheim" .
+
+ex:AT rdfs:label "AT" .
+
+ex:3 rdfs:label "3"^^xsd:float .
+
+ex:University%20of%20Oldenburg rdfs:label "University of Oldenburg" .
+
+ex:Business%20Administration rdfs:label "Business Administration" .
+
+ex:divorced rdfs:label "divorced" .
+
+ex:C85Y532 a ex:Customer;
+  foaf:givenname "Albert";
+  foaf:surname "Ego";
+  foaf:gender "woman";
+  ex:email "albert-niklas45@gmail.com";
+  ex:dateBirth "1975-09-02";
+  ex:houseNumber "16";
+  ex:street ex:Parkweg;
+  ex:postCode "64625";
+  ex:city ex:Bensheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Technische%20Universität%20Ilmenau;
+  ex:sentiment "0.37442"^^xsd:float;
+  ex:fraudScore "0.01948"^^xsd:float;
+  ex:enrollment "1993-07-21";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:single .
+
+ex:Parkweg a ex:Street;
+  rdfs:label "Parkweg" .
+
+ex:Bensheim a ex:City;
+  rdfs:label "Bensheim" .
+
+ex:8 rdfs:label "8"^^xsd:float .
+
+ex:Technische%20Universität%20Ilmenau rdfs:label "Technische Universität Ilmenau" .
+
+ex:single rdfs:label "single" .
+
+ex:R86M859 a ex:Customer;
+  foaf:givenname "Jelle";
+  foaf:surname "Hadrell";
+  foaf:gender "woman";
+  ex:email "jelle6@web.de";
+  ex:dateBirth "1955-09-18";
+  ex:houseNumber "52";
+  ex:street <http://example.com/#Röhrstr.>;
+  ex:postCode "86438";
+  ex:city ex:Kissing;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:26;
+  ex:university ex:Johannes%20Gutenberg%20Universität;
+  ex:sentiment "0.54911"^^xsd:float;
+  ex:fraudScore "0.015069999999999997"^^xsd:float;
+  ex:enrollment "2019-02-07";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Röhrstr.> a ex:Street;
+  rdfs:label "Röhrstr." .
+
+ex:Kissing a ex:City;
+  rdfs:label "Kissing" .
+
+ex:26 rdfs:label "26"^^xsd:float .
+
+ex:Johannes%20Gutenberg%20Universität rdfs:label "Johannes Gutenberg Universität" .
+
+ex:model%20building rdfs:label "model building" .
+
+ex:T87P624 a ex:Customer;
+  foaf:givenname "Evgenia";
+  foaf:surname "Kowalzik";
+  foaf:gender "woman";
+  ex:email "evgenia285025@gmail.com";
+  ex:dateBirth "1946-12-03";
+  ex:houseNumber "19";
+  ex:street ex:Sporngasse;
+  ex:postCode "58135";
+  ex:city ex:Hagen;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Johannes%20Gutenberg%20Universität;
+  ex:sentiment "0.52725"^^xsd:float;
+  ex:fraudScore "0.00925"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2018-04-18";
+  ex:hobby ex:watching%20movies%20and%20music;
+  ex:maritalStatus ex:divorced .
+
+ex:Sporngasse a ex:Street;
+  rdfs:label "Sporngasse" .
+
+ex:Hagen a ex:City;
+  rdfs:label "Hagen" .
+
+ex:9 rdfs:label "9"^^xsd:float .
+
+ex:Economics rdfs:label "Economics" .
+
+ex:watching%20movies%20and%20music rdfs:label "watching movies and music" .
+
+ex:Q88Y507 a ex:Customer;
+  foaf:givenname "Franz";
+  foaf:surname "Stan";
+  foaf:gender "woman";
+  ex:religion ex:Judaism;
+  ex:email "franz-joseph.stan@yahoo.com";
+  ex:dateBirth "1972-10-22";
+  ex:houseNumber "97";
+  ex:street <http://example.com/#Burgmühlenstr.>;
+  ex:postCode "65020";
+  ex:city ex:Thale;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:26;
+  ex:university ex:Universität%20Rostock;
+  ex:sentiment "0.6311"^^xsd:float;
+  ex:fraudScore "0.01316"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "1985-01-06";
+  ex:maritalStatus ex:single .
+
+ex:Judaism rdfs:label "Judaism" .
+
+<http://example.com/#Burgmühlenstr.> a ex:Street;
+  rdfs:label "Burgmühlenstr." .
+
+ex:Thale a ex:City;
+  rdfs:label "Thale" .
+
+ex:Universität%20Rostock rdfs:label "Universität Rostock" .
+
+ex:Psychology rdfs:label "Psychology" .
+
+ex:E89Y958 a ex:Customer;
+  foaf:givenname "Chabat";
+  foaf:surname "Platen";
+  foaf:gender "woman";
+  ex:religion ex:Buddhism;
+  ex:email "chabat.platen@web.de";
+  ex:dateBirth "1978-11-04";
+  ex:houseNumber "65";
+  ex:street ex:Hobsweg;
+  ex:postCode "22177";
+  ex:city ex:Hamburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:6;
+  ex:university ex:GISMA%20Business%20School;
+  ex:sentiment "0.09318"^^xsd:float;
+  ex:fraudScore "0.018330000000000003"^^xsd:float;
+  ex:enrollment "1993-06-21";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:married .
+
+ex:Buddhism rdfs:label "Buddhism" .
+
+ex:Hobsweg a ex:Street;
+  rdfs:label "Hobsweg" .
+
+ex:Hamburg a ex:City;
+  rdfs:label "Hamburg" .
+
+ex:6 rdfs:label "6"^^xsd:float .
+
+ex:volleyball rdfs:label "volleyball" .
+
+ex:B90J496 a ex:Customer;
+  foaf:givenname "Franz";
+  foaf:surname "Bachaert";
+  foaf:gender "male";
+  ex:email "franz-peter.bachaert@web.de";
+  ex:dateBirth "1938-11-10";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Garnstr.>;
+  ex:postCode "81827";
+  ex:city ex:München;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:10;
+  ex:university ex:Martin%20Luther%20Universität%20Halle-Wittenberg;
+  ex:sentiment "0.31588"^^xsd:float;
+  ex:fraudScore "0.04259"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2002-01-23";
+  ex:hobby ex:playing%20golf%20and%20riding%20bicycle;
+  ex:maritalStatus ex:widow .
+
+<http://example.com/#Garnstr.> a ex:Street;
+  rdfs:label "Garnstr." .
+
+ex:München a ex:City;
+  rdfs:label "München" .
+
+ex:10 rdfs:label "10"^^xsd:float .
+
+ex:Martin%20Luther%20Universität%20Halle-Wittenberg rdfs:label "Martin Luther Universität Halle-Wittenberg" .
+
+ex:playing%20golf%20and%20riding%20bicycle rdfs:label "playing golf and riding bicycle" .
+
+ex:widow rdfs:label "widow" .
+
+ex:Q91E641 a ex:Customer;
+  foaf:givenname "Wilkening";
+  foaf:surname "Murari";
+  foaf:gender "male";
+  ex:email "wilkening.murari@yahoo.com";
+  ex:dateBirth "1975-01-07";
+  ex:houseNumber "46";
+  ex:street <http://example.com/#Farchacher%20Str.>;
+  ex:postCode "71332";
+  ex:city ex:Waiblingen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Universität%20Mannheim;
+  ex:sentiment "0.38146"^^xsd:float;
+  ex:fraudScore "0.03849"^^xsd:float;
+  ex:enrollment "2008-05-14";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Farchacher%20Str.> a ex:Street;
+  rdfs:label "Farchacher Str." .
+
+ex:Waiblingen a ex:City;
+  rdfs:label "Waiblingen" .
+
+ex:Universität%20Mannheim rdfs:label "Universität Mannheim" .
+
+ex:collecting%20stamps rdfs:label "collecting stamps" .
+
+ex:O92K196 a ex:Customer;
+  foaf:givenname "Vlado";
+  foaf:surname "Winters";
+  foaf:gender "woman";
+  ex:dateBirth "1970-12-20";
+  ex:houseNumber " ";
+  ex:street ex:Kriegergasse;
+  ex:postCode "90443";
+  ex:city ex:Nürnberg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Tübingen;
+  ex:sentiment "0.28246"^^xsd:float;
+  ex:fraudScore "0.04747"^^xsd:float;
+  ex:enrollment "2016-03-12";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:divorced .
+
+ex:Kriegergasse a ex:Street;
+  rdfs:label "Kriegergasse" .
+
+ex:Nürnberg a ex:City;
+  rdfs:label "Nürnberg" .
+
+ex:0 rdfs:label "0"^^xsd:float .
+
+ex:Universität%20Tübingen rdfs:label "Universität Tübingen" .
+
+ex:football rdfs:label "football" .
+
+ex:X93X759 a ex:Customer;
+  foaf:givenname "Krimhod";
+  foaf:surname "Parzych";
+  foaf:gender "woman";
+  ex:dateBirth "1977-04-17";
+  ex:houseNumber "40";
+  ex:street <http://example.com/#Werderstr.>;
+  ex:postCode "52391";
+  ex:city ex:Vettweiß;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Johannes%20Gutenberg%20Universität;
+  ex:sentiment "0.32246"^^xsd:float;
+  ex:fraudScore "0.02194"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "2008-12-15";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Werderstr.> a ex:Street;
+  rdfs:label "Werderstr." .
+
+ex:Vettweiß a ex:City;
+  rdfs:label "Vettweiß" .
+
+ex:Physics rdfs:label "Physics" .
+
+ex:hiking rdfs:label "hiking" .
+
+ex:G94T622 a ex:Customer;
+  foaf:givenname "Kalus";
+  foaf:surname "Abrantes";
+  foaf:gender "woman";
+  ex:email "kalusd..abrantes-melo6@gmail.com";
+  ex:dateBirth "1942-12-24";
+  ex:houseNumber "9";
+  ex:street ex:Rohrdamm;
+  ex:postCode "64367";
+  ex:city ex:Mühltal;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:38;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.4204"^^xsd:float;
+  ex:fraudScore "0.01071"^^xsd:float;
+  ex:enrollment "2006-08-26";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:married .
+
+ex:Rohrdamm a ex:Street;
+  rdfs:label "Rohrdamm" .
+
+ex:Mühltal a ex:City;
+  rdfs:label "Mühltal" .
+
+ex:38 rdfs:label "38"^^xsd:float .
+
+ex:Freie%20Universität%20Berlin rdfs:label "Freie Universität Berlin" .
+
+ex:M95G616 a ex:Customer;
+  foaf:givenname "Sonja";
+  foaf:surname "Josefine";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "sonja6197@outlook.com";
+  ex:dateBirth "1946-07-11";
+  ex:houseNumber "89";
+  ex:street <http://example.com/#Teutoburger-Wald-Str.>;
+  ex:postCode "86956";
+  ex:city ex:Schongau;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:University%20of%20Oslo;
+  ex:sentiment "0.5886899999999999"^^xsd:float;
+  ex:fraudScore "0.02001"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "1989-08-10";
+  ex:hobby ex:volleyball%20and%20collecting%20stamps;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Teutoburger-Wald-Str.> a ex:Street;
+  rdfs:label "Teutoburger-Wald-Str." .
+
+ex:Schongau a ex:City;
+  rdfs:label "Schongau" .
+
+ex:University%20of%20Oslo rdfs:label "University of Oslo" .
+
+ex:Mathematics rdfs:label "Mathematics" .
+
+ex:volleyball%20and%20collecting%20stamps rdfs:label "volleyball and collecting stamps" .
+
+ex:E96N503 a ex:Customer;
+  foaf:givenname "Hans";
+  foaf:surname "Ic";
+  foaf:gender "male";
+  ex:email "hans-wilhelm@yahoo.com";
+  ex:dateBirth "1997-01-25";
+  ex:houseNumber "30";
+  ex:street <http://example.com/#Striesener%20Str.>;
+  ex:postCode "17235";
+  ex:city ex:Neustrelitz;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Georg-August-Universität%20Göttingen;
+  ex:sentiment "0.49368"^^xsd:float;
+  ex:fraudScore "0.00205"^^xsd:float;
+  ex:enrollment "1992-02-20";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Striesener%20Str.> a ex:Street;
+  rdfs:label "Striesener Str." .
+
+ex:Neustrelitz a ex:City;
+  rdfs:label "Neustrelitz" .
+
+ex:2 rdfs:label "2"^^xsd:float .
+
+ex:Georg-August-Universität%20Göttingen rdfs:label "Georg-August-Universität Göttingen" .
+
+ex:video%20games rdfs:label "video games" .
+
+ex:%20 rdfs:label " " .
+
+ex:F97B314 a ex:Customer;
+  foaf:givenname "Annelise";
+  foaf:surname "Wierick";
+  foaf:gender "male";
+  ex:religion ex:Hinduism;
+  ex:email "annelise.wierick@gmx.de";
+  ex:dateBirth "1945-04-05";
+  ex:houseNumber "82";
+  ex:street ex:An%20der%20Tarnitz;
+  ex:postCode "96158";
+  ex:city ex:Frensdorf;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:17;
+  ex:university ex:Universität%20Bielefeld;
+  ex:sentiment "0.28443"^^xsd:float;
+  ex:fraudScore "0.02294"^^xsd:float;
+  ex:enrollment "2007-12-21";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Hinduism rdfs:label "Hinduism" .
+
+ex:An%20der%20Tarnitz a ex:Street;
+  rdfs:label "An der Tarnitz" .
+
+ex:Frensdorf a ex:City;
+  rdfs:label "Frensdorf" .
+
+ex:17 rdfs:label "17"^^xsd:float .
+
+ex:Universität%20Bielefeld rdfs:label "Universität Bielefeld" .
+
+ex:Y98A700 a ex:Customer;
+  foaf:givenname "Hans";
+  foaf:surname "Canga";
+  foaf:gender "male";
+  ex:email "hans-günter.canga@gmx.de";
+  ex:dateBirth "1967-10-27";
+  ex:houseNumber "91";
+  ex:street ex:Langer%20Acker;
+  ex:postCode "85774";
+  ex:city ex:Unterföhring;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Technische%20Hochschule%20Darmstadt;
+  ex:sentiment "0.32173"^^xsd:float;
+  ex:fraudScore "0.00198"^^xsd:float;
+  ex:enrollment "1984-06-06";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:single .
+
+ex:Langer%20Acker a ex:Street;
+  rdfs:label "Langer Acker" .
+
+ex:Unterföhring a ex:City;
+  rdfs:label "Unterföhring" .
+
+ex:Technische%20Hochschule%20Darmstadt rdfs:label "Technische Hochschule Darmstadt" .
+
+ex:K99Z629 a ex:Customer;
+  foaf:givenname "Dmitrij";
+  foaf:surname "Daher";
+  foaf:gender "male";
+  ex:religion ex:Judaism;
+  ex:email "dmitrij@outlook.com";
+  ex:dateBirth "1968-12-26";
+  ex:houseNumber "22";
+  ex:street ex:Weinholdweg;
+  ex:postCode "94560";
+  ex:city ex:Annaberg-Buchholz;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Universität%20Bamberg;
+  ex:sentiment "0.33746"^^xsd:float;
+  ex:fraudScore "0.0395"^^xsd:float;
+  ex:enrollment "2013-08-15";
+  ex:hobby ex:volleyball%20and%20swimming;
+  ex:maritalStatus ex:widow .
+
+ex:Weinholdweg a ex:Street;
+  rdfs:label "Weinholdweg" .
+
+ex:Annaberg-Buchholz a ex:City;
+  rdfs:label "Annaberg-Buchholz" .
+
+ex:1 rdfs:label "1"^^xsd:float .
+
+ex:Universität%20Bamberg rdfs:label "Universität Bamberg" .
+
+ex:volleyball%20and%20swimming rdfs:label "volleyball and swimming" .
+
+ex:Q100V43 a ex:Customer;
+  foaf:givenname "Reinhard";
+  foaf:surname "Narolewski";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "reinharderich.narolewski8266@web.de";
+  ex:dateBirth "1941-07-09";
+  ex:houseNumber "2";
+  ex:street ex:Brunnengasse;
+  ex:postCode "73760";
+  ex:city ex:Ostfildern;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:29;
+  ex:university ex:Universität%20Bamberg;
+  ex:sentiment "0.4292"^^xsd:float;
+  ex:fraudScore "0.02241"^^xsd:float;
+  ex:enrollment "2013-12-06";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:divorced .
+
+ex:Islam rdfs:label "Islam" .
+
+ex:Brunnengasse a ex:Street;
+  rdfs:label "Brunnengasse" .
+
+ex:Ostfildern a ex:City;
+  rdfs:label "Ostfildern" .
+
+ex:29 rdfs:label "29"^^xsd:float .
+
+ex:Z101L75 a ex:Customer;
+  foaf:givenname "Pegy";
+  foaf:surname "Ferki";
+  foaf:gender "woman";
+  ex:email "pegy13@gmail.com";
+  ex:dateBirth "1949-04-28";
+  ex:houseNumber "35";
+  ex:street ex:Sahlweg;
+  ex:postCode "67059";
+  ex:city ex:Ludwigshafen;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:13;
+  ex:university ex:Norwegian%20School%20of%20Sport%20Sciences;
+  ex:sentiment "0.24718"^^xsd:float;
+  ex:fraudScore "0.004220000000000001"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "1982-06-29";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:single .
+
+ex:Sahlweg a ex:Street;
+  rdfs:label "Sahlweg" .
+
+ex:Ludwigshafen a ex:City;
+  rdfs:label "Ludwigshafen" .
+
+ex:13 rdfs:label "13"^^xsd:float .
+
+ex:Norwegian%20School%20of%20Sport%20Sciences rdfs:label "Norwegian School of Sport Sciences" .
+
+ex:Banking rdfs:label "Banking" .
+
+ex:L102W98 a ex:Customer;
+  foaf:givenname "Erna";
+  foaf:surname "Rammin";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "erna47@gmail.com";
+  ex:dateBirth "1946-03-01";
+  ex:houseNumber "92";
+  ex:street <http://example.com/#Gustav-Adolf-Str.>;
+  ex:postCode "63637";
+  ex:city ex:Jossgrund;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:18;
+  ex:university ex:Katholische%20Universität%20Eichstätt;
+  ex:sentiment "0.60517"^^xsd:float;
+  ex:fraudScore "0.0008300000000000001"^^xsd:float;
+  ex:enrollment "1996-09-07";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Gustav-Adolf-Str.> a ex:Street;
+  rdfs:label "Gustav-Adolf-Str." .
+
+ex:Jossgrund a ex:City;
+  rdfs:label "Jossgrund" .
+
+ex:18 rdfs:label "18"^^xsd:float .
+
+ex:Katholische%20Universität%20Eichstätt rdfs:label "Katholische Universität Eichstätt" .
+
+ex:A103R51 a ex:Customer;
+  foaf:givenname "Ignatz";
+  foaf:surname "Line";
+  foaf:gender "male";
+  ex:religion ex:Shintoism;
+  ex:email "ignatz50@gmail.com";
+  ex:dateBirth "1985-07-29";
+  ex:houseNumber "31";
+  ex:street ex:Ludwig-v-Beethoven-Str;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:ETH%20Zurich;
+  ex:sentiment "0.37157"^^xsd:float;
+  ex:fraudScore "0.02774"^^xsd:float;
+  ex:enrollment "1980-01-30";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+ex:Shintoism rdfs:label "Shintoism" .
+
+ex:Ludwig-v-Beethoven-Str a ex:Street;
+  rdfs:label "Ludwig-v-Beethoven-Str" .
+
+ex:Berlin a ex:City;
+  rdfs:label "Berlin" .
+
+ex:ETH%20Zurich rdfs:label "ETH Zurich" .
+
+ex:sport rdfs:label "sport" .
+
+ex:Z104J61 a ex:Customer;
+  foaf:givenname "Karin";
+  foaf:surname "Ochse";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "karini.s.wohlgemuth..ochse@gmail.com";
+  ex:dateBirth "2002-06-25";
+  ex:houseNumber "54";
+  ex:street ex:Am%20Stricken;
+  ex:postCode "81827";
+  ex:city ex:München;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:University%20of%20Oslo;
+  ex:sentiment "0.18302"^^xsd:float;
+  ex:fraudScore "0.02208"^^xsd:float;
+  ex:enrollment "1988-03-13";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Stricken a ex:Street;
+  rdfs:label "Am Stricken" .
+
+ex:I105S54 a ex:Customer;
+  foaf:givenname "Elisabeth";
+  foaf:surname "Hambli";
+  foaf:gender "woman";
+  ex:religion <http://example.com/#Sikhism.>;
+  ex:email "elisabethanna2029@gmx.de";
+  ex:dateBirth "1999-04-28";
+  ex:houseNumber "8";
+  ex:street <http://example.com/#Steinfurther%20Str.>;
+  ex:postCode "54426";
+  ex:city ex:Hilscheid;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Institut%20f.%20Semantische%20Informationsverarbeitung;
+  ex:sentiment "0.637"^^xsd:float;
+  ex:fraudScore "0.0014"^^xsd:float;
+  ex:enrollment "1981-10-24";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Sikhism.> rdfs:label "Sikhism." .
+
+<http://example.com/#Steinfurther%20Str.> a ex:Street;
+  rdfs:label "Steinfurther Str." .
+
+ex:Hilscheid a ex:City;
+  rdfs:label "Hilscheid" .
+
+ex:Institut%20f.%20Semantische%20Informationsverarbeitung rdfs:label "Institut f. Semantische Informationsverarbeitung" .
+
+ex:G106Y11 a ex:Customer;
+  foaf:givenname "Betül";
+  foaf:surname "Poetter";
+  foaf:gender "woman";
+  ex:email "betül@gmx.de";
+  ex:dateBirth "1979-04-21";
+  ex:houseNumber "85";
+  ex:street <http://example.com/#Knappschaftstr.>;
+  ex:postCode "71229";
+  ex:city ex:Leonberg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Institut%20f.%20Semantische%20Informationsverarbeitung;
+  ex:sentiment "0.6553399999999999"^^xsd:float;
+  ex:fraudScore "0.01808"^^xsd:float;
+  ex:enrollment "2019-09-05";
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Knappschaftstr.> a ex:Street;
+  rdfs:label "Knappschaftstr." .
+
+ex:Leonberg a ex:City;
+  rdfs:label "Leonberg" .
+
+ex:14 rdfs:label "14"^^xsd:float .
+
+ex:E107Y41 a ex:Customer;
+  foaf:givenname "Hamane";
+  foaf:surname "Odovicic";
+  foaf:gender "male";
+  ex:email "hamane667893@gmx.de";
+  ex:dateBirth "1958-03-02";
+  ex:houseNumber "56";
+  ex:street ex:Am%20Sollerbach;
+  ex:postCode "29413";
+  ex:city ex:Dähre;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Hildesheim;
+  ex:sentiment "0.3536"^^xsd:float;
+  ex:fraudScore "0.20813"^^xsd:float;
+  ex:enrollment "2008-03-06";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Sollerbach a ex:Street;
+  rdfs:label "Am Sollerbach" .
+
+ex:Dähre a ex:City;
+  rdfs:label "Dähre" .
+
+ex:5 rdfs:label "5"^^xsd:float .
+
+ex:Universität%20Hildesheim rdfs:label "Universität Hildesheim" .
+
+ex:J108D47 a ex:Customer;
+  foaf:givenname "Dominique";
+  foaf:surname "Frenzl";
+  foaf:gender "woman";
+  ex:religion ex:Shintoism;
+  ex:email "dominique.frenzl1459@outlook.com";
+  ex:dateBirth "1993-02-15";
+  ex:houseNumber "23";
+  ex:street <http://example.com/#Wörthstr.>;
+  ex:postCode "19055";
+  ex:city ex:Schwerin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Dresden%20Technical%20University;
+  ex:sentiment "0.22708000000000006"^^xsd:float;
+  ex:fraudScore "0.04929"^^xsd:float;
+  ex:enrollment "2007-11-01";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Wörthstr.> a ex:Street;
+  rdfs:label "Wörthstr." .
+
+ex:Schwerin a ex:City;
+  rdfs:label "Schwerin" .
+
+ex:Dresden%20Technical%20University rdfs:label "Dresden Technical University" .
+
+ex:Y109O15 a ex:Customer;
+  foaf:givenname "Afroita";
+  foaf:surname "Spogis";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "afroita3789@gmail.com";
+  ex:dateBirth "1980-06-14";
+  ex:houseNumber "82";
+  ex:street ex:Im%20Ruhrfeld;
+  ex:postCode "53902";
+  ex:city ex:Bad%20Münstereifel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Fachhochschule%20Fulda;
+  ex:sentiment "0.6479"^^xsd:float;
+  ex:fraudScore "0.01808"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "1987-11-17";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:widow .
+
+ex:Im%20Ruhrfeld a ex:Street;
+  rdfs:label "Im Ruhrfeld" .
+
+ex:Bad%20Münstereifel a ex:City;
+  rdfs:label "Bad Münstereifel" .
+
+ex:Fachhochschule%20Fulda rdfs:label "Fachhochschule Fulda" .
+
+ex:P110X91 a ex:Customer;
+  foaf:givenname "Zoehre";
+  foaf:surname "Seedorf";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "zoehre.seedorf6610@yahoo.com";
+  ex:dateBirth "1952-04-30";
+  ex:houseNumber "70";
+  ex:street ex:Heide;
+  ex:postCode "99713";
+  ex:city ex:Ebeleben;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:16;
+  ex:university ex:Universität%20Bremen;
+  ex:sentiment "0.6294"^^xsd:float;
+  ex:fraudScore "0.01038"^^xsd:float;
+  ex:enrollment "1999-06-06";
+  ex:hobby ex:hiking%20and%20running;
+  ex:maritalStatus ex:single .
+
+ex:Heide a ex:Street;
+  rdfs:label "Heide" .
+
+ex:Ebeleben a ex:City;
+  rdfs:label "Ebeleben" .
+
+ex:16 rdfs:label "16"^^xsd:float .
+
+ex:Universität%20Bremen rdfs:label "Universität Bremen" .
+
+ex:hiking%20and%20running rdfs:label "hiking and running" .
+
+ex:E111U95 a ex:Customer;
+  foaf:givenname "Heide";
+  foaf:surname "Budzinski";
+  foaf:gender "male";
+  ex:dateBirth "1944-03-28";
+  ex:houseNumber "65";
+  ex:street <http://example.com/#Hoefftstr.>;
+  ex:postCode "36142";
+  ex:city ex:Tann%20%28Rhön%29;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Technische%20Universität%20Clausthal;
+  ex:sentiment "0.6724600000000001"^^xsd:float;
+  ex:fraudScore "0.01816"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "2004-01-18";
+  ex:hobby ex:music;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Hoefftstr.> a ex:Street;
+  rdfs:label "Hoefftstr." .
+
+ex:Tann%20%28Rhön%29 a ex:City;
+  rdfs:label "Tann (Rhön)" .
+
+ex:Technische%20Universität%20Clausthal rdfs:label "Technische Universität Clausthal" .
+
+ex:music rdfs:label "music" .
+
+ex:N112M18 a ex:Customer;
+  foaf:givenname "Seosamh";
+  foaf:surname "Grulich";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "seosamh.grulich5507@outlook.com";
+  ex:dateBirth "1961-07-07";
+  ex:houseNumber "78";
+  ex:street <http://example.com/#Siebrandstr.>;
+  ex:postCode "22850";
+  ex:city ex:Norderstedt;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Universität%20Bayreuth;
+  ex:sentiment "0.13133"^^xsd:float;
+  ex:fraudScore "0.09898"^^xsd:float;
+  ex:enrollment "1980-07-11";
+  ex:hobby ex:maraton%20running;
+  ex:maritalStatus ex:widow .
+
+<http://example.com/#Siebrandstr.> a ex:Street;
+  rdfs:label "Siebrandstr." .
+
+ex:Norderstedt a ex:City;
+  rdfs:label "Norderstedt" .
+
+ex:Universität%20Bayreuth rdfs:label "Universität Bayreuth" .
+
+ex:maraton%20running rdfs:label "maraton running" .
+
+ex:T113D56 a ex:Customer;
+  foaf:givenname "Hesso";
+  foaf:surname "Neider";
+  foaf:gender "male";
+  ex:email "hesso.neider@yahoo.com";
+  ex:dateBirth "1966-04-27";
+  ex:houseNumber "18";
+  ex:street ex:Erlenbacher%20Weg;
+  ex:postCode "48529";
+  ex:city ex:Nordhorn;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities;
+  ex:sentiment "0.7247399999999999"^^xsd:float;
+  ex:fraudScore "0.02487"^^xsd:float;
+  ex:enrollment "2010-02-24";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:divorced .
+
+ex:Erlenbacher%20Weg a ex:Street;
+  rdfs:label "Erlenbacher Weg" .
+
+ex:Nordhorn a ex:City;
+  rdfs:label "Nordhorn" .
+
+ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities rdfs:label "Swiss Association for Private Schools and Universities" .
+
+ex:watching%20movies rdfs:label "watching movies" .
+
+ex:H114H96 a ex:Customer;
+  foaf:givenname "Pervin";
+  foaf:surname "Parkenings";
+  foaf:gender "male";
+  ex:email "pervin.parkenings@gmail.com";
+  ex:dateBirth "1972-02-04";
+  ex:houseNumber "40";
+  ex:street ex:Zum%20Mühlenbach;
+  ex:postCode "73432";
+  ex:city ex:Aalen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Frankfurt%20University;
+  ex:sentiment "0.4807"^^xsd:float;
+  ex:fraudScore "0.01068"^^xsd:float;
+  ex:enrollment "2014-10-14";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Zum%20Mühlenbach a ex:Street;
+  rdfs:label "Zum Mühlenbach" .
+
+ex:Aalen a ex:City;
+  rdfs:label "Aalen" .
+
+ex:Frankfurt%20University rdfs:label "Frankfurt University" .
+
+ex:M115G12 a ex:Customer;
+  foaf:givenname "Sueleyman";
+  foaf:surname "Hewing";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "sueleyman189275@yahoo.com";
+  ex:dateBirth "1981-09-09";
+  ex:houseNumber "45";
+  ex:street <http://example.com/#Julius-Hölder-Str.>;
+  ex:postCode "52525";
+  ex:city ex:Heinsberg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities;
+  ex:sentiment "0.37548"^^xsd:float;
+  ex:fraudScore "0.01545"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "2015-07-08";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Julius-Hölder-Str.> a ex:Street;
+  rdfs:label "Julius-Hölder-Str." .
+
+ex:Heinsberg a ex:City;
+  rdfs:label "Heinsberg" .
+
+ex:C116Z10 a ex:Customer;
+  foaf:givenname "Eugen";
+  foaf:surname "Wersig";
+  foaf:gender "male";
+  ex:email "eugenwilhelm515139@outlook.com";
+  ex:dateBirth "1969-01-10";
+  ex:houseNumber "89";
+  ex:street ex:Martiniplan;
+  ex:postCode "49078";
+  ex:city ex:Osnabrück;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:27;
+  ex:university ex:Universität%20Hamburg;
+  ex:sentiment "0.56348"^^xsd:float;
+  ex:fraudScore "0.02454"^^xsd:float;
+  ex:enrollment "1983-12-23";
+  ex:hobby ex:watching%20movies%20and%20horse%20riding;
+  ex:maritalStatus ex:single .
+
+ex:Martiniplan a ex:Street;
+  rdfs:label "Martiniplan" .
+
+ex:Osnabrück a ex:City;
+  rdfs:label "Osnabrück" .
+
+ex:27 rdfs:label "27"^^xsd:float .
+
+ex:Universität%20Hamburg rdfs:label "Universität Hamburg" .
+
+ex:watching%20movies%20and%20horse%20riding rdfs:label "watching movies and horse riding" .
+
+ex:H117B87 a ex:Customer;
+  foaf:givenname "Katharina";
+  foaf:surname "Häge";
+  foaf:gender "woman";
+  ex:dateBirth "1992-05-05";
+  ex:houseNumber "59";
+  ex:street ex:Harstenhoekweg%20209;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Köln;
+  ex:sentiment "0.7464"^^xsd:float;
+  ex:fraudScore "0.00064"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1996-07-09";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+ex:Harstenhoekweg%20209 a ex:Street;
+  rdfs:label "Harstenhoekweg 209" .
+
+ex:Universität%20Köln rdfs:label "Universität Köln" .
+
+ex:Finance rdfs:label "Finance" .
+
+ex:W118A62 a ex:Customer;
+  foaf:givenname "Eset";
+  foaf:surname "Abraski";
+  foaf:gender "male";
+  ex:religion ex:Judaism;
+  ex:email "eset@gmx.de";
+  ex:dateBirth "1939-07-07";
+  ex:houseNumber "34";
+  ex:street ex:Kurze%20Brehe;
+  ex:postCode "35576";
+  ex:city ex:Wetzlar;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:16;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.92674"^^xsd:float;
+  ex:fraudScore "0.00399"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "2008-03-24";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:%20 .
+
+ex:Kurze%20Brehe a ex:Street;
+  rdfs:label "Kurze Brehe" .
+
+ex:Wetzlar a ex:City;
+  rdfs:label "Wetzlar" .
+
+ex:D119B72 a ex:Customer;
+  foaf:givenname "Bojana";
+  foaf:surname "Seodor";
+  foaf:gender "male";
+  ex:email "bojana807825@gmail.com";
+  ex:dateBirth "1992-12-14";
+  ex:houseNumber "30";
+  ex:street <http://example.com/#Neue%20Dorfstr.>;
+  ex:postCode "85053";
+  ex:city ex:Ingolstadt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Technische%20Universität%20Hamburg-Harburg;
+  ex:sentiment "0.5584600000000001"^^xsd:float;
+  ex:fraudScore "0.016319999999999998"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "2004-08-24";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Neue%20Dorfstr.> a ex:Street;
+  rdfs:label "Neue Dorfstr." .
+
+ex:Ingolstadt a ex:City;
+  rdfs:label "Ingolstadt" .
+
+ex:Technische%20Universität%20Hamburg-Harburg rdfs:label "Technische Universität Hamburg-Harburg" .
+
+ex:Computer%20Science rdfs:label "Computer Science" .
+
+ex:G120R20 a ex:Customer;
+  foaf:givenname "Jule";
+  foaf:surname "Celil";
+  foaf:gender "male";
+  ex:email "jule25@outlook.com";
+  ex:dateBirth "1999-03-05";
+  ex:houseNumber "45";
+  ex:street ex:Pechhäusl;
+  ex:postCode "70734";
+  ex:city ex:Fellbach;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.49748"^^xsd:float;
+  ex:fraudScore "0.03001"^^xsd:float;
+  ex:enrollment "2002-11-01";
+  ex:maritalStatus ex:married .
+
+ex:Pechhäusl a ex:Street;
+  rdfs:label "Pechhäusl" .
+
+ex:Fellbach a ex:City;
+  rdfs:label "Fellbach" .
+
+ex:Universität%20Konstanz rdfs:label "Universität Konstanz" .
+
+ex:X121Q70 a ex:Customer;
+  foaf:givenname "Oswine";
+  foaf:surname "Herzog";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "oswine.herzog-tietz5695@gmx.de";
+  ex:dateBirth "1965-09-25";
+  ex:houseNumber "41";
+  ex:street <http://example.com/#Herseler%20Str.>;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:17;
+  ex:university ex:Hochschule%20Offenburg;
+  ex:sentiment "0.26936"^^xsd:float;
+  ex:fraudScore "0.02204"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "1980-10-03";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Herseler%20Str.> a ex:Street;
+  rdfs:label "Herseler Str." .
+
+ex:Hochschule%20Offenburg rdfs:label "Hochschule Offenburg" .
+
+ex:N122T74 a ex:Customer;
+  foaf:givenname "Sandra";
+  foaf:surname "Throm";
+  foaf:gender "male";
+  ex:dateBirth "1975-11-27";
+  ex:houseNumber "77";
+  ex:street ex:Löwenplatz;
+  ex:postCode "85764";
+  ex:city ex:Oberschleißheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Fachhochschule%20Reutlingen;
+  ex:sentiment "0.32692"^^xsd:float;
+  ex:fraudScore "0.03577"^^xsd:float;
+  ex:degree ex:Banking;
+  ex:enrollment "1982-12-27";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:married .
+
+ex:Löwenplatz a ex:Street;
+  rdfs:label "Löwenplatz" .
+
+ex:Oberschleißheim a ex:City;
+  rdfs:label "Oberschleißheim" .
+
+ex:Fachhochschule%20Reutlingen rdfs:label "Fachhochschule Reutlingen" .
+
+ex:J123M15 a ex:Customer;
+  foaf:givenname "Zaniar";
+  foaf:surname "Soltani";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "zaniar@gmx.de";
+  ex:dateBirth "1946-11-03";
+  ex:houseNumber "43";
+  ex:street ex:Am%20Rullenweg;
+  ex:postCode "99425";
+  ex:city ex:Weimar;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Heinrich-Heine-Universität%20Dässeldorf;
+  ex:sentiment "0.08631"^^xsd:float;
+  ex:fraudScore "0.0654"^^xsd:float;
+  ex:enrollment "1980-08-10";
+  ex:maritalStatus ex:single .
+
+ex:Am%20Rullenweg a ex:Street;
+  rdfs:label "Am Rullenweg" .
+
+ex:Weimar a ex:City;
+  rdfs:label "Weimar" .
+
+ex:Heinrich-Heine-Universität%20Dässeldorf rdfs:label "Heinrich-Heine-Universität Dässeldorf" .
+
+ex:C124K90 a ex:Customer;
+  foaf:givenname "Dawid";
+  foaf:surname "De";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "dawid35@outlook.com";
+  ex:dateBirth "1967-02-02";
+  ex:houseNumber "48";
+  ex:street ex:In%20der%20Lüh;
+  ex:postCode "18435";
+  ex:city ex:Stralsund;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Universität%20Hildesheim;
+  ex:sentiment "0.41948"^^xsd:float;
+  ex:fraudScore "0.01044"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "1980-05-30";
+  ex:hobby ex:collecting%20stamps;
+  ex:maritalStatus ex:single .
+
+ex:Christianity rdfs:label "Christianity" .
+
+ex:Customer a ex:Person .
+
+ex:In%20der%20Lüh a ex:Street;
+  rdfs:label "In der Lüh" .
+
+ex:Stralsund a ex:City;
+  rdfs:label "Stralsund" .
+
+ex:DE rdfs:label "DE" .
+
+ex:2 rdfs:label "2"^^xsd:float .
+
+ex:Universität%20Hildesheim rdfs:label "Universität Hildesheim" .
+
+ex:Economics rdfs:label "Economics" .
+
+ex:collecting%20stamps rdfs:label "collecting stamps" .
+
+ex:single rdfs:label "single" .
+
+ex:X125U85 a ex:Customer;
+  foaf:givenname "Rayko";
+  foaf:surname "Hintz";
+  foaf:gender "male";
+  ex:religion ex:Buddhism;
+  ex:email "rayko.hintz@yahoo.com";
+  ex:dateBirth "1961-03-31";
+  ex:houseNumber "9";
+  ex:street ex:Pfarrgasse;
+  ex:postCode "39249";
+  ex:city ex:Barby;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:23;
+  ex:university ex:Berufsakademie%20Ravensburg;
+  ex:sentiment "0.32167"^^xsd:float;
+  ex:fraudScore "0.02394"^^xsd:float;
+  ex:enrollment "2017-07-31";
+  ex:maritalStatus ex:%20 .
+
+ex:Buddhism rdfs:label "Buddhism" .
+
+ex:Pfarrgasse a ex:Street;
+  rdfs:label "Pfarrgasse" .
+
+ex:Barby a ex:City;
+  rdfs:label "Barby" .
+
+ex:23 rdfs:label "23"^^xsd:float .
+
+ex:Berufsakademie%20Ravensburg rdfs:label "Berufsakademie Ravensburg" .
+
+ex:%20 rdfs:label " " .
+
+ex:G126D63 a ex:Customer;
+  foaf:givenname "Olando";
+  foaf:surname "Dorenbusch";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "olando.dorenbusch@gmail.com";
+  ex:dateBirth "2002-03-15";
+  ex:houseNumber "13";
+  ex:street ex:Stahlgruber%20Wohnpark;
+  ex:postCode "22177";
+  ex:city ex:Hamburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Stuttgart;
+  ex:sentiment "0.82806"^^xsd:float;
+  ex:fraudScore "0.01627"^^xsd:float;
+  ex:enrollment "2009-08-14";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:single .
+
+ex:Stahlgruber%20Wohnpark a ex:Street;
+  rdfs:label "Stahlgruber Wohnpark" .
+
+ex:Hamburg a ex:City;
+  rdfs:label "Hamburg" .
+
+ex:AT rdfs:label "AT" .
+
+ex:0 rdfs:label "0"^^xsd:float .
+
+ex:Universität%20Stuttgart rdfs:label "Universität Stuttgart" .
+
+ex:volleyball rdfs:label "volleyball" .
+
+ex:V127S76 a ex:Customer;
+  foaf:givenname "Erolyn";
+  foaf:surname "Pilgrim";
+  foaf:gender "male";
+  ex:religion ex:Judaism;
+  ex:email "erolyn3826@web.de";
+  ex:dateBirth "1951-04-02";
+  ex:houseNumber "40";
+  ex:street ex:Hofstraat%207;
+  ex:postCode "24884";
+  ex:city ex:Selk;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:ETH%20Zurich%20Faculty%20of%20Architecture;
+  ex:sentiment "0.21513"^^xsd:float;
+  ex:fraudScore "0.02151"^^xsd:float;
+  ex:enrollment "1996-03-14";
+  ex:hobby ex:collecting%20stamps%20and%20sport;
+  ex:maritalStatus ex:single .
+
+ex:Judaism rdfs:label "Judaism" .
+
+ex:Hofstraat%207 a ex:Street;
+  rdfs:label "Hofstraat 7" .
+
+ex:Selk a ex:City;
+  rdfs:label "Selk" .
+
+ex:1 rdfs:label "1"^^xsd:float .
+
+ex:ETH%20Zurich%20Faculty%20of%20Architecture rdfs:label "ETH Zurich Faculty of Architecture" .
+
+ex:collecting%20stamps%20and%20sport rdfs:label "collecting stamps and sport" .
+
+ex:B128Z14 a ex:Customer;
+  foaf:givenname "Michael";
+  foaf:surname "Machado";
+  foaf:gender "woman";
+  ex:email "michaelfelix148294@outlook.com";
+  ex:dateBirth "1974-11-17";
+  ex:houseNumber "45";
+  ex:street <http://example.com/#Karl-Peters-Str.>;
+  ex:postCode "62170";
+  ex:city ex:Merseburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:11;
+  ex:university ex:Fachhochschule%20Fulda;
+  ex:sentiment "0.25805"^^xsd:float;
+  ex:fraudScore "0.00593"^^xsd:float;
+  ex:enrollment "1981-10-01";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Karl-Peters-Str.> a ex:Street;
+  rdfs:label "Karl-Peters-Str." .
+
+ex:Merseburg a ex:City;
+  rdfs:label "Merseburg" .
+
+ex:11 rdfs:label "11"^^xsd:float .
+
+ex:Fachhochschule%20Fulda rdfs:label "Fachhochschule Fulda" .
+
+ex:football rdfs:label "football" .
+
+ex:A129Z31 a ex:Customer;
+  foaf:givenname "Gerrie";
+  foaf:surname "Schmitt";
+  foaf:gender "woman";
+  ex:email "gerrie.schmitt-mickley@web.de";
+  ex:dateBirth "1976-01-13";
+  ex:houseNumber "18";
+  ex:street ex:Olewischtwiet;
+  ex:postCode "16620";
+  ex:city ex:Meißen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.28536"^^xsd:float;
+  ex:fraudScore "0.054679999999999986"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "2002-02-12";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:%20 .
+
+ex:Olewischtwiet a ex:Street;
+  rdfs:label "Olewischtwiet" .
+
+ex:Meißen a ex:City;
+  rdfs:label "Meißen" .
+
+ex:Universität%20Konstanz rdfs:label "Universität Konstanz" .
+
+ex:Finance rdfs:label "Finance" .
+
+ex:hiking rdfs:label "hiking" .
+
+ex:M130I68 a ex:Customer;
+  foaf:givenname "Kriener";
+  foaf:surname "Ertelt";
+  foaf:gender "woman";
+  ex:email "krieneranna.ertelt9537@web.de";
+  ex:dateBirth "1944-02-17";
+  ex:houseNumber "8";
+  ex:street ex:Am%20Lindtor;
+  ex:postCode "90443";
+  ex:city ex:Nürnberg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Norwegian%20School%20of%20Sport%20Sciences;
+  ex:sentiment "0.47522"^^xsd:float;
+  ex:fraudScore "0.00693"^^xsd:float;
+  ex:enrollment "1980-09-19";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Lindtor a ex:Street;
+  rdfs:label "Am Lindtor" .
+
+ex:Nürnberg a ex:City;
+  rdfs:label "Nürnberg" .
+
+ex:7 rdfs:label "7"^^xsd:float .
+
+ex:Norwegian%20School%20of%20Sport%20Sciences rdfs:label "Norwegian School of Sport Sciences" .
+
+ex:playing%20golf rdfs:label "playing golf" .
+
+ex:R131T15 a ex:Customer;
+  foaf:givenname "Der";
+  foaf:surname "Fenstermaker";
+  foaf:gender "woman";
+  ex:email "der.fenstermaker@outlook.com";
+  ex:dateBirth "1953-04-23";
+  ex:houseNumber "26";
+  ex:street ex:Snirgelskamp;
+  ex:postCode "78315";
+  ex:city ex:Radolfzell;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:15;
+  ex:university ex:Hochschule%20Offenburg;
+  ex:sentiment "0.91566"^^xsd:float;
+  ex:fraudScore "0.01697"^^xsd:float;
+  ex:enrollment "2005-02-13";
+  ex:hobby ex:horse%20riding%20and%20football;
+  ex:maritalStatus ex:widow .
+
+ex:Snirgelskamp a ex:Street;
+  rdfs:label "Snirgelskamp" .
+
+ex:Radolfzell a ex:City;
+  rdfs:label "Radolfzell" .
+
+ex:15 rdfs:label "15"^^xsd:float .
+
+ex:Hochschule%20Offenburg rdfs:label "Hochschule Offenburg" .
+
+ex:horse%20riding%20and%20football rdfs:label "horse riding and football" .
+
+ex:widow rdfs:label "widow" .
+
+ex:U132Z89 a ex:Customer;
+  foaf:givenname "Mei";
+  foaf:surname "Hübers";
+  foaf:gender "male";
+  ex:email "mei-chih.hübers@gmail.com";
+  ex:dateBirth "1968-11-05";
+  ex:houseNumber "69";
+  ex:street ex:Weißdornweg;
+  ex:postCode "35606";
+  ex:city ex:Solms;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Bielefeld;
+  ex:sentiment "0.80135"^^xsd:float;
+  ex:fraudScore "0.006809999999999999"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "1981-05-25";
+  ex:maritalStatus ex:married .
+
+ex:Weißdornweg a ex:Street;
+  rdfs:label "Weißdornweg" .
+
+ex:Solms a ex:City;
+  rdfs:label "Solms" .
+
+ex:5 rdfs:label "5"^^xsd:float .
+
+ex:Universität%20Bielefeld rdfs:label "Universität Bielefeld" .
+
+ex:Physics rdfs:label "Physics" .
+
+ex:married rdfs:label "married" .
+
+ex:Y133N27 a ex:Customer;
+  foaf:givenname "Margot";
+  foaf:surname "Neugebauer";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "margotmaria665615@yahoo.com";
+  ex:dateBirth "1996-08-25";
+  ex:houseNumber "95";
+  ex:street ex:Sohldfeld;
+  ex:postCode "16866";
+  ex:city ex:Gumtow;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.45622"^^xsd:float;
+  ex:fraudScore "0.02425"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2005-09-15";
+  ex:hobby ex:playing%20golf;
+  ex:maritalStatus ex:%20 .
+
+ex:Sohldfeld a ex:Street;
+  rdfs:label "Sohldfeld" .
+
+ex:Gumtow a ex:City;
+  rdfs:label "Gumtow" .
+
+ex:Mathematics rdfs:label "Mathematics" .
+
+ex:V134Y99 a ex:Customer;
+  foaf:givenname "Adelheid";
+  foaf:surname "Wipfli";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1965-07-03";
+  ex:houseNumber "3";
+  ex:street ex:Zur%20Fallmühle;
+  ex:postCode "61080";
+  ex:city ex:Halle%20Saale;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Universität%20Duisburg;
+  ex:sentiment "0.29465"^^xsd:float;
+  ex:fraudScore "0.04159"^^xsd:float;
+  ex:enrollment "2011-06-26";
+  ex:maritalStatus ex:%20 .
+
+ex:Zur%20Fallmühle a ex:Street;
+  rdfs:label "Zur Fallmühle" .
+
+ex:Halle%20Saale a ex:City;
+  rdfs:label "Halle Saale" .
+
+ex:3 rdfs:label "3"^^xsd:float .
+
+ex:Universität%20Duisburg rdfs:label "Universität Duisburg" .
+
+ex:L135Q80 a ex:Customer;
+  foaf:givenname "Barbara";
+  foaf:surname "Riedler";
+  foaf:gender "male";
+  ex:email "barbara677723@outlook.com";
+  ex:dateBirth "1945-04-26";
+  ex:houseNumber "22";
+  ex:street ex:Holzgasse;
+  ex:postCode "83395";
+  ex:city ex:Freilassing;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Universität%20Köln;
+  ex:sentiment "0.7742100000000001"^^xsd:float;
+  ex:fraudScore "0.01163"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "1982-04-04";
+  ex:hobby ex:music%20and%20volleyball;
+  ex:maritalStatus ex:single .
+
+ex:Holzgasse a ex:Street;
+  rdfs:label "Holzgasse" .
+
+ex:Freilassing a ex:City;
+  rdfs:label "Freilassing" .
+
+ex:Universität%20Köln rdfs:label "Universität Köln" .
+
+ex:music%20and%20volleyball rdfs:label "music and volleyball" .
+
+ex:K136H22 a ex:Customer;
+  foaf:givenname "Reinard";
+  foaf:surname "Wallbraun";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "reinard89@outlook.com";
+  ex:dateBirth "1984-07-10";
+  ex:houseNumber " ";
+  ex:street ex:Leopoldshöhe;
+  ex:postCode "26605";
+  ex:city ex:Aurich;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Technische%20Universität%20Dresden;
+  ex:sentiment "0.35396"^^xsd:float;
+  ex:fraudScore "0.04533"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2014-08-07";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:%20 .
+
+ex:Leopoldshöhe a ex:Street;
+  rdfs:label "Leopoldshöhe" .
+
+ex:Aurich a ex:City;
+  rdfs:label "Aurich" .
+
+ex:Technische%20Universität%20Dresden rdfs:label "Technische Universität Dresden" .
+
+ex:Psychology rdfs:label "Psychology" .
+
+ex:watching%20movies rdfs:label "watching movies" .
+
+ex:E137U93 a ex:Customer;
+  foaf:givenname "Sari";
+  foaf:surname "Scheerer";
+  foaf:gender "woman";
+  ex:email "sari.scheerer@web.de";
+  ex:dateBirth "1975-05-09";
+  ex:houseNumber "33";
+  ex:street <http://example.com/#Heidemannstr.>;
+  ex:postCode "12390";
+  ex:city ex:Dresden;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Universität%20Stuttgart;
+  ex:sentiment "0.51286"^^xsd:float;
+  ex:fraudScore "0.00047"^^xsd:float;
+  ex:enrollment "1999-12-02";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Heidemannstr.> a ex:Street;
+  rdfs:label "Heidemannstr." .
+
+ex:Dresden a ex:City;
+  rdfs:label "Dresden" .
+
+ex:6 rdfs:label "6"^^xsd:float .
+
+ex:video%20games rdfs:label "video games" .
+
+ex:U138Z13 a ex:Customer;
+  foaf:givenname "Josef";
+  foaf:surname "Linanmera";
+  foaf:gender "male";
+  ex:email "josefkarl.linanmera@yahoo.com";
+  ex:dateBirth "1991-04-09";
+  ex:houseNumber " ";
+  ex:street ex:Am%20Sturmiusberg;
+  ex:postCode "64490";
+  ex:city ex:Aschersleben;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:ETH%20Zurich%20Faculty%20of%20Architecture;
+  ex:sentiment "0.75308"^^xsd:float;
+  ex:fraudScore "0.00977"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2014-01-28";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:widow .
+
+ex:Am%20Sturmiusberg a ex:Street;
+  rdfs:label "Am Sturmiusberg" .
+
+ex:Aschersleben a ex:City;
+  rdfs:label "Aschersleben" .
+
+ex:model%20building rdfs:label "model building" .
+
+ex:H139D84 a ex:Customer;
+  foaf:givenname "Michael";
+  foaf:surname "Kirschmer";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "michaelfelix32@web.de";
+  ex:dateBirth "1999-09-11";
+  ex:houseNumber "30";
+  ex:street ex:Rappenhecke;
+  ex:postCode "42853";
+  ex:city ex:Remscheid;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Potsdam;
+  ex:sentiment "0.7659"^^xsd:float;
+  ex:fraudScore "0.01308"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "1984-02-04";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:married .
+
+ex:Rappenhecke a ex:Street;
+  rdfs:label "Rappenhecke" .
+
+ex:Remscheid a ex:City;
+  rdfs:label "Remscheid" .
+
+ex:4 rdfs:label "4"^^xsd:float .
+
+ex:Universität%20Potsdam rdfs:label "Universität Potsdam" .
+
+ex:Y140C20 a ex:Customer;
+  foaf:givenname "Marlies";
+  foaf:surname "Radickovic";
+  foaf:gender "male";
+  ex:dateBirth "1940-08-20";
+  ex:houseNumber "30";
+  ex:street <http://example.com/#Kümmelbergstr.>;
+  ex:postCode "43170";
+  ex:city ex:Leipzig;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Rudolf%20Steiner%20University%20College;
+  ex:sentiment "0.51235"^^xsd:float;
+  ex:fraudScore "0.02211"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1992-02-25";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Kümmelbergstr.> a ex:Street;
+  rdfs:label "Kümmelbergstr." .
+
+ex:Leipzig a ex:City;
+  rdfs:label "Leipzig" .
+
+ex:Rudolf%20Steiner%20University%20College rdfs:label "Rudolf Steiner University College" .
+
+ex:sport rdfs:label "sport" .
+
+ex:divorced rdfs:label "divorced" .
+
+ex:N141T91 a ex:Customer;
+  foaf:givenname "Abeer";
+  foaf:surname "Engelhard";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "abeer892638@yahoo.com";
+  ex:dateBirth "1944-01-16";
+  ex:houseNumber "16";
+  ex:street ex:Via%20S.Ciro%20N.3;
+  ex:postCode "41352";
+  ex:city ex:Korschenbroich;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Folkeuniversitet;
+  ex:sentiment "0.6821699999999999"^^xsd:float;
+  ex:fraudScore "0.01861"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "1993-03-28";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:single .
+
+ex:Islam rdfs:label "Islam" .
+
+ex:Via%20S.Ciro%20N.3 a ex:Street;
+  rdfs:label "Via S.Ciro N.3" .
+
+ex:Korschenbroich a ex:City;
+  rdfs:label "Korschenbroich" .
+
+ex:Folkeuniversitet rdfs:label "Folkeuniversitet" .
+
+ex:F142D93 a ex:Customer;
+  foaf:givenname "Redouan";
+  foaf:surname "Haneder";
+  foaf:gender "woman";
+  ex:email "redouan80@gmx.de";
+  ex:dateBirth "2001-03-22";
+  ex:houseNumber "97";
+  ex:street <http://example.com/#Feldhüterstr.>;
+  ex:postCode "16928";
+  ex:city ex:Pritzwalk;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Technische%20Universität%20Chemnitz-Zwickau;
+  ex:sentiment "0.33572"^^xsd:float;
+  ex:fraudScore "0.01596"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1985-10-20";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Feldhüterstr.> a ex:Street;
+  rdfs:label "Feldhüterstr." .
+
+ex:Pritzwalk a ex:City;
+  rdfs:label "Pritzwalk" .
+
+ex:Technische%20Universität%20Chemnitz-Zwickau rdfs:label "Technische Universität Chemnitz-Zwickau" .
+
+ex:S143A74 a ex:Customer;
+  foaf:givenname "Michael";
+  foaf:surname "Dieringer";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "michaelolufemi21388@gmail.com";
+  ex:dateBirth "1938-07-18";
+  ex:houseNumber "89";
+  ex:street <http://example.com/#Liebermannstr.>;
+  ex:postCode "51580";
+  ex:city ex:Reichshof;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:62;
+  ex:university ex:Otto%20von%20Guericke%20Universität;
+  ex:sentiment "0.55361"^^xsd:float;
+  ex:fraudScore "0.02698"^^xsd:float;
+  ex:enrollment "2016-10-17";
+  ex:hobby ex:video%20games%20and%20video%20games;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Liebermannstr.> a ex:Street;
+  rdfs:label "Liebermannstr." .
+
+ex:Reichshof a ex:City;
+  rdfs:label "Reichshof" .
+
+ex:62 rdfs:label "62"^^xsd:float .
+
+ex:Otto%20von%20Guericke%20Universität rdfs:label "Otto von Guericke Universität" .
+
+ex:video%20games%20and%20video%20games rdfs:label "video games and video games" .
+
+ex:X144M90 a ex:Customer;
+  foaf:givenname "Ould";
+  foaf:surname "Genau";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "ould-ahmed90@web.de";
+  ex:dateBirth "2001-04-14";
+  ex:houseNumber "45";
+  ex:street <http://example.com/#Burgwerbener%20Str.>;
+  ex:postCode "00000";
+  ex:city ex:UNbekannt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.8518899999999999"^^xsd:float;
+  ex:fraudScore "0.006999999999999999"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "2000-12-04";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Burgwerbener%20Str.> a ex:Street;
+  rdfs:label "Burgwerbener Str." .
+
+ex:UNbekannt a ex:City;
+  rdfs:label "UNbekannt" .
+
+ex:Computer%20Science rdfs:label "Computer Science" .
+
+ex:X145C20 a ex:Customer;
+  foaf:givenname "Christophe";
+  foaf:surname "El";
+  foaf:gender "woman";
+  ex:email "christophe73@yahoo.com";
+  ex:dateBirth "1937-04-25";
+  ex:houseNumber "69";
+  ex:street ex:Am%20Kürchen;
+  ex:postCode "73773";
+  ex:city ex:Aichwald;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Technische%20Hochschule%20Darmstadt;
+  ex:sentiment "0.3032"^^xsd:float;
+  ex:fraudScore "0.00981"^^xsd:float;
+  ex:enrollment "1989-06-27";
+  ex:hobby ex:collecting%20stamps%20and%20volleyball;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Kürchen a ex:Street;
+  rdfs:label "Am Kürchen" .
+
+ex:Aichwald a ex:City;
+  rdfs:label "Aichwald" .
+
+ex:Technische%20Hochschule%20Darmstadt rdfs:label "Technische Hochschule Darmstadt" .
+
+ex:collecting%20stamps%20and%20volleyball rdfs:label "collecting stamps and volleyball" .
+
+ex:C146G67 a ex:Customer;
+  foaf:givenname "Ariunzazralt";
+  foaf:surname "Mitarbeiter";
+  foaf:gender "woman";
+  ex:religion ex:Buddhism;
+  ex:dateBirth "1955-03-11";
+  ex:houseNumber "54";
+  ex:street ex:Am%20Eisstadion;
+  ex:postCode "95460";
+  ex:city ex:Bad%20Berneck;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:35;
+  ex:university ex:Institut%20f.%20Semantische%20Informationsverarbeitung;
+  ex:sentiment "0.7375"^^xsd:float;
+  ex:fraudScore "0.01332"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "1993-11-06";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Eisstadion a ex:Street;
+  rdfs:label "Am Eisstadion" .
+
+ex:Bad%20Berneck a ex:City;
+  rdfs:label "Bad Berneck" .
+
+ex:35 rdfs:label "35"^^xsd:float .
+
+ex:Institut%20f.%20Semantische%20Informationsverarbeitung rdfs:label "Institut f. Semantische Informationsverarbeitung" .
+
+ex:Business%20Administration rdfs:label "Business Administration" .
+
+ex:A147V35 a ex:Customer;
+  foaf:givenname "Nasar";
+  foaf:surname "Goerigk";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "nasar.goerigk@outlook.com";
+  ex:dateBirth "1956-06-30";
+  ex:houseNumber "66";
+  ex:street <http://example.com/#Jüchtstr.>;
+  ex:postCode "93482";
+  ex:city ex:Pemfling;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:39;
+  ex:university ex:Technische%20Universität%20Ilmenau;
+  ex:sentiment "0.20474"^^xsd:float;
+  ex:fraudScore "0.00249"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "1992-12-20";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Jüchtstr.> a ex:Street;
+  rdfs:label "Jüchtstr." .
+
+ex:Pemfling a ex:City;
+  rdfs:label "Pemfling" .
+
+ex:39 rdfs:label "39"^^xsd:float .
+
+ex:Technische%20Universität%20Ilmenau rdfs:label "Technische Universität Ilmenau" .
+
+ex:G148A56 a ex:Customer;
+  foaf:givenname "Tuba";
+  foaf:surname "Apt";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "tuba.apt864@web.de";
+  ex:dateBirth "1964-07-23";
+  ex:houseNumber "5";
+  ex:street ex:Petersleite;
+  ex:postCode "55270";
+  ex:city ex:Essenheim;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Universität%20Mannheim;
+  ex:sentiment "0.09016"^^xsd:float;
+  ex:fraudScore "0.031160000000000007"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1987-10-21";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:single .
+
+ex:Petersleite a ex:Street;
+  rdfs:label "Petersleite" .
+
+ex:Essenheim a ex:City;
+  rdfs:label "Essenheim" .
+
+ex:Universität%20Mannheim rdfs:label "Universität Mannheim" .
+
+ex:Y149W20 a ex:Customer;
+  foaf:givenname "Nicoletta";
+  foaf:surname "Narr";
+  foaf:gender "male";
+  ex:email "nicoletta189408@yahoo.com";
+  ex:dateBirth "1946-08-14";
+  ex:houseNumber "101";
+  ex:street ex:Hundhaupten;
+  ex:postCode "76872";
+  ex:city ex:Minfeld;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Gesamthochschule%20Kassel;
+  ex:sentiment "0.18758"^^xsd:float;
+  ex:fraudScore "0.01826"^^xsd:float;
+  ex:enrollment "1995-09-11";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:%20 .
+
+ex:Hundhaupten a ex:Street;
+  rdfs:label "Hundhaupten" .
+
+ex:Minfeld a ex:City;
+  rdfs:label "Minfeld" .
+
+ex:Universität%20Gesamthochschule%20Kassel rdfs:label "Universität Gesamthochschule Kassel" .
+
+ex:K150Q10 a ex:Customer;
+  foaf:givenname "Swantje";
+  foaf:surname "Sandweg";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:dateBirth "1985-06-23";
+  ex:houseNumber "36";
+  ex:street ex:Zum%20Bind;
+  ex:postCode "35614";
+  ex:city ex:Aßlar;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Hannover;
+  ex:sentiment "0.35272"^^xsd:float;
+  ex:fraudScore "0.00532"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "2006-08-18";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Zum%20Bind a ex:Street;
+  rdfs:label "Zum Bind" .
+
+ex:Aßlar a ex:City;
+  rdfs:label "Aßlar" .
+
+ex:Universität%20Hannover rdfs:label "Universität Hannover" .
+
+ex:N151B54 a ex:Customer;
+  foaf:givenname "Kana";
+  foaf:surname "Rottenfusser";
+  foaf:gender "male";
+  ex:email "kana.rottenfusser@yahoo.com";
+  ex:dateBirth "1941-10-24";
+  ex:houseNumber "87";
+  ex:street ex:Zschöppichen;
+  ex:postCode "65830";
+  ex:city ex:Kriftel;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Universität%20Rostock;
+  ex:sentiment "0.06053"^^xsd:float;
+  ex:fraudScore "0.02969"^^xsd:float;
+  ex:enrollment "1996-01-25";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+ex:Zschöppichen a ex:Street;
+  rdfs:label "Zschöppichen" .
+
+ex:Kriftel a ex:City;
+  rdfs:label "Kriftel" .
+
+ex:9 rdfs:label "9"^^xsd:float .
+
+ex:Universität%20Rostock rdfs:label "Universität Rostock" .
+
+ex:Y152U60 a ex:Customer;
+  foaf:givenname "Johannes";
+  foaf:surname "Luszas";
+  foaf:gender "woman";
+  ex:email "johannes@gmx.de";
+  ex:dateBirth "1974-02-28";
+  ex:houseNumber "85";
+  ex:street ex:In%20der%20Würdenwiese;
+  ex:postCode "54518";
+  ex:city ex:Esch;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Technische%20Universität%20Berlin;
+  ex:sentiment "0.26827"^^xsd:float;
+  ex:fraudScore "0.03357"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2009-11-22";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:single .
+
+ex:In%20der%20Würdenwiese a ex:Street;
+  rdfs:label "In der Würdenwiese" .
+
+ex:Esch a ex:City;
+  rdfs:label "Esch" .
+
+ex:8 rdfs:label "8"^^xsd:float .
+
+ex:Technische%20Universität%20Berlin rdfs:label "Technische Universität Berlin" .
+
+ex:O153R52 a ex:Customer;
+  foaf:givenname "Max";
+  foaf:surname "Armann";
+  foaf:gender "male";
+  ex:religion ex:Shintoism;
+  ex:email "max-peter.armann@yahoo.com";
+  ex:dateBirth "1960-04-29";
+  ex:houseNumber "25";
+  ex:street <http://example.com/#Gadebuscher%20Str.>;
+  ex:postCode "68623";
+  ex:city ex:Lampertheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:32;
+  ex:university ex:Technische%20Universität%20Clausthal;
+  ex:sentiment "0.19501"^^xsd:float;
+  ex:fraudScore "0.052820000000000006"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "1992-11-27";
+  ex:hobby ex:music;
+  ex:maritalStatus ex:single .
+
+ex:Shintoism rdfs:label "Shintoism" .
+
+<http://example.com/#Gadebuscher%20Str.> a ex:Street;
+  rdfs:label "Gadebuscher Str." .
+
+ex:Lampertheim a ex:City;
+  rdfs:label "Lampertheim" .
+
+ex:32 rdfs:label "32"^^xsd:float .
+
+ex:Technische%20Universität%20Clausthal rdfs:label "Technische Universität Clausthal" .
+
+ex:music rdfs:label "music" .
+
+ex:O154H23 a ex:Customer;
+  foaf:givenname "Anntte";
+  foaf:surname "Schröder";
+  foaf:gender "male";
+  ex:email "anntte@web.de";
+  ex:dateBirth "1999-06-30";
+  ex:houseNumber " ";
+  ex:street ex:Werningkamp;
+  ex:postCode "90000";
+  ex:city ex:Sulyotarjan;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Universität%20Rostock;
+  ex:sentiment "0.5898"^^xsd:float;
+  ex:fraudScore "0.00617"^^xsd:float;
+  ex:enrollment "1992-06-18";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:married .
+
+ex:Werningkamp a ex:Street;
+  rdfs:label "Werningkamp" .
+
+ex:Sulyotarjan a ex:City;
+  rdfs:label "Sulyotarjan" .
+
+ex:biathlon rdfs:label "biathlon" .
+
+ex:H155O61 a ex:Customer;
+  foaf:givenname "Natse";
+  foaf:surname "Rafschneider";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "natse.rafschneider@gmx.de";
+  ex:dateBirth "1972-09-03";
+  ex:houseNumber " ";
+  ex:street ex:Rahmengasse;
+  ex:postCode "54597";
+  ex:city ex:Burbach;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Fachhochschule%20Karlsruhe;
+  ex:sentiment "0.8847799999999999"^^xsd:float;
+  ex:fraudScore "0.09537"^^xsd:float;
+  ex:enrollment "1995-03-08";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:divorced .
+
+ex:Rahmengasse a ex:Street;
+  rdfs:label "Rahmengasse" .
+
+ex:Burbach a ex:City;
+  rdfs:label "Burbach" .
+
+ex:Fachhochschule%20Karlsruhe rdfs:label "Fachhochschule Karlsruhe" .
+
+ex:running rdfs:label "running" .
+
+ex:G156K57 a ex:Customer;
+  foaf:givenname "Tamaranca";
+  foaf:surname "Fey";
+  foaf:gender "woman";
+  ex:email "tamaranca.fey@gmail.com";
+  ex:dateBirth "1975-03-05";
+  ex:houseNumber "60";
+  ex:street ex:Sandbergsfeld;
+  ex:postCode "66649";
+  ex:city ex:Oberthal;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:9;
+  ex:university ex:Ruhr-Universität%20Bochum;
+  ex:sentiment "0.19424"^^xsd:float;
+  ex:fraudScore "0.00292"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "1997-08-20";
+  ex:hobby ex:maraton%20running;
+  ex:maritalStatus ex:divorced .
+
+ex:Sandbergsfeld a ex:Street;
+  rdfs:label "Sandbergsfeld" .
+
+ex:Oberthal a ex:City;
+  rdfs:label "Oberthal" .
+
+ex:Ruhr-Universität%20Bochum rdfs:label "Ruhr-Universität Bochum" .
+
+ex:maraton%20running rdfs:label "maraton running" .
+
+ex:I157O88 a ex:Customer;
+  foaf:givenname "Joanna";
+  foaf:surname "Ueberle";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "joanna-christina@web.de";
+  ex:dateBirth "1986-12-26";
+  ex:houseNumber "2";
+  ex:street ex:Groschlagweg;
+  ex:postCode "45899";
+  ex:city ex:Gelsenkirchen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:13;
+  ex:university ex:GISMA%20Business%20School;
+  ex:sentiment "0.58128"^^xsd:float;
+  ex:fraudScore "0.00485"^^xsd:float;
+  ex:enrollment "2001-03-12";
+  ex:hobby ex:hiking;
+  ex:maritalStatus ex:single .
+
+ex:Groschlagweg a ex:Street;
+  rdfs:label "Groschlagweg" .
+
+ex:Gelsenkirchen a ex:City;
+  rdfs:label "Gelsenkirchen" .
+
+ex:13 rdfs:label "13"^^xsd:float .
+
+ex:GISMA%20Business%20School rdfs:label "GISMA Business School" .
+
+ex:N158E50 a ex:Customer;
+  foaf:givenname "Teyfik";
+  foaf:surname "Reiniger";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "teyfik9@gmx.de";
+  ex:dateBirth "1945-03-29";
+  ex:houseNumber "89";
+  ex:street ex:Ausserfeld;
+  ex:postCode "59821";
+  ex:city ex:Arnsberg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Universität%20Mannheim;
+  ex:sentiment "0.8391"^^xsd:float;
+  ex:fraudScore "0.09569"^^xsd:float;
+  ex:enrollment "1992-04-10";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Ausserfeld a ex:Street;
+  rdfs:label "Ausserfeld" .
+
+ex:Arnsberg a ex:City;
+  rdfs:label "Arnsberg" .
+
+ex:R159H91 a ex:Customer;
+  foaf:givenname "Sean";
+  foaf:surname "Bouillon";
+  foaf:gender "woman";
+  ex:email "sean48@gmail.com";
+  ex:dateBirth "1976-09-22";
+  ex:houseNumber "34";
+  ex:street <http://example.com/#Harfenstr.>;
+  ex:postCode "53721";
+  ex:city ex:Siegburg;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Benedict%20Schools;
+  ex:sentiment "0.21015"^^xsd:float;
+  ex:fraudScore "0.00316"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "2006-08-23";
+  ex:hobby ex:swimming;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Harfenstr.> a ex:Street;
+  rdfs:label "Harfenstr." .
+
+ex:Siegburg a ex:City;
+  rdfs:label "Siegburg" .
+
+ex:Benedict%20Schools rdfs:label "Benedict Schools" .
+
+ex:swimming rdfs:label "swimming" .
+
+ex:K160M31 a ex:Customer;
+  foaf:givenname "Burghart";
+  foaf:surname "Mickan";
+  foaf:gender "woman";
+  ex:email "burghart.mickan@yahoo.com";
+  ex:dateBirth "1953-06-15";
+  ex:houseNumber "64";
+  ex:street <http://example.com/#Dientzenhoferstr.>;
+  ex:postCode "34117";
+  ex:city ex:Kassel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:10;
+  ex:university ex:Universität%20Potsdam;
+  ex:sentiment "0.5834199999999999"^^xsd:float;
+  ex:fraudScore "0.02506"^^xsd:float;
+  ex:enrollment "1998-01-25";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Dientzenhoferstr.> a ex:Street;
+  rdfs:label "Dientzenhoferstr." .
+
+ex:Kassel a ex:City;
+  rdfs:label "Kassel" .
+
+ex:10 rdfs:label "10"^^xsd:float .
+
+ex:K161K41 a ex:Customer;
+  foaf:givenname "Thomas";
+  foaf:surname "Ditschun";
+  foaf:gender "male";
+  ex:email "thomascorwin2907@yahoo.com";
+  ex:dateBirth "1986-09-06";
+  ex:houseNumber "51";
+  ex:street <http://example.com/#Reißhausstr.>;
+  ex:postCode "17050";
+  ex:city ex:Freital;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Benedict%20International%20Education%20Group;
+  ex:sentiment "0.22217"^^xsd:float;
+  ex:fraudScore "0.02118"^^xsd:float;
+  ex:enrollment "2016-02-24";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Reißhausstr.> a ex:Street;
+  rdfs:label "Reißhausstr." .
+
+ex:Freital a ex:City;
+  rdfs:label "Freital" .
+
+ex:Benedict%20International%20Education%20Group rdfs:label "Benedict International Education Group" .
+
+ex:K162D30 a ex:Customer;
+  foaf:givenname "Tuba";
+  foaf:surname "Etzler";
+  foaf:gender "woman";
+  ex:email "tuba.etzler@gmail.com";
+  ex:dateBirth "1938-05-04";
+  ex:houseNumber "89";
+  ex:street <http://example.com/#Dr.-Schoenemann-Str.>;
+  ex:postCode "86972";
+  ex:city ex:Altenstadt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Julius-Maximilians-Universität;
+  ex:sentiment "0.24625"^^xsd:float;
+  ex:fraudScore "0.01015"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "1994-05-12";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Dr.-Schoenemann-Str.> a ex:Street;
+  rdfs:label "Dr.-Schoenemann-Str." .
+
+ex:Altenstadt a ex:City;
+  rdfs:label "Altenstadt" .
+
+ex:Julius-Maximilians-Universität rdfs:label "Julius-Maximilians-Universität" .
+
+ex:Q163A92 a ex:Customer;
+  foaf:givenname "Mykhaylo";
+  foaf:surname "Sarcevic";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1977-02-01";
+  ex:houseNumber "56";
+  ex:street <http://example.com/#Dillinger%20Str.>;
+  ex:postCode "96487";
+  ex:city ex:Dörfles-Esbach;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:12;
+  ex:university ex:Rudolf%20Steiner%20University%20College;
+  ex:sentiment "0.72685"^^xsd:float;
+  ex:fraudScore "0.01286"^^xsd:float;
+  ex:enrollment "1984-08-05";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Dillinger%20Str.> a ex:Street;
+  rdfs:label "Dillinger Str." .
+
+ex:Dörfles-Esbach a ex:City;
+  rdfs:label "Dörfles-Esbach" .
+
+ex:DE rdfs:label "DE" .
+
+ex:12 rdfs:label "12"^^xsd:float .
+
+ex:Rudolf%20Steiner%20University%20College rdfs:label "Rudolf Steiner University College" .
+
+ex:watching%20movies rdfs:label "watching movies" .
+
+ex:married rdfs:label "married" .
+
+ex:P164F73 a ex:Customer;
+  foaf:givenname "Azis";
+  foaf:surname "Dobroschke";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "azisrahman.dobroschke@gmx.de";
+  ex:dateBirth "1961-07-18";
+  ex:houseNumber "35";
+  ex:street <http://example.com/#Königsgartenstr.>;
+  ex:postCode "76189";
+  ex:city ex:Karlsruhe;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Bielefeld;
+  ex:sentiment "0.8363799999999999"^^xsd:float;
+  ex:fraudScore "0.01835"^^xsd:float;
+  ex:enrollment "1998-03-22";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Christianity rdfs:label "Christianity" .
+
+ex:Customer a ex:Person .
+
+<http://example.com/#Königsgartenstr.> a ex:Street;
+  rdfs:label "Königsgartenstr." .
+
+ex:Karlsruhe a ex:City;
+  rdfs:label "Karlsruhe" .
+
+ex:5 rdfs:label "5"^^xsd:float .
+
+ex:Universität%20Bielefeld rdfs:label "Universität Bielefeld" .
+
+ex:football rdfs:label "football" .
+
+ex:single rdfs:label "single" .
+
+ex:F165F59 a ex:Customer;
+  foaf:givenname "Gesua";
+  foaf:surname "Pretzlaw";
+  foaf:gender "male";
+  ex:email "gesua.pretzlaw4335@gmail.com";
+  ex:dateBirth "1957-10-28";
+  ex:houseNumber "55";
+  ex:street ex:Am%20Anschlag;
+  ex:postCode "84453";
+  ex:city ex:Mühldorf%20a.%20Inn;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:38;
+  ex:university ex:Technische%20Universität%20Chemnitz-Zwickau;
+  ex:sentiment "0.6217699999999999"^^xsd:float;
+  ex:fraudScore "0.005220000000000001"^^xsd:float;
+  ex:enrollment "2004-05-28";
+  ex:hobby ex:collecting%20stamps%20and%20music;
+  ex:maritalStatus ex:single .
+
+ex:Am%20Anschlag a ex:Street;
+  rdfs:label "Am Anschlag" .
+
+ex:Mühldorf%20a.%20Inn a ex:City;
+  rdfs:label "Mühldorf a. Inn" .
+
+ex:38 rdfs:label "38"^^xsd:float .
+
+ex:Technische%20Universität%20Chemnitz-Zwickau rdfs:label "Technische Universität Chemnitz-Zwickau" .
+
+ex:collecting%20stamps%20and%20music rdfs:label "collecting stamps and music" .
+
+ex:E166M55 a ex:Customer;
+  foaf:givenname "Anna";
+  foaf:surname "Hoffer";
+  foaf:gender "male";
+  ex:email "annamarta77@gmail.com";
+  ex:dateBirth "1981-01-07";
+  ex:houseNumber "32";
+  ex:street ex:Klingelpütz;
+  ex:postCode "71732";
+  ex:city ex:Tamm;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Gesamthochschule%20Essen;
+  ex:sentiment "0.98041"^^xsd:float;
+  ex:fraudScore "0.01922"^^xsd:float;
+  ex:enrollment "1999-05-19";
+  ex:maritalStatus ex:single .
+
+ex:Klingelpütz a ex:Street;
+  rdfs:label "Klingelpütz" .
+
+ex:Tamm a ex:City;
+  rdfs:label "Tamm" .
+
+ex:Universität%20Gesamthochschule%20Essen rdfs:label "Universität Gesamthochschule Essen" .
+
+ex:T167R88 a ex:Customer;
+  foaf:givenname "Akyüz";
+  foaf:surname "Preis";
+  foaf:gender "woman";
+  ex:email "akyüz.preis2160@gmx.de";
+  ex:dateBirth "1975-12-18";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Karl-Städtler-Str.>;
+  ex:postCode "82041";
+  ex:city ex:Deisenhofen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:8;
+  ex:university ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities;
+  ex:sentiment "0.94661"^^xsd:float;
+  ex:fraudScore "0.01576"^^xsd:float;
+  ex:degree ex:Computer%20Science;
+  ex:enrollment "2015-12-17";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Karl-Städtler-Str.> a ex:Street;
+  rdfs:label "Karl-Städtler-Str." .
+
+ex:Deisenhofen a ex:City;
+  rdfs:label "Deisenhofen" .
+
+ex:AT rdfs:label "AT" .
+
+ex:8 rdfs:label "8"^^xsd:float .
+
+ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities rdfs:label "Swiss Association for Private Schools and Universities" .
+
+ex:Computer%20Science rdfs:label "Computer Science" .
+
+ex:Z168G58 a ex:Customer;
+  foaf:givenname "Sarnada";
+  foaf:surname "Klopsch";
+  foaf:gender "woman";
+  ex:email "sarnada.klopsch@yahoo.com";
+  ex:dateBirth "1991-06-27";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Hahnenbergstr.>;
+  ex:postCode "23843";
+  ex:city ex:Bad%20Oldesloe;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Universität%20Passau;
+  ex:sentiment "0.37106"^^xsd:float;
+  ex:fraudScore "0.0101"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "1986-04-02";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Hahnenbergstr.> a ex:Street;
+  rdfs:label "Hahnenbergstr." .
+
+ex:Bad%20Oldesloe a ex:City;
+  rdfs:label "Bad Oldesloe" .
+
+ex:6 rdfs:label "6"^^xsd:float .
+
+ex:Universität%20Passau rdfs:label "Universität Passau" .
+
+ex:Mathematics rdfs:label "Mathematics" .
+
+ex:%20 rdfs:label " " .
+
+ex:F169C93 a ex:Customer;
+  foaf:givenname "Maicon";
+  foaf:surname "Roither";
+  foaf:gender "male";
+  ex:email "maicon@web.de";
+  ex:dateBirth "1974-12-03";
+  ex:houseNumber "78";
+  ex:street ex:Hinter%20der%20Exter;
+  ex:postCode "24768";
+  ex:city ex:Rendsburg;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Fachhochschule%20Reutlingen;
+  ex:sentiment "0.31997"^^xsd:float;
+  ex:fraudScore "0.036660000000000005"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2017-12-11";
+  ex:maritalStatus ex:married .
+
+ex:Hinter%20der%20Exter a ex:Street;
+  rdfs:label "Hinter der Exter" .
+
+ex:Rendsburg a ex:City;
+  rdfs:label "Rendsburg" .
+
+ex:1 rdfs:label "1"^^xsd:float .
+
+ex:Fachhochschule%20Reutlingen rdfs:label "Fachhochschule Reutlingen" .
+
+ex:I170V48 a ex:Customer;
+  foaf:givenname "Hans";
+  foaf:surname "Reuss";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "hans-reinhard.reuss-lambertz@outlook.com";
+  ex:dateBirth "1981-09-02";
+  ex:houseNumber " ";
+  ex:street ex:Wolfshalde;
+  ex:postCode "42283";
+  ex:city ex:Wuppertal;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:6;
+  ex:university ex:Universität%20Gesamthochschule%20Essen;
+  ex:sentiment "0.45863"^^xsd:float;
+  ex:fraudScore "0.00493"^^xsd:float;
+  ex:enrollment "1986-08-24";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:%20 .
+
+ex:Islam rdfs:label "Islam" .
+
+ex:Wolfshalde a ex:Street;
+  rdfs:label "Wolfshalde" .
+
+ex:Wuppertal a ex:City;
+  rdfs:label "Wuppertal" .
+
+ex:L171V98 a ex:Customer;
+  foaf:givenname "Quintus";
+  foaf:surname "Dittchrist";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "quintus39@gmail.com";
+  ex:dateBirth "1965-10-27";
+  ex:houseNumber "74";
+  ex:street ex:Kaisermühlenweg;
+  ex:postCode "71665";
+  ex:city ex:Vaihingen%20an%20der%20Enz;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:17;
+  ex:university ex:Technische%20Universität%20Clausthal;
+  ex:sentiment "0.8609"^^xsd:float;
+  ex:fraudScore "0.01524"^^xsd:float;
+  ex:enrollment "2010-05-01";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:widow .
+
+ex:Kaisermühlenweg a ex:Street;
+  rdfs:label "Kaisermühlenweg" .
+
+ex:Vaihingen%20an%20der%20Enz a ex:City;
+  rdfs:label "Vaihingen an der Enz" .
+
+ex:17 rdfs:label "17"^^xsd:float .
+
+ex:Technische%20Universität%20Clausthal rdfs:label "Technische Universität Clausthal" .
+
+ex:biathlon rdfs:label "biathlon" .
+
+ex:widow rdfs:label "widow" .
+
+ex:P172K54 a ex:Customer;
+  foaf:givenname "Barbara";
+  foaf:surname "Pargmann";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "barbara.pargmann@web.de";
+  ex:dateBirth "1988-05-11";
+  ex:houseNumber "20";
+  ex:street <http://example.com/#Breslauerstr.>;
+  ex:postCode "38100";
+  ex:city ex:Braunschweig;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Russian%20and%20Eurasian%20Security%20Network;
+  ex:sentiment "0.5775399999999999"^^xsd:float;
+  ex:fraudScore "0.02439"^^xsd:float;
+  ex:enrollment "2008-09-08";
+  ex:hobby ex:maraton%20running;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Breslauerstr.> a ex:Street;
+  rdfs:label "Breslauerstr." .
+
+ex:Braunschweig a ex:City;
+  rdfs:label "Braunschweig" .
+
+ex:0 rdfs:label "0"^^xsd:float .
+
+ex:Russian%20and%20Eurasian%20Security%20Network rdfs:label "Russian and Eurasian Security Network" .
+
+ex:maraton%20running rdfs:label "maraton running" .
+
+ex:F173Y59 a ex:Customer;
+  foaf:givenname "Hergen";
+  foaf:surname "Sudrow";
+  foaf:gender "woman";
+  ex:religion ex:Judaism;
+  ex:dateBirth "1960-11-22";
+  ex:houseNumber "71";
+  ex:street ex:Am%20Göpel;
+  ex:postCode "40724";
+  ex:city ex:Hilden;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Passau;
+  ex:sentiment "0.75268"^^xsd:float;
+  ex:fraudScore "0.004379999999999999"^^xsd:float;
+  ex:degree ex:Physics;
+  ex:enrollment "2002-03-25";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Judaism rdfs:label "Judaism" .
+
+ex:Am%20Göpel a ex:Street;
+  rdfs:label "Am Göpel" .
+
+ex:Hilden a ex:City;
+  rdfs:label "Hilden" .
+
+ex:Physics rdfs:label "Physics" .
+
+ex:F174A65 a ex:Customer;
+  foaf:givenname "Friedhelm";
+  foaf:surname "Möller";
+  foaf:gender "male";
+  ex:email "friedhelmernst.mölleru.oest@web.de";
+  ex:dateBirth "1973-08-04";
+  ex:houseNumber "17";
+  ex:street <http://example.com/#Johann-Reineke-Str.>;
+  ex:postCode "91443";
+  ex:city ex:Scheinfeld;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:13;
+  ex:university ex:Berlin%20School%20of%20Business%20and%20Innovation;
+  ex:sentiment "0.48236"^^xsd:float;
+  ex:fraudScore "0.01403"^^xsd:float;
+  ex:enrollment "1982-04-08";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Johann-Reineke-Str.> a ex:Street;
+  rdfs:label "Johann-Reineke-Str." .
+
+ex:Scheinfeld a ex:City;
+  rdfs:label "Scheinfeld" .
+
+ex:13 rdfs:label "13"^^xsd:float .
+
+ex:Berlin%20School%20of%20Business%20and%20Innovation rdfs:label "Berlin School of Business and Innovation" .
+
+ex:sport rdfs:label "sport" .
+
+ex:T175L84 a ex:Customer;
+  foaf:givenname "Nadine";
+  foaf:surname "Rissleben";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "nadinemaria606506@gmail.com";
+  ex:dateBirth "1941-02-21";
+  ex:houseNumber "1";
+  ex:street <http://example.com/#Laurentiusstr.>;
+  ex:postCode "48329";
+  ex:city ex:Havixbeck;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:11;
+  ex:university ex:Heinrich-Heine-Universität%20Dässeldorf;
+  ex:sentiment "0.30431"^^xsd:float;
+  ex:fraudScore "0.02383"^^xsd:float;
+  ex:enrollment "2006-05-28";
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Laurentiusstr.> a ex:Street;
+  rdfs:label "Laurentiusstr." .
+
+ex:Havixbeck a ex:City;
+  rdfs:label "Havixbeck" .
+
+ex:11 rdfs:label "11"^^xsd:float .
+
+ex:Heinrich-Heine-Universität%20Dässeldorf rdfs:label "Heinrich-Heine-Universität Dässeldorf" .
+
+ex:M176Q80 a ex:Customer;
+  foaf:givenname "Hürriyet";
+  foaf:surname "Atasoy";
+  foaf:gender "woman";
+  ex:email "hürriyet.atasoy@yahoo.com";
+  ex:dateBirth "1960-08-08";
+  ex:houseNumber "72";
+  ex:street <http://example.com/#Eugen-Rosner-Str.>;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:26;
+  ex:university ex:Freie%20Universität%20Berlin;
+  ex:sentiment "0.69163"^^xsd:float;
+  ex:fraudScore "0.016390000000000002"^^xsd:float;
+  ex:enrollment "2000-08-08";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Eugen-Rosner-Str.> a ex:Street;
+  rdfs:label "Eugen-Rosner-Str." .
+
+ex:Berlin a ex:City;
+  rdfs:label "Berlin" .
+
+ex:26 rdfs:label "26"^^xsd:float .
+
+ex:Freie%20Universität%20Berlin rdfs:label "Freie Universität Berlin" .
+
+ex:A177U14 a ex:Customer;
+  foaf:givenname "Kamila";
+  foaf:surname "Vögerl";
+  foaf:gender "male";
+  ex:email "kamila27517@yahoo.com";
+  ex:dateBirth "1969-08-14";
+  ex:houseNumber " ";
+  ex:street ex:Bermensfeld;
+  ex:postCode "42283";
+  ex:city ex:Wuppertal;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Ernst-Moritz-Arndt-University%20Greifswald;
+  ex:sentiment "0.48285"^^xsd:float;
+  ex:fraudScore "0.00233"^^xsd:float;
+  ex:enrollment "2014-08-19";
+  ex:hobby ex:volleyball;
+  ex:maritalStatus ex:divorced .
+
+ex:Bermensfeld a ex:Street;
+  rdfs:label "Bermensfeld" .
+
+ex:Ernst-Moritz-Arndt-University%20Greifswald rdfs:label "Ernst-Moritz-Arndt-University Greifswald" .
+
+ex:volleyball rdfs:label "volleyball" .
+
+ex:divorced rdfs:label "divorced" .
+
+ex:H178K87 a ex:Customer;
+  foaf:givenname "Gülden";
+  foaf:surname "Gleinig";
+  foaf:gender "woman";
+  ex:religion ex:Buddhism;
+  ex:email "gülden41@yahoo.com";
+  ex:dateBirth "1980-04-11";
+  ex:houseNumber "26";
+  ex:street ex:Springwiesen;
+  ex:postCode "46145";
+  ex:city ex:Oberhausen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Benedict%20Schools;
+  ex:sentiment "0.36918"^^xsd:float;
+  ex:fraudScore "0.02914"^^xsd:float;
+  ex:enrollment "2004-11-29";
+  ex:maritalStatus ex:single .
+
+ex:Buddhism rdfs:label "Buddhism" .
+
+ex:Springwiesen a ex:Street;
+  rdfs:label "Springwiesen" .
+
+ex:Oberhausen a ex:City;
+  rdfs:label "Oberhausen" .
+
+ex:3 rdfs:label "3"^^xsd:float .
+
+ex:Benedict%20Schools rdfs:label "Benedict Schools" .
+
+ex:W179A61 a ex:Customer;
+  foaf:givenname "Lysett";
+  foaf:surname "Schwaz";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "lysett313484@yahoo.com";
+  ex:dateBirth "1990-01-09";
+  ex:houseNumber "70";
+  ex:street <http://example.com/#Königsbrücker%20Str.>;
+  ex:postCode "41352";
+  ex:city ex:Korschenbroich;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Georg-August-Universität%20Göttingen;
+  ex:sentiment "0.40588"^^xsd:float;
+  ex:fraudScore "0.01826"^^xsd:float;
+  ex:enrollment "1995-08-21";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Königsbrücker%20Str.> a ex:Street;
+  rdfs:label "Königsbrücker Str." .
+
+ex:Korschenbroich a ex:City;
+  rdfs:label "Korschenbroich" .
+
+ex:Georg-August-Universität%20Göttingen rdfs:label "Georg-August-Universität Göttingen" .
+
+ex:C180P41 a ex:Customer;
+  foaf:givenname "Medet";
+  foaf:surname "El";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "medet@yahoo.com";
+  ex:dateBirth "1987-07-10";
+  ex:houseNumber "33";
+  ex:street <http://example.com/#Birklestr.>;
+  ex:postCode "83512";
+  ex:city ex:Wasserburg%20a.%20Inn;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:3;
+  ex:university ex:Johannes%20Gutenberg%20Universität;
+  ex:sentiment "0.29796"^^xsd:float;
+  ex:fraudScore "0.0049700000000000005"^^xsd:float;
+  ex:enrollment "2007-03-14";
+  ex:hobby ex:video%20games%20and%20riding%20bicycle;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Birklestr.> a ex:Street;
+  rdfs:label "Birklestr." .
+
+ex:Wasserburg%20a.%20Inn a ex:City;
+  rdfs:label "Wasserburg a. Inn" .
+
+ex:Johannes%20Gutenberg%20Universität rdfs:label "Johannes Gutenberg Universität" .
+
+ex:video%20games%20and%20riding%20bicycle rdfs:label "video games and riding bicycle" .
+
+ex:O181M71 a ex:Customer;
+  foaf:givenname "Burim";
+  foaf:surname "Klehn";
+  foaf:gender "male";
+  ex:email "burim.klehn8969@yahoo.com";
+  ex:dateBirth "2002-05-09";
+  ex:houseNumber "2";
+  ex:street ex:Gaulsheimer%20Weg;
+  ex:postCode "72537";
+  ex:city ex:Mehrstetten;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:GISMA%20Business%20School;
+  ex:sentiment "0.56796"^^xsd:float;
+  ex:fraudScore "0.02427"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2003-01-29";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Gaulsheimer%20Weg a ex:Street;
+  rdfs:label "Gaulsheimer Weg" .
+
+ex:Mehrstetten a ex:City;
+  rdfs:label "Mehrstetten" .
+
+ex:GISMA%20Business%20School rdfs:label "GISMA Business School" .
+
+ex:G182H76 a ex:Customer;
+  foaf:givenname "Ff";
+  foaf:surname "Raonic";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:email "ff112253@gmail.com";
+  ex:dateBirth "1996-07-20";
+  ex:houseNumber "53";
+  ex:street <http://example.com/#Oberensinger%20Str.>;
+  ex:postCode "26835";
+  ex:city ex:Neukamperfehn;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:2;
+  ex:university ex:Ernst-Moritz-Arndt-University%20Greifswald;
+  ex:sentiment "0.39229"^^xsd:float;
+  ex:fraudScore "0.01654"^^xsd:float;
+  ex:enrollment "1983-11-01";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Oberensinger%20Str.> a ex:Street;
+  rdfs:label "Oberensinger Str." .
+
+ex:Neukamperfehn a ex:City;
+  rdfs:label "Neukamperfehn" .
+
+ex:2 rdfs:label "2"^^xsd:float .
+
+ex:H183A71 a ex:Customer;
+  foaf:givenname "Melanija";
+  foaf:surname "Galazka";
+  foaf:gender "male";
+  ex:email "melanija.galazka4466@web.de";
+  ex:dateBirth "1947-02-21";
+  ex:houseNumber "93";
+  ex:street ex:Neumarkt;
+  ex:postCode "82800";
+  ex:city ex:Aue;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:17;
+  ex:university ex:Russian%20and%20Eurasian%20Security%20Network;
+  ex:sentiment "0.25107"^^xsd:float;
+  ex:fraudScore "0.04564"^^xsd:float;
+  ex:degree ex:Business%20Administration;
+  ex:enrollment "1980-11-25";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+ex:Neumarkt a ex:Street;
+  rdfs:label "Neumarkt" .
+
+ex:Aue a ex:City;
+  rdfs:label "Aue" .
+
+ex:Business%20Administration rdfs:label "Business Administration" .
+
+ex:B184F86 a ex:Customer;
+  foaf:givenname "Kristina";
+  foaf:surname "Ucata";
+  foaf:gender "woman";
+  ex:email "kristina-henriette22@gmail.com";
+  ex:dateBirth "1943-05-01";
+  ex:houseNumber "28";
+  ex:street <http://example.com/#Stephanistr.>;
+  ex:postCode "26721";
+  ex:city ex:Emden;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:29;
+  ex:university ex:Universität%20Kaiserslautern;
+  ex:sentiment "0.69687"^^xsd:float;
+  ex:fraudScore "0.00428"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1999-03-02";
+  ex:hobby ex:running;
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Stephanistr.> a ex:Street;
+  rdfs:label "Stephanistr." .
+
+ex:Emden a ex:City;
+  rdfs:label "Emden" .
+
+ex:29 rdfs:label "29"^^xsd:float .
+
+ex:Universität%20Kaiserslautern rdfs:label "Universität Kaiserslautern" .
+
+ex:Finance rdfs:label "Finance" .
+
+ex:running rdfs:label "running" .
+
+ex:O185U28 a ex:Customer;
+  foaf:givenname "Anna";
+  foaf:surname "Dannheim";
+  foaf:gender "male";
+  ex:email "anna-aktharin.dannheim@web.de";
+  ex:dateBirth "1953-12-20";
+  ex:houseNumber "17";
+  ex:street <http://example.com/#Platekaer%20Str.>;
+  ex:postCode "53332";
+  ex:city ex:Bornheim;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:11;
+  ex:university ex:Oslo%20Metropolitan%20University;
+  ex:sentiment "0.47323"^^xsd:float;
+  ex:fraudScore "0.0016300000000000002"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "1994-06-20";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Platekaer%20Str.> a ex:Street;
+  rdfs:label "Platekaer Str." .
+
+ex:Bornheim a ex:City;
+  rdfs:label "Bornheim" .
+
+ex:Oslo%20Metropolitan%20University rdfs:label "Oslo Metropolitan University" .
+
+ex:Psychology rdfs:label "Psychology" .
+
+ex:model%20building rdfs:label "model building" .
+
+ex:I186O52 a ex:Customer;
+  foaf:givenname "Ingolfur";
+  foaf:surname "Hamburg";
+  foaf:gender "male";
+  ex:religion ex:Judaism;
+  ex:email "ingolfurhelgi4132@gmx.de";
+  ex:dateBirth "1964-01-16";
+  ex:houseNumber "42";
+  ex:street ex:Feldstraße;
+  ex:postCode "61200";
+  ex:city ex:Halle%20%28Saale%29;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:21;
+  ex:university ex:Swiss%20Association%20for%20Private%20Schools%20and%20Universities;
+  ex:sentiment "0.32609"^^xsd:float;
+  ex:fraudScore "0.02218"^^xsd:float;
+  ex:enrollment "1994-03-09";
+  ex:hobby ex:riding%20bicycle;
+  ex:maritalStatus ex:single .
+
+ex:Feldstraße a ex:Street;
+  rdfs:label "Feldstraße" .
+
+ex:Halle%20%28Saale%29 a ex:City;
+  rdfs:label "Halle (Saale)" .
+
+ex:21 rdfs:label "21"^^xsd:float .
+
+ex:riding%20bicycle rdfs:label "riding bicycle" .
+
+ex:Z187A49 a ex:Customer;
+  foaf:givenname "Chris";
+  foaf:surname "Engel";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "chris.engel1253@web.de";
+  ex:dateBirth "1967-02-27";
+  ex:houseNumber "32";
+  ex:street <http://example.com/#Gellertstr.>;
+  ex:postCode "73117";
+  ex:city ex:Wangen;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:11;
+  ex:university ex:Universität%20Stuttgart;
+  ex:sentiment "0.71208"^^xsd:float;
+  ex:fraudScore "0.0007599999999999999"^^xsd:float;
+  ex:enrollment "1989-11-14";
+  ex:maritalStatus ex:single .
+
+<http://example.com/#Gellertstr.> a ex:Street;
+  rdfs:label "Gellertstr." .
+
+ex:Wangen a ex:City;
+  rdfs:label "Wangen" .
+
+ex:Universität%20Stuttgart rdfs:label "Universität Stuttgart" .
+
+ex:O188U82 a ex:Customer;
+  foaf:givenname "Andreas";
+  foaf:surname "Tanmazov";
+  foaf:gender "woman";
+  ex:dateBirth "1988-08-04";
+  ex:houseNumber " ";
+  ex:street <http://example.com/#Kretschmerstr.>;
+  ex:postCode "24148";
+  ex:city ex:Kiel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Technische%20Hochschule%20Darmstadt;
+  ex:sentiment "0.86218"^^xsd:float;
+  ex:fraudScore "0.02222"^^xsd:float;
+  ex:enrollment "2002-07-14";
+  ex:hobby ex:model%20building;
+  ex:maritalStatus ex:%20 .
+
+<http://example.com/#Kretschmerstr.> a ex:Street;
+  rdfs:label "Kretschmerstr." .
+
+ex:Kiel a ex:City;
+  rdfs:label "Kiel" .
+
+ex:14 rdfs:label "14"^^xsd:float .
+
+ex:Technische%20Hochschule%20Darmstadt rdfs:label "Technische Hochschule Darmstadt" .
+
+ex:J189I98 a ex:Customer;
+  foaf:givenname "Heinz";
+  foaf:surname "Virkus";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:dateBirth "1977-08-03";
+  ex:houseNumber "10";
+  ex:street ex:Kurzer%20Weg;
+  ex:postCode "65451";
+  ex:city ex:Kelsterbach;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:4;
+  ex:university ex:ETH%20Zurich;
+  ex:sentiment "0.24045"^^xsd:float;
+  ex:fraudScore "0.01066"^^xsd:float;
+  ex:degree ex:Psychology;
+  ex:enrollment "2018-03-06";
+  ex:maritalStatus ex:married .
+
+ex:Kurzer%20Weg a ex:Street;
+  rdfs:label "Kurzer Weg" .
+
+ex:Kelsterbach a ex:City;
+  rdfs:label "Kelsterbach" .
+
+ex:4 rdfs:label "4"^^xsd:float .
+
+ex:ETH%20Zurich rdfs:label "ETH Zurich" .
+
+ex:J190Z92 a ex:Customer;
+  foaf:givenname "Mohamed";
+  foaf:surname "Bulat";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:email "mohamedawad21@gmail.com";
+  ex:dateBirth "1981-10-26";
+  ex:houseNumber "77";
+  ex:street <http://example.com/#Bürabergstr.>;
+  ex:postCode "53797";
+  ex:city ex:Lohmar;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Universität%20Augsburg;
+  ex:sentiment "0.4698600000000001"^^xsd:float;
+  ex:fraudScore "0.0371"^^xsd:float;
+  ex:degree ex:Mathematics;
+  ex:enrollment "2014-02-01";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Bürabergstr.> a ex:Street;
+  rdfs:label "Bürabergstr." .
+
+ex:Lohmar a ex:City;
+  rdfs:label "Lohmar" .
+
+ex:Universität%20Augsburg rdfs:label "Universität Augsburg" .
+
+ex:X191S90 a ex:Customer;
+  foaf:givenname "Wilhelmine";
+  foaf:surname "Mac";
+  foaf:gender "woman";
+  ex:email "wilhelmine19@outlook.com";
+  ex:dateBirth "2002-02-16";
+  ex:houseNumber "59";
+  ex:street ex:Bückeburger%20Weg;
+  ex:postCode "34117";
+  ex:city ex:Kassel;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Hochschule%20Offenburg;
+  ex:sentiment "0.78357"^^xsd:float;
+  ex:fraudScore "0.00986"^^xsd:float;
+  ex:enrollment "2012-02-03";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:single .
+
+ex:Bückeburger%20Weg a ex:Street;
+  rdfs:label "Bückeburger Weg" .
+
+ex:Kassel a ex:City;
+  rdfs:label "Kassel" .
+
+ex:Hochschule%20Offenburg rdfs:label "Hochschule Offenburg" .
+
+ex:M192D37 a ex:Customer;
+  foaf:givenname "Abram";
+  foaf:surname "Pinski";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:email "abram.pinski1367@gmx.de";
+  ex:dateBirth "1977-01-15";
+  ex:houseNumber "1";
+  ex:street ex:Lübberlindenweg;
+  ex:postCode "28237";
+  ex:city ex:Bremen;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Georg-August-Universität%20Göttingen;
+  ex:sentiment "0.83119"^^xsd:float;
+  ex:fraudScore "0.00491"^^xsd:float;
+  ex:enrollment "2019-12-18";
+  ex:hobby ex:sport;
+  ex:maritalStatus ex:divorced .
+
+ex:Lübberlindenweg a ex:Street;
+  rdfs:label "Lübberlindenweg" .
+
+ex:Bremen a ex:City;
+  rdfs:label "Bremen" .
+
+ex:7 rdfs:label "7"^^xsd:float .
+
+ex:E193W49 a ex:Customer;
+  foaf:givenname "Ratree";
+  foaf:surname "Jericho";
+  foaf:gender "male";
+  ex:religion ex:Buddhism;
+  ex:email "ratree.jericho239@web.de";
+  ex:dateBirth "1965-02-09";
+  ex:houseNumber "71";
+  ex:street ex:Wrauster%20Bogen;
+  ex:postCode "18057";
+  ex:city ex:Rostock;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Universität%20Rostock;
+  ex:sentiment "0.08728"^^xsd:float;
+  ex:fraudScore "0.09179"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2004-01-22";
+  ex:hobby ex:video%20games;
+  ex:maritalStatus ex:single .
+
+ex:Wrauster%20Bogen a ex:Street;
+  rdfs:label "Wrauster Bogen" .
+
+ex:Rostock a ex:City;
+  rdfs:label "Rostock" .
+
+ex:Universität%20Rostock rdfs:label "Universität Rostock" .
+
+ex:Economics rdfs:label "Economics" .
+
+ex:video%20games rdfs:label "video games" .
+
+ex:Z194S23 a ex:Customer;
+  foaf:givenname "Un";
+  foaf:surname "Saphira";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1938-08-03";
+  ex:houseNumber "2";
+  ex:street <http://example.com/#Neustadtstr.>;
+  ex:postCode "00000";
+  ex:city ex:Adresse%20unbekannt;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:1;
+  ex:university ex:Universität%20Passau;
+  ex:sentiment "0.30334"^^xsd:float;
+  ex:fraudScore "0.03085"^^xsd:float;
+  ex:enrollment "1988-07-27";
+  ex:hobby ex:horse%20riding;
+  ex:maritalStatus ex:divorced .
+
+<http://example.com/#Neustadtstr.> a ex:Street;
+  rdfs:label "Neustadtstr." .
+
+ex:Adresse%20unbekannt a ex:City;
+  rdfs:label "Adresse unbekannt" .
+
+ex:horse%20riding rdfs:label "horse riding" .
+
+ex:K195M99 a ex:Customer;
+  foaf:givenname "Maercel";
+  foaf:surname "Seik";
+  foaf:gender "male";
+  ex:religion ex:Islam;
+  ex:email "maercel-mario.seik@web.de";
+  ex:dateBirth "1941-05-17";
+  ex:houseNumber "2";
+  ex:street ex:Zum%20Erlengrund;
+  ex:postCode "98634";
+  ex:city ex:Wasungen;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:4;
+  ex:university ex:Universität%20Köln;
+  ex:sentiment "0.14864000000000002"^^xsd:float;
+  ex:fraudScore "0.03713"^^xsd:float;
+  ex:degree ex:Economics;
+  ex:enrollment "2016-12-13";
+  ex:hobby ex:collecting%20stamps%20and%20horse%20riding;
+  ex:maritalStatus ex:single .
+
+ex:Zum%20Erlengrund a ex:Street;
+  rdfs:label "Zum Erlengrund" .
+
+ex:Wasungen a ex:City;
+  rdfs:label "Wasungen" .
+
+ex:Universität%20Köln rdfs:label "Universität Köln" .
+
+ex:collecting%20stamps%20and%20horse%20riding rdfs:label "collecting stamps and horse riding" .
+
+ex:I196C95 a ex:Customer;
+  foaf:givenname "Vjaceslav";
+  foaf:surname "Mösbauer";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1981-06-23";
+  ex:houseNumber "9";
+  ex:street ex:Katharina-Petersen-Weg;
+  ex:postCode "63776";
+  ex:city ex:Mömbris;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:14;
+  ex:university ex:Universität%20Augsburg;
+  ex:sentiment "0.30471"^^xsd:float;
+  ex:fraudScore "0.04499"^^xsd:float;
+  ex:enrollment "2002-02-09";
+  ex:hobby ex:running%20and%20watching%20movies;
+  ex:maritalStatus ex:single .
+
+ex:Katharina-Petersen-Weg a ex:Street;
+  rdfs:label "Katharina-Petersen-Weg" .
+
+ex:Mömbris a ex:City;
+  rdfs:label "Mömbris" .
+
+ex:running%20and%20watching%20movies rdfs:label "running and watching movies" .
+
+ex:T197K46 a ex:Customer;
+  foaf:givenname "Peter";
+  foaf:surname "Olivier";
+  foaf:gender "woman";
+  ex:religion ex:Shintoism;
+  ex:email "peterjoseph40@outlook.com";
+  ex:dateBirth "1994-02-05";
+  ex:houseNumber "60";
+  ex:street <http://example.com/#Siebekingstr.>;
+  ex:postCode "99085";
+  ex:city ex:Erfurt;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:5;
+  ex:university ex:Universität%20Konstanz;
+  ex:sentiment "0.5653100000000001"^^xsd:float;
+  ex:fraudScore "0.00508"^^xsd:float;
+  ex:degree ex:Finance;
+  ex:enrollment "1990-07-14";
+  ex:hobby ex:horse%20riding%20and%20football;
+  ex:maritalStatus ex:single .
+
+ex:Shintoism rdfs:label "Shintoism" .
+
+<http://example.com/#Siebekingstr.> a ex:Street;
+  rdfs:label "Siebekingstr." .
+
+ex:Erfurt a ex:City;
+  rdfs:label "Erfurt" .
+
+ex:Universität%20Konstanz rdfs:label "Universität Konstanz" .
+
+ex:horse%20riding%20and%20football rdfs:label "horse riding and football" .
+
+ex:Y198D21 a ex:Customer;
+  foaf:givenname "Debora";
+  foaf:surname "Maykopf";
+  foaf:gender "woman";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1971-01-22";
+  ex:houseNumber " ";
+  ex:street ex:Schulzenhof;
+  ex:postCode "65830";
+  ex:city ex:Kriftel;
+  ex:country ex:DE;
+  ex:customerLoyalty ex:7;
+  ex:university ex:Heinrich-Heine-Universität%20Dässeldorf;
+  ex:sentiment "0.54501"^^xsd:float;
+  ex:fraudScore "0.03019"^^xsd:float;
+  ex:enrollment "1990-05-31";
+  ex:hobby ex:hiking%20and%20riding%20bicycle;
+  ex:maritalStatus ex:married .
+
+ex:Schulzenhof a ex:Street;
+  rdfs:label "Schulzenhof" .
+
+ex:Kriftel a ex:City;
+  rdfs:label "Kriftel" .
+
+ex:hiking%20and%20riding%20bicycle rdfs:label "hiking and riding bicycle" .
+
+ex:F199K48 a ex:Customer;
+  foaf:givenname "Sevkige";
+  foaf:surname "Knur";
+  foaf:gender "woman";
+  ex:email "sevkige.knur@yahoo.com";
+  ex:dateBirth "1964-07-01";
+  ex:houseNumber "36";
+  ex:street <http://example.com/#Virmondstr.>;
+  ex:postCode "12101";
+  ex:city ex:Berlin;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:12;
+  ex:university ex:Universität%20Karlsruhe;
+  ex:sentiment "0.28099"^^xsd:float;
+  ex:fraudScore "0.03727"^^xsd:float;
+  ex:enrollment "1982-02-11";
+  ex:hobby ex:watching%20movies;
+  ex:maritalStatus ex:married .
+
+<http://example.com/#Virmondstr.> a ex:Street;
+  rdfs:label "Virmondstr." .
+
+ex:Universität%20Karlsruhe rdfs:label "Universität Karlsruhe" .
+
+ex:A200D31 a ex:Customer;
+  foaf:givenname "Benedetto";
+  foaf:surname "Schlichte";
+  foaf:gender "woman";
+  ex:religion ex:Islam;
+  ex:email "benedetto.schlichte6146@gmx.de";
+  ex:dateBirth "1996-04-25";
+  ex:houseNumber "87";
+  ex:street ex:Schloßring;
+  ex:postCode "36341";
+  ex:city ex:Lauterbach%20%28Hessen%29;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Georg-August-Universität%20Göttingen;
+  ex:sentiment "0.28358"^^xsd:float;
+  ex:fraudScore "0.04165"^^xsd:float;
+  ex:enrollment "1990-08-16";
+  ex:hobby ex:football;
+  ex:maritalStatus ex:single .
+
+ex:Schloßring a ex:Street;
+  rdfs:label "Schloßring" .
+
+ex:Lauterbach%20%28Hessen%29 a ex:City;
+  rdfs:label "Lauterbach (Hessen)" .
+
+ex:P201C68 a ex:Customer;
+  foaf:givenname "Eliana";
+  foaf:surname "Marchl";
+  foaf:gender "male";
+  ex:religion ex:Christianity;
+  ex:dateBirth "1994-08-12";
+  ex:houseNumber "49";
+  ex:street ex:Wittumhalde;
+  ex:postCode "79725";
+  ex:city ex:Laufenburg%20%28Baden%29;
+  ex:country ex:AT;
+  ex:customerLoyalty ex:0;
+  ex:university ex:Rudolf%20Steiner%20University%20College;
+  ex:sentiment "0.74337"^^xsd:float;
+  ex:fraudScore "0.01534"^^xsd:float;
+  ex:enrollment "2010-03-17";
+  ex:hobby ex:biathlon;
+  ex:maritalStatus ex:%20 .
+
+ex:Wittumhalde a ex:Street;
+  rdfs:label "Wittumhalde" .
+
+ex:Laufenburg%20%28Baden%29 a ex:City;
+  rdfs:label "Laufenburg (Baden)" .
+
+
+_:blankNode rdfs:label "Blank node" .
