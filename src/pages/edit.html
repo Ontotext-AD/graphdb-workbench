@@ -38,7 +38,7 @@
                         <form name="newRowPredicate" novalidate>
                             <input required uri name="value"
                                    placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
-                                   class="form-control" type="text" ng-model="newRow.predicate">
+                                   class="form-control predicate-input" type="text" ng-model="newRow.predicate">
 
                             <div ng-show="predicate_new.$submitted || predicate_new.value.$touched">
                                 <p ng-show="predicate_new.value.$error.required"
@@ -46,16 +46,19 @@
                                     {{'complete.short.iri.warning' | translate}}
                                 </p>
                             </div>
-                            <ul class="list-inline">
-                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
-                                                                           ng-click="newRow.predicate = namespace.uri"
-                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                            <ul class="list-inline predicate-suggestions">
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item">
+                                    <a href
+                                       ng-click="newRow.predicate = namespace.uri"
+                                       class="pointer predicate-suggestion">{{namespace.prefix}}
+                                    </a>
+                                </li>
                             </ul>
                         </form>
                     </td>
                     <td style="vertical-align: top;">
                         <form name="newRowObject" novalidate>
-                            <select class="form-control mb-1" ng-model="newRow.object.type">
+                            <select class="form-control mb-1 object-type-selector" ng-model="newRow.object.type">
                                 <option value="uri">{{'iri.label' | translate}}</option>
                                 <option value="literal">{{'literal.type.index' | translate}}</option>
                             </select>
@@ -69,10 +72,13 @@
                                     {{'complete.short.iri.warning' | translate}}
                                 </p>
                             </div>
-                            <ul class="list-inline" ng-show="newRow.object.type == 'uri'">
-                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
-                                                                           ng-click="newRow.object.value = namespace.uri"
-                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                            <ul class="list-inline object-iri-type-suggestions" ng-show="newRow.object.type == 'uri'">
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item">
+                                    <a href
+                                       ng-click="newRow.object.value = namespace.uri"
+                                       class="pointer object-iri-type-suggestion">{{namespace.prefix}}
+                                    </a>
+                                </li>
                             </ul>
                             <select ng-show="newRow.object.type == 'literal'" class="form-control literalType"
                                     ng-model="newRow.object.datatype">
@@ -90,16 +96,19 @@
                         <form name="newRowContext" novalidate>
                             <input name="" uri
                                    placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
-                                   class="form-control" type="text" ng-model="newRow.context">
+                                   class="form-control context-input" type="text" ng-model="newRow.context">
 
                             <p ng-show="newRow.context && !validateUri(newRow.context)"
                                class="alert alert-info completeUriAlert">
                                 {{'complete.short.iri.warning' | translate}}
                             </p>
                             <ul class="list-inline">
-                                <li ng-repeat="namespace in namespaces" class="list-inline-item"><a href
-                                                                           ng-click="newRow.context = namespace.prefix+':'"
-                                                                           class="pointer">{{namespace.prefix}}</a></li>
+                                <li ng-repeat="namespace in namespaces" class="list-inline-item context-suggestions">
+                                    <a href
+                                       ng-click="newRow.context = namespace.prefix+':'"
+                                       class="pointer context-suggestion">{{namespace.prefix}}
+                                    </a>
+                                </li>
                             </ul>
                         </form>
                     </td>
@@ -173,13 +182,13 @@
             </table>
     </div>
     <div class="text-xs-right">
-		<button class="btn btn-secondary"
+		<button class="btn btn-secondary view-trig-btn"
                 ng-disabled="statements.length == 0"
                 gdb-tooltip="{{'view.resource.trig.format.tooltip' | translate}}"
                 ng-click="viewTrig()">
             {{'view.trig.format.label' | translate}}
         </button>
-        <button class="btn btn-primary"
+        <button class="btn btn-primary save-btn"
                 gdb-tooltip="{{'save.changes.label' | translate}}"
                 ng-click="save()">
             {{'common.save.btn' | translate}}

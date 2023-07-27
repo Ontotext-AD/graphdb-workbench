@@ -15,17 +15,17 @@
 
             <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
-               class="btn btn-link">
+               class="btn btn-link edit-resource-link">
                 <span class="icon-edit"></span>
             </a>
         </h1>
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
         <p>
-            <span>{{'source.label' | translate}}:</span>&nbsp;<a href="{{details.uri}}">{{details.uri}}</a>
+            <span>{{'source.label' | translate}}:</span>&nbsp;<a class="source-link" href="{{details.uri}}">{{details.uri}}</a>
         </p>
         <p ng-show="isContextAvailable()">
-            <span>{{'context.label' | translate}}:</span>&nbsp;<a href="{{details.context}}">{{details.context}}</a>
+            <span>{{'context.label' | translate}}:</span>&nbsp;<a class="context-link" href="{{details.context}}">{{details.context}}</a>
         </p>
     </div>
 
@@ -50,10 +50,11 @@
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
                     ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inference"
-                    ng-change="changeInference(inference)" class="form-control form-control-sm" ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'"></select>
+                    ng-change="changeInference(inference)" class="form-control form-control-sm"
+                    ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'"></select>
         </label>
 
-        <button type="button" class="btn btn-link" ng-model="sameAs"
+        <button type="button" class="btn btn-link same-as-btn" ng-model="sameAs"
                 ng-class="loading ? 'disabled' : ''"
                 ng-show="inference != 'explicit'"
                 ng-click="sameAs = !sameAs; exploreResource()"
@@ -64,7 +65,7 @@
                   ng-class="{'icon-sameas-on':sameAs, 'icon-sameas-off':!sameAs}"></span>
         </button>
 
-        <button type="button" class="btn btn-sm" ng-model="blanks"
+        <button type="button" class="btn btn-sm show-blank-nodes-btn" ng-model="blanks"
                 ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
                 uib-btn-checkbox btn-checkbox-true="true"
                 btn-checkbox-false="false" ng-change="exploreResource()">
@@ -83,7 +84,7 @@
             </ul>
         </div>
 
-        <button type="button" role="button" class="btn btn-primary btn-sm"
+        <button type="button" role="button" class="btn btn-primary btn-sm visual-graph-btn"
                 uib-popover="{{'explore.graph.visually.popover' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
