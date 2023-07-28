@@ -1,7 +1,7 @@
 import HomeSteps from "../../steps/home-steps";
 import {ResourceSteps} from "../../steps/resource/resource-steps";
-import {GraphsVisualizationsSteps} from "../../steps/explore/graphs-visualizations-steps";
 import {QueryStubs} from "../../stubs/yasgui/query-stubs";
+import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE = 'http:%2F%2Fexample.com%2F%2320';
@@ -11,7 +11,7 @@ const CONTEXT_EXPLICIT = 'http://www.ontotext.com/explicit';
 const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2F%23City';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
 
-describe('', () => {
+describe('Resource view', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'repository-' + Date.now();
@@ -62,7 +62,7 @@ describe('', () => {
         ResourceSteps.clickOnVisualGraphButton();
 
         // Then I expect to be redirected to explore graph view.
-        GraphsVisualizationsSteps.verifyUrl();
+        VisualGraphSteps.verifyUrl();
     });
 
     it('should displays results depends on explicit/implicit dropdown', () => {
