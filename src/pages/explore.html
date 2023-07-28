@@ -115,15 +115,15 @@
 
     </div>
 
-    <div id="selection" class="selection mb-1" ng-init="roles = ['subject', 'predicate', 'object', 'context', 'all']">
+    <div id="selection" class="selection mb-1">
         <ul class="nav nav-tabs">
-            <li ng-repeat="roleVar in roles" class="nav-item">
+            <li ng-repeat="role in roles" class="nav-item">
                 <a class="nav-link" href
-                   ng-click="changeRole(roleVar)"
-                   ng-class="resourceInfo.role === roleVar ? 'active' : (loading ? 'disabled': '')"
+                   ng-click="changeRole(role)"
+                   ng-class="resourceInfo.role === role ? 'active' : (loading ? 'disabled': '')"
                    ng-disabled="loading"
-                   guide-selector="role-{{roleVar}}">
-                    {{roleVar | translate}}
+                   guide-selector="role-{{role}}">
+                    {{role | translate}}
                 </a>
             </li>
         </ul>
