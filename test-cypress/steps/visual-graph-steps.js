@@ -1,4 +1,14 @@
-class VisualGraphSteps {
+const VIEW_URL = '/graphs-visualizations';
+
+export class VisualGraphSteps {
+
+     static visit() {
+         cy.visit(VIEW_URL);
+     }
+
+     static verifyUrl() {
+         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
+     }
 
     static updateGraphConfiguration(namedGraph) {
         cy.get('[data-cy="save-or-update-graph"]').click()
@@ -27,5 +37,3 @@ class VisualGraphSteps {
     }
 
 }
-
-export default VisualGraphSteps;
