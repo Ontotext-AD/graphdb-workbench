@@ -4,6 +4,7 @@ import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {YasrUtils} from "../utils/yasr-utils";
+import {ResourceInfo} from "../models/resource/resource-info";
 
 const modules = [
     'ngCookies',
@@ -58,16 +59,15 @@ function ExploreCtrl(
     $q,
     ExploreRestService) {
 
+    $scope.resourceInfo = undefined;
+
     // Defaults
-    $scope.role = $location.search().role ? $location.search().role : 'subject';
     $scope.loading = false;
     $scope.inferences = [
         {id: 'all', title: 'explore.explicit.implicit'},
         {id: 'explicit', title: 'explore.explicit'},
         {id: 'implicit', title: 'explore.implicit'}
     ];
-    $scope.context = '';
-    $scope.blanks = true;
     $scope.formats = FileTypes;
 
     // TODO remove it
@@ -82,12 +82,17 @@ function ExploreCtrl(
         return 'RESOURCE';
     };
 
+    $scope.toggleSameAs = () => {
+        $scope.resourceInfo.sameAs = !$scope.resourceInfo.sameAs;
+        $scope.exploreResource();
+    };
+
     $scope.getActiveRepository = function () {
         return $repositories.getActiveRepository();
     };
 
     $scope.isTripleResource = function () {
-        return !!$scope.tripleParam;
+        return !!$scope.resourceInfo.triple;
     };
 
     // TODO move this to core
@@ -108,34 +113,33 @@ function ExploreCtrl(
         return ClassInstanceDetailsService.getLocalName(uri);
     };
 
-    $scope.loadResource = function () {
+    const initResourceReference = (resourceInfo) => {
         if ($routeParams.prefix && $routeParams.localName && $scope.usedPrefixes[$routeParams.prefix]) {
             // /resource/PREFIX/LOCAL -> URI = expanded PREFIX + LOCAL
-            $scope.uriParam = $scope.usedPrefixes[$routeParams.prefix] + $routeParams.localName;
+            $scope.resourceInfo.uri = $scope.usedPrefixes[$routeParams.prefix] + $routeParams.localName;
         } else if ($location.search().uri) {
             // uri parameter -> URI
-            $scope.uriParam = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
+            $scope.resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
         } else if ($location.search().triple) {
             // uri parameter -> URI
             $scope.tripleParam = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
         } else {
             // absolute URI -> URI
-            $scope.uriParam = $location.absUrl();
-        }
-        if ($routeParams.context != null) {
-            $scope.context = $routeParams.context;
+            $scope.resourceInfo.uri = $location.absUrl();
         }
         // remove angle brackets which were allowed when filling out the search input field
         // but are forbidden when passing the uri as a query parameter
-        $scope.uriParam = $scope.uriParam && $scope.uriParam.replace(/<|>/g, "");
+        $scope.resourceInfo.uri = $scope.resourceInfo.uri && $scope.resourceInfo.uri.replace(/<|>/g, "");
+    };
 
+    $scope.loadResource = function () {
         // Get resource details
-        ExploreRestService.getResourceDetails($scope.uriParam, $scope.tripleParam, $scope.context)
+        ExploreRestService.getResourceDetails($scope.resourceInfo.uri, $scope.resourceInfo.triple, $scope.resourceInfo.context)
             .success((data) => {
-                $scope.details = data;
-                $scope.context = $scope.details.context;
-                if ($scope.details.uri !== 'object') {
-                    $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
+                $scope.resourceInfo.details = data;
+                $scope.resourceInfo.context = $scope.resourceInfo.details.context;
+                if ($scope.resourceInfo.uri !== 'object') {
+                    $scope.resourceInfo.details.encodeURI = encodeURIComponent($scope.resourceInfo.details.uri);
                 }
             })
             .error((data) => toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)})));
@@ -144,21 +148,21 @@ function ExploreCtrl(
     };
 
     $scope.isContextAvailable = function () {
-        return $scope.context !== null && $scope.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
+        return $scope.resourceInfo.context !== null && $scope.resourceInfo.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
     };
 
     $scope.goToGraphsViz = function () {
-        $location.path('graphs-visualizations').search('uri', $scope.uriParam);
+        $location.path('graphs-visualizations').search('uri', $scope.resourceInfo.uri);
     };
 
     // Get resource table
     $scope.exploreResource = function () {
         toggleOntoLoader(true);
         if ($routeParams.context != null) {
-            $scope.context = $routeParams.context;
+            $scope.resourceInfo.context = $routeParams.context;
         }
         // Remember the role in the URL so the URL is stable and leads back to the same view
-        $location.search('role', $scope.role);
+        $location.search('role', $scope.resourceInfo.role);
         // Changing the URL parameters adds a history entry in the browser history, and this causes incorrect behavior of the browser's back button functionality.
         // To resolve this issue, we replace the current URL without adding a new history entry.
         $location.replace();
@@ -170,22 +174,22 @@ function ExploreCtrl(
     $scope.downloadExport = function (format) {
         let param;
         let encodedURI;
-        if ($scope.uriParam) {
+        if ($scope.resourceInfo.uri) {
             param = 'uri=';
-            encodedURI = encodeURIComponent($scope.uriParam);
+            encodedURI = encodeURIComponent($scope.resourceInfo.uri);
         } else {
             param = 'triple=';
-            encodedURI = encodeURIComponent($scope.tripleParam);
+            encodedURI = encodeURIComponent($scope.resourceInfo.triple);
         }
 
         $http({
             method: 'GET',
             url: 'rest/explore/graph?' + param + encodedURI +
-                "&role=" + $scope.role +
-                "&inference=" + $scope.inference +
-                "&bnodes=" + $scope.blanks +
-                "&sameAs=" + $scope.sameAs +
-                ($scope.context ? "&context=" + encodeURIComponent($scope.context) : ""),
+                "&role=" + $scope.resourceInfo.role +
+                "&inference=" + $scope.resourceInfo.inference +
+                "&bnodes=" + $scope.resourceInfo.blanks +
+                "&sameAs=" + $scope.resourceInfo.sameAs +
+                ($scope.resourceInfo.context ? "&context=" + encodeURIComponent($scope.resourceInfo.context) : ""),
             headers: {
                 'Accept': format.type
             }
@@ -209,15 +213,15 @@ function ExploreCtrl(
     };
 
     $scope.changeRole = function (roleVar) {
-        $scope.role = roleVar;
-        if ($scope.role === 'context') {
-            $scope.inference = 'explicit';
+        $scope.resourceInfo.role = roleVar;
+        if ($scope.resourceInfo.role === 'context') {
+            $scope.resourceInfo.inference = 'explicit';
         }
         $scope.exploreResource();
     };
 
     $scope.changeInference = function (inference) {
-        $scope.inference = inference;
+        $scope.resourceInfo.inference = inference;
         $scope.exploreResource();
     };
 
@@ -226,8 +230,22 @@ function ExploreCtrl(
     };
 
     // =========================
-    // Public functions
+    // Private functions
     // =========================
+    const init = () => {
+        if ($scope.resourceInfo) {
+            return;
+        }
+        $scope.resourceInfo = new ResourceInfo();
+        initResourceReference($scope.resourceInfo);
+
+        if ($routeParams.context != null) {
+            $scope.resourceInfo.context = $routeParams.context;
+        }
+
+        $scope.resourceInfo.role = $location.search().role ? $location.search().role : 'subject';
+    };
+
     const toggleOntoLoader = (showLoader) => {
         const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
         const resultsLoader = angular.element(document.getElementById('results-loader'));
@@ -250,13 +268,13 @@ function ExploreCtrl(
             method: 'GET',
             url: 'rest/explore/graph',
             data: {
-                uri: $scope.uriParam,
-                triple: $scope.tripleParam,
-                inference: $scope.inference,
-                role: $scope.role,
-                bnodes: $scope.blanks,
-                sameAs: $scope.sameAs,
-                context: $scope.context
+                uri: $scope.resourceInfo.uri,
+                triple: $scope.resourceInfo.triple,
+                inference: $scope.resourceInfo.inference,
+                role: $scope.resourceInfo.role,
+                bnodes: $scope.resourceInfo.blanks,
+                sameAs: $scope.resourceInfo.sameAs,
+                context: $scope.resourceInfo.context
             },
             headers: headers
         }).done(function (data, textStatus, jqXhr) {
@@ -309,6 +327,7 @@ function ExploreCtrl(
                             translateHeaders: true,
                             pluginsOptions: YasrUtils.getYasrConfiguration()
                         });
+                        init();
                         $scope.loadResource();
                     }).error(function (data) {
                     toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
@@ -321,9 +340,11 @@ function ExploreCtrl(
     // Using $q.when to proper set values in view
     $q.when($jwtAuth.getPrincipal())
         .then((principal) => {
+            init();
             // Get the predefined settings for sameAs and inference per user
-            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
-            $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
+            // TODO why inference depends on context?
+            $scope.resourceInfo.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
+            $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
         });
 }
 
