@@ -57,17 +57,21 @@
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
                     class="form-control form-control-sm"
-                    ng-options="inf.id as inf.title | translate for inf in inferences"
-                    ng-model="resourceInfo.inference"
-                    ng-change="changeInference(resourceInfo.inference)"
+                    ng-model="currentContextType"
+                    ng-change="changeInference(currentContextType)"
                     ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'">
+                <option ng-repeat="contextType in contextTypes"
+                        value="{{contextType.id}}"
+                        ng-selected="resourceInfo.contextType.id === contextType.id">
+                    {{contextType.labelKey | translate}}
+                </option>
             </select>
         </label>
 
         <button type="button" class="btn btn-link same-as-btn"
                 ng-model="sameAs"
                 ng-class="loading ? 'disabled' : ''"
-                ng-show="resourceInfo.inference != 'explicit'"
+                ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
                 ng-click="toggleSameAs()"
                 uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
