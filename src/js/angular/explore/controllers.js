@@ -6,6 +6,7 @@ import {decodeHTML} from "../../../app";
 import {YasrUtils} from "../utils/yasr-utils";
 import {ResourceInfo} from "../models/resource/resource-info";
 import {ContextType, ContextTypes} from "../models/resource/context-type";
+import {RoleType} from "../models/resource/role-type";
 
 const modules = [
     'ngCookies',
@@ -63,6 +64,7 @@ function ExploreCtrl(
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextType = ContextTypes.EXPLICIT;
+    $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
 
     $scope.resourceInfo = undefined;
 
@@ -212,9 +214,9 @@ function ExploreCtrl(
         });
     };
 
-    $scope.changeRole = function (roleVar) {
-        $scope.resourceInfo.role = roleVar;
-        if ($scope.resourceInfo.role === 'context') {
+    $scope.changeRole = function (role) {
+        $scope.resourceInfo.role = role;
+        if ($scope.resourceInfo.role === RoleType.CONTEXT) {
             $scope.resourceInfo.contextType = ContextTypes.EXPLICIT;
         }
         $scope.exploreResource();
@@ -243,7 +245,7 @@ function ExploreCtrl(
             $scope.resourceInfo.context = $routeParams.context;
         }
 
-        $scope.resourceInfo.role = $location.search().role ? $location.search().role : 'subject';
+        $scope.resourceInfo.role = $location.search().role ? $location.search().role : RoleType.SUBJECT;
     };
 
     const toggleOntoLoader = (showLoader) => {
@@ -343,7 +345,7 @@ function ExploreCtrl(
             init();
             // Get the predefined settings for sameAs and inference per user
             // TODO why inference depends on context?
-            $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === 'context' ? ContextTypes.ALL : ContextTypes.EXPLICIT;
+            $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === RoleType.CONTEXT ? ContextTypes.ALL : ContextTypes.EXPLICIT;
             $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
         });
 }
