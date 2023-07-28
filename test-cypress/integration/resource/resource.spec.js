@@ -99,25 +99,25 @@ describe('Resource view', () => {
             ResourceSteps.visit(`uri=${IMPLICIT_EXPLICIT_RESOURCE}&role=all`);
 
             // Then I expect same as button to not be displayed.
-            ResourceSteps.getSameAsButton().should('not.be.visible');
+            ResourceSteps.getSameAsButton().should('not.exist');
 
             // When I select implicit context.
             ResourceSteps.selectImplicitOnlyInference();
 
             // Then I expect same as button to be displayed.
-            ResourceSteps.getSameAsButton().should('be.visible');
+            ResourceSteps.getSameAsButton().should('exist');
 
             // When I select both contexts.
             ResourceSteps.selectExplicitAndImplicitInference();
 
             // Then I expect same as button to be displayed.
-            ResourceSteps.getSameAsButton().should('be.visible');
+            ResourceSteps.getSameAsButton().should('exist');
 
             // When I select explicit context.
             ResourceSteps.selectExplicitOnlyInference();
 
             // Then I expect same as button to be displayed.
-            ResourceSteps.getSameAsButton().should('not.be.visible');
+            ResourceSteps.getSameAsButton().should('not.exist');
             }
         );
 

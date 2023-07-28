@@ -5,6 +5,7 @@ import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {YasrUtils} from "../utils/yasr-utils";
 import {ResourceInfo} from "../models/resource/resource-info";
+import {ContextType, ContextTypes} from "../models/resource/context-type";
 
 const modules = [
     'ngCookies',
@@ -59,15 +60,14 @@ function ExploreCtrl(
     $q,
     ExploreRestService) {
 
+    $scope.ContextTypes = ContextTypes;
+    $scope.contextTypes = ContextType.getAllType();
+    $scope.currentContextType = ContextTypes.EXPLICIT;
+
     $scope.resourceInfo = undefined;
 
     // Defaults
     $scope.loading = false;
-    $scope.inferences = [
-        {id: 'all', title: 'explore.explicit.implicit'},
-        {id: 'explicit', title: 'explore.explicit'},
-        {id: 'implicit', title: 'explore.implicit'}
-    ];
     $scope.formats = FileTypes;
 
     // TODO remove it
@@ -186,7 +186,7 @@ function ExploreCtrl(
             method: 'GET',
             url: 'rest/explore/graph?' + param + encodedURI +
                 "&role=" + $scope.resourceInfo.role +
-                "&inference=" + $scope.resourceInfo.inference +
+                "&inference=" + $scope.resourceInfo.contextType.id +
                 "&bnodes=" + $scope.resourceInfo.blanks +
                 "&sameAs=" + $scope.resourceInfo.sameAs +
                 ($scope.resourceInfo.context ? "&context=" + encodeURIComponent($scope.resourceInfo.context) : ""),
@@ -215,13 +215,13 @@ function ExploreCtrl(
     $scope.changeRole = function (roleVar) {
         $scope.resourceInfo.role = roleVar;
         if ($scope.resourceInfo.role === 'context') {
-            $scope.resourceInfo.inference = 'explicit';
+            $scope.resourceInfo.contextType = ContextTypes.EXPLICIT;
         }
         $scope.exploreResource();
     };
 
-    $scope.changeInference = function (inference) {
-        $scope.resourceInfo.inference = inference;
+    $scope.changeInference = function (contextTypeId) {
+        $scope.resourceInfo.contextType = ContextType.getContextType(contextTypeId);
         $scope.exploreResource();
     };
 
@@ -270,7 +270,7 @@ function ExploreCtrl(
             data: {
                 uri: $scope.resourceInfo.uri,
                 triple: $scope.resourceInfo.triple,
-                inference: $scope.resourceInfo.inference,
+                inference: $scope.resourceInfo.contextType.id,
                 role: $scope.resourceInfo.role,
                 bnodes: $scope.resourceInfo.blanks,
                 sameAs: $scope.resourceInfo.sameAs,
@@ -343,7 +343,7 @@ function ExploreCtrl(
             init();
             // Get the predefined settings for sameAs and inference per user
             // TODO why inference depends on context?
-            $scope.resourceInfo.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
+            $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === 'context' ? ContextTypes.ALL : ContextTypes.EXPLICIT;
             $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
         });
 }
