@@ -97,6 +97,8 @@ describe('Graphs config', () => {
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 1);
         // And I should not see user sample queries
         VisualGraphSteps.getUserQuerySamples().should('have.length.gte', 0);
+        // And I should see the show preview button when query mode is query
+        VisualGraphSteps.getPreviewQueryResultsButton().should('be.visible');
     });
 
     it('Should see the second tab in create graph config wizard', () => {
@@ -114,8 +116,9 @@ describe('Graphs config', () => {
         // And I should see predefined sample queries
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
-        // TODO: These are more likely created by me during testing
         VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
+        // And I should see the show preview button
+        VisualGraphSteps.getPreviewQueryResultsButton().should('be.visible');
     });
 
     it('Should see the third tab in create graph config wizard', () => {
@@ -133,8 +136,9 @@ describe('Graphs config', () => {
         // And I should see predefined sample queries
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
-        // TODO: These are more likely created by me during testing
         VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
+        // And I should see the show preview button
+        VisualGraphSteps.getPreviewQueryResultsButton().should('be.visible');
     });
 
     it('Should see the fourth tab in create graph config wizard', () => {
@@ -153,6 +157,8 @@ describe('Graphs config', () => {
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
         VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
+        // And I should see the show preview button
+        VisualGraphSteps.getPreviewQueryResultsButton().should('be.visible');
     });
 
     it('Should see the fifth tab in create graph config wizard', () => {
@@ -171,6 +177,8 @@ describe('Graphs config', () => {
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
         VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
+        // And I should see the show preview button
+        VisualGraphSteps.getPreviewQueryResultsButton().should('be.visible');
     });
 
     it('Should be able to cancel config creation', () => {
@@ -225,6 +233,22 @@ describe('Graphs config', () => {
         // Then I expect the graph visualization of the saved config to be opened
         cy.url().should('contain', Cypress.config('baseUrl') + '/graphs-visualizations?config=');
         VisualGraphSteps.getGraphVisualizationPane().should('be.visible');
+    });
+
+    it('Should not be able to switch to next wizard tabs when starting point query is not provided ', () => {
+        // Given I have started a create config wizard
+        startCreateConfigWizard();
+        // And I populated in the config name
+        VisualGraphSteps.typeGraphConfigName(graphConfigName);
+        // And I selected the config with query results option
+        VisualGraphSteps.selectStartMode('query');
+        // When I try to open the graph expansion tab without providing a starting point query
+        VisualGraphSteps.openConfigWizardTab(2);
+        // Then I expect to see a warning
+        // And the current first tab to remain open
+        ApplicationSteps.getWarningNotification().should('be.visible');
+        VisualGraphSteps.getConfigWizardTab(1).should('be.visible')
+            .and('have.class', 'active');
     });
 
     it('Should be able to create graph config with query results', () => {

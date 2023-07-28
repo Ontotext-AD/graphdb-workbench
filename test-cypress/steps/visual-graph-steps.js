@@ -342,8 +342,12 @@ export class VisualGraphSteps {
         return this.getStartNodeSelectorComponent().find('.selected-node code');
     }
 
+    static getPreviewQueryResultsButton() {
+        return cy.get('.btn-preview-query-results');
+    }
+
     static previewQueryResults() {
-        cy.get('.btn-preview-query-results').click();
+        this.getPreviewQueryResultsButton().click();
     }
 
     static editQuery() {
