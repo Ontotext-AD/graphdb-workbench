@@ -115,7 +115,7 @@ describe('Graphs config', () => {
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
         // TODO: These are more likely created by me during testing
-        VisualGraphSteps.getUserQuerySamples().should('have.length.gte', 0);
+        VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
     });
 
     it('Should see the third tab in create graph config wizard', () => {
@@ -134,7 +134,7 @@ describe('Graphs config', () => {
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
         // TODO: These are more likely created by me during testing
-        VisualGraphSteps.getUserQuerySamples().should('have.length.gte', 0);
+        VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
     });
 
     it('Should see the fourth tab in create graph config wizard', () => {
@@ -152,7 +152,7 @@ describe('Graphs config', () => {
         // And I should see predefined sample queries
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
-        VisualGraphSteps.getUserQuerySamples().should('have.length.gte', 0);
+        VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
     });
 
     it('Should see the fifth tab in create graph config wizard', () => {
@@ -170,7 +170,7 @@ describe('Graphs config', () => {
         // And I should see predefined sample queries
         VisualGraphSteps.getPredefinedQuerySamples().should('have.length', 2);
         // And I should not see user sample queries
-        VisualGraphSteps.getUserQuerySamples().should('have.length.gte', 0);
+        VisualGraphSteps.getUserQuerySamples().should('have.length', 0);
     });
 
     it('Should be able to cancel config creation', () => {
