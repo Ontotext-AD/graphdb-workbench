@@ -3,52 +3,52 @@
 <link href="css/yasr.custom.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div core-errors></div>
-<div class="page fit-content-on-mobile" ng-show="getActiveRepository()">
+<div class="page fit-content-on-mobile" ng-if="resourceInfo">
     <div class="resource-info" ng-if="!isTripleResource()">
-        <div class="thumb" ng-show="{{details.img}}">
-            <a href="{{details.img}}">
+        <div class="thumb" ng-if="resourceInfo.details.img">
+            <a href="resourceInfo.details.img">
                 <img ng-src="{{details.img}}" alt="details image"/>
             </a>
         </div>
         <h1>
-            <a href="{{details.uri}}" gdb-tooltip="{{details.uri}}">
-                {{details.label ? details.label : getLocalName(details.uri)}}
+            <a href="resourceInfo.details.uri" gdb-tooltip="resourceInfo.details.uri">
+                {{resourceInfo.details.label ? resourceInfo.details.label : getLocalName(resourceInfo.details.uri)}}
             </a>
 
-            <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
+            <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{resourceInfo.details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link edit-resource-link">
                 <span class="icon-edit"></span>
             </a>
         </h1>
 
-        <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
+        <p ng-if="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
             <span>{{'source.label' | translate}}:</span>&nbsp;
-            <a class="source-link" href="{{details.uri}}">{{details.uri}}</a>
+            <a class="source-link" href="{{resourceInfo.details.uri}}">{{resourceInfo.details.uri}}</a>
         </p>
         <p ng-show="isContextAvailable()">
             <span>{{'context.label' | translate}}:</span>&nbsp;
-            <a class="context-link" href="{{details.context}}">{{details.context}}</a>
+            <a class="context-link" href="{{resourceInfo.details.context}}">{{resourceInfo.details.context}}</a>
         </p>
     </div>
 
     <div class="resource-info" ng-if="isTripleResource()">
-        <div class="thumb" ng-show="{{details.img}}">
-            <a href="{{details.img}}">
-                <img ng-src="{{details.img}}" alt="details image"/>
+        <div class="thumb" ng-if="resourceInfo.details.img">
+            <a href="{{resourceInfo.details.img}}">
+                <img ng-src="{{resourceInfo.details.img}}" alt="details image"/>
             </a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" gdb-tooltip="{{tripleParam}}">
-                {{getRdfStarLocalNames(tripleParam)}}
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}" gdb-tooltip="{{resourceInfo.triple}}">
+                {{getRdfStarLocalNames(resourceInfo.triple)}}
             </a>
         </h1>
 
-        <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
+        <p ng-show="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
             <span>{{'target.label' | translate}}:</span>&nbsp;
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}">{{tripleParam}}</a>
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}">{{resourceInfo.triple}}</a>
         </p>
     </div>
 
@@ -58,8 +58,8 @@
             <select id="inference-select"
                     class="form-control form-control-sm"
                     ng-options="inf.id as inf.title | translate for inf in inferences"
-                    ng-model="inference"
-                    ng-change="changeInference(inference)"
+                    ng-model="resourceInfo.inference"
+                    ng-change="changeInference(resourceInfo.inference)"
                     ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'">
             </select>
         </label>
@@ -67,18 +67,18 @@
         <button type="button" class="btn btn-link same-as-btn"
                 ng-model="sameAs"
                 ng-class="loading ? 'disabled' : ''"
-                ng-show="inference != 'explicit'"
-                ng-click="sameAs = !sameAs; exploreResource()"
-                uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
+                ng-show="resourceInfo.inference != 'explicit'"
+                ng-click="toggleSameAs()"
+                uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
             <span class="icon-2-5x"
-                  ng-class="{'icon-sameas-on':sameAs, 'icon-sameas-off':!sameAs}"></span>
+                  ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
         </button>
 
         <button type="button"
-                class="btn btn-sm show-blank-nodes-btn" ng-model="blanks"
-                ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
+                class="btn btn-sm show-blank-nodes-btn" ng-model="resourceInfo.blanks"
+                ng-class="loading ? 'disabled' : (resourceInfo.blanks ? 'btn-primary' : 'btn-secondary')"
                 uib-btn-checkbox
                 btn-checkbox-true="true"
                 btn-checkbox-false="false"
@@ -116,7 +116,7 @@
             <li ng-repeat="roleVar in roles" class="nav-item">
                 <a class="nav-link" href
                    ng-click="changeRole(roleVar)"
-                   ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')"
+                   ng-class="resourceInfo.role === roleVar ? 'active' : (loading ? 'disabled': '')"
                    ng-disabled="loading"
                    guide-selector="role-{{roleVar}}">
                     {{roleVar | translate}}
