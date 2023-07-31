@@ -553,6 +553,43 @@ function GraphConfigCtrl(
         });
     }
 
+    const setLoader = (isRunning, progressMessage, extraMessage) => {
+        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
+        $scope.queryIsRunning = isRunning;
+        if (isRunning) {
+            $scope.queryStartTime = Date.now();
+            $scope.countTimeouted = false;
+            $scope.progressMessage = progressMessage;
+            $scope.extraMessage = extraMessage;
+            yasrInnerContainer.addClass('hide');
+        } else {
+            $scope.progressMessage = '';
+            $scope.extraMessage = '';
+            yasrInnerContainer.removeClass('hide');
+        }
+        // We might call this from angular or outside angular so take care of applying the scope.
+        if ($scope.$$phase === null) {
+            $scope.$apply();
+        }
+    };
+
+    const getLoaderMessage = () => {
+        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
+        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
+        let message;
+
+        if ($scope.progressMessage) {
+            message = $scope.progressMessage + '... ' + timeHuman;
+        } else {
+            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
+        }
+        if ($scope.extraMessage && timeSeconds > 10) {
+            message += '\n' + $scope.extraMessage;
+        }
+
+        return message;
+    };
+
     const initView = () => {
 
     };
@@ -580,62 +617,13 @@ function GraphConfigCtrl(
         initForConfig();
     }
 
-    // query tab operations
     $scope.loadTab = loadTab;
-
-    // query operations
-    $scope.toggleSampleQueries = toggleSampleQueries;
-    $scope.getExistingTabId = getExistingTabId;
-    $scope.querySelected = querySelected;
-
-    $scope.setLoader = setLoader;
-    $scope.getLoaderMessage = getLoaderMessage;
 
     // query editor and results orientation
     $scope.fixSizesOnHorizontalViewModeSwitch = fixSizesOnHorizontalViewModeSwitch;
     $scope.changeViewMode = changeViewMode;
     $scope.showHideEditor = showHideEditor;
-    $scope.focusQueryEditor = focusQueryEditor;
     $scope.orientationViewMode = true;
-
-    // start of repository actions
-
-    function setLoader(isRunning, progressMessage, extraMessage) {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        $scope.queryIsRunning = isRunning;
-        if (isRunning) {
-            $scope.queryStartTime = Date.now();
-            $scope.countTimeouted = false;
-            $scope.progressMessage = progressMessage;
-            $scope.extraMessage = extraMessage;
-            yasrInnerContainer.addClass('hide');
-        } else {
-            $scope.progressMessage = '';
-            $scope.extraMessage = '';
-            yasrInnerContainer.removeClass('hide');
-        }
-        // We might call this from angular or outside angular so take care of applying the scope.
-        if ($scope.$$phase === null) {
-            $scope.$apply();
-        }
-    }
-
-    function getLoaderMessage() {
-        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
-        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
-        let message;
-
-        if ($scope.progressMessage) {
-            message = $scope.progressMessage + '... ' + timeHuman;
-        } else {
-            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
-        }
-        if ($scope.extraMessage && timeSeconds > 10) {
-            message += '\n' + $scope.extraMessage;
-        }
-
-        return message;
-    }
 
     // start of query editor results orientation operations
     function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
@@ -705,44 +693,11 @@ function GraphConfigCtrl(
         fixSizesOnHorizontalViewModeSwitch(true);
     }
 
-    function focusQueryEditor() {
-        if (!angular.element(document).find('.editable-input').is(':focus')) {
-            angular.element(document).find('.CodeMirror textarea:first-child').focus();
-        }
-    }
-
     // start of query operations
 
     if ($scope.getActiveRepository()) {
         getNamespaces();
     }
-
-    $scope.$on('$destroy', function () {
-        window.editor = null;
-        window.yasr = null;
-    });
-
-    function toggleSampleQueries() {
-    }
-
-    function querySelected(query) {
-        const tabId = getExistingTabId(query);
-        $scope.toggleSampleQueries();
-    }
-
-    function getExistingTabId(query) {
-        let existingTabId = undefined;
-        angular.forEach($scope.tabsData, function (item) {
-            if (item.name === query.name && item.query === query.body) {
-                existingTabId = item.id;
-                return item;
-            }
-        });
-
-        return existingTabId;
-    }
-
-    // end of query operations
 
     function loadTab() {
         if (!window.editor) {
@@ -788,4 +743,8 @@ function GraphConfigCtrl(
     $scope.getStaleWarningMessage = function () {
     }
 
+    $scope.$on('$destroy', function () {
+        window.editor = null;
+        window.yasr = null;
+    });
 }
