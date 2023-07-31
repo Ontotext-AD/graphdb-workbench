@@ -332,7 +332,7 @@ function GraphConfigCtrl(
             // Hides the editor and shows the yasr results
             $scope.viewMode = 'editor';
             if ($scope.orientationViewMode) {
-                $scope.fixSizesOnHorizontalViewModeSwitch()
+                //
             }
 
             // setLoader(true, $translate.instant('evaluating.query.msg'));
@@ -632,68 +632,7 @@ function GraphConfigCtrl(
     }
 
     // query editor and results orientation
-    $scope.fixSizesOnHorizontalViewModeSwitch = fixSizesOnHorizontalViewModeSwitch;
-    $scope.showHideEditor = showHideEditor;
     $scope.orientationViewMode = true;
-
-    // start of query editor results orientation operations
-    function fixSizesOnHorizontalViewModeSwitch(verticalViewParam) {
-        // function visibleWindowHeight() {
-        //     return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0;
-        // }
-        //
-        // const codemirrorWrapperSelector = '.CodeMirror-wrap';
-        // const verticalView = verticalViewParam;
-        // if (!$scope.orientationViewMode) {
-        //     $scope.noPadding = {paddingRight: 15, paddingLeft: 0};
-        //
-        //     // window.editor is undefined if no repo is selected
-        //     if (window.editor && document.querySelector(codemirrorWrapperSelector)) {
-        //         let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
-        //         newHeight -= 40;
-        //         document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
-        //         document.getElementById('yasr').style.minHeight = newHeight + 'px';
-        //     } else {
-        //         let timer;
-        //         if (verticalView) {
-        //             timer = $timeout(function () {
-        //                 $scope.fixSizesOnHorizontalViewModeSwitch(verticalView)
-        //             }, 100);
-        //         } else {
-        //             timer = $timeout($scope.fixSizesOnHorizontalViewModeSwitch, 100);
-        //         }
-        //
-        //         $scope.$on('$destroy', function () {
-        //             $timeout.cancel(timer);
-        //         });
-        //     }
-        // } else {
-        //     if ($scope.viewMode === 'yasr') {
-        //         let newHeight = visibleWindowHeight() - (document.querySelector(codemirrorWrapperSelector).getBoundingClientRect().top);
-        //         newHeight -= 40;
-        //         document.querySelector(codemirrorWrapperSelector).style.height = newHeight + 'px';
-        //     } else {
-        //         $scope.noPadding = {};
-        //         document.querySelector(codemirrorWrapperSelector).style.height = '';
-        //     }
-        //     document.getElementById('yasr').style.minHeight = '';
-        // }
-        // if (window.yasr && window.yasr.container) {
-        //     $timeout(function () {
-        //         window.yasr.container.resize();
-        //     }, 100);
-        // }
-    }
-
-    if (!$scope.orientationViewMode) {
-        showHideEditor();
-    }
-
-    function showHideEditor() {
-        fixSizesOnHorizontalViewModeSwitch(true);
-    }
-
-    // start of query operations
 
     if ($scope.getActiveRepository()) {
         getNamespaces();
