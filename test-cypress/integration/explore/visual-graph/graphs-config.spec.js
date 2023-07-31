@@ -1,8 +1,8 @@
-import VisualGraphSteps from "../../../steps/visual-graph-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const QUERY_START = `# CONSTRUCT or DESCRIBE query. The results will be rendered visually as a graph of triples.\nCONSTRUCT WHERE {\n\t?s ?p ?o\n} LIMIT 10`;
