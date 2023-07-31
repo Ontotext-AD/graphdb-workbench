@@ -80,6 +80,10 @@ function GraphConfigCtrl(
     $scope.queryExists = false;
     // TODO: remove
     $scope.tabsData = $scope.tabs = [defaultTabConfig];
+    $scope.currentQuery = angular.copy(defaultTabConfig);
+    $scope.showSampleQueries = false;
+    $scope.savedQuery = {};
+    $scope.sampleQueries = {};
 
     // =========================
     // TODO: Private fields
@@ -590,6 +594,16 @@ function GraphConfigCtrl(
         return message;
     };
 
+    const loadTab = () => {
+        if (!window.editor) {
+            $timeout(() => loadTab());
+            return;
+        }
+        $scope.tabsData = [$scope.currentQuery];
+
+        $scope.setQuery($scope.currentQuery.query)
+    };
+
     const initView = () => {
 
     };
@@ -617,11 +631,8 @@ function GraphConfigCtrl(
         initForConfig();
     }
 
-    $scope.loadTab = loadTab;
-
     // query editor and results orientation
     $scope.fixSizesOnHorizontalViewModeSwitch = fixSizesOnHorizontalViewModeSwitch;
-    $scope.changeViewMode = changeViewMode;
     $scope.showHideEditor = showHideEditor;
     $scope.orientationViewMode = true;
 
@@ -678,17 +689,6 @@ function GraphConfigCtrl(
         showHideEditor();
     }
 
-    function changeViewMode(tabID) {
-        $scope.viewMode = 'none';
-        $scope.orientationViewMode = !$scope.orientationViewMode;
-        fixSizesOnHorizontalViewModeSwitch();
-        $('.dataTables_filter').remove();
-        $('.resultsTable').remove();
-        $timeout(function () {
-            loadTab();
-        }, 100);
-    }
-
     function showHideEditor() {
         fixSizesOnHorizontalViewModeSwitch(true);
     }
@@ -699,49 +699,18 @@ function GraphConfigCtrl(
         getNamespaces();
     }
 
-    function loadTab() {
-        if (!window.editor) {
-            $timeout(() => loadTab());
-            return;
-        }
-        $scope.tabsData = [$scope.currentQuery];
-
-        let tab = $scope.currentQuery;
-
-        $scope.setQuery($scope.currentQuery.query)
-
-        //Remove padding of yasr so it will be aligned with sparql editor
-        $('#yasr').css('padding', '0');
-    }
-
     function getQueryID(element) {
         return $(element).attr('data-id');
     }
 
     $scope.$on('tabAction', function (e, tabEvent) {
-        $scope.loadTab(getQueryID(tabEvent.target));
+        loadTab(getQueryID(tabEvent.target));
     });
 
     $scope.$on('deleteAllexeptSelected', function (e, tabs) {
         $scope.tabsData = tabs;
         $scope.tabs = tabs;
     });
-    // end of query tab operations
-
-    $scope.currentQuery = _.cloneDeep(defaultTabConfig);
-    // $scope.state = {};
-    $scope.showSampleQueries = false;
-    $scope.savedQuery = {};
-    $scope.sampleQueries = {};
-
-    $scope.getResultsDescription = function () {
-    };
-
-    $scope.getUpdateDescription = function () {
-    };
-
-    $scope.getStaleWarningMessage = function () {
-    }
 
     $scope.$on('$destroy', function () {
         window.editor = null;
