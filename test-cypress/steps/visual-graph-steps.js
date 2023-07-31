@@ -5,7 +5,7 @@ export class VisualGraphSteps {
 
      static visit() {
          cy.visit(VIEW_URL);
-         cy.window();
+         // cy.window();
      }
 
      static verifyUrl() {
