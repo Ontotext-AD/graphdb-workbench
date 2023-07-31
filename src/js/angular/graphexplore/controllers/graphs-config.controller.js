@@ -67,6 +67,20 @@ function GraphConfigCtrl(
      */
     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
 
+    const defaultTabConfig = {
+        id: '1',
+        name: '',
+        query: 'select * where { \n' +
+            '\t?s ?p ?o .\n' +
+            '} limit 100 \n',
+        inference: $scope.newConfig.startQueryIncludeInferred,
+        sameAs: $scope.newConfig.startQuerySameAs
+    };
+
+    $scope.queryExists = false;
+    // TODO: remove
+    $scope.tabsData = $scope.tabs = [defaultTabConfig];
+
     // =========================
     // TODO: Private fields
     // =========================
@@ -479,7 +493,7 @@ function GraphConfigCtrl(
     };
 
     // =========================
-    // Initialization
+    // TODO: Initialization
     // =========================
 
     $repositories.getPrefixes(activeRepository)
@@ -501,25 +515,7 @@ function GraphConfigCtrl(
         initForConfig();
     }
 
-    // DOWN HERE WE KEEP EVERYTHING PURELY QUERY EDITOR (MOSTLY BORROWED FROM query-editor.controller.js)
-    // But Why? Can't we reuse it instead of borrow?
-
-    const defaultTabConfig = {
-        id: '1',
-        name: '',
-        query: 'select * where { \n' +
-        '\t?s ?p ?o .\n' +
-        '} limit 100 \n',
-        inference: $scope.newConfig.startQueryIncludeInferred,
-        sameAs: $scope.newConfig.startQuerySameAs
-    };
-
-    $scope.queryExists = false;
-
-    $scope.tabsData = $scope.tabs = [defaultTabConfig];
-
     // query tab operations
-    $scope.saveTab = saveTab;
     $scope.loadTab = loadTab;
     $scope.addNewTab = addNewTab;
 
@@ -530,7 +526,6 @@ function GraphConfigCtrl(
     $scope.toggleSampleQueries = toggleSampleQueries;
     $scope.getExistingTabId = getExistingTabId;
     $scope.querySelected = querySelected;
-    $scope.saveQueryToLocal = saveQueryToLocal;
 
     $scope.setLoader = setLoader;
     $scope.getLoaderMessage = getLoaderMessage;
@@ -543,9 +538,6 @@ function GraphConfigCtrl(
     $scope.orientationViewMode = true;
 
     // start of repository actions
-
-    function saveQueryToLocal(currentQueryTab) {
-    }
 
     function setLoader(isRunning, progressMessage, extraMessage) {
         const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
@@ -777,31 +769,6 @@ function GraphConfigCtrl(
 
     // end of query operations
 
-    // start of query tab operations
-    function findTabIndexByID(id) {
-        for (let i = 0; i < $scope.tabsData.length; i++) {
-            const tab = $scope.tabsData[i];
-            if (tab.id === id) {
-                return i;
-            }
-        }
-    }
-
-    $scope.$watchCollection('[currentQuery.inference, currentQuery.sameAs]', function () {
-        saveQueryToLocal($scope.currentQuery);
-    });
-
-    function saveTab(id) {
-        const idx = findTabIndexByID(id);
-        // Tab was deleted, don't try to save it's state
-        if (idx === undefined) {
-            return {};
-        }
-        const tab = $scope.tabsData[idx];
-        $scope.saveQueryToLocal(tab);
-        return tab;
-    }
-
     function addNewTab(callback, tabName, savedQuery) {
     }
 
@@ -825,9 +792,6 @@ function GraphConfigCtrl(
     }
 
     $scope.$on('tabAction', function (e, tabEvent) {
-        if (tabEvent.relatedTarget) {
-            $scope.saveTab(getQueryID(tabEvent.relatedTarget));
-        }
         $scope.loadTab(getQueryID(tabEvent.target));
     });
 
