@@ -384,7 +384,6 @@ function GraphConfigCtrl(
             $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
             $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
             loadTab();
-            selectTab($scope.currentQuery.id);
         }, 100);
     };
 
@@ -517,7 +516,6 @@ function GraphConfigCtrl(
 
     // query tab operations
     $scope.loadTab = loadTab;
-    $scope.addNewTab = addNewTab;
 
     // query operations
     $scope.runQuery = runQuery;
@@ -637,7 +635,6 @@ function GraphConfigCtrl(
         $('.resultsTable').remove();
         $timeout(function () {
             loadTab();
-            selectTab(tabID);
         }, 100);
     }
 
@@ -649,12 +646,6 @@ function GraphConfigCtrl(
         if (!angular.element(document).find('.editable-input').is(':focus')) {
             angular.element(document).find('.CodeMirror textarea:first-child').focus();
         }
-    }
-
-    function selectTab(id) {
-        $timeout(function () {
-            $('a[data-id = "' + id + '"]').tab('show');
-        }, 0);
     }
 
     const updateYasguiConfiguration = (additionalConfiguration = {}) => {
@@ -748,11 +739,6 @@ function GraphConfigCtrl(
     function querySelected(query) {
         const tabId = getExistingTabId(query);
         $scope.toggleSampleQueries();
-        if (!angular.isDefined(tabId)) {
-            $scope.addNewTab(null, query.name, query.body);
-        } else {
-            selectTab(tabId);
-        }
     }
 
     function getExistingTabId(query) {
@@ -768,9 +754,6 @@ function GraphConfigCtrl(
     }
 
     // end of query operations
-
-    function addNewTab(callback, tabName, savedQuery) {
-    }
 
     function loadTab() {
         $scope.tabsData = [$scope.currentQuery];
