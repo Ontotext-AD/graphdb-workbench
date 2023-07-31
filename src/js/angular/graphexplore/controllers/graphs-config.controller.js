@@ -699,19 +699,6 @@ function GraphConfigCtrl(
         getNamespaces();
     }
 
-    function getQueryID(element) {
-        return $(element).attr('data-id');
-    }
-
-    $scope.$on('tabAction', function (e, tabEvent) {
-        loadTab(getQueryID(tabEvent.target));
-    });
-
-    $scope.$on('deleteAllexeptSelected', function (e, tabs) {
-        $scope.tabsData = tabs;
-        $scope.tabs = tabs;
-    });
-
     $scope.$on('$destroy', function () {
         window.editor = null;
         window.yasr = null;
