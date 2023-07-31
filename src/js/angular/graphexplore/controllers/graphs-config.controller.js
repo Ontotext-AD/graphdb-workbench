@@ -331,9 +331,6 @@ function GraphConfigCtrl(
         if (!$scope.queryIsRunning) {
             // Hides the editor and shows the yasr results
             $scope.viewMode = 'editor';
-            if ($scope.orientationViewMode) {
-                //
-            }
 
             // setLoader(true, $translate.instant('evaluating.query.msg'));
 
@@ -601,38 +598,35 @@ function GraphConfigCtrl(
     };
 
     const initView = () => {
+        $repositories.getPrefixes(activeRepository)
+            .then((prefixes) => initYasgui(prefixes))
+            .finally(() => setLoader(false));
 
+        if (configName) {
+            $scope.isUpdate = true;
+            GraphConfigRestService.getConfig(configName)
+                .then(function (graphConfigModel) {
+                    $scope.newConfig = graphConfigModel;
+                    initForConfig();
+                })
+                .catch((data) => {
+                    toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
+                });
+        } else {
+            $scope.isUpdate = false;
+            initForConfig();
+        }
+
+        if ($scope.getActiveRepository()) {
+            getNamespaces();
+        }
     };
 
     // =========================
     // TODO: Initialization
     // =========================
 
-    $repositories.getPrefixes(activeRepository)
-        .then((prefixes) => initYasgui(prefixes))
-        .finally(() => setLoader(false));
-
-    if (configName) {
-        $scope.isUpdate = true;
-        GraphConfigRestService.getConfig(configName)
-            .then(function (graphConfigModel) {
-                $scope.newConfig = graphConfigModel;
-                initForConfig();
-            })
-            .catch((data) => {
-                toastr.error(getError(data), $translate.instant('created.connector', {name: configName}));
-            });
-    } else {
-        $scope.isUpdate = false;
-        initForConfig();
-    }
-
-    // query editor and results orientation
-    $scope.orientationViewMode = true;
-
-    if ($scope.getActiveRepository()) {
-        getNamespaces();
-    }
+    initView();
 
     $scope.$on('$destroy', function () {
         window.editor = null;
