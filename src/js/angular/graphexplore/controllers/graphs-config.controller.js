@@ -162,6 +162,9 @@ function GraphConfigCtrl(
             });
     };
 
+    /**
+     * @param {number} nextPage
+     */
     $scope.goToPage = (nextPage) => {
         if ($scope.page === nextPage) {
             // already there
@@ -285,11 +288,6 @@ function GraphConfigCtrl(
     // =========================
     // TODO: Private functions
     // =========================
-
-    const setEditorValue = (value) => {
-        // window.editor.setValue(value);
-
-    }
 
     const getYasguiInstance = () => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor');
@@ -476,6 +474,10 @@ function GraphConfigCtrl(
         });
     }
 
+    const initView = () => {
+
+    };
+
     // =========================
     // Initialization
     // =========================
@@ -512,18 +514,7 @@ function GraphConfigCtrl(
         sameAs: $scope.newConfig.startQuerySameAs
     };
 
-    $scope.resetCurrentTabConfig = () => {
-        $scope.currentTabConfig = {
-            pageSize: 100, // page limit 100 as this is only used for preview
-            page: 1,
-            allResultsCount: 0,
-            resultsCount: 0
-        };
-    };
-
     $scope.queryExists = false;
-
-    $scope.resetCurrentTabConfig();
 
     $scope.tabsData = $scope.tabs = [defaultTabConfig];
 
@@ -698,12 +689,6 @@ function GraphConfigCtrl(
 
         $scope.explainRequested = explain;
         if (!$scope.queryIsRunning) {
-            if (changePage) {
-                $scope.currentTabConfig.resultsCount = 0;
-            } else {
-                $scope.resetCurrentTabConfig();
-            }
-
             // Hides the editor and shows the yasr results
             $scope.viewMode = 'editor';
             if ($scope.orientationViewMode) {
@@ -826,28 +811,6 @@ function GraphConfigCtrl(
         let tab = $scope.currentQuery;
 
         $scope.setQuery($scope.currentQuery.query)
-        // if ($scope.currentQuery.query == null || $scope.currentQuery.query === '') {
-        //     // hack for YASQE bug
-        //     setEditorValue(' ');
-        // } else {
-        //     setEditorValue($scope.currentQuery.query);
-        // }
-
-        $timeout(function () {
-            $scope.currentTabConfig = {};
-            $scope.currentTabConfig.queryType = tab.queryType;
-            $scope.currentTabConfig.resultsCount = tab.resultsCount;
-
-            $scope.currentTabConfig.offset = tab.offset;
-            $scope.currentTabConfig.allResultsCount = tab.allResultsCount;
-            $scope.currentTabConfig.page = tab.page;
-            $scope.currentTabConfig.pageSize = tab.pageSize;
-
-            $scope.currentTabConfig.timeFinished = tab.timeFinished;
-            $scope.currentTabConfig.timeTook = tab.timeTook;
-            $scope.currentTabConfig.sizeDelta = tab.sizeDelta;
-            $scope.$apply();
-        }, 0);
 
         //Remove padding of yasr so it will be aligned with sparql editor
         $('#yasr').css('padding', '0');
