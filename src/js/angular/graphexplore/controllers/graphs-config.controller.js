@@ -66,6 +66,7 @@ function GraphConfigCtrl(
      * @type {boolean}
      */
     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+    $scope.samples = [];
 
     const defaultTabConfig = {
         id: '1',
@@ -76,8 +77,15 @@ function GraphConfigCtrl(
         inference: $scope.newConfig.startQueryIncludeInferred,
         sameAs: $scope.newConfig.startQuerySameAs
     };
-
     $scope.currentQuery = angular.copy(defaultTabConfig);
+    /**
+     * @type {Promise|undefined}
+     */
+    $scope.getAutocompletePromise = undefined;
+    /**
+     * @type {Promise|undefined}
+     */
+    $scope.getNamespacesPromise = undefined;
 
     // =========================
     // TODO: Private fields
@@ -199,7 +207,6 @@ function GraphConfigCtrl(
         validateCurrentPage(() => {
             $scope.showEditor();
             $scope.page = nextPage;
-            $scope.notoolbar = $scope.page !== 1;
         });
     };
 
@@ -297,7 +304,6 @@ function GraphConfigCtrl(
     $scope.$watch('newConfig.startMode', (value) => {
         if (value === StartMode.QUERY) {
             $timeout(() => {
-                console.log('%cwatcher newConfig.startMode', 'background-color:yellow', );
                 updateEditor();
             }, 0);
         }
@@ -307,7 +313,6 @@ function GraphConfigCtrl(
     $scope.$watch('page', (value) => {
         if ($scope.newConfig.isStartMode(StartMode.QUERY) || value > 1) {
             $timeout(() => {
-                console.log('%cwatcher page', 'background-color:yellow', );
                 $scope.showEditor();
                 updateEditor();
             }, 0);
@@ -432,12 +437,12 @@ function GraphConfigCtrl(
     const getGraphConfigSamples = () => {
         GraphConfigRestService.getGraphConfigSamples()
             .success(function (data) {
-                $scope.samples = _.filter(data, function (s) {
+                $scope.samples = data.filter((sample) => {
                     // Skip the currently edited config from samples and store it into a revert variable
-                    if (!s.id || $scope.newConfig.id !== s.id) {
+                    if (!sample.id || $scope.newConfig.id !== sample.id) {
                         return true;
                     } else {
-                        $scope.revertConfig = s;
+                        $scope.revertConfig = sample;
                         return false;
                     }
                 });
@@ -451,16 +456,14 @@ function GraphConfigCtrl(
      * relevant query from the model.
      */
     const updateEditor = () => {
-        $timeout(() => {
-            $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
-            // Check for ontop repository and override nocount property (it's default value is false)
-            if ($repositories.isActiveRepoOntopType()) {
-                $scope.nocount = true;
-            }
-            $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
-            $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
-            $scope.setQuery($scope.currentQuery.query)
-        }, 100);
+        $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
+        // Check for ontop repository and override nocount property (it's default value is false)
+        if ($repositories.isActiveRepoOntopType()) {
+            $scope.nocount = true;
+        }
+        $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
+        $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
+        $scope.setQuery($scope.currentQuery.query)
     };
 
     const showInvalidMsg = (message) => {
