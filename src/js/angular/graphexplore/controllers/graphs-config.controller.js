@@ -78,8 +78,6 @@ function GraphConfigCtrl(
     };
 
     $scope.queryExists = false;
-    // TODO: remove
-    $scope.tabsData = $scope.tabs = [defaultTabConfig];
     $scope.currentQuery = angular.copy(defaultTabConfig);
     $scope.showSampleQueries = false;
     $scope.savedQuery = {};
@@ -278,6 +276,10 @@ function GraphConfigCtrl(
     // TODO: Event handlers
     // =========================
 
+    $scope.$on('$destroy', function () {
+        //
+    });
+
     $scope.$on('autocompleteStatus', () => {
         checkAutocompleteStatus();
     });
@@ -450,7 +452,7 @@ function GraphConfigCtrl(
             }
             $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
             $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
-            loadTab();
+            $scope.setQuery($scope.currentQuery.query)
         }, 100);
     };
 
@@ -591,12 +593,6 @@ function GraphConfigCtrl(
         return message;
     };
 
-    const loadTab = () => {
-        $scope.tabsData = [$scope.currentQuery];
-
-        $scope.setQuery($scope.currentQuery.query)
-    };
-
     const initView = () => {
         $repositories.getPrefixes(activeRepository)
             .then((prefixes) => initYasgui(prefixes))
@@ -627,9 +623,4 @@ function GraphConfigCtrl(
     // =========================
 
     initView();
-
-    $scope.$on('$destroy', function () {
-        window.editor = null;
-        window.yasr = null;
-    });
 }
