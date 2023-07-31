@@ -77,11 +77,7 @@ function GraphConfigCtrl(
         sameAs: $scope.newConfig.startQuerySameAs
     };
 
-    $scope.queryExists = false;
     $scope.currentQuery = angular.copy(defaultTabConfig);
-    $scope.showSampleQueries = false;
-    $scope.savedQuery = {};
-    $scope.sampleQueries = {};
 
     // =========================
     // TODO: Private fields
@@ -110,6 +106,9 @@ function GraphConfigCtrl(
     // TODO: Public functions
     // =========================
 
+    /**
+     * @param {number|undefined} value
+     */
     $scope.toggleHelp = (value) => {
         if (value === undefined) {
             value = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP);
@@ -133,10 +132,20 @@ function GraphConfigCtrl(
         selectedFixedNodeChanged = true;
     };
 
+    /**
+     * A filter used to filter query samples during the rendering.
+     * @param sample
+     * @return {boolean}
+     */
     $scope.isDefaultGraph = (sample) => {
-        return (sample.name === 'Minimal' || sample.name === 'Advanced');
+        return sample.name === 'Minimal' || sample.name === 'Advanced';
     };
 
+    /**
+     * A filter used to filter query samples during the rendering.
+     * @param sample
+     * @return {boolean}
+     */
     $scope.isUserGraph = (sample) => {
         return !$scope.isDefaultGraph(sample);
     };
@@ -314,7 +323,6 @@ function GraphConfigCtrl(
     }
 
     const runQuery = async (changePage, explain) => {
-        $scope.executedQueryTab = $scope.currentQuery;
         const yasguiInstance = await getYasguiInstance()
         const queryType = await yasguiInstance.getQueryType();
         if (explain && !(queryType === 'SELECT' || queryType === 'CONSTRUCT' || queryType === 'DESCRIBE')) {
@@ -327,8 +335,6 @@ function GraphConfigCtrl(
             toastr.warning($translate.instant('cannot.execute.update.error'));
             return;
         }
-
-        $scope.explainRequested = explain;
 
         if (!$scope.queryIsRunning) {
             // Hides the editor and shows the yasr results
@@ -362,6 +368,7 @@ function GraphConfigCtrl(
         RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const usedPrefixes = {};
+                // TODO: move this to a mapper
                 data.results.bindings.forEach(function (e) {
                     usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
@@ -539,8 +546,8 @@ function GraphConfigCtrl(
     };
 
     const initYasgui = (prefixes) => {
-        // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
-        // readOnly configuration may be incorrect.
+        // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result
+        // and the "ontotext-yasgui" readOnly configuration may be incorrect.
         const repoIsInitialized = $scope.$watch(function () {
             return $scope.getActiveRepositoryObject();
         }, function (activeRepo) {
