@@ -263,7 +263,7 @@ function GraphConfigCtrl(
         // if we execute a CONSTRUCT and then a SELECT. This makes sure it's always table.
         $scope.viewMode = 'editor';
         $scope.currentQuery.outputType = 'table';
-        $scope.runQuery();
+        runQuery();
     };
 
     $scope.revertEditor = () => {
@@ -305,6 +305,72 @@ function GraphConfigCtrl(
 
     const getYasguiInstance = () => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor');
+    }
+
+    const runQuery = async (changePage, explain) => {
+        $scope.executedQueryTab = $scope.currentQuery;
+        const yasguiInstance = await getYasguiInstance()
+        const queryType = await yasguiInstance.getQueryType();
+        if (explain && !(queryType === 'SELECT' || queryType === 'CONSTRUCT' || queryType === 'DESCRIBE')) {
+            toastr.warning($translate.instant('query.editor.warning.msg'));
+            return;
+        }
+
+        const queryMode = await yasguiInstance.getQueryMode();
+        if (queryMode === 'update') {
+            toastr.warning($translate.instant('cannot.execute.update.error'));
+            return;
+        }
+
+        $scope.explainRequested = explain;
+
+        if (!$scope.queryIsRunning) {
+            // Hides the editor and shows the yasr results
+            $scope.viewMode = 'editor';
+            if ($scope.orientationViewMode) {
+                $scope.fixSizesOnHorizontalViewModeSwitch()
+            }
+
+            // setLoader(true, $translate.instant('evaluating.query.msg'));
+
+            executeYasqeQuery();
+            switchToYasr();
+        }
+    };
+
+    const executeYasqeQuery = async () => {
+        const yasguiInstance = await getYasguiInstance();
+        yasguiInstance.query();
+    }
+
+    const switchToYasqe = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.changeRenderMode(RenderingMode.YASQE);
+    }
+
+    const switchToYasr = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.changeRenderMode(RenderingMode.YASR);
+    }
+
+    const getNamespaces = () => {
+        // Signals the namespaces are to be fetched => loader will be shown
+        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
+        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
+            .success(function (data) {
+                const usedPrefixes = {};
+                data.results.bindings.forEach(function (e) {
+                    usedPrefixes[e.prefix.value] = e.namespace.value;
+                });
+                $scope.namespaces = usedPrefixes;
+            })
+            .error(function (data) {
+                $scope.repositoryError = getError(data);
+            })
+            .finally(function () {
+                // Signals namespaces were fetched => loader will be hidden
+                setLoader(false);
+            });
     }
 
     const updateModel = async () => {
@@ -518,9 +584,6 @@ function GraphConfigCtrl(
     $scope.loadTab = loadTab;
 
     // query operations
-    $scope.runQuery = runQuery;
-    $scope.getNamespaces = getNamespaces;
-    $scope.changePagination = changePagination;
     $scope.toggleSampleQueries = toggleSampleQueries;
     $scope.getExistingTabId = getExistingTabId;
     $scope.querySelected = querySelected;
@@ -648,81 +711,7 @@ function GraphConfigCtrl(
         }
     }
 
-    const updateYasguiConfiguration = (additionalConfiguration = {}) => {
-        const config = {};
-        angular.extend(config, $scope.yasguiConfig || defaultYasguiConfig, additionalConfiguration);
-        $scope.yasguiConfig = config;
-    };
-
     // start of query operations
-    async function runQuery(changePage, explain) {
-        $scope.executedQueryTab = $scope.currentQuery;
-        const yasguiInstance = await getYasguiInstance()
-        const queryType = await yasguiInstance.getQueryType();
-        if (explain && !(queryType === 'SELECT' || queryType === 'CONSTRUCT' || queryType === 'DESCRIBE')) {
-            toastr.warning($translate.instant('query.editor.warning.msg'));
-            return;
-        }
-
-        const queryMode = await yasguiInstance.getQueryMode();
-        if (queryMode === 'update') {
-            toastr.warning($translate.instant('cannot.execute.update.error'));
-            return;
-        }
-
-        $scope.explainRequested = explain;
-        if (!$scope.queryIsRunning) {
-            // Hides the editor and shows the yasr results
-            $scope.viewMode = 'editor';
-            if ($scope.orientationViewMode) {
-                $scope.fixSizesOnHorizontalViewModeSwitch()
-            }
-
-            // setLoader(true, $translate.instant('evaluating.query.msg'));
-
-            executeYasqeQuery();
-            switchToYasr();
-        }
-    }
-
-    const executeYasqeQuery = async () => {
-        const yasguiInstance = await getYasguiInstance();
-        yasguiInstance.query();
-    }
-
-    const switchToYasqe = async () => {
-        const yasguiInstance = await getYasguiInstance()
-        yasguiInstance.changeRenderMode(RenderingMode.YASQE);
-    }
-
-    const switchToYasr = async () => {
-        const yasguiInstance = await getYasguiInstance()
-        yasguiInstance.changeRenderMode(RenderingMode.YASR);
-    }
-
-    function getNamespaces() {
-        // Signals the namespaces are to be fetched => loader will be shown
-        setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
-        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
-            .success(function (data) {
-                const usedPrefixes = {};
-                data.results.bindings.forEach(function (e) {
-                    usedPrefixes[e.prefix.value] = e.namespace.value;
-                });
-                $scope.namespaces = usedPrefixes;
-            })
-            .error(function (data) {
-                $scope.repositoryError = getError(data);
-            })
-            .finally(function () {
-                // Signals namespaces were fetched => loader will be hidden
-                setLoader(false);
-            });
-    }
-
-    function changePagination() {
-        runQuery(true, $scope.explainRequested);
-    }
 
     if ($scope.getActiveRepository()) {
         getNamespaces();
