@@ -79,11 +79,11 @@ function GraphConfigCtrl(
     $scope.getNamespacesPromise = undefined;
 
     $scope.tabsViewModel = [
-        {label: $translate.instant('starting.point.label'), page: 1},
-        {label: $translate.instant('graph.expansion'), page: 2},
-        {label: $translate.instant('node.basics'), page: 3},
-        {label: $translate.instant('edge.basics'), page: 4},
-        {label: $translate.instant('node.extra'), page: 5}
+        {page: 1, label: $translate.instant('starting.point.label'), type: 'startGraphQuery'},
+        {page: 2, label: $translate.instant('graph.expansion'), type: 'expandQuery'},
+        {page: 3, label: $translate.instant('node.basics'), type: 'resourceQuery'},
+        {page: 4, label: $translate.instant('edge.basics'), type: 'predicateLabelQuery'},
+        {page: 5, label: $translate.instant('node.extra'), type: 'resourcePropertiesQuery'}
     ];
 
     // =========================
