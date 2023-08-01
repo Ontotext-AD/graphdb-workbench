@@ -25,10 +25,10 @@ export class GraphsConfig {
      */
     constructor(id,
                 name,
-                startMode,
+                startMode = StartMode.SEARCH,
                 owner,
-                startQueryIncludeInferred,
-                startQuerySameAs,
+                startQueryIncludeInferred = true,
+                startQuerySameAs= true,
                 startGraphQuery,
                 startIRI,
                 startIRILabel,
