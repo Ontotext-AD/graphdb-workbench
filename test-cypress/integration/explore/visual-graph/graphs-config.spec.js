@@ -310,6 +310,14 @@ describe('Graphs config', () => {
         VisualGraphSteps.editConfig(graphConfigName);
         // Then I expect to see the first wizard tab with the selected start query
         checkEditorWithQuery(QUERY_START);
+        // When I change the query
+        VisualGraphSteps.getRevertQueryButton().should('be.disabled');
+        YasqeSteps.writeInEditor('##');
+        // Then I expect to be able to revert it
+        VisualGraphSteps.getRevertQueryButton().should('be.enabled');
+        VisualGraphSteps.revertQuery();
+        VisualGraphSteps.getRevertQueryButton().should('be.disabled');
+        checkEditorWithQuery(QUERY_START);
         // When I edit the config by adding an expand query
         VisualGraphSteps.goToNextPage();
         VisualGraphSteps.getConfigWizardTab(2).should('be.visible');
