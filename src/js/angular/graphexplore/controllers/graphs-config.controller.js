@@ -78,6 +78,14 @@ function GraphConfigCtrl(
      */
     $scope.getNamespacesPromise = undefined;
 
+    $scope.tabsViewModel = [
+        {label: $translate.instant('starting.point.label'), page: 1},
+        {label: $translate.instant('graph.expansion'), page: 2},
+        {label: $translate.instant('node.basics'), page: 3},
+        {label: $translate.instant('edge.basics'), page: 4},
+        {label: $translate.instant('node.extra'), page: 5}
+    ];
+
     // =========================
     // TODO: Private fields
     // =========================
