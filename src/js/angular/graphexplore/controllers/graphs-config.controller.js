@@ -52,13 +52,11 @@ function GraphConfigCtrl(
     // Public fields
     // =========================
 
+    $scope.newConfig = new GraphsConfig();
+
     $scope.page = 1;
     $scope.totalPages = 5;
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_GRAPH_CONFIG_HELP) === 1;
-    $scope.newConfig = new GraphsConfig();
-    $scope.newConfig.startQueryIncludeInferred = true;
-    $scope.newConfig.startQuerySameAs = true;
-    $scope.newConfig.startMode = StartMode.SEARCH;
     $scope.isUpdate = false;
     $scope.shared = false;
     /**
@@ -67,17 +65,10 @@ function GraphConfigCtrl(
      */
     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
     $scope.samples = [];
-
-    const defaultTabConfig = {
-        id: '1',
-        name: '',
-        query: 'select * where { \n' +
-            '\t?s ?p ?o .\n' +
-            '} limit 100 \n',
+    $scope.tabConfig = {
         inference: $scope.newConfig.startQueryIncludeInferred,
         sameAs: $scope.newConfig.startQuerySameAs
     };
-    $scope.currentQuery = angular.copy(defaultTabConfig);
     /**
      * @type {Promise|undefined}
      */
@@ -234,8 +225,9 @@ function GraphConfigCtrl(
             return;
         }
 
-        $scope.newConfig.startQueryIncludeInferred = $scope.currentQuery.inference;
-        $scope.newConfig.startQuerySameAs = $scope.currentQuery.sameAs;
+        $scope.newConfig.startQueryIncludeInferred = $scope.tabConfig.inference;
+        $scope.newConfig.startQuerySameAs = $scope.tabConfig.sameAs;
+        console.log('saveGraphConfig', $scope.tabConfig, $scope.newConfig);
 
         validateCurrentPage(() => {
             if (!$scope.newConfig.name) {
@@ -277,10 +269,7 @@ function GraphConfigCtrl(
     };
 
     $scope.showPreview = () => {
-        // For some reason YASR gets confused and sets this to rawResponse
-        // if we execute a CONSTRUCT and then a SELECT. This makes sure it's always table.
         $scope.viewMode = 'editor';
-        $scope.currentQuery.outputType = 'table';
         runQuery();
     };
 
@@ -456,14 +445,9 @@ function GraphConfigCtrl(
      * relevant query from the model.
      */
     const updateEditor = () => {
-        $scope.currentQuery.query = getQueryForCurrentPage($scope.newConfig);
-        // Check for ontop repository and override nocount property (it's default value is false)
-        if ($repositories.isActiveRepoOntopType()) {
-            $scope.nocount = true;
-        }
-        $scope.currentQuery.inference = $scope.newConfig.startQueryIncludeInferred;
-        $scope.currentQuery.sameAs = $scope.newConfig.startQuerySameAs;
-        $scope.setQuery($scope.currentQuery.query)
+        $scope.tabConfig.inference = $scope.newConfig.startQueryIncludeInferred;
+        $scope.tabConfig.sameAs = $scope.newConfig.startQuerySameAs;
+        $scope.setQuery(getQueryForCurrentPage($scope.newConfig))
     };
 
     const showInvalidMsg = (message) => {
