@@ -78,7 +78,22 @@ export class GraphsConfig {
      * @return {boolean}
      */
     isStartMode(expectedMode) {
-        return this._startMode === expectedMode;
+        return this.startMode === expectedMode;
+    }
+
+    isDefaultGraph() {
+        return this.name === 'Minimal' || this.name === 'Advanced';
+    }
+
+    /**
+     * Finds out the description for a property with given name. The description properties always end with the
+     * `Description` suffix when loaded from backend.
+     * @param {string} propertyName The property name for which to get the description.
+     * @return {string|undefined} the property description or undefined if not found.
+     */
+    getPropertyDescription(propertyName) {
+        const descriptionPropertyName = `${propertyName}Description`;
+        return this[descriptionPropertyName];
     }
 
     /**
