@@ -248,7 +248,6 @@ function GraphConfigCtrl(
 
         $scope.newConfig.startQueryIncludeInferred = $scope.tabConfig.inference;
         $scope.newConfig.startQuerySameAs = $scope.tabConfig.sameAs;
-        console.log('saveGraphConfig', $scope.tabConfig, $scope.newConfig);
 
         validateCurrentPage(() => {
             if (!$scope.newConfig.name) {
@@ -274,12 +273,9 @@ function GraphConfigCtrl(
         yasguiInstance.setQuery(newQuery);
     };
 
-    // TODO: used to be called as a handler from the yasgui component and worked in the old yasgui but not implemented here
     $scope.markDirty = async (evt) => {
-        console.log('markDirty', $scope.revertConfig);
         if ($scope.revertConfig) {
             const q1 = $scope.revertConfig.getQueryType($scope.page);
-            // const q2 = window.editor.getValue().trim();
             const q2 = await getYasqeQuery();
             $scope.queryEditorIsDirty = q1 !== q2;
         }
@@ -298,6 +294,7 @@ function GraphConfigCtrl(
 
     $scope.revertEditor = () => {
         $scope.setQuery($scope.revertConfig.getQueryType($scope.page));
+        $scope.queryEditorIsDirty = false;
     };
 
     // =========================
