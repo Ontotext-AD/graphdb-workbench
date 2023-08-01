@@ -149,27 +149,32 @@ function GraphConfigCtrl(
 
     /**
      * A filter used to filter query samples during the rendering.
-     * @param sample
+     * @param {GraphsConfig} sample
      * @return {boolean}
      */
     $scope.isDefaultGraph = (sample) => {
-        return sample.name === 'Minimal' || sample.name === 'Advanced';
+        return sample.isDefaultGraph();
     };
 
     /**
      * A filter used to filter query samples during the rendering.
-     * @param sample
+     * @param {GraphsConfig} sample
      * @return {boolean}
      */
     $scope.isUserGraph = (sample) => {
-        return !$scope.isDefaultGraph(sample);
+        return !sample.isDefaultGraph();
     };
 
+    /**
+     * @param {GraphsConfig} sample
+     * @param {string} property
+     * @return {string|*}
+     */
     $scope.getSampleName = (sample, property) => {
-        const extra = sample[property + 'Description'];
-        if (extra) {
+        const propertyDescription = sample.getPropertyDescription(property);
+        if (propertyDescription) {
             // Sample has description, use it
-            return extra;
+            return propertyDescription;
         } else {
             // Sample is a copy of existing config, prepend Copy of to name
             return sample.id ? 'Copy of ' + sample.name : sample.name;
