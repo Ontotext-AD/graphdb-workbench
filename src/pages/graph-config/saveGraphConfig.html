@@ -50,30 +50,10 @@
         <span class="hidden-lg-down">{{'menu.help.label' | translate}}</span>
     </button>
     <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a ng-class="page == 1 ? 'active' : ''" ng-click="goToPage(1)" class="nav-link page-1-link" href>
-                {{'starting.point.label' | translate}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a ng-class="page == 2 ? 'active' : ''" ng-click="goToPage(2)" class="nav-link page-2-link" href>
-                {{'graph.expansion' | translate}}
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a ng-class="page == 3 ? 'active' : ''" ng-click="goToPage(3)" class="nav-link page-3-link" href>
-                {{'node.basics' | translate}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a ng-class="page == 4 ? 'active' : ''" ng-click="goToPage(4)" class="nav-link page-4-link" href>
-                {{'edge.basics' | translate}}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a ng-class="page == 5 ? 'active' : ''" ng-click="goToPage(5)" class="nav-link page-5-link" href>
-                {{'node.extra' | translate}}
+        <li ng-repeat="tab in tabsViewModel track by tab.page" class="nav-item">
+            <a ng-class="page === tab.page ? 'active' : ''" ng-click="goToPage(tab.page)"
+               class="nav-link page-{{tab.page}}-link" href>
+                {{tab.label}}
             </a>
         </li>
     </ul>
