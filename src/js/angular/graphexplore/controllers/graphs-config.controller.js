@@ -4,6 +4,7 @@ import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {YasguiComponentDirectiveUtil} from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
+import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
@@ -52,7 +53,14 @@ function GraphConfigCtrl(
     // Public fields
     // =========================
 
+    /**
+     * @type {GraphsConfig}
+     */
     $scope.newConfig = new GraphsConfig();
+    /**
+     * @type {GraphsConfig|undefined}
+     */
+    $scope.revertConfig = undefined;
 
     $scope.page = 1;
     $scope.totalPages = 5;
@@ -87,7 +95,7 @@ function GraphConfigCtrl(
     ];
 
     // =========================
-    // TODO: Private fields
+    // Private fields
     // =========================
 
     let selectedFixedNodeChanged;
@@ -110,7 +118,7 @@ function GraphConfigCtrl(
     ];
 
     // =========================
-    // TODO: Public functions
+    // Public functions
     // =========================
 
     /**
@@ -262,10 +270,12 @@ function GraphConfigCtrl(
     };
 
     // TODO: used to be called as a handler from the yasgui component and worked in the old yasgui but not implemented here
-    $scope.markDirty = (evt) => {
+    $scope.markDirty = async (evt) => {
+        console.log('markDirty', $scope.revertConfig);
         if ($scope.revertConfig) {
-            const q1 = getQueryForCurrentPage($scope.revertConfig);
-            const q2 = window.editor.getValue().trim();
+            const q1 = $scope.revertConfig.getQueryType($scope.page);
+            // const q2 = window.editor.getValue().trim();
+            const q2 = await getYasqeQuery();
             $scope.queryEditorIsDirty = q1 !== q2;
         }
     };
@@ -282,11 +292,11 @@ function GraphConfigCtrl(
     };
 
     $scope.revertEditor = () => {
-        $scope.setQuery(getQueryForCurrentPage($scope.revertConfig));
+        $scope.setQuery($scope.revertConfig.getQueryType($scope.page));
     };
 
     // =========================
-    // TODO: Private functions
+    // Private functions
     // =========================
 
     const getYasguiInstance = () => {
@@ -334,13 +344,17 @@ function GraphConfigCtrl(
         yasguiInstance.changeRenderMode(RenderingMode.YASR);
     }
 
+    const getYasqeQuery = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        return yasguiInstance.getQuery();
+    }
+
     const getNamespaces = () => {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
         RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const usedPrefixes = {};
-                // TODO: move this to a mapper
                 data.results.bindings.forEach(function (e) {
                     usedPrefixes[e.prefix.value] = e.namespace.value;
                 });
@@ -404,15 +418,16 @@ function GraphConfigCtrl(
     const getGraphConfigSamples = () => {
         GraphConfigRestService.getGraphConfigSamples()
             .success(function (data) {
-                $scope.samples = data.filter((sample) => {
-                    // Skip the currently edited config from samples and store it into a revert variable
-                    if (!sample.id || $scope.newConfig.id !== sample.id) {
-                        return true;
-                    } else {
-                        $scope.revertConfig = sample;
-                        return false;
-                    }
-                });
+                $scope.samples = mapGraphConfigSamplesToGraphConfigs(data)
+                    .filter((graphConfig) => {
+                        // Skip the currently edited config from samples and store it into a revert variable
+                        if (!graphConfig.id || $scope.newConfig.id !== graphConfig.id) {
+                            return true;
+                        } else {
+                            $scope.revertConfig = graphConfig;
+                            return false;
+                        }
+                    });
             }).error(function (data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs'));
             });
@@ -425,31 +440,11 @@ function GraphConfigCtrl(
     const updateEditor = () => {
         $scope.tabConfig.inference = $scope.newConfig.startQueryIncludeInferred;
         $scope.tabConfig.sameAs = $scope.newConfig.startQuerySameAs;
-        $scope.setQuery(getQueryForCurrentPage($scope.newConfig))
+        $scope.setQuery($scope.newConfig.getQueryType($scope.page))
     };
 
     const showInvalidMsg = (message) => {
         toastr.warning(message);
-    };
-
-    /**
-     * @param {GraphsConfig} config
-     */
-    const getQueryForCurrentPage = (config) => {
-        let query;
-
-        if (config.isStartMode(StartMode.QUERY) && $scope.page === 1) {
-            query = config.startGraphQuery;
-        } else if ($scope.page === 2) {
-            query = config.expandQuery;
-        } else if ($scope.page === 3) {
-            query = config.resourceQuery;
-        } else if ($scope.page === 4) {
-            query = config.predicateLabelQuery;
-        } else if ($scope.page === 5) {
-            query = config.resourcePropertiesQuery;
-        }
-        return angular.isDefined(query) ? query : '';
     };
 
     const checkAutocompleteStatus = () => {

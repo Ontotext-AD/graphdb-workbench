@@ -6,22 +6,27 @@ export const StartMode = {
 
 export class GraphsConfig {
     /**
-     * @param {string} id
-     * @param {string} name
-     * @param {string} startMode
-     * @param {string} owner
-     * @param {boolean} startQueryIncludeInferred
-     * @param {boolean} startQuerySameAs
-     * @param {string} startGraphQuery
-     * @param {string} startIRI
-     * @param {string} startIRILabel
-     * @param {string} expandQuery
-     * @param {string} resourceQuery
-     * @param {string} predicateLabelQuery
-     * @param {string} resourcePropertiesQuery
-     * @param {boolean} shared
-     * @param {string} description
-     * @param {string} hint
+     * @param {string|undefined} id
+     * @param {string|undefined} name
+     * @param {string|undefined} startMode
+     * @param {string|undefined} owner
+     * @param {boolean|undefined} startQueryIncludeInferred
+     * @param {boolean|undefined} startQuerySameAs
+     * @param {string|undefined} startGraphQuery
+     * @param {string|undefined} startIRI
+     * @param {string|undefined} startIRILabel
+     * @param {string|undefined} expandQuery
+     * @param {string|undefined} resourceQuery
+     * @param {string|undefined} predicateLabelQuery
+     * @param {string|undefined} resourcePropertiesQuery
+     * @param {boolean|undefined} shared
+     * @param {string|undefined} description
+     * @param {string|undefined} hint
+     * @param {string|undefined} startGraphQueryDescription
+     * @param {string|undefined} expandQueryDescription
+     * @param {string|undefined} resourceQueryDescription
+     * @param {string|undefined} predicateLabelQueryDescription
+     * @param {string|undefined} resourcePropertiesQueryDescription
      */
     constructor(id,
                 name,
@@ -38,7 +43,12 @@ export class GraphsConfig {
                 resourcePropertiesQuery,
                 shared,
                 description,
-                hint
+                hint,
+                startGraphQueryDescription,
+                expandQueryDescription,
+                resourceQueryDescription,
+                predicateLabelQueryDescription,
+                resourcePropertiesQueryDescription
     ) {
         this._id = id;
         this._name = name;
@@ -56,6 +66,11 @@ export class GraphsConfig {
         this._shared = shared;
         this._description = description;
         this._hint = hint;
+        this._startGraphQueryDescription = startGraphQueryDescription;
+        this._expandQueryDescription = expandQueryDescription;
+        this._resourceQueryDescription = resourceQueryDescription;
+        this._predicateLabelQueryDescription = predicateLabelQueryDescription;
+        this._resourcePropertiesQueryDescription = resourcePropertiesQueryDescription;
     }
 
     /**
@@ -66,6 +81,31 @@ export class GraphsConfig {
         return this._startMode === expectedMode;
     }
 
+    /**
+     * Resolves the query type applicable for given graph config wizard page.
+     * @param {number} page A page is a tab in the graph config wizard.
+     * @return {*|string}
+     */
+    getQueryType(page) {
+        let query;
+        if (this.isStartMode(StartMode.QUERY) && page === 1) {
+            query = this.startGraphQuery;
+        } else if (page === 2) {
+            query = this.expandQuery;
+        } else if (page === 3) {
+            query = this.resourceQuery;
+        } else if (page === 4) {
+            query = this.predicateLabelQuery;
+        } else if (page === 5) {
+            query = this.resourcePropertiesQuery;
+        }
+        return query || '';
+    }
+
+    /**
+     * Converts this model to a payload JSON object needed for a save config operation.
+     * @return {{owner: (string|undefined), shared: (boolean|undefined), startIRI: (string|undefined), resourceQuery: (string|undefined), startGraphQuery: (string|undefined), expandQuery: (string|undefined), description: (string|undefined), startIRILabel: (string|undefined), startQueryIncludeInferred: (boolean|undefined), resourcePropertiesQuery: (string|undefined), predicateLabelQuery: (string|undefined), startMode: (string|undefined), hint: (string|undefined), name: (string|undefined), id: (string|undefined), startQuerySameAs: (boolean|undefined)}}
+     */
     toSavePayload() {
         return {
             id: this.id,
@@ -213,5 +253,45 @@ export class GraphsConfig {
 
     set hint(value) {
         this._hint = value;
+    }
+
+    get startGraphQueryDescription() {
+        return this._startGraphQueryDescription;
+    }
+
+    set startGraphQueryDescription(value) {
+        this._startGraphQueryDescription = value;
+    }
+
+    get expandQueryDescription() {
+        return this._expandQueryDescription;
+    }
+
+    set expandQueryDescription(value) {
+        this._expandQueryDescription = value;
+    }
+
+    get resourceQueryDescription() {
+        return this._resourceQueryDescription;
+    }
+
+    set resourceQueryDescription(value) {
+        this._resourceQueryDescription = value;
+    }
+
+    get predicateLabelQueryDescription() {
+        return this._predicateLabelQueryDescription;
+    }
+
+    set predicateLabelQueryDescription(value) {
+        this._predicateLabelQueryDescription = value;
+    }
+
+    get resourcePropertiesQueryDescription() {
+        return this._resourcePropertiesQueryDescription;
+    }
+
+    set resourcePropertiesQueryDescription(value) {
+        this._resourcePropertiesQueryDescription = value;
     }
 }
