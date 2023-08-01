@@ -278,37 +278,6 @@ function GraphConfigCtrl(
     };
 
     // =========================
-    // TODO: Event handlers
-    // =========================
-
-    $scope.$on('$destroy', function () {
-        //
-    });
-
-    $scope.$on('autocompleteStatus', () => {
-        checkAutocompleteStatus();
-    });
-
-    // Trigger for showing the editor and moving it to the right position
-    $scope.$watch('newConfig.startMode', (value) => {
-        if (value === StartMode.QUERY) {
-            $timeout(() => {
-                updateEditor();
-            }, 0);
-        }
-    });
-
-    // Trigger for showing the editor and moving it to the right position
-    $scope.$watch('page', (value) => {
-        if ($scope.newConfig.isStartMode(StartMode.QUERY) || value > 1) {
-            $timeout(() => {
-                $scope.showEditor();
-                updateEditor();
-            }, 0);
-        }
-    });
-
-    // =========================
     // TODO: Private functions
     // =========================
 
@@ -334,6 +303,7 @@ function GraphConfigCtrl(
             // Hides the editor and shows the yasr results
             $scope.viewMode = 'editor';
 
+            // this breaks a test - probably something with the queryIsRunning flag
             // setLoader(true, $translate.instant('evaluating.query.msg'));
 
             executeYasqeQuery();
@@ -551,40 +521,7 @@ function GraphConfigCtrl(
     }
 
     const setLoader = (isRunning, progressMessage, extraMessage) => {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
         $scope.queryIsRunning = isRunning;
-        if (isRunning) {
-            $scope.queryStartTime = Date.now();
-            $scope.countTimeouted = false;
-            $scope.progressMessage = progressMessage;
-            $scope.extraMessage = extraMessage;
-            yasrInnerContainer.addClass('hide');
-        } else {
-            $scope.progressMessage = '';
-            $scope.extraMessage = '';
-            yasrInnerContainer.removeClass('hide');
-        }
-        // We might call this from angular or outside angular so take care of applying the scope.
-        if ($scope.$$phase === null) {
-            $scope.$apply();
-        }
-    };
-
-    const getLoaderMessage = () => {
-        const timeSeconds = (Date.now() - $scope.queryStartTime) / 1000;
-        const timeHuman = $scope.getHumanReadableSeconds(timeSeconds);
-        let message;
-
-        if ($scope.progressMessage) {
-            message = $scope.progressMessage + '... ' + timeHuman;
-        } else {
-            message = $translate.instant('common.running.operation', {timeHuman: timeHuman});
-        }
-        if ($scope.extraMessage && timeSeconds > 10) {
-            message += '\n' + $scope.extraMessage;
-        }
-
-        return message;
     };
 
     const initView = () => {
@@ -611,6 +548,33 @@ function GraphConfigCtrl(
             getNamespaces();
         }
     };
+
+    // =========================
+    // TODO: Event handlers
+    // =========================
+
+    const unsubscribeListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    const subscriptions = [];
+    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
+
+    // Trigger for showing the editor and moving it to the right position
+    $scope.$watch('newConfig.startMode', (value) => {
+        if (value === StartMode.QUERY) {
+            updateEditor();
+        }
+    });
+
+    // Trigger for showing the editor and moving it to the right position
+    $scope.$watch('page', (value) => {
+        if ($scope.newConfig.isStartMode(StartMode.QUERY) || value > 1) {
+            $scope.showEditor();
+            updateEditor();
+        }
+    });
 
     // =========================
     // TODO: Initialization
