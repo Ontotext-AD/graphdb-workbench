@@ -353,4 +353,12 @@ export class VisualGraphSteps {
     static editQuery() {
         cy.get('.btn-show-query-editor').click();
     }
+
+    static getRevertQueryButton() {
+         return cy.get('.btn-revert-query');
+    }
+
+    static revertQuery() {
+         this.getRevertQueryButton().click();
+    }
 }
