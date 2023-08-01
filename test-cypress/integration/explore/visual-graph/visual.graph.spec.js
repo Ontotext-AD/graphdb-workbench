@@ -1,4 +1,4 @@
-import VisualGraphSteps from "../../../steps/visual-graph-steps";
+import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
