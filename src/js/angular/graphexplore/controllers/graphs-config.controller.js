@@ -283,13 +283,13 @@ function GraphConfigCtrl(
 
     $scope.showEditor = () => {
         $scope.viewMode = 'yasr';
-        // TODO: abort running query if any
+        abortQuery();
         switchToYasqe();
     };
 
     $scope.showPreview = () => {
         $scope.viewMode = 'editor';
-        runQuery();
+        runQuery()
     };
 
     $scope.revertEditor = () => {
@@ -349,6 +349,11 @@ function GraphConfigCtrl(
     const getYasqeQuery = async () => {
         const yasguiInstance = await getYasguiInstance()
         return yasguiInstance.getQuery();
+    }
+
+    const abortQuery = async () => {
+        const yasguiInstance = await getYasguiInstance()
+        yasguiInstance.abortQuery();
     }
 
     const getNamespaces = () => {
@@ -555,7 +560,7 @@ function GraphConfigCtrl(
     };
 
     // =========================
-    // TODO: Event handlers
+    // Event handlers
     // =========================
 
     const unsubscribeListeners = () => {
@@ -582,7 +587,7 @@ function GraphConfigCtrl(
     });
 
     // =========================
-    // TODO: Initialization
+    // Initialization
     // =========================
 
     initView();
