@@ -231,107 +231,25 @@
 
             <div class="sample-queries col-md-3">
                 <p>{{'sample.queries' | translate}} </p>
-<!--                TODO: refactor sample queries lists - remove the excessive code duplication -->
-                <div ng-if="page == 1" class="predefined-queries list-group">
+                <div ng-repeat="tab in tabsViewModel track by tab.page" ng-if="tab.page === page"
+                     class="predefined-queries list-group">
                     <div ng-repeat="sample in samples | filter:isDefaultGraph">
-                        <a href="#" ng-if="sample.startGraphQuery" ng-click="setQuery(sample.startGraphQuery)"
+                        <a href="#" ng-if="sample[tab.type]" ng-click="setQuery(sample[tab.type])"
                            class="predefined-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'startGraphQuery')"></strong>
-                            <samp class="text-muted small">{{sample.startGraphQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 2" class="predefined-queries list-group expand-samples">
-                    <div ng-repeat="sample in samples | filter:isDefaultGraph">
-                        <a href="#" ng-if="sample.expandQuery" ng-click="setQuery(sample.expandQuery)"
-                           class="predefined-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'expandQuery')"></strong>
-                            <samp class="text-muted small">{{sample.expandQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 3" class="predefined-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isDefaultGraph">
-                        <a href="#" ng-if="sample.resourceQuery" ng-click="setQuery(sample.resourceQuery)"
-                           class="predefined-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'resourceQuery')"></strong>
-                            <samp class="text-muted small">{{sample.resourceQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 4" class="predefined-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isDefaultGraph">
-                        <a href="#" ng-if="sample.predicateLabelQuery" ng-click="setQuery(sample.predicateLabelQuery)"
-                           class="predefined-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'predicateLabelQuery')"></strong>
-                            <samp class="text-muted small">{{sample.predicateLabelQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 5" class="predefined-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isDefaultGraph">
-                        <a href="#" ng-if="sample.resourcePropertiesQuery"
-                           ng-click="setQuery(sample.resourcePropertiesQuery)"
-                           class="predefined-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></strong>
-                            <samp class="text-muted small">{{sample.resourcePropertiesQuery}}</samp>
+                            <strong ng-bind="getSampleName(sample, tab.type)"></strong>
+                            <samp class="text-muted small">{{sample[tab.type]}}</samp>
                         </a>
                     </div>
                 </div>
 
                 <p class="mt-1">{{'user.queries' | translate}} </p>
-
-                <div ng-if="page == 1" class="user-queries list-group">
+                <div ng-repeat="tab in tabsViewModel track by tab.page" ng-if="page == 1"
+                     class="user-queries list-group">
                     <div ng-repeat="sample in samples | filter:isUserGraph">
-                        <a href="#" ng-if="sample.startGraphQuery" ng-click="setQuery(sample.startGraphQuery)"
+                        <a href="#" ng-if="sample[tab.type]" ng-click="setQuery(sample[tab.type])"
                            class="user-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'startGraphQuery')"></strong>
-                            <samp class="text-muted small">{{sample.startGraphQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 2" class="user-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isUserGraph">
-                        <a href="#" ng-if="sample.expandQuery" ng-click="setQuery(sample.expandQuery)"
-                           class="user-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'expandQuery')"></strong>
-                            <samp class="text-muted small">{{sample.expandQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 3" class="user-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isUserGraph">
-                        <a href="#" ng-if="sample.resourceQuery" ng-click="setQuery(sample.resourceQuery)"
-                           class="user-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'resourceQuery')"></strong>
-                            <samp class="text-muted small">{{sample.resourceQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 4" class="user-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isUserGraph">
-                        <a href="#" ng-if="sample.predicateLabelQuery" ng-click="setQuery(sample.predicateLabelQuery)"
-                           class="user-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'predicateLabelQuery')"></strong>
-                            <samp class="text-muted small">{{sample.predicateLabelQuery}}</samp>
-                        </a>
-                    </div>
-                </div>
-
-                <div ng-if="page == 5" class="user-queries list-group">
-                    <div ng-repeat="sample in samples | filter:isUserGraph">
-                        <a href="#" ng-if="sample.resourcePropertiesQuery"
-                           ng-click="setQuery(sample.resourcePropertiesQuery)"
-                           class="user-query list-group-item list-group-item-action">
-                            <strong ng-bind="getSampleName(sample, 'resourcePropertiesQuery')"></strong>
-                            <samp class="text-muted small">{{sample.resourcePropertiesQuery}}</samp>
+                            <strong ng-bind="getSampleName(sample, tab.type)"></strong>
+                            <samp class="text-muted small">{{sample[tab.type]}}</samp>
                         </a>
                     </div>
                 </div>
