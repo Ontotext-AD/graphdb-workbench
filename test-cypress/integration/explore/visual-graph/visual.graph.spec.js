@@ -273,6 +273,7 @@ describe('Visual graph screen validation', () => {
                 'Right arrow\n                        \n                        ' +
                 'Rotate the graph to the right\n';
 
+            VisualGraphSteps.searchForResource(VALID_RESOURCE);
             // Click on "mouse and keyboard actions" in the lower right corner of the screen
             cy.get('#keyboardShortcuts').click();
             // Verify all mouse and actions
