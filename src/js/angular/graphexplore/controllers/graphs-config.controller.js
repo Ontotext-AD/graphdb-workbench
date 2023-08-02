@@ -28,7 +28,8 @@ GraphConfigCtrl.$inject = [
     'RDF4JRepositoriesRestService',
     'LocalStorageAdapter',
     'LSKeys',
-    '$translate'
+    '$translate',
+    'ModalService'
 ];
 
 function GraphConfigCtrl(
@@ -46,7 +47,8 @@ function GraphConfigCtrl(
     RDF4JRepositoriesRestService,
     LocalStorageAdapter,
     LSKeys,
-    $translate
+    $translate,
+    ModalService
 ) {
 
     // =========================
@@ -254,6 +256,7 @@ function GraphConfigCtrl(
                 showInvalidMsg($translate.instant('graphexplore.provide.config.name'));
                 return;
             }
+            $scope.queryEditorIsDirty = false;
             if ($scope.isUpdate) {
                 $scope.updateGraphConfig($scope.newConfig.toSavePayload());
             } else {
@@ -271,9 +274,10 @@ function GraphConfigCtrl(
         const newQuery = query ? query : ' ';
         const yasguiInstance = await getYasguiInstance()
         yasguiInstance.setQuery(newQuery);
+        $scope.markDirty();
     };
 
-    $scope.markDirty = async (evt) => {
+    $scope.markDirty = async () => {
         if ($scope.revertConfig) {
             const q1 = $scope.revertConfig.getQueryType($scope.page);
             const q2 = await getYasqeQuery();
@@ -534,6 +538,50 @@ function GraphConfigCtrl(
         $scope.queryIsRunning = isRunning;
     };
 
+    const openConfirmDialog = (title, message, onConfirm, onCancel) => {
+        ModalService.openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function () {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
+        });
+    };
+
+    const locationChangedHandler = (event, newPath) => {
+        if ($scope.queryEditorIsDirty) {
+            event.preventDefault();
+            const title = $translate.instant('common.confirm');
+            const message = $translate.instant('visual.config.warning.unsaved.changes');
+            const onConfirm = () => {
+                unsubscribeListeners();
+                const baseLen = $location.absUrl().length - $location.url().length;
+                const path = newPath.substring(baseLen);
+                $location.path(path);
+            };
+            openConfirmDialog(title, message, onConfirm);
+        } else {
+            unsubscribeListeners();
+        }
+    };
+
+    const unsubscribeListeners = () => {
+        window.removeEventListener('beforeunload', beforeunloadHandler);
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    const beforeunloadHandler = (event) => {
+        if ($scope.queryEditorIsDirty) {
+            event.returnValue = true;
+        }
+    };
+
     const initView = () => {
         $repositories.getPrefixes(activeRepository)
             .then((prefixes) => initYasgui(prefixes))
@@ -563,13 +611,11 @@ function GraphConfigCtrl(
     // Event handlers
     // =========================
 
-    const unsubscribeListeners = () => {
-        subscriptions.forEach((subscription) => subscription());
-    };
-
     const subscriptions = [];
     subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
+    window.addEventListener('beforeunload', beforeunloadHandler);
 
     // Trigger for showing the editor and moving it to the right position
     $scope.$watch('newConfig.startMode', (value) => {
