@@ -404,7 +404,6 @@ describe('Graphs config', () => {
         ModalDialogSteps.getDialog().should('be.visible');
     });
 
-    // TODO: check why this breaks on CI
     it('Should be able to delete existing graph config', () => {
         // Given I have created a graph config
         startCreateConfigWizard();
@@ -423,7 +422,7 @@ describe('Graphs config', () => {
         VisualGraphSteps.deleteConfig(graphConfigName);
         ModalDialogSteps.clickOnConfirmButton();
         // Then I expect the config to be deleted
-        VisualGraphSteps.getGraphConfig(graphConfigName).should('not.exist');
+        VisualGraphSteps.getGraphConfigs().should('not.exist');
     });
 
     it.skip('Should be able to share graph config', () => {

@@ -205,8 +205,12 @@ export class VisualGraphSteps {
         return cy.get('.graph-configurations');
     }
 
+    static getGraphConfigs() {
+         return this.getGraphConfigurationsArea().find('.graph-configurations-list tr');
+    }
+
     static getGraphConfig(name) {
-        return this.getGraphConfigurationsArea().find('.graph-configurations-list tr').contains(name);
+        return this.getGraphConfigs().contains(name);
     }
 
     static openGraphConfig(name) {
