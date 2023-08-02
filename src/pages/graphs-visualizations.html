@@ -196,8 +196,7 @@
     </div>
 </div>
 
-
-<keyboard-shortcuts template-url="res/graphexplore/keyboard-shortcuts.html"></keyboard-shortcuts>
+<keyboard-shortcuts template-url="res/graphexplore/keyboard-shortcuts.html" ng-if="nodeSelected && !loading"></keyboard-shortcuts>
 
 <div class="graph-visualization" ng-hide="loading || !nodeSelected"></div>
 <div onto-loader-new
