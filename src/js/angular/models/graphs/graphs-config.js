@@ -118,6 +118,27 @@ export class GraphsConfig {
     }
 
     /**
+     * Updates the model by applying the provided query to a particular property according to page property.
+     * @param {string}query The query string to be stored in the model.
+     * @param {number} page
+     * @return {GraphsConfig}
+     */
+    updateModel(query, page) {
+        if (this.isStartMode(StartMode.QUERY) && page === 1) {
+            this.startGraphQuery = query;
+        } else if (page === 2) {
+            this.expandQuery = query;
+        } else if (page === 3) {
+            this.resourceQuery = query;
+        } else if (page === 4) {
+            this.predicateLabelQuery = query;
+        } else if (page === 5) {
+            this.resourcePropertiesQuery = query;
+        }
+        return this;
+    }
+
+    /**
      * Converts this model to a payload JSON object needed for a save config operation.
      * @return {{owner: (string|undefined), shared: (boolean|undefined), startIRI: (string|undefined), resourceQuery: (string|undefined), startGraphQuery: (string|undefined), expandQuery: (string|undefined), description: (string|undefined), startIRILabel: (string|undefined), startQueryIncludeInferred: (boolean|undefined), resourcePropertiesQuery: (string|undefined), predicateLabelQuery: (string|undefined), startMode: (string|undefined), hint: (string|undefined), name: (string|undefined), id: (string|undefined), startQuerySameAs: (boolean|undefined)}}
      */
