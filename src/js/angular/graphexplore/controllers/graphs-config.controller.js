@@ -385,20 +385,7 @@ function GraphConfigCtrl(
         /** @type string */
         let query = await yasguiInstance.getQuery();
         query = query.trim();
-
-        if ($scope.newConfig.isStartMode(StartMode.QUERY) && $scope.page === 1) {
-            $scope.newConfig.startGraphQuery = query;
-        } else if ($scope.page === 2) {
-            $scope.newConfig.expandQuery = query;
-        } else if ($scope.page === 3) {
-            $scope.newConfig.resourceQuery = query;
-        } else if ($scope.page === 4) {
-            $scope.newConfig.predicateLabelQuery = query;
-        } else if ($scope.page === 5) {
-            $scope.newConfig.resourcePropertiesQuery = query;
-        }
-
-        return $scope.newConfig;
+        return $scope.newConfig.updateModel(query, $scope.page);
     };
 
     const validateCurrentPage = async (successCallback) => {
@@ -490,10 +477,6 @@ function GraphConfigCtrl(
         checkAutocompleteStatus();
         $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
     }
-
-    const query = 'select * where { \n' +
-        '\t?s ?p ?o .\n' +
-        '} limit 100 \n'
 
     const getQueryEndpoint = () => {
         return `/repositories/${$repositories.getActiveRepository()}`;
