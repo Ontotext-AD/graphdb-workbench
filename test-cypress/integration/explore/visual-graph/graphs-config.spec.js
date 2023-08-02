@@ -332,8 +332,80 @@ describe('Graphs config', () => {
         checkEditorWithQuery(QUERY_EXPAND_NODE);
     });
 
+    it('Should prevent leaving with confirmation when start query is changed', () => {
+        // Given I have created a graph config with start query
+        startCreateConfigWizard();
+        VisualGraphSteps.typeGraphConfigName(graphConfigName);
+        VisualGraphSteps.selectStartMode('query');
+        checkEditorWithQuery(' ');
+        VisualGraphSteps.selectPredefinedQuerySample(0);
+        checkEditorWithQuery(QUERY_START);
+        saveGraphConfig(graphConfigName);
+        // And I open it for edit
+        VisualGraphSteps.editConfig(graphConfigName);
+        checkEditorWithQuery(QUERY_START);
+        // When I click cancel without changing the query
+        VisualGraphSteps.cancelSaveConfig();
+        // Then I expect to be redirected to configs list without confirmation
+        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+        // And I open it for edit
+        VisualGraphSteps.editConfig(graphConfigName);
+        checkEditorWithQuery(QUERY_START);
+        // And I change the query
+        YasqeSteps.writeInEditor('##');
+        // When I click cancel after changing the query
+        VisualGraphSteps.cancelSaveConfig();
+        // Then I expect a confirmation for leaving the page
+        ModalDialogSteps.getDialog().should('be.visible');
+        // When I reject
+        ModalDialogSteps.clickOnCancelButton();
+        // Then I expect to remain on the same page
+        ModalDialogSteps.getDialog().should('not.exist');
+        cy.url().should('contain', '/graphs-visualizations/config/save');
+        // When I click cancel after changing the query
+        VisualGraphSteps.cancelSaveConfig();
+        // Then I expect a confirmation for leaving the page
+        ModalDialogSteps.getDialog().should('be.visible');
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then I expect to be redirected to configs list page
+        ModalDialogSteps.getDialog().should('not.exist');
+        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+    });
+
+    it('Should prevent leaving with confirmation when expand query is changed', () => {
+        // Given I have created a graph config with start query
+        startCreateConfigWizard();
+        VisualGraphSteps.typeGraphConfigName(graphConfigName);
+        VisualGraphSteps.selectStartMode('query');
+        checkEditorWithQuery(' ');
+        VisualGraphSteps.selectPredefinedQuerySample(0);
+        checkEditorWithQuery(QUERY_START);
+        saveGraphConfig(graphConfigName);
+        // And I open it for edit
+        VisualGraphSteps.editConfig(graphConfigName);
+        // And I open the expand query wizard tab
+        VisualGraphSteps.openConfigWizardTab(2);
+        VisualGraphSteps.getConfigWizardTab(2).should('have.class', 'active');
+        // When I click cancel without changing the query
+        VisualGraphSteps.cancelSaveConfig();
+        // Then I expect a confirmation for leaving the page
+        ModalDialogSteps.getDialog().should('be.visible');
+        // When I reject
+        ModalDialogSteps.clickOnCancelButton();
+        // Then I expect to stay on the same page
+        ModalDialogSteps.getDialog().should('not.exist');
+        // When I select a predefined query
+        VisualGraphSteps.selectPredefinedQuerySample(0);
+        YasqeSteps.getQuery(500).should('contain', QUERY_EXPAND_NODE);
+        // And I try to open another page
+        cy.get('.main-menu .brand a').click();
+        // Then I expect a confirmation for leaving the page
+        ModalDialogSteps.getDialog().should('be.visible');
+    });
+
     // TODO: check why this breaks on CI
-    it.skip('Should be able to delete existing graph config', () => {
+    it('Should be able to delete existing graph config', () => {
         // Given I have created a graph config
         startCreateConfigWizard();
         VisualGraphSteps.typeGraphConfigName(graphConfigName);
