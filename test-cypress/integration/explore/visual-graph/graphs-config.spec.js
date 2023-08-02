@@ -424,10 +424,6 @@ describe('Graphs config', () => {
         // Then I expect the config to be deleted
         VisualGraphSteps.getGraphConfigs().should('not.exist');
     });
-
-    it.skip('Should be able to share graph config', () => {
-
-    });
 });
 
 function checkEditorWithQuery(query) {
