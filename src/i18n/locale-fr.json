@@ -1641,6 +1641,7 @@
     "visual.config.search.box.starting.point": "Point de départ - Boîte de recherche",
     "visual.config.query.results.starting.point": "Point de départ - Résultats de la requête",
     "visual.config.fixed.resource.starting.point": "Point de départ - Ressource fixe",
+    "visual.config.warning.unsaved.changes": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?",
     "visual.edit.config": "Modifier la configuration",
     "visual.delete.config": "Supprimer la configuration",
     "visual.saved.graphs": "Graphiques sauvegardés",

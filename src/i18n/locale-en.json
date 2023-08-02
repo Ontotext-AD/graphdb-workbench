@@ -1649,6 +1649,7 @@
     "visual.config.search.box.starting.point": "Starting point - Search box",
     "visual.config.query.results.starting.point": "Starting point - Query results",
     "visual.config.fixed.resource.starting.point": "Starting point - Fixed resource",
+    "visual.config.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "visual.edit.config": "Edit configuration",
     "visual.delete.config": "Delete configuration",
     "visual.saved.graphs": "Saved graphs",
