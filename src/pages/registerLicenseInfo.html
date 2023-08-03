@@ -46,14 +46,14 @@
 popover-trigger="focus"></textarea>
 	</div>
 
-	<div>
+	<div class="text-right">
+        <button class="btn btn-secondary license-button"
+                ng-click="getBackToPreviousPage()">
+            {{'common.cancel.btn' | translate}}
+        </button>
 		<button class="btn btn-primary license-button"
 				ng-click="sendLicenseToValidateAndActivate(licenseCode)">
 			{{'register.btn' | translate}}
-		</button>
-		<button class="btn btn-secondary license-button"
-				ng-click="getBackToPreviousPage()">
-			{{'common.cancel.btn' | translate}}
 		</button>
 	</div>
 </div>
