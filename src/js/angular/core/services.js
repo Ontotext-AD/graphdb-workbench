@@ -168,7 +168,7 @@ function ModalService($uibModal, $timeout, $sce) {
     }
 
     function openCopyToClipboardModal(uri) {
-        const modalInstance = $uibModal.open({
+        return $uibModal.open({
             templateUrl: 'js/angular/core/templates/modal/copy-to-clipboard-modal.html',
             controller: 'CopyToClipboardModalCtrl',
             resolve: {
@@ -177,19 +177,6 @@ function ModalService($uibModal, $timeout, $sce) {
                 }
             }
         });
-
-        modalInstance.opened.then(function () {
-            // TODO: If the need for this timeout was to wait for the clipboardURI to be rendered,
-            // then better and more reliable approach would be to replace it with an interval instead.
-            // And the best way is to move this logic in the CopyToClipboardModalCtrl where it should
-            // be because working with the DOM is not the place in services but in controllers or
-            // directives.
-            $timeout(function () {
-                $('#clipboardURI')[0].select();
-            }, 100);
-        });
-
-        return modalInstance;
     }
 }
 
