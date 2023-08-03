@@ -19,9 +19,15 @@ function SimpleModalCtrl($scope, $uibModalInstance, title, message) {
     };
 }
 
-CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toastr', '$translate'];
+CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toastr', '$translate', '$timeout'];
 
-function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $translate) {
+function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $translate, $timeout) {
+    $uibModalInstance.opened.then(function () {
+        $timeout(() => {
+            $('#clipboardURI')[0].select();
+        }, 0);
+    });
+
     $scope.clipboardURI = uri;
 
     $scope.ok = function () {
