@@ -828,6 +828,7 @@
     "import.reset.status": "Réinitialiser l'état",
     "import.remove.selected": "Supprimer les éléments sélectionnés de la liste",
     "import.remove.btn": "Supprimer",
+    "import.remove.confirm.msg": "Êtes-vous sûr de vouloir supprimer les fichiers sélectionnés: {{name}}",
     "import.last.import.settings": "Paramètres de la dernière importation",
     "import.mode.not.supported.constraint": "Ce mode n'est pas pris en charge lors de l'importation de plusieurs éléments.",
     "import.enable.replace.option": "Activez cette option pour remplacer les données d'un ou plusieurs graphes par les données importées.",

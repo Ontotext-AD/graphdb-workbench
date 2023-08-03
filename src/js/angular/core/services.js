@@ -106,7 +106,7 @@ function MenuItemsProvider() {
             }
         }
         return false;
-    }
+    };
 
     this.updateItemsWithMissedParent = function () {
         if (itemsWithMissedParent.length > 0) {
@@ -145,8 +145,33 @@ ModalService.$inject = ['$uibModal', '$timeout', '$sce'];
 function ModalService($uibModal, $timeout, $sce) {
     return {
         openSimpleModal: openSimpleModal,
-        openCopyToClipboardModal: openCopyToClipboardModal
+        openCopyToClipboardModal: openCopyToClipboardModal,
+        openConfirmation: openConfirmation
     };
+
+    /**
+     * Opens a confirmation dialog with provided translated title and message. If provided onConfirm and onCancel
+     * handler functions then they will be executed.
+     * @param {string} title
+     * @param {message} message
+     * @param {Function} onConfirm
+     * @param {Function} onCancel
+     */
+    function openConfirmation(title, message, onConfirm, onCancel) {
+        openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function () {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
+        });
+    }
 
     function openSimpleModal(config) {
         const simpleTemplate = 'js/angular/core/templates/modal/modal-simple.html';
