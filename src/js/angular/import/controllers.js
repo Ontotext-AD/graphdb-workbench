@@ -19,8 +19,8 @@ const modules = [
 
 const importCtrl = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService',
-    function ($scope, $http, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService) {
+importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService',
+    function ($scope, $http, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService) {
         $scope.files = [];
         $scope.fileChecked = {};
         $scope.checkAll = false;
@@ -337,8 +337,13 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             $scope.resetStatus($scope.getSelectedFiles());
         };
 
-        $scope.removeEntry = function (names) {
-            resetStatusOrRemoveEntry(names, true);
+        $scope.removeEntry = function (names = []) {
+            ModalService.openConfirmation(
+                $translate.instant('common.confirm'),
+                $translate.instant('import.remove.confirm.msg', {name: names.join(', ')}),
+                () => {
+                    resetStatusOrRemoveEntry(names, true);
+                });
         };
 
         $scope.removeEntrySelected = function () {
@@ -390,7 +395,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         };
     }]);
 
-importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller', function ($scope, $http, toastr, $controller) {
+importCtrl.controller('ImportCtrl', ['$scope', '$http', 'toastr', '$controller', '$translate', function ($scope, $http, toastr, $controller, $translate) {
     $scope.loader = true;
     angular.extend(this, $controller('CommonCtrl', {$scope: $scope}));
     $scope.viewUrl = 'server';

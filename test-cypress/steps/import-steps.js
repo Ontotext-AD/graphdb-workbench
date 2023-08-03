@@ -1,3 +1,5 @@
+import {ModalDialogSteps} from "./modal-dialog-steps";
+
 /**
  * Reusable functions for interacting with the import page.
  */
@@ -84,8 +86,9 @@ class ImportSteps {
     static removeUploadedFiles() {
         ImportSteps.selectAllUserFiles();
         cy.get('#wb-import-removeEntries').click();
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.clickOnConfirmButton();
         cy.get('#wb-import-fileInFiles').should('be.hidden');
-
         return ImportSteps;
     }
 
