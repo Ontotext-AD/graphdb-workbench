@@ -374,6 +374,10 @@
     text-align: left;
 }
 
+.text-right {
+    text-align: right;
+}
+
 @media only screen and (max-width:768px) {
     .fit-content-on-mobile {
         width: fit-content;
