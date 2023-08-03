@@ -203,7 +203,7 @@ describe('Import screen validation - user data', () => {
             .clickImportTextSnippetButton();
         importFromData(true, "urn:graph1")
         verifyGraphData("urn:graph1", "urn:replaced-s1-custom", "urn:replaced-p1-custom", "urn:replaced-o1-custom", "urn:graph1", true, "urn:s1-custom");
-    })
+    });
 
     it('Import RDF snippet in the default graph (The default graph) and replace data in the default graph', () => {
         ImportSteps
@@ -220,9 +220,9 @@ describe('Import screen validation - user data', () => {
             .fillRDFTextSnippet(REPLACEMENT_DATA)
             .selectRDFFormat("TriG")
             .clickImportTextSnippetButton();
-        importInTheDefaultGraph(true)
+        importInTheDefaultGraph(true);
         verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
-    })
+    });
 
     it('Import RDF snippet in a named graph (Named graph) and replace data in the named graph', () => {
         ImportSteps
@@ -239,7 +239,7 @@ describe('Import screen validation - user data', () => {
             .fillRDFTextSnippet(REPLACEMENT_DATA)
             .selectRDFFormat("TriG")
             .clickImportTextSnippetButton();
-        importInNamedGraph(true, "http://graph1")
+        importInNamedGraph(true, "http://graph1");
         verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
     });
 
