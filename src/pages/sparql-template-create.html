@@ -46,26 +46,36 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
-            uib-popover="{{'save.sparql.template.tooltip' | translate}}"
-            popover-placement="top"
-            popover-trigger="mouseenter"
-            ng-if="canWriteActiveRepo()">
-        {{'common.save.btn' | translate}}
-    </button>
-    <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
-       uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
-       popover-placement="top"
-       popover-trigger="mouseenter"
-       ng-if="canWriteActiveRepo()">
-        {{'common.cancel.btn' | translate}}
-    </a>
-    <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
-       uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
-       popover-placement="top"
-       popover-trigger="mouseenter"
-       ng-if="!canWriteActiveRepo()">
-        {{'common.close' | translate}}
-    </a>
-    <br/><br/><br/>
+    <div class="pull-right">
+        <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
+           uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+           popover-placement="top"
+           popover-trigger="mouseenter"
+           ng-if="canEditActiveRepo">
+            {{'common.cancel.btn' | translate}}
+        </a>
+        <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
+                uib-popover="{{'save.sparql.template.tooltip' | translate}}"
+                popover-placement="top"
+                popover-trigger="mouseenter"
+                ng-if="canEditActiveRepo">
+            {{'common.save.btn' | translate}}
+        </button>
+        <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
+           uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+           popover-placement="top"
+           popover-trigger="mouseenter"
+           ng-if="!canEditActiveRepo">
+            {{'common.close' | translate}}
+        </a>
+    </div>
+</div>
+
+<div onto-loader-new
+     ng-if="queryIsRunning"
+     ng-show="queryIsRunning"
+     class="sparql-loader"
+     size="75"
+     message="loaderMessage"
+     timeout="[1]">
 </div>
