@@ -22,6 +22,72 @@
   }
 }
 
+.editUserContainer {
+
+    .row {
+        display: flex;
+    }
+}
+
+.us-left-col {
+    display: flex;
+    flex-direction: column;
+
+    .card {
+        display: flex;
+        flex-grow: 1;
+    }
+}
+
+.us-right-col {
+    display: flex;
+    flex-direction: column;
+
+    .user-repositories {
+        display: flex;
+        flex-grow: 1;
+
+        .card-block {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+
+            .scrollable-table {
+                flex-grow: 1;
+            }
+        }
+    }
+}
+
+.scrollable-table {
+    height: 377px;
+    overflow: auto;
+
+    table {
+        border-collapse: unset;
+        border-spacing: 0;
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #fff;
+
+            th {
+                background: #fff;
+            }
+
+            tr:first-of-type th {
+                border-bottom: 1px solid #ddd;
+            }
+
+            tr:nth-of-type(2) th {
+                border-top: none;
+            }
+        }
+    }
+}
+
 .force-wrap {
 	word-wrap: break-word;
 }
