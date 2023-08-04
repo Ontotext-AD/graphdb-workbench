@@ -1612,6 +1612,7 @@
     "target.label": "Cible",
     "show.blank.nodes.label": "Afficher les nœuds vides",
     "download.as.label": "Télécharger en tant que",
+    "download.as.error": "Erreur lors du téléchargement du résultat sparql",
     "visual.graph.label": "Graphique visuel",
     "explore.graph.visually.popover": "Cliquez pour explorer le graphe visuellement.",
     "edit.label": "Éditer",
