@@ -8,6 +8,7 @@ import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -30,7 +31,8 @@ yasguiComponentDirective.$inject = [
     'RDF4JRepositoriesRestService',
     'MonitoringRestService',
     'SparqlRestService',
-    'ShareQueryLinkService'
+    'ShareQueryLinkService',
+    'RepositoriesRestService'
 ];
 
 function yasguiComponentDirective(
@@ -47,7 +49,8 @@ function yasguiComponentDirective(
     RDF4JRepositoriesRestService,
     MonitoringRestService,
     SparqlRestService,
-    ShareQueryLinkService
+    ShareQueryLinkService,
+    RepositoriesRestService
 ) {
 
     const HEADERS = {
@@ -299,17 +302,20 @@ function yasguiComponentDirective(
                 const sameAs = downloadAsEvent.sameAs;
                 const accept = downloadAsEvent.contentType;
                 const authToken = $jwtAuth.getAuthToken() || '';
-
-                // TODO change it
-                // Simple cross-browser download with a form
-                const $wbDownload = $('#wb-download');
-                $wbDownload.attr('action', $scope.ontotextYasguiConfig.endpoint);
-                $('#wb-download-query').val(query);
-                $('#wb-download-infer').val(infer);
-                $('#wb-download-sameAs').val(sameAs);
-                $('#wb-auth-token').val(authToken);
-                $('#wb-download-accept').val(accept);
-                $wbDownload.submit();
+                const activeRepository = $repositories.getActiveRepositoryObject();
+                RepositoriesRestService.downloadAs(activeRepository, {
+                    'query': query,
+                    'infer': infer,
+                    'sameAs': sameAs,
+                    'auth-token': authToken
+                }, accept)
+                .then(function ({data, filename}) {
+                    saveAs(data, filename);
+                })
+                .catch((err) => {
+                    const msg = getError(err);
+                    toastr.error(msg, $translate.instant('download.as.error'));
+                });
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
