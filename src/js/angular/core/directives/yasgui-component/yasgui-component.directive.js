@@ -302,17 +302,24 @@ function yasguiComponentDirective(
                 const authToken = $jwtAuth.getAuthToken() || '';
                 const activeRepository = $repositories.getActiveRepositoryObject();
                 RDF4JRepositoriesRestService.downloadAs(activeRepository, {
-                    'query': query,
-                    'infer': infer,
-                    'sameAs': sameAs,
-                    'auth-token': authToken
-                }, accept)
+                        'query': query,
+                        'infer': infer,
+                        'sameAs': sameAs,
+                        'auth-token': authToken
+                    }, accept)
                 .then(function ({data, filename}) {
                     saveAs(data, filename);
                 })
-                .catch((err) => {
-                    const msg = getError(err);
-                    toastr.error(msg, $translate.instant('download.as.error'));
+                .catch((res) => {
+                    // data is received as blob
+                    res.data.text()
+                        .then((message) => {
+                            if (res.status === 431) {
+                                toastr.error(res.statusText, $translate.instant('common.error'));
+                            } else {
+                                toastr.error(message, $translate.instant('common.error'));
+                            }
+                        });
                 });
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
