@@ -301,7 +301,7 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = $jwtAuth.getAuthToken() || '';
                 const activeRepository = $repositories.getActiveRepositoryObject();
-                RDF4JRepositoriesRestService.downloadAs(activeRepository, {
+                RDF4JRepositoriesRestService.downloadResultsAsFile(activeRepository, {
                         'query': query,
                         'infer': infer,
                         'sameAs': sameAs,
