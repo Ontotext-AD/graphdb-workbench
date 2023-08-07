@@ -3,8 +3,8 @@
 <link href="css/yasr.custom.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div core-errors></div>
-<div class="page fit-content-on-mobile" ng-if="resourceInfo">
-    <div class="resource-info" ng-if="!isTripleResource()">
+<div class="page fit-content-on-mobile">
+    <div class="resource-info" ng-if="resourceInfo && !isTripleResource()">
         <div class="thumb" ng-if="resourceInfo.details.img">
             <a href="resourceInfo.details.img">
                 <img ng-src="{{details.img}}" alt="details image"/>
@@ -33,7 +33,7 @@
         </p>
     </div>
 
-    <div class="resource-info" ng-if="isTripleResource()">
+    <div class="resource-info" ng-if="resourceInfo && isTripleResource()">
         <div class="thumb" ng-if="resourceInfo.details.img">
             <a href="{{resourceInfo.details.img}}">
                 <img ng-src="{{resourceInfo.details.img}}" alt="details image"/>
@@ -52,7 +52,7 @@
         </p>
     </div>
 
-    <div class="pull-right">
+    <div class="pull-right" ng-if="resourceInfo">
 
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
@@ -115,7 +115,7 @@
 
     </div>
 
-    <div id="selection" class="selection mb-1">
+    <div id="selection" class="selection mb-1" ng-if="resourceInfo">
         <ul class="nav nav-tabs">
             <li ng-repeat="role in roles" class="nav-item">
                 <a class="nav-link" href
