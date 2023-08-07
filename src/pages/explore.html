@@ -40,7 +40,9 @@
             </a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}" gdb-tooltip="{{resourceInfo.triple}}">
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+               gdb-tooltip="{{resourceInfo.triple}}"
+            class="triple-resource-link">
                 {{getRdfStarLocalNames(resourceInfo.triple)}}
             </a>
         </h1>
@@ -48,7 +50,10 @@
         <p ng-show="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
             <span>{{'target.label' | translate}}:</span>&nbsp;
-            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}">{{resourceInfo.triple}}</a>
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+               class="target-link">
+                {{resourceInfo.triple}}
+            </a>
         </p>
     </div>
 
