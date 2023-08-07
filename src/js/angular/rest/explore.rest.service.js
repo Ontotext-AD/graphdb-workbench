@@ -21,7 +21,34 @@ function ExploreRestService($http) {
         });
     };
 
+    /**
+     * Fetches graph of a resource.
+     *
+     * @param {ResourceInfo} resourceInfo - holds information about the resource.
+     * @param {string} accept - specifies the content type of response.
+     * @return {ResourceGraphResponse}
+     */
+    const getGraph = (resourceInfo, accept) => {
+        return $http.get(`${EXPLORE_ENDPOINT}/graph`, {
+            params: {
+                uri: resourceInfo.uri,
+                triple: resourceInfo.triple,
+                inference: resourceInfo.contextType.id,
+                role: resourceInfo.role,
+                bnodes: resourceInfo.blanks,
+                sameAs: resourceInfo.sameAs,
+                context: resourceInfo.context
+            },
+            headers: {
+                'Accept': accept || 'application/x-graphdb-table-results+json'
+            }
+        })
+            .then((response) => response.data);
+    };
+
+
     return {
-        getResourceDetails
+        getResourceDetails,
+        getGraph
     };
 }
