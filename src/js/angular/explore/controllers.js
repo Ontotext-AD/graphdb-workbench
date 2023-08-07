@@ -87,20 +87,20 @@ function ExploreCtrl(
         $scope.exploreResource();
     };
 
-    $scope.getActiveRepository = function () {
+    $scope.getActiveRepository = () => {
         return $repositories.getActiveRepository();
     };
 
-    $scope.isTripleResource = function () {
+    $scope.isTripleResource = () => {
         return !!$scope.resourceInfo.triple;
     };
 
     // TODO move this to core
-    $scope.encodeURIComponent = function (param) {
+    $scope.encodeURIComponent = (param) => {
         return encodeURIComponent(param);
     };
 
-    $scope.getRdfStarLocalNames = function (triple) {
+    $scope.getRdfStarLocalNames = (triple) => {
         let localNames = triple.slice();
         const trimmed = triple.replace(/[<>]+/g, '');
         trimmed.split(' ').forEach((uri) => {
@@ -109,7 +109,7 @@ function ExploreCtrl(
         return localNames;
     };
 
-    $scope.getLocalName = function (uri) {
+    $scope.getLocalName = (uri) => {
         return ClassInstanceDetailsService.getLocalName(uri);
     };
 
@@ -132,7 +132,7 @@ function ExploreCtrl(
         $scope.resourceInfo.uri = $scope.resourceInfo.uri && $scope.resourceInfo.uri.replace(/<|>/g, "");
     };
 
-    $scope.loadResource = function () {
+    $scope.loadResource = () => {
         // Get resource details
         ExploreRestService.getResourceDetails($scope.resourceInfo.uri, $scope.resourceInfo.triple, $scope.resourceInfo.context)
             .success((data) => {
@@ -147,16 +147,16 @@ function ExploreCtrl(
         $scope.exploreResource();
     };
 
-    $scope.isContextAvailable = function () {
+    $scope.isContextAvailable = () => {
         return $scope.resourceInfo.context !== null && $scope.resourceInfo.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
     };
 
-    $scope.goToGraphsViz = function () {
+    $scope.goToGraphsViz = () => {
         $location.path('graphs-visualizations').search('uri', $scope.resourceInfo.uri);
     };
 
     // Get resource table
-    $scope.exploreResource = function () {
+    $scope.exploreResource = () => {
         toggleOntoLoader(true);
         if ($routeParams.context != null) {
             $scope.resourceInfo.context = $routeParams.context;
@@ -171,7 +171,7 @@ function ExploreCtrl(
             .then(() => getGraph());
     };
 
-    $scope.downloadExport = function (format) {
+    $scope.downloadExport = (format) => {
         ExploreRestService.getGraph($scope.resourceInfo, format.type)
             .then((data) => {
                 if (format.type.indexOf('json') > -1) {
@@ -194,7 +194,7 @@ function ExploreCtrl(
             });
     };
 
-    $scope.changeRole = function (role) {
+    $scope.changeRole = (role) => {
         $scope.resourceInfo.role = role;
         if ($scope.resourceInfo.role === RoleType.CONTEXT) {
             $scope.resourceInfo.contextType = ContextTypes.EXPLICIT;
@@ -202,12 +202,12 @@ function ExploreCtrl(
         $scope.exploreResource();
     };
 
-    $scope.changeInference = function (contextTypeId) {
+    $scope.changeInference = (contextTypeId) => {
         $scope.resourceInfo.contextType = ContextType.getContextType(contextTypeId);
         $scope.exploreResource();
     };
 
-    $scope.copyToClipboardResult = function (uri) {
+    $scope.copyToClipboardResult = (uri) => {
         ModalService.openCopyToClipboardModal(uri);
     };
 
