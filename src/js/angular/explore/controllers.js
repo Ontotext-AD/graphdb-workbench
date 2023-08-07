@@ -122,7 +122,7 @@ function ExploreCtrl(
             $scope.resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
         } else if ($location.search().triple) {
             // uri parameter -> URI
-            $scope.tripleParam = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
+            $scope.resourceInfo.triple = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
         } else {
             // absolute URI -> URI
             $scope.resourceInfo.uri = $location.absUrl();
