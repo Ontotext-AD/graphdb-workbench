@@ -19,7 +19,15 @@ describe('Download results', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    describe('DownloadAs button', () => {
+    it('Should be able to download result as a file', () => {
+        QueryStubs.stubDownloadAsJSONResponse(repositoryId);
+        YasqeSteps.executeQuery();
+        YasrSteps.getDownloadAsDropdown().should('be.visible');
+        YasrSteps.downloadAs(0);
+        cy.wait('@download').its('request.body').should('equal', 'query=select%20*%20where%20%7B%20%20%0A%20%3Fs%20%3Fp%20%3Fo%20.%20%0A%20%7D%20limit%20100&infer=true&sameAs=true&offset=0&limit=1001')
+    });
+
+    context('DownloadAs button', () => {
         it('should not be visible if query is not ran', () => {
             // When yasr has not result
             // Then download dropdown should not be visible.
