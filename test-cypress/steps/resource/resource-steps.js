@@ -130,4 +130,16 @@ export class ResourceSteps {
     static getAllRoles() {
         return ['subject', 'predicate', 'object', 'context', 'all'];
     }
+
+    static getTargetLink() {
+        return cy.get('.target-link');
+    }
+
+    static getTripleResourceLink() {
+        return cy.get('.triple-resource-link');
+    }
+
+    static clickOnTripleResourceLink() {
+        ResourceSteps.getTripleResourceLink().click();
+    }
 }

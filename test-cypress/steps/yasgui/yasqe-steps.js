@@ -13,8 +13,8 @@ export class YasqeSteps {
         return cy.get(".yasqe").eq(yasqeIndex);
     }
 
-    static getCodeMirror() {
-        return this.getEditor().find('.CodeMirror').then(($el) => {
+    static getCodeMirror(yasqeIndex = 0) {
+        return this.getEditor(yasqeIndex).find('.CodeMirror').then(($el) => {
             // @ts-ignore
             return $el[0].CodeMirror;
         });
@@ -98,8 +98,8 @@ export class YasqeSteps {
      * @param {number} delay The time in milliseconds to wait before trying to get the editor and its query.
      * @return {Cypress.Chainable<unknown>}
      */
-    static getQuery(delay = 0) {
-        return cy.wait(delay).then(() => this.getCodeMirror()).then((cm) => {
+    static getQuery(delay = 0, yasqeIndex = 0) {
+        return cy.wait(delay).then(() => this.getCodeMirror(yasqeIndex)).then((cm) => {
             return cm.getValue();
         });
     }
