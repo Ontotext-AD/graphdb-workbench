@@ -29,7 +29,6 @@ angular
 
 ExploreCtrl.$inject = [
     '$scope',
-    '$http',
     '$location',
     'toastr',
     '$routeParams',
@@ -46,7 +45,6 @@ ExploreCtrl.$inject = [
 
 function ExploreCtrl(
     $scope,
-    $http,
     $location,
     toastr,
     $routeParams,
@@ -174,44 +172,26 @@ function ExploreCtrl(
     };
 
     $scope.downloadExport = function (format) {
-        let param;
-        let encodedURI;
-        if ($scope.resourceInfo.uri) {
-            param = 'uri=';
-            encodedURI = encodeURIComponent($scope.resourceInfo.uri);
-        } else {
-            param = 'triple=';
-            encodedURI = encodeURIComponent($scope.resourceInfo.triple);
-        }
-
-        $http({
-            method: 'GET',
-            url: 'rest/explore/graph?' + param + encodedURI +
-                "&role=" + $scope.resourceInfo.role +
-                "&inference=" + $scope.resourceInfo.contextType.id +
-                "&bnodes=" + $scope.resourceInfo.blanks +
-                "&sameAs=" + $scope.resourceInfo.sameAs +
-                ($scope.resourceInfo.context ? "&context=" + encodeURIComponent($scope.resourceInfo.context) : ""),
-            headers: {
-                'Accept': format.type
-            }
-        }).success(function (response) {
-            let data = response;
-            if (format.type.indexOf('json') > -1) {
-                data = JSON.stringify(data);
-            }
-            // TODO: Use bowser library to get the browser type
-            const ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
-                window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
-            } else {
-                const file = new Blob([data], {type: format.type});
-                saveAs(file, 'statements' + format.extension);
-            }
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('common.error'));
-        });
+        ExploreRestService.getGraph($scope.resourceInfo, format.type)
+            .then((data) => {
+                if (format.type.indexOf('json') > -1) {
+                    data = JSON.stringify(data);
+                }
+                // TODO: Use bowser library to get the browser type
+                const ua = navigator.userAgent.toLowerCase();
+                if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
+                    window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
+                } else {
+                    const file = new Blob([data], {type: format.type});
+                    saveAs(file, 'statements' + format.extension);
+                }
+            })
+            .catch((error) => {
+                toastr.error(getError(error), $translate.instant('common.error'));
+            })
+            .finally(() => {
+                toggleOntoLoader(false);
+            });
     };
 
     $scope.changeRole = function (role) {
@@ -265,28 +245,16 @@ function ExploreCtrl(
     };
 
     const getGraph = () => {
-        const headers = {Accept: 'application/x-graphdb-table-results+json'};
-        $.ajax({
-            method: 'GET',
-            url: 'rest/explore/graph',
-            data: {
-                uri: $scope.resourceInfo.uri,
-                triple: $scope.resourceInfo.triple,
-                inference: $scope.resourceInfo.contextType.id,
-                role: $scope.resourceInfo.role,
-                bnodes: $scope.resourceInfo.blanks,
-                sameAs: $scope.resourceInfo.sameAs,
-                context: $scope.resourceInfo.context
-            },
-            headers: headers
-        }).done(function (data, textStatus, jqXhr) {
-            toggleOntoLoader(false);
-            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
-            yasr.setResponse(jqXhr, textStatus);
-        }).fail(function (data) {
-            toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
-            toggleOntoLoader(false);
-        });
+        ExploreRestService.getGraph($scope.resourceInfo)
+            .then((data) => {
+                yasr.setResponse(data);
+            })
+            .catch((error) => {
+                toastr.error($translate.instant('explore.error.resource', {data: getError(error)}));
+            })
+            .finally(() => {
+                toggleOntoLoader(false);
+            });
     };
 
     // =========================
