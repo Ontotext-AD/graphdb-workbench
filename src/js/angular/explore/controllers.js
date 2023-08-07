@@ -113,7 +113,7 @@ function ExploreCtrl(
         return ClassInstanceDetailsService.getLocalName(uri);
     };
 
-    const initResourceReference = (resourceInfo) => {
+    const initResourceReference = () => {
         if ($routeParams.prefix && $routeParams.localName && $scope.usedPrefixes[$routeParams.prefix]) {
             // /resource/PREFIX/LOCAL -> URI = expanded PREFIX + LOCAL
             $scope.resourceInfo.uri = $scope.usedPrefixes[$routeParams.prefix] + $routeParams.localName;
@@ -214,6 +214,30 @@ function ExploreCtrl(
     // =========================
     // Private functions
     // =========================
+    const initComponent = () => {
+        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
+            .then(([principal, usedPrefixes]) => {
+                init();
+                setInferAndSameAs(principal);
+                $scope.usedPrefixes = usedPrefixes;
+                yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
+                    //this way, the URLs in the results are prettified using the defined prefixes
+                    getUsedPrefixes: $scope.usedPrefixes,
+                    persistency: false,
+                    hideHeader: true,
+                    locale: $languageService.getLanguage(),
+                    // Additional option for translation.
+                    // For the explore view could be applied
+                    translateHeaders: true,
+                    pluginsOptions: YasrUtils.getYasrConfiguration()
+                });
+                $scope.loadResource();
+            })
+            .catch((error) => {
+                toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(error)}));
+            });
+    };
+
     const init = () => {
         if ($scope.resourceInfo) {
             return;
@@ -257,65 +281,44 @@ function ExploreCtrl(
             });
     };
 
+    const setInferAndSameAs = (principal) => {
+        // Get the predefined settings for sameAs and inference per user
+        // TODO why inference depends on context?
+        $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === RoleType.CONTEXT ? ContextTypes.ALL : ContextTypes.EXPLICIT;
+        $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
+    };
+
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+        if (yasr) {
+            yasr.destroy();
+        }
+    };
+
     // =========================
     // Event handler functions
     // =========================
 
-    $scope.$on('language-changed', function (event, args) {
+    const languageChangeHandler = (event, args) => {
         if (yasr && yasr.options) {
             yasr.options.locale = args.locale;
             yasr.changeLanguage(args.locale);
         }
-    });
+    };
 
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        if ($scope.getActiveRepository()) {
-            if ($scope.usedPrefixes) {
-                $scope.loadResource();
-            } else {
-                RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                    .success(function (data) {
-                        $scope.usedPrefixes = {};
-                        data.results.bindings.forEach(function (e) {
-                            $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
-                        });
-                        $scope.$on('$destroy', function () {
-                            if (yasr) {
-                                yasr.destroy();
-                            }
-                        });
-                        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                            //this way, the URLs in the results are prettified using the defined prefixes
-                            getUsedPrefixes: $scope.usedPrefixes,
-                            persistency: false,
-                            hideHeader: true,
-                            locale: $languageService.getLanguage(),
-                            // Additional option for translation.
-                            // For the explore view could be applied
-                            translateHeaders: true,
-                            pluginsOptions: YasrUtils.getYasrConfiguration()
-                        });
-                        init();
-                        $scope.loadResource();
-                    }).error(function (data) {
-                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-                });
-            }
+    $scope.$on('$destroy', removeAllListeners);
+    const subscriptions = [];
+    subscriptions.push($scope.$on('language-changed', languageChangeHandler));
+
+    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+    // readOnly configuration may be incorrect.
+    subscriptions.push($scope.$watch(function () {
+        return $scope.getActiveRepositoryObject();
+    }, function (activeRepo) {
+        if (activeRepo) {
+            initComponent();
         }
-    });
-
-    // We need to get sameAs and inference for the current user
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal())
-        .then((principal) => {
-            init();
-            // Get the predefined settings for sameAs and inference per user
-            // TODO why inference depends on context?
-            $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === RoleType.CONTEXT ? ContextTypes.ALL : ContextTypes.EXPLICIT;
-            $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
-        });
+    }));
 }
 
 FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];
