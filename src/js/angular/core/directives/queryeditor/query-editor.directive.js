@@ -592,27 +592,23 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             window.yasr = yasr;
             yasr.afterCopy = afterCopy;
             yasr.getQueryResultsAsFormat = function (downloadFormat) {
-                // JSON and JSON-LD have to be fetched in memory before sending, so error handling must be introduced
-                // Valid for construct queries only
-                const exportTypesToFetchWithErrorHandling = ['application/rdf+json', 'application/ld+json'];
-                const isConstructQuery = window.editor.getQueryType() === 'CONSTRUCT';
-                const queryParams = {
+                // JSON and JSON-LD have to be fetched in memory before sending to client
+                const params = {
                     query: scope.currentQuery.query,
                     infer: scope.currentQuery.inference,
                     sameAs: scope.currentQuery.sameAs,
                     auth: localStorage.getItem('com.ontotext.graphdb.auth')
                 };
-                const accept = downloadFormat;
 
-                const fetchWithErrorHandling = exportTypesToFetchWithErrorHandling.includes(downloadFormat);
-                if (window.editor.getValue() !== queryParams.query) {
+                if (window.editor.getValue() !== params.query) {
                     toastr.warning($translate.instant('query.editor.query.results.mismatch'));
                 }
-                if (isConstructQuery && fetchWithErrorHandling) {
-                    RDF4JRepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept)
-                        .then(function ({data, filename}) {
-                            saveAs(data, filename);
-                        }).catch(function (res) {
+
+                scope.setLoader(true, $translate.instant('download.as.progress.label'), null, true);
+                RDF4JRepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepositoryObject(), params, downloadFormat)
+                    .then(function ({data, filename}) {
+                        saveAs(data, filename);
+                    }).catch(function (res) {
                         // data is received as blob
                         res.data.text()
                             .then((message) => {
@@ -622,21 +618,11 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                                     toastr.error(message, $translate.instant('common.error'));
                                 }
                             });
-                    });
-                } else {
-                    // Simple cross-browser download with a form
-                    const $wbDownload = $('#wb-download');
-                    $wbDownload.attr('action', 'repositories/' + $repositories.getActiveRepository());
-                    $('#wb-download-query').val(queryParams.query);
-                    $('#wb-download-infer').val(queryParams.infer);
-                    $('#wb-download-sameAs').val(queryParams.sameAs);
-                    if (queryParams.auth) {
-                        $('#wb-auth-token').val(queryParams.auth);
-                    }
-                    $('#wb-download-accept').val(downloadFormat);
-                    $wbDownload.trigger('submit');
-                }
+                }).finally(() => {
+                    scope.setLoader(false);
+                });
             };
+
             window.editor.options.sparql.handlers.complete = function (dataOrJqXhr, textStatus, jqXhrOrErrorString) {
                 function setNewTabStateForThis() {
                     setNewTabState(dataOrJqXhr, textStatus, jqXhrOrErrorString);
