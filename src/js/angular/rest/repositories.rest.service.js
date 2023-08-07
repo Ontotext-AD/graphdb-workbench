@@ -8,7 +8,6 @@ const REPOSITORIES_ENDPOINT = 'rest/repositories';
 
 function RepositoriesRestService($http) {
     return {
-        downloadAs,
         getRepositories,
         getRepository,
         deleteRepository,
@@ -27,37 +26,6 @@ function RepositoriesRestService($http) {
         loadPropertiesFile,
         getRepositoriesFromKnownLocation
     };
-
-    /**
-     * Downloads sparql results as a file in given format provided by the accept header parameter.
-     * @param {Repository} repoInfo
-     * @param {*} data
-     * @param {string} acceptHeader
-     * @return {Promise<any>}
-     */
-    function downloadAs(repoInfo, data, acceptHeader) {
-        const properties = Object.entries(data)
-            .filter(([property, value]) => value !== undefined)
-            .map(([property, value]) => `${property}=${value}`);
-        const payloadString = properties.join('&');
-        return $http({
-            method: 'POST',
-            url: `/repositories/${repoInfo.id}`,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-                'Accept': acceptHeader
-            },
-            data: payloadString,
-            responseType: "blob"
-        }).then(function (res) {
-            const data = res.data;
-            const headers = res.headers();
-            const contentDisposition = headers['content-disposition'];
-            let filename = contentDisposition.split('filename=')[1];
-            filename = filename.substring(0, filename.length);
-            return {data, filename};
-        });
-    }
 
     function getRepository(repoInfo) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repoInfo.id}`, {

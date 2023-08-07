@@ -31,8 +31,7 @@ yasguiComponentDirective.$inject = [
     'RDF4JRepositoriesRestService',
     'MonitoringRestService',
     'SparqlRestService',
-    'ShareQueryLinkService',
-    'RepositoriesRestService'
+    'ShareQueryLinkService'
 ];
 
 function yasguiComponentDirective(
@@ -49,8 +48,7 @@ function yasguiComponentDirective(
     RDF4JRepositoriesRestService,
     MonitoringRestService,
     SparqlRestService,
-    ShareQueryLinkService,
-    RepositoriesRestService
+    ShareQueryLinkService
 ) {
 
     const HEADERS = {
@@ -303,7 +301,7 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = $jwtAuth.getAuthToken() || '';
                 const activeRepository = $repositories.getActiveRepositoryObject();
-                RepositoriesRestService.downloadAs(activeRepository, {
+                RDF4JRepositoriesRestService.downloadAs(activeRepository, {
                     'query': query,
                     'infer': infer,
                     'sameAs': sameAs,
