@@ -74,6 +74,11 @@ export class YasrSteps {
         return this.getDownloadAsDropdown().find('.ontotext-dropdown-menu-item').eq(number);
     }
 
+    static downloadAs(option) {
+        this.openDownloadAsDropdown();
+        this.getDownloadAsOption(option).click();
+    }
+
     static getPagination() {
         return YasrSteps.getYasr().find('.ontotext-pagination');
     }
