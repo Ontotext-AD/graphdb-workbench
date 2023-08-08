@@ -85,4 +85,8 @@ export class YasrSteps {
     static getVisualButton() {
         return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button-name');
     }
+
+    static getNoDataElement() {
+        return cy.get('.dataTables_empty');
+    }
 }

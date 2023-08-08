@@ -4,6 +4,7 @@ import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -49,13 +50,13 @@ describe('Resource view', () => {
         ResourceSteps.selectPredicateRole();
 
         // Then I expect to see all triples including this with blank node.
-        getAllResultRows().should('have.length', 6);
+        YasrSteps.getResults().should('have.length', 6);
 
         // When I turn off showing of blank nodes.
         ResourceSteps.clickOnShowBlankNodesButton();
 
         // Then I expect to see all triples including this with blank node.
-        getAllResultRows().should('have.length', 5);
+        YasrSteps.getResults().should('have.length', 5);
     });
 
     it('should navigate to visual graph view', () => {
@@ -74,26 +75,26 @@ describe('Resource view', () => {
         ResourceSteps.visit(`uri=${IMPLICIT_EXPLICIT_RESOURCE}&role=all`);
 
         // Then I expect to see all triples of explicit context, because default value of the dropdown is "Explicit only".
-        getAllResultRows().should('have.length', 24);
-        getUriCellLink(0, 4).should('contain', CONTEXT_EXPLICIT);
+        YasrSteps.getResults().should('have.length', 24);
+        YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
         // When I chose to display implicit only.
         ResourceSteps.selectImplicitOnlyInference();
 
         // Then I expect triples of implicit context to be displayed only.
-        getAllResultRows().should('have.length', 67);
+        YasrSteps.getResults().should('have.length', 67);
 
         // When I chose to display both context.
         ResourceSteps.selectExplicitAndImplicitInference();
 
         // Then  I expect the triples of both context to be displayed.
-        getAllResultRows().should('have.length', 91);
+        YasrSteps.getResults().should('have.length', 91);
 
         // When I chose to display explicit context only.
         ResourceSteps.selectExplicitOnlyInference();
 
         // Then I expect triples of explicit context to be displayed only.
-        getAllResultRows().should('have.length', 24);
+        YasrSteps.getResults().should('have.length', 24);
     });
 
     context('Same as', () => {
@@ -167,54 +168,55 @@ describe('Resource view', () => {
     });
 
     context('Role tabs', () => {
+
         it('should list the triples of a resource used as subject', () => {
             // When I am on resource view,
             // and page loaded a resource that is used as subject,
             ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
 
             // Then I expect to see only one result because the resource has only one triplet as subject.
-            getAllResultRows().should('have.length', 1);
-            getUriCellLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
-            getUriCellLink(0, 2).should('contain', 'rdfs:subClassOf');
-            getUriCellLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
-            getUriCellLink(0, 4).should('contain', CONTEXT_EXPLICIT);
+            YasrSteps.getResults().should('have.length', 1);
+            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 2).should('contain', 'rdfs:subClassOf');
+            YasrSteps.getResultLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
+            YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
             // When I click on "predicate" tab.
             ResourceSteps.selectPredicateRole();
 
             // Then I expect to not see any triplets because the resource is not used as predicate.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "object" tab.
             ResourceSteps.selectObjectRole();
             // Then I expect to see all triples where the resource is object.
-            getAllResultRows().should('have.length', 1);
-            getUriCellLink(0, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
-            getUriCellLink(0, 2).should('contain', 'rdf:type');
-            getUriCellLink(0, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
-            getUriCellLink(0, 4).should('contain', CONTEXT_EXPLICIT);
+            YasrSteps.getResults().should('have.length', 1);
+            YasrSteps.getResultLink(0, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
+            YasrSteps.getResultLink(0, 2).should('contain', 'rdf:type');
+            YasrSteps.getResultLink(0, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
             // When I click on "context" tab.
             ResourceSteps.selectContextRole();
 
             // Then I expect to see empty results because this resource has not triples as context.
-            getAllResultRows().should('have.length', 0);
+            YasrSteps.getNoDataElement().should('exist');
 
             // When I click on "all" tab.
             ResourceSteps.selectAlRole();
 
             // Then I expect to see all triples of subject without mater of its role.
-            getAllResultRows().should('have.length', 2);
+            YasrSteps.getResults().should('have.length', 2);
 
-            getUriCellLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
-            getUriCellLink(0, 2).should('contain', 'rdfs:subClassOf');
-            getUriCellLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
-            getUriCellLink(0, 4).should('contain', CONTEXT_EXPLICIT);
+            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 2).should('contain', 'rdfs:subClassOf');
+            YasrSteps.getResultLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
+            YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
-            getUriCellLink(1, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
-            getUriCellLink(1, 2).should('contain', 'rdf:type');
-            getUriCellLink(1, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
-            getUriCellLink(1, 4).should('contain', CONTEXT_EXPLICIT);
+            YasrSteps.getResultLink(1, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
+            YasrSteps.getResultLink(1, 2).should('contain', 'rdf:type');
+            YasrSteps.getResultLink(1, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(1, 4).should('contain', CONTEXT_EXPLICIT);
         });
 
         it('should list the triples of a resource used as predicate', () => {
@@ -222,31 +224,31 @@ describe('Resource view', () => {
             ResourceSteps.visit(`uri=${PREDICATE_SOURCE}&role=subject`);
 
             // Then I expect to see empty results because this resource has not triples as subject.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "predicate" tab.
             ResourceSteps.selectPredicateRole();
 
             // Then I expect to see all triples where resource is predicate .
-            getAllResultRows().should('have.length', 6);
+            YasrSteps.getResults().should('have.length', 6);
 
             // When I click on "object" tab.
             ResourceSteps.selectObjectRole();
 
             // Then I expect to empty result because the resource has not triples as object.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "context" tab.
             ResourceSteps.selectContextRole();
 
             // Then I expect to empty result because the resource has not triples as context.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "all" tab.
             ResourceSteps.selectAlRole();
 
             // Then I expect to see all triples of subject without mater of its role.
-            getAllResultRows().should('have.length', 6);
+            YasrSteps.getResults().should('have.length', 6);
         });
 
         it('should list the triples of a resource used as object', () => {
@@ -254,31 +256,31 @@ describe('Resource view', () => {
             ResourceSteps.visit(`uri=${OBJECT_RESOURCE}&role=subject`);
 
             // Then I expect to see empty results because this resource has not triples as subject.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "predicate" tab.
             ResourceSteps.selectPredicateRole();
 
             // Then I expect to see empty results because this resource has not triples as predicate.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "object" tab.
             ResourceSteps.selectObjectRole();
 
             // Then I expect to see all triples of resource without mater of its role.
-            getAllResultRows().should('have.length', 6);
+            YasrSteps.getResults().should('have.length', 6);
 
             // When I click on "context" tab.
             ResourceSteps.selectContextRole();
 
             // Then I expect to empty result because the resource has not triples as context.
-            getAllResultRows().should('have.length', 0);
+            YasrSteps.getNoDataElement().should('exist');
 
             // When I click on "all" tab.
             ResourceSteps.selectAlRole();
 
             // Then I expect to see all triples of resource without mater of its role.
-            getAllResultRows().should('have.length', 6);
+            YasrSteps.getResults().should('have.length', 6);
         });
 
         it('should list the triples of a resource used as context', () => {
@@ -286,31 +288,31 @@ describe('Resource view', () => {
             ResourceSteps.visit(`uri=${CONTEXT_EXPLICIT}&role=subject`);
 
             // Then I expect to see empty results because this resource has not triples as subject.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "predicate" tab.
             ResourceSteps.selectPredicateRole();
 
             // Then I expect to see empty results because this resource has not triples as predicate.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "object" tab.
             ResourceSteps.selectObjectRole();
 
             // Then I expect to empty result because the resource has not triples as object.
-            getNoDataElement().should('be.visible');
+            YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "context" tab.
             ResourceSteps.selectContextRole();
 
             // Then I expect to see all triples of resource without mater of its role.
-            getAllResultRows().should('have.length', 86);
+            YasrSteps.getResults().should('have.length', 86);
 
             // When I click on "all" tab.
             ResourceSteps.selectAlRole();
 
             // Then I expect to see all triples of resource without mater of its role.
-            getAllResultRows().should('have.length', 86);
+            YasrSteps.getResults().should('have.length', 86);
         });
     });
 
@@ -346,19 +348,4 @@ describe('Resource view', () => {
             YasqeSteps.getQuery(0, 1).should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
         });
     });
-
-    function getAllResultRows() {
-        // TODO change the follow selectors with YasrSteps functions
-        return cy.get('.resultsTable tbody tr');
-    }
-
-    function getUriCellLink(row, column) {
-        // TODO change the follow selectors with YasrSteps functions
-        return getAllResultRows().eq(row).find('td').eq(column).find('a');
-    }
-
-    function getNoDataElement() {
-        // TODO change the follow selectors with YasrSteps functions
-        return cy.get('.dataTables_empty');
-    }
 });
