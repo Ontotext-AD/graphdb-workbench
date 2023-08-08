@@ -101,8 +101,8 @@
                 {{'download.as.label' | translate}}
             </button>
             <ul class="dropdown-menu small" role="menu">
-                <li ng-repeat="format in formats">
-                    <a href="javascript:" ng-click="downloadExport(format)" class="dropdown-item">{{format.name}}</a>
+                <li ng-repeat="fileType in fileTypes">
+                    <a href="javascript:" ng-click="downloadExport(fileType)" class="dropdown-item">{{fileType.name}}</a>
                 </li>
             </ul>
         </div>
@@ -134,6 +134,11 @@
 
     <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
 
-    <div id="results-loader" class="ot-loader opacity-hide" onto-loader size="100"></div>
+    <div onto-loader-new
+         ng-if="isLoading"
+         size="100"
+         message="loaderMessage"
+         timeout="[1]">
+    </div>
 
 </div>

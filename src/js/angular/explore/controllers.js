@@ -67,20 +67,14 @@ function ExploreCtrl(
     $scope.resourceInfo = undefined;
 
     // Defaults
-    $scope.loading = false;
-    $scope.formats = FileTypes;
+    $scope.isLoading = false;
+    $scope.fileTypes = FileTypes;
 
-    // TODO remove it
-    let principalRequestPromise;
+    let usedPrefixes;
 
     // =========================
     // Public functions
     // =========================
-    window.editor = {};
-    window.editor.getQueryType = function () {
-        return 'RESOURCE';
-    };
-
     $scope.toggleSameAs = () => {
         $scope.resourceInfo.sameAs = !$scope.resourceInfo.sameAs;
         $scope.exploreResource();
@@ -113,9 +107,9 @@ function ExploreCtrl(
     };
 
     const initResourceReference = () => {
-        if ($routeParams.prefix && $routeParams.localName && $scope.usedPrefixes[$routeParams.prefix]) {
+        if ($routeParams.prefix && $routeParams.localName && usedPrefixes[$routeParams.prefix]) {
             // /resource/PREFIX/LOCAL -> URI = expanded PREFIX + LOCAL
-            $scope.resourceInfo.uri = $scope.usedPrefixes[$routeParams.prefix] + $routeParams.localName;
+            $scope.resourceInfo.uri = usedPrefixes[$routeParams.prefix] + $routeParams.localName;
         } else if ($location.search().uri) {
             // uri parameter -> URI
             $scope.resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
@@ -165,24 +159,22 @@ function ExploreCtrl(
         // Changing the URL parameters adds a history entry in the browser history, and this causes incorrect behavior of the browser's back button functionality.
         // To resolve this issue, we replace the current URL without adding a new history entry.
         $location.replace();
-        // wait for principal request if it has not finished and then fetch graph
-        Promise.resolve(principalRequestPromise)
-            .then(() => getGraph());
+        getGraph();
     };
 
-    $scope.downloadExport = (format) => {
-        ExploreRestService.getGraph($scope.resourceInfo, format.type)
+    $scope.downloadExport = (fileType) => {
+        ExploreRestService.getGraph($scope.resourceInfo, fileType.type)
             .then((data) => {
-                if (format.type.indexOf('json') > -1) {
+                if (fileType.type.indexOf('json') > -1) {
                     data = JSON.stringify(data);
                 }
                 // TODO: Use bowser library to get the browser type
                 const ua = navigator.userAgent.toLowerCase();
                 if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
-                    window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
+                    window.open('data:attachment/csv;filename="statements.' + fileType.extension + '",' + encodeURIComponent(data), 'statements.' + fileType.extension);
                 } else {
-                    const file = new Blob([data], {type: format.type});
-                    saveAs(file, 'statements' + format.extension);
+                    const file = new Blob([data], {type: fileType.type});
+                    saveAs(file, 'statements' + fileType.extension);
                 }
             })
             .catch((error) => {
@@ -215,10 +207,10 @@ function ExploreCtrl(
     // =========================
     const initComponent = () => {
         Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
-            .then(([principal, usedPrefixes]) => {
-                init();
+            .then(([principal, usedPrefixesResponse]) => {
+                initResourceInfo();
                 setInferAndSameAs(principal);
-                $scope.usedPrefixes = usedPrefixes;
+                usedPrefixes = usedPrefixesResponse;
                 $scope.loadResource();
             })
             .catch((error) => {
@@ -226,7 +218,7 @@ function ExploreCtrl(
             });
     };
 
-    const init = () => {
+    const initResourceInfo = () => {
         if ($scope.resourceInfo) {
             return;
         }
@@ -241,19 +233,7 @@ function ExploreCtrl(
     };
 
     const toggleOntoLoader = (showLoader) => {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        const resultsLoader = angular.element(document.getElementById('results-loader'));
-        const opacityHideClass = 'opacity-hide';
-        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
-        if (showLoader) {
-            $scope.loading = true;
-            yasrInnerContainer.addClass(opacityHideClass);
-            resultsLoader.removeClass(opacityHideClass);
-        } else {
-            $scope.loading = false;
-            yasrInnerContainer.removeClass(opacityHideClass);
-            resultsLoader.addClass(opacityHideClass);
-        }
+        $scope.isLoading = !!showLoader;
     };
 
     const updateYasguiConfiguration = (additionalConfiguration = {}) => {
@@ -271,7 +251,7 @@ function ExploreCtrl(
             downloadAsOn: false,
             showQueryButton: false,
             componentId: 'resource-view-component',
-            prefixes: $scope.usedPrefixes,
+            prefixes: usedPrefixes,
             maxPersistentResponseSize: 0,
             render: RenderingMode.YASR,
             showYasqeActionButtons: false,
@@ -294,7 +274,6 @@ function ExploreCtrl(
 
     const setInferAndSameAs = (principal) => {
         // Get the predefined settings for sameAs and inference per user
-        // TODO why inference depends on context?
         $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === RoleType.CONTEXT ? ContextTypes.ALL : ContextTypes.EXPLICIT;
         $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
     };
