@@ -1,5 +1,15 @@
-<div>
-    <h1>YASGUI integration page</h1>
+<link href="css/sparql-editor.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-    <yasgui-component id="query-editor" yasgui-config="yasguiConfig" after-init="initViewFromUrlParams()"></yasgui-component>
+<div class="sparql-editor-view">
+    <h1 id="sparql-query-update-title-label">
+        <span>{{title}}</span>
+        <span class="btn btn-link"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+
+    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"
+                      after-init="initViewFromUrlParams()"></yasgui-component>
 </div>
