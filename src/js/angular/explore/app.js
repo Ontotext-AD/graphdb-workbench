@@ -6,6 +6,7 @@ import 'angular/explore/directives';
 import 'angular-xeditable/dist/js/xeditable.min';
 import 'lib/angucomplete-alt/angucomplete-alt-onto.min';
 import 'angular/core/directives/fit-text.directive';
+import 'angular/core/directives/yasgui-component/yasgui-component.directive';
 
 const modules = [
     'ngRoute',
@@ -15,7 +16,8 @@ const modules = [
     'graphdb.framework.explore.services',
     'graphdb.framework.explore.controllers',
     'graphdb.framework.explore.directives',
-    'graphdb.framework.core.directives.fittext'
+    'graphdb.framework.core.directives.fittext',
+    'graphdb.framework.core.directives.yasgui-component'
 ];
 
 angular.module('graphdb.framework.explore', modules);
