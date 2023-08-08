@@ -1,3 +1,8 @@
 #query-editor .yasr .yasr_header {
     margin-bottom: 0;
 }
+
+.yasr_results {
+    max-height: 345px;
+    overflow-y: auto;
+}
