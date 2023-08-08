@@ -219,7 +219,6 @@ function ExploreCtrl(
                 init();
                 setInferAndSameAs(principal);
                 $scope.usedPrefixes = usedPrefixes;
-                $scope.yasguiConfig = getDefaultYasguiConfiguration();
                 $scope.loadResource();
             })
             .catch((error) => {
