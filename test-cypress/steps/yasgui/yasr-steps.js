@@ -23,6 +23,14 @@ export class YasrSteps {
         return cy.get('.yasr_results tbody').find('tr');
     }
 
+    static getResultTableHeader() {
+        return cy.get('.yasr_results thead');
+    }
+
+    static getResultTableHeaderColumns() {
+        return YasrSteps.getResultTableHeader().find('th');
+    }
+
     static getResultFilter() {
         return cy.get('.tableFilter');
     }
