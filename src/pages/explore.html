@@ -1,6 +1,4 @@
 <link href="css/explore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<link href="css/lib/yasr.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<link href="css/yasr.custom.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div core-errors></div>
 <div class="page fit-content-on-mobile">
@@ -134,12 +132,7 @@
         </ul>
     </div>
 
-    <div id="yasr" class="explore">
-        <!--<uib-pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
-        <div class="yasr" id="yasr-inner">
-            <div class='yasr_results' guide-selector="yasrResults"></div>
-        </div>
-    </div>
+    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
 
     <div id="results-loader" class="ot-loader opacity-hide" onto-loader size="100"></div>
 
