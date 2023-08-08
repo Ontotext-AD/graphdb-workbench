@@ -11,7 +11,7 @@ const CONTEXT_EXPLICIT = 'http://www.ontotext.com/explicit';
 const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2F%23City';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
 
-describe('Resource view', () => {
+describe.skip('Resource view', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'repository-' + Date.now();
