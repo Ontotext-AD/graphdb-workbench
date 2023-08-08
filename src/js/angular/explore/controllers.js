@@ -1,12 +1,12 @@
 import 'angular/utils/file-types';
 import 'angular/rest/explore.rest.service';
-import YASR from 'lib/yasr.bundled';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
-import {YasrUtils} from "../utils/yasr-utils";
 import {ResourceInfo} from "../models/resource/resource-info";
 import {ContextType, ContextTypes} from "../models/resource/context-type";
 import {RoleType} from "../models/resource/role-type";
+import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
+import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'ngCookies',
@@ -72,7 +72,6 @@ function ExploreCtrl(
 
     // TODO remove it
     let principalRequestPromise;
-    let yasr;
 
     // =========================
     // Public functions
@@ -220,17 +219,7 @@ function ExploreCtrl(
                 init();
                 setInferAndSameAs(principal);
                 $scope.usedPrefixes = usedPrefixes;
-                yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                    //this way, the URLs in the results are prettified using the defined prefixes
-                    getUsedPrefixes: $scope.usedPrefixes,
-                    persistency: false,
-                    hideHeader: true,
-                    locale: $languageService.getLanguage(),
-                    // Additional option for translation.
-                    // For the explore view could be applied
-                    translateHeaders: true,
-                    pluginsOptions: YasrUtils.getYasrConfiguration()
-                });
+                $scope.yasguiConfig = getDefaultYasguiConfiguration();
                 $scope.loadResource();
             })
             .catch((error) => {
@@ -268,10 +257,33 @@ function ExploreCtrl(
         }
     };
 
+    const updateYasguiConfiguration = (additionalConfiguration = {}) => {
+        const config = {};
+        angular.extend(config, $scope.yasguiConfig || getDefaultYasguiConfiguration(), additionalConfiguration);
+        $scope.yasguiConfig = config;
+    };
+
+    const getDefaultYasguiConfiguration = () => {
+        return {
+            showEditorTabs: false,
+            showToolbar: false,
+            showResultTabs: false,
+            showResultInfo: false,
+            downloadAsOn: false,
+            showQueryButton: false,
+            componentId: 'resource-view-component',
+            prefixes: $scope.usedPrefixes,
+            maxPersistentResponseSize: 0,
+            render: RenderingMode.YASR,
+            showYasqeActionButtons: false,
+            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION
+        };
+    };
+
     const getGraph = () => {
         ExploreRestService.getGraph($scope.resourceInfo)
             .then((data) => {
-                yasr.setResponse(data);
+                updateYasguiConfiguration({sparqlResponse: data});
             })
             .catch((error) => {
                 toastr.error($translate.instant('explore.error.resource', {data: getError(error)}));
@@ -290,25 +302,14 @@ function ExploreCtrl(
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
-        if (yasr) {
-            yasr.destroy();
-        }
     };
 
     // =========================
     // Event handler functions
     // =========================
 
-    const languageChangeHandler = (event, args) => {
-        if (yasr && yasr.options) {
-            yasr.options.locale = args.locale;
-            yasr.changeLanguage(args.locale);
-        }
-    };
-
     $scope.$on('$destroy', removeAllListeners);
     const subscriptions = [];
-    subscriptions.push($scope.$on('language-changed', languageChangeHandler));
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
