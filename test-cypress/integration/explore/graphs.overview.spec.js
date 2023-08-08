@@ -1,3 +1,5 @@
+import {YasrSteps} from "../../steps/yasgui/yasr-steps";
+
 const EXPORT_GRAPHS_TABLE_ID = '#export-graphs';
 const ROWS_PER_PAGE_20 = '1';
 const ROWS_PER_PAGE_ALL = '2';
@@ -118,8 +120,8 @@ describe('Graphs overview screen validation', () => {
         // open default graph through the link and verify that the table view is rendered
         cy.contains('The default graph').click();
         cy.url().should('contain', Cypress.config('baseUrl') + '/resource');
-        cy.get('.resultsTable').should('be.visible')
-            .find('thead th').should('have.length', 5);
+        YasrSteps.getResultTableHeader().should('be.visible');
+        YasrSteps.getResultTableHeaderColumns().should('have.length', 5);
     });
 
     it('Export repository in JSONLD format', () => {
