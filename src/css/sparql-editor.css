@@ -1,0 +1,61 @@
+.sparql-editor-view {
+    position: relative;
+}
+
+.sparql-editor-view #sparql-query-update-title-label {
+    position: relative;
+}
+
+.sparql-editor-view #sparql-query-update-title-label .btn-link {
+    position: relative;
+    z-index: 100;
+}
+
+.sparql-editor-view #query-editor {
+    position: relative;
+    top: -55px;
+}
+
+.sparql-editor-view #query-editor .yasgui-host-element {
+    display: block;
+}
+
+.sparql-editor-view #query-editor .yasgui-host-element .ontotext-yasgui {
+    clear: both;
+    padding-top: 15px;
+}
+
+.sparql-editor-view #query-editor .yasgui-toolbar {
+    display: inline;
+    float: right;
+}
+
+.sparql-editor-view #query-editor .yasgui-toolbar {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sparql-editor-view #query-editor .yasgui-toolbar .yasgui-btn {
+    height: 27px;
+    margin-right: 3px;
+    color: var(--onto-blue);
+}
+
+.sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
+    color: #fff;
+}
+
+.keyboard-shortcuts-dialog-wrapper {
+    height: 20px;
+    line-height: 20px;
+    font-size: 90%;
+}
+
+.keyboard-shortcuts-dialog-wrapper.resizeable-on {
+    margin-top: -30px;
+}
+
+.keyboard-shortcuts-dialog-button {
+    font-weight: 400;
+    color: var(--onto-blue);
+}
