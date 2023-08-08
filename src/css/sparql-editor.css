@@ -45,6 +45,10 @@
     color: #fff;
 }
 
+.sparql-editor-view #query-editor .dataTables_wrapper {
+    overflow-x: scroll;
+}
+
 .keyboard-shortcuts-dialog-wrapper {
     height: 20px;
     line-height: 20px;
