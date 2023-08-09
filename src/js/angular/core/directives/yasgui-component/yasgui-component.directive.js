@@ -8,6 +8,8 @@ import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
+import {saveAs} from 'lib/FileSaver-patch';
+import {YasguiComponent} from "../../../models/yasgui-component";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -89,8 +91,12 @@ function yasguiComponentDirective(
                 return element.find('ontotext-yasgui');
             };
 
+            /**
+             * Getter for yasgui component.
+             * @return {YasguiComponent}
+             */
             $scope.getOntotextYasguiElement = () => {
-                return $scope.getOntotextYasguiElements()[0];
+                return new YasguiComponent($scope.getOntotextYasguiElements()[0]);
             };
 
             // =========================
