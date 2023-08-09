@@ -88,7 +88,6 @@ function SparqlEditorCtrl($scope,
             // init new tab from shared query link
             initTabFromSharedQuery(queryParams);
         } else if (GuidesService.isActive()) {
-            $scope.updateConfig();
             const sparqlQuery = new TabQueryModel();
             openNewTab(sparqlQuery);
         }
@@ -167,18 +166,23 @@ function SparqlEditorCtrl($scope,
         if (isRequested) {
             YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
                 .then(getQueryMode)
-                .then(confirmAndExecuteQuery);
+                .then(confirmAndExecuteQuery)
+                .finally(() => {
+                    $location.search({});
+                    // Replace current URL without adding a new history entry
+                    $location.replace();
+                });
         }
     };
 
     const getQueryMode = (yasguiComponent) => {
-        yasguiComponent.getQueryMode()
+        return yasguiComponent.getQueryMode()
             .then((queryMode) => {
                 return {yasguiComponent, queryMode};
             });
     };
 
-    const confirmAndExecuteQuery = ([yasguiComponent, queryMode]) => {
+    const confirmAndExecuteQuery = ({yasguiComponent, queryMode}) => {
         const runQuery = () => {
             yasguiComponent.query().then();
         };
@@ -346,26 +350,20 @@ function SparqlEditorCtrl($scope,
     // =========================
     const subscriptions = [];
 
+    const repositoryChangedHandler = (activeRepo) => {
+        if (activeRepo) {
+            init();
+        }
+    };
+
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
-    /**
-     * When the repository gets changed through the UI, we need to update the yasgui configuration so that new queries
-     * to be issued against the new repository.
-     */
-    subscriptions.push($scope.$on('repositoryIsSet', init));
 
     // Deregister the watcher when the scope/directive is destroyed
     $scope.$on('$destroy', removeAllListeners);
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch(function () {
-        return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
-        if (activeRepo) {
-            init();
-            repoIsInitialized();
-        }
-    });
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
 }
