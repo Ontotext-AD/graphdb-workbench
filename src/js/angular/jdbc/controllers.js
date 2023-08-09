@@ -116,6 +116,7 @@ function JdbcCreateCtrl(
     $scope.prefixes = [];
     $scope.isLoading = false;
     $scope.isQueryRunning = false;
+    $scope.canEditActiveRepo = false;
 
     // =========================
     // Public functions
@@ -313,7 +314,6 @@ function JdbcCreateCtrl(
     };
 
     const init = (prefixes, jdbcConfiguration = new JdbcConfigurationInfo()) => {
-        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
         $scope.jdbcConfigurationInfo.columns = jdbcConfiguration.columns;
         $scope.jdbcConfigurationInfo.query = jdbcConfiguration.query;
         $scope.jdbcConfigurationInfo.jdbcConfigurationName = $location.search().name || '';
@@ -376,7 +376,7 @@ function JdbcCreateCtrl(
             render: RenderingMode.YASQE,
             getCellContent: getCellContent,
             sparqlResponse: $scope.emptySparqlResponse,
-            yasqeMode: $scope.canWriteActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
+            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
         };
     };
 
@@ -593,11 +593,6 @@ function JdbcCreateCtrl(
         });
     };
 
-    const repositoryChangedHandler = () => {
-        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-        loadOntotextYasgui();
-    };
-
     const locationChangedHandler = (event, newPath) => {
         if ($scope.isDirty) {
             event.preventDefault();
@@ -626,6 +621,13 @@ function JdbcCreateCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
+    const repositoryChangedHandler = (activeRepo) => {
+        if (activeRepo) {
+            $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+            loadOntotextYasgui();
+        }
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -634,7 +636,6 @@ function JdbcCreateCtrl(
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
-    subscriptions.push(EventEmitterService.subscribe('repositoryIsSet', repositoryChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
@@ -642,12 +643,5 @@ function JdbcCreateCtrl(
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch(function () {
-        return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
-        if (activeRepo) {
-            loadOntotextYasgui();
-            repoIsInitialized();
-        }
-    });
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
 }
