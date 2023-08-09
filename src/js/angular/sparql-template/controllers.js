@@ -169,7 +169,6 @@ function SparqlTemplateCreateCtrl(
         $scope.sparqlTemplateInfo.query = initialQuery;
         $scope.sparqlTemplateInfo.templateID = extractTemplateIdFromUri();
         $scope.sparqlTemplateInfo.isNewTemplate = !$scope.sparqlTemplateInfo.templateID;
-        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
         updateTitle();
         $scope.yasguiConfig = {
             showEditorTabs: false,
@@ -183,7 +182,7 @@ function SparqlTemplateCreateCtrl(
             prefixes: prefixes,
             render: RenderingMode.YASQE,
             maxPersistentResponseSize: 0,
-            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED
+            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
         };
     };
 
@@ -457,9 +456,11 @@ function SparqlTemplateCreateCtrl(
         }
     };
 
-    const repositoryChangedHandler = () => {
-        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-        loadOntotextYasgui();
+    const repositoryChangedHandler = (activeRepo) => {
+        if (activeRepo) {
+            $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+            loadOntotextYasgui();
+        }
     };
 
     // =========================
@@ -470,7 +471,6 @@ function SparqlTemplateCreateCtrl(
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
-    subscriptions.push(eventEmitterService.subscribe('repositoryIsSet', repositoryChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
@@ -497,12 +497,5 @@ function SparqlTemplateCreateCtrl(
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch(function () {
-        return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
-        if (activeRepo) {
-            loadOntotextYasgui();
-            repoIsInitialized();
-        }
-    });
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
 }
