@@ -104,23 +104,23 @@ function ExploreCtrl(
         return ClassInstanceDetailsService.getLocalName(uri);
     };
 
-    const initResourceReference = () => {
+    const initResourceReference = (resourceInfo) => {
         if ($routeParams.prefix && $routeParams.localName && usedPrefixes[$routeParams.prefix]) {
             // /resource/PREFIX/LOCAL -> URI = expanded PREFIX + LOCAL
-            $scope.resourceInfo.uri = usedPrefixes[$routeParams.prefix] + $routeParams.localName;
+            resourceInfo.uri = usedPrefixes[$routeParams.prefix] + $routeParams.localName;
         } else if ($location.search().uri) {
             // uri parameter -> URI
-            $scope.resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
+            resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
         } else if ($location.search().triple) {
             // uri parameter -> URI
-            $scope.resourceInfo.triple = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
+            resourceInfo.triple = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
         } else {
             // absolute URI -> URI
-            $scope.resourceInfo.uri = $location.absUrl();
+            resourceInfo.uri = $location.absUrl();
         }
         // remove angle brackets which were allowed when filling out the search input field
         // but are forbidden when passing the uri as a query parameter
-        $scope.resourceInfo.uri = $scope.resourceInfo.uri && $scope.resourceInfo.uri.replace(/<|>/g, "");
+        resourceInfo.uri = resourceInfo.uri && resourceInfo.uri.replace(/<|>/g, "");
     };
 
     $scope.loadResource = () => {
