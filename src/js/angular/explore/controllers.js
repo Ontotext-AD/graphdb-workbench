@@ -39,7 +39,6 @@ ExploreCtrl.$inject = [
     'FileTypes',
     '$jwtAuth',
     '$translate',
-    '$languageService',
     '$q',
     'ExploreRestService'];
 
@@ -55,7 +54,6 @@ function ExploreCtrl(
     FileTypes,
     $jwtAuth,
     $translate,
-    $languageService,
     $q,
     ExploreRestService) {
 
