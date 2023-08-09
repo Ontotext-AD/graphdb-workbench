@@ -9,6 +9,9 @@ import {QueryType} from "../models/ontotext-yasgui/query-type";
 import {ConnectorCommand} from "../models/connectors/connector-command";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/ontotext-yasgui/before-update-query-result";
 import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
+import {decodeHTML} from "../../../app";
+import {TabQueryModel} from "../models/sparql/tab-query-model";
+import {toBoolean} from "../utils/string-utils";
 
 const modules = [
     'ui.bootstrap',
@@ -30,7 +33,9 @@ SparqlEditorCtrl.$inject = [
     'toastr',
     '$translate',
     'SparqlRestService',
-    'ConnectorsRestService'];
+    'ConnectorsRestService',
+    'GuidesService',
+    'ModalService'];
 
 function SparqlEditorCtrl($scope,
                           $q,
@@ -41,7 +46,9 @@ function SparqlEditorCtrl($scope,
                           toastr,
                           $translate,
                           SparqlRestService,
-                          ConnectorsRestService) {
+                          ConnectorsRestService,
+                          GuidesService,
+                          ModalService) {
     this.repository = '';
 
     $scope.yasguiConfig = undefined;
@@ -68,7 +75,11 @@ function SparqlEditorCtrl($scope,
         };
     };
 
-    $scope.initViewFromUrlParams = () => {
+    // =========================
+    // Private functions
+    // =========================
+    const initViewFromUrlParams = () => {
+        $scope.updateConfig();
         const queryParams = $location.search();
         if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
             // init new tab from shared saved query link
@@ -76,6 +87,10 @@ function SparqlEditorCtrl($scope,
         } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
             initTabFromSharedQuery(queryParams);
+        } else if (GuidesService.isActive()) {
+            $scope.updateConfig();
+            const sparqlQuery = new TabQueryModel();
+            openNewTab(sparqlQuery);
         }
     };
 
@@ -111,7 +126,7 @@ function SparqlEditorCtrl($scope,
             // * Otherwise open a new tab and load the query in the editor.
             // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
             // Same as the above should be checked on tab switching for existing tab too.
-            YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor').openTab(savedQuery);
+            openNewTab(savedQuery, true);
         }).catch((err) => {
             toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
                 savedQueryName: savedQueryName,
@@ -129,7 +144,52 @@ function SparqlEditorCtrl($scope,
         // * Otherwise open a new tab and load the query in the editor.
         // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
         // Same as the above should be checked on tab switching for existing tab too.
-        YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor').openTab(sharedQueryModel);
+        openNewTab(sharedQueryModel, true);
+    };
+
+    /**
+     * Open a new tab with query described in <code>sparqlQuery</code>.
+     *
+     * @param {TabQueryModel} sparqlQuery
+     * @param {boolean} executeWhenOpen
+     */
+    const openNewTab = (sparqlQuery, executeWhenOpen = false) => {
+        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+            .then((yasguiComponent) => yasguiComponent.openTab(sparqlQuery));
+
+        if (executeWhenOpen) {
+            autoExecuteQueryIfRequested();
+        }
+    };
+
+    const autoExecuteQueryIfRequested = () => {
+        const isRequested = toBoolean($location.search().execute);
+        if (isRequested) {
+            YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+                .then(getQueryMode)
+                .then(confirmAndExecuteQuery);
+        }
+    };
+
+    const getQueryMode = (yasguiComponent) => {
+        yasguiComponent.getQueryMode()
+            .then((queryMode) => {
+                return {yasguiComponent, queryMode};
+            });
+    };
+
+    const confirmAndExecuteQuery = ([yasguiComponent, queryMode]) => {
+        const runQuery = () => {
+            yasguiComponent.query().then();
+        };
+
+        if (queryMode === 'update') {
+            const title = $translate.instant('confirm.execute');
+            const message = decodeHTML($translate.instant('query.editor.automatically.execute.update.warning'));
+            ModalService.openConfirmation(title, message, runQuery);
+        } else {
+            runQuery();
+        }
     };
 
     const setInferAndSameAs = (principal) => {
@@ -271,15 +331,11 @@ function SparqlEditorCtrl($scope,
     const init = () => {
         Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
             .then(([principal, usedPrefixes]) => {
-                setInferAndSameAs(principal);
                 $scope.prefixes = usedPrefixes;
-            })
-            .finally(() => {
-                $scope.updateConfig();
+                setInferAndSameAs(principal);
                 // check is there is a savedquery or query url parameter and init the editor
-                // initViewFromUrlParams();
-                // on repo change do the same as above
-                // focus on the active editor on init
+                initViewFromUrlParams();
+
             });
         // TODO: we should also watch for changes in namespaces
         // scope.$watch('namespaces', function () {});
@@ -288,17 +344,19 @@ function SparqlEditorCtrl($scope,
     // =========================
     // Event handlers
     // =========================
+    const subscriptions = [];
 
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
     /**
      * When the repository gets changed through the UI, we need to update the yasgui configuration so that new queries
      * to be issued against the new repository.
      */
-    const repositoryIsSetSubscription = $scope.$on('repositoryIsSet', init);
+    subscriptions.push($scope.$on('repositoryIsSet', init));
 
     // Deregister the watcher when the scope/directive is destroyed
-    $scope.$on('$destroy', function () {
-        repositoryIsSetSubscription();
-    });
+    $scope.$on('$destroy', removeAllListeners);
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
