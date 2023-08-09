@@ -1,10 +1,7 @@
+import {TabQueryModel} from "../../models/sparql/tab-query-model";
+
 export const buildQueryModel = (query, queryName, owner, isPublic) => {
-    return {
-        queryName: queryName,
-        query: query,
-        owner: owner,
-        isPublic: isPublic
-    };
+    return new TabQueryModel(queryName, query, owner, isPublic);
 };
 
 /**
