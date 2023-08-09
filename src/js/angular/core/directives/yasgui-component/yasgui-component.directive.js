@@ -79,7 +79,6 @@ function yasguiComponentDirective(
         },
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
-            $scope.language = $languageService.getLanguage();
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = new Map();
 
@@ -353,6 +352,7 @@ function yasguiComponentDirective(
                     }
 
                     addDirtyCheckHandlers();
+                    $scope.language = $languageService.getLanguage();
                 }
             };
 
