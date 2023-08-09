@@ -6,16 +6,31 @@ export const YasguiComponentDirectiveUtil = (function () {
         return directiveElement.isolateScope();
     };
 
+    /**
+     * Fetches yasgui component.
+     *
+     * @param {string} directiveSelector - the unique selector of the yasgui component directive.
+     *
+     * @return {YasguiComponent}
+     */
     const getOntotextYasguiElement = (directiveSelector) => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementController(directiveSelector).getOntotextYasguiElement();
     };
 
+    /**
+     * Fetches yasgui component.
+     *
+     * @param {string} directiveSelector - the unique selector of the yasgui component directive.
+     *
+     * @return {Promise<YasguiComponent>}
+     */
     const getOntotextYasguiElementAsync = (directiveSelector) => {
         return new Promise((resolve, reject) => {
             let directive = getOntotextYasguiElementController(directiveSelector);
             if (directive) {
                 resolve(directive.getOntotextYasguiElement());
             }
+            // TODO add max interval time.
 
             const interval = setInterval(() => {
                 directive = getOntotextYasguiElementController(directiveSelector);
