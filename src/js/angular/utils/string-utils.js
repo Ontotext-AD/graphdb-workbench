@@ -11,6 +11,16 @@ const removeSpecialChars = (string) => {
     return string.replace(/[()']/g, "");
 };
 
-export {
-    removeSpecialChars
+
+const toBoolean = (value) => {
+    if (typeof value === 'string') {
+        return value === 'true';
+    }
+    return Boolean(value);
 };
+
+export {
+    removeSpecialChars,
+    toBoolean
+};
+
