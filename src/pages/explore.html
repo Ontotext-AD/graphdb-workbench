@@ -71,7 +71,7 @@
             </select>
         </label>
 
-        <button type="button" class="btn btn-link same-as-btn"
+        <button type="button" class="btn btn-link same-as-btn btn-sm"
                 ng-model="sameAs"
                 ng-class="loading ? 'disabled' : ''"
                 ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
@@ -79,8 +79,7 @@
                 uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
-            <span class="icon-2-5x"
-                  ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
+            <span ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
         </button>
 
         <button type="button"
