@@ -32,7 +32,8 @@ describe('Execute query', () => {
             expect(headers).to.have.property('x-graphdb-track-alias');
         });
         YasguiSteps.openANewTab();
-        YasqeSteps.executeQuery(1);
+        YasguiSteps.getTabs().should('have.length', 2);
+        YasqeSteps.executeQuery();
         cy.wait('@query').then((interception) => {
             const headers = interception.request.headers;
             expect(headers).to.have.property('x-graphdb-local-consistency');

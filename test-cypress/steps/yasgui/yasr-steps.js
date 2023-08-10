@@ -3,12 +3,16 @@ export class YasrSteps {
         return cy.get('.yasr').eq(yasrIndex);
     }
 
+    static getActiveYasr() {
+        return cy.get('.tabPanel.active .yasr');
+    }
+
     static getResultHeader() {
         return cy.get('.yasr_header');
     }
 
-    static getResponseInfo(yasrIndex = 0) {
-        return YasrSteps.getYasr(yasrIndex).find('.yasr_response_chip');
+    static getResponseInfo() {
+        return YasrSteps.getActiveYasr().find('.yasr_response_chip');
     }
 
     static getErrorHeader() {
