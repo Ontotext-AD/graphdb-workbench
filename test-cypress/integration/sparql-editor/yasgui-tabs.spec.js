@@ -24,7 +24,7 @@ describe('Yasgui tabs', () => {
         // Given I have opened yasgui with a single opened tab
         SparqlEditorSteps.visitSparqlEditorPage();
         // And I have created a second tab
-        openNewTab(1, 2);
+        openNewTab(2);
         // When I close the second tab
         YasguiSteps.closeTab(1);
         // Then I expect a confirmation dialog to be opened
@@ -54,7 +54,7 @@ describe('Yasgui tabs', () => {
         // Given I have opened yasgui with a single opened tab
         SparqlEditorSteps.visitSparqlEditorPage();
         // And I have created a second tab
-        openNewTab(1, 2);
+        openNewTab(2);
         // When I close the second tab
         YasguiSteps.openTabContextMenu(1).should('be.visible');
         TabContextMenu.closeTab();
@@ -76,7 +76,7 @@ describe('Yasgui tabs', () => {
         // Given I have opened yasgui with a single opened tab
         SparqlEditorSteps.visitSparqlEditorPage();
         // And I have created more tabs
-        openNewTab(1, 2);
+        openNewTab(2);
         // When I try closing all other tabs but the last one
         YasguiSteps.openTabContextMenu(1).should('be.visible');
         TabContextMenu.closeOtherTabs();
@@ -99,9 +99,9 @@ describe('Yasgui tabs', () => {
     });
 });
 
-function openNewTab(tabIndex, expectedTabsCount) {
+function openNewTab(expectedTabsCount) {
     YasguiSteps.openANewTab();
     YasguiSteps.getTabs().should('have.length', expectedTabsCount);
     // Execute the query for a bit of delay before closing the tab
-    YasqeSteps.executeQuery(tabIndex);
+    YasqeSteps.executeQuery();
 }
