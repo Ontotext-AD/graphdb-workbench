@@ -12,6 +12,7 @@ import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 import {decodeHTML} from "../../../app";
 import {TabQueryModel} from "../models/sparql/tab-query-model";
 import {toBoolean} from "../utils/string-utils";
+import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 
 const modules = [
     'ui.bootstrap',
@@ -64,7 +65,7 @@ function SparqlEditorCtrl($scope,
     // =========================
     $scope.updateConfig = () => {
         $scope.yasguiConfig = {
-            endpoint: getQueryEndpoint(),
+            endpoint: getEndpoint,
             componentId: 'graphdb-workbench-sparql-editor',
             prefixes: $scope.prefixes,
             infer: $scope.inferUserSetting,
@@ -78,6 +79,30 @@ function SparqlEditorCtrl($scope,
     // =========================
     // Private functions
     // =========================
+    const getYasqe = (yasgui) => {
+        const tab = yasgui.getTab();
+        if (!tab) {
+            return;
+        }
+        return tab.getYasqe();
+    };
+
+    const getEndpoint = (yasgui) => {
+        const yasqe = getYasqe(yasgui);
+        if (!yasqe) {
+            // this can happen if open saprql view for first time (browser local store is clear);
+            return;
+        }
+        const queryMode = yasqe.getQueryMode();
+        // if query mode is 'query' -> '/repositories/repo-name'
+        // if query mode is 'update' -> '/repositories/repo-name/statements'
+        if (queryMode === QueryMode.UPDATE) {
+            return `/repositories/${$repositories.getActiveRepository()}/statements`;
+        } else if (queryMode === QueryMode.QUERY) {
+            return `/repositories/${$repositories.getActiveRepository()}`;
+        }
+    };
+
     const initViewFromUrlParams = () => {
         $scope.updateConfig();
         const queryParams = $location.search();
@@ -111,10 +136,6 @@ function SparqlEditorCtrl($scope,
     // =========================
     // Private function
     // =========================
-
-    const getQueryEndpoint = () => {
-        return `/repositories/${$repositories.getActiveRepository()}`;
-    };
 
     const initTabFromSavedQuery = (queryParams) => {
         const savedQueryName = queryParams[RouteConstants.savedQueryName];
