@@ -1,9 +1,5 @@
 export class YasrSteps {
-    static getYasr(yasrIndex = 0) {
-        return cy.get('.yasr').eq(yasrIndex);
-    }
-
-    static getActiveYasr() {
+    static getYasr() {
         return cy.get('.tabPanel.active .yasr');
     }
 
@@ -12,7 +8,7 @@ export class YasrSteps {
     }
 
     static getResponseInfo() {
-        return YasrSteps.getActiveYasr().find('.yasr_response_chip');
+        return YasrSteps.getYasr().find('.yasr_response_chip');
     }
 
     static getErrorHeader() {
@@ -24,7 +20,7 @@ export class YasrSteps {
     }
 
     static getResults() {
-        return cy.get('.yasr_results tbody').find('tr');
+        return YasrSteps.getYasr('.yasr_results tbody').find('tr');
     }
 
     static getResultTableHeader() {
