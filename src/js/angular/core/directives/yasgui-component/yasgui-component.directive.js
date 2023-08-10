@@ -215,7 +215,6 @@ function yasguiComponentDirective(
              */
             const queryHandler = (queryRequest) => {
                 updateRequestHeaders(queryRequest.request, queryRequest.queryMode, queryRequest.queryType, queryRequest.pageSize);
-                changeEndpointByQueryType(queryRequest.queryMode, queryRequest.request);
                 const pageNumber = queryRequest.getPageNumber();
                 const pageSize = queryRequest.getPageSize();
                 if (pageSize && pageNumber) {
@@ -234,7 +233,6 @@ function yasguiComponentDirective(
              */
             const countQueryRequestHandler = (countQueryRequest) => {
                 updateRequestHeaders(countQueryRequest.request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
-                changeEndpointByQueryType(countQueryRequest.queryMode, countQueryRequest.request);
                 countQueryRequest.setPageSize(undefined);
                 countQueryRequest.setPageNumber(undefined);
                 countQueryRequest.setCount(1);
@@ -426,20 +424,6 @@ function yasguiComponentDirective(
                         }
                     }
                 }
-            };
-
-            const changeEndpointByQueryType = (queryMode, request) => {
-                // if query mode is 'query' -> '/repositories/repo-name'
-                // if query mode is 'update' -> '/repositories/repo-name/statements'
-                if (queryMode === QueryMode.UPDATE) {
-                    request.url = getMutationEndpoint();
-                } else if (queryMode === QueryMode.QUERY) {
-                    request.url = $scope.ontotextYasguiConfig.endpoint;
-                }
-            };
-
-            const getMutationEndpoint = () => {
-                return `/repositories/${$repositories.getActiveRepository()}/statements`;
             };
 
             const updateRequestHeaders = (req, queryMode, queryType, pageSize) => {
