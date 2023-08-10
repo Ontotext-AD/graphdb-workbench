@@ -2,42 +2,49 @@ import {YasrSteps} from "./yasr-steps";
 
 export class YasqeSteps {
     static getYasqe() {
-        return cy.get('.yasqe');
+        return cy.get('.tabPanel.active .yasqe');
     }
 
     static getQueryTabs() {
         return cy.get('.tabsList');
     }
 
-    static getEditor(yasqeIndex = 0) {
-        return cy.get(".yasqe").eq(yasqeIndex);
+    static getEditor() {
+        return YasqeSteps.getYasqe();
     }
 
-    static getCodeMirror(yasqeIndex = 0) {
-        return this.getEditor(yasqeIndex).find('.CodeMirror').then(($el) => {
+    static getCodeMirror() {
+        return this.getEditor().find('.CodeMirror').then(($el) => {
+            // @ts-ignore
+            return $el[0].CodeMirror;
+        });
+    }
+
+    static getActiveTabCodeMirror() {
+        return this.getYasqe().find('.CodeMirror').then(($el) => {
             // @ts-ignore
             return $el[0].CodeMirror;
         });
     }
 
     static getExecuteQueryButton() {
-        return cy.get('.yasqe_queryButton');
+        return YasqeSteps.getYasqe().find('.yasqe_queryButton');
     }
 
-    static executeQuery(tabIndex = 0) {
-        this.getExecuteQueryButton(tabIndex).eq(tabIndex).click();
-        YasrSteps.getResponseInfo(tabIndex)
+    static executeQuery() {
+        this.getExecuteQueryButton().click();
+        YasrSteps.getResponseInfo()
             .should('not.have.class', 'hidden')
             .should('not.have.class', 'empty')
             .should('be.visible');
     }
 
-    static executeQueryWithoutWaiteResult(index = 0) {
-        this.getExecuteQueryButton(index).click();
+    static executeQueryWithoutWaiteResult() {
+        this.getExecuteQueryButton().click();
     }
 
-    static executeErrorQuery(index = 0) {
-        this.getExecuteQueryButton(index).click();
+    static executeErrorQuery() {
+        this.getExecuteQueryButton().click();
         // Wait a wile for the response information to be present.
         cy.get('.error-response-plugin').should('be.visible');
     }
@@ -98,8 +105,14 @@ export class YasqeSteps {
      * @param {number} delay The time in milliseconds to wait before trying to get the editor and its query.
      * @return {Cypress.Chainable<unknown>}
      */
-    static getQuery(delay = 0, yasqeIndex = 0) {
-        return cy.wait(delay).then(() => this.getCodeMirror(yasqeIndex)).then((cm) => {
+    static getQuery(delay = 0) {
+        return cy.wait(delay).then(() => this.getCodeMirror()).then((cm) => {
+            return cm.getValue();
+        });
+    }
+
+    static getActiveTabQuery(delay = 0) {
+        return cy.wait(delay).then(() => this.getActiveTabCodeMirror()).then((cm) => {
             return cm.getValue();
         });
     }
