@@ -435,6 +435,8 @@ function SimilarityCtrl(
             showToolbar: false,
             showResultTabs: false,
             showQueryButton: false,
+            downloadAsOn: false,
+            showResultInfo: false,
             componentId: 'similarity-list-component',
             maxPersistentResponseSize: 0,
             render: RenderingMode.YASR,
