@@ -5,6 +5,7 @@ import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
+import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -328,8 +329,9 @@ describe.skip('Resource view', () => {
 
             // Then I expect to see sparql query view,
             SparqlEditorSteps.verifyUrl();
+            YasguiSteps.getTabs().should('have.length', 2);
             // and a describe query to be present
-            YasqeSteps.getQuery(0, 1).should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
+            YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
 
             // When I visit resource view with triple resource.
             ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
@@ -342,8 +344,9 @@ describe.skip('Resource view', () => {
 
             // Then I expect to see sparql query view,
             SparqlEditorSteps.verifyUrl();
+            YasguiSteps.getTabs().should('have.length', 2);
             // and a describe query to be present
-            YasqeSteps.getQuery(0, 1).should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
+            YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
         });
     });
 });
