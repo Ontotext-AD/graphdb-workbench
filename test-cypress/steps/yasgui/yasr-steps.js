@@ -20,7 +20,7 @@ export class YasrSteps {
     }
 
     static getResults() {
-        return YasrSteps.getYasr('.yasr_results tbody').find('tr');
+        return YasrSteps.getYasr().find('.yasr_results tbody').find('tr');
     }
 
     static getResultTableHeader() {
