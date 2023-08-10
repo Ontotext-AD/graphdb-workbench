@@ -8,6 +8,7 @@ import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -78,7 +79,6 @@ function yasguiComponentDirective(
         },
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
-            $scope.language = $languageService.getLanguage();
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = new Map();
 
@@ -299,17 +299,27 @@ function yasguiComponentDirective(
                 const sameAs = downloadAsEvent.sameAs;
                 const accept = downloadAsEvent.contentType;
                 const authToken = $jwtAuth.getAuthToken() || '';
-
-                // TODO change it
-                // Simple cross-browser download with a form
-                const $wbDownload = $('#wb-download');
-                $wbDownload.attr('action', $scope.ontotextYasguiConfig.endpoint);
-                $('#wb-download-query').val(query);
-                $('#wb-download-infer').val(infer);
-                $('#wb-download-sameAs').val(sameAs);
-                $('#wb-auth-token').val(authToken);
-                $('#wb-download-accept').val(accept);
-                $wbDownload.submit();
+                const activeRepository = $repositories.getActiveRepositoryObject();
+                RDF4JRepositoriesRestService.downloadResultsAsFile(activeRepository, {
+                        'query': query,
+                        'infer': infer,
+                        'sameAs': sameAs,
+                        'auth-token': authToken
+                    }, accept)
+                .then(function ({data, filename}) {
+                    saveAs(data, filename);
+                })
+                .catch((res) => {
+                    // data is received as blob
+                    res.data.text()
+                        .then((message) => {
+                            if (res.status === 431) {
+                                toastr.error(res.statusText, $translate.instant('common.error'));
+                            } else {
+                                toastr.error(message, $translate.instant('common.error'));
+                            }
+                        });
+                });
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
@@ -342,6 +352,7 @@ function yasguiComponentDirective(
                     }
 
                     addDirtyCheckHandlers();
+                    $scope.language = $languageService.getLanguage();
                 }
             };
 

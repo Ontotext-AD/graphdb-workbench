@@ -409,15 +409,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="form-group row pb-3" ng-if="repositoryInfo.type !== 'ontop'">
+                    <div class="form-group row pb-3 text-right" ng-if="repositoryInfo.type !== 'ontop'">
                         <div class="col-xs-12">
+                            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
                             <button id="addSaveRepository" ng-click="createRepo()" ng-if="!editRepoPage" type="submit"
                                     class="btn btn-primary" guide-selector="graphDBRepositoryCrateButton">{{'common.create.btn' | translate}}
                             </button>
                             <button id="addSaveRepository" ng-click="editRepository()" ng-if="editRepoPage"
                                     type="submit" class="btn btn-primary" guide-selector="graphDBRepositorySaveButton">{{'common.save.btn' | translate}}
                             </button>
-                            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
                         </div>
                     </div>
                 </fieldset>

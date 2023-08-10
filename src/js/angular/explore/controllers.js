@@ -1,8 +1,12 @@
 import 'angular/utils/file-types';
-import YASR from 'lib/yasr.bundled';
+import 'angular/rest/explore.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
-import {YasrUtils} from "../utils/yasr-utils";
+import {ResourceInfo} from "../models/resource/resource-info";
+import {ContextType, ContextTypes} from "../models/resource/context-type";
+import {RoleType} from "../models/resource/role-type";
+import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
+import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'ngCookies',
@@ -12,7 +16,8 @@ const modules = [
     'graphdb.framework.core',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.rest.explore.rest.service'
 ];
 
 angular
@@ -22,280 +27,275 @@ angular
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
 
-ExploreCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$routeParams', '$repositories', 'ClassInstanceDetailsService', 'ModalService', 'RDF4JRepositoriesRestService', 'FileTypes', '$jwtAuth', '$translate', '$languageService', '$q'];
+ExploreCtrl.$inject = [
+    '$scope',
+    '$location',
+    'toastr',
+    '$routeParams',
+    '$repositories',
+    'ClassInstanceDetailsService',
+    'ModalService',
+    'RDF4JRepositoriesRestService',
+    'FileTypes',
+    '$jwtAuth',
+    '$translate',
+    '$q',
+    'ExploreRestService'];
 
-function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositories, ClassInstanceDetailsService, ModalService, RDF4JRepositoriesRestService, FileTypes, $jwtAuth, $translate, $languageService, $q) {
+function ExploreCtrl(
+    $scope,
+    $location,
+    toastr,
+    $routeParams,
+    $repositories,
+    ClassInstanceDetailsService,
+    ModalService,
+    RDF4JRepositoriesRestService,
+    FileTypes,
+    $jwtAuth,
+    $translate,
+    $q,
+    ExploreRestService) {
+
+    $scope.ContextTypes = ContextTypes;
+    $scope.contextTypes = ContextType.getAllType();
+    $scope.currentContextType = ContextTypes.EXPLICIT;
+    $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
+
+    $scope.resourceInfo = undefined;
+
     // Defaults
-    $scope.role = $location.search().role ? $location.search().role : 'subject';
+    $scope.isLoading = false;
+    $scope.fileTypes = FileTypes;
 
-    let principalRequestPromise;
-    // We need to get sameAs and inference for the current user
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal())
-        .then((principal) => {
-            // Get the predefined settings for sameAs and inference per user
-            $scope.inference = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.role === 'context' ? 'all' : 'explicit';
-            $scope.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
-        });
+    let usedPrefixes;
 
-    $scope.loading = false;
+    // =========================
+    // Public functions
+    // =========================
+    $scope.toggleSameAs = () => {
+        $scope.resourceInfo.sameAs = !$scope.resourceInfo.sameAs;
+        $scope.exploreResource();
+    };
 
-    $scope.getActiveRepository = function () {
+    $scope.getActiveRepository = () => {
         return $repositories.getActiveRepository();
     };
 
-    $scope.isTripleResource = function () {
-        return !!$scope.tripleParam;
+    $scope.isTripleResource = () => {
+        return !!$scope.resourceInfo.triple;
     };
 
     // TODO move this to core
-    $scope.encodeURIComponent = function (param) {
+    $scope.encodeURIComponent = (param) => {
         return encodeURIComponent(param);
     };
 
-    $scope.getRdfStarLocalNames = function (triple) {
+    $scope.getRdfStarLocalNames = (triple) => {
         let localNames = triple.slice();
         const trimmed = triple.replace(/[<>]+/g, '');
-        trimmed.split(' ').forEach(uri => {
+        trimmed.split(' ').forEach((uri) => {
             localNames = localNames.replace(uri, ClassInstanceDetailsService.getLocalName(uri));
         });
         return localNames;
     };
 
-    $scope.inferences = [
-        {id: 'all', title: 'explore.explicit.implicit'},
-        {id: 'explicit', title: 'explore.explicit'},
-        {id: 'implicit', title: 'explore.implicit'}
-    ];
-    $scope.context = '';
-
-    $scope.getLocalName = function (uri) {
+    $scope.getLocalName = (uri) => {
         return ClassInstanceDetailsService.getLocalName(uri);
     };
 
-    $scope.blanks = true;
-
-    $scope.formats = FileTypes;
-
-    let yasr;
-
-    window.editor = {};
-    window.editor.getQueryType = function () {
-        return 'RESOURCE';
-    };
-
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        if ($scope.getActiveRepository()) {
-            if ($scope.usedPrefixes) {
-                $scope.loadResource();
-            } else {
-                RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                    .success(function (data) {
-                        $scope.usedPrefixes = {};
-                        data.results.bindings.forEach(function (e) {
-                            $scope.usedPrefixes[e.prefix.value] = e.namespace.value;
-                        });
-                        $scope.$on('$destroy', function () {
-                            if (yasr) {
-                                yasr.destroy();
-                            }
-                        });
-                        yasr = YASR(document.getElementById('yasr'), { // eslint-disable-line new-cap
-                            //this way, the URLs in the results are prettified using the defined prefixes
-                            getUsedPrefixes: $scope.usedPrefixes,
-                            persistency: false,
-                            hideHeader: true,
-                            locale: $languageService.getLanguage(),
-                            // Additional option for translation.
-                            // For the explore view could be applied
-                            translateHeaders: true,
-                            pluginsOptions: YasrUtils.getYasrConfiguration()
-                        });
-                        $scope.loadResource();
-                    }).error(function (data) {
-                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-                });
-            }
-        }
-    });
-
-    $scope.loadResource = function () {
-        if ($routeParams.prefix && $routeParams.localName && $scope.usedPrefixes[$routeParams.prefix]) {
+    const initResourceReference = (resourceInfo) => {
+        if ($routeParams.prefix && $routeParams.localName && usedPrefixes[$routeParams.prefix]) {
             // /resource/PREFIX/LOCAL -> URI = expanded PREFIX + LOCAL
-            $scope.uriParam = $scope.usedPrefixes[$routeParams.prefix] + $routeParams.localName;
+            resourceInfo.uri = usedPrefixes[$routeParams.prefix] + $routeParams.localName;
         } else if ($location.search().uri) {
             // uri parameter -> URI
-            $scope.uriParam = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
+            resourceInfo.uri = $location.search().uri + ($location.hash() ? '#' + $location.hash() : '');
         } else if ($location.search().triple) {
             // uri parameter -> URI
-            $scope.tripleParam = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
+            resourceInfo.triple = $location.search().triple + ($location.hash() ? '#' + $location.hash() : '');
         } else {
             // absolute URI -> URI
-            $scope.uriParam = $location.absUrl();
-        }
-        if ($routeParams.context != null) {
-            $scope.context = $routeParams.context;
+            resourceInfo.uri = $location.absUrl();
         }
         // remove angle brackets which were allowed when filling out the search input field
         // but are forbidden when passing the uri as a query parameter
-        $scope.uriParam = $scope.uriParam && $scope.uriParam.replace(/<|>/g, "");
+        resourceInfo.uri = resourceInfo.uri && resourceInfo.uri.replace(/<|>/g, "");
+    };
 
+    $scope.loadResource = () => {
         // Get resource details
-        $http({
-            url: 'rest/explore/details',
-            method: 'GET',
-            params: {
-                uri: $scope.uriParam,
-                triple: $scope.tripleParam,
-                context: $scope.context
-            },
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).success(function (data) {
-            $scope.details = data;
-            $scope.context = $scope.details.context;
-            if ($scope.details.uri !== 'object') {
-                $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
-            }
-        }).error(function (data) {
-            toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
-        });
+        ExploreRestService.getResourceDetails($scope.resourceInfo.uri, $scope.resourceInfo.triple, $scope.resourceInfo.context)
+            .success((data) => {
+                $scope.resourceInfo.details = data;
+                $scope.resourceInfo.context = $scope.resourceInfo.details.context;
+                if ($scope.resourceInfo.uri !== 'object') {
+                    $scope.resourceInfo.details.encodeURI = encodeURIComponent($scope.resourceInfo.details.uri);
+                }
+            })
+            .error((data) => toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)})));
 
         $scope.exploreResource();
     };
 
-    $scope.isContextAvailable = function () {
-        return $scope.context !== null && $scope.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
+    $scope.isContextAvailable = () => {
+        return $scope.resourceInfo.context !== null && $scope.resourceInfo.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
     };
 
-    $scope.goToGraphsViz = function () {
-        $location.path('graphs-visualizations').search('uri', $scope.uriParam);
-    };
-
-    const toggleOntoLoader = function (showLoader) {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        const resultsLoader = angular.element(document.getElementById('results-loader'));
-        const opacityHideClass = 'opacity-hide';
-        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
-        if (showLoader) {
-            $scope.loading = true;
-            yasrInnerContainer.addClass(opacityHideClass);
-            resultsLoader.removeClass(opacityHideClass);
-        } else {
-            $scope.loading = false;
-            yasrInnerContainer.removeClass(opacityHideClass);
-            resultsLoader.addClass(opacityHideClass);
-        }
+    $scope.goToGraphsViz = () => {
+        $location.path('graphs-visualizations').search('uri', $scope.resourceInfo.uri);
     };
 
     // Get resource table
-    $scope.exploreResource = function () {
+    $scope.exploreResource = () => {
         toggleOntoLoader(true);
         if ($routeParams.context != null) {
-            $scope.context = $routeParams.context;
+            $scope.resourceInfo.context = $routeParams.context;
         }
         // Remember the role in the URL so the URL is stable and leads back to the same view
-        $location.search('role', $scope.role);
+        $location.search('role', $scope.resourceInfo.role);
         // Changing the URL parameters adds a history entry in the browser history, and this causes incorrect behavior of the browser's back button functionality.
         // To resolve this issue, we replace the current URL without adding a new history entry.
         $location.replace();
-        // wait for principal request if it has not finished and then fetch graph
-        Promise.resolve(principalRequestPromise)
-            .then(() => getGraph());
+        getGraph();
     };
 
-    function getGraph() {
-        const headers = {Accept: 'application/x-graphdb-table-results+json'};
-        $.ajax({
-            method: 'GET',
-            url: 'rest/explore/graph',
-            data: {
-                uri: $scope.uriParam,
-                triple: $scope.tripleParam,
-                inference: $scope.inference,
-                role: $scope.role,
-                bnodes: $scope.blanks,
-                sameAs: $scope.sameAs,
-                context: $scope.context
-            },
-            headers: headers
-        }).done(function (data, textStatus, jqXhr) {
-            toggleOntoLoader(false);
-            // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
-            yasr.setResponse(jqXhr, textStatus);
-        }).fail(function (data) {
-            toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
-            toggleOntoLoader(false);
-        });
-    }
-
-    $scope.downloadExport = function (format) {
-        let param;
-        let encodedURI;
-        if ($scope.uriParam) {
-            param = 'uri=';
-            encodedURI = encodeURIComponent($scope.uriParam);
-        } else {
-            param = 'triple=';
-            encodedURI = encodeURIComponent($scope.tripleParam);
-        }
-
-        $http({
-            method: 'GET',
-            url: 'rest/explore/graph?' + param + encodedURI +
-                "&role=" + $scope.role +
-                "&inference=" + $scope.inference +
-                "&bnodes=" + $scope.blanks +
-                "&sameAs=" + $scope.sameAs +
-                ($scope.context ? "&context=" + encodeURIComponent($scope.context) : ""),
-            headers: {
-                'Accept': format.type
-            }
-        }).success(function (response) {
-            let data = response;
-            if (format.type.indexOf('json') > -1) {
-                data = JSON.stringify(data);
-            }
-            // TODO: Use bowser library to get the browser type
-            const ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
-                window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
-            } else {
-                const file = new Blob([data], {type: format.type});
-                saveAs(file, 'statements' + format.extension);
-            }
-        }).error(function (data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('common.error'));
-        });
+    $scope.downloadExport = (fileType) => {
+        ExploreRestService.getGraph($scope.resourceInfo, fileType.type)
+            .then((data) => {
+                if (fileType.type.indexOf('json') > -1) {
+                    data = JSON.stringify(data);
+                }
+                // TODO: Use bowser library to get the browser type
+                const ua = navigator.userAgent.toLowerCase();
+                if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
+                    window.open('data:attachment/csv;filename="statements.' + fileType.extension + '",' + encodeURIComponent(data), 'statements.' + fileType.extension);
+                } else {
+                    const file = new Blob([data], {type: fileType.type});
+                    saveAs(file, 'statements' + fileType.extension);
+                }
+            })
+            .catch((error) => {
+                toastr.error(getError(error), $translate.instant('common.error'));
+            })
+            .finally(() => {
+                toggleOntoLoader(false);
+            });
     };
 
-    $scope.changeRole = function (roleVar) {
-        $scope.role = roleVar;
-        if ($scope.role === 'context') {
-            $scope.inference = 'explicit';
+    $scope.changeRole = (role) => {
+        $scope.resourceInfo.role = role;
+        if ($scope.resourceInfo.role === RoleType.CONTEXT) {
+            $scope.resourceInfo.contextType = ContextTypes.EXPLICIT;
         }
         $scope.exploreResource();
     };
 
-    $scope.changeInference = function (inference) {
-        $scope.inference = inference;
+    $scope.changeInference = (contextTypeId) => {
+        $scope.resourceInfo.contextType = ContextType.getContextType(contextTypeId);
         $scope.exploreResource();
     };
 
-    $scope.copyToClipboardResult = function (uri) {
+    $scope.copyToClipboardResult = (uri) => {
         ModalService.openCopyToClipboardModal(uri);
     };
 
-    $scope.$on('language-changed', function (event, args) {
-        if (yasr && yasr.options) {
-            yasr.options.locale = args.locale;
-            yasr.changeLanguage(args.locale);
+    // =========================
+    // Private functions
+    // =========================
+    const initComponent = () => {
+        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
+            .then(([principal, usedPrefixesResponse]) => {
+                initResourceInfo();
+                setInferAndSameAs(principal);
+                usedPrefixes = usedPrefixesResponse;
+                $scope.loadResource();
+            })
+            .catch((error) => {
+                toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(error)}));
+            });
+    };
+
+    const initResourceInfo = () => {
+        if ($scope.resourceInfo) {
+            return;
         }
-    });
+        $scope.resourceInfo = new ResourceInfo();
+        initResourceReference($scope.resourceInfo);
+
+        if ($routeParams.context != null) {
+            $scope.resourceInfo.context = $routeParams.context;
+        }
+
+        $scope.resourceInfo.role = $location.search().role ? $location.search().role : RoleType.SUBJECT;
+    };
+
+    const toggleOntoLoader = (showLoader) => {
+        $scope.isLoading = !!showLoader;
+    };
+
+    const updateYasguiConfiguration = (additionalConfiguration = {}) => {
+        const config = {};
+        angular.extend(config, $scope.yasguiConfig || getDefaultYasguiConfiguration(), additionalConfiguration);
+        $scope.yasguiConfig = config;
+    };
+
+    const getDefaultYasguiConfiguration = () => {
+        return {
+            showEditorTabs: false,
+            showToolbar: false,
+            showResultTabs: false,
+            showResultInfo: false,
+            downloadAsOn: false,
+            showQueryButton: false,
+            componentId: 'resource-view-component',
+            prefixes: usedPrefixes,
+            maxPersistentResponseSize: 0,
+            render: RenderingMode.YASR,
+            showYasqeActionButtons: false,
+            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION
+        };
+    };
+
+    const getGraph = () => {
+        ExploreRestService.getGraph($scope.resourceInfo)
+            .then((data) => {
+                updateYasguiConfiguration({sparqlResponse: data});
+            })
+            .catch((error) => {
+                toastr.error($translate.instant('explore.error.resource', {data: getError(error)}));
+            })
+            .finally(() => {
+                toggleOntoLoader(false);
+            });
+    };
+
+    const setInferAndSameAs = (principal) => {
+        // Get the predefined settings for sameAs and inference per user
+        $scope.resourceInfo.contextType = principal.appSettings['DEFAULT_INFERENCE'] && !$scope.resourceInfo.role === RoleType.CONTEXT ? ContextTypes.ALL : ContextTypes.EXPLICIT;
+        $scope.resourceInfo.sameAs = principal.appSettings['DEFAULT_INFERENCE'] && principal.appSettings['DEFAULT_SAMEAS'];
+    };
+
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    // =========================
+    // Event handler functions
+    // =========================
+
+    $scope.$on('$destroy', removeAllListeners);
+    const subscriptions = [];
+
+    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
+    // readOnly configuration may be incorrect.
+    subscriptions.push($scope.$watch(function () {
+        return $scope.getActiveRepositoryObject();
+    }, function (activeRepo) {
+        if (activeRepo) {
+            initComponent();
+        }
+    }));
 }
 
 FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];
@@ -484,18 +484,18 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
                 });
                 $scope.loader = false;
             }).error(function (data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('common.error'));
-                $scope.loader = false;
-            });
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('common.error'));
+            $scope.loader = false;
+        });
 
         ClassInstanceDetailsService.getDetails($scope.uriParam)
             .success(function (data) {
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
             }).error(function (data) {
-                toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
-            });
+            toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
+        });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
             .then(function (res) {

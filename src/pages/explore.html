@@ -1,85 +1,107 @@
 <link href="css/explore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<link href="css/lib/yasr.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<link href="css/yasr.custom.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div core-errors></div>
-<div class="page fit-content-on-mobile" ng-show="getActiveRepository()">
-    <div class="resource-info" ng-if="!isTripleResource()">
-        <div class="thumb" ng-show="{{details.img}}">
-            <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
+<div class="page fit-content-on-mobile">
+    <div class="resource-info" ng-if="resourceInfo && !isTripleResource()">
+        <div class="thumb" ng-if="resourceInfo.details.img">
+            <a href="resourceInfo.details.img">
+                <img ng-src="{{details.img}}" alt="details image"/>
+            </a>
         </div>
         <h1>
-            <a href="{{details.uri}}" gdb-tooltip="{{details.uri}}">
-                {{details.label ? details.label : getLocalName(details.uri)}}
+            <a href="resourceInfo.details.uri" gdb-tooltip="resourceInfo.details.uri">
+                {{resourceInfo.details.label ? resourceInfo.details.label : getLocalName(resourceInfo.details.uri)}}
             </a>
 
-            <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{details.encodeURI}}"
+            <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{resourceInfo.details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link edit-resource-link">
                 <span class="icon-edit"></span>
             </a>
         </h1>
 
-        <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
+        <p ng-if="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
-            <span>{{'source.label' | translate}}:</span>&nbsp;<a class="source-link" href="{{details.uri}}">{{details.uri}}</a>
+            <span>{{'source.label' | translate}}:</span>&nbsp;
+            <a class="source-link" href="{{resourceInfo.details.uri}}">{{resourceInfo.details.uri}}</a>
         </p>
         <p ng-show="isContextAvailable()">
-            <span>{{'context.label' | translate}}:</span>&nbsp;<a class="context-link" href="{{details.context}}">{{details.context}}</a>
+            <span>{{'context.label' | translate}}:</span>&nbsp;
+            <a class="context-link" href="{{resourceInfo.details.context}}">{{resourceInfo.details.context}}</a>
         </p>
     </div>
 
-    <div class="resource-info" ng-if="isTripleResource()">
-        <div class="thumb" ng-show="{{details.img}}">
-            <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
+    <div class="resource-info" ng-if="resourceInfo && isTripleResource()">
+        <div class="thumb" ng-if="resourceInfo.details.img">
+            <a href="{{resourceInfo.details.img}}">
+                <img ng-src="{{resourceInfo.details.img}}" alt="details image"/>
+            </a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" gdb-tooltip="{{tripleParam}}">
-                {{getRdfStarLocalNames(tripleParam)}}
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+               gdb-tooltip="{{resourceInfo.triple}}"
+            class="triple-resource-link">
+                {{getRdfStarLocalNames(resourceInfo.triple)}}
             </a>
         </h1>
 
-        <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
+        <p ng-show="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
-            <span>{{'target.label' | translate}}:</span>&nbsp;<a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}">{{tripleParam}}</a>
+            <span>{{'target.label' | translate}}:</span>&nbsp;
+            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+               class="target-link">
+                {{resourceInfo.triple}}
+            </a>
         </p>
     </div>
 
-    <div class="pull-right">
+    <div class="pull-right" ng-if="resourceInfo">
 
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
-                    ng-options="inf.id as inf.title | translate for inf in inferences" ng-model="inference"
-                    ng-change="changeInference(inference)" class="form-control form-control-sm"
-                    ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'"></select>
+                    class="form-control form-control-sm"
+                    ng-model="currentContextType"
+                    ng-change="changeInference(currentContextType)"
+                    ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'">
+                <option ng-repeat="contextType in contextTypes"
+                        value="{{contextType.id}}"
+                        ng-selected="resourceInfo.contextType.id === contextType.id">
+                    {{contextType.labelKey | translate}}
+                </option>
+            </select>
         </label>
 
-        <button type="button" class="btn btn-link same-as-btn" ng-model="sameAs"
+        <button type="button" class="btn btn-link same-as-btn btn-sm"
+                ng-model="sameAs"
                 ng-class="loading ? 'disabled' : ''"
-                ng-show="inference != 'explicit'"
-                ng-click="sameAs = !sameAs; exploreResource()"
-                uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
+                ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
+                ng-click="toggleSameAs()"
+                uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
-            <span class="icon-2-5x"
-                  ng-class="{'icon-sameas-on':sameAs, 'icon-sameas-off':!sameAs}"></span>
+            <span ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
         </button>
 
-        <button type="button" class="btn btn-sm show-blank-nodes-btn" ng-model="blanks"
-                ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
-                uib-btn-checkbox btn-checkbox-true="true"
-                btn-checkbox-false="false" ng-change="exploreResource()">
+        <button type="button"
+                class="btn btn-sm show-blank-nodes-btn" ng-model="resourceInfo.blanks"
+                ng-class="loading ? 'disabled' : (resourceInfo.blanks ? 'btn-primary' : 'btn-secondary')"
+                uib-btn-checkbox
+                btn-checkbox-true="true"
+                btn-checkbox-false="false"
+                ng-change="exploreResource()">
             {{'show.blank.nodes.label' | translate}}
         </button>
 
         <div class="btn-group" uib-dropdown is-open="isopen">
-            <button type="button" ng-class="loading ? 'disabled' : ''" class="btn btn-sm btn-secondary dropdown-toggle"
+            <button type="button"
+                    class="btn btn-sm btn-secondary dropdown-toggle"
+                    ng-class="loading ? 'disabled' : ''"
                     uib-dropdown-toggle>
                 {{'download.as.label' | translate}}
             </button>
             <ul class="dropdown-menu small" role="menu">
-                <li ng-repeat="format in formats">
-                    <a href="javascript:" ng-click="downloadExport(format)" class="dropdown-item">{{format.name}}</a>
+                <li ng-repeat="fileType in fileTypes">
+                    <a href="javascript:" ng-click="downloadExport(fileType)" class="dropdown-item">{{fileType.name}}</a>
                 </li>
             </ul>
         </div>
@@ -88,31 +110,34 @@
                 uib-popover="{{'explore.graph.visually.popover' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
-                ng-click="goToGraphsViz()" guide-selector="explore-visual">
+                ng-click="goToGraphsViz()"
+                guide-selector="explore-visual">
             {{'visual.graph.label' | translate}}
         </button>
 
     </div>
 
-    <div id="selection" class="selection mb-1" ng-init="roles = ['subject', 'predicate', 'object', 'context', 'all']">
+    <div id="selection" class="selection mb-1" ng-if="resourceInfo">
         <ul class="nav nav-tabs">
-            <li ng-repeat="roleVar in roles" class="nav-item">
-                <a class="nav-link" href ng-click="changeRole(roleVar)"
-                   ng-class="role === roleVar ? 'active' : (loading ? 'disabled': '')" ng-disabled="loading"
-                   guide-selector="role-{{roleVar}}">
-                    {{roleVar | translate}}
+            <li ng-repeat="role in roles" class="nav-item">
+                <a class="nav-link" href
+                   ng-click="changeRole(role)"
+                   ng-class="resourceInfo.role === role ? 'active' : (loading ? 'disabled': '')"
+                   ng-disabled="loading"
+                   guide-selector="role-{{role}}">
+                    {{role | translate}}
                 </a>
             </li>
         </ul>
     </div>
 
-    <div id="yasr" class="explore">
-        <!--<uib-pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
-        <div class="yasr" id="yasr-inner">
-            <div class='yasr_results' guide-selector="yasrResults"></div>
-        </div>
-    </div>
+    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
 
-    <div id="results-loader" class="ot-loader opacity-hide" onto-loader size="100"></div>
+    <div onto-loader-new
+         ng-if="isLoading"
+         size="100"
+         message="loaderMessage"
+         timeout="[1]">
+    </div>
 
 </div>

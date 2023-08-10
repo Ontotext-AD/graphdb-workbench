@@ -5,8 +5,8 @@ PluginRegistry.add('route', {
     'chunk': 'sparql',
     'controller': 'SparqlEditorCtrl',
     'templateUrl': 'pages/sparql-editor.html',
-    'title': 'view.sparql-editor.title',
-    'helpInfo': 'view.sparql-editor.helpInfo',
+    'title': 'view.sparql.title',
+    'helpInfo': 'view.sparql.helpInfo',
     'reloadOnSearch': false
 });
 

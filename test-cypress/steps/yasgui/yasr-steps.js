@@ -23,6 +23,14 @@ export class YasrSteps {
         return cy.get('.yasr_results tbody').find('tr');
     }
 
+    static getResultTableHeader() {
+        return cy.get('.yasr_results thead');
+    }
+
+    static getResultTableHeaderColumns() {
+        return YasrSteps.getResultTableHeader().find('th');
+    }
+
     static getResultFilter() {
         return cy.get('.tableFilter');
     }
@@ -74,6 +82,11 @@ export class YasrSteps {
         return this.getDownloadAsDropdown().find('.ontotext-dropdown-menu-item').eq(number);
     }
 
+    static downloadAs(option) {
+        this.openDownloadAsDropdown();
+        this.getDownloadAsOption(option).click();
+    }
+
     static getPagination() {
         return YasrSteps.getYasr().find('.ontotext-pagination');
     }
@@ -84,5 +97,9 @@ export class YasrSteps {
 
     static getVisualButton() {
         return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button-name');
+    }
+
+    static getNoDataElement() {
+        return cy.get('.dataTables_empty');
     }
 }

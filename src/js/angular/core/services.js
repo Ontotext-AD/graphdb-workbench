@@ -106,7 +106,7 @@ function MenuItemsProvider() {
             }
         }
         return false;
-    }
+    };
 
     this.updateItemsWithMissedParent = function () {
         if (itemsWithMissedParent.length > 0) {
@@ -145,8 +145,33 @@ ModalService.$inject = ['$uibModal', '$timeout', '$sce'];
 function ModalService($uibModal, $timeout, $sce) {
     return {
         openSimpleModal: openSimpleModal,
-        openCopyToClipboardModal: openCopyToClipboardModal
+        openCopyToClipboardModal: openCopyToClipboardModal,
+        openConfirmation: openConfirmation
     };
+
+    /**
+     * Opens a confirmation dialog with provided translated title and message. If provided onConfirm and onCancel
+     * handler functions then they will be executed.
+     * @param {string} title
+     * @param {message} message
+     * @param {Function} onConfirm
+     * @param {Function} onCancel
+     */
+    function openConfirmation(title, message, onConfirm, onCancel) {
+        openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function () {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
+        });
+    }
 
     function openSimpleModal(config) {
         const simpleTemplate = 'js/angular/core/templates/modal/modal-simple.html';
@@ -168,7 +193,7 @@ function ModalService($uibModal, $timeout, $sce) {
     }
 
     function openCopyToClipboardModal(uri) {
-        const modalInstance = $uibModal.open({
+        return $uibModal.open({
             templateUrl: 'js/angular/core/templates/modal/copy-to-clipboard-modal.html',
             controller: 'CopyToClipboardModalCtrl',
             resolve: {
@@ -177,19 +202,6 @@ function ModalService($uibModal, $timeout, $sce) {
                 }
             }
         });
-
-        modalInstance.opened.then(function () {
-            // TODO: If the need for this timeout was to wait for the clipboardURI to be rendered,
-            // then better and more reliable approach would be to replace it with an interval instead.
-            // And the best way is to move this logic in the CopyToClipboardModalCtrl where it should
-            // be because working with the DOM is not the place in services but in controllers or
-            // directives.
-            $timeout(function () {
-                $('#clipboardURI')[0].select();
-            }, 100);
-        });
-
-        return modalInstance;
     }
 }
 
