@@ -265,7 +265,7 @@ describe('Graphs config', () => {
         // When I select preview query results
         VisualGraphSteps.previewQueryResults();
         // Then I expect to see the results table
-        YasrSteps.getYasr(0).should('be.visible');
+        YasrSteps.getYasr().should('be.visible');
         // When I select to edit query
         VisualGraphSteps.editQuery();
         // Then I expect to see the query editor with the previously selected query
@@ -282,7 +282,7 @@ describe('Graphs config', () => {
         // When I select to preview query results
         VisualGraphSteps.previewQueryResults();
         // Then I expect to see the results table
-        YasrSteps.getYasr(0).should('be.visible');
+        YasrSteps.getYasr().should('be.visible');
         // When I select to edit the selected query
         VisualGraphSteps.editQuery();
         // Then I expect to see the editor with the selected query
