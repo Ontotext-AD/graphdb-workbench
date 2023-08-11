@@ -304,7 +304,11 @@ function GraphConfigCtrl(
     // =========================
     // Private functions
     // =========================
-
+    /**
+     * Fetches yasgui component.
+     *
+     * @return {Promise<YasguiComponent>}
+     */
     const getYasguiInstance = () => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor');
     }
@@ -363,18 +367,12 @@ function GraphConfigCtrl(
     const getNamespaces = () => {
         // Signals the namespaces are to be fetched => loader will be shown
         setLoader(true, $translate.instant('common.refreshing.namespaces'), $translate.instant('common.extra.message'));
-        RDF4JRepositoriesRestService.getRepositoryNamespaces($repositories.getActiveRepository())
-            .success(function (data) {
-                const usedPrefixes = {};
-                data.results.bindings.forEach(function (e) {
-                    usedPrefixes[e.prefix.value] = e.namespace.value;
-                });
-                $scope.namespaces = usedPrefixes;
-            })
-            .error(function (data) {
-                $scope.repositoryError = getError(data);
-            })
-            .finally(function () {
+        $repositories.getPrefixes($repositories.getActiveRepository())
+            .then((prefixes) => {
+                $scope.namespaces = prefixes;
+            }).catch(function (data) {
+            $scope.repositoryError = getError(data);
+        }).finally(function () {
                 // Signals namespaces were fetched => loader will be hidden
                 setLoader(false);
             });
@@ -483,7 +481,7 @@ function GraphConfigCtrl(
     };
 
     const defaultYasguiConfig = {
-        endpoint: getQueryEndpoint(),
+        endpoint: getQueryEndpoint,
         showEditorTabs: false,
         showToolbar: false,
         showResultTabs: false,
