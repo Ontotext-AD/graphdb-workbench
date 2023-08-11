@@ -1,4 +1,5 @@
-import VisualGraphSteps from "../../steps/visual-graph-steps";
+import {VisualGraphSteps} from "../../steps/visual-graph-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -37,7 +38,7 @@ describe('Visual graph screen validation', () => {
         getGraphConfigName().type(graphConfigName, {force: true});
 
         cy.waitUntil(() => getGraphConfigName().should('have.value', graphConfigName));
-        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10');
+        YasqeSteps.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10');
         cy.waitUntilQueryIsVisible();
 
         getSaveConfig().click();
