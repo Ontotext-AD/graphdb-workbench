@@ -166,14 +166,14 @@ a[aria-expanded = true].query-has-error span {
 }
 
 .show-less-message-link, .show-full-message-link {
-    color: var(--onto-blue);
+    color: var(--secondary-color);
     font-weight: 400;
     display: block;
     text-align: right;
 }
 
 .show-full-message-link::after, .show-less-message-link::after {
-    color: var(--onto-blue);
+    color: var(--secondary-color);
     font-family: 'icomoon', sans-serif !important;
     content: "\e921";
     display: inline-block;

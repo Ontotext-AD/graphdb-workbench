@@ -1,4 +1,5 @@
 import 'angular/core/services';
+import 'angular/core/services/theme-service';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
 import 'angular/rest/plugins.rest.service';
@@ -13,6 +14,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
+import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
@@ -25,6 +27,7 @@ angular
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.core.services.licenseService',
+        'graphdb.framework.core.services.theme-service',
         'ngCookies',
         'ngFileUpload',
         'graphdb.framework.core',
@@ -39,6 +42,7 @@ angular
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
+        'graphdb.framework.utils.workbenchsettingsstorageservice',
         'graphdb.framework.core.services.autocompleteStatus',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',
@@ -47,7 +51,7 @@ angular
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl)
-    .controller('uxTestCtrl', uxTestCtrl)
+    .controller('uxTestCtrl', uxTestCtrl);
 
 homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'toastr'];
 

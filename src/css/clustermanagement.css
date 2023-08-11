@@ -47,24 +47,24 @@ path.link {
 
 .node {
   cursor: pointer;
-  fill: var(--onto-grey);
+  fill: var(--grey-color);
   stroke: black;
 }
 
 .node.leader {
-  fill: var(--onto-orange)
+  fill: var(--primary-color)
 }
 
 .node.follower {
-  fill: var(--onto-blue)
+  fill: var(--secondary-color)
 }
 
 .node.candidate {
-  fill: var(--onto-green)
+  fill: var(--tertiary-color)
 }
 
 .node.other {
-  fill: var(--onto-grey)
+  fill: var(--grey-color)
 }
 
 #node-group.legend .node {

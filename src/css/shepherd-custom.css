@@ -47,8 +47,8 @@
     display: block;
     height: 120px;
     margin-top: 0.5em;
-    color: var(--onto-blue);
-    background-color: hsla(var(--onto-green-hsl), 0.3);
+    color: var(--secondary-color);
+    background-color: hsla(var(--tertiary-color-hsl), 0.3);
     overflow: scroll;
     white-space: pre-wrap;
 }

@@ -16,7 +16,6 @@ const modules = [
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
-    'graphdb.framework.utils.localstorageadapter',
     'toastr'
 ];
 
@@ -713,16 +712,33 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'LocalStorageAdapter', 'LSKeys', '$q',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, LocalStorageAdapter, LSKeys, $q) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        $scope.themes = ThemeService.getThemes();
         $scope.mode = 'settings';
+        $scope.showWorkbenchSettings = true;
+        /** @type {{theme: string, mode: string}} */
+        $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
+        $scope.saveButtonText = $translate.instant('common.save.btn');
+        $scope.pageTitle = $translate.instant('view.settings.title');
+        $scope.passwordPlaceholder = $translate.instant('security.new.password');
+        $scope.grantedAuthorities = {
+            [READ_REPO]: {},
+            [WRITE_REPO]: {}
+        };
+        $scope.loader = false;
+        /**
+         * @type {{name: string, label: string}}
+         */
+        $scope.selectedTheme = ThemeService.getTheme();
+
         $scope.hasEditRestrictions = function () {
             return true;
         };
-        $scope.saveButtonText = $translate.instant('common.save.btn');
+
         $scope.goBack = function () {
             const timer = $timeout(function () {
                 $window.history.back();
@@ -731,6 +747,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 $timeout.cancel(timer);
             });
         };
+
         // Wrapped in a scope function for ease of testing
         $scope.getPrincipal = function () {
             return $jwtAuth.getPrincipal()
@@ -744,8 +761,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             initUserData($scope);
         });
 
-        $scope.showWorkbenchSettings = true;
-
         $scope.updateCurrentUserData = function () {
             // Using $q.when to proper set values in view
             $q.when($jwtAuth.getPrincipal())
@@ -757,13 +772,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             if (!$scope.currentUserData) {
                 $rootScope.redirectToLogin();
             }
-        };
-
-        $scope.pageTitle = $translate.instant('view.settings.title');
-        $scope.passwordPlaceholder = $translate.instant('security.new.password');
-        $scope.grantedAuthorities = {
-            [READ_REPO]: {},
-            [WRITE_REPO]: {}
         };
 
         const initUserData = function (scope) {
@@ -783,8 +791,6 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.userType = pa.userType;
             $scope.grantedAuthorities = pa.grantedAuthorities;
         };
-
-        $scope.loader = false;
 
         $scope.submit = function () {
             if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
@@ -813,7 +819,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                     $scope.loader = false;
                     $window.history.back();
                 }, 2000);
-                LocalStorageAdapter.set(LSKeys.WORKBENCH_SETTINGS, $scope.workbenchSettings);
+                WorkbenchSettingsStorageService.saveWorkbenchSettings($scope.workbenchSettings);
                 $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
@@ -836,32 +842,34 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             return $scope.validatePassword();
         };
 
-        $scope.setWorkbenchTheme = function () {
-            const rootElement = document.querySelector(':root');
-            if ($scope.workbenchSettings.theme === 'dark') {
-                rootElement.classList.add("dark");
-            } else {
-                rootElement.classList.remove("dark");
-            }
+        $scope.setThemeMode = function () {
+            ThemeService.toggleThemeMode($scope.workbenchSettings.mode);
         };
 
-        $scope.workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
-        if (!$scope.workbenchSettings) {
-            $scope.workbenchSettings = {
-                theme: 'light'
-            };
-        }
-        $scope.setWorkbenchTheme();
+        /**
+         * @param {{name: string, label: string}} theme
+         */
+        $scope.setTheme = (theme) => {
+            $scope.selectedTheme = theme;
+            $scope.workbenchSettings.theme = theme.name;
+            ThemeService.applyTheme(theme.name);
+        };
 
-        $scope.$on("$destroy", function () {
-            const workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
-            const rootElement = document.querySelector(':root');
-            if (workbenchSettings && workbenchSettings.theme === 'dark') {
-                rootElement.classList.add("dark");
-            } else {
-                rootElement.classList.remove("dark");
-            }
+        $scope.$on('$destroy', function () {
+            const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
+            ThemeService.toggleThemeMode(workbenchSettings.mode);
         });
+
+        const initView = () => {
+            if (!$scope.workbenchSettings) {
+                $scope.workbenchSettings = {
+                    theme: 'light'
+                };
+            }
+            $scope.setThemeMode();
+        };
+
+        initView();
     }]);
 
 securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {

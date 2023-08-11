@@ -165,7 +165,8 @@ const moduleDefinition = function (productInfo) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'LocalStorageAdapter', 'LSKeys', 'GuidesService', function ($rootScope, $route, toastr, $sce, $translate, LocalStorageAdapter, LSKeys, GuidesService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
         $rootScope.$on('$routeChangeSuccess', function () {
             updateTitleAndHelpInfo();
 
@@ -188,13 +189,10 @@ const moduleDefinition = function (productInfo) {
         }
 
         // Check if theme is set in local storage workbench settings and apply
-        const workbenchSettings = LocalStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
-        if (workbenchSettings && workbenchSettings.theme) {
-            const rootElement = document.querySelector(':root');
-            if (workbenchSettings.theme === 'dark') {
-                rootElement.classList.add("dark");
-            }
-        }
+        const currentTheme = WorkbenchSettingsStorageService.getTheme();
+        ThemeService.applyTheme(currentTheme);
+        ThemeService.applyDarkThemeMode();
+
         GuidesService.init();
     }]);
 

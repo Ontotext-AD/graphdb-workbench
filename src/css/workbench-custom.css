@@ -107,37 +107,37 @@
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
-    background-color: var(--onto-blue);
-    border-color: var(--onto-blue);
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
 .label-success {
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 @media (max-width: 767px) {
     .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-        border-color: var(--onto-green);
+        border-color: var(--tertiary-color);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
-        background-color: var(--onto-green);
+        background-color: var(--tertiary-color);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
-        background-color: var(--onto-green);
+        background-color: var(--tertiary-color);
     }
 }
 
@@ -167,14 +167,14 @@
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
     color: #ffffff;
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
     color: #ffffff;
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 .navbar-inverse .navbar-nav > .disabled > a,
@@ -227,7 +227,7 @@
 
 @media (max-width: 767px) {
     .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-        border-color: var(--onto-green);
+        border-color: var(--tertiary-color);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
         color: #ffffff;
@@ -235,13 +235,13 @@
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
         color: #ffffff;
-        background-color: var(--onto-green);
+        background-color: var(--tertiary-color);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
         color: #ffffff;
-        background-color: var(--onto-green);
+        background-color: var(--tertiary-color);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:hover,
@@ -271,7 +271,7 @@
 .navbar-inverse .dropdown-menu > li > a:hover,
 .navbar-inverse .dropdown-menu > .active > a,
 .navbar-inverse .dropdown-menu > .active > a:hover {
-    background-color: var(--onto-green);
+    background-color: var(--tertiary-color);
 }
 
 .panel-danger > .panel-heading {
