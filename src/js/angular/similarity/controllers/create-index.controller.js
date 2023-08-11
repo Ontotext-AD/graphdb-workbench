@@ -502,7 +502,7 @@ function CreateSimilarityIdxCtrl(
 
     const updateYasguiComponent = (config) => {
         const defaultConfig = {
-            endpoint: getQueryEndpoint(),
+            endpoint: getQueryEndpoint,
             componentId: 'create-index',
             showEditorTabs: false,
             showToolbar: false,
