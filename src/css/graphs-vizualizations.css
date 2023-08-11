@@ -148,11 +148,11 @@
 }
 
 .triple-pred:hover {
-    color:var(--onto-green)
+    color:var(--tertiary-color)
 }
 
 .triple-pred {
-    color: var(--onto-orange-dark);
+    color: var(--primary-color-dark);
 }
 
 .disable-visual-graph-node {

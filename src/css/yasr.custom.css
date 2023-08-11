@@ -5,7 +5,7 @@
 }
 
 .yasr table.dataTable thead th {
-  background-color: hsla(var(--onto-green-hsl), 0.1) !important;
+  background-color: hsla(var(--tertiary-color-hsl), 0.1) !important;
 }
 
 .yasr table.dataTable thead th, .yasr table.dataTable thead td {
@@ -21,12 +21,12 @@
 }
 
 .yasr a {
-  color: var(--onto-blue-light);
+  color: var(--secondary-color-light);
   text-decoration: none;
 }
 
 .yasr a:hover {
-  color: var(--onto-blue);
+  color: var(--secondary-color);
 }
 
 .yasr table.dataTable tr td:first-child {
@@ -88,7 +88,7 @@
 
 .yasr .nonUri {
   border: none;
-  color: var(--onto-blue);
+  color: var(--secondary-color);
   background-color: transparent;
   padding: 0;
   margin: 0;

@@ -39,7 +39,7 @@ svg {
 }
 
 #close-button {
-	color: var(--onto-blue);
+	color: var(--secondary-color);
     font-size: 1.5em;
     cursor: pointer;
 }
