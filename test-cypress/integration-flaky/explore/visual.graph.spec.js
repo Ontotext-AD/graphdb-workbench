@@ -1,4 +1,5 @@
-import VisualGraphSteps from "../../steps/visual-graph-steps";
+import {VisualGraphSteps} from "../../steps/visual-graph-steps";
+import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -35,10 +36,7 @@ describe('Visual graph screen validation', () => {
         cy.url().should('include', '/config/save');
         getGraphConfigName().type(graphConfigName);
         cy.get('[data-cy="graph-config-by-graph-query-checkbox"]').check();
-        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10').then( () => {
-                getSaveConfig().click();
-            }
-        );
+        YasqeSteps.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10');
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
         cy.contains('td', graphConfigName).should('be.visible').parent().within(() => {
