@@ -144,18 +144,34 @@
 						<h3>{{'security.workbench.settings.title' | translate}}
 							<em class="icon-info text-primary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
 
-						<div class="mb-1">
-							<label class="col-lg-5">{{'security.workbench.settings.theme.label' | translate}}</label>
-							<div class="radio">
-								<label class="px-1">
-									<input type="radio" value="light" ng-model="workbenchSettings.theme" ng-change="setWorkbenchTheme()"/>
-									{{'security.workbench.settings.theme.light' | translate}}
-								</label>
-								<label class="px-1">
-									<input type="radio" value="dark" ng-model="workbenchSettings.theme" ng-change="setWorkbenchTheme()"/>
-									{{'security.workbench.settings.theme.dark' | translate}}
-								</label>
-							</div>
+						<div>
+                            <div class="form-group">
+                                <label class="col-lg-2">{{'security.workbench.settings.theme.label' | translate}}</label>
+                                <div class="btn-group theme-selector-dropdown" uib-dropdown>
+                                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle theme-selector-dropdown-btn" uib-dropdown-toggle>
+                                        {{selectedTheme.label}}
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li ng-repeat="theme in themes">
+                                            <a ng-click="setTheme(theme)" class="dropdown-item">{{theme.label}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-2">{{'security.workbench.settings.theme.mode.label' | translate}}</label>
+                                <div class="radio">
+                                    <label class="px-1">
+                                        <input type="radio" value="light" ng-model="workbenchSettings.mode" ng-change="setThemeMode()"/>
+                                        {{'security.workbench.settings.theme.mode.light' | translate}}
+                                    </label>
+                                    <label class="px-1">
+                                        <input type="radio" value="dark" ng-model="workbenchSettings.mode" ng-change="setThemeMode()"/>
+                                        {{'security.workbench.settings.theme.mode.dark' | translate}}
+                                    </label>
+                                </div>
+                            </div>
 						</div>
 					</div>
 				</div>

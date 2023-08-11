@@ -10,7 +10,7 @@
     border: none;
     outline: none;
     color: #FFFFFF;
-    background-color: var(--onto-orange);
+    background-color: var(--primary-color);
 }
 .explore-visual-graph-button:hover {
     cursor: pointer;

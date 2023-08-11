@@ -38,7 +38,7 @@
 .sparql-editor-view #query-editor .yasgui-toolbar .yasgui-btn {
     height: 27px;
     margin-right: 3px;
-    color: var(--onto-blue);
+    color: var(--secondary-color);
 }
 
 .sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
@@ -61,5 +61,5 @@
 
 .keyboard-shortcuts-dialog-button {
     font-weight: 400;
-    color: var(--onto-blue);
+    color: var(--secondary-color);
 }
