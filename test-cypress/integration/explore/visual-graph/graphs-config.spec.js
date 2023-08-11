@@ -3,6 +3,7 @@ import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
+import {MainMenuSteps} from "../../../steps/main-menu-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const QUERY_START = `# CONSTRUCT or DESCRIBE query. The results will be rendered visually as a graph of triples.\nCONSTRUCT WHERE {\n\t?s ?p ?o\n} LIMIT 10`;
@@ -399,7 +400,7 @@ describe('Graphs config', () => {
         VisualGraphSteps.selectPredefinedQuerySample(0);
         YasqeSteps.getQuery(500).should('contain', QUERY_EXPAND_NODE);
         // And I try to open another page
-        cy.get('.main-menu .brand a').click();
+        MainMenuSteps.clickOnMenuImport();
         // Then I expect a confirmation for leaving the page
         ModalDialogSteps.getDialog().should('be.visible');
     });
