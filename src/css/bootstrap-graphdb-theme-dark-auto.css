@@ -19,11 +19,11 @@
     --checkbox-filter: var(--checkbox-filter-dark);
 
     /* This results in a more subdued orange in the dark theme, easier on the eyes */
-    --onto-orange-hue: 25.4;
-    --onto-orange-lightness: 30%;
+    --primary-color-hue: 25.4;
+    --primary-color-lightness: 30%;
 
     /* Slightly different blue in the dark theme */
-    --onto-blue-hue: 200.3;
+    --secondary-color-hue: 200.3;
 
     --color-danger-dark: #9f2010;
     --color-success-dark: #005934;

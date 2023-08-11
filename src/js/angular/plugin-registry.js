@@ -95,8 +95,22 @@ window.PluginRegistry = (function() {
         }
     };
 
+    /**
+     * @param {string} extensionPoint The extension point name for which to get the registered plugins.
+     * @return {Array} An array with registered plugins.
+     */
     registry.get = function(extensionPoint) {
         return plugins[extensionPoint];
+    };
+
+    /**
+     * @param {string} extensionPoint The extension point name for which to get the registered plugins.
+     * @param {Function} predicate A callback function which will be used as a predicate in call to Array#find function
+     * and must return a boolean value.
+     * @return {Object|undefined} A plugin definition or undefined.
+     */
+    registry.findPlugin = function(extensionPoint, predicate) {
+        return plugins[extensionPoint].find(predicate);
     };
 
     registry.clear = function(extensionPoint) {
