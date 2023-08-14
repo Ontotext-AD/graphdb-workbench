@@ -1264,12 +1264,10 @@ footer.footer .container-fluid.main-container p {
 }
 
 .alert-warning {
-    kbackground-color: #f9e6c0;
     background-color: rgba(252, 248, 227, 0.7);
 }
 
 .alert-info {
-    kbackground-color: #cfefec;
     background-color: rgba(203, 238, 234, 0.7);
 }
 
@@ -1278,12 +1276,10 @@ footer.footer .container-fluid.main-container p {
 }
 
 .alert-success {
-    kbackground-color: #dff0d8;
     background-color: rgba(219, 252, 202, 0.7);
 }
 
 .alert-danger {
-    kbackground-color: #fbdbd5;
     background-color: rgba(242, 222, 222, 0.7);
 }
 
