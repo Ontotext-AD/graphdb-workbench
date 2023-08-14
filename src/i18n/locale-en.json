@@ -425,6 +425,7 @@
     "security.workbench.settings.theme.mode.dark": "Dark",
     "security.workbench.settings.theme.default-theme": "Default theme",
     "security.workbench.settings.theme.onto-original-theme": "Ontotext original theme",
+    "security.workbench.settings.theme.validation.missing-fields": "Color theme validation error. Check browser log for more details!",
     "security.user.role": "User role",
     "security.user.label": "User",
     "security.repo.manager.label": "Repository manager",
