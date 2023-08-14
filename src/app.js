@@ -189,7 +189,7 @@ const moduleDefinition = function (productInfo) {
         }
 
         // Check if theme is set in local storage workbench settings and apply
-        const currentTheme = WorkbenchSettingsStorageService.getTheme();
+        const currentTheme = WorkbenchSettingsStorageService.getThemeName();
         ThemeService.applyTheme(currentTheme);
         ThemeService.applyDarkThemeMode();
 
