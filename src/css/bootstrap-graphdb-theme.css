@@ -2499,6 +2499,41 @@ ul.nav.navbar-right.pagination li.disabled a {
 	SPARQL editor
 -------------------------------------------------------------*/
 
+yasgui-component .yasgui-btn.btn-selected {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .btn-orientation {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .custom-button {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .yasqe_queryButton {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .ontotext-dropdown-button,
+yasgui-component .ontotext-dropdown-menu-item {
+    background-color: var(--primary-color) !important;
+}
+yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
+yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
+    color: #fff !important;
+}
+
+yasgui-component .ok-button,
+yasgui-component .primary-button,
+yasgui-component .confirm-button {
+    background-color: var(--primary-color) !important;
+}
+
+.dialog .dialog-footer .confirm-button {
+    background-color: var(--primary-color) !important;
+}
+
 .yasqe .CodeMirror {
     min-height: 330px;
 }
