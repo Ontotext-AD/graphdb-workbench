@@ -5,7 +5,6 @@
     --html-background-dark: #0d0d0d;
     --media-filter-dark: invert(100%) hue-rotate(180deg);
     --alert-filter-dark: brightness(0.9);
-    /*--toast-filter-dark: invert(100%) hue-rotate(195deg) contrast(2);*/
     --checkbox-filter-dark: invert(100%) hue-rotate(180deg);
 }
 
@@ -15,7 +14,6 @@
     --html-background: var(--html-background-dark);
     --media-filter: var(--media-filter-dark);
     --alert-filter: var(--alert-filter-dark);
-    /*--toast-filter: var(--toast-filter-dark);*/
     --checkbox-filter: var(--checkbox-filter-dark);
 
     /* This results in a more subdued orange in the dark theme, easier on the eyes */
