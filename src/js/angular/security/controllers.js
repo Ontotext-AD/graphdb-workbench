@@ -720,7 +720,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.themes = ThemeService.getThemes();
         $scope.mode = 'settings';
         $scope.showWorkbenchSettings = true;
-        /** @type {{theme: string, mode: string}} */
+        /** @type {WorkbenchSettingsModel} */
         $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.pageTitle = $translate.instant('view.settings.title');
@@ -730,9 +730,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             [WRITE_REPO]: {}
         };
         $scope.loader = false;
-        /**
-         * @type {{name: string, label: string}}
-         */
+        /** @type {ThemeModel} */
         $scope.selectedTheme = ThemeService.getTheme();
 
         $scope.hasEditRestrictions = function () {
