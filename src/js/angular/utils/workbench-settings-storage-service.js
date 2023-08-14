@@ -6,7 +6,7 @@ WorkbenchSettingsStorageService.$inject = ['LocalStorageAdapter', 'LSKeys'];
 
 function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
     /**
-     * @type {{mode: string, theme: string}}
+     * @type {WorkbenchSettingsModel}
      */
     const defaultSettings = {
         theme: 'default-theme',
@@ -15,7 +15,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
 
     /**
      * Gets the workbench settings from the local storage.
-     * @return {{theme: string, mode: string}}
+     * @return {WorkbenchSettingsModel}
      */
     const getWorkbenchSettings = () => {
         let settings = localStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
@@ -27,7 +27,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
 
     /**
      * Saves the workbench settings in the local storage.
-     * @param {{theme: string, mode: string}} settings
+     * @param {WorkbenchSettingsModel} settings
      */
     const saveWorkbenchSettings = (settings) => {
         localStorageAdapter.set(LSKeys.WORKBENCH_SETTINGS, settings);
@@ -37,7 +37,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
      * Gets the theme name from the workbench settings stored in the local storage.
      * @return {string|string|null|*}
      */
-    const getTheme = () => {
+    const getThemeName = () => {
         const settings = getWorkbenchSettings();
         if (settings && settings.theme) {
             return settings.theme;
@@ -57,7 +57,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
     return {
         getWorkbenchSettings,
         saveWorkbenchSettings,
-        getTheme,
+        getThemeName,
         saveTheme
     };
 }

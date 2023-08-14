@@ -7,10 +7,9 @@ angular
 ThemeService.$inject = ['WorkbenchSettingsStorageService', '$translate', 'toastr'];
 
 const THEMES_EXTENSION = 'themes';
-const DEFAULT_THEME = 'default-theme';
+const DEFAULT_THEME_NAME = 'default-theme';
 const DARK_MODE = 'dark';
-
-const THEME_DEFINITION_PLUGIN_MODEL = {
+const ThemeDefinitionModel = {
     'name': null,
     'label': null,
     'primary-color-hue': null,
@@ -34,7 +33,8 @@ const THEME_DEFINITION_PLUGIN_MODEL = {
 function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
     /**
-     * Applies the theme mode saved in the local storage in the document.
+     * Applies the dark theme mode if it's saved in the local storage with the workbench settings. Otherwise the dark
+     * mode is not applied.
      */
     const applyDarkThemeMode = () => {
         const workbenchSettings = workbenchSettingsStorageService.getWorkbenchSettings();
@@ -58,7 +58,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     };
 
     /**
-     * @return {{name: string, label: string}} The default theme names and labels.
+     * @return {ThemeModel} The default theme names and labels.
      */
     const getDefaultTheme = () => {
       const defaultThemeDefinition = getDefaultThemeDefinition();
@@ -70,17 +70,17 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
     /**
      * @param {string} themeName
-     * @return {Object|undefined} A theme definition obtained from the PluginRegistry by name.
+     * @return {ThemeDefinitionModel|undefined} A theme definition obtained from the PluginRegistry by name.
      */
     const getThemeDefinitionByName = (themeName) => {
         return PluginRegistry.findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === themeName);
     };
 
     /**
-     * @return {Object|undefined} The registered default theme definition obtained from the PluginRegistry.
+     * @return {ThemeDefinitionModel|undefined} The registered default theme definition obtained from the PluginRegistry.
      */
     const getDefaultThemeDefinition = () => {
-      return getThemeDefinitionByName(DEFAULT_THEME);
+      return getThemeDefinitionByName(DEFAULT_THEME_NAME);
     };
 
     /**
@@ -88,12 +88,12 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      * PluginRegistry.
      */
     const getSelectedThemeDefinition = () => {
-        const workbenchTheme = workbenchSettingsStorageService.getTheme();
+        const workbenchTheme = workbenchSettingsStorageService.getThemeName();
         return getThemeDefinitionByName(workbenchTheme);
     };
 
     /**
-     * @return {{name: string, label: string}} The selected theme or the default theme name and label.
+     * @return {ThemeModel} The selected theme or the default theme name and label.
      */
     const getTheme = () => {
         let theme;
@@ -110,7 +110,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     };
 
     /**
-     * @return {{name: string, label: string}[]} An array with all registered theme names and labels.
+     * @return {ThemeModel[]} An array with all registered theme names and labels.
      */
     const getThemes = () => {
         const themeDefinitions = PluginRegistry.get(THEMES_EXTENSION);
@@ -123,12 +123,12 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     };
 
     /**
-     * @param {Object} themeDefinition
+     * @param {ThemeDefinitionModel} themeDefinition
      * @return {boolean}
      */
     const validateThemeDefinition = (themeDefinition) => {
         const validationResult = [];
-        Object.keys(THEME_DEFINITION_PLUGIN_MODEL).forEach((prop) => {
+        Object.keys(ThemeDefinitionModel).forEach((prop) => {
             if (!(prop in themeDefinition)) {
                 validationResult.push(prop);
             }
@@ -146,10 +146,10 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     /**
      * Gets a theme definition. If there is a saved theme, then theme definition with that name loaded from
      * PluginRegistry and returned. Otherwise the default theme definition is returned.
-     * @return {Object}
+     * @return {ThemeDefinitionModel}
      */
     const getThemeDefinition = () => {
-        const workbenchTheme = workbenchSettingsStorageService.getTheme();
+        const workbenchTheme = workbenchSettingsStorageService.getThemeName();
         let selectedThemeDefinition = PluginRegistry.findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === workbenchTheme);
         if (!selectedThemeDefinition) {
             selectedThemeDefinition = getDefaultThemeDefinition();
@@ -159,7 +159,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
     /**
      * Builds a stylesheet model using the theme definition.
-     * @param {Object} themeDefinition
+     * @param {ThemeDefinitionModel} themeDefinition
      * @return {CSSStyleSheet}
      */
     const buildStylheet = (themeDefinition) => {
@@ -181,6 +181,10 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
       document.adoptedStyleSheets = [stylesheet];
     };
 
+    /**
+     * @param {ThemeDefinitionModel} themeDefinition
+     * @return {string}
+     */
     const themeTag = (themeDefinition) => {
         return `
             :root {
