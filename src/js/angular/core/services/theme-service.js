@@ -4,13 +4,34 @@ angular
     .module('graphdb.framework.core.services.theme-service', modules)
     .factory('ThemeService', ThemeService);
 
-ThemeService.$inject = ['WorkbenchSettingsStorageService', '$translate'];
+ThemeService.$inject = ['WorkbenchSettingsStorageService', '$translate', 'toastr'];
 
 const THEMES_EXTENSION = 'themes';
 const DEFAULT_THEME = 'default-theme';
 const DARK_MODE = 'dark';
 
-function ThemeService(workbenchSettingsStorageService, $translate) {
+const THEME_DEFINITION_PLUGIN_MODEL = {
+    'name': null,
+    'label': null,
+    'primary-color-hue': null,
+    'primary-color-saturation': null,
+    'primary-color-lightness': null,
+    'secondary-color-hue': null,
+    'secondary-color-saturation': null,
+    'secondary-color-lightness': null,
+    'tertiary-color-hue': null,
+    'tertiary-color-saturation': null,
+    'tertiary-color-lightness': null,
+    'icon-on-primary-color': null,
+    'grey-rgb': null,
+    'grey-color': null,
+    'color-danger-dark': null,
+    'color-success-dark': null,
+    'color-warning-dark': null,
+    'color-info-dark': null
+};
+
+function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
     /**
      * Applies the theme mode saved in the local storage in the document.
@@ -93,10 +114,33 @@ function ThemeService(workbenchSettingsStorageService, $translate) {
      */
     const getThemes = () => {
         const themeDefinitions = PluginRegistry.get(THEMES_EXTENSION);
-        return themeDefinitions.map((themeDefinition) => ({
-            name: themeDefinition.name,
-            label: $translate.instant(themeDefinition.label) || themeDefinition.label
-        }));
+        return themeDefinitions
+            .filter(validateThemeDefinition)
+            .map((themeDefinition) => ({
+                name: themeDefinition.name,
+                label: $translate.instant(themeDefinition.label) || themeDefinition.label
+            }));
+    };
+
+    /**
+     * @param {Object} themeDefinition
+     * @return {boolean}
+     */
+    const validateThemeDefinition = (themeDefinition) => {
+        const validationResult = [];
+        Object.keys(THEME_DEFINITION_PLUGIN_MODEL).forEach((prop) => {
+            if (!(prop in themeDefinition)) {
+                validationResult.push(prop);
+            }
+        });
+        if (validationResult.length) {
+            toastr.error($translate.instant('security.workbench.settings.theme.validation.missing-fields'));
+            console.error(`
+            Color theme validation error. Found missing colors in plugin theme: ${validationResult.join('')}.
+            Check the developers guide how to create a valid color theme.`);
+            return false;
+        }
+        return true;
     };
 
     /**
@@ -118,7 +162,7 @@ function ThemeService(workbenchSettingsStorageService, $translate) {
      * @param {Object} themeDefinition
      * @return {CSSStyleSheet}
      */
-    const buildStylheetSheet = (themeDefinition) => {
+    const buildStylheet = (themeDefinition) => {
         const stylesheetContent = themeTag(themeDefinition);
         const stylesheet = new CSSStyleSheet();
         stylesheet.title = themeDefinition.name;
@@ -133,7 +177,7 @@ function ThemeService(workbenchSettingsStorageService, $translate) {
      */
     const applyTheme = (themeName) => {
       const themeDefinition = getThemeDefinitionByName(themeName);
-      const stylesheet = buildStylheetSheet(themeDefinition);
+      const stylesheet = buildStylheet(themeDefinition);
       document.adoptedStyleSheets = [stylesheet];
     };
 
