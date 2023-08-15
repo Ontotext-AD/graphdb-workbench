@@ -447,6 +447,7 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
         heartbeatInterval: 2000,
         messageSizeKB: 64,
         verificationTimeout: 1500,
+        transactionLogMaximumSizeGB: 50,
         nodes: []
     };
 

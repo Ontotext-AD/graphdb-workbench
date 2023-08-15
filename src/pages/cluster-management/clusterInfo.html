@@ -157,6 +157,16 @@
                 <span>{{clusterConfiguration.verificationTimeout | number}}</span>
             </div>
         </div>
+        <div class="datasource mb-1">
+            <div class="item clearfix break-word-alt small">
+                {{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb' | translate}}
+                <em class="icon-info text-primary"
+                    gdb-tooltip="{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb_tooltip' | translate}}"></em>
+            </div>
+            <div class="data-value">
+                <span>{{clusterConfiguration.transactionLogMaximumSizeGB | number}}</span>
+            </div>
+        </div>
         <h4>{{'cluster_management.cluster_configuration.nodes_list_label' | translate}}</h4>
         <ul>
             <li ng-repeat="node in clusterModel.nodes">
