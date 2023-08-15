@@ -30,15 +30,15 @@
                     tooltip-placement="bottom">
                 <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
             </button>
-            <button type="button" class="btn btn-primary add-node-btn" ng-if="currentLeader"
-                    ng-click="showAddNodeToClusterDialog()"
-                    gdb-tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
-                <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
-            </button>
-            <button type="button" class="btn btn-secondary remove-node-btn mr-2" ng-if="currentLeader"
+            <button type="button" class="btn btn-secondary remove-node-btn" ng-if="currentLeader"
                     ng-click="showRemoveNodesFromClusterDialog()"
                     gdb-tooltip="{{'cluster_management.buttons.remove_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
                 <span class="icon-minus"></span> {{'cluster_management.buttons.remove_nodes_btn' | translate}}
+            </button>
+            <button type="button" class="btn btn-primary add-node-btn mr-2" ng-if="currentLeader"
+                    ng-click="showAddNodeToClusterDialog()"
+                    gdb-tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
+                <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
             </button>
         </div>
     </div>
