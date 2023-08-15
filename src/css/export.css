@@ -241,3 +241,7 @@
     bottom: -450px;
     right: -22px;
 }
+
+.clear-repository-btn {
+    margin-right: 5px;
+}

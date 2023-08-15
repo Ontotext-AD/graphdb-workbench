@@ -58,14 +58,14 @@
                 </div>
             </div>
             <p class="text-muted">{{license.typeOfUse}}</p>
-            <div>
-                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
-                    {{'core.errors.set.new.license.warning.msg' | translate}}
-                </a>
+            <div class="text-right">
                 <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded() && !isFreeEdition() && isAdmin()"
                         class="btn btn-secondary">
                     {{'revert.to.free' | translate}}
                 </button>
+                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
+                    {{'core.errors.set.new.license.warning.msg' | translate}}
+                </a>
             </div>
 
             <div class="mt-2" ng-if="isFreeEdition() || !getLicense().valid">
