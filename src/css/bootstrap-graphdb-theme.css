@@ -2530,6 +2530,23 @@ yasgui-component .confirm-button {
     background-color: var(--primary-color) !important;
 }
 
+yasgui-component .yasr a,
+yasgui-component .yasr .overlay_content .yasr_btn,
+yasgui-component .yasr .yasr_btn.selected {
+    color: var(--secondary-color-light) !important;
+}
+
+yasgui-component .tabsList a,
+yasgui-component .tabsList .closeTab,
+yasgui-component .tabsList .tab a .closeTab {
+    color: var(--gray-color) !important;
+}
+
+yasgui-component .yasr_response_chip,
+yasgui-component .yasr_plugin_control label {
+    color: var(--gray-color) !important;
+}
+
 .dialog .dialog-footer .confirm-button {
     background-color: var(--primary-color) !important;
 }
