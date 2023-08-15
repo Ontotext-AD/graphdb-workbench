@@ -502,7 +502,7 @@ function CreateSimilarityIdxCtrl(
 
     const updateYasguiComponent = (config) => {
         const defaultConfig = {
-            endpoint: getQueryEndpoint(),
+            endpoint: getQueryEndpoint,
             componentId: 'create-index',
             showEditorTabs: false,
             showToolbar: false,
@@ -903,7 +903,6 @@ function CreateSimilarityIdxCtrl(
 
     subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
-    subscriptions.push(EventEmitterService.subscribe('repositoryIsSet', repositoryChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
@@ -927,6 +926,7 @@ function CreateSimilarityIdxCtrl(
                 console.log(error)
                 $scope.repositoryError = getError(error);
             }).finally(() => {
+                subscriptions.push($scope.$on('repositoryIsSet', repositoryChangedHandler));
                 repoIsInitialized();
             });
         }

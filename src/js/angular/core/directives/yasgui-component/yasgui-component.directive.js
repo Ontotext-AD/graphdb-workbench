@@ -9,6 +9,7 @@ import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {saveAs} from 'lib/FileSaver-patch';
+import {YasguiComponent} from "../../../models/yasgui-component";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -51,24 +52,6 @@ function yasguiComponentDirective(
     ShareQueryLinkService
 ) {
 
-    const HEADERS = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/sparql-results+json',
-        'X-GraphDB-Local-Consistency': 'updating'
-    };
-
-    const DEFAULT_CONFIG = {
-        showEditorTabs: true,
-        showToolbar: true,
-        componentId: 'yasgui-component',
-        headers: () => {
-            return HEADERS;
-        },
-        pageSize: 1000,
-        maxPersistentResponseSize: 500000,
-        showResultTabs: true
-    };
-
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
@@ -90,8 +73,12 @@ function yasguiComponentDirective(
                 return element.find('ontotext-yasgui');
             };
 
+            /**
+             * Getter for yasgui component.
+             * @return {YasguiComponent}
+             */
             $scope.getOntotextYasguiElement = () => {
-                return $scope.getOntotextYasguiElements()[0];
+                return new YasguiComponent($scope.getOntotextYasguiElements()[0]);
             };
 
             // =========================
@@ -209,8 +196,6 @@ function yasguiComponentDirective(
              * @param {QueryRequestEvent} queryRequest - the event payload containing the query and the request object.
              */
             const queryHandler = (queryRequest) => {
-                updateRequestHeaders(queryRequest.request, queryRequest.queryMode, queryRequest.queryType, queryRequest.pageSize);
-                changeEndpointByQueryType(queryRequest.queryMode, queryRequest.request);
                 const pageNumber = queryRequest.getPageNumber();
                 const pageSize = queryRequest.getPageSize();
                 if (pageSize && pageNumber) {
@@ -228,8 +213,6 @@ function yasguiComponentDirective(
              * @param {CountQueryRequestEvent} countQueryRequest - the event payload containing the query and the request object.
              */
             const countQueryRequestHandler = (countQueryRequest) => {
-                updateRequestHeaders(countQueryRequest.request, countQueryRequest.queryMode, countQueryRequest.queryType, countQueryRequest.pageSize);
-                changeEndpointByQueryType(countQueryRequest.queryMode, countQueryRequest.request);
                 countQueryRequest.setPageSize(undefined);
                 countQueryRequest.setPageNumber(undefined);
                 countQueryRequest.setCount(1);
@@ -343,7 +326,7 @@ function yasguiComponentDirective(
                         onQueryAborted: onQueryAborted
                     };
 
-                    angular.extend(config, DEFAULT_CONFIG, $scope.yasguiConfig);
+                    angular.extend(config, getDefaultConfig(), $scope.yasguiConfig);
 
                     $scope.ontotextYasguiConfig = config;
 
@@ -433,39 +416,48 @@ function yasguiComponentDirective(
                 }
             };
 
-            const changeEndpointByQueryType = (queryMode, request) => {
-                // if query mode is 'query' -> '/repositories/repo-name'
-                // if query mode is 'update' -> '/repositories/repo-name/statements'
-                if (queryMode === QueryMode.UPDATE) {
-                    request.url = getMutationEndpoint();
-                } else if (queryMode === QueryMode.QUERY) {
-                    request.url = $scope.ontotextYasguiConfig.endpoint;
-                }
-            };
+            const getHeaders = (yasgui) => {
+                const yasqe = yasgui.getTab().getYasqe();
+                const pageSize = yasqe.getPageSize();
 
-            const getMutationEndpoint = () => {
-                return `/repositories/${$repositories.getActiveRepository()}/statements`;
-            };
+                // Generates a new tracking alias for queries based on time
+                const trackAlias = `yasgui-component-${performance.now()}-${Date.now()}`;
 
-            const updateRequestHeaders = (req, queryMode, queryType, pageSize) => {
+                const headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-GraphDB-Local-Consistency': 'updating',
+                    'X-GraphDB-Catch': `${pageSize}; throw`,
+                    'X-GraphDB-Track-Alias': trackAlias,
+                    'X-GraphDB-Repository-Location': $repositories.getActiveRepositoryObject().location,
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
+
                 const authToken = $jwtAuth.getAuthToken();
                 if (authToken) {
-                    req.header['Authorization'] = authToken;
+                    headers['Authorization'] = authToken;
                 }
-                req.header['X-GraphDB-Catch'] = `${pageSize}; throw`;
-                // Generates a new tracking alias for queries based on time
-                $scope.currentTrackAlias = `query-editor-${performance.now()}-${Date.now()}`;
-                req.header['X-GraphDB-Track-Alias'] = $scope.currentTrackAlias;
-                req.header['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
-                req.header['X-Requested-With'] = 'XMLHttpRequest';
 
-                if (QueryMode.UPDATE === queryMode) {
-                    req.header['Accept'] = 'text/plain,/;q=0.9';
+                const queryType = yasqe.getQueryType();
+                if (QueryMode.UPDATE === yasqe.getQueryMode()) {
+                    headers['Accept'] = 'text/plain,/;q=0.9';
                 } else if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
-                    req.header['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8';
+                    headers['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8';
                 } else {
-                    req.header['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
+                    headers['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
                 }
+                return headers;
+            };
+
+            const getDefaultConfig = () => {
+                return {
+                    showEditorTabs: true,
+                    showToolbar: true,
+                    componentId: 'yasgui-component',
+                    headers: getHeaders,
+                    pageSize: 1000,
+                    maxPersistentResponseSize: 500000,
+                    showResultTabs: true
+                };
             };
 
             const querySaveErrorHandler = (err) => {

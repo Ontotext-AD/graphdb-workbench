@@ -1,14 +1,14 @@
 export class YasrSteps {
-    static getYasr(yasrIndex = 0) {
-        return cy.get('.yasr').eq(yasrIndex);
+    static getYasr() {
+        return cy.get('.tabPanel.active .yasr');
     }
 
     static getResultHeader() {
         return cy.get('.yasr_header');
     }
 
-    static getResponseInfo(yasrIndex = 0) {
-        return YasrSteps.getYasr(yasrIndex).find('.yasr_response_chip');
+    static getResponseInfo() {
+        return YasrSteps.getYasr().find('.yasr_response_chip');
     }
 
     static getErrorHeader() {
@@ -20,7 +20,7 @@ export class YasrSteps {
     }
 
     static getResults() {
-        return cy.get('.yasr_results tbody').find('tr');
+        return YasrSteps.getYasr().find('.yasr_results tbody').find('tr');
     }
 
     static getResultTableHeader() {
