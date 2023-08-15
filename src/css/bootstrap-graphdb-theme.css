@@ -2536,10 +2536,13 @@ yasgui-component .yasr .yasr_btn.selected {
     color: var(--secondary-color-light) !important;
 }
 
-yasgui-component .tabsList a,
-yasgui-component .tabsList .closeTab,
-yasgui-component .tabsList .tab a .closeTab {
+yasgui-component .tabsList a {
     color: var(--gray-color) !important;
+}
+
+yasgui-component .tabsList .closeTab {
+    color: var(--gray-color) !important;
+    opacity: .8 !important;
 }
 
 yasgui-component .yasr_response_chip,
@@ -2547,9 +2550,14 @@ yasgui-component .yasr_plugin_control label {
     color: var(--gray-color) !important;
 }
 
+yasgui-component .CodeMirror-gutter-elt {
+    color: var(--gray-color) !important;
+}
+
 .dialog .dialog-footer .confirm-button {
     background-color: var(--primary-color) !important;
 }
+
 
 .yasqe .CodeMirror {
     min-height: 330px;
