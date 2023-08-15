@@ -358,7 +358,7 @@ function SparqlEditorCtrl($scope,
             .then(([principal, usedPrefixes]) => {
                 $scope.prefixes = usedPrefixes;
                 setInferAndSameAs(principal);
-                // check is there is a savedquery or query url parameter and init the editor
+                // check is there is a saved query or query url parameter and init the editor
                 initViewFromUrlParams();
 
             });

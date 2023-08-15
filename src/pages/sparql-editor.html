@@ -10,6 +10,8 @@
               popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
 
-    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"
+    <div core-errors></div>
+
+    <yasgui-component id="query-editor" yasgui-config="yasguiConfig" ng-if="yasguiConfig"
                       after-init="initViewFromUrlParams()"></yasgui-component>
 </div>
