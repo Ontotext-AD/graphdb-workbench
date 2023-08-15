@@ -51,7 +51,9 @@
             "message_size_kb": "Message size KB",
             "message_size_kb_tooltip": "Message size concerns the size of the data blocks transferred during data replication streaming through the RPC protocol.",
             "verification_timeout": "Verification timeout",
-            "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful."
+            "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful.",
+            "transaction_log_maximum_size_gb": "Transaction log maximum size GB",
+            "transaction_log_maximum_size_gb_tooltip": "Maximum size of the transaction log in GBs that will trigger an automatic truncation of the transaction log if it becomes bigger. The minimum transaction log size is 1 GB. Negative numbers will disable the automatic transaction log truncation."
         },
         "cluster_page": {
             "create_page_title": "Create cluster",
@@ -70,6 +72,7 @@
             "toggle_legend_btn": "Toggle legend",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
+                "small_transaction_log_max_size": "Transaction log maximum size must be at least 1 GB or a negative number",
                 "at_least_two_nodes": "Must have at least two nodes",
                 "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "nodes_status_label": "Nodes status",
