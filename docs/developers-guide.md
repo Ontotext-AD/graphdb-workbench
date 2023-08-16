@@ -228,7 +228,46 @@ PluginRegistry.add('themes', {
 });
 ```
 
-All available registered themes are loaded using the PluginsRegistry and displayed in a combobox in the my settings page.
+The plugin definition is compiled to a stylesheet and embedded in the html document
+
+```css
+:root {
+    --primary-color-hue: 13.4;
+    --primary-color-saturation: 87.9%;
+    --primary-color-lightness: 33%;
+    --primary-color-hsl: var(--primary-color-hue), var(--primary-color-saturation), var(--primary-color-lightness);
+    --primary-color: hsl(var(--primary-color-hsl));
+    --primary-color-light: hsl(var(--primary-color-hue), var(--primary-color-saturation), calc(var(--primary-color-lightness)*1.2));
+    --primary-color-dark: hsl(var(--primary-color-hue), var(--primary-color-saturation), calc(var(--primary-color-lightness)*0.8));
+
+    --secondary-color-hue: 207.3;
+    --secondary-color-saturation: 100%;
+    --secondary-color-lightness: 19.4%;
+    --secondary-color-hsl: var(--secondary-color-hue), var(--secondary-color-saturation), var(--secondary-color-lightness);
+    --secondary-color: hsl(var(--secondary-color-hsl));
+    --secondary-color-light: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), calc(var(--secondary-color-lightness)*1.2));
+    --secondary-color-dark: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), calc(var(--secondary-color-lightness)*0.8));
+
+    --tertiary-color-hue: 174.6;
+    --tertiary-color-saturation: 97.7%;
+    --tertiary-color-lightness: 33.5%;
+    --tertiary-color-hsl: var(--tertiary-color-hue), var(--tertiary-color-saturation), var(--tertiary-color-lightness);
+    --tertiary-color: hsl(var(--tertiary-color-hsl));
+    --tertiary-color-light: hsl(var(--tertiary-color-hue), var(--tertiary-color-saturation), calc(var(--tertiary-color-lightness)*1.2));
+    --tertiary-color-dark: hsl(var(--tertiary-color-hue), var(--tertiary-color-saturation), calc(var(--tertiary-color-lightness)*0.8));
+
+    --icon-on-primary-color: rgba(255, 255, 255, 0.8);
+
+    --gray-color: #97999C;
+
+    --color-danger-dark: #a41424;
+    --color-success-dark: #005934;
+    --color-warning-dark: #734721;
+    --color-info-dark: #115590;
+}
+```
+
+All available registered themes are loaded using the PluginsRegistry and displayed in a combobox in "my settings" page.
 The definition of the selected in the ‘my settings’ page and saved theme is loaded and applied by default when the 
 workbench is opened. If no theme is selected and saved in the local storage, then the default-theme is applied.
 All properties in the definition are mandatory. Definitions with missing properties are rejected, and an error will be
