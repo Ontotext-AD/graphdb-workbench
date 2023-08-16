@@ -22,7 +22,6 @@ const ThemeDefinitionModel = {
     'tertiary-color-saturation': null,
     'tertiary-color-lightness': null,
     'icon-on-primary-color': null,
-    'grey-rgb': null,
     'grey-color': null,
     'color-danger-dark': null,
     'color-success-dark': null,
@@ -214,7 +213,6 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
                 --icon-on-primary-color: ${themeDefinition['icon-on-primary-color']};
 
-                --grey-rgb: ${themeDefinition['grey-rgb']};
                 --grey-color: ${themeDefinition['grey-color']};
 
                 --color-danger-dark: ${themeDefinition['color-danger-dark']};
