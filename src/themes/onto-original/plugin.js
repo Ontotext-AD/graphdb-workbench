@@ -11,7 +11,6 @@ PluginRegistry.add('themes', {
     'tertiary-color-saturation': '97.7%',
     'tertiary-color-lightness': '33.5%',
     'icon-on-primary-color': 'rgba(255, 255, 255, 0.8)',
-    'grey-rgb': '151, 153, 156',
     'grey-color': '#97999C',
     'color-danger-dark': '#bd362f',
     'color-success-dark': '#51a351',
