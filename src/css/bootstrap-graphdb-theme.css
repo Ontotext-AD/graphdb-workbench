@@ -2587,18 +2587,85 @@ yasgui-component .yasr .yasr_btn.selected {
     color: var(--secondary-color-light) !important;
 }
 
-yasgui-component .tabsList a {
-    color: var(--gray-color) !important;
+yasgui-component .yasr a {
+    color: var(--secondary-color) !important;
 }
 
-yasgui-component .tabsList .closeTab {
-    color: var(--gray-color) !important;
+yasgui-component .yasr .yasr_btnGroup .yasr_btn {
+    margin-left: 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--secondary-color) !important;
+    background-color: #eee;
+    border-bottom: 2px solid transparent;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn:hover {
+    border-bottom: 2px solid #9fc4e4;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: none;
+    color: var(--secondary-color-dark) !important;
+    background-color: #fff;
+}
+
+yasgui-component .tabsList .tab .closeTab {
+    color: var(--secondary-color-light) !important;
     opacity: .8 !important;
+}
+
+yasgui-component .tabsList .tab .closeTab:hover {
+    color: var(--primary-color-dark) !important;
+}
+
+yasgui-component .tabsList .tab {
+    background-color: #eee;
+    margin-right: 0.2rem;
+}
+
+yasgui-component .tabsList :last-child {
+    background-color: #eee;
+    padding-right: 14px;
+    color: var(--secondary-color) !important;
+}
+
+yasgui-component .tabsList :last-child:hover {
+    transform: none !important;
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .tabsList .tab a {
+    color: var(--secondary-color) !important;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+yasgui-component .tabsList .tab.active {
+    margin-bottom: -1px;
+    z-index: 1;
+    border-bottom: 1px solid #fff !important;
+}
+
+yasgui-component .tabsList .tab.active a {
+    color: var(--secondary-color-dark) !important;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #fff !important;
+}
+
+yasgui-component .tabsList .tab a:hover {
+    text-decoration: none;
 }
 
 yasgui-component .yasr_response_chip,
 yasgui-component .yasr_plugin_control label {
-    color: var(--gray-color) !important;
+    color: var(--secondary-color) !important;
 }
 
 yasgui-component .yasr_plugin_control label .label {
@@ -2606,9 +2673,10 @@ yasgui-component .yasr_plugin_control label .label {
 }
 
 yasgui-component .CodeMirror-gutter-elt {
-    color: var(--gray-color) !important;
+    color: var(--secondary-color) !important;
 }
 
+/* End of yasgui-component style overrides */
 .dialog .dialog-footer .confirm-button {
     background-color: var(--primary-color) !important;
 }
