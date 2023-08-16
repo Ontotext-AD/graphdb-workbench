@@ -47,7 +47,7 @@ path.link {
 
 .node {
   cursor: pointer;
-  fill: var(--grey-color);
+  fill: var(--gray-color);
   stroke: black;
 }
 
@@ -64,7 +64,7 @@ path.link {
 }
 
 .node.other {
-  fill: var(--grey-color)
+  fill: var(--gray-color)
 }
 
 #node-group.legend .node {
