@@ -46,7 +46,7 @@
 }
 
 .sparql-editor-view #query-editor .dataTables_wrapper {
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .keyboard-shortcuts-dialog-wrapper {
