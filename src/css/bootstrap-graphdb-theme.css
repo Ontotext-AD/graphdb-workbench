@@ -726,7 +726,6 @@ main menu height*/
 .main-menu .menu-element.open,
 .main-menu.collapsed .menu-element:hover {
     background-color: #dcdcdc;
-
 }
 
 .main-menu .sub-menu {
@@ -758,7 +757,6 @@ main menu height*/
     font-family: 'icomoon', sans-serif !important;
     content: "\e921";
     display: block;
-    color: rgba(0, 0, 0, .25);
     font-size: 1.5em;
     position: absolute;
     top: -3.3rem;
