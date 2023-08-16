@@ -18,9 +18,6 @@ PluginRegistry.add('themes', {
     'tertiary-color-lightness': '33.5%',
     // A color used for the font/svg icons when placed on a primary color background.
     'icon-on-primary-color': 'rgba(255, 255, 255, 0.8)',
-    //
-    'grey-rgb': '151, 153, 156',
-    //
     'grey-color': '#97999C',
     // Colors for the toastr notifications in any of their four states.
     'color-danger-dark': '#a41424',
