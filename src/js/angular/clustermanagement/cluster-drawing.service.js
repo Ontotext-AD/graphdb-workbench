@@ -4,7 +4,7 @@ export const clusterColors = {
     ontoOrange: 'var(--primary-color)',
     ontoBlue: 'var(--secondary-color)',
     ontoGreen: 'var(--tertiary-color)',
-    ontoGrey: 'var(--grey-color)'
+    ontoGrey: 'var(--gray-color)'
 };
 
 export function createClusterSvgElement(element) {
