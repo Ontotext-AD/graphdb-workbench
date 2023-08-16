@@ -2550,6 +2550,70 @@ ul.nav.navbar-right.pagination li.disabled a {
 }
 
 
+yasgui-component .yasgui-btn.btn-selected {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .btn-orientation {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .custom-button {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .yasqe_queryButton {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .ontotext-dropdown-button,
+yasgui-component .ontotext-dropdown-menu-item {
+    background-color: var(--primary-color) !important;
+}
+yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
+yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
+    color: #fff !important;
+}
+
+yasgui-component .ok-button,
+yasgui-component .primary-button,
+yasgui-component .confirm-button {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .yasr a,
+yasgui-component .yasr .overlay_content .yasr_btn,
+yasgui-component .yasr .yasr_btn.selected {
+    color: var(--secondary-color-light) !important;
+}
+
+yasgui-component .tabsList a {
+    color: var(--gray-color) !important;
+}
+
+yasgui-component .tabsList .closeTab {
+    color: var(--gray-color) !important;
+    opacity: .8 !important;
+}
+
+yasgui-component .yasr_response_chip,
+yasgui-component .yasr_plugin_control label {
+    color: var(--gray-color) !important;
+}
+
+yasgui-component .yasr_plugin_control label .label {
+    margin-right: 5px;
+}
+
+yasgui-component .CodeMirror-gutter-elt {
+    color: var(--gray-color) !important;
+}
+
+.dialog .dialog-footer .confirm-button {
+    background-color: var(--primary-color) !important;
+}
+
+
 .yasqe .CodeMirror {
     min-height: 330px;
 }
