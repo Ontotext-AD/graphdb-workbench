@@ -2617,6 +2617,10 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
     background-color: #fff;
 }
 
+yasgui-component .yasr .dataTable a {
+    font-size: 16px;
+}
+
 yasgui-component .tabsList .tab .closeTab {
     color: var(--secondary-color-light) !important;
     opacity: .8 !important;
@@ -2628,12 +2632,14 @@ yasgui-component .tabsList .tab .closeTab:hover {
 
 yasgui-component .tabsList .tab {
     background-color: #eee;
+    margin-top: 0.2rem;
     margin-right: 0.2rem;
 }
 
 yasgui-component .tabsList :last-child {
     background-color: #eee;
     padding-right: 14px;
+    margin-top: 0.2rem;
     color: var(--secondary-color) !important;
 }
 
@@ -2663,13 +2669,23 @@ yasgui-component .tabsList .tab.active a {
     border-bottom: 1px solid #fff !important;
 }
 
+yasgui-component .tabsList .tab.active a:focus {
+    text-decoration: none;
+    outline: none;
+}
+
 yasgui-component .tabsList .tab a:hover {
     text-decoration: none;
 }
 
-yasgui-component .yasr_response_chip,
+yasgui-component .yasr_response_chip {
+    font-size: 16px;
+    color: var(--secondary-color) !important;
+}
+
 yasgui-component .yasr_plugin_control label {
     color: var(--secondary-color) !important;
+    margin-bottom: 0;
 }
 
 yasgui-component .yasr_plugin_control label .label {
