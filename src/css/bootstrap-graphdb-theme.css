@@ -2636,6 +2636,14 @@ yasgui-component .tabsList .tab {
     margin-right: 0.2rem;
 }
 
+yasgui-component .tabsList .tab.query-invalid a {
+    text-decoration: none !important;
+}
+
+yasgui-component .tabsList .tab.query-invalid a :first-child {
+    text-decoration: underline dotted var(--color-danger-dark);
+}
+
 yasgui-component .tabsList :last-child {
     background-color: #eee;
     padding-right: 14px;
