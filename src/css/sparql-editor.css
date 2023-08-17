@@ -1,19 +1,12 @@
-.sparql-editor-view {
-    position: relative;
-}
-
 .sparql-editor-view #sparql-query-update-title-label {
     position: relative;
+    margin-bottom: -35px;
+    z-index: 1;
 }
 
 .sparql-editor-view #sparql-query-update-title-label .btn-link {
     position: relative;
     z-index: 100;
-}
-
-.sparql-editor-view #query-editor {
-    position: relative;
-    top: -55px;
 }
 
 .sparql-editor-view #query-editor .yasgui-host-element {
@@ -28,11 +21,10 @@
 .sparql-editor-view #query-editor .yasgui-toolbar {
     display: inline;
     float: right;
-}
-
-.sparql-editor-view #query-editor .yasgui-toolbar {
     font-size: 14px;
     font-weight: 400;
+    position: relative;
+    z-index: 100;
 }
 
 .sparql-editor-view #query-editor .yasgui-toolbar .yasgui-btn {
