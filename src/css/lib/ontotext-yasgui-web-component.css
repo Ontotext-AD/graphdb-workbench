@@ -1,5 +1,179 @@
 @import "../common.css";
 
+
+yasgui-component .yasgui-btn.btn-selected {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .btn-orientation {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .custom-button {
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .yasqe_queryButton {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .ontotext-dropdown-button,
+yasgui-component .ontotext-dropdown-menu-item {
+    background-color: var(--primary-color) !important;
+}
+yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
+yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
+    color: #fff !important;
+}
+
+yasgui-component .ok-button,
+yasgui-component .primary-button,
+yasgui-component .confirm-button {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .yasr a,
+yasgui-component .yasr .overlay_content .yasr_btn,
+yasgui-component .yasr .yasr_btn.selected {
+    color: var(--secondary-color-light) !important;
+}
+
+yasgui-component .yasr a {
+    color: var(--secondary-color) !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn {
+    margin-left: 0;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--secondary-color) !important;
+    background-color: #eee;
+    border-bottom: 2px solid transparent;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn:hover {
+    border-bottom: 2px solid #9fc4e4;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: none;
+    color: var(--secondary-color-dark) !important;
+    background-color: #fff;
+}
+
+yasgui-component .yasr .dataTable a {
+    font-size: 16px;
+}
+
+yasgui-component .tabsList .tab .closeTab {
+    color: var(--secondary-color-light) !important;
+    opacity: .8 !important;
+}
+
+yasgui-component .tabsList .tab .closeTab:hover {
+    color: var(--primary-color-dark) !important;
+}
+
+yasgui-component .tabsList .tab {
+    background-color: #eee;
+    margin-top: 0.2rem;
+    margin-right: 0.2rem;
+}
+
+yasgui-component .tabsList .tab.query-invalid a {
+    text-decoration: none !important;
+}
+
+yasgui-component .tabsList .tab.query-invalid a :first-child {
+    text-decoration: underline dotted var(--color-danger-dark);
+}
+
+yasgui-component .tabsList :last-child {
+    background-color: #eee;
+    padding-right: 14px;
+    margin-top: 0.2rem;
+    color: var(--secondary-color) !important;
+}
+
+yasgui-component .tabsList :last-child:hover {
+    transform: none !important;
+    color: var(--primary-color) !important;
+}
+
+yasgui-component .tabsList :last-child .addTab {
+    height: 30px;
+}
+
+yasgui-component .tabsList .tab a {
+    color: var(--secondary-color) !important;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+yasgui-component .tabsList .tab.active {
+    margin-bottom: -1px;
+    z-index: 1;
+    border-bottom: 1px solid #fff !important;
+}
+
+yasgui-component .tabsList .tab.active a {
+    color: var(--secondary-color-dark) !important;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #fff !important;
+}
+
+yasgui-component .tabsList .tab.active a:focus {
+    text-decoration: none;
+    outline: none;
+}
+
+yasgui-component .tabsList .tab a:hover {
+    text-decoration: none;
+}
+
+yasgui-component .yasr_response_chip {
+    font-size: 16px;
+    color: var(--secondary-color) !important;
+}
+
+yasgui-component .yasr_plugin_control label {
+    color: var(--secondary-color) !important;
+    margin-bottom: 0;
+}
+
+yasgui-component .yasr_plugin_control label .label {
+    margin-right: 5px;
+}
+
+yasgui-component .CodeMirror-gutter-elt {
+    color: var(--secondary-color) !important;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup {
+    overflow-y: auto;
+}
+
+.keyboard-shortcuts-dialog-wrapper {
+    height: 20px;
+    line-height: 20px;
+    font-size: 90%;
+}
+
+.keyboard-shortcuts-dialog-wrapper.resizeable-on {
+    margin-top: -30px;
+}
+
+.keyboard-shortcuts-dialog-button {
+    font-weight: 400;
+    color: var(--secondary-color);
+}
+
 .hidden {
     display: none;
 }
