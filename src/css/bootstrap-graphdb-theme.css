@@ -2709,7 +2709,6 @@ yasgui-component .CodeMirror-gutter-elt {
     background-color: var(--primary-color) !important;
 }
 
-
 .yasqe .CodeMirror {
     min-height: 330px;
 }
