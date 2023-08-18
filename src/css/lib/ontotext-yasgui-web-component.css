@@ -159,6 +159,19 @@ yasgui-component .saved-queries-container .saved-queries-popup {
     overflow-y: auto;
 }
 
+yasgui-component .abort-button {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .page-button.selected-page {
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+}
+
+yasgui-component .page-selector {
+    color: var(--secondary-color) !important;
+}
+
 .keyboard-shortcuts-dialog-wrapper {
     height: 20px;
     line-height: 20px;
