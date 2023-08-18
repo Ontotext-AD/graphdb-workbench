@@ -40,18 +40,3 @@
 .sparql-editor-view #query-editor .dataTables_wrapper {
     overflow-x: auto;
 }
-
-.keyboard-shortcuts-dialog-wrapper {
-    height: 20px;
-    line-height: 20px;
-    font-size: 90%;
-}
-
-.keyboard-shortcuts-dialog-wrapper.resizeable-on {
-    margin-top: -30px;
-}
-
-.keyboard-shortcuts-dialog-button {
-    font-weight: 400;
-    color: var(--secondary-color);
-}

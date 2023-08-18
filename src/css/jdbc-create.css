@@ -1,0 +1,4 @@
+.jdbc-configuration {
+    /* unset it to prevent yasgui inner controls misalignment */
+    position: unset;
+}
