@@ -151,7 +151,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/security/templates',
-                to: 'js/angular/security/templates'
+                to: 'js/angular/security/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/settings/modal',

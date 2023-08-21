@@ -399,18 +399,21 @@ describe('==> Controllers tests', function () {
 
                 $scope.userType = 'user';
                 $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {}};
+                $scope.customRoles = ['ROLE1'];
                 $scope.setGrantedAuthorities();
-                expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER']);
+                expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER', 'CUSTOM_ROLE1']);
                 expect($scope.repositoryCheckError).toEqual(true);
 
                 $scope.userType = 'user';
                 $scope.grantedAuthorities = {'READ_REPO': {'myrepo': true}, 'WRITE_REPO': {}};
+                $scope.customRoles = ['ROLE2'];
                 $scope.setGrantedAuthorities();
-                expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER', 'READ_REPO_myrepo']);
+                expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER', 'READ_REPO_myrepo', 'CUSTOM_ROLE2']);
                 expect($scope.repositoryCheckError).toEqual(false);
 
                 $scope.userType = 'user';
                 $scope.grantedAuthorities = {'READ_REPO': {}, 'WRITE_REPO': {'myrepo': true}};
+                $scope.customRoles = null;
                 $scope.setGrantedAuthorities();
                 expect($scope.user.grantedAuthorities).toEqual(['ROLE_USER', 'WRITE_REPO_myrepo', 'READ_REPO_myrepo']);
                 expect($scope.repositoryCheckError).toEqual(false);
