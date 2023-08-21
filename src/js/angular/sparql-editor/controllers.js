@@ -10,7 +10,6 @@ import {ConnectorCommand} from "../models/connectors/connector-command";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/ontotext-yasgui/before-update-query-result";
 import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 import {decodeHTML} from "../../../app";
-import {TabQueryModel} from "../models/sparql/tab-query-model";
 import {toBoolean} from "../utils/string-utils";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 
@@ -113,8 +112,7 @@ function SparqlEditorCtrl($scope,
             // init new tab from shared query link
             initTabFromSharedQuery(queryParams);
         } else if (GuidesService.isActive()) {
-            const sparqlQuery = new TabQueryModel();
-            openNewTab(sparqlQuery);
+            openNewTab();
         }
     };
 
