@@ -428,6 +428,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     this._toGuideStep = (guide, previousStepDescription, currentStepDescription, nextStepDescription) => {
         const step = this._toBaseGuideStep(guide, $translate, currentStepDescription, () => this._updateLocalStorage());
         const buttons = [];
+        if (currentStepDescription.skipPoint) {
+            buttons.push(this._getSkipButton(guide));
+        }
+
         if (previousStepDescription) {
             buttons.push(this._getPreviousButton(guide));
         }
@@ -435,9 +439,6 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
         }
 
-        if (currentStepDescription.skipPoint) {
-            buttons.push(this._getSkipButton(guide));
-        }
         step.buttons = buttons;
         return step;
     };
