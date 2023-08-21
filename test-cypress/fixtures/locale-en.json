@@ -427,6 +427,8 @@
     "security.workbench.settings.theme.onto-original-theme": "Ontotext original theme",
     "security.workbench.settings.theme.validation.missing-fields": "Color theme validation error. Check browser log for more details!",
     "security.user.role": "User role",
+    "security.user.custom_role": "Custom roles",
+    "security.user.add.custom_role.msg": "Add custom role...",
     "security.user.label": "User",
     "security.repo.manager.label": "Repository manager",
     "security.admin.label": "Administrator",
