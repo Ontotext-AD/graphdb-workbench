@@ -429,6 +429,8 @@
     "security.workbench.settings.theme.onto-original-theme": "Ontotext thème original",
     "security.workbench.settings.theme.validation.missing-fields": "Erreur de validation du thème de couleur. Consultez le journal du navigateur pour plus de détails!",
     "security.user.role": "Rôle de l'utilisateur",
+    "security.user.custom_role": "Rôles personnalisés",
+    "security.user.add.custom_role.msg": "Ajouter un rôle personnalisé...",
     "security.user.label": "Utilisateur",
     "security.repo.manager.label": "Gestionnaire du dépôt",
     "security.admin.label": "Administrateur",
