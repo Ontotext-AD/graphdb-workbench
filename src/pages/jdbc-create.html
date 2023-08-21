@@ -62,12 +62,8 @@
                              class="idError alert alert-danger invalid-query-mode"
                              translate="jdbc.warning.invalid.query">
                         </div>
-                        <div onto-loader-new
-                             ng-if="isQueryRunning"
-                             size="75"
-                             message="queryRunningMessage"
-                             timeout="[1]">
-                        </div>
+
+                        <loader-component ng-if="isQueryRunning" message="{{ 'jdbc.preview.first.rows' | translate: {name: jdbcConfigurationInfo.jdbcConfigurationName} }}"></loader-component>
                     </div>
 
                     <!-- Second tab -->
@@ -193,9 +189,6 @@
         </button>
     </div>
 
-<div onto-loader-new
-     ng-if="isLoading"
-     size="75"
-     message="loaderMessage"
-     timeout="[1]">
+<loader-component ng-if="loadingControllerResources" message="{{ ('common.refreshing.namespaces' | translate) + '.' +('common.extra.message' | translate) }}"></loader-component>
+
 </div>
