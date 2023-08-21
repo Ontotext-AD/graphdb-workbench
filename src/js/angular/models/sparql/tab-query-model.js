@@ -1,5 +1,5 @@
 export class TabQueryModel {
-    constructor(queryName = '', query = '', owner = '', isPublic = true) {
+    constructor(queryName = undefined, query = undefined, owner = undefined, isPublic = true) {
         this.queryName = queryName;
         this.query = query;
         this.owner = owner;
