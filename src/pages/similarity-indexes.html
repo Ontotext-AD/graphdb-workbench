@@ -289,8 +289,8 @@
 
 
 			<div class="yasr-container pt-1" ng-if="lastSearch">
-                <yasgui-component ng-if="!loading" id="query-editor" yasgui-config="yasguiConfig""></yasgui-component>
-				<div id="results-loader" class="ot-loader opacity-hide" onto-loader size="100"></div>
+                <yasgui-component ng-if="!isLoading" id="query-editor" yasgui-config="yasguiConfig""></yasgui-component>
+                <loader-component ng-if="isLoading"></loader-component>
 			</div>
 		</div>
 	</div>
