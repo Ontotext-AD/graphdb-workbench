@@ -1,5 +1,6 @@
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/services/jwt-auth.service';
+import 'ng-tags-input/build/ng-tags-input.min';
 
 beforeEach(angular.mock.module('graphdb.framework.core.interceptors.unauthorized', function($provide) {
     $provide.constant("productInfo", {
