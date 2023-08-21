@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/security/controllers';
 import 'angular/core/services/jwt-auth.service';
+import 'ng-tags-input/build/ng-tags-input.min';
 
 const modules = [
     'toastr',

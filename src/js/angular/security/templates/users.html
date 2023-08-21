@@ -62,6 +62,12 @@
 						{{repo}}
 					</div>
 					<div ng-show="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
+                    <div>
+                        <span ng-repeat="role in user.customRoles">
+                            <span class="tag tag-primary" >{{ role }}</span>
+                            &nbsp;
+                        </span>
+                    </div>
 				</td>
 				<td class="date-created"><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
 				<td class="actions-bar">
