@@ -114,7 +114,7 @@ function JdbcCreateCtrl(
     $scope.language = $languageService.getLanguage();
     $scope.isDirty = false;
     $scope.prefixes = [];
-    $scope.isLoading = false;
+    $scope.loadingControllerResources = false;
     $scope.isQueryRunning = false;
     $scope.canEditActiveRepo = false;
 
@@ -151,8 +151,8 @@ function JdbcCreateCtrl(
 
     $scope.getPreview = () => {
         $scope.activeTab = 1;
-        setQueryRunningLoader(true, $translate.instant('jdbc.preview.first.rows', {name: $scope.jdbcConfigurationInfo.jdbcConfigurationName}));
 
+        $scope.isQueryRunning = true;
         validateQueryType($scope.jdbcConfigurationInfo)
             .then(validateQuery)
             .then(validateColumns)
@@ -186,7 +186,7 @@ function JdbcCreateCtrl(
                 }
             })
             .finally(() => {
-                setQueryRunningLoader(false);
+                $scope.isQueryRunning = false;
             });
     };
 
@@ -286,10 +286,6 @@ function JdbcCreateCtrl(
     // Private functions
     // =========================
 
-    const setLoader = (isLoading, loaderMessage) => {
-        $scope.isLoading = isLoading;
-        $scope.loaderMessage = $scope.isLoading ? loaderMessage : '';
-    };
     const getSqlTablePreview = (jdbcConfigurationInfo) => {
         if ($scope.canWriteActiveRepo) {
             const sqlView = JSON.stringify({
@@ -504,34 +500,22 @@ function JdbcCreateCtrl(
         });
     };
 
-    const setQueryRunningLoader = (isRunning, loaderMessage) => {
-        $scope.isQueryRunning = isRunning;
-        $scope.queryRunningMessage = loaderMessage;
-        if ($scope.isQueryRunning) {
-            $('.yasr_results').addClass('hidden');
-        } else {
-            $('.yasr_results').removeClass('hidden');
-        }
-    };
-
     /**
      * Starts loading of needed data and process the view.
      */
     const loadOntotextYasgui = () => {
-        const loadMessage = `${$translate.instant('common.refreshing.namespaces')}. ${$translate.instant('common.extra.message')}`;
-
-        setLoader(true, loadMessage);
+        $scope.loadingControllerResources = true;
         const activeRepository = $repositories.getActiveRepository();
         if ($scope.jdbcConfigurationInfo.jdbcConfigurationName) {
             Promise.all([$repositories.getPrefixes(activeRepository), JdbcRestService.getJdbcConfiguration($scope.jdbcConfigurationInfo.jdbcConfigurationName)])
                 .then(([prefixes, templateContent]) => {
                     init(prefixes, templateContent.data);
                 })
-                .finally(() => setLoader(false));
+                .finally(() => $scope.loadingControllerResources = false);
         } else {
             $repositories.getPrefixes(activeRepository)
                 .then((prefixes) => init(prefixes))
-                .finally(() => setLoader(false));
+                .finally(() => $scope.loadingControllerResources = false);
         }
     };
 
