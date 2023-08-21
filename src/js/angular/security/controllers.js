@@ -16,7 +16,8 @@ const modules = [
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
-    'toastr'
+    'toastr',
+    'ngTagsInput'
 ];
 
 const createUniqueKey = function (repository) {
@@ -62,6 +63,7 @@ const setGrantedAuthorities = function ($scope) {
             }
         }
     }
+    $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
 };
 
 const parseAuthorities = function (authorities) {
@@ -71,6 +73,7 @@ const parseAuthorities = function (authorities) {
         [WRITE_REPO]: {}
     };
     const repositories = {};
+    const customRoles = [];
     for (let i = 0; i < authorities.length; i++) {
         const role = authorities[i];
         if (role === UserRole.ROLE_ADMIN) {
@@ -81,7 +84,7 @@ const parseAuthorities = function (authorities) {
             }
         } else if (role === UserRole.ROLE_USER) {
             userType = UserType.USER;
-        } else if (role.indexOf('ROLE_') !== 0) {
+        } else if (role.indexOf('READ_REPO_') === 0 || role.indexOf('WRITE_REPO_') === 0) {
             const index = role.indexOf('_', role.indexOf('_') + 1);
             const op = role.substr(0, index);
             const repo = role.substr(index + 1);
@@ -92,6 +95,8 @@ const parseAuthorities = function (authorities) {
             } else if (op === WRITE_REPO) {
                 repositories[repo].write = true;
             }
+        } else if (role.indexOf('CUSTOM_') === 0) {
+            customRoles.push(role.substr('CUSTOM_'.length));
         }
     }
 
@@ -99,7 +104,8 @@ const parseAuthorities = function (authorities) {
         userType: userType,
         userTypeDescription: UserUtils.getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
-        repositories: repositories
+        repositories: repositories,
+        customRoles: customRoles
     };
 };
 
@@ -187,6 +193,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
                         $scope.users[i].userType = pa.userType;
                         $scope.users[i].userTypeDescription = pa.userTypeDescription;
                         $scope.users[i].repositories = pa.repositories;
+                        $scope.users[i].customRoles = pa.customRoles;
                     }
                     $scope.loader = false;
                 }).error(function (data) {
@@ -464,6 +471,11 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
 
             return $scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE;
         };
+
+        $scope.addCustomRole = function (role) {
+            role.text = role.text.toUpperCase();
+            return role;
+        };
     }]);
 
 securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
@@ -617,6 +629,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
                 const pa = parseAuthorities(data.grantedAuthorities);
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
+                $scope.customRoles = pa.customRoles;
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -788,6 +801,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             const pa = parseAuthorities(scope.userData.authorities);
             $scope.userType = pa.userType;
             $scope.grantedAuthorities = pa.grantedAuthorities;
+            $scope.customRoles = pa.customRoles;
         };
 
         $scope.submit = function () {
