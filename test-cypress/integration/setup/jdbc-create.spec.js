@@ -7,6 +7,7 @@ import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/mod
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
+import {YasguiLoader} from "../../steps/yasgui/yasgui-loader";
 
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
 const DEFAULT_QUERY = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
@@ -50,7 +51,7 @@ describe('JDBC configuration', () => {
         JdbcCreateSteps.clickOnPreviewButton();
 
         // Then I expect to see loader,
-        LoaderSteps.verifyMessage('Preview of first 100 rows of table');
+        YasguiLoader.verifyMessage('Preview of first 100 rows of table', 1);
         // and see the generated preview.
         YasrSteps.getResults().should('be.visible');
     });
