@@ -133,11 +133,5 @@
 
     <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
 
-    <div onto-loader-new
-         ng-if="isLoading"
-         size="100"
-         message="loaderMessage"
-         timeout="[1]">
-    </div>
-
+    <loader-component ng-if="isLoading"></loader-component>
 </div>
