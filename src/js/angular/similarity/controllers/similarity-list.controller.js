@@ -52,7 +52,7 @@ function SimilarityCtrl(
     $scope.pluginName = 'similarity';
     $scope.pluginIsActive = true;
 
-    $scope.loading = false;
+    $scope.isLoading = false;
 
     $scope.selectedSimilarityIndex = undefined;
 
@@ -115,13 +115,13 @@ function SimilarityCtrl(
     };
 
     $scope.performSearch = (similarityIndex, uri, searchType, resultType, parameters) => {
-        toggleOntoLoader(true);
+        $scope.isLoading = true;
         updateLastSearch(searchType, uri);
         const sendData = buildSendData(similarityIndex, uri, searchType, resultType, parameters);
         SparqlRestService.getQueryResult($repositories.getActiveRepository(), sendData, acceptContent)
             .then((response) => setSimilarityResponse(response))
             .catch((error) => toastr.error(getError(error.data), $translate.instant('similarity.get.resource.error')))
-            .finally(() => toggleOntoLoader(false));
+            .finally(() => $scope.isLoading = false);
     };
 
     $scope.viewSearchQuery = () => {
@@ -306,21 +306,6 @@ function SimilarityCtrl(
     const checkAutocompleteStatus = () => {
         if ($licenseService.isLicenseValid()) {
             $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
-    };
-
-    const toggleOntoLoader = (showLoader) => {
-        const yasrInnerContainer = angular.element(document.getElementById('yasr-inner'));
-        const resultsLoader = angular.element(document.getElementById('results-loader'));
-        /* Angular b**it. For some reason the loader behaved strangely with ng-show not always showing */
-        if (showLoader) {
-            $scope.loading = true;
-            yasrInnerContainer.addClass('opacity-hide');
-            resultsLoader.removeClass('opacity-hide');
-        } else {
-            $scope.loading = false;
-            yasrInnerContainer.removeClass('opacity-hide');
-            resultsLoader.addClass('opacity-hide');
         }
     };
 
