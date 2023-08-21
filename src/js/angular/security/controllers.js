@@ -63,7 +63,9 @@ const setGrantedAuthorities = function ($scope) {
             }
         }
     }
-    $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
+    if ($scope.customRoles) {
+        $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
+    }
 };
 
 const parseAuthorities = function (authorities) {
