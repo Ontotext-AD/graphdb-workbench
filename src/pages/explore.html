@@ -4,12 +4,12 @@
 <div class="page fit-content-on-mobile">
     <div class="resource-info" ng-if="resourceInfo && !isTripleResource()">
         <div class="thumb" ng-if="resourceInfo.details.img">
-            <a href="resourceInfo.details.img">
+            <a href="{{resourceInfo.details.img}}">
                 <img ng-src="{{details.img}}" alt="details image"/>
             </a>
         </div>
         <h1>
-            <a href="resourceInfo.details.uri" gdb-tooltip="resourceInfo.details.uri">
+            <a href="{{resourceInfo.details.uri}}" gdb-tooltip="{{resourceInfo.details.uri}}">
                 {{resourceInfo.details.label ? resourceInfo.details.label : getLocalName(resourceInfo.details.uri)}}
             </a>
 
@@ -79,7 +79,7 @@
                 uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
-            <span ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
+            <span class="icon-2x" ng-class="{'icon-sameas-on':resourceInfo.sameAs, 'icon-sameas-off':!resourceInfo.sameAs}"></span>
         </button>
 
         <button type="button"
