@@ -381,7 +381,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getLastStep = (guide, stepsDescriptions) => {
-        const step = this._toGuideStep(guide, stepsDescriptions[stepsDescriptions.length - 2], stepsDescriptions[stepsDescriptions.length - 1]);
+        const step = this._toGuideStep(guide, null, stepsDescriptions[stepsDescriptions.length - 1]);
         step.buttons.push(this._getBackToGuidesButton(guide));
         step.buttons.push(this._getCancelButton(guide));
         return step;
