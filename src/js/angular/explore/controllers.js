@@ -245,7 +245,7 @@ function ExploreCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
-            showResultInfo: false,
+            showResultInfo: true,
             downloadAsOn: false,
             showQueryButton: false,
             componentId: 'resource-view-component',
