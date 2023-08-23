@@ -74,6 +74,7 @@ function CreateSimilarityIdxCtrl(
     $scope.samples = undefined;
     $scope.yasguiConfig = undefined;
     $scope.saveOrUpdateExecuted = false;
+    $scope.loadingControllerResources = false;
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP) === 1;
 
     let isDirty = false;
@@ -915,6 +916,7 @@ function CreateSimilarityIdxCtrl(
         return $scope.getActiveRepositoryObject();
     }, function (activeRepo) {
         if (activeRepo) {
+            $scope.loadingControllerResources = true;
             Promise.all([SimilarityRestService.getSearchQueries(), SimilarityRestService.getSamples(), $repositories.getPrefixes(activeRepo.id)])
                 .then(([searchQueriesResponses, samplesResponse, usedPrefixesResponse]) => {
                     $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
@@ -928,6 +930,7 @@ function CreateSimilarityIdxCtrl(
             }).finally(() => {
                 subscriptions.push($scope.$on('repositoryIsSet', repositoryChangedHandler));
                 repoIsInitialized();
+                $scope.loadingControllerResources = false;
             });
         }
     });
