@@ -107,9 +107,14 @@
             <em class="icon-caret-left"></em>
         </span>
         <a class="menu-element-root" ng-href="./" href="./" ng-click="selected = -1">
-            <img class="big-logo" src="img/graphdb-logo.svg" alt="GraphDB logo" width="181" height="45">
-            <img class="small-logo" src="img/graphdb-logo-sq.svg" alt="GraphDB logo" ng-href="./" href="./" width="58"
-                 height="58">
+            <svg class="big-logo" width="180" height="50">
+                <desc>GraphDB logo</desc>
+                <use href="img/graphdb-logo.svg#Layer_1"></use>
+            </svg>
+            <svg class="small-logo" width="58" height="58">
+                <desc>GraphDB logo</desc>
+                <use href="img/graphdb-logo-sq.svg#Layer_1"></use>
+            </svg>
         </a>
     </li>
     <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
