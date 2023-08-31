@@ -678,7 +678,7 @@ main menu height*/
 }
 
 .main-menu .brand {
-    background-color: var(--secondary-color);
+    background-color: var(--logo-background-color);
 }
 
 .main-menu .brand a {
@@ -796,12 +796,10 @@ main menu height*/
 }
 
 .small-logo {
-    width: 3.625rem;
     height: auto;
 }
 
 .big-logo {
-    width: 11.25rem;
     height: auto;
 }
 
@@ -1264,23 +1262,23 @@ footer.footer .container-fluid.main-container p {
 }
 
 .alert-warning {
-    background-color: rgba(252, 248, 227, 0.7);
+    background-color: var(--color-warning-light);
 }
 
 .alert-info {
-    background-color: rgba(203, 238, 234, 0.7);
+    background-color: var(--color-info-light);
 }
 
 .alert-help {
-    background-color: #e8f5fe;
+    background-color: var(--color-help-light);
 }
 
 .alert-success {
-    background-color: rgba(219, 252, 202, 0.7);
+    background-color: var(--color-success-light);
 }
 
 .alert-danger {
-    background-color: rgba(242, 222, 222, 0.7);
+    background-color: var(--color-danger-light);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {

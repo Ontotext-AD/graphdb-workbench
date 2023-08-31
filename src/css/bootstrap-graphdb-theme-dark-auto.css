@@ -1,35 +1,3 @@
-:root {
-    /* Lets the browser know we support both light and dark so some things get the dark mode from the browser */
-    --color-scheme-dark: light dark;
-    --body-filter-dark: invert(95%) hue-rotate(180deg);
-    --html-background-dark: #0d0d0d;
-    --media-filter-dark: invert(100%) hue-rotate(180deg);
-    --alert-filter-dark: brightness(0.9);
-    --checkbox-filter-dark: invert(100%) hue-rotate(180deg);
-}
-
-:root.dark {
-    color-scheme: var(--color-scheme-dark);
-    --body-filter: var(--body-filter-dark);
-    --html-background: var(--html-background-dark);
-    --media-filter: var(--media-filter-dark);
-    --alert-filter: var(--alert-filter-dark);
-    --checkbox-filter: var(--checkbox-filter-dark);
-
-    /* This results in a more subdued orange in the dark theme, easier on the eyes */
-    --primary-color-hue: 25.4;
-    --primary-color-lightness: 30%;
-
-    /* Slightly different blue in the dark theme */
-    --secondary-color-hue: 200.3;
-
-    --color-danger-dark: #9f2010;
-    --color-success-dark: #005934;
-    --color-warning-dark: #734721;
-    --color-info-dark: #115590;
-
-}
-
 /* Invert all elements on the root while attempting to not alter the hue substantially. */
 :root {
     filter: var(--body-filter);
@@ -51,12 +19,6 @@ img, video, .brand {
     filter: var(--media-filter);
 }
 
-/* Additional adjustment for the img inside the logo because it gets inverted twice,
-   this rule is good regardless of the theme */
-.brand img {
-    filter: none;
-}
-
 /* Make the alert boxes slightly more visible */
 .alert {
     filter: var(--alert-filter);
@@ -64,8 +26,7 @@ img, video, .brand {
 
 /* Make the toastr boxes more close to the light theme so they stand out */
 #toast-container .toast {
-    /*filter: var(--toast-filter);*/
-    /*color: black;*/
+    filter: var(--toast-filter);
 }
 
 /* Revert the change on checkboxes and let the browser apply its dark theme there */
