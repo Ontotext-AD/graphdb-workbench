@@ -377,6 +377,16 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             setGrantedAuthorities($scope);
         };
 
+        $scope.resetCustomRoleField = function () {
+            if (!$scope.isUser()) {
+                $scope.customRoles = "";
+            }
+        };
+
+        $scope.isUser = function () {
+            return $scope.userType === UserType.USER;
+        };
+
         $scope.hasReadPermission = function (repository) {
             const uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER

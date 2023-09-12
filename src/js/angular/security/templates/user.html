@@ -181,7 +181,7 @@
 
 			<div class="col-md-6 us-right-col" ng-hide="!isLocalAuthentication()">
 				<div class="card user-role" id="user-roles">
-					<div class="card-block">
+					<div class="card-block" ng-click="resetCustomRoleField()">
 						<h3>{{'security.user.role' | translate}}</h3>
 						<label class="mr-1"
 							   uib-popover-template="'popover-content-user.html'"
@@ -210,7 +210,8 @@
                     <div class="card-block">
                         <h3>{{'security.user.custom_role' | translate}}</h3>
                         <div class="input-group">
-                            <tags-input class="wb-tags-input" ng-model="customRoles" min-length="2" ng-disabled="hasEditRestrictions()"
+                            <tags-input class="wb-tags-input" ng-model="customRoles" min-length="2"
+                                        ng-disabled="!isUser()"
                                         use-strings="true"
                                         add-on-space="true"
                                         add-on-comma="true"
