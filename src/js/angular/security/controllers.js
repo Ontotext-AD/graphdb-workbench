@@ -377,11 +377,11 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             setGrantedAuthorities($scope);
         };
 
-        $scope.resetCustomRoleField = function () {
+        $scope.$watch('userType', function () {
             if (!$scope.isUser()) {
                 $scope.customRoles = "";
             }
-        };
+        });
 
         $scope.isUser = function () {
             return $scope.userType === UserType.USER;
