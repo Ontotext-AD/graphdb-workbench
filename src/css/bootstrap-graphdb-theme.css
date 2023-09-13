@@ -659,6 +659,12 @@ main menu height*/
     pointer-events: none;
 }
 
+.main-menu .menu-item-icon.fa-flask {
+    /* Temporary: until we get our own icon */
+    font-size: 2rem;
+    padding: 4px 5px;
+}
+
 .main-menu .menu-element-root .menu-item {
     pointer-events: none;
 }

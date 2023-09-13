@@ -24,12 +24,13 @@
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
         <div ng-show="!isActiveRepoFedXType() && connectors.length">
-            <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors">
+            <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors"
+                 ng-init="keyForDom = connector.key.replace(' ', '-')">
                 <h3>{{connector.key}}</h3>
                 <section class="mb-1">
-                    <div id="accordion-{{connector.key}}" role="tablist" aria-multiselectable="true">
+                    <div id="accordion-{{keyForDom}}" role="tablist" aria-multiselectable="true">
                         <div class="card" ng-repeat="exist in existing[connector.key]">
-                            <div class="card-header" role="tab" id="heading-{{connector.key}}{{$index}}">
+                            <div class="card-header" role="tab" id="heading-{{keyForDom}}{{$index}}">
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
 										    ng-click="copyConnector(connector, exist)"
@@ -48,15 +49,15 @@
                                     </button>
 								</div>
                                 <h5 class="mb-0">
-                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{connector.key}}"
-                                       href="#collapse-{{connector.key}}{{$index}}" aria-expanded="false"
-                                       aria-controls="collapse-{{connector.key}}{{$index}}">
+                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{keyForDom}}"
+                                       href="#collapse-{{keyForDom}}{{$index}}" aria-expanded="false"
+                                       aria-controls="collapse-{{keyForDom}}{{$index}}">
                                         {{exist.name}}
                                     </a>
                                 </h5>
                             </div>
-                            <div id="collapse-{{connector.key}}{{$index}}" class="collapse" role="tabpanel"
-                                 aria-labelledby="heading-{{connector.key}}{{$index}}">
+                            <div id="collapse-{{keyForDom}}{{$index}}" class="collapse" role="tabpanel"
+                                 aria-labelledby="heading-{{keyForDom}}{{$index}}">
                                 <div class="card-block">
                                     <div class="form-horizontal">
                                         <div class="row form-group" ng-repeat="option in getOptions(connector)"
