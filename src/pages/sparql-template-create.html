@@ -15,7 +15,7 @@
               uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
-              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+              popover-append-to-body="true"><span class="icon-info"></span></span>
     </h1>
     <div core-errors></div>
     <div system-repo-warning></div>
@@ -51,31 +51,22 @@
            uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter"
-           ng-if="canEditActiveRepo">
+           ng-if="canWriteActiveRepo()">
             {{'common.cancel.btn' | translate}}
         </a>
         <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
                 uib-popover="{{'save.sparql.template.tooltip' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter"
-                ng-if="canEditActiveRepo">
+                ng-if="canWriteActiveRepo()">
             {{'common.save.btn' | translate}}
         </button>
         <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
            uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter"
-           ng-if="!canEditActiveRepo">
+           ng-if="!canWriteActiveRepo()">
             {{'common.close' | translate}}
         </a>
-    </div>
-</div>
-
-<div onto-loader-new
-     ng-if="queryIsRunning"
-     ng-show="queryIsRunning"
-     class="sparql-loader"
-     size="75"
-     message="loaderMessage"
-     timeout="[1]">
+    <br/><br/><br/>
 </div>
