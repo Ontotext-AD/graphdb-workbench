@@ -1,3 +1,5 @@
+import {mapBackupAndRestoreResponseToModel} from "./mappers/monitor-backup-and-restore-mapper";
+
 angular
     .module('graphdb.framework.rest.monitoring.service', [])
     .factory('MonitoringRestService', MonitoringRestService);
@@ -6,6 +8,7 @@ MonitoringRestService.$inject = ['$http'];
 
 const MONITORING_ENDPOINT = 'rest/monitor';
 const QUERY_MONITORING_ENDPOINT = `${MONITORING_ENDPOINT}/repository`;
+const BACKUP_MONITORING_ENDPOINT = `${MONITORING_ENDPOINT}/backup`;
 
 function MonitoringRestService($http) {
     return {
@@ -14,6 +17,7 @@ function MonitoringRestService($http) {
         monitorCluster,
         monitorGC,
         monitorQuery,
+        monitorBackup,
         deleteQuery,
         getQueryCount,
         checkAutocompleteStatus,
@@ -42,6 +46,15 @@ function MonitoringRestService($http) {
 
     function monitorQuery(repositoryID) {
         return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/active`);
+    }
+
+    /**
+     *
+     * @return {Promise<BackupAndRestoreInfo>}
+     */
+    function monitorBackup() {
+        return $http.get(BACKUP_MONITORING_ENDPOINT)
+            .then((response) => mapBackupAndRestoreResponseToModel(response.data));
     }
 
     function deleteQuery(queryId, repositoryID) {

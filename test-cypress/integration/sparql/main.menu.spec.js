@@ -64,6 +64,11 @@ describe('Main menu tests', function () {
                         redirect: '/queries'
                     },
                     {
+                        name: 'Backup and Restore',
+                        visible: false,
+                        redirect: '/monitor/backup-and-restore'
+                    },
+                    {
                         name: 'System',
                         visible: false,
                         redirect: '/system'
