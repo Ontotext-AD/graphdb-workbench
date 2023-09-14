@@ -1,0 +1,30 @@
+{
+    "status": "WARNING",
+    "allRunningOperations": [
+        {
+            "value": "25",
+            "status": "INFORMATION",
+            "type": "queries"
+        },
+        {
+            "value": "1",
+            "status": "INFORMATION",
+            "type": "updates"
+        },
+        {
+            "value": "1",
+            "status": "CRITICAL",
+            "type": "imports"
+        },
+        {
+            "value": "CREATE_BACKUP_IN_PROGRESS",
+            "status": "WARNING",
+            "type": "backupAndRestore"
+        },
+        {
+            "value": "UNAVAILABLE_NODES",
+            "status": "WARNING",
+            "type": "clusterHealth"
+        }
+    ]
+}
