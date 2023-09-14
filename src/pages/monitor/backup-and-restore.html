@@ -1,0 +1,74 @@
+<div>
+    <title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
+
+    <link href="css/backup-and-restore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+    <h1>
+        {{title}}
+        <span class="btn btn-link"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true">
+            <span class="icon-info text-tertiary"></span>
+        </span>
+        <span onto-loader-new class="backup-and-restore-updater-icon" size="25">
+        </span>
+    </h1>
+
+    <div core-errors ontop></div>
+
+    <div ng-if="initialized" class="backup-and-restore">
+        <table ng-if="backupAndRestoreInfos && backupAndRestoreInfos.length > 0" class="table table-striped table-bordered"
+               aria-describedby="Monitor backup and restore">
+            <thead>
+            <tr>
+                <th class="id-header">{{'view.monitoring.backup_and_restore.id.header' | translate}}</th>
+                <th class="username-header">{{'view.monitoring.backup_and_restore.username.header' | translate}}</th>
+                <th class="recovery-operation-header">{{'view.monitoring.backup_and_restore.recovery_operation_type.header' | translate}}
+                </th>
+                <th class="affected-repository-header">{{'view.monitoring.backup_and_restore.affected_repositories.header' | translate}}
+                </th>
+                <th class="lifetime-header">{{'view.monitoring.backup_and_restore.lifetime.header' | translate}}</th>
+                <th class="snapshot-options-header">{{'view.monitoring.backup_and_restore.snapshot_options.header' | translate}}</th>
+                <th ng-if="hasClusterOperation" class="node-performing-cluster-backup-header">
+                    {{'view.monitoring.backup_and_restore.node_performing_cluster_backup.header' | translate}}
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="backupAndRestoreInfo in backupAndRestoreInfos">
+                <td>{{backupAndRestoreInfo.id}}</td>
+                <td>{{backupAndRestoreInfo.username}}</td>
+                <td>{{('view.monitoring.backup_and_restore.' + backupAndRestoreInfo.operation) | translate}}</td>
+                <td>
+                    <div ng-repeat="repository in backupAndRestoreInfo.affectedRepositories">
+                        {{repository}}
+                    </div>
+                </td>
+                <td>{{getHumanReadableSeconds(backupAndRestoreInfo.secondsSinceCreated)}}</td>
+                <td class="snapshot-options-data">
+                    <div ng-repeat="(key, value) in backupAndRestoreInfo.snapshotOptions">
+                        <div ng-if="hasToShowValue(value)">
+                            <b>{{key}}</b> : {{value}}
+                        </div>
+                    </div>
+                </td>
+                <td ng-if="hasClusterOperation">{{backupAndRestoreInfo.nodePerformingClusterBackup}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="alert alert-info no-icon no-running-backup-and-restore-alert"
+             ng-if="!backupAndRestoreInfos || !backupAndRestoreInfos.length || backupAndRestoreInfos.length === 0">
+            {{'view.monitoring.backup_and_restore.no_running_backup_and_restore' | translate}}
+        </div>
+    </div>
+
+    <div ng-if="!initialized && loading">
+        <div onto-loader-new
+             ng-if="loading"
+             size="75">
+        </div>
+    </div>
+</div>

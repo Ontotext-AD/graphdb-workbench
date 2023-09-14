@@ -26,7 +26,7 @@ PluginRegistry.add('main.menu', {
             href: 'monitor/system',
             // Added role requirement here to assert that users cannot see Resources menu item
             role: 'ROLE_MONITORING',
-            order: 2,
+            order: 3,
             parent: 'Monitor',
             guideSelector: 'sub-menu-resources'
         }
