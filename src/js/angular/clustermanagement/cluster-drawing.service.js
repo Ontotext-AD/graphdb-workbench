@@ -1,4 +1,4 @@
-import {LinkState, NodeState} from "./controllers";
+import {LinkState, NodeState, RecoveryState} from "./controllers";
 
 export const clusterColors = {
     ontoOrange: 'var(--primary-color)',
@@ -110,9 +110,18 @@ function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
 
         nodeTextHost
             .append('text')
-            .attr('y', nodeRadius + 10)
-            .attr('class', 'id id-host')
-            .style('text-anchor', 'middle');
+            .attr('y', nodeRadius + 15)
+            .attr('class', 'id id-host');
+
+        nodeTextHost
+            .append('rect')
+            .attr('class', 'node-info-background')
+            .attr('rx', 6);
+
+        nodeTextHost
+            .append('text')
+            .attr('y', nodeRadius + 45)
+            .attr('class', 'node-info-text');
     }
 }
 
@@ -120,6 +129,7 @@ export function updateNodes(nodes) {
     updateNodesIcon(nodes);
     updateNodesClasses(nodes);
     updateNodesHostnameText(nodes);
+    updateNodesInfoText(nodes);
 }
 
 function updateNodesClasses(nodes) {
@@ -136,9 +146,45 @@ function updateNodesClasses(nodes) {
 }
 
 function updateNodesIcon(nodes) {
-    nodes
-        .select('.icon-any.node-icon')
-        .text(getNodeIconType);
+    nodes.select('.node-icon')
+        .classed('icon-any', function (d) {
+            return !hasRecoveryState(d);
+        })
+        .classed('fa-d3', hasRecoveryState)
+        .text(function (d) {
+            if (hasRecoveryState(d)) {
+                return getNodeInfoIconType(d);
+            } else {
+                return getNodeIconType(d);
+            }
+        });
+}
+
+function hasRecoveryState(node) {
+    return !!node.recoveryStatus;
+}
+
+function getNodeInfoIconType(node) {
+    if (!node.recoveryStatus) {
+        return '';
+    }
+
+    switch (node.recoveryStatus.state) {
+        case RecoveryState.SEARCHING_FOR_NODE:
+            return '\uf002';
+        case RecoveryState.WAITING_FOR_SNAPSHOT:
+            return '\uf017';
+        case RecoveryState.RECORDING_SNAPSHOT:
+            return '\uf0c7';
+        case RecoveryState.APPLYING_SNAPSHOT:
+            return '\uf110';
+        case RecoveryState.BUILDING_SNAPSHOT:
+            return '\uf085';
+        case RecoveryState.SENDING_SNAPSHOT:
+            return '\uf093';
+        default:
+            return '';
+    }
 }
 
 function getNodeIconType(node) {
@@ -160,6 +206,36 @@ function getNodeIconType(node) {
     return '';
 }
 
+function updateNodesInfoText(nodes) {
+    nodes
+        .select('.node-info-text')
+        .each(function (d) {
+            d.infoNode = this;
+        })
+        .text(function (d) {
+            return d.recoveryStatus && d.recoveryStatus.message;
+        });
+
+    // Add padding styling to text background. left/right/top/bottom +5
+    nodes
+        .select('.node-info-background')
+        .attr('width', function (d) {
+            return d3.select(d.infoNode).node().getBBox().width + 10;
+        })
+        .attr('height', function (d) {
+            return d3.select(d.infoNode).node().getBBox().height + 10;
+        })
+        .attr('x', function (d) {
+            return d3.select(d.infoNode).node().getBBox().x - 5;
+        })
+        .attr('y', function (d) {
+            return d3.select(d.infoNode).node().getBBox().y - 5;
+        })
+        .classed('hidden', function (d) {
+            return !d.recoveryStatus;
+        });
+}
+
 function updateNodesHostnameText(nodes) {
     nodes
         .select('.id.id-host')
@@ -170,22 +246,21 @@ function updateNodesHostnameText(nodes) {
             return d.hostname;
         });
 
-    // Add padding styling to text background. left/right +5. top/bottom +1
+    // Add padding styling to text background. left/right/top/bottom +5
     nodes
         .select('.id-host-background')
         .attr('width', function (d) {
             return d3.select(d.labelNode).node().getBBox().width + 10;
         })
         .attr('height', function (d) {
-            return d3.select(d.labelNode).node().getBBox().height + 2;
+            return d3.select(d.labelNode).node().getBBox().height + 10;
         })
         .attr('x', function (d) {
             return d3.select(d.labelNode).node().getBBox().x - 5;
         })
         .attr('y', function (d) {
-            return d3.select(d.labelNode).node().getBBox().y - 1;
-        })
-        .attr('fill', '#EEEEEE');
+            return d3.select(d.labelNode).node().getBBox().y - 5;
+        });
 }
 
 export function createLinks(linksDataBinding) {

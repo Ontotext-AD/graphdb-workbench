@@ -1,6 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import * as CDS from "./cluster-drawing.service";
-import {LinkState, NodeState} from "./controllers";
+import {LinkState, NodeState, RecoveryState} from "./controllers";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 
 
@@ -15,6 +15,7 @@ const clusterManagementDirectives = angular.module('graphdb.framework.clusterman
     'graphdb.framework.utils.localstorageadapter'
 ]);
 
+// Labels in translation map is dynamically translated and reassigned. It contains defaults
 const translationsMap = {
     no_cluster_configured: '',
     create_cluster_btn: '',
@@ -30,7 +31,15 @@ const translationsMap = {
     node_state_restricted: "Restricted",
     link_state_in_sync: "In sync",
     link_state_syncing: "Syncing",
-    link_state_out_of_sync: "Out of sync"
+    link_state_out_of_sync: "Out of sync",
+    recovery_state: {
+        searching_for_node: "Searching for node",
+        waiting_for_snapshot: "Waiting for snapshot from node",
+        recording_snapshot: "Recording a snapshot from node",
+        applying_snapshot: "Applying a snapshot",
+        building_snapshot: "Building a snapshot for node",
+        sending_snapshot: "Sending a snapshot to node"
+    }
 };
 
 const idTranslationKeyMap = {
@@ -47,15 +56,25 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 scope.showLegend = false;
                 $rootScope.$on('$translateChangeSuccess', function () {
-                    updateTranslations();
+                    updateTranslations(translationsMap);
                     updateLabels();
                 });
                 scope.$on("$destroy", function () {
                     legendTooltip.destroy();
                 });
-                function updateTranslations() {
-                    Object.keys(translationsMap).forEach((key) => {
-                        translationsMap[key] = $translate.instant('cluster_management.cluster_graphical_view.' + key);
+                function updateTranslations(translationMapObject, translationAppend = '') {
+                    Object.keys(translationMapObject).forEach((key) => {
+                        let compoundKey = '';
+                        if (translationAppend) {
+                            compoundKey += translationAppend;
+                        }
+                        compoundKey += `.${key}`;
+                        const value = translationMapObject[key];
+                        if (typeof value === 'string') {
+                            translationMapObject[key] = $translate.instant(`cluster_management.cluster_graphical_view${compoundKey}`);
+                        } else if (typeof value === 'object') {
+                            updateTranslations(value, compoundKey);
+                        }
                     });
                 }
 
@@ -71,7 +90,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return Math.max((($window.innerHeight - 250) * 0.95), 600);
                 }
 
-                let legendNodesGroup;
+                let legendGroup;
                 let legendWidth;
                 let legendHeight;
                 const legendPadding = 10;
@@ -102,8 +121,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     Object.keys(idTranslationKeyMap).forEach((elementId) => {
                         d3.select(`#${elementId}`).text(getLabelFor(elementId));
                     });
-                    if (legendNodesGroup) {
-                        legendNodesGroup.remove();
+                    if (legendGroup) {
+                        legendGroup.remove();
                     }
                     createLegendGroup();
                     createClusterLegend();
@@ -111,7 +130,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function translateLegendLinksAndNodes(legendNodes, legendLinks) {
                     legendNodes.forEach((node) => {
-                        node.toolTip = node.hostname = translationsMap[node.customText];
+                        const label = _.get(translationsMap, node.customText);
+                        node.toolTip = node.hostname = label;
                     });
                     legendLinks.forEach((link) => {
                         link.toolTip = link.linkTypeText = translationsMap[link.linkTypeKey];
@@ -124,7 +144,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function initialize() {
-                    updateTranslations();
+                    updateTranslations(translationsMap);
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
                     createClusterZone(hasCluster);
                     createClusterLegend();
@@ -145,7 +165,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function createLegendGroup() {
-                    legendNodesGroup = svg.append('g').attr('id', 'legend-group')
+                    legendGroup = svg.append('g').attr('id', 'legend-group')
                         .classed('hidden', !scope.showLegend)
                         .classed('legend-group', true);
                 }
@@ -183,7 +203,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const nodeLinkStateTextHeight = 14;
 
                     const nodeStateLabelY = legendPadding + nodeLinkStateTextHeight;
-                    const linkStateLabelY = nodeStateLabelY + legendPadding * 3 + legendNodeRadius * 5;
+                    const nodesGroupHeight = nodeStateLabelY + legendPadding + legendNodeRadius * 11;
+                    const linkStateLabelY = legendPadding + nodesGroupHeight;
 
                     const legendColumns = 4;
                     const nodesXPadding = 15;
@@ -193,12 +214,12 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const legendLinks = getLegendLinks();
                     translateLegendLinksAndNodes(legendNodes, legendLinks);
 
-                    legendNodesGroup.append('rect')
+                    legendGroup.append('rect')
                         .attr('id', 'legend-background')
                         .attr('class', 'legend-background')
                         .attr('fill', '#EEEEEE');
 
-                    const nodeStateLabel = legendNodesGroup
+                    const nodeStateLabel = legendGroup
                         .append('text')
                         .attr('id', 'node_state')
                         .attr('class', 'id id-host')
@@ -206,7 +227,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .attr('y', nodeStateLabelY)
                         .text(getLabelFor('node_state'));
 
-                    const linkStateLabel = legendNodesGroup
+                    const linkStateLabel = legendGroup
                         .append('text')
                         .attr('id', 'link_state')
                         .attr('class', 'id id-host')
@@ -214,7 +235,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .attr('y', linkStateLabelY)
                         .text(getLabelFor('link_state'));
 
-                    const legendNodeData = legendNodesGroup.selectAll('#node-group').data(legendNodes);
+                    const legendNodeData = legendGroup.selectAll('#node-group').data(legendNodes);
                     CDS.createNodes(legendNodeData, legendNodeRadius, true);
                     CDS.updateNodes(legendNodeData);
 
@@ -235,7 +256,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             return `translate(${x}, ${y})`;
                         });
 
-                    legendNodesGroup
+                    legendGroup
                         .call(function () {
                             legendWidth = this.node().getBBox().width;
                         });
@@ -247,7 +268,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     const linkWidth = legendWidth / 3;
 
-                    const linksGroup = legendNodesGroup.append('g').attr('id', 'links-group');
+                    const linksGroup = legendGroup.append('g').attr('id', 'links-group');
                     const linksGroupY = linkStateLabelY + legendPadding;
                     linksGroup.attr('transform', `translate(${legendPadding}, ${linksGroupY})`);
 
@@ -294,14 +315,14 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     });
 
 
-                    legendNodesGroup
+                    legendGroup
                         .call(function (d) {
                             legendHeight = this.node().getBBox().height;
                             legendWidth = this.node().getBBox().width;
                         });
 
-                    legendNodesGroup.select('.legend-background')
-                        .attr('height', legendHeight + legendPadding * 4)
+                    legendGroup.select('.legend-background')
+                        .attr('height', legendHeight + legendPadding * 5)
                         .attr('width', legendWidth + legendPadding * 2)
                         .attr('rx', '6');
 
@@ -309,12 +330,18 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function positionLegend() {
-                    const y = height - (legendHeight + legendPadding * 3 + 50);
-                    CDS.moveElement(legendNodesGroup, 0, y);
+                    const y = height - (legendHeight + legendPadding * 4 + 50);
+                    CDS.moveElement(legendGroup, 0, y);
                 }
 
                 function createNodes(nodes) {
-                    nodes.forEach((node) => node.hostname = UriUtils.shortenIri(node.endpoint));
+                    nodes.forEach((node) => {
+                        node.hostname = UriUtils.shortenIri(node.endpoint);
+                        if (node.recoveryStatus) {
+                            const messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.' + node.recoveryStatus.state.toLowerCase();
+                            node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
+                        }
+                    });
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
                     nodeData
                         .on('click', (d) => {
@@ -358,7 +385,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 };
                 scope.childContext.toggleLegend = () => {
                     scope.showLegend = !scope.showLegend;
-                    legendNodesGroup.classed('hidden', !scope.showLegend);
+                    legendGroup.classed('hidden', !scope.showLegend);
                 };
 
                 function resizeClusterComponent() {
@@ -418,6 +445,13 @@ const getLegendNodes = function () {
     legendNodes.push({nodeState: NodeState.NO_CONNECTION, customText: 'node_state_no_connection'});
     legendNodes.push({nodeState: NodeState.READ_ONLY, customText: 'node_state_read_only'});
     legendNodes.push({nodeState: NodeState.RESTRICTED, customText: 'node_state_restricted'});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.searching_for_node', recoveryStatus: {state: RecoveryState.SEARCHING_FOR_NODE}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.waiting_for_snapshot', recoveryStatus: {state: RecoveryState.WAITING_FOR_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.recording_snapshot', recoveryStatus: {state: RecoveryState.RECORDING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.applying_snapshot', recoveryStatus: {state: RecoveryState.APPLYING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.building_snapshot', recoveryStatus: {state: RecoveryState.BUILDING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.sending_snapshot', recoveryStatus: {state: RecoveryState.SENDING_SNAPSHOT}});
+
     legendNodes.forEach((node, index) => node.id = index);
     return legendNodes;
 };

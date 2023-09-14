@@ -26,7 +26,15 @@
             "node_state_restricted": "Restricted",
             "link_state_in_sync": "In sync",
             "link_state_syncing": "Syncing",
-            "link_state_out_of_sync": "Out of sync"
+            "link_state_out_of_sync": "Out of sync",
+            "recovery_state": {
+                "searching_for_node": "Searching for node",
+                "applying_snapshot": "Applying a snapshot",
+                "building_snapshot": "Building a snapshot for {{node}}",
+                "waiting_for_snapshot": "Waiting for snapshot from node {{node}}",
+                "sending_snapshot": "Sending a snapshot to node {{node}}",
+                "recording_snapshot": "Recording a snapshot from node {{node}}"
+            }
         },
         "cluster_configuration": {
             "label": "Cluster configuration",

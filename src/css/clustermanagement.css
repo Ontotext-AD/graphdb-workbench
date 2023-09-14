@@ -99,9 +99,20 @@ path.link {
   visibility: hidden;
 }
 
+.hidden {
+  display: none;
+}
+
 text.node-icon {
   fill: rgba(255, 255, 255, 0.5);
   font-size: 40px;
+}
+
+.id-host-background, .node-info-background {
+  fill: #EEEEEE;
+}
+
+text.node-icon {
   text-anchor: middle;
   dominant-baseline: central;
 }
@@ -112,13 +123,9 @@ text {
   pointer-events: none;
 }
 
-text.id {
+text.id-host, text.node-info-text {
   text-anchor: middle;
-  font-weight: 500;
-}
-
-text.id-host {
-    font-weight: 400;
+  font-weight: 400;
 }
 
 .text-btn {
