@@ -118,6 +118,32 @@ describe('Main menu tests', function () {
                         name: 'RDF Rank',
                         visible: false,
                         redirect: '/rdfrank'
+                    },
+                    {
+                        name: 'JDBC',
+                        visible: false,
+                        redirect: '/jdbc'
+                    },
+                    {
+                        name: 'SPARQL Templates',
+                        visible: false,
+                        redirect: '/sparql-templates'
+                    },
+                    {
+                        name: 'License',
+                        visible: false,
+                        redirect: '/license'
+                    }
+                ]
+            },
+            {
+                name: 'Lab',
+                visible: true,
+                submenu: [
+                    {
+                        name: 'Talk to Your Graph',
+                        visible: false,
+                        redirect: '/chatgpt'
                     }
                 ]
             },
