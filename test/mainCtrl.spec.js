@@ -143,6 +143,9 @@ describe('mainCtrl', function () {
             $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
             $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
             $httpBackend.when('GET', 'rest/repositories/repoId/size').respond(200, '2000000');
+            $httpBackend.when('GET', 'rest/monitor/repoId/operations').respond(200, []);
+            const repository = spyOn($repositories, 'getActiveRepository');
+            repository.and.returnValue('repoId');
             $scope.popoverRepo = { id: 'repoId' };
             $scope.repositorySize = undefined;
 
@@ -155,6 +158,9 @@ describe('mainCtrl', function () {
         it('should not set repository size variable if repository is not hovered', () => {
             $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
             $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
+            $httpBackend.when('GET', 'rest/monitor/repoId/operations').respond(200, []);
+            const repository = spyOn($repositories, 'getActiveRepository');
+            repository.and.returnValue('repoId');
             $scope.popoverRepo = undefined;
             $scope.repositorySize = undefined;
 

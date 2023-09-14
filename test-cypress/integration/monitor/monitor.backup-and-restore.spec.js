@@ -3,10 +3,14 @@ import {BackupAndRestoreStubs} from "../../stubs/backup-and-restore-stubs";
 
 describe("Monitoring 'Backup And Restore'", () => {
 
+    const repositoryId = 'backup-and-restore-' + Date.now();
     beforeEach(() => {
-        const repositoryId = 'backup-and-restore-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('should show running backup or restore operations', () => {

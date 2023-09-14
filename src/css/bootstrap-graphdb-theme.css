@@ -563,6 +563,11 @@ a:focus, a:hover {
     color: rgba(255, 255, 255, 0.7);
 }
 
+.btn.active-operation {
+    padding: 0 !important;
+    border: 0 !important;
+}
+
 
 /*-------------------------------------------------------------
 	Headings

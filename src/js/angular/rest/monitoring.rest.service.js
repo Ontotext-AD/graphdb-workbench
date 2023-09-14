@@ -1,4 +1,5 @@
 import {mapBackupAndRestoreResponseToModel} from "./mappers/monitor-backup-and-restore-mapper";
+import {mapActiveOperationResponseToModel, mapActiveOperationToActiveOperationInfoModel} from "./mappers/active-operations-mapper";
 
 angular
     .module('graphdb.framework.rest.monitoring.service', [])
@@ -18,6 +19,7 @@ function MonitoringRestService($http) {
         monitorGC,
         monitorQuery,
         monitorBackup,
+        monitorActiveOperations,
         deleteQuery,
         getQueryCount,
         checkAutocompleteStatus,
@@ -55,6 +57,18 @@ function MonitoringRestService($http) {
     function monitorBackup() {
         return $http.get(BACKUP_MONITORING_ENDPOINT)
             .then((response) => mapBackupAndRestoreResponseToModel(response.data));
+    }
+
+    /**
+     * Fetches all active operations: running, updates or imports queries, backup or restore, cluster health status.
+     *
+     * @param {string} repositoryID - the repository id for which active operations will be returned.
+     *
+     * @return {Promise<ActiveOperationsModel>}
+     */
+    function monitorActiveOperations(repositoryID) {
+        return $http.get(`${MONITORING_ENDPOINT}/${repositoryID}/operations`)
+            .then((response) => mapActiveOperationResponseToModel(response.data));
     }
 
     function deleteQuery(queryId, repositoryID) {

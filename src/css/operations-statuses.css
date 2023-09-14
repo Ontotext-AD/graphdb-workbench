@@ -1,0 +1,76 @@
+.operations-statuses .operations-statuses-dropdown-toggle {
+    display: flex;
+    background-color: #EBEBEB;
+    border-radius: 0;
+    border: 0;
+}
+
+.operations-statuses .operation-status-header {
+    display: flex;
+    padding-right: 5px;
+}
+
+.operations-statuses .operation-status-header img {
+    width: 24px;
+}
+
+.operations-statuses .running-operation-count {
+    padding-left: 2px;
+}
+
+.operations-statuses .running-operation-count sup {
+    color: white;
+    border-radius: 2px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    top: -0.8em;
+}
+
+.operations-statuses .operations-statuses-content {
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    justify-content: space-around;
+    background-color: #EBEBEB;
+}
+
+.operations-statuses .operation-status-content {
+    padding: 10px;
+    display: flex;
+    background-color: #D4D4D4;
+    margin: 10px;
+    align-items: center;
+    justify-content: space-around;
+    cursor: pointer;
+    text-decoration: none;
+    width: auto;
+}
+
+.operations-statuses .operation-status-content:hover {
+    text-decoration: none;
+}
+
+.operations-statuses .operation-status-content img {
+    width: 24px;
+}
+
+.operations-statuses .operation-status-label {
+    min-width: 250px;
+    padding: 5px;
+    line-height: 0;
+    text-align: start;
+}
+
+.operations-statuses .operation-status-running-operation-count {
+    color: white;
+    border-radius: 2px;
+    padding: 3px 2px 2px;
+    min-width: 20px;
+    text-align: center;
+    font-size: 75%;
+}
+
+.operations-statuses .operation-status-content .icon-external {
+    padding: 4px;
+}
