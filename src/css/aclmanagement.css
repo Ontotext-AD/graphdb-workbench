@@ -1,0 +1,25 @@
+.acl-management-view .acl-rules .toolbar {
+    padding: 0;
+    position: relative;
+}
+
+.acl-management-view .acl-rules .reorder-cell {
+}
+
+.acl-management-view .acl-rules .actions-column {
+    min-width: 107px;
+}
+
+.acl-management-view .acl-rules .reorder-cell button {
+    padding: 0;
+    cursor: pointer;
+}
+
+.acl-management-view .acl-rules .actions-cell button {
+    padding: 0;
+    cursor: pointer;
+}
+
+.acl-management-view .acl-rules .selected {
+    outline: 1px solid var(--secondary-color);
+}

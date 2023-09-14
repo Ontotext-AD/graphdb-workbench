@@ -1,0 +1,44 @@
+{
+    "data": [
+        {
+            "subject": "<urn:Mary>",
+            "predicate": "*",
+            "object": "*",
+            "context": "*",
+            "role": "!CUSTOM_ROLE2",
+            "policy": "allow"
+        },
+        {
+            "subject": "*",
+            "predicate": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+            "object": "*",
+            "context": "*",
+            "role": "CUSTOM_ROLE1",
+            "policy": "deny"
+        },
+        {
+            "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+            "predicate": "*",
+            "object": "\"test aber auf Deutsch\"@en",
+            "context": "<http://example.com/graph1>",
+            "role": "CUSTOM_ROLE3",
+            "policy": "deny"
+        },
+        {
+            "subject": "*",
+            "predicate": "*",
+            "object": "\"15\"^^<http://www.w3.org/2001/XMLSchema#int>",
+            "context": "*",
+            "role": "CUSTOM_ROLE3",
+            "policy": "allow"
+        },
+        {
+            "subject": "<urn:Cat>",
+            "predicate": "*",
+            "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+            "context": "*",
+            "role": "CUSTOM_ROLE4",
+            "policy": "deny"
+        }
+    ]
+}

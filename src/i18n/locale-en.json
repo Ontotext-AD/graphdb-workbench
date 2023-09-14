@@ -127,6 +127,31 @@
             "content": "Select nodes to be removed from existing cluster"
         }
     },
+    "acl_management": {
+        "rulestable": {
+            "column": {
+                "index": "#",
+                "reorder": "",
+                "subject": "Subject",
+                "predicate": "Predicate",
+                "object": "Object",
+                "context": "Context",
+                "role": "Role",
+                "policy": "Policy",
+                "actions": ""
+            },
+            "actions": {
+                "move_up": "Move the rule up",
+                "move_down": "Move the rule down",
+                "delete_rule": "Delete rule",
+                "add_rule": "Add new rule",
+                "edit_rule": "Edit rule"
+            }
+        },
+        "errors": {
+            "loading_rules": "Error during ACL rules"
+        }
+    },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
     "description.text": "Description",
@@ -566,6 +591,8 @@
     "view.resource.monitoring.title": "System monitoring",
     "view.resource.monitoring.helpInfo": "The System monitoring view shows the usage of various system resources, such as memory, CPU, file descriptors, and storage space. It also shows some performance metrics that allow you to diagnose various issues, as well as an overview of the cluster health",
     "view.users.access.helpInfo": "The Users and Access view is used to manage the users and their access to the GraphDB repositories. You can also enable or disable the security of the entire GraphDB. When security is disabled, everyone has full access to the repositories and the admin functionality.",
+    "view.aclmanagement.title": "ACL Management",
+    "view.aclmanagement.helpInfo": "The ACL management view is used to manage the Access Control List, a mechanism for fine-grained access level control on the quad level of the repository. Each ACL rule consists of the quad (subject, predicate, object, context, including wildcards) whose level needs to be controlled, the applicable role membership and the policy (allow or deny) of the rule.",
     "view.create.user.title": "Create new user",
     "view.edit.user.title": "Edit user: {{userId}}",
     "view.login.title": "Login",
@@ -621,6 +648,7 @@
     "menu.lab.label": "Lab",
     "menu.ttyg.label": "Talk to Your Graph",
     "menu.repositories.label": "Repositories",
+    "menu.aclmanagement.label": "ACL Management",
     "menu.users.and.access.label": "Users and Access",
     "menu.my.settings.label": "My Settings",
     "menu.cluster.label": "Cluster",

@@ -1,0 +1,89 @@
+<link href="css/aclmanagement.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="acl-management-view">
+    <h1 id="acl-management-view-title">
+        <span>{{title}}</span>
+        <span class="btn btn-link"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info"></span></span>
+    </h1>
+
+    <div core-errors></div>
+
+    <div class="acl-management-container">
+        <div ng-if="rulesModel" class="table-responsive">
+            <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                <thead>
+                <tr>
+                    <th class="index-column">{{'acl_management.rulestable.column.index' | translate}}</th>
+                    <th class="reorder-column">{{'acl_management.rulestable.column.reorder' | translate}}</th>
+                    <th class="subject-column">{{'acl_management.rulestable.column.subject' | translate}}</th>
+                    <th class="predicate-column">{{'acl_management.rulestable.column.predicate' | translate}}</th>
+                    <th class="object-column">{{'acl_management.rulestable.column.object' | translate}}</th>
+                    <th class="context-column">{{'acl_management.rulestable.column.context' | translate}}</th>
+                    <th class="role-column">{{'acl_management.rulestable.column.role' | translate}}</th>
+                    <th class="policy-column">{{'acl_management.rulestable.column.policy' | translate}}</th>
+                    <th class="actions-column">{{'acl_management.rulestable.column.actions' | translate}}</th>
+                </tr>
+                <tr>
+                    <th colspan="9" class="toolbar">
+                        <div class="pull-right">
+                            <button ng-click="addRule(0)" class="btn btn-link add-rule-btn"
+                                    gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                <i class="icon-plus"></i>
+                            </button>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-hide="!loading">
+                    <td colspan="9">
+                        <div onto-loader-new
+                             size="100"
+                             style="height: 75vh; display: flex;">
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-repeat="rule in rulesModel.aclRules track by $index" class="acl-rule"
+                    ng-class="{'selected': $index === selectedRule}">
+                    <td>{{$index}}</td>
+                    <td class="reorder-cell">
+                        <button ng-click="moveUp($index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
+                            <i class="fa fa-caret-up"></i>
+                        </button>
+                        <button ng-click="moveDown($index)" ng-if="$index < rulesModel.size() - 1"
+                                class="btn btn-link move-down-btn"
+                                gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </td>
+                    <td>{{rule.subject}}</td>
+                    <td>{{rule.predicate}}</td>
+                    <td>{{rule.object}}</td>
+                    <td>{{rule.context}}</td>
+                    <td>{{rule.role}}</td>
+                    <td>{{rule.policy}}</td>
+                    <td class="actions-cell">
+                        <button ng-click="deleteRule($index)" class="btn btn-link delete-rule-btn"
+                                gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
+                            <i class="icon-trash"></i>
+                        </button>
+                        <button ng-click="editRule($index)" class="btn btn-link edit-rule-btn"
+                                gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
+                            <i class="icon-edit"></i>
+                        </button>
+                        <button ng-click="addRule($index + 1)" class="btn btn-link add-rule-btn"
+                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                            <i class="icon-plus"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
