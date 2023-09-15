@@ -23,9 +23,7 @@
     font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon', sans-serif !important;
+[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -37,6 +35,16 @@
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon', sans-serif !important;
+}
+
+.fa-d3 {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'FontAwesome', sans-serif !important;
 }
 
 .icon-arrow-up-off:before {
