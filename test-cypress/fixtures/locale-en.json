@@ -123,14 +123,12 @@
         "rulestable": {
             "column": {
                 "index": "#",
-                "reorder": "",
                 "subject": "Subject",
                 "predicate": "Predicate",
                 "object": "Object",
                 "context": "Context",
                 "role": "Role",
-                "policy": "Policy",
-                "actions": ""
+                "policy": "Policy"
             },
             "actions": {
                 "move_up": "Move the rule up",
