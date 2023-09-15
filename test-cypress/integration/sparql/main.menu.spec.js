@@ -85,6 +85,11 @@ describe('Main menu tests', function () {
                         redirect: '/users'
                     },
                     {
+                        name: 'ACL Management',
+                        visible: false,
+                        redirect: '/aclmanagement'
+                    },
+                    {
                         name: 'My Settings',
                         visible: false,
                         redirect: '/settings'
