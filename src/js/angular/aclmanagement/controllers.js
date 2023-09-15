@@ -111,6 +111,16 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
         return $repositories.getActiveRepository();
     };
 
+    /**
+     * Watching for repository changes and reload the rules, because they are stored per repository.
+     * TODO: later when we have the create/edit operations we would need a confirmation before repo change in order to prevent data loss for the user.
+     */
+    $scope.$watch(function () {
+        return $repositories.getActiveRepository();
+    }, function () {
+        loadRules();
+    });
+
     //
     // initialization
     //

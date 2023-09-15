@@ -146,6 +146,9 @@
                 "delete_rule": "Supprimer la règle",
                 "add_rule": "Ajouter une nouvelle règle",
                 "edit_rule": "Modifier la règle"
+            },
+            "messages": {
+                "no_data": "Aucune règle n'est définie dans le référentiel actuel"
             }
         },
         "errors": {

@@ -22,6 +22,7 @@ describe('ACL Management page', () => {
             AclManagementSteps.getAclTable().should('be.visible');
             AclManagementSteps.getAclRules().should('not.exist');
             AclManagementSteps.getAddFirstRuleButton().should('be.visible');
+            AclManagementSteps.getNoDataMessage().should('be.visible');
         });
     });
 
