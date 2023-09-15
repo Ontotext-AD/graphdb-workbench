@@ -323,7 +323,7 @@ describe('SPARQL screen validation', () => {
             openDownloadAsMenu();
 
             getDownloadAsFormatButtons()
-                .should('have.length', 12)
+                .should('have.length', 13)
                 .contains('JSON-LD')
                 .should('have.attr', 'data-accepts')
                 .and('include', 'application/ld+json')
