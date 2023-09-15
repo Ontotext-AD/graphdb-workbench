@@ -11,8 +11,8 @@ import {ACListModel, ACRuleModel} from "../../aclmanagement/model";
  * @return {*[]|ACListModel}
  */
 export const mapAclRulesResponse = (response) => {
-    if (response) {
-        const rules = response.map((rule) => {
+    if (response && response.data) {
+        const rules = response.data.map((rule) => {
             return new ACRuleModel(
                 rule.subject,
                 rule.predicate,
