@@ -3,7 +3,9 @@
     position: relative;
 }
 
-.acl-management-view .acl-rules .reorder-cell {
+.acl-management-view .acl-rules .no-data {
+    text-align: center;
+    background-color: var(--color-info-light);
 }
 
 .acl-management-view .acl-rules .actions-column {

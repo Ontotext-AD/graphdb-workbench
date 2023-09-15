@@ -52,6 +52,10 @@ export class AclManagementSteps {
     static moveRuleDown(index) {
         this.getMoveDownButton(index).click();
     }
+
+    static getNoDataMessage() {
+        return this.getAclTable().find('.no-data');
+    }
 }
 
 const ACL = [

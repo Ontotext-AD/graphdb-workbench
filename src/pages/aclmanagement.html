@@ -45,6 +45,11 @@
                         </div>
                     </td>
                 </tr>
+                <tr ng-if="!rulesModel.size()">
+                    <td colspan="9" class="no-data">
+                        {{'acl_management.rulestable.messages.no_data' | translate}}
+                    </td>
+                </tr>
                 <tr ng-repeat="rule in rulesModel.aclRules track by $index" class="acl-rule"
                     ng-class="{'selected': $index === selectedRule}">
                     <td>{{$index}}</td>

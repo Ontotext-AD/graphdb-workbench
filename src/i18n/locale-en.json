@@ -146,6 +146,9 @@
                 "delete_rule": "Delete rule",
                 "add_rule": "Add new rule",
                 "edit_rule": "Edit rule"
+            },
+            "messages": {
+                "no_data": "There are no rules defined in current repository"
             }
         },
         "errors": {
