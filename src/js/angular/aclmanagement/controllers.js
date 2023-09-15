@@ -97,10 +97,10 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
         if ($repositories.getActiveRepository()) {
             $scope.loading = true;
             const repositoryId = getActiveRepository();
-            AclManagementRestService.getRules(repositoryId).success((response) => {
+            AclManagementRestService.getRules(repositoryId).then((response) => {
                 $scope.rulesModel = mapAclRulesResponse(response);
                 $scope.rulesModelCopy = new ACListModel([...$scope.rulesModel.aclRules]);
-            }).error((data) => {
+            }).catch((data) => {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
             }).finally(() => {
