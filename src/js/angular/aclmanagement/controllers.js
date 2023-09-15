@@ -94,17 +94,19 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     //
 
     const loadRules = () => {
-        $scope.loading = true;
-        const repositoryId = getActiveRepository();
-        AclManagementRestService.getRules(repositoryId).success((response) => {
-            $scope.rulesModel = mapAclRulesResponse(response);
-            $scope.rulesModelCopy = new ACListModel([...$scope.rulesModel.aclRules]);
-        }).error((data) => {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
-        }).finally(() => {
-            $scope.loading = false;
-        });
+        if ($repositories.getActiveRepository()) {
+            $scope.loading = true;
+            const repositoryId = getActiveRepository();
+            AclManagementRestService.getRules(repositoryId).success((response) => {
+                $scope.rulesModel = mapAclRulesResponse(response);
+                $scope.rulesModelCopy = new ACListModel([...$scope.rulesModel.aclRules]);
+            }).error((data) => {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
+            }).finally(() => {
+                $scope.loading = false;
+            });
+        }
     };
 
     const getActiveRepository = () => {
