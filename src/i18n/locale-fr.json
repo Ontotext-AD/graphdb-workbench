@@ -138,15 +138,27 @@
                 "role": "Rôle",
                 "policy": "Politique"
             },
+            "field_placeholders": {
+                "subject": "Sujet",
+                "predicate": "Prédicat",
+                "object": "Objet",
+                "context": "Contexte",
+                "role": "Politique"
+            },
             "actions": {
                 "move_up": "Déplacer la règle vers le haut",
                 "move_down": "Déplacer la règle vers le bas",
                 "delete_rule": "Supprimer la règle",
                 "add_rule": "Ajouter une nouvelle règle",
-                "edit_rule": "Modifier la règle"
+                "edit_rule": "Modifier la règle",
+                "save_rule": "Enregistrer la règle",
+                "cancel_rule_editing": "Annuler la modification des règles",
+                "save_acl": "Enregistrer la liste de contrôle d'accès",
+                "cancel_acl_saving": "Annuler"
             },
             "messages": {
-                "no_data": "Aucune règle n'est définie dans le référentiel actuel"
+                "no_data": "Aucune règle n'est définie dans le référentiel actuel",
+                "invalid_form": "Remplissez des données valides dans tous les champs avant d'enregistrer la règle"
             }
         },
         "errors": {

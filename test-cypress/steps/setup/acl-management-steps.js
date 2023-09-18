@@ -56,6 +56,106 @@ export class AclManagementSteps {
     static getNoDataMessage() {
         return this.getAclTable().find('.no-data');
     }
+
+    static addRuleInBeginning() {
+        this.getAddFirstRuleButton().click();
+    }
+
+    static getAddRuleButton(index) {
+        return this.getRule(index).find('.add-rule-btn');
+    }
+
+    static addRule(index) {
+        this.getAddRuleButton(index).click();
+    }
+
+    static getCancelRuleEditingButton(index) {
+        return this.getAclRules().eq(index).find('.cancel-rule-editing-btn');
+    }
+
+    static cancelRuleEditing(index) {
+        this.getCancelRuleEditingButton(index).click();
+    }
+
+    static getSaveRuleButton(index) {
+        return this.getRule(index).find('.save-rule-btn');
+    }
+
+    static getSaveRuleDisabledButton(index) {
+        return this.getRule(index).find('.save-rule-disabled-btn');
+    }
+
+    static saveRule(index) {
+        this.getSaveRuleButton(index).click();
+    }
+
+    static getSubjectField(index) {
+        return this.getRule(index).find('.subject-cell input');
+    }
+
+    static fillSubject(index, value) {
+        this.getSubjectField(index).type(value);
+    }
+
+    static getPredicateField(index) {
+        return this.getRule(index).find('.predicate-cell input');
+    }
+
+    static fillPredicate(index, value) {
+        this.getPredicateField(index).type(value);
+    }
+
+    static getObjectField(index) {
+        return this.getRule(index).find('.object-cell input');
+    }
+
+    static fillObject(index, value) {
+        this.getObjectField(index).type(value);
+    }
+
+    static getContextField(index) {
+        return this.getRule(index).find('.context-cell input');
+    }
+
+    static fillContext(index, value) {
+        this.getContextField(index).type(value);
+    }
+
+    static getRoleField(index) {
+        return this.getRule(index).find('.role-cell input');
+    }
+
+    static fillRole(index, value) {
+        this.getRoleField(index).type(value);
+    }
+
+    static getPolicySelectorField(index) {
+        return this.getRule(index).find('.policy-cell select');
+    }
+
+    static selectPolicy(index, value) {
+        this.getPolicySelectorField(index).select(value);
+    }
+
+    static getMoveUpButtons() {
+        return this.getAclTable().find('.move-up-btn');
+    }
+
+    static getMoveDownButtons() {
+        return this.getAclTable().find('.move-down-btn');
+    }
+
+    static deleteRuleButtons() {
+        return this.getAclTable().find('.delete-rule-btn');
+    }
+
+    static editRuleButtons() {
+        return this.getAclTable().find('.edit-rule-btn');
+    }
+
+    static createRuleButtons() {
+        return this.getAclTable().find('.add-rule-btn');
+    }
 }
 
 const ACL = [
